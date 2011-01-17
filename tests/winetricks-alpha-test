@@ -1,0 +1,142 @@
+#!/bin/sh
+# Regression test for winetricks-alpha
+
+set -x
+
+# verbs known to not work in -q mode yet
+BLACKLIST="cygwin"
+
+errors=0
+fail()
+{
+    echo FAIL: $@
+    errors=`expr $errors + 1`
+}
+
+case "$LANG" in
+""|"C") echo "Some games won't install in the Posix locale; doing 'export LANG=en_US.UTF-8'" ; export LANG=en_US.UTF-8;;
+esac
+
+case "$OS" in
+ "Windows_NT")
+    # Mostly unimplemented...
+    # Cheezy fix for getting rid of double slashes when running cygwin in wine
+    case "$HOME" in
+      /) HOME="" ;;
+    esac
+    WINE=""
+    WINESERVER=true
+    DRIVE_C="C:/"
+    ;;
+ *)
+    export WINE=${WINE:-wine}
+    export WINESERVER=${WINESERVER:-wineserver}
+    ;;
+esac
+
+srcdir=`dirname $0`
+srcdir=`cd $srcdir; pwd`
+
+test_speed()
+{
+    (/usr/bin/time sh winetricks-alpha $1) 2> time.log > /dev/null
+    # 0.44user 0.19system 0:00.84elapsed 75%CPU (0avgtext+0avgdata 26656maxresident)k
+    t=`awk '/elapsed/ {print $3}' < time.log`
+    seconds=`echo $t | sed 's/0://;s/\..*//'`
+    minutes=`echo $t | sed 's/:.*//'`
+    seconds=`expr $seconds + $minutes \* 60`
+    echo test_speed: winetricks-alpha $1 took $seconds seconds
+    # Longest runtime as of 11 Dec 2010 is 5 seconds on an e8400 with cygwin
+    if test $seconds -gt 7
+    then
+        fail "test_speed: winetricks-alpha $1 took $seconds seconds"
+    fi
+}
+
+test_app_checksums()
+{
+    # Verify the installation
+    if [ -f "$srcdir/winetricksverify.d/$app.sha1sum" ]
+    then
+        windir="`$WINE cmd /c echo "%windir%" | cut -c 4- | tr -d '\015'`"
+        progdir="`$WINE cmd /c echo "%ProgramFiles%" | cut -c 4- | tr -d '\015'`"
+
+        cd "$DRIVE_C"
+        # Fix up the filenames, which can differ between Windows versions/Wine:
+        # FIXME: we need a way to guarantee that all _original_ .sha1sums are the same.
+        # Preferably generated under 32-bit wine, so that we don't need a really complex sed
+        # substitution here...
+        sed -e "s|/Program\ Files/|/$progdir/|" -e "s|/windows/|/$windir/|" < "$srcdir/winetricksverify.d/$app.sha1sum" > $app.sha1sum.tmp
+        if ! sha1sum -c $app.sha1sum.tmp 
+        then
+            fail "test_app_checksum $app !" 
+        fi
+        rm $app.sha1sum.tmp
+        cd $srcdir
+    fi
+}
+
+test_app()
+{
+    app=$1
+
+    export WINEPREFIX=$HOME/winetrickstest-prefixes/$app
+    DRIVE_C="$WINEPREFIX/dosdevices/c:"
+
+    # change if you don't want to skip ones already installed
+    if test -d $HOME/winetrickstest-prefixes/$app
+    then
+        echo "Skipping $app, already installed"
+        return 0
+        #rm -rf $WINEPREFIX
+    fi
+    mkdir -p $WINEPREFIX
+
+    # Isolate us from the user's home directory
+    sh -x winetricks sandbox gecko
+
+    echo "Installing $app"
+    if ! sh winetricks-alpha -v -q $app
+    then
+        fail "test_app $app failed!"
+        return
+    fi
+    echo -n "Done installing $app, disk usage "
+    du -sh $WINEPREFIX
+    $WINESERVER -w
+    echo "Wineserver done."
+    ps augxw | grep exe
+
+    test_app_checksums
+}
+
+test_install_cached_or_download()
+{
+    sh winetricks-alpha list-cached list-download > ticd.log
+    if grep .------------------- ticd.log
+    then
+        fail "output of list-cached list-download contained garbage"
+        exit 1
+    fi
+    sort -u < ticd.log | egrep -v "$BLACKLIST" > ticd.verbs
+    for a in `cat ticd.verbs`
+    do
+        test_app $a
+    done
+    sh winetricks-alpha list-cached > cached.txt
+    sh winetricks-alpha list-download > download.txt
+    comm -23 download.txt cached.txt > download-but-not-cached.txt
+    if test `wc -l < download-but-not-cached.txt` != 0
+    then
+        fail "test_install_cached_or_download: asked to install all downloadable apps, but some not listed as cached afterwards"
+    fi
+}
+
+test_speed list
+test_speed list-download
+test_speed list-cached
+test_speed list-installed
+test_install_cached_or_download
+
+echo "Test over, $errors failures."
+test $errors = 0
