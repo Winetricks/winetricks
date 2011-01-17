@@ -1065,22 +1065,6 @@ winetricks_detect_gui()
 
         WINETRICKS_MENU_HEIGHT=500
         WINETRICKS_MENU_WIDTH=900
-
-        # Reduce menu size if bigger than screen
-        XRANDR="`which xrandr`"
-        if test -x "$XRANDR"
-        then
-            XRANDR_WIDTH=`$XRANDR -q | awk '/current/ {print $8}'`
-            XRANDR_HEIGHT=`$XRANDR -q | awk '/current/ {print $10}' | sed 's/,//'`
-            if test "$XRANDR_HEIGHT" -gt 400 -a "$XRANDR_HEIGHT" -lt $WINETRICKS_MENU_HEIGHT
-            then
-                WINETRICKS_MENU_HEIGHT=$XRANDR_HEIGHT
-            fi
-            if test "$XRANDR_WIDTH" -gt 400 -a "$XRANDR_WIDTH" -lt $WINETRICKS_MENU_WIDTH
-            then
-                WINETRICKS_MENU_WIDTH=$XRANDR_WIDTH
-            fi
-        fi
     elif test -x "`which kdialog 2>/dev/null`"
     then
         echo "Zenity not found!  Using kdialog as poor substitute."
