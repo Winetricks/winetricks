@@ -6328,6 +6328,71 @@ load_vc2005express()
 
 #----------------------------------------------------------------
 
+w_metadata vc2005trial apps \
+    title="MS Visual C++ 2005 Trial" \
+    publisher="Microsoft" \
+    year="2005" \
+    media="download" \
+    file1="En_vs_2005_vsts_180_Trial.img" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Visual Studio 8/Common7/IDE/devenv.exe"
+
+
+load_vc2005trial()
+{
+    if w_workaround_wine_bug 25331
+    then
+        w_warn "Install fails with wine older than 1.1.35 or newer than wine-1.3.4."
+    fi
+    w_call dotnet20
+    if w_workaround_wine_bug 20029  # fixed in wine-1.3.9
+    then
+        w_call msxml6
+    fi
+    # Without mfc42.dll, pidgen.dll won't load, and the app claims "A trial edition is alread installed..."
+    w_call mfc42
+
+    w_download vc2005trial http://download.microsoft.com/download/6/f/5/6f5f7a01-50bb-422d-8742-c099c8896969/En_vs_2005_vsts_180_Trial.img f66ae07618d67e693ca0524d3582208c20e07823
+
+    # Unpack ISO (how handy that 7z can do this!)
+    # Only the windows version of 7z can handle .img files?
+    w_call 7zip
+    cd "$W_PROGRAMS_X86_UNIX"/7-Zip
+    w_try $WINE 7z.exe x -y -o"$W_TMP_WIN" "$W_CACHE_WIN\\vc2005trial\\En_vs_2005_vsts_180_Trial.img"
+
+    cd "$W_TMP"
+
+    # Sanity check...
+    w_verify_sha1sum 15433993ab7573c5154dbea2dcb65450f2adbf5c vs/wcu/runmsi.exe
+
+    cd vs/Setup
+    w_ahk_do "
+        SetTitleMatchMode 2
+        run setup.exe
+        winwait, Visual Studio, Setup is loading
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            winwait, Visual Studio, Loading completed
+            controlclick, button2
+            winwait, Visual Studio, Select features
+            controlclick, button38
+            controlclick, button40
+            winwait, Visual Studio, You have chosen
+            controlclick, button1
+            winwait, Visual Studio, Select features
+            controlclick, button11
+        }
+        ;this can take a while
+        winwait, Finish Page
+        if ( u > 0 )
+            controlclick, button2
+        winwaitclose, Finish Page
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Visual Studio 8\\Common7\\IDE" "devenv.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata vlc apps \
    title="VLC media player 1.1.5" \
    publisher="videolan.org" \
