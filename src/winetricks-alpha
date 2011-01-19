@@ -448,7 +448,7 @@ w_download_torrent()
     "
 }
 
-w_download_manual()
+w_download_manual_to()
 {
     _W_packagename="$1"
     _W_url="$2"
@@ -465,8 +465,12 @@ w_download_manual()
     then
         mkdir -p "$W_CACHE/$_W_packagename"
         case "$OS" in
-        "Windows_NT") cygstart "$_W_url" ;;
-        *) xdg-open "$_W_url" ;;
+        "Windows_NT")
+            cygstart "$W_CACHE/$_W_packagename"
+            cygstart "$_W_url" ;;
+        *)
+            xdg-open "$W_CACHE/$_W_packagename"
+            xdg-open "$_W_url" ;;
         esac
         sleep 3   # give some time for browser to open
         w_die "$_W_dlmsg"
@@ -474,6 +478,11 @@ w_download_manual()
     fi
     # FIXME: verify $sha1sum of $file
     unset _W_url _W_file _W_sha1sum _W_dlmsg
+}
+
+w_download_manual()
+{
+    w_download_manual_to $W_PACKAGE "$@"
 }
 
 # Usage: w_mount "volume name"
@@ -6888,7 +6897,7 @@ w_metadata amnesia_tdd_demo games \
 
 load_amnesia_tdd_demo()
 {
-    w_download_manual $W_PACKAGE "http://www.amnesiagame.com/#demo" amnesia_tdd_demo_1.0.1.exe 0bf0bc6e9c8ea76f1c44582d9302a9b22d31d1b6
+    w_download_manual "http://www.amnesiagame.com/#demo" amnesia_tdd_demo_1.0.1.exe 0bf0bc6e9c8ea76f1c44582d9302a9b22d31d1b6
 
     cd "$W_CACHE/$W_PACKAGE"
 
@@ -7237,7 +7246,7 @@ w_metadata  blobby_volley games \
 
 load_blobby_volley()
 {
-    w_download_manual blobby_volley http://www.chip.de/downloads/Blobby-Volley_12990993.html blobby.zip c7057c77a5009a88d9d877e17a63b5536ebeb177
+    w_download_manual http://www.chip.de/downloads/Blobby-Volley_12990993.html blobby.zip c7057c77a5009a88d9d877e17a63b5536ebeb177
 
     mkdir -p "$W_DRIVE_C/BlobbyVolley"
     cd "$W_CACHE/$W_PACKAGE"
@@ -7480,7 +7489,7 @@ w_metadata civ4_demo games \
 
 load_civ4_demo()
 {
-    w_download_manual civ4_demo http://download.cnet.com/Civilization-IV-demo/3000-7489_4-10465206.html Civilization4_Demo.zip b54f1e5d0a1c2d1ef456d0c20098c23bbb6a0ea7
+    w_download_manual http://download.cnet.com/Civilization-IV-demo/3000-7489_4-10465206.html Civilization4_Demo.zip b54f1e5d0a1c2d1ef456d0c20098c23bbb6a0ea7
 
     cd "$W_CACHE/$W_PACKAGE"
     w_try_unzip Civilization4_Demo.zip -d "$W_TMP"
@@ -7533,7 +7542,7 @@ w_metadata darknesswithin2_demo games \
 
 load_darknesswithin2_demo()
 {
-    w_download_manual $W_PACKAGE http://www.bigdownload.com/games/darkness-within-2-the-dark-lineage/pc/darkness-within-2-the-dark-lineage-demo DarknessWithin2Demo.exe
+    w_download_manual http://www.bigdownload.com/games/darkness-within-2-the-dark-lineage/pc/darkness-within-2-the-dark-lineage-demo DarknessWithin2Demo.exe
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -7803,7 +7812,7 @@ w_metadata demolition_company_demo games \
 
 load_demolition_company_demo()
 {
-    w_download_manual $W_PACKAGE http://www.demolitioncompany-thegame.com/demo.php DemolitionCompanyDemoENv2.exe
+    w_download_manual http://www.demolitioncompany-thegame.com/demo.php DemolitionCompanyDemoENv2.exe
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -7983,7 +7992,7 @@ w_metadata losthorizon_demo games \
 
 load_losthorizon_demo()
 {
-    w_download_manual $W_PACKAGE http://www.fileplanet.com/215704/download/Lost-Horizon-Demo Lost_Horizon_Demo_EN.exe
+    w_download_manual http://www.fileplanet.com/215704/download/Lost-Horizon-Demo Lost_Horizon_Demo_EN.exe
 
     cd "$W_CACHE/$W_PACKAGE"
 
@@ -8441,7 +8450,7 @@ w_metadata riseofnations_demo games \
 
 load_riseofnations_demo()
 {
-    w_download_manual $W_PACKAGE http://download.cnet.com/Rise-of-Nations-Trial-Version/3000-7562_4-10730812.html RiseOfNationsTrial.exe 33cbf1ebc0a93cb840f6296d8b529f6155db95ee
+    w_download_manual http://download.cnet.com/Rise-of-Nations-Trial-Version/3000-7562_4-10730812.html RiseOfNationsTrial.exe 33cbf1ebc0a93cb840f6296d8b529f6155db95ee
 
     cd "$W_CACHE/$W_PACKAGE"
 
@@ -8480,7 +8489,7 @@ w_metadata theundergarden_demo games \
 
 load_theundergarden_demo()
 {
-    w_download_manual $W_PACKAGE http://www.bigdownload.com/games/the-undergarden/pc/the-undergarden-demo TheUnderGarden_PC_B34_SRTB.30_28OCT10.exe acf90c422ac2f2f242100f39bedfe7df0c95f7a
+    w_download_manual http://www.bigdownload.com/games/the-undergarden/pc/the-undergarden-demo TheUnderGarden_PC_B34_SRTB.30_28OCT10.exe acf90c422ac2f2f242100f39bedfe7df0c95f7a
 
     if w_workaround_wine_bug 25384
     then
@@ -8771,7 +8780,7 @@ w_metadata stalker_pripyat_bench benchmarks \
 load_stalker_pripyat_bench()
 {
     # Much faster
-    w_download_manual $W_PACKAGE http://www.bigdownload.com/games/stalker-call-of-pripyat/pc/stalker-call-of-pripyat-benchmark stkcop-bench-setup.exe 8691c3f289ecd0521bed60ffd46e65ad080206e0
+    w_download_manual http://www.bigdownload.com/games/stalker-call-of-pripyat/pc/stalker-call-of-pripyat-benchmark stkcop-bench-setup.exe 8691c3f289ecd0521bed60ffd46e65ad080206e0
     #w_download $W_PACKAGE http://files.gsc-game.com/st/bench/stkcop-bench-setup.exe 8691c3f289ecd0521bed60ffd46e65ad080206e0
 
     cd "$W_CACHE/$W_PACKAGE"
@@ -8948,7 +8957,7 @@ w_metadata ut3 games \
 
 load_ut3()
 {
-    w_download_manual $W_PACKAGE "http://www.filefront.com/13709855/UT3Patch5.exe" UT3Patch5.exe
+    w_download_manual "http://www.filefront.com/13709855/UT3Patch5.exe" UT3Patch5.exe
     w_try w_mount UT3_RC7
 
     w_ahk_do "
