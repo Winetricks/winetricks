@@ -8487,6 +8487,80 @@ load_riseofnations_demo()
 
 #----------------------------------------------------------------
 
+w_metadata sims3 games \
+    title="The Sims 3" \
+    publisher="EA" \
+    year="2009" \
+    media="dvd" \
+    file1="Sims3.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/The Sims 3/Game/Bin/TS3.EXE"
+
+load_sims3()
+{
+    # Launcher needs .net.  (But you don't need the launcher to play the game, so this may be overkill.)
+    if false && w_workaround_wine_bug 22350
+    then
+        w_call dotnet20
+    fi
+
+    if w_workaround_wine_bug 21517
+    then
+        w_call d3dx9_36
+    fi
+
+    w_read_key
+
+    w_mount Sims3
+    # Default lang, USA, accept defaults, uncheck EA dl mgr, uncheck readme
+    w_ahk_do "
+        run ${W_ISO_MOUNT_LETTER}:Sims3Setup.exe
+        winwait, Choose Setup Language
+        send {Enter}
+        SetTitleMatchMode, 2
+        winwait, - InstallShield Wizard
+        sleep 1000
+        ControlClick &Next >, - InstallShield Wizard
+        sleep 1000
+        send uuuuuu{Tab}{Tab}{Enter}
+        sleep 1000
+        send a{Enter}
+        sleep 1000
+        send {Raw}$W_KEY
+        send {Enter}
+        winwait, - InstallShield Wizard, Setup Type
+        send {Enter}
+        winwait, - InstallShield Wizard, Click Install to begin
+        send {Enter}
+        winwait, - InstallShield Wizard, EA Download Manager
+        ControlClick Yes, - InstallShield Wizard
+        send {Enter}
+        winwait, - InstallShield Wizard, Complete
+        ControlClick View the readme file, - InstallShield Wizard
+        ControlClick Finish, - InstallShield Wizard
+    "
+    w_umount
+
+    cd "$W_PROGRAMS_UNIX/Electronic Arts/The Sims 3/Game/Bin"
+    echo "Sims3 version info:"
+    cat skuversion.txt
+
+    w_download http://na.llnet.eadownloads.ea.com/u/f/sims/sims3/patches/Sims3_1.6.6.002001_from_1.0.631.00001.exe 02703d296417750005326ff0d37295fa434a3f49
+
+    cd "$W_CACHE"/$W_PACKAGE
+    w_ahk_do "
+        run Sims3_1.6.6.002001_from_1.0.631.00001.exe
+        SetTitleMatchMode, 2
+        winwait, - InstallShield Wizard, Complete
+        ControlClick Finish, - InstallShield Wizard
+    "
+
+    # FIXME: apply next patch, too
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\The Sims 3\\Game\\Bin" "TS3.EXE"
+}
+
+#----------------------------------------------------------------
+
 w_metadata theundergarden_demo games \
     title="The UnderGarden Demo" \
     publisher="Atari" \
