@@ -2178,6 +2178,9 @@ winetricks_init()
     # FIXME: move those tr's and sed's into w_pathconv, if they're still needed?
     W_CACHE_WIN="`w_pathconv -w $W_CACHE | tr '\012' ' ' | sed 's/ $//'`"
 
+    # Postinstall scripts, if any, go here
+    WINETRICKS_POST="${WINETRICKS_POST:-$WINETRICKS_DIR/postinstall}"
+
     # The folder-name is localized!
     W_PROGRAMS_WIN="`winetricks_early_wine cmd.exe /c echo "%ProgramFiles%" | tr -d '\015'`"
     case "$W_PROGRAMS_WIN" in
