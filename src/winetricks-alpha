@@ -7993,6 +7993,57 @@ load_hko()
 
 #----------------------------------------------------------------
 
+w_metadata hphbp_demo games \
+    title="Harry Potter & The Half Blood Prince Demo" \
+    publisher="EA" \
+    year="2009" \
+    media="download" \
+    file1="Release_HBP_demo_PC_DD_DEMO_Final_348428.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Harry Potter and the Half-Blood Prince Demo/pc/hp6_demo.exe"
+
+load_hphbp_demo()
+{
+    case "$LANG" in
+    ""|"C") w_die "Harry Potter will not install in the Posix locale; please do 'export LANG=en_US.UTF-8' or something like that" ;;
+    esac
+
+    w_download http://largedownloads.ea.com/pub/demos/HarryPotter/Release_HBP_demo_PC_DD_DEMO_Final_348428.exe dadc1366c3b5e641454aa337ad82bc8c5082bad2
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, Release_HBP_demo_PC_DD_DEMO_FINAL_348428.exe
+        winwait, Harry Potter, Install
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick, Button1, Harry Potter
+            winwait, Setup, License
+            controlclick, Button1
+            controlclick, Button3
+            winwait, Setup, License
+            controlclick, Button1
+            controlclick, Button3
+            winwait, Setup, Destination
+            controlclick, Button1
+            winwait, Setup, begin
+            controlclick, Button1
+        }
+        winwait, Setup, Finish
+        if ( u > 0 )
+            controlclick, Button1
+        winwaitclose
+    "
+
+    # Work around locale issues by symlinking the app's directory to not have a funny char
+    # Won't really work on cygwin, but that's ok.
+    cd "$W_PROGRAMS_X86_UNIX/Electronic Arts"
+    ln -s "Harry Potter and the Half-Blood Prince"* "Harry Potter and the Half-Blood Prince Demo"
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Harry Potter and the Half-Blood Prince Demo\\pc" hp6_demo.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata losthorizon_demo games \
     title="Lost Horizon Demo" \
     publisher="Deep Silver" \
