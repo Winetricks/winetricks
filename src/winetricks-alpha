@@ -7246,6 +7246,57 @@ load_bladekitten_demo()
 
 #----------------------------------------------------------------
 
+w_metadata cnc3_demo games \
+    title="Command and Conquer 3 Demo" \
+    publisher="EA" \
+    year="2007" \
+    media="download" \
+    file1="CnC3Demo.exe" \
+    installed_exe="$W_PROGRAMS_X86_WIN/Electronic Arts/Command & Conquer 3 Tiberium Wars Demo/CNC3Demo.exe"
+
+load_cnc3_demo()
+{
+    w_download "http://largedownloads.ea.com/pub/demos/CommandandConquer3/CnC3Demo.exe" f6af21eba2d17eb6d8bb6a131b501b41c3a7eaf7
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, CnC3Demo.exe
+        winwait, Conquer 3, free space to install
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick, button1
+            winwait, WinZip, After installation
+            controlclick, button1
+            winwait, Conquer 3, InstallShield
+            controlclick, button1
+            winwait, Conquer 3, license
+            controlclick, button3
+            controlclick, button5
+            winwait, Conquer 3, setup type
+            controlclick, button5
+            winwait, Conquer 3, EA Link
+            controlclick, button1
+            winwait, Conquer 3, GameSpy
+            controlclick, button1
+        }
+        winwait, Conquer 3, Launch the program
+        if ( u > 0 )
+            controlclick, button1
+
+        winwaitclose, Conquer 3, Launch the program
+    "
+
+    if w_workaround_wine_bug 19159
+    then
+        w_call vd=800x600
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Command & Conquer 3 Tiberium Wars Demo" "CNC3Demo.exe"
+}
+
+#----------------------------------------------------------------
+
 # http://appdb.winehq.org/objectManager.php?sClass=version&iId=9320
 w_metadata  blobby_volley games \
    title="Blobby Volley" \
