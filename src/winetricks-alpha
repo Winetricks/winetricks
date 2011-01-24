@@ -7906,6 +7906,42 @@ load_demolition_company_demo()
 }
 
 #----------------------------------------------------------------
+
+w_metadata guildwars games \
+    title="Guild Wars" \
+    publisher="NCsoft" \
+    year="2005" \
+    media="download" \
+    file1="GwSetup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Guild Wars/Gw.exe" \
+    homepage="www.guildwars.com"
+
+load_guildwars()
+{
+    w_download "http://guildwars.com/download" a7c4c8cb3b8cbee20707dcf8176d3da6a1686c05 GwSetup.exe
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        Run, GwSetup.exe
+        WinWait, ahk_class ArenaNet_Dialog_Class
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            ; Wait for network connection to finish.  This might need to be longer.  Can we detect this better?
+            Sleep 6000
+            ; For some reason, the OK doesn't take for me unless I activate the window first
+            WinActivate
+            Send {Enter}
+            ; Installation takes a long time... and then starts the game, which we don't want.
+        }
+        WinWait, ahk_class ArenaNet_Dx_Window_Class
+        Sleep 4000
+        WinClose, ahk_class ArenaNet_Dx_Window_Class
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Guild Wars" "Gw.exe"
+}
+
+#----------------------------------------------------------------
  
 w_metadata hegemonygold_demo games \
     title="Hegemony Gold beta 13" \
