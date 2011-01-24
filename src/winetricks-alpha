@@ -8454,6 +8454,76 @@ load_menofwar()
 
 #----------------------------------------------------------------
 
+w_metadata nfsshift_demo games \
+    title="Need For Speed: SHIFT Demo" \
+    publisher="EA" \
+    year="2009" \
+    media="download" \
+    file1="NFSSHIFTPCDEMO.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need for Speed SHIFT Demo/shiftdemo.exe"
+
+load_nfsshift_demo()
+{
+    w_download "http://cdn.needforspeed.com/data/downloads/shift/NFSSHIFTPCDEMO.exe" 7b267654d08c54f15813f2917d9d74ec40905db7
+
+    cp "$W_CACHE/$W_PACKAGE/NFSSHIFTPCDEMO.exe" "$W_TMP"
+
+    cd "$W_TMP"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetTitleMatchMode, slow
+        run, NFSSHIFTPCDEMO.exe
+        winwait, WinRAR
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            ControlClick, Button2
+            winwait, SHIFT, View the readme
+            controlclick, Button1
+            ; Not all systems need the Visual C++ runtime
+            loop
+            {
+                ifwinexist, Visual C++
+                {
+                    controlclick, Button1
+                    break
+                }
+                ifwinexist, Setup, SHIFT Demo License
+                {
+                    break
+                }
+                sleep 1000
+            }
+            winwait, Setup, SHIFT Demo License
+            Sleep 1000
+            send {Space}
+            Sleep 1000
+            send {Enter}
+            winwait, Setup, DirectX
+            Sleep 1000
+            send {Space}
+            Sleep 1000
+            send {Enter}
+            winwait, Setup, Destination
+            Sleep 1000
+            send {Enter}
+            winwait, Setup, begin
+            Sleep 1000
+            controlclick, Button1
+        }
+        winwait, Setup, Finish
+        if ( u > 0 ) {
+            Sleep 1000
+            controlclick, Button5
+            controlclick, Button1
+        }
+        winwaitclose, Setup, Finish
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Need for Speed SHIFT Demo" "shiftdemo.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata osmos_demo games \
     title="Osmos demo" \
     publisher="Hemisphere Games" \
