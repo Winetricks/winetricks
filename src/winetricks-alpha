@@ -1071,7 +1071,9 @@ winetricks_print_version() {
 # Run a windows command without triggering wine's mshtml's gecko install dialog
 winetricks_early_wine()
 {
-    WINEDEBUG=-all WINEDLLOVERRIDES=mshtml= $WINE "$@"
+    # The sed works around http://bugs.winehq.org/show_bug.cgi?id=25838
+    # which unfortunately got released in wine-1.3.12
+    WINEDEBUG=-all WINEDLLOVERRIDES=mshtml= $WINE "$@" | sed 's/.*h.=//'
 }
 
 winetricks_detect_gui()
