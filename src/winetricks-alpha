@@ -955,6 +955,13 @@ w_do_call()
         elif winetricks_metadata_exists $cmd
         then
             . "$WINETRICKS_METADATA"/*/$cmd.vars
+        elif test $cmd = native || test $cmd = disabled || test $cmd = builtin
+        then
+            # ugly special case - can't have metadata for these verbs until we allow arbitrary parameters
+            w_override_dlls $cmd $arg
+            _W_status=$?
+            rm -rf "$W_TMP"
+            return $_W_status
         else
             w_die "No such verb $1"
         fi
@@ -10156,7 +10163,9 @@ execute_command()
     attended) winetricks_set_unattended 0 ;;
 
     # Use winecfg if you want a gui for plain old dll overrides
-    gameux=*|mmdevapi=*|oleaut32=*) w_override_dlls $arg $cmd;;
+    *=native) w_do_call native $cmd;;
+    *=builtin) w_do_call builtin $cmd;;
+    *=disabled) w_do_call disabled $cmd;;
 
     # Hacks for backwards compatibility
     cc580) winetricks_do_app comctl32 ;;
