@@ -1047,8 +1047,9 @@ _EOF_
 w_append_path()
 {
     # Prepend $1 to the windows path in the registry.
-    _W_NEW_PATH="`echo $1| sed 's,\\\\,\\\\\\\\,g'`"
-    _W_WIN_PATH="`WINEDEBUG= $WINE cmd.exe /c echo "%PATH%" | tr -d '\r' | sed 's,\\\\,\\\\\\\\,g'`"
+    # Use printf %s to avoid interpreting backslashes.
+    _W_NEW_PATH="`printf %s $1| sed 's,\\\\,\\\\\\\\,g'`"
+    _W_WIN_PATH="`winetricks_early_wine cmd.exe /c echo "%PATH%" | tr -d '\r' | sed 's,\\\\,\\\\\\\\,g'`"
 
     sed 's/$/\r/' > "$W_TMP"/path.reg <<_EOF_
 REGEDIT4
@@ -1073,7 +1074,7 @@ winetricks_early_wine()
 {
     # The sed works around http://bugs.winehq.org/show_bug.cgi?id=25838
     # which unfortunately got released in wine-1.3.12
-    WINEDEBUG=-all WINEDLLOVERRIDES=mshtml= $WINE "$@" | sed 's/.*h.=//'
+    WINEDEBUG=-all WINEDLLOVERRIDES=mshtml= $WINE "$@" | sed 's/.*1h.=//'
 }
 
 winetricks_detect_gui()
