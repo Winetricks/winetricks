@@ -543,7 +543,7 @@ w_ahk_do()
 {
     if ! test -f "$W_CACHE/ahk/AutoHotkey.exe"
     then
-        w_download http://www.autohotkey.com/download/AutoHotkey104805.zip b3981b13fbc45823131f69d125992d6330212f27 
+        w_download_to ahk http://www.autohotkey.com/download/AutoHotkey104805.zip b3981b13fbc45823131f69d125992d6330212f27 
         w_try_unzip -d "$W_CACHE/ahk"  "$W_CACHE/ahk/AutoHotkey104805.zip" AutoHotkey.exe AU3_Spy.exe
         chmod +x "$W_CACHE/ahk/AutoHotkey.exe"
     fi
