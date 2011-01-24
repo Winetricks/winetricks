@@ -6205,6 +6205,42 @@ load_python26_comtypes()
 
 #----------------------------------------------------------------
 
+w_metadata spotify apps \
+   title="Spotify - All the music, all the time" \
+   publisher="Spotify" \
+   year="2011" \
+   media="download" \
+   file1="SpotifyInstaller.exe" \
+   installed_exe1="$W_PROGRAMS_X86_WIN/Spotify/spotify.exe"
+
+load_spotify()
+{
+    w_download http://www.spotify.com/download/Spotify%20Installer.exe f26712b576baa1c78112a05474293deef39f7f62 SpotifyInstaller.exe
+
+    cd "$W_CACHE"/spotify
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run SpotifyInstaller.exe
+        WinWait, Spotify 0.4.9 Setup, Location
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            Sleep 500
+            ControlClick Button7 ; Start after install
+            Sleep 500
+            ControlClick Button2 ; Install
+            WinWait, Spotify 0.4.9 Setup, Complete
+            Sleep 500
+            ControlClick Button2 ; Close
+        }
+        WinWaitClose
+        "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Spotify" "spotify.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata  safari apps \
    title="Safari" \
    publisher="Apple" \
