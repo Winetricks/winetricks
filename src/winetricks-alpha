@@ -8772,28 +8772,34 @@ load_sims3()
     w_ahk_do "
         run ${W_ISO_MOUNT_LETTER}:Sims3Setup.exe
         winwait, Choose Setup Language
-        send {Enter}
-        SetTitleMatchMode, 2
-        winwait, - InstallShield Wizard
-        sleep 1000
-        ControlClick &Next >, - InstallShield Wizard
-        sleep 1000
-        send uuuuuu{Tab}{Tab}{Enter}
-        sleep 1000
-        send a{Enter}
-        sleep 1000
-        send {Raw}$W_KEY
-        send {Enter}
-        winwait, - InstallShield Wizard, Setup Type
-        send {Enter}
-        winwait, - InstallShield Wizard, Click Install to begin
-        send {Enter}
-        winwait, - InstallShield Wizard, EA Download Manager
-        ControlClick Yes, - InstallShield Wizard
-        send {Enter}
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+	    send {Enter}
+	    SetTitleMatchMode, 2
+	    winwait, - InstallShield Wizard
+	    sleep 1000
+	    ControlClick &Next >, - InstallShield Wizard
+	    sleep 1000
+	    send uuuuuu{Tab}{Tab}{Enter}
+	    sleep 1000
+	    send a{Enter}
+	    sleep 1000
+	    send {Raw}$W_KEY
+	    send {Enter}
+	    winwait, - InstallShield Wizard, Setup Type
+	    send {Enter}
+	    winwait, - InstallShield Wizard, Click Install to begin
+	    send {Enter}
+	    winwait, - InstallShield Wizard, EA Download Manager
+	    ControlClick Yes, - InstallShield Wizard
+	    send {Enter}
+	}
         winwait, - InstallShield Wizard, Complete
-        ControlClick View the readme file, - InstallShield Wizard
-        ControlClick Finish, - InstallShield Wizard
+        if ( u > 0 ) {
+	    ControlClick View the readme file, - InstallShield Wizard
+	    ControlClick Finish, - InstallShield Wizard
+	}
+	winwaitclose
     "
     w_umount
 
@@ -8808,7 +8814,11 @@ load_sims3()
         run Sims3_1.6.6.002001_from_1.0.631.00001.exe
         SetTitleMatchMode, 2
         winwait, - InstallShield Wizard, Complete
-        ControlClick Finish, - InstallShield Wizard
+        u = $W_OPT_UNATTENDED
+	if ( u > 0 ) {
+            ControlClick Finish, - InstallShield Wizard
+	}
+	winwaitclose
     "
 
     # FIXME: apply next patch, too
