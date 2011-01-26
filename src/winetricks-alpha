@@ -582,8 +582,7 @@ w_override_dlls()
     case $_W_mode in
     *=*)
         w_die "w_override_dlls: unknown mode $_W_mode.
-Usage: 'w_override_dlls mode dll ...'.   
-Perhaps you were thinking of w_call $1 ?" ;;
+Usage: 'w_override_dlls mode[,mode] dll ...'." ;;
     disabled)
         _W_mode="" ;;
     esac
