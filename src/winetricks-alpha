@@ -579,10 +579,14 @@ w_override_dlls()
     w_skip_windows w_override_dlls && return
 
     _W_mode=$1
-    if [ $_W_mode = "disabled" ]
-    then
-        _W_mode=""
-    fi
+    case $_W_mode in
+    *=*)
+        w_die "w_override_dlls: unknown mode $_W_mode.
+Usage: 'w_override_dlls mode dll ...'.   
+Perhaps you were thinking of w_call $1 ?" ;;
+    disabled)
+        _W_mode="" ;;
+    esac
     shift
     echo Using $_W_mode override for following DLLs: $@
     cat > "$W_TMP"/override-dll.reg <<_EOF_
