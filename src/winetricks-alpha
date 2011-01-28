@@ -7109,6 +7109,57 @@ load_aoe_demo()
 
 #----------------------------------------------------------------
 
+w_metadata atmosphir games \
+    title="Atmosphir" \
+    publisher="Minor Studios" \
+    year="2011" \
+    media="download" \
+    file1="Atmosphir Installer v1.0.0 fixed.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Minor Studios/Atmosphir/Atmosphir.exe" \
+    homepage="http://www.atmosphir.com"
+
+load_atmosphir()
+{
+    w_download_manual http://download.cnet.com/Atmosphir/3000-7492_4-75335647.html "Atmosphir Installer v1.0.0 fixed.exe" 3ee46b45ea9a8e4a8888148556efb7e61882f7d0
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        run Atmosphir Installer v1.0.0 fixed.exe
+        winwait, Atmosphir Setup, Welcome
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            sleep 1000
+            ControlClick Button2
+            winwait, Atmosphir Setup, License Agreement
+            sleep 1000
+            ControlClick Button2
+            winwait, Atmosphir Setup, Choose Install Location
+            sleep 1000
+            ControlClick Button2
+            winwait, Atmosphir Setup, Choose Start Menu Folder
+            sleep 1000
+            ControlClick Button2
+        }
+        winwait, Atmosphir Setup, Installation complete
+        if ( u > 0 ) {
+            sleep 1000
+            send {Space}  ; ControlClick Button4    # start
+            sleep 1000
+            ControlClick Button2
+            ; Let the launcher do the initial full download
+            winwait, Atmosphir Launcher
+            winwaitclose
+            ; then kill the game when it starts
+            winwait, Atmosphir
+            ;winkill          ; doesn't work, game traps it
+            winclose
+        }
+        winwaitclose
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN/Minor Studios/Atmosphir" Atmosphir.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata bioshock_demo games \
     title="Bioshock Demo" \
     publisher="2K Games" \
