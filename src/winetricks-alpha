@@ -391,8 +391,8 @@ w_download()
 }
 
 # Download one or more files via bittorrent
-# Usage: w_download_torrent package [foo.torrent]
-# Caches downloads in $W_CACHE/$package, torrent files are assumed to be there
+# Usage: w_download_torrent [foo.torrent]
+# Caches downloads in $W_CACHE/$W_PACKAGE, torrent files are assumed to be there
 # If no foo.torrent is given, will add ALL .torrent files in $W_CACHE/$W_PACKAGE
 w_download_torrent()
 {
@@ -401,8 +401,8 @@ w_download_torrent()
 
     w_call utorrent
 
-    UT_WINPATH="$W_CACHE_WIN\\$1"
-    cd "$W_CACHE/$1"
+    UT_WINPATH="$W_CACHE_WIN\\$W_PACKAGE"
+    cd "$W_CACHE/$W_PACKAGE"
 
     if [ "$2"x != ""x ] # foo.torrent parameter supplied
     then
@@ -8184,7 +8184,7 @@ load_hko()
     w_download http://www.hellokittyonline.com/images/downloads/hkostandardinstaller.torrent fcbb6869551ba251a08402f6de81855e829407e9
     if ! test -f "$W_CACHE/hko/Hello Kitty Online Standard Installer.zip"
     then
-        w_download_torrent hko hkostandardinstaller.torrent
+        w_download_torrent hkostandardinstaller.torrent
     fi
     w_try_unzip "$W_CACHE/hko/Hello Kitty Online Standard Installer.zip" -d "$W_TMP"
     cd "$W_TMP/Hello Kitty Online Standard Installer"
