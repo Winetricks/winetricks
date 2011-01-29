@@ -8420,6 +8420,62 @@ load_losthorizon_demo()
 
 #----------------------------------------------------------------
 
+w_metadata lhp_demo games \
+    title="LEGO Harry Potter Demo [Years 1-4]" \
+    publisher="Travellers Tales / WB" \
+    year="2010" \
+    media="download" \
+    file1="LEGOHarryPotterDEMO.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/WB Games/LEGO_Harry_Potter_DEMO/LEGOHarryPotterDEMO.exe"
+
+load_lhp_demo()
+{
+    case "$LANG" in
+    *UTF-8*|*utf8*) ;;
+    *)
+        w_warn "This installer fails in non-utf-8 locales.  Doing 'export LANG=en_US.UTF-8'."
+        export LANG=en_US.UTF-8
+        ;;
+    esac
+
+    w_download "http://static.kidswb.com/legoharrypottergame/LEGOHarryPotterDEMO.exe" bb0a30ad9a7cc51c80e1bb1f3eec22e6ccc1a706
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, LEGOHarryPotterDEMO.exe
+        winwait, LEGO, language
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick, Button1
+            winwait, LEGO, License
+            controlclick, Button1
+            controlclick, Button2
+            winwait, LEGO, installation method
+            controlclick, Button2
+        }
+        winwait, LEGO, Finish
+        if ( u > 0 )
+            controlclick, Button1
+
+        winwaitclose, LEGO, Finish
+    "
+
+    if w_workaround_wine_bug 23397
+    then
+        w_warn "If sound stutters, try switching to OSS sound in winecfg (winetricks-alpha sound=oss)"
+    fi
+
+    # Work around locale issues by symlinking the app's directory to not have a funny char
+    # Won't really work on cygwin, but that's ok.
+    cd "$W_PROGRAMS_X86_UNIX/WB Games"
+    ln -s LEGO*Harry\ Potter*DEMO LEGO_Harry_Potter_DEMO
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\WB Games\\LEGO_Harry_Potter_DEMO" "LEGOHarryPotterDEMO.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata lswcs games \
     title="Lego Star Wars Complete Saga" \
     publisher="Lucasarts" \
