@@ -6296,6 +6296,65 @@ _EOF_
 
 #----------------------------------------------------------------
 
+w_metadata sketchup apps \
+   title="Sketchup 8" \
+   publisher="Google" \
+   year="2010" \
+   media="download" \
+   file1="GoogleSketchUpWEN.exe" \
+   installed_exe1="$W_PROGRAMS_X86_WIN/Google/Google SketchUp 8/SketchUp.exe"
+
+load_sketchup()
+{
+    w_download http://dl.google.com/sketchup/GoogleSketchUpWEN.exe 84a72bbe9fd131c34bad855c6781c98a8196b7bf
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run GoogleSketchUpWEN.exe
+        WinWait, SketchUp, Welcome
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            Sleep 2000
+            Send {Enter}
+            WinWait, SketchUp, License
+            Sleep 500
+            ControlClick Button1 ; accept
+            Sleep 500
+            ControlClick Button3 ; Next
+            WinWait, SketchUp, Destination
+            Sleep 500
+            ControlClick Button1 ; Next
+            WinWait, SketchUp, Ready
+            Sleep 500
+            ControlClick Button1 ; Install
+        }
+        WinWait, SketchUp, Completed
+        if ( u > 0 ) {
+            Sleep 500
+            ControlClick Button1 ; Finish
+        }
+        WinWaitClose
+    "
+
+    if w_workaround_wine_bug 14045
+    then
+        echo "Setting GLConfig Display HW_OK to 1"
+        cat > "$W_TMP"/glconfigdisplay.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Google\SketchUp8\GLConfig\Display]
+"HW_OK"="1"
+
+_EOF_
+        w_try_regedit "$W_TMP_WIN"\\glconfigdisplay.reg
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Google\\Google SketchUp 8" "SketchUp.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata steam apps \
    title="Steam" \
    publisher="Valve" \
