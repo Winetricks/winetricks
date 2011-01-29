@@ -8066,6 +8066,76 @@ load_demolition_company_demo()
 
 #----------------------------------------------------------------
 
+w_metadata fifa11_demo games \
+    title="FIFA 11 Demo" \
+    publisher="EA Sports" \
+    year="2010" \
+    media="download" \
+    file1="fifa11_pc_demo_NA.zip" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/EA Sports/FIFA 11 Demo/Game/fifa.exe"
+
+load_fifa11_demo()
+{
+    # From http://www.ea.com/uk/football/news/fifa11-download-2
+    w_download "http://static.cdn.ea.com/fifa/u/f/fifa11_pc_demo_NA.zip" c3a66284bffb985f31b11e477dade50c0d4cac52
+
+    w_try unzip -d "$W_TMP" "$W_CACHE/$W_PACKAGE/fifa11_pc_demo_NA.zip"
+    cd "$W_TMP"
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, EASetup.exe
+        winwait, Microsoft Visual C++ 2008, wizard
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            sleep 1000
+            controlclick, Button12, Microsoft Visual C++ 2008, wizard
+            winwait, Microsoft Visual C++ 2008, License Terms
+            sleep 1000
+            controlclick, Button11, Microsoft Visual C++ 2008, License Terms
+            sleep 1000
+            controlclick, Button8, Microsoft Visual C++ 2008, License Terms
+            winwait, Setup, is configuring
+            winwaitclose
+            winwait, Microsoft Visual C++ 2008, Setup Complete
+            sleep 1000
+            controlclick, Button2
+            ; There are two license agreements...one is for Directx
+            winwait, FIFA 11, I &accept the terms in the End User License Agreement
+            sleep 1000
+            controlclick, Button1
+            sleep 1000
+            controlclick, Button3
+            winwaitclose
+            winwait, FIFA 11, I &accept the terms in the End User License Agreement
+            sleep 1000
+            controlclick, Button1, FIFA 11, I &accept the terms in the End User License Agreement
+            sleep 1000
+            controlclick, Button3, FIFA 11, I &accept the terms in the End User License Agreement
+            winwait, FIFA 11, Ready to install FIFA 11
+            sleep 1000
+            controlclick, Button1, FIFA 11, Ready to install FIFA 11
+        }
+        winwait, FIFA 11, Click the Finish button to exit the Setup Wizard.
+        if ( u > 0 ) {
+            sleep 1000
+            controlclick, Button5, FIFA 11, Click the Finish button to exit the Setup Wizard.
+            sleep 1000
+            controlclick, Button1, FIFA 11, Click the Finish button to exit the Setup Wizard.
+        }
+        WinWaitClose
+    "
+
+    if w_workaround_wine_bug 22161
+    then
+        w_call d3dx9_36
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\EA Sports\\FIFA 11 Demo\\Game" "fifa.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata guildwars games \
     title="Guild Wars" \
     publisher="NCsoft" \
