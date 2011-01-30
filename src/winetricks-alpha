@@ -7282,6 +7282,8 @@ w_metadata  bfbc2 games \
 
 load_bfbc2()
 {
+    # Title of installer window gets the TM symbol wrong, even in utf8 locales.
+    # Is it like that in Windows, too?
     w_mount BFBC2
     w_read_key
     w_ahk_do "
@@ -7321,7 +7323,8 @@ load_bfbc2()
         winwait, Updater, have to update to
         ControlClick, Yes, Updater, have to update
         winwait, Updater, successfully updated
-        ControlClick,No, Updater, successfully updated
+        sleep 500
+        ControlClick,No, Updater, successfully updated  ; Button2
     "
 
     if w_workaround_wine_bug 22762
