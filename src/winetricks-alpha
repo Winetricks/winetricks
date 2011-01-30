@@ -10490,6 +10490,21 @@ winetricks_stats_report()
     fi
 }
 
+winetricks_stats_log_command()
+{
+    # log what we execute for possible later statistics reporting
+    WINETRICKS_STATS_BREADCRUMBS="$WINETRICKS_STATS_BREADCRUMBS $*"
+
+    # and for the user's own reference later, when figuring out what he did
+    case "$OS" in
+    "Windows_NT") _W_LOGDIR="$W_WINDIR_UNIX"/Temp ;;
+    *) _W_LOGDIR="$WINEPREFIX" ;;
+    esac
+    mkdir -p "$_W_LOGDIR"
+    echo "$*" >> "$_W_LOGDIR"/winetricks.log
+    unset _W_LOGDIR
+}
+
 # Do whatever the current menu says to the given app
 # Unless you're in the run or uninstall menus, that means to install it.
 winetricks_do_app()
@@ -10510,8 +10525,7 @@ winetricks_do_app()
 # Usage: execute_command verb[=argument]
 execute_command()
 {
-    # log what we execute for possible later statistics reporting
-    WINETRICKS_STATS_BREADCRUMBS="$WINETRICKS_STATS_BREADCRUMBS $*"
+    winetricks_stats_log_command $*
 
     case $1 in
     *=*) arg=`echo $1 | sed 's/.*=//'`; cmd=`echo $1 | sed 's/=.*//'`;;
