@@ -9733,6 +9733,47 @@ load_wog()
 
 #----------------------------------------------------------------
 
+w_metadata wowtrial games \
+    title="World of Warcraft trial" \
+    publisher="Blizzard" \
+    year="2010" \
+    media="download" \
+    file1="WOW-4.0.0.12911-enUS-Trial.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/World of Warcraft/WoW.exe"
+
+load_wowtrial()
+{
+    w_download http://us.media.battle.net.edgesuite.net/downloads/wow-installers/WOW-4.0.0.12911-enUS-Trial.exe 1efb32d10afc4c200a8f34d44980077668085c95
+
+    cd "$W_CACHE/$W_PACKAGE"
+
+    w_ahk_do "
+        SetTitleMatchMode, slow
+        run WOW-4.0.0.12911-enUS-Trial.exe
+        winwait, World of Warcraft Installer
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            sleep 3000
+            controlclick, x400 y440 ; Install
+            winwait, End User License Agreement
+            sleep 1000
+            controlclick, Button2 ; Accept
+            winwait, World of Warcraft Installer
+            sleep 1000
+            controlclick, x680 y560 ; OK
+        }
+        ; fixme: should comment here saying what these screens are
+        winwait, World of Warcraft v4.0.0.12911, Play
+        winwaitclose
+        winwait, World of Warcraft , Play
+        winwaitclose
+        ; fixme: check whether -q actually does a successfull quiet install
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\World of Warcraft" WoW.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata zootycoon2_demo games \
     title="Zoo Tycoon 2 demo" \
     publisher="Microsoft" \
