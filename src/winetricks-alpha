@@ -7573,7 +7573,7 @@ load_cod1()
         WinWait, CD Key, enter
         u = $W_OPT_UNATTENDED
         if ( u > 0 ) {
-            send {Raw}$KEY
+            send {Raw}$W_KEY
             ControlClick Button1
             WinWait, CD Key, valid
             ControlClick Button1
