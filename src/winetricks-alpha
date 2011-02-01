@@ -6138,10 +6138,10 @@ load_psdkwin7()
     fi
     w_try $WINE winsdk_web.exe
 
-    # FIXME: don't do this if running on real Windows?
-    # Work around bug http://bugs.winehq.org/show_bug.cgi?id=21362
-    # Assume user installed in default location
-    cat > "$W_TMP"/set-psdk7.reg <<_EOF_
+    if w_workaround_wine_bug 21362
+    then
+        # Assume user installed in default location
+        cat > "$W_TMP"/set-psdk7.reg <<_EOF_
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs]
@@ -6155,7 +6155,8 @@ REGEDIT4
 "ProductVersion"="7.0.7600.16385.40715"
 "ProductName"="Microsoft Windows SDK for Windows 7 (7.0.7600.16385.40715)"
 _EOF_
-    w_try_regedit "$W_TMP_WIN"\\set-psdk7.reg
+        w_try_regedit "$W_TMP_WIN"\\set-psdk7.reg
+    fi
 }
 
 #----------------------------------------------------------------
