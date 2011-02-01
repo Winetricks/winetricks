@@ -991,7 +991,10 @@ w_do_call()
 
         # Clean up after this verb
         rm -rf "$W_TMP"
-    )
+
+        # Calling subshell must explicitly propagate error code with exit $?
+    ) || exit $?
+
     # Kludge: some verbs are allowed to affect the environment
     case $1 in
     sandbox)
