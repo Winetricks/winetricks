@@ -3884,33 +3884,6 @@ load_ogg()
 
 #----------------------------------------------------------------
 
-w_metadata ole2 dlls \
-   title="MS 16 bit OLE" \
-   publisher="Microsoft" \
-   year="1994" \
-   media="download" \
-   file1="ww1116.exe" \
-   installed_file1="c:/windows/system/OLE2CONV.DLL"
-
-load_ole2()
-{
-    # http://support.microsoft.com/kb/123087/EN-US/
-    w_download http://download.microsoft.com/download/win31/update/2.03/win/en-us/ww1116.exe b803991c40f387464b61f606536b7c98a88245d2
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/ole2/ww1116.exe
-    w_set_winver win31
-    cd "$W_TMP"
-    if w_workaround_wine_bug 25684
-    then
-        w_warn "The ole2 installer may hang at the end.  Please let me (dank@kegel.com) know whether it helps your app."
-    fi
-    w_try $WINE setup.exe
-    w_unset_winver
-
-    w_override_dlls native,builtin COMPOBJ OLE2CONV OLE2DISP OLE2 OLE2NLS OLE2PROX STORAGE TYPELIB
-}
-
-#----------------------------------------------------------------
-
 w_metadata openwatcom apps \
     title="Open Watcom C/C++ compiler (can compile win16 code!)" \
     publisher="Watcom" \
