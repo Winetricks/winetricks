@@ -103,6 +103,8 @@ test_app()
     fi
     echo -n "Done installing $app, disk usage "
     du -sh $WINEPREFIX
+    # Some installers (like fontxplorer) start a winefile.
+    killall winefile.exe
     $WINESERVER -w
     echo "Wineserver done."
     ps augxw | grep exe
