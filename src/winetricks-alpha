@@ -3442,8 +3442,26 @@ load_icodecs()
     w_download "http://codec.alshow.co.kr/Down/codinstl.exe" 2c5d64f472abe3f601ce352dcca75b4f02996f8a
 
     cd "$W_CACHE"/icodecs
-    # FIXME: support unattended mode, possibly by scripting it with autohotkey
-    w_try $WINE codinstl.exe
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run codinstl.exe
+        winwait, Welcome
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            sleep 1000
+            controlclick, Button1  ; Next
+            winwait, Software License Agreement
+            sleep 1000
+            controlclick, Button2  ; Yes
+        }
+        winwait, Setup Complete
+        if ( u > 0 ) {
+            sleep 1000
+            controlclick, Button4  ; Finish
+        }
+        winwaitclose
+    "
 
     # Work around bug in codec's installer?
     # http://support.britannica.com/other/touchthesky/win/issues/TSTUw_150.htm
@@ -3452,7 +3470,6 @@ load_icodecs()
 }
 
 #----------------------------------------------------------------
-
 
 w_metadata jet40 dlls \
    title="MS Jet 4.0 Service Pack 8" \
