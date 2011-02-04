@@ -10282,6 +10282,43 @@ _EOF_
 
 #----------------------------------------------------------------
 
+w_metadata videomemorysize=default settings \
+    title="Let Wine detect amount of video card memory"
+w_metadata videomemorysize=512 settings \
+    title="Tell Wine your video card has 512MB RAM"
+w_metadata videomemorysize=1024 settings \
+    title="Tell Wine your video card has 1024MB RAM"
+
+load_videomemorysize()
+{
+    size=$1
+    echo "Setting video memory size to $size"
+
+    case $size in
+    default)
+
+    cat > "$W_TMP"/set-video.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"VideoMemorySize"=-
+
+_EOF_
+    ;;
+    *)
+    cat > "$W_TMP"/set-video.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"VideoMemorySize"="$size"
+
+_EOF_
+    esac
+    w_try_regedit "$W_TMP_WIN"\\set-video.reg
+}
+
+#----------------------------------------------------------------
+
 w_metadata vista settings \
     title="Set windows version to Windows Vista"
 
