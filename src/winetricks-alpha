@@ -1029,8 +1029,8 @@ w_do_call()
         *) cmd=$1; arg=$2 ;;
         esac
 
-        W_TMP="$W_DRIVE_C/windows/_temp/_$1"
-        W_TMP_WIN="C:\\windows\\_temp\\_$1"
+        W_TMP="$W_DRIVE_C/windows/Temp/_$1"
+        W_TMP_WIN="C:\\windows\\Temp\\_$1"
         rm -rf "$W_TMP"
         mkdir -p "$W_TMP"
 
@@ -2255,9 +2255,9 @@ winetricks_init()
         ;;
     esac
     # Verbs can rely on W_TMP being empty at entry, deleted after return, and a subdir of C:
-    # Kludge: use _temp instead of temp to avoid \t expansion in w_try
-    W_TMP="$W_DRIVE_C/windows/_temp"
-    W_TMP_WIN="C:\\windows\\_temp"
+    # Kludge: use Temp instead of temp to avoid \t expansion in w_try
+    W_TMP="$W_DRIVE_C/windows/Temp"
+    W_TMP_WIN="C:\\windows\\Temp"
 
     W_WINDIR_UNIX="$W_DRIVE_C/windows"
 
