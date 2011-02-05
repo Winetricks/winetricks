@@ -1087,7 +1087,9 @@ winetricks_early_wine()
 {
     # The sed works around http://bugs.winehq.org/show_bug.cgi?id=25838
     # which unfortunately got released in wine-1.3.12
-    DISPLAY= WINEDEBUG=-all WINEDLLOVERRIDES=mshtml= $WINE "$@" 2>/dev/null | sed 's/.*1h.=//'
+    # We would like to use DISPLAY= to prevent virtual desktops from
+    # popping up, but that causes autohotkey's tray icon to not show up.
+    WINEDEBUG=-all WINEDLLOVERRIDES=mshtml= $WINE "$@" 2>/dev/null | sed 's/.*1h.=//'
 }
 
 winetricks_detect_gui()
