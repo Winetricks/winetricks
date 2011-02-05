@@ -7809,6 +7809,132 @@ load_darknesswithin2_demo()
 
 #----------------------------------------------------------------
 
+w_metadata deadspace2 games \
+    title="Dead Space 2" \
+    publisher="EA" \
+    year="2011" \
+    media="dvd" \
+    file1="Disc1.iso" \
+    file2="Disc2.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/EA Games/Dead Space 2/deadspace2.exex"
+
+load_deadspace2()
+{
+    if w_workaround_wine_bug 25853
+    then
+        w_warn "Non-steam versions of this game do not run on Wine because Wine does not support the version of SecuROM they use.  Proceed only if you want to run into this problem."
+    fi
+    w_read_key
+
+    w_mount Disc1
+
+    # Work around bug 25963 (fails to switch discs)
+    w_warn "Copying discs to hard drive.  This will take a few minutes."
+    cd "$W_TMP"
+    # Copy takes a LONG time, so offer a way to avoid copy while debugging verb
+    # You'll need to comment out the five "rm -rf"'s, too.
+    if test ! -f easetup.exe      
+    then
+        w_try cp -r "$W_ISO_MOUNT_ROOT"/* .
+        # Make the directories writable, else 2nd disc copy will fail.
+        w_try chmod -R +w .
+        w_mount Disc2
+        # On Linux, use symlinks for disc 2.  (On Cygwin, we'd have to copy.)
+        w_try ln -s "$W_ISO_MOUNT_ROOT"/*.dat .
+        mkdir -p movies/en movies/fr
+        w_try ln -s "$W_ISO_MOUNT_ROOT"/movies/en/* movies/en/
+        w_try ln -s "$W_ISO_MOUNT_ROOT"/movies/fr/* movies/fr/
+        # Make the files writable, otherwise you'll get errors when trying to remove the temp directory.
+        chmod -R +w .
+    fi
+
+    # Install takes a long time, so offer a way to skip installation
+    # and go straight to activation while debugging that
+    if ! test -f "$W_PROGRAMS_X86_UNIX/EA Games/Dead Space 2/deadspace2.exe"
+    then
+      w_ahk_do "
+        run easetup.exe
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            SetTitleMatchMode, 2
+            ; Not all systems need the Visual C++ runtime
+            loop
+            {
+                ifwinexist, Microsoft Visual C++ 2008 Redistributable Setup
+                {
+                    sleep 500
+                    controlclick, Button12 ; Next
+                    winwait, Visual C++, License
+                    sleep 500
+                    controlclick, Button11 ; Agree
+                    sleep 500
+                    controlclick, Button8 ; Install
+                    winwait, Setup, configuring
+                    winwaitclose
+                    winwait, Visual C++, Complete
+                    sleep 500
+                    controlclick, Button2 ; Finish
+                    break
+                }
+                ifwinexist, Setup, Dead Space
+                {
+                    break
+                }
+                sleep 1000
+            }
+            winwait, Setup, License        ; Dead Space license
+            sleep 500
+            controlclick Button1  ; accept
+            controlclick Button3  ; next
+            SetTitleMatchMode, slow        ; since word DirectX in next dialog can only be read 'slowly'
+            winwait, Setup, DirectX        ; DirectX license
+            sleep 500
+            controlclick Button1  ; accept
+            controlclick Button3  ; next
+            winwait, Setup, Ready to install
+            sleep 500
+            controlclick Button1  ; Install
+        }
+        winwait, Setup, Completed
+        if ( u > 0 ) {
+            controlclick Button5  ; (Don't) install EA Download Manager
+            controlclick Button1  ; Finish
+        }
+        winwaitclose
+        "
+    fi
+
+    # Activate the game
+    cd "$W_PROGRAMS_X86/EA Games/Dead Space 2"
+    w_ahk_do "
+        run activation.exe
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            SetTitleMatchMode, 2
+            WinWait, Product activation
+            sleep 500
+            controlclick TBitBtn2  ; Next
+            WinWait, Product activation, Serial
+            sleep 500
+            send $W_KEY
+            controlclick TBitBtn3  ; Next
+            WinWait, Information
+            sleep 4000             ; let user see what happened
+            send {Enter}
+        }
+        WinWaitClose, Product activation
+    "
+
+    if w_workaround_wine_bug 21230
+    then
+        w_call d3dx9_36
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\EA Games\\Dead Space 2" deadspace2.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata dirt2_demo games \
     title="Dirt 2 Demo" \
     publisher="Codemasters" \
