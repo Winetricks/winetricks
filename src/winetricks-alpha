@@ -534,6 +534,7 @@ w_umount()
           w_try $WINETRICKS_SUDO rm -rf $W_ISO_MOUNT_ROOT
           ;;
         esac
+        $WINE eject ${W_ISO_MOUNT_LETTER}:
         rm -f "$WINEPREFIX"/dosdevices/${W_ISO_MOUNT_LETTER}:
         rm -f "$WINEPREFIX"/dosdevices/${W_ISO_MOUNT_LETTER}::
     fi
