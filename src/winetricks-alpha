@@ -1031,7 +1031,7 @@ w_do_call()
 
         W_TMP="$W_DRIVE_C/windows/Temp/_$1"
         W_TMP_WIN="C:\\windows\\Temp\\_$1"
-        rm -rf "$W_TMP"
+        test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
         mkdir -p "$W_TMP"
 
         # Unset all known used metadata values, in case this is a nested call
@@ -1048,7 +1048,7 @@ w_do_call()
             # ugly special case - can't have metadata for these verbs until we allow arbitrary parameters
             w_override_dlls $cmd $arg
             _W_status=$?
-            rm -rf "$W_TMP"
+            test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
             return $_W_status
         else
             w_die "No such verb $1"
@@ -1075,7 +1075,7 @@ w_do_call()
         fi
 
         # Clean up after this verb
-        rm -rf "$W_TMP"
+        test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
 
         # Calling subshell must explicitly propagate error code with exit $?
     ) || exit $?
@@ -2143,7 +2143,7 @@ winetricks_mount_real_volume()
 winetricks_cleanup()
 {
     test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
-    rm -rf "$WINETRICKS_WORKDIR"
+    test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
 }
 
 winetricks_kill_handler()
@@ -2187,7 +2187,7 @@ winetricks_init()
 
     # Ephemeral files for this run
     WINETRICKS_WORKDIR=/tmp/w.$LOGNAME.$$
-    rm -rf "$WINETRICKS_WORKDIR"
+    test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
 
     # Registering a verb creates a file in WINETRICKS_METADATA
     WINETRICKS_METADATA="$WINETRICKS_WORKDIR/metadata"
@@ -2421,6 +2421,7 @@ Options:
 -v|--verbose: echo all commands as they are executed
 -V|--version: display version and exit
 -h|--help: display this message and exit
+--noclean: don't delete temp directories (useful during debugging)
 Miscellaneous verbs:
 apps: select type 'apps'
 games: select type 'games'
@@ -2443,6 +2444,7 @@ winetricks_handle_option()
     -v|--verbose) set -x ;;
     -V|--version) winetricks_print_version ; exit 0;;
     -h|--help) winetricks_usage ; exit 0 ;;
+    --noclean) W_OPT_NOCLEAN=1 ;;
     --optin) WINETRICKS_STATS_REPORT=1;;
     --optout) WINETRICKS_STATS_REPORT=0;;
     -*) w_die "unknown option $1" ;;
