@@ -835,9 +835,87 @@ w_set_app_winver()
     unset _W_app
 }
 
-# Usage: workaround_wine_bug bugnumber [good-wineversion-shell-pattern]
+# Usage: w_wine_version OP VALUE
+# All the integer comparison operators of 'test' are supported, since 'test' does the work.
+# Example:
+#  if w_wine_version -gt 1.3.2
+#  then
+#      ...
+#  fi
+w_wine_version()
+{
+    # Parse major/minor/micro/nano fields of VALUE.  Ignore nano.  Abort if major is not 1.
+    case $2 in
+    0*|1.0|1.0.*) w_die "bug: $2 is before 1.1, we don't bother with bugs fixed that long ago" ;;
+    1.1.*) _W_minor=1; _W_micro=`echo $2 | sed 's/.*\.//'`;;
+    1.2) _W_minor=2; _W_micro=0;;
+    1.2.*) _W_minor=2; _W_micro=`echo $2 | sed 's/.*\.//'`;;
+    1.3.*) _W_minor=3; _W_micro=`echo $2 | sed 's/.*\.//'`;;
+    *) w_die "bug: unrecognized version $2";;
+    esac
+
+    # Comparing current wine version 1.$WINETRICKS_WINE_MINOR.$WINETRICKS_WINE_MICRO against 1.$_W_minor.$_W_micro 
+    if test $WINETRICKS_WINE_MINOR = $_W_minor
+    then
+        echo minor was same, comparing micro
+        test $WINETRICKS_WINE_MICRO $1 $_W_micro || return 1
+    else
+        echo minor was different.
+        test $WINETRICKS_WINE_MINOR $1 $_W_minor || return 1
+    fi
+}
+
+# Built-in self test for w_wine_version
+#echo Verify that version 1.3.4 is equal to itself
+#WINETRICKS_WINE_MINOR=3 WINETRICKS_WINE_MICRO=4 w_wine_version -eq 1.3.4 || w_die "fail test case wine-1.3.4 = 1.3.4"
+#echo Verify that version 1.3.4 is greater than 1.2
+#WINETRICKS_WINE_MINOR=3 WINETRICKS_WINE_MICRO=4 w_wine_version -gt 1.2 || w_die "fail test case wine-1.3.4 > wine-1.2"
+
+# Usage: w_wine_version_in range ...
+# True if wine version in any of the given ranges
+# 'range' can be
+#    val1,   (for >= val1)
+#    ,val2   (for <= val2)
+#    val1,val2 (for >= val1 && <= val2)
+w_wine_version_in()
+{
+   for _W_range
+   do
+     _W_val1=`echo $_W_range | sed 's/,.*//'`
+     _W_val2=`echo $_W_range | sed 's/.*,//'`
+
+     # If in this range, return true
+     case $_W_range in
+     ,*)                                  w_wine_version   -le "$_W_val2" && unset _W_range _W_val1 _W_val2 && return 0;;
+     *,) w_wine_version -ge "$_W_val1"                                    && unset _W_range _W_val1 _W_val2 && return 0;;
+     *)  w_wine_version -ge "$_W_val1" && w_wine_version   -le "$_W_val2" && unset _W_range _W_val1 _W_val2 && return 0;;
+     esac
+   done
+   echo Not in any of the ranges, return false
+   unset _W_range _W_val1 _W_val2
+   return 1
+}
+
+# Built-in self teest for w_wine_version_in
+#w_wine_version_in_test()
+#{
+#    WINETRICKS_WINE_MINOR=$1 WINETRICKS_WINE_MICRO=$2 w_wine_version_in $3 $4 $5 $6 || w_die "fail test case wine-1.$1.$2 in $3 $4 $5 $6"
+#}
+#w_wine_version_not_in_test()
+#{
+#    WINETRICKS_WINE_MINOR=$1 WINETRICKS_WINE_MICRO=$2 w_wine_version_in $3 $4 $5 $6 && w_die "fail test case wine-1.$1.$2 in $3 $4 $5 $6"
+#}
+#echo Verify that version 1.2.0 is in the range 1.2,
+#w_wine_version_in_test 2 0  1.2,
+#echo Verify that version 1.3.4 is in the range 1.2,
+#w_wine_version_in_test 3 4  1.2,
+#echo Verify that version 1.3 is not in the range ,1.2
+#w_wine_version_not_in_test 3 0  ,1.2
+#echo test passed
+
+# Usage: workaround_wine_bug bugnumber [good-version-range ...]
 # False (nonzero status) on Windows.
-# True (zero status) on Wine unless good-wineversion-shell-pattern is set
+# True (zero status) on Wine unless good-wineversion-range is set
 # and matches the current wine version.
 # For debugging: if you want to skip a bug's workaround, put the bug number in the
 # environment variable WINETRICKS_BLACKLIST to disable it.
@@ -848,7 +926,13 @@ w_workaround_wine_bug()
         echo No need to work around wine bug $1 on windows
         return 1
     fi
-    # FIXME: accept wine version number as $2, only apply if before that
+
+    if test "$2" && w_wine_version_in $2 $3 $4 $5
+    then
+        echo Current wine should not suffer from wine bug $1, so not applying workaround
+        return 1
+    fi
+
     case $1 in
     "$WINETRICKS_BLACKLIST")
         echo wine bug $1 workaround blacklisted, skipping
@@ -2276,6 +2360,10 @@ winetricks_init()
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
     fi
+
+    WINETRICKS_WINE_VERSION=`winetricks_early_wine --version | sed 's/.*wine/wine/'`
+    WINETRICKS_WINE_MINOR=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1\.\([0-9]*\)\..*/\1/'`
+    WINETRICKS_WINE_MICRO=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/'`
 }
 
 winetricks_usage()
@@ -2377,7 +2465,7 @@ then
 
     winetricks_init
 fi
-
+ 
 winetricks_run_app()
 {
     # Find the app
@@ -4040,7 +4128,7 @@ load_quicktime72()
        QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
     fi
 
-    if w_workaround_wine_bug 9366  # fixed in wine-1.1.22
+    if w_workaround_wine_bug 9366  1.1.22,
     then
         w_call gdiplus
         w_call vcrun2005      # no bug number, but same era
@@ -4094,7 +4182,7 @@ load_quicktime76()
        QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
     fi
 
-    if w_workaround_wine_bug 9366  # fixed in wine-1.1.22
+    if w_workaround_wine_bug 9366  1.1.22,
     then
         w_call gdiplus
         w_call vcrun2005      # no bug number, but same era
@@ -4551,7 +4639,7 @@ load_vcrun2010()
     # See http://www.microsoft.com/downloads/details.aspx?FamilyID=a7b7a05e-6de6-4d3a-a423-37bf0912db84
     w_download http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 372d9c1670343d3fb252209ba210d4dc4d67d358
 
-    if w_workaround_wine_bug 23427  # fixed in wine-1.3.5
+    if w_workaround_wine_bug 23427  1.3.5,
     then
         w_call msxml3
     fi
@@ -5645,7 +5733,7 @@ w_metadata firefox4 apps \
 
 load_firefox4()
 {
-    if w_workaround_wine_bug 22972 # fixed in wine-1.3.0
+    if w_workaround_wine_bug 22972 1.3.0,
     then
         w_warn "Requires wine-1.3.0 or later to install"
     fi
@@ -6118,7 +6206,7 @@ load_psdkwin7()
 {
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en
     w_call dotnet20
-    if w_workaround_wine_bug 21509 # fixed in wine-1.2
+    if w_workaround_wine_bug 21509 1.2,
     then
         w_call gdiplus     # work around http://bugs.winehq.org/show_bug.cgi?id=21509
     fi
@@ -6416,7 +6504,7 @@ load_vc2005express()
 {
     # Thanks to http://blogs.msdn.com/astebner/articles/551674.aspx for the recipe
     w_call dotnet20
-    if w_workaround_wine_bug 20029  # fixed in wine-1.3.9
+    if w_workaround_wine_bug 20029  1.3.9,
     then
         w_call msxml6
     fi
@@ -6469,7 +6557,7 @@ load_vc2005trial()
         w_warn "Install fails with wine older than 1.1.35 or newer than wine-1.3.4."
     fi
     w_call dotnet20
-    if w_workaround_wine_bug 20029  # fixed in wine-1.3.9
+    if w_workaround_wine_bug 20029  1.3.9,
     then
         w_call msxml6
     fi
@@ -8789,11 +8877,11 @@ load_masseffect2()
         w_call nocrashdialog
     fi
 
-    if w_workaround_wine_bug 23126 "wine-1.3.[0-9]*"
+    if w_workaround_wine_bug 23126 1.3.0,
     then
         w_call vcrun2005
     fi
-    if w_workaround_wine_bug 23125 "wine-1.3.[0-9]*"
+    if w_workaround_wine_bug 23125 1.3.0,
     then
         w_call d3dx10
     fi
@@ -9129,7 +9217,7 @@ load_puzzleagent_demo()
         WinWaitClose, Puzzle Agent
     "
 
-    if w_workaround_wine_bug 25210  # fixed in 1.3.8
+    if w_workaround_wine_bug 25210  1.3.8,
     then
         w_call vcrun2008
     fi
