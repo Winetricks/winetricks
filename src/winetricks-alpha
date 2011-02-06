@@ -999,19 +999,26 @@ w_metadata()
     unset _W_md_cmd
 }
 
-# Function for verbs to register their main executable.
+# Function for verbs to register their main executable [or, if name is given,
+# other executables]
 # Example:
-#   w_declare_exe "$W_PROGRAMS_X86_WIN\\WorldOfGooDemo" WorldOfGoo.exe
+#   w_declare_exe "$W_PROGRAMS_X86_WIN\\WorldOfGooDemo" WorldOfGoo.exe [name]
 w_declare_exe()
 {
     _W_dir="$1"
     _W_exe="$2"
-    cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
+    if test "$3"
+    then
+        _W_name="$3"
+    else
+        _W_name="$W_PACKAGE"
+    fi
+    cat > "$W_DRIVE_C/run-$_W_name.bat" <<__EOF__
 ${W_PROGRAMS_DRIVE}:
 cd "$_W_dir"
 $_W_exe
 __EOF__
-    unset _W_dir _W_exe
+    unset _W_dir _W_exe _W_name
 }
 
 # Call a verb, don't let it affect environment
