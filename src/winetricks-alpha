@@ -857,10 +857,8 @@ w_wine_version()
     # Comparing current wine version 1.$WINETRICKS_WINE_MINOR.$WINETRICKS_WINE_MICRO against 1.$_W_minor.$_W_micro 
     if test $WINETRICKS_WINE_MINOR = $_W_minor
     then
-        echo minor was same, comparing micro
         test $WINETRICKS_WINE_MICRO $1 $_W_micro || return 1
     else
-        echo minor was different.
         test $WINETRICKS_WINE_MINOR $1 $_W_minor || return 1
     fi
 }
