@@ -10812,6 +10812,7 @@ execute_command()
     attended) winetricks_set_unattended 0 ;;
 
     # Use winecfg if you want a gui for plain old dll overrides
+    alldlls=*) winetricks_do_app $1 ;;
     *=native) w_do_call native $cmd;;
     *=builtin) w_do_call builtin $cmd;;
     *=disabled) w_do_call disabled $cmd;;
