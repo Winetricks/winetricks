@@ -8291,6 +8291,53 @@ load_demolition_company_demo()
 
 #----------------------------------------------------------------
 
+w_metadata eve games \
+    title="EVE Online Tyrannis" \
+    publisher="CCP Games" \
+    year="2010" \
+    media="download" \
+    file1="EVE_Premium_Setup_177290_m.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/CCP/EVE/eve.exe"
+
+load_eve()
+{
+    w_download "http://content.eveonline.com/EVE_Premium_Setup_177290_m.exe" 92624334ed5a431c1b516161ecf7280882b388f6
+
+    if w_workaround_wine_bug 18221
+    then
+        w_call corefonts
+    fi
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        run, EVE_Premium_Setup_177290_m.exe
+        WinWait, EVE Online Installer
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            WinActivate
+            send {Enter}         ; Next
+            WinWait, EVE,License Agreement
+            WinActivate
+            send {Enter}         ; Next
+            WinWait, EVE,Choose Install
+            WinActivate
+            send {Enter}         ; Install
+            WinWait, EVE,Installation Complete
+            WinActivate
+            send {Enter}         ; next
+            WinWait, EVE,Installation Complete
+            WinActivate
+            Send {Tab}{Tab}{Tab} ; select Launch
+            Send {Space}         ; untick Launch
+            Send {Enter}         ; Finish
+        }
+        WinWaitClose, EVE Online Installer
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\CCP\\EVE" "eve.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata fifa11_demo games \
     title="FIFA 11 Demo" \
     publisher="EA Sports" \
