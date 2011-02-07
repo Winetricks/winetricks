@@ -133,6 +133,8 @@ test_app()
 
     # Some installers (like fontxplorer) start a winefile.
     killall winefile.exe
+    # wmi starts a server
+    killall WinMgmt.exe
     $WINESERVER -w
     echo "Wineserver done."
     ps augxw | grep exe
