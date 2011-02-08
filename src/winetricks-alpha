@@ -669,6 +669,18 @@ w_override_app_dlls()
     shift
     _W_mode=$1
     shift
+
+    # Fixme: handle comma-separated list of modes
+    case $_W_mode in
+    b*) _W_mode=builtin ;;
+    n*) _W_mode=native ;;
+    d*)
+        _W_mode="" ;;
+    *)
+        w_die "w_override_app_dlls: unknown mode $_W_mode.  (want native, builtin, or disabled)
+Usage: 'w_override_app_dlls app mode dll ...'." ;;
+    esac
+
     echo Using $_W_mode override for following DLLs when running $_W_app: $@
     (
     echo REGEDIT4
