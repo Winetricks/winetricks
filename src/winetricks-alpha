@@ -673,7 +673,7 @@ w_override_app_dlls()
     (
     echo REGEDIT4
     echo ""
-    echo "[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\$app\\DllOverrides]"
+    echo "[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\$_W_app\\DllOverrides]"
     ) > "$W_TMP"/override-dll.reg
 
     while test "$1" != ""
