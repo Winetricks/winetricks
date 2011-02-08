@@ -10021,6 +10021,7 @@ load_wowtrial()
 
     w_ahk_do "
         SetTitleMatchMode, slow
+        SetTitleMatchMode, 2
         run WOW-4.0.0.12911-enUS-Trial.exe
         winwait, World of Warcraft Installer
         u = $W_OPT_UNATTENDED
@@ -10035,7 +10036,7 @@ load_wowtrial()
             controlclick, x680 y560 ; OK
         }
         ; fixme: should comment here saying what these screens are
-        winwait, World of Warcraft v4.0.0.12911, Play
+        winwait, World of Warcraft v4, Play
         winwaitclose
         winwait, World of Warcraft , Play
         winwaitclose
