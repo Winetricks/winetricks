@@ -8832,6 +8832,231 @@ load_hphbp_demo()
 
 #----------------------------------------------------------------
 
+w_metadata kotor1 games \
+    title="Star Wars: Knights Of The Old Republic" \
+    publisher="Lucas Arts" \
+    year="2003" \
+    media="cd" \
+    file1="KOTOR_1.iso" \
+    file2="KOTOR_2.iso" \
+    file3="KOTOR_3.iso" \
+    file4="KOTOR_4.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/LucasArts/SWKotOR/swkotor.exe"
+
+load_kotor1()
+{
+    # without virtual desktop, some in-game resolutions cause a crash.
+    if w_workaround_wine_bug 16596
+    then
+        w_call vd=800x600
+    fi
+
+    w_mount "KOTOR_1"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        SetWinDelay 500
+        run ${W_ISO_MOUNT_LETTER}:setup.exe
+        winwait Star Wars, Welcome
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick button1
+            winwait Star Wars, Licensing Agreement
+            controlclick button2
+            winwait Question, Licensing Agreement
+            controlclick button1
+            winwait Star Wars, Destination Folder
+            controlclick button1
+            winwait Star Wars, Program Folder
+            controlclick button2
+            winwait Star Wars, Additional Shortcuts
+            ;unselect start menu shortcuts
+            controlclick button1
+            controlclick button2
+            controlclick button3
+            controlclick button4
+            controlclick button5
+            controlclick button11
+            winwait Star Wars, Review settings
+            controlclick button1
+        }
+        winwait Next Disk, Please insert disk 2
+    "
+    w_mount "KOTOR_2"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            winwait Next Disk
+            controlclick button2
+        }
+        winwait Next Disk, Please insert disk 3
+    "
+    w_mount "KOTOR_3"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            winwait Next Disk
+            controlclick button2
+        }
+        winwait Next Disk, Please insert disk 4
+    "
+    w_mount "KOTOR_4"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            winwait Next Disk
+            controlclick button2
+            winwait Question, Desktop
+            controlclick button2
+            winwait Question, DirectX
+            controlclick button2 ;don't install directx
+        }
+        winwait Star Wars, Complete
+        if ( u > 0 ) {
+            controlclick button1 ;don't launch game
+            controlclick button4
+        }
+        winwaitclose Star Wars, Complete
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\LucasArts\\SWKotOR" "swkotor.exe"
+}
+
+#--------------------------------------------------------------------
+
+w_metadata kotor2 games \
+    title="Star Wars - Knights of the Old Republic 2: The Sith Lords (UK)" \
+    publisher="LucasArts" \
+    year="2005" \
+    media="cd" \
+    file1="K2_UK_v_1_0_dsc_.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/LucasArts/SWKotOR2/swkotor2.exe"
+
+load_kotor2()
+{
+    if w_workaround_wine_bug 16596
+    then
+        w_call vd=800x600
+    fi
+
+    w_mount "K2_UK_v_1_0_dsc_"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        SetWinDelay 500
+        run ${W_ISO_MOUNT_LETTER}:setup.exe
+        winwait Star Wars, Welcome
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick button1
+            winwait Star Wars, License Agreement
+            controlclick button2
+            winwait Question, Licensing Agreement
+            controlclick button1
+            winwait Star Wars, Destination Location
+            controlclick button1
+            winwait Star Wars, Program Folder
+            controlclick button2
+        }
+        winwait Next Disk, disk 2
+    "
+    w_umount
+    w_mount "K2_UK_v_1_0_dsc_"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        winwait Next Disk, disk 2
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 )
+            controlclick button2
+        winwait Next Disk, disk 3
+    "
+    w_umount
+    w_mount "K2_UK_v_1_0_dsc_"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        winwait Next Disk, disk 3
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 )
+            controlclick button2
+        winwait Next Disk, disk 4
+    "
+    w_umount
+    w_mount "K2_UK_v_1_0_dsc_"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        winwait Next Disk, disk 4
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 )
+            controlclick button2
+        winwait Next Disk, Play disc
+    "
+    w_umount
+    w_mount "K2_UK_v_1_0_dsc_"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        SetWinDelay 500
+        winwait Next Disk, Play disc
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick button2
+            winwait Question, shortcut
+            controlclick button1
+            winwait Question, DirectX
+            controlclick button2
+        }
+        winwait Star Wars, Wizard Complete
+        if ( u > 0 ) {
+            controlclick button1
+            controlclick button2
+            controlclick button4
+        }
+        winwaitclose Star Wars, Wizard Complete
+    "
+
+    # download 1.0a and 1.0b patches
+    w_download "ftp://ftp.lucasarts.com/patches/pc/KotOR2 Patch v201420 UK.exe" ab97a0d41ae15782418d0fd1b2ad43ccf35ca070
+    w_download "ftp://ftp.lucasarts.com/patches/pc/sw_pc_uk_from201420_to211427.exe" cf4ed797a0314b3ca047012f732321c6ba9a2388
+
+    cd "$W_CACHE/$W_PACKAGE"
+
+    # install 1.0a patch
+    w_ahk_do "
+        SetTitleMatchMode 2
+        SetWinDelay 500
+        run KotOR2 Patch v201420 UK.exe
+        winwait RTPatch Software, 1.0a
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick button1
+            winwait RTPatch Software, updated
+            controlclick button1
+        }
+        winwaitclose RTPatch Software
+    "
+
+    # install 1.0b patch
+    w_ahk_do "
+        SetTitleMatchMode 2
+        SetWinDelay 500
+        run sw_pc_uk_from201420_to211427.exe
+        winwait RTPatch Software, 1.0b
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick button1
+            winwait Update1_0b.txt
+            winclose Update1_0b.txt ;close readme that pops up
+            winwait RTPatch Software, updated
+            controlclick button1
+        }
+        winwaitclose RTPatch Software
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\LucasArts\\SWKotOR2" "swkotor2.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata losthorizon_demo games \
     title="Lost Horizon Demo" \
     publisher="Deep Silver" \
