@@ -6981,16 +6981,21 @@ load_3dmark2001()
             ControlClick Button2  ; Next
             sleep 5000
             WinWait ahk_class #32770 ; License
+            sleep 500
             ControlClick Button2  ; Next
             WinWait ahk_class #32770, Destination
+            sleep 500
             ControlClick Button1  ; Next
             WinWait ahk_class #32770, Start
+            sleep 500
             ControlClick Button1  ; Next
             WinWait,, Registration
+            sleep 500
             ControlClick Button2  ; Next
         }
         WinWait,, Complete
         if ( u > 0 ) {
+            sleep 500
             ControlClick Button1  ; Unclick View Readme
             ControlClick Button4  ; Finish
         }
