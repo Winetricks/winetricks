@@ -198,7 +198,7 @@ w_read_key()
         fi
         echo "$W_KEY" > "$_W_keyfile"
     fi
-    W_KEY=`cat "$_W_keyfile" | tr -d '[ -]'`
+    W_KEY=`cat "$_W_keyfile" | tr -d '[:blank:][=-=]'`
     unset _W_keyfile _W_keymsg _W_nokeymsg
 }
 
@@ -901,7 +901,6 @@ w_wine_version_in()
      *)  w_wine_version -ge "$_W_val1" && w_wine_version   -le "$_W_val2" && unset _W_range _W_val1 _W_val2 && return 0;;
      esac
    done
-   echo Not in any of the ranges, return false
    unset _W_range _W_val1 _W_val2
    return 1
 }
