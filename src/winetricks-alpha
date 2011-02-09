@@ -1094,6 +1094,14 @@ w_do_call()
         # Clean up after this verb
         test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
 
+        # Verify install
+        if test "$installed_exe1" || test "$installed_file1"
+        then
+            if ! winetricks_is_installed $1
+            then
+                w_die "$1 install completed, but installed file not found"
+            fi
+        fi
         # Calling subshell must explicitly propagate error code with exit $?
     ) || exit $?
 
