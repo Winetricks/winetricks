@@ -6192,6 +6192,125 @@ load_mspaint()
 
 #----------------------------------------------------------------
 
+w_metadata office2003pro apps \
+   title="Microsoft Office 2003 Professional" \
+   publisher="Microsoft" \
+   year="2002" \
+   media="cd" \
+   file1="setup.exe" \
+   installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Office/Office11/WINWORD.EXE"
+
+load_office2003pro()
+{
+    w_mount OFFICE11
+    w_read_key
+
+    w_ahk_do "
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            run ${W_ISO_MOUNT_LETTER}:setup.exe /EULA_ACCEPT=YES /PIDKEY=$W_KEY
+        } else {
+            run ${W_ISO_MOUNT_LETTER}:setup.exe
+        }
+        SetTitleMatchMode, 2
+        WinWait,Microsoft Office 2003 Setup, Welcome
+        if ( u > 0 ) {
+            Sleep 500
+            WinWait,Microsoft Office 2003 Setup,Key
+            Sleep 500
+            ControlClick Button1 ; Next
+            WinWait,Microsoft Office 2003 Setup,Initials
+            Sleep 500
+            ControlClick Button1 ; Next
+            WinWait,Microsoft Office 2003 Setup,End-User
+            Sleep 500
+            ControlClick Button1 ; I accept
+            ControlClick Button2 ; Next
+            WinWait,Microsoft Office 2003 Setup,Recommended
+            Sleep 500
+            ControlClick Button7 ; Next
+            WinWait,Microsoft Office 2003 Setup,Summary
+            Sleep 500
+            ControlClick Button1 ; Install
+        }
+        WinWait,Microsoft Office 2003 Setup,Completed
+        if ( u > 0 ) {
+            Sleep 500
+            ControlClick Button2 ; Finish
+        }
+        WinWaitClose
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" WINWORD.EXE  word2003
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" EXCEL.EXE    excel2003
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" POWERPNT.EXE powerpoint2003
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" MSACCESS.EXE access2003
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" OUTLOOK.EXE  outlook2003
+}
+
+#----------------------------------------------------------------
+
+w_metadata office2007pro apps \
+   title="Microsoft Office 2007 Professional" \
+   publisher="Microsoft" \
+   year="2006" \
+   media="cd" \
+   file1="setup.exe" \
+   installed_file1="$W_PROGRAMS_X86_WIN/Microsoft Office/Office12/WINWORD.EXE"
+
+load_office2007pro()
+{
+    if w_workaround_wine_bug 14980
+    then
+       w_override_app_dlls winword.exe n riched20
+    fi
+    if w_workaround_wine_bug 21914
+    then
+        w_call ie7
+    fi
+
+    w_mount OFFICE12
+    w_read_key
+
+    if [ $W_OPT_UNATTENDED = 1 ]
+    then
+        # See
+        # http://blogs.technet.com/b/office_resource_kit/archive/2009/01/29/configure-a-silent-install-of-the-2007-office-system-with-config-xml.aspx
+        # http://www.symantec.com/connect/articles/office-2007-silent-installation-lessons-learned
+        cat > "$W_TMP"/config.xml <<__EOF__
+<Configuration Product="ProPlus">
+<Display Level="none" CompletionNotice="no" SuppressModal="yes" AcceptEula="yes" />
+<PIDKEY Value="$W_KEY" />
+</Configuration>
+__EOF__
+        $WINE ${W_ISO_MOUNT_LETTER}:setup.exe /config "$W_TMP_WIN"\\config.xml
+
+        status=$?
+        case $status in
+        0|43) ;;
+        78)
+            w_die "Installing $W_PACKAGE failed, product key $W_KEY \
+might be wrong. Try again without -q, or put correct key in \
+$W_CACHE/$W_PACKAGE/key.txt and rerun."
+            ;;
+        *) 
+            w_die "Installing $W_PACKAGE failed."
+            ;;
+        esac
+
+    else
+        w_try $WINE ${W_ISO_MOUNT_LETTER}:setup.exe
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" WINWORD.EXE  word2007
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" EXCEL.EXE    excel2007
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" POWERPNT.EXE powerpoint2007
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" MSACCESS.EXE access2007
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" OUTLOOK.EXE  outlook2007
+}
+
+#----------------------------------------------------------------
+
 w_metadata psdk2003 apps \
    title="MS Platform SDK 2003" \
    publisher="Microsoft" \
