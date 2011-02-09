@@ -8481,6 +8481,137 @@ load_eve()
 
 #----------------------------------------------------------------
 
+w_metadata fable_tlc games \
+    title="Fable: The Lost Chapters" \
+    publisher="Microsoft" \
+    year="2005" \
+    media="cd" \
+    file1="FABLE_DISC_1.iso" \
+    file2="FABLE DISC 2.iso" \
+    file3="FABLE DISC 3.iso" \
+    file4="FABLE DISC 4.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Fable - The Lost Chapters/Fable.exe"
+
+load_fable_tlc()
+{
+    w_read_key
+
+    if w_workaround_wine_bug 657
+    then
+        w_call mfc42
+    fi
+
+    if test ! -f "$W_CACHE/$W_PACKAGE/FABLE_DISC_1.iso" && w_workaround_wine_bug 24940
+    then
+        # FIXME: port load_harder from winetricks and use it when caching first disc?
+        w_warn "If the installer can't read from the CD, try using ddrescue to make image of first disc, and place in $W_CACHE/$W_PACKAGE/FABLE_DISC_1.iso"
+    fi
+
+    w_mount FABLE_DISK_1
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, ${W_ISO_MOUNT_LETTER}:setup.exe
+        WinWait,Fable,Welcome
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            Sleep 500
+            ControlClick Button1 ; Next
+            WinWait,Fable,Please
+            Sleep 500
+            ControlClick Button4 ; Next
+            WinWait,Fable,Product Key
+            Sleep 500
+            Send $W_KEY
+            Send {Enter}
+        }
+        WinWait,Fable,Disk 2
+        "
+    w_mount "FABLE DISK 2"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        WinWait,Fable,Disk 2
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            Sleep 500
+            ControlClick Button2 ; Retry
+        }
+        WinWait,Fable,Disk 3
+        "
+
+    w_mount "FABLE DISK 3"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        WinWait,Fable,Disk 3
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            Sleep 500
+            ControlClick Button2 ; Retry
+        }
+        WinWait,Fable,Disk 4
+        "
+
+    w_mount "FABLE DISK 4"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        WinWait,Fable,Disk 4
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            Sleep 500
+            ControlClick Button2 ; Retry
+        }
+        WinWait,Fable,Disk 1
+        WinKill
+        "
+
+    # Now tell game what the real disc is so user can insert disc 1 and run the game!
+    # FIXME: don't guess it's D:
+    cat > "$W_TMP"/$W_PACKAGE.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products\D3BE9C3CAF4226447B48E06CAACF2DDD\InstallProperties]
+"InstallSource"="D:\\"
+
+_EOF_
+    try_regedit "$W_TMP_WIN"\\$W_PACKAGE.reg
+
+    # Also accept EULA
+    cat > "$W_TMP"/$W_PACKAGE.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Microsoft\Microsoft Games\Fable TLC]
+"FIRSTRUN"=dword:00000001
+
+_EOF_
+    try_regedit "$W_TMP_WIN"\\$W_PACKAGE.reg
+
+    if w_workaround_wine_bug 24912
+    then
+        # kill off lingering installer
+        w_ahk_do "
+            SetTitleMatchMode, 2
+            WinKill,Fable
+        "
+        killall IDriverT.exe
+        killall IDriver.exe
+    fi
+
+    if w_workaround_wine_bug 25352
+    then
+        w_call devenum
+        w_call quartz
+        w_call wmp9
+    fi
+
+    if w_workaround_wine_bug 20074
+    then
+        w_call d3dx9_36
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Fable - The Lost Chapters" "Fable.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata fifa11_demo games \
     title="FIFA 11 Demo" \
     publisher="EA Sports" \
