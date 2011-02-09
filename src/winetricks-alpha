@@ -198,7 +198,7 @@ w_read_key()
         fi
         echo "$W_KEY" > "$_W_keyfile"
     fi
-    W_KEY=`cat "$_W_keyfile" | tr -d -`
+    W_KEY=`cat "$_W_keyfile" | tr -d '[ -]'`
     unset _W_keyfile _W_keymsg _W_nokeymsg
 }
 
