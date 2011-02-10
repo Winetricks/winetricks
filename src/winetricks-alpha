@@ -1590,12 +1590,15 @@ winetricks_showmenu()
             title='?'
             author='?'
             . $metadatafile
-            echo -n " " FALSE \
+            if test "$W_OPT_SHOWBROKEN" = 1 || test "$wine_showstoppers" = ""
+            then
+                echo -n " " FALSE \
                     $code \
                     "\"$title\"" \
                     "\"$publisher\"" \
                     "\"$year\"" \
                     "\"$media\""
+            fi
             )
         done >> $WINETRICKS_WORKDIR/zenity.sh
 
@@ -2450,6 +2453,7 @@ Options:
 -V|--version: display version and exit
 -h|--help: display this message and exit
 --noclean: don't delete temp directories (useful during debugging)
+--showbroken: even show verbs that are currently broken in wine
 Miscellaneous verbs:
 apps: select type 'apps'
 games: select type 'games'
@@ -2473,6 +2477,7 @@ winetricks_handle_option()
     -V|--version) winetricks_print_version ; exit 0;;
     -h|--help) winetricks_usage ; exit 0 ;;
     --noclean) W_OPT_NOCLEAN=1 ;;
+    --showbroken) W_OPT_SHOWBROKEN=1 ;;
     --optin) WINETRICKS_STATS_REPORT=1;;
     --optout) WINETRICKS_STATS_REPORT=0;;
     -*) w_die "unknown option $1" ;;
