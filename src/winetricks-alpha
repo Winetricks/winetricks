@@ -8688,6 +8688,94 @@ load_fifa11_demo()
 
 #----------------------------------------------------------------
 
+w_metadata gothic4_demo games \
+    title="Gothic 4 demo (drm broken on wine)" \
+    publisher="Jowood" \
+    year="2010" \
+    media="download" \
+    file1="ArcaniA_Gothic4_Demo_Setup.zip" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/JoWooD Entertainment AG/ArcaniA - Gothic 4 Demo/Arcania.exe" \
+    wine_showstoppers="7065"
+
+# http://appdb.winehq.org/objectManager.php?sClass=version&iId=21507
+
+load_gothic4_demo()
+{
+    if w_workaround_wine_bug 7065
+    then
+        w_warn "Non-steam versions of this game do not run on Wine because Wine does not support the version of SecuROM they use.  Proceed only if you want to run into this problem."
+    fi
+
+    w_download http://gamedaily.newaol.com/pub/ArcaniA_Gothic4_Demo_Setup.zip
+
+    cd "$W_TMP"
+    w_try unzip "$W_CACHE/$W_PACKAGE"/ArcaniA_Gothic4_Demo_Setup.zip
+
+    w_ahk_do "
+        Settitlematchmode, 2
+        run, ArcaniA_Gothic4_Demo_Setup.exe
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            winwait, Select Setup Language
+            sleep 1000
+            controlclick, TNewButton1, Select Setup Language
+            winwait, Setup - ArcaniA, Welcome to the
+            sleep 1000
+            controlclick, TNewButton1, Setup - ArcaniA, Welcome to the
+            winwait, Setup - ArcaniA, License Agreement
+            sleep 1000
+            controlclick, TNewRadioButton1, Setup - ArcaniA, License Agreement
+            sleep 1000
+            controlclick, TNewButton2, Setup - ArcaniA, License Agreement
+            winwait, Setup - ArcaniA, Select Destination Location
+            sleep 1000
+            controlclick, TNewButton3, Setup - ArcaniA, Select Destination Location
+            winwait, Setup - ArcaniA, Select Components
+            sleep 1000
+            controlclick, TNewButton3, Setup - ArcaniA, Select Components
+            winwait, Setup - ArcaniA, Select Start Menu
+            sleep 1000
+            controlclick, TNewButton4, Setup - ArcaniA, Select Start Menu
+            winwait, Setup - ArcaniA, Select Additional
+            sleep 1000
+            controlclick, TNewButton4, Setup - ArcaniA, Select Additional
+            winwait, Setup - ArcaniA, Ready to Install
+            sleep 1000
+            controlclick, TNewButton4, Setup - ArcaniA, Ready to Install
+            winwait, Setup - ArcaniA, Information
+            sleep 1000
+            controlclick, TNewButton4, Setup - ArcaniA, Information
+        }
+        winwait, Setup - ArcaniA, Completing
+        if ( u > 0 ) {
+            sleep 1000
+            ; The two checkboxes share the same button id. App/Wine bug?
+            mousemove, 190, 155
+            click
+            sleep 1000
+            mousemove, 190, 180
+            click
+            sleep 1000
+            controlclick, TNewButton4, Setup - ArcaniA, Completing
+        }
+        winwaitclose
+    "
+
+    if w_workaround_wine_bug 21939
+    then
+        w_call wmp9
+    fi
+
+    if w_workaround_wine_bug 24250
+    then
+        w_call vcrun2008
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\JoWooD Entertainment AG\\ArcaniA - Gothic 4 Demo" "Arcania.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata guildwars games \
     title="Guild Wars" \
     publisher="NCsoft" \
