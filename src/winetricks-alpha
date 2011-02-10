@@ -8057,13 +8057,14 @@ load_darknesswithin2_demo()
 #----------------------------------------------------------------
 
 w_metadata deadspace2 games \
-    title="Dead Space 2" \
+    title="Dead Space 2 (drm broken on wine)" \
     publisher="EA" \
     year="2011" \
     media="dvd" \
     file1="Disc1.iso" \
     file2="Disc2.iso" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/EA Games/Dead Space 2/deadspace2.exex"
+    installed_exe1="$W_PROGRAMS_X86_WIN/EA Games/Dead Space 2/deadspace2.exe" \
+    wine_showstoppers="25853"
 
 load_deadspace2()
 {
