@@ -6951,7 +6951,7 @@ load_3dmark2000()
     "
 
     cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
-${programfilesdrive}:
+c:
 cd "$W_PROGRAMS_X86_WIN\MadOnion.com\3DMark2000"
 REM possible wine cmd bug: "3dmark2000" aborts, but ".\3dmark2000" works
 .\3DMark2000
@@ -7789,7 +7789,7 @@ load_cod_demo()
     fi
     cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
 $setvar
-${programfilesdrive}:
+c:
 cd "$W_PROGRAMS_X86_WIN\\Call of Duty Single Player Demo"
 CoDSP.exe
 __EOF__
@@ -7885,7 +7885,7 @@ load_cod1()
     fi
     cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
 $setvar
-${programfilesdrive}:
+c:
 cd "$W_PROGRAMS_X86_WIN\\Call of Duty"
 CoDSP.exe
 __EOF__
