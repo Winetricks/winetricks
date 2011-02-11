@@ -10701,7 +10701,8 @@ load_wowtrial()
         winwait, World of Warcraft Installer
         u = $W_OPT_UNATTENDED
         if ( u > 0 ) {
-            sleep 3000
+            ; Wait for it to find servers
+            sleep 6000
             controlclick, x400 y440 ; Install
             winwait, End User License Agreement
             sleep 1000
@@ -10710,12 +10711,34 @@ load_wowtrial()
             sleep 1000
             controlclick, x680 y560 ; OK
         }
-        ; fixme: should comment here saying what these screens are
         winwait, World of Warcraft v4, Play
+        if ( u > 0 ) {
+            ; Wait until left side of progress bar is green; that means the game is playable.
+            ;Loop
+            ;{
+            ;    PixelGetColor, color, 33, 592
+            ;    FileAppend, loop1 color is %color%, log.txt
+            ;    ifEqual, color, 0x017425
+            ;    {
+            ;        break
+            ;    }
+            ;    sleep 5000
+            ;}
+            ; Wait until left side of progress bar goes blackish, that means game is fully loaded
+            Loop
+            {
+                PixelGetColor, color, 33, 592
+                ;FileAppend, loop2 color is %color%, log.txt
+                ifEqual, color, 0x003C10
+                {
+                    break
+                }
+                sleep 5000
+            }
+            # All done downloading, so quit
+            winclose
+        }
         winwaitclose
-        winwait, World of Warcraft , Play
-        winwaitclose
-        ; fixme: check whether -q actually does a successfull quiet install
     "
     w_declare_exe "$W_PROGRAMS_X86_WIN\\World of Warcraft" WoW.exe
 }
