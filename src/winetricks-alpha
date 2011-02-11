@@ -5717,7 +5717,9 @@ load_dxdiag()
     helper_directx_dl
 
     w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F dxdiag.exe "$W_TMP/dxnt.cab"
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "dxdiag.exe" "$W_TMP/dxnt.cab"
+    mkdir -p "$W_WINDIR_UNIX/help"
+    w_try_cabextract -d "$W_WINDIR_UNIX/help" -L -F "dxdiag.chm" "$W_TMP/dxnt.cab"
     w_override_dlls native dxdiag.exe
 
     if w_workaround_wine_bug 1429
