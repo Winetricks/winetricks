@@ -9110,6 +9110,45 @@ load_hphbp_demo()
 
 #----------------------------------------------------------------
 
+w_metadata imvu games \
+    title="IMVU - Instant Messaging Virtual Universe" \
+    publisher="IMVU" \
+    year="2004" \
+    media="download" \
+    file1="InstallIMVU_453.0.exe" \
+    installed_exe1="c:/users/$LOGNAME/Application Data/IMVUClient/IMVUClient.exe"
+
+load_imvu()
+{
+    w_download http://static-akm.imvu.com/imvufiles/installers/InstallIMVU_453.0.exe 78c6ea5366b617c4d1418be164e40616412b8fc2
+
+    cd "$W_CACHE/$W_PACKAGE"
+
+    w_ahk_do "
+        Run, InstallIMVU_453.0.exe
+        SetTitleMatchMode, 2
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            WinWait,IMVU Setup, Welcome
+            Sleep 500
+            ControlClick Button2 ; Install
+            ; There's no way to tell it not to launch
+            WinWait,IMVU Login, chrome
+            Sleep 500
+            Click, Left, 29, 230  ; Uncheck [run on startup]
+            Sleep 500
+            Click, Left, 416, 11  ; Click X on window decoration to close
+            Sleep 500
+            WinKill,IMVU Login, chrome ; and then close harshly, just in case?
+        }
+        winwaitclose
+    "
+
+    w_declare_exe "c:\\users\\$LOGNAME\\Application Data\\IMVUClient" "IMVUClient.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata kotor1 games \
     title="Star Wars: Knights Of The Old Republic" \
     publisher="Lucas Arts" \
