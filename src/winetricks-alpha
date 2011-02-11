@@ -2453,6 +2453,7 @@ Options:
 -V|--version: display version and exit
 -h|--help: display this message and exit
 --noclean: don't delete temp directories (useful during debugging)
+--gui: show gui diagnostics even when driven by commandline
 --showbroken: even show verbs that are currently broken in wine
 Miscellaneous verbs:
 apps: select type 'apps'
@@ -2477,6 +2478,7 @@ winetricks_handle_option()
     -V|--version) winetricks_print_version ; exit 0;;
     -h|--help) winetricks_usage ; exit 0 ;;
     --noclean) W_OPT_NOCLEAN=1 ;;
+    --gui) winetricks_detect_gui;;
     --showbroken) W_OPT_SHOWBROKEN=1 ;;
     --optin) WINETRICKS_STATS_REPORT=1;;
     --optout) WINETRICKS_STATS_REPORT=0;;
