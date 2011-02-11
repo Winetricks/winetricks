@@ -1079,7 +1079,7 @@ w_do_call()
 
         # We'd like to get rid of W_PACKAGE, but for now, just set it as late as possible.
         W_PACKAGE=$1
-        load_$cmd $arg
+        w_try load_$cmd $arg
 
         # User-specific postinstall hook.
         # Source it so the script can call w_download() if needed.
@@ -10079,6 +10079,75 @@ load_sims3()
     # FIXME: apply next patch, too
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\The Sims 3\\Game\\Bin" "TS3.EXE"
+}
+
+#----------------------------------------------------------------
+
+w_metadata starcraft2_demo games \
+    title="Starcraft II Demo" \
+    publisher="Blizzard" \
+    year="2010" \
+    media="download" \
+    file1="SC2-WingsOfLiberty-enUS-Demo-Installer.zip" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/StarCraft II Demo/StarCraft II.exe"
+
+load_starcraft2_demo()
+{
+    w_download_manual http://www.bigdownload.com/games/starcraft-ii-wings-of-liberty/pc/starcraft-2-wings-of-liberty-demo SC2-WingsOfLiberty-enUS-Demo-Installer.zip 4c06ad755fbde73f135a7359bf6bfdbd2c6eb00e
+
+    cd "$W_TMP"
+    w_try_unzip "$W_CACHE/$W_PACKAGE"/SC2-WingsOfLiberty-enUS-Demo-Installer.zip
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        Run, Installer.exe
+        WinWait, StarCraft II Installer
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            sleep 500
+            ControlClick, x300 y200
+            winwait, End User License Agreement
+            winactivate
+            ;MouseMove, 300, 300
+            ;Click WheelDown, 70
+            Sleep, 1000
+            ControlClick, Button2  ; Accept
+            winwaitclose
+            winwait, StarCraft II Installer
+            sleep 1000
+            ControlClick, x800 y500
+            ; Is there any better wait to await completion?
+            Loop {
+                PixelGetColor, color, 473, 469   ; the 1 in 100%
+                ; The digits are drawn white, but because the whole
+                ; window is flickering, it cycles through about 20
+                ; brightnesses.  Check a bunch of them to reduce
+                ; chances of getting stuck for a long time.
+                ifEqual, color, 0xffffff
+                    break
+                ifEqual, color, 0xf4f4f4
+                    break
+                ifEqual, color, 0xf1f1f1
+                    break
+                ifEqual, color, 0xf0f0f0
+                    break
+                ifEqual, color, 0xeeeeee
+                    break
+                ifEqual, color, 0xebebeb
+                    break
+                ifEqual, color, 0xe4e4e4
+                    break
+                sleep 500 ; changes rapidly, so sample often
+            }
+            ControlClick, x800 y500   ; Finish
+            winwaitclose
+            ; no way to tell game to not start?
+        }
+        "
+    # Wait untill game is launched, then kill it
+    sleep 2
+    killall SC2.exe
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\StarCraft II Demo" "StarCraft II.exe"
 }
 
 #----------------------------------------------------------------
