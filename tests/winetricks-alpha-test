@@ -156,11 +156,17 @@ test_install_cached_or_download()
         test_app $a
     done
     sh winetricks-alpha list-cached > cached.txt
-    sh winetricks-alpha list-download > download.txt
+    # Verbs that are just wrappers around others don't detect cache/install
+    # state yet.  
+    # Verbs that are just informative placeholders don't ever download (gecko).
+    # And some verbs (gecko110) don't usually install for other reasons.
+    BLACKLIST_CACHE="allfonts|cjkfonts|allcodecs|gecko|gecko110"
+    cat ticd.verbs | egrep -vw "$BLACKLIST_CACHE" > download.txt
     comm -23 download.txt cached.txt > download-but-not-cached.txt
     if test `wc -l < download-but-not-cached.txt` != 0
     then
         fail "test_install_cached_or_download: asked to install all downloadable apps, but some not listed as cached afterwards"
+        cat download-but-not-cached.txt
     fi
 }
 
