@@ -7400,12 +7400,16 @@ load_aoe_demo()
         winwait, Microsoft Age of Empires Trial Version
         u = $W_OPT_UNATTENDED
         if ( u > 0 ) {
+            sleep 1000
             ControlClick, Button1
             winwait, End User License Agreement
+            sleep 1000
             ControlClick, Button1
             winwait, Microsoft Age of Empires Trial Version, Setup will install
+            sleep 1000
             ControlClick Button2
             winwait, Microsoft Age of Empires Trial Version, Setup has successfully
+            sleep 1000
             ControlClick Button1
         }
         WinWaitClose, Microsoft Age of Empires Trial Version
