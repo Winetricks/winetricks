@@ -7542,28 +7542,38 @@ load_bfbc2()
         SetTitleMatchMode, 2
         run ${W_ISO_MOUNT_LETTER}:setup.exe
         winwait, Bad Company, English
+        sleep 500
         ControlClick, Next, Bad Company
         winwait, Bad Company, Registration Code
+        sleep 500
         send {RAW}$W_KEY
         ControlClick, Next, Bad Company, Registration Code
         winwait, Bad Company, Setup Wizard will install
+        sleep 500
         ControlClick, Button1, Bad Company, Setup Wizard
         winwait, Bad Company, License Agreement
+        sleep 500
         ControlClick, Button1, Bad Company, License Agreement
         ControlClick, Button3, Bad Company, License Agreement
         winwait, Bad Company, End-User License Agreement
+        sleep 500
         ControlClick, Button1, Bad Company, License Agreement
         ControlClick, Button3, Bad Company, License Agreement
         winwait, Bad Company, Destination Folder
+        sleep 500
         ControlClick, Button1, Bad Company, Destination Folder
         winwait, Bad Company, Ready to install
+        sleep 500
         ControlClick, Install, Bad Company, Ready to install
         winwait, Authenticate Battlefield
+        sleep 500
         ControlClick, Disc authentication, Authenticate Battlefield
         ControlClick, Button4, Authenticate Battlefield
         winwait, Bad Company, PunkBuster
+        sleep 500
         ControlClick, Button4, Bad Company, PunkBuster
         ControlClick, Finish, Bad Company
+        winwaitclose
     "
 
     w_warn "Patching to latest version..."
@@ -7573,6 +7583,7 @@ load_bfbc2()
         SetTitleMatchMode, 2
         run, BFBC2Updater.exe
         winwait, Updater, have to update to
+        sleep 500
         ControlClick, Yes, Updater, have to update
         winwait, Updater, successfully updated
         sleep 500
