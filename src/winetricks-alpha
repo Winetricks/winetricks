@@ -8207,6 +8207,58 @@ load_deadspace2()
 
 #----------------------------------------------------------------
 
+w_metadata deusex2_demo games \
+    title="Deus Ex 2 / Deus Ex: Invisible War Demo" \
+    publisher="Eidos" \
+    year="2003" \
+    media="download" \
+    file1="dxiw_demo.zip" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Deus Ex - Invisible War Demo/System/DX2.exe"
+
+load_deusex2_demo()
+{
+    w_download_manual "http://www.techpowerup.com/downloads/1730/Deus_Ex:_Invisible_War_Demo.html" dxiw_demo.zip ccae48fb046d912b3714ea1b4be4294e74bb3092
+
+    if w_workaround_wine_bug 6971
+    then
+        w_warn "Patch wine as described in bug 6971 to use xinput2"
+    fi
+
+    w_try unzip "$W_CACHE/$W_PACKAGE/dxiw_demo.zip" -d "$W_TMP"
+    cd "$W_TMP"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        SetWinDelay 500
+        run setup.exe
+        winwait Deus Ex, Launch
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick button2
+            winwait Deus Ex, Welcome
+            controlclick button1
+            winwait Deus Ex, License
+            controlclick button3 ;accept
+            controlclick button1 ;next
+            winwait Deus Ex, Setup Type
+            controlclick button4
+            winwait Deus Ex, Install
+            controlclick button1
+            winwait Question, Readme
+            controlclick button2
+            winwait Question, play
+            controlclick button2
+        }
+        winwait Deus Ex, Complete
+        if ( u > 0 )
+            controlclick button4
+        winwaitclose Deus Ex, Complete
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Deus Ex - Invisible War Demo\\System" "DX2.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata dirt2_demo games \
     title="Dirt 2 Demo" \
     publisher="Codemasters" \
