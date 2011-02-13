@@ -6280,10 +6280,12 @@ load_office2007pro()
     if w_workaround_wine_bug 14980
     then
        w_override_app_dlls winword.exe n riched20
-    fi
-    if w_workaround_wine_bug 21914
-    then
-        w_call ie7
+       w_override_app_dlls excel.exe n riched20
+       w_override_app_dlls powerpnt.exe n riched20
+       w_override_app_dlls msaccess.exe n riched20
+       w_override_app_dlls outlook.exe n riched20
+       w_override_app_dlls mspub.exe n riched20
+       w_override_app_dlls infopath.exe n riched20
     fi
 
     w_mount OFFICE12
@@ -6324,6 +6326,8 @@ $W_CACHE/$W_PACKAGE/key.txt and rerun."
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" POWERPNT.EXE powerpoint2007
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" MSACCESS.EXE access2007
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" OUTLOOK.EXE  outlook2007
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" MSPUB.EXE  publisher2007
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" INFOPATH.EXE  infopath2007
 }
 
 #----------------------------------------------------------------
