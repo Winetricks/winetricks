@@ -2280,6 +2280,7 @@ winetricks_init()
      *)
         WINE=${WINE:-wine}
         WINEPREFIX="${WINEPREFIX:-$HOME/.wine}"
+        mkdir -p "$WINEPREFIX"
         W_DRIVE_C="$WINEPREFIX/dosdevices/c:"
         # This needs to go somewhere else soon, like ~/.local/wineprefixes
         W_PREFIXES_ROOT="${W_PREFIXES_ROOT:-$HOME/prefixes}"
