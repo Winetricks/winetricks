@@ -9827,6 +9827,50 @@ load_menofwar()
 
 #----------------------------------------------------------------
 
+w_metadata mb_warband_demo games \
+    title="Mount & Blade Warband Demo" \
+    publisher="Taleworlds" \
+    year="2010" \
+    media="download" \
+    file1="mb_warband_setup_1134.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Mount&Blade Warband/mb_warband.exe" \
+    homepage="http://www.taleworlds.com"
+
+load_mb_warband_demo()
+{
+    if w_workaround_wine_bug 6971
+    then
+        w_warn "Patch wine as described in bug 6971 to use xinput2"
+    fi
+    if grep -q -i nvidia /proc/bus/pci/devices && w_workaround_wine_bug 13490 1.2,
+    then
+        w_warn "This game crashes on startup in wine with nvidia unless you apply the patch from wine bug 13490, run with wine-1.1.38, or use WINEDEBUG=+relay wine mw_warband.exe 2>&1 > /dev/null"
+    fi
+
+    w_download "http://download.taleworlds.com/mb_warband_setup_1134.exe" 1aac92b6c97869350b80fe7a08f559719deb37d7
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        run mb_warband_setup_1134.exe
+        winwait Warband
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick button2
+            winwait Warband
+            controlclick button2
+            winwait Warband, Finish
+            controlclick button4
+            controlclick button2
+        }
+        winwaitclose Warband
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mount&Blade Warband" "mb_warband.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata nfsshift_demo games \
     title="Need For Speed: SHIFT Demo" \
     publisher="EA" \
