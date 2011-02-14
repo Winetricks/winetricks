@@ -1051,7 +1051,7 @@ w_do_call()
         mkdir -p "$W_TMP"
 
         # Unset all known used metadata values, in case this is a nested call
-        unset installed_dll1 installed_exe1
+        unset installed_file1 installed_exe1
 
         if winetricks_metadata_exists $1
         then
@@ -5273,8 +5273,7 @@ w_metadata fontfix fonts \
    publisher="Arphic" \
    year="2007" \
    media="download" \
-   file1="ttf-arphic-ukai_0.1.20060108.orig.tar.gz" \
-   installed_file1="$W_FONTSDIR_WIN/ukai.ttf"
+   file1="ttf-arphic-ukai_0.1.20060108.orig.tar.gz"
 
 load_fontfix()
 {
