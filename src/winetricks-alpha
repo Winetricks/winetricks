@@ -2389,19 +2389,22 @@ winetricks_init()
 
     # Where application installers are cached
     # See http://standards.freedesktop.org/basedir-spec/latest/ar01s03.html
+    if test -d "$HOME/Library/Caches"
+    then
+        # MacOSX
+        XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/Library/Caches}"
+    else
+        XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+    fi
     if test "$WINETRICKS_DIR"
     then
-        W_CACHE="$WINETRICKS_DIR/cache"
+        # For backwards compatibility
+        W_CACHE="${W_CACHE:-$WINETRICKS_DIR/cache}"
+        WINETRICKS_POST="${WINETRICKS_POST:-$WINETRICKS_DIR/postinstall}"
     else
-        WINETRICKS_DIR="$HOME/.local/winetricks"
-        if test -d "$HOME/Library/Caches"
-        then
-            # MacOSX
-            W_CACHE="$HOME/Library/Caches/winetricks"
-        else
-            XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
-            W_CACHE="${W_CACHE:-$XDG_CACHE_HOME/winetricks}"
-        fi
+        W_CACHE="${W_CACHE:-$XDG_CACHE_HOME/winetricks}"
+        # FIXME: maybe obey XDG_DATA_HOME
+        WINETRICKS_POST="${WINETRICKS_POST:-$HOME/.local/share/winetricks/postinstall}"
     fi
     test -d "$W_CACHE" || mkdir -p "$W_CACHE"
 
@@ -2429,8 +2432,6 @@ winetricks_init()
     # FIXME: don't hardcode
     W_PROGRAMS_DRIVE=c
 
-    # Postinstall scripts, if any, go here
-    WINETRICKS_POST="${WINETRICKS_POST:-$WINETRICKS_DIR/postinstall}"
 
     # Whether to automate installs (0=no, 1=yes)
     winetricks_set_unattended ${W_OPT_UNATTENDED:-0}
