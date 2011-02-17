@@ -977,7 +977,8 @@ w_metadata()
     fi
 
     _W_md_cmd="$1"
-    file="$WINETRICKS_METADATA/$2/$1.vars"
+    _W_category=$2
+    file="$WINETRICKS_METADATA/$_W_category/$1.vars"
     shift
     shift
     # Echo arguments to file, with double quotes around the values.
@@ -992,6 +993,7 @@ w_metadata()
         # slashes in that variable instead of backslashes.
         echo ${arg%%=*}=\"${arg#*=}\"
     done > "$file"
+    echo category='"'$_W_category'"' >> "$file"
     # If the problem described above happens, you'd see errors like this:
     # /tmp/w.dank.4650/metadata/dlls/comctl32.vars: 6: Syntax error: Unterminated quoted string
     # so check for lines that aren't properly quoted.
@@ -1069,6 +1071,14 @@ w_do_call()
         else
             w_die "No such verb $1"
         fi
+
+        # FIXME: This might delete the Temp directory created above and create a new one, which is a bit messy.
+        case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+        games-0) winetricks_set_wineprefix $cmd
+        esac
+
+        test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
+        mkdir -p "$W_TMP"
 
         # Don't install if already installed
         if winetricks_is_installed $1
@@ -1721,30 +1731,30 @@ winetricks_list_installed()
     (
     case $WINETRICKS_OPT_SHAREDPREFIX in
     0)
-        # assume there's only one app per bottle (!), and list the bottles that have a matching run batch file.
+        # List the bottles that have a matching run batch file (presumably others were partial installs)
+        # FIXME: do something that works when creating bottles and installing apps by hand
         for verb in `ls "$W_PREFIXES_ROOT"/*/dosdevices/c:/run-*.bat | sed 's,.*/\([^/]*\)/dosdevices.*,\1,' `
         do
             test -f "$W_PREFIXES_ROOT"/$verb/dosdevices/c:/run-$verb.bat && echo $verb
         done
         ;;
-    1)
-        # List packages in default bottle
-        for _W_metadatafile in "$WINETRICKS_METADATA"/*/*.vars
-        do
-            # Use a subshell to avoid putting metadata in global space
-            # If this is too slow, we can unset known metadata by hand
-            (
-            code=`winetricks_metadata_basename $_W_metadatafile`
-            . $_W_metadatafile
-            if winetricks_is_installed $code
-            then
-                echo $code
-            fi
-            )
-        done | sort
-        unset _W_metadatafile
-        ;;
     esac
+
+    # List packages in default bottle
+    for _W_metadatafile in "$WINETRICKS_METADATA"/*/*.vars
+    do
+        # Use a subshell to avoid putting metadata in global space
+        # If this is too slow, we can unset known metadata by hand
+        (
+        code=`winetricks_metadata_basename $_W_metadatafile`
+        . $_W_metadatafile
+        if winetricks_is_installed $code
+        then
+            echo $code
+        fi
+        )
+    done | sort
+    unset _W_metadatafile
 
     ) | sort -u
 }
@@ -2212,6 +2222,112 @@ winetricks_set_unattended()
     esac
 }
 
+# Usage: winetricks_set_wineprefix [bottlename]
+# Bottlename must not contain spaces, slashes, or other special charaters
+# If bottlename is omitted, the default bottle (~/.wine) is used.
+winetricks_set_wineprefix()
+{
+    if ! test "$1"
+    then
+        WINEPREFIX="$WINETRICKS_ORIGINAL_WINEPREFIX"
+    else
+        WINEPREFIX="$W_PREFIXES_ROOT/$1"
+    fi
+    export WINEPREFIX
+    echo "WINEPREFIX is now $WINEPREFIX"
+    mkdir -p "`dirname "$WINEPREFIX"`"
+
+    # Run wine here to force creation of the wineprefix so it's there when we want to make the cache symlink a bit later.
+    # The folder-name is localized!
+    W_PROGRAMS_WIN="`$WINE cmd.exe /c echo "%ProgramFiles%" | tr -d '\015'`"
+    case "$W_PROGRAMS_WIN" in
+    "") w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string" ;;
+    %*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string... do you own the parent of $WINEPREFIX ?" ;;
+    *unknown*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
+    esac
+
+    W_DRIVE_C="$WINEPREFIX/dosdevices/c:"
+
+    if ! test "$1"
+    then
+        W_TMP="$W_DRIVE_C/windows/Temp"
+        W_TMP_WIN="C:\\windows\\Temp"
+    else
+        # Verbs can rely on W_TMP being empty at entry, deleted after return, and a subdir of C:
+        # Kludge: use Temp instead of temp to avoid \t expansion in w_try
+        W_TMP="$W_DRIVE_C/windows/Temp/_$1"
+        W_TMP_WIN="C:\\windows\\Temp\\_$1"
+    fi
+
+    case "$OS" in
+     "Windows_NT") ;;
+     *)
+        # For case where z: doesn't exist or / is writable (!),
+        # make a drive letter for W_CACHE.  Clean it up on exit.
+        test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
+        for letter in y x w v u t s r q p o n m
+        do
+            if ! test -d "$WINEPREFIX"/dosdevices/${letter}:
+            then
+                mkdir -p "$WINEPREFIX"/dosdevices
+                WINETRICKS_CACHE_SYMLINK="$WINEPREFIX"/dosdevices/${letter}:
+                ln -sf "$W_CACHE" "$WINETRICKS_CACHE_SYMLINK"
+                break
+            fi
+        done
+        ;;
+    esac
+
+    W_WINDIR_UNIX="$W_DRIVE_C/windows"
+
+    # FIXME: move those tr's and sed's into w_pathconv, if they're still needed?
+    W_CACHE_WIN="`w_pathconv -w $W_CACHE | tr '\012' ' ' | sed 's/ $//'`"
+
+    # FIXME: move that tr into w_pathconv, if it's still needed?
+    W_PROGRAMS_UNIX="`w_pathconv -u "$W_PROGRAMS_WIN" | tr -d '\015' `"
+
+    # 64 bit windows has a second directory for program files
+    W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN} (x86)"
+    W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX} (x86)"
+    if ! test -d "$W_PROGRAMS_X86_UNIX"
+    then
+        W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN}"
+        W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX}"
+    fi
+
+    W_APPDATA_WIN="`winetricks_early_wine cmd.exe /c echo "%AppData%" | tr -d '\015'`"
+    W_APPDATA_UNIX="`w_pathconv -u "$W_APPDATA_WIN" | tr -d '\015' `"
+
+    # FIXME: get fonts path from SHGetFolderPath
+    # See also http://blogs.msdn.com/oldnewthing/archive/2003/11/03/55532.aspx
+    W_FONTSDIR_WIN="c:\\windows\\Fonts"
+
+    # FIXME: just convert path from windows to unix?
+    # Did the user rename Fonts to fonts?
+    if test ! -d "$W_WINDIR_UNIX"/Fonts && test -d "$W_WINDIR_UNIX"/fonts
+    then
+        W_FONTSDIR_UNIX="$W_WINDIR_UNIX"/fonts
+    else
+        W_FONTSDIR_UNIX="$W_WINDIR_UNIX"/Fonts
+    fi
+    mkdir -p "${W_FONTSDIR_UNIX}"
+
+    # Win(e) 32/64?
+    # Using the variable W_SYSTEM32_DLLS instead of SYSTEM32 because some stuff does go under system32 for both arch's
+    # e.g., spool/drivers/color
+    if test -d "$W_DRIVE_C/windows/syswow64"
+    then
+        W_ARCH=win64
+        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
+        W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
+        W_SYSTEM64_DLLS="$W_WINDIR_UNIX/system32"
+    else
+        W_ARCH=win32
+        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
+        W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
+    fi
+}
+
 winetricks_init()
 {
     #---- Private Variables ----
@@ -2271,28 +2387,6 @@ winetricks_init()
 
     #---- Public Variables ----
 
-    # System-specific variables
-    case "$OS" in
-     "Windows_NT")
-        WINE=""
-        W_DRIVE_C="C:/"
-        ;;
-     *)
-        WINE=${WINE:-wine}
-        WINEPREFIX="${WINEPREFIX:-$HOME/.wine}"
-        mkdir -p "$WINEPREFIX"
-        W_DRIVE_C="$WINEPREFIX/dosdevices/c:"
-        # This needs to go somewhere else soon, like ~/.local/wineprefixes
-        W_PREFIXES_ROOT="${W_PREFIXES_ROOT:-$HOME/prefixes}"
-        ;;
-    esac
-    # Verbs can rely on W_TMP being empty at entry, deleted after return, and a subdir of C:
-    # Kludge: use Temp instead of temp to avoid \t expansion in w_try
-    W_TMP="$W_DRIVE_C/windows/Temp"
-    W_TMP_WIN="C:\\windows\\Temp"
-
-    W_WINDIR_UNIX="$W_DRIVE_C/windows"
-
     # Where application installers are cached
     # See http://standards.freedesktop.org/basedir-spec/latest/ar01s03.html
     if test "$WINETRICKS_DIR"
@@ -2310,88 +2404,40 @@ winetricks_init()
         fi
     fi
     test -d "$W_CACHE" || mkdir -p "$W_CACHE"
-    # FIXME: move those tr's and sed's into w_pathconv, if they're still needed?
-    W_CACHE_WIN="`w_pathconv -w $W_CACHE | tr '\012' ' ' | sed 's/ $//'`"
 
-    # Postinstall scripts, if any, go here
-    WINETRICKS_POST="${WINETRICKS_POST:-$WINETRICKS_DIR/postinstall}"
-
-    # The folder-name is localized!
-    W_PROGRAMS_WIN="`winetricks_early_wine cmd.exe /c echo "%ProgramFiles%" | tr -d '\015'`"
-    case "$W_PROGRAMS_WIN" in
-    "") w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string" ;;
-    %*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string... do you own the parent of $WINEPREFIX ?" ;;
+    # System-specific variables
+    case "$OS" in
+     "Windows_NT")
+        WINE=""
+        W_DRIVE_C="C:/"
+        ;;
+     *)
+        WINE="${WINE:-wine}"
+        if test "$WINEPREFIX"
+        then
+            WINETRICKS_ORIGINAL_WINEPREFIX="$WINEPREFIX"
+        else
+            WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
+        fi
+        # FIXME: agree on location common with other wine frontends?
+        # FIXME: maybe obey XDG_DATA_HOME
+        W_PREFIXES_ROOT="${WINE_PREFIXES:-$HOME/.local/share/wineprefixes}"
+        ;;
     esac
-    # FIXME: move that tr into w_pathconv, if it's still needed?
-    W_PROGRAMS_UNIX="`w_pathconv -u "$W_PROGRAMS_WIN" | tr -d '\015' `"
-
-    # 64 bit windows has a second directory for program files
-    W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN} (x86)"
-    W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX} (x86)"
-    if ! test -d "$W_PROGRAMS_X86_UNIX"
-    then
-        W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN}"
-        W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX}"
-    fi
-
-    W_APPDATA_WIN="`winetricks_early_wine cmd.exe /c echo "%AppData%" | tr -d '\015'`"
-    W_APPDATA_UNIX="`w_pathconv -u "$W_APPDATA_WIN" | tr -d '\015' `"
-
-    # FIXME: get fonts path from SHGetFolderPath
-    # See also http://blogs.msdn.com/oldnewthing/archive/2003/11/03/55532.aspx
-    W_FONTSDIR_WIN="c:\\windows\\Fonts"
-
-    # FIXME: just convert path from windows to unix?
-    # Did the user rename Fonts to fonts?
-    if test ! -d "$W_WINDIR_UNIX"/Fonts && test -d "$W_WINDIR_UNIX"/fonts
-    then
-        W_FONTSDIR_UNIX="$W_WINDIR_UNIX"/fonts
-    else
-        W_FONTSDIR_UNIX="$W_WINDIR_UNIX"/Fonts
-    fi
-    mkdir -p "${W_FONTSDIR_UNIX}"
+    winetricks_set_wineprefix
 
     # FIXME: don't hardcode
     W_PROGRAMS_DRIVE=c
 
+    # Postinstall scripts, if any, go here
+    WINETRICKS_POST="${WINETRICKS_POST:-$WINETRICKS_DIR/postinstall}"
+
     # Whether to automate installs (0=no, 1=yes)
     winetricks_set_unattended ${W_OPT_UNATTENDED:-0}
-
-    case "$OS" in
-    "Windows_NT")
-        ;;
-    *)
-        # For case where z: doesn't exist or / is writable (!),
-        # make a drive letter for W_CACHE.  Clean it up on exit.
-        for letter in y x w v u t s r q p o n m
-        do
-            if ! test -d "$WINEPREFIX"/dosdevices/${letter}:
-            then
-                WINETRICKS_CACHE_SYMLINK="$WINEPREFIX"/dosdevices/${letter}:
-                ln -sf "$W_CACHE" "$WINETRICKS_CACHE_SYMLINK"
-                break
-            fi
-        done
-    esac
 
     # Overridden for windows
     W_ISO_MOUNT_ROOT=/mnt/winetricks
     W_ISO_MOUNT_LETTER=i
-
-    # Win(e) 32/64?
-    # Using the variable W_SYSTEM32_DLLS instead of SYSTEM32 because some stuff does go under system32 for both arch's
-    # e.g., spool/drivers/color
-    if test -d "$W_DRIVE_C/windows/syswow64"
-    then
-        W_ARCH=win64
-        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
-        W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
-        W_SYSTEM64_DLLS="$W_WINDIR_UNIX/system32"
-    else
-        W_ARCH=win32
-        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
-        W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
-    fi
 
     WINETRICKS_WINE_VERSION=`winetricks_early_wine --version | sed 's/.*wine/wine/'`
     WINETRICKS_WINE_MINOR=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1\.\([0-9]*\)\..*/\1/'`
@@ -2453,6 +2499,7 @@ Options:
 -v|--verbose: echo all commands as they are executed
 -V|--version: display version and exit
 -h|--help: display this message and exit
+--isolate-games: install each game in its own bottle
 --noclean: don't delete temp directories (useful during debugging)
 --gui: show gui diagnostics even when driven by commandline
 --showbroken: even show verbs that are currently broken in wine
@@ -2478,6 +2525,7 @@ winetricks_handle_option()
     -v|--verbose) set -x ;;
     -V|--version) winetricks_print_version ; exit 0;;
     -h|--help) winetricks_usage ; exit 0 ;;
+    --isolate-games) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
     --noclean) W_OPT_NOCLEAN=1 ;;
     --gui) winetricks_detect_gui;;
     --showbroken) W_OPT_SHOWBROKEN=1 ;;
