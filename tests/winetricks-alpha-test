@@ -5,6 +5,10 @@ set -x
 
 # verbs known to not work in -q mode yet
 BLACKLIST="cygwin|kde|psdk2003|psdkwin7"
+# verbs that are too slow
+BLACKLIST="$BLACKLIST|bfbc2"
+# verbs that are too flaky
+BLACKLIST="$BLACKLIST|amnesia_tdd_demo|wowtrial"
 
 # Check for programs this script (or winetricks) uses.  
 # Better to find out they're missing now than in the
@@ -125,19 +129,31 @@ test_app()
     seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
     echo "test_app: ${app}: install_time $seconds seconds."
 
+    sh winetricks-alpha -q list-installed > list-installed.out
+    if ! grep -w $app list-installed.out
+    then
+        fail "test app $app not installed after install?"
+    fi
+
     # Total max disk usage = max df change plus any initial blocks in cache
     DF_MIN=`cat df-during.log | awk '/\// { if (min == "" || $4 < min) min=$4; } END {print min}' `
     DF_DIFF=`expr $DF_START - $DF_MIN`
     TOTAL=`expr $DF_DIFF + $DU_CACHE_START`
     echo "test_app: ${app}: max_disk $TOTAL blocks."
 
-    # Some installers (like fontxplorer) start a winefile.
-    killall winefile.exe
-    # wmi starts a server
-    killall WinMgmt.exe
+    # Work around dangling processes (whether normal or the fault of wine or the verb script)
+    case $app in
+    dotnet*)
+        killall wineconsole ;;   # bug in wine?  the wineconsoles are for the langpacks, and seem empty.
+    wmi)
+        killall WinMgmt.exe ;;   # wmi starts a service
+    fontxplorer)
+        killall winefile.exe ;;  # a number of apps open a folder on the desktop
+    esac
+
+    ps augxw | grep exe
     $WINESERVER -w
     echo "Wineserver done."
-    ps augxw | grep exe
 
     test_app_checksums
 }
