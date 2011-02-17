@@ -1108,7 +1108,7 @@ w_do_call()
         then
             if ! winetricks_is_installed $1
             then
-                w_die "$1 install completed, but installed file not found"
+                w_die "$1 install completed, but installed file $installed_exe1 $installed_file1 not found"
             fi
         fi
         # Calling subshell must explicitly propagate error code with exit $?
@@ -3366,8 +3366,8 @@ w_metadata flash dlls \
    media="download" \
    file1="install_flash_player.exe" \
    file2="install_flash_player_ax.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10l_Plugin.exe" \
-   installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10l_ActiveX.exe"
+   installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10m_Plugin.exe" \
+   installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10m_ActiveX.exe"
 
 load_flash()
 {
@@ -3377,7 +3377,8 @@ load_flash()
     # http://blogs.adobe.com/psirt/2008/03/preparing_for_april_flash_play.html
     # http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_active_x.msi
     # 2010-11-04: sha1sum 58412bcc83e349be50cafe0e1c46e19088620866
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_ax.exe 58412bcc83e349be50cafe0e1c46e19088620866
+    # 2011-02-12: sha1sum 944c1f2055cd85af37ef44629773c2cf1d02a21c
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_ax.exe 944c1f2055cd85af37ef44629773c2cf1d02a21c
     cd "$W_CACHE"/flash
 
     if [ $W_UNATTENDED_SLASH_Q ]
@@ -3389,7 +3390,8 @@ load_flash()
 
     # Mozilla / Firefox plugin
     # 2010-11-04: sha1sum 09f2491c5bec7286155234f4e6e1af70c7cef78f
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player.exe 09f2491c5bec7286155234f4e6e1af70c7cef78f
+    # 2011-02-12: sha1sum 4a650caf62d8841d14b9d7888ab9b69d5d6f617a
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player.exe 4a650caf62d8841d14b9d7888ab9b69d5d6f617a
     if [ $W_UNATTENDED_SLASH_Q ]
     then
         w_try $WINE install_flash_player.exe /install
