@@ -6767,12 +6767,16 @@ w_metadata vc2005trial apps \
     year="2005" \
     media="download" \
     file1="En_vs_2005_vsts_180_Trial.img" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Visual Studio 8/Common7/IDE/devenv.exe"
-
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Visual Studio 8/Common7/IDE/devenv.exe" \
+    wine_showstoppers="26162"
 
 load_vc2005trial()
 {
-    if w_workaround_wine_bug 25331
+    if w_workaround_wine_bug 26162
+    then
+        w_warn "Install fails in recent wine"
+    fi
+    if w_workaround_wine_bug 25331 1.1.35,1.3.4 1.3.9,
     then
         w_warn "Install fails with wine older than 1.1.35 or newer than wine-1.3.4."
     fi
