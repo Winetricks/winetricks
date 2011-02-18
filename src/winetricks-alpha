@@ -1047,7 +1047,11 @@ w_do_call()
         *) cmd=$1; arg=$2 ;;
         esac
 
-        W_TMP="$W_DRIVE_C/windows/Temp/_$1"
+        # Kludge: use Temp instead of temp to avoid \t expansion in w_try
+        # but use temp in unix path because that's what wine creates, and having both temp and Temp
+        # causes confusion (e.g. makes vc2005trial fail)
+        # FIXME: W_TMP is also set in winetricks_set_wineprefix, can we avoid the duplication?
+        W_TMP="$W_DRIVE_C/windows/temp/_$1"
         W_TMP_WIN="C:\\windows\\Temp\\_$1"
         test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
         mkdir -p "$W_TMP"
@@ -1072,7 +1076,7 @@ w_do_call()
             w_die "No such verb $1"
         fi
 
-        # FIXME: This might delete the Temp directory created above and create a new one, which is a bit messy.
+        # FIXME: This deletes the Temp directory created above and creates a new one, which is a bit messy.
         case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
         games-0) winetricks_set_wineprefix $cmd
         esac
@@ -2234,7 +2238,7 @@ winetricks_set_wineprefix()
         WINEPREFIX="$W_PREFIXES_ROOT/$1"
     fi
     export WINEPREFIX
-    echo "WINEPREFIX is now $WINEPREFIX"
+    #echo "WINEPREFIX is now $WINEPREFIX"
     mkdir -p "`dirname "$WINEPREFIX"`"
 
     # Run wine here to force creation of the wineprefix so it's there when we want to make the cache symlink a bit later.
@@ -2248,14 +2252,16 @@ winetricks_set_wineprefix()
 
     W_DRIVE_C="$WINEPREFIX/dosdevices/c:"
 
+    # Kludge: use Temp instead of temp to avoid \t expansion in w_try
+    # but use temp in unix path because that's what wine creates, and having both temp and Temp
+    # causes confusion (e.g. makes vc2005trial fail)
     if ! test "$1"
     then
-        W_TMP="$W_DRIVE_C/windows/Temp"
+        W_TMP="$W_DRIVE_C/windows/temp"
         W_TMP_WIN="C:\\windows\\Temp"
     else
         # Verbs can rely on W_TMP being empty at entry, deleted after return, and a subdir of C:
-        # Kludge: use Temp instead of temp to avoid \t expansion in w_try
-        W_TMP="$W_DRIVE_C/windows/Temp/_$1"
+        W_TMP="$W_DRIVE_C/windows/temp/_$1"
         W_TMP_WIN="C:\\windows\\Temp\\_$1"
     fi
 
