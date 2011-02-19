@@ -1300,8 +1300,6 @@ winetricks_mainmenu()
     *) _W_cmd_unattended=unattended; _W_msg_unattended="$_W_msg_unattended1" ;;
     esac
 
-    # FIXME: don't show uninstall option when $WINETRICKS_OPT_SHAREDPREFIX is 1
-
     case $WINETRICKS_GUI in
     zenity)
         zenity \
@@ -1342,117 +1340,6 @@ winetricks_mainmenu()
         ;;
     esac
     unset _W_msg_body _W_msg_title _W_msg_apps _W_msg_benchmarks _W_msg_dlls _W_msg_games _W_msg_settings
-}
-
-# Display the menu of installed apps, output list of selected apps
-winetricks_installed_menu()
-{
-    case $WINETRICKS_CURMENU in
-    run)
-        case $LANG in
-        de*) _W_msg_title='Pakete auswählen'
-             _W_msg_body='Welches Programm möchten Sie starten?'
-             ;;
-        *)   _W_msg_title='Select a program to run'
-             _W_msg_body='Which program would you like to run?'
-             ;;
-        esac
-        ;;
-    uninstall)
-        case $LANG in
-        de*) _W_msg_title='Pakete auswählen'
-             _W_msg_body='Welches Programm möchten Sie löschen?'
-             ;;
-        *)   _W_msg_title='Select a program to delete'
-             _W_msg_body='Which program would you like to uninstall?'
-             ;;
-        esac
-        ;;
-    esac
-
-    case $WINETRICKS_GUI in
-    zenity)
-        case $LANG in
-        da*) echo -n "zenity \
-                --title '$_W_msg_title' \
-                --text '$_W_msg_body' \
-                --list \
-                --checklist \
-                --column '' \
-                --column Pakke \
-                --column Navn \
-                --column Udgiver \
-                --column År \
-                --column Medie \
-                --height $WINETRICKS_MENU_HEIGHT \
-                --width $WINETRICKS_MENU_WIDTH \
-                "
-             ;;
-       de*) echo -n "zenity \
-                --title '$_W_msg_title' \
-                --text '$_W_msg_body' \
-                --list \
-                --checklist \
-                --column '' \
-                --column Paket \
-                --column Name \
-                --column Herausgeber \
-                --column Jahr \
-                --column Media \
-                --height $WINETRICKS_MENU_HEIGHT \
-                --width $WINETRICKS_MENU_WIDTH \
-                "
-             ;;
-        *) echo -n "zenity \
-                --title '$_W_msg_title' \
-                --text '$_W_msg_body' \
-                --list \
-                --checklist \
-                --column '' \
-                --column Package \
-                --column Title \
-                --column Publisher \
-                --column Year \
-                --column Media \
-                --height $WINETRICKS_MENU_HEIGHT \
-                --width $WINETRICKS_MENU_WIDTH \
-                "
-             ;;
-        esac > "$WINETRICKS_WORKDIR"/zenity.sh
-
-        for verb in `winetricks_list_installed`
-        do
-            metadatafile="`echo "$WINETRICKS_METADATA"/*/$verb.vars`"
-            if ! test -f "$metadatafile"
-            then
-                continue
-            fi
-            (
-            title='?'
-            author='?'
-            . $metadatafile
-            echo -n " " FALSE \
-                    $verb \
-                    "\"$title\"" \
-                    "\"$publisher\"" \
-                    "\"$year\"" \
-                    "\"$media\""
-            )
-        done >> $WINETRICKS_WORKDIR/zenity.sh
-
-        sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
-        ;;
-
-    kdialog)
-        (
-        echo -n "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --checklist '$_W_msg_body' "
-        winetricks_list_installed | sed 's/\(.*\)/\1 \1 off/' | tr '\012' ' '
-        ) > "$WINETRICKS_WORKDIR"/kdialog.sh
-        sh "$WINETRICKS_WORKDIR"/kdialog.sh
-        ;;
-    esac
-
-    unset _W_msg_body _W_msg_title _W_msg_apps _W_msg_games
 }
 
 winetricks_settings_menu()
@@ -2351,7 +2238,6 @@ winetricks_init()
     do
         mkdir -p "$WINETRICKS_METADATA"/$_W_cat
     done
-    WINETRICKS_COMMANDMENUS="run uninstall"
 
     # Which subdirectory of WINETRICKS_METADATA is currently active (or main, if none)
     WINETRICKS_CURMENU=main
@@ -2592,25 +2478,6 @@ winetricks_install_app()
     then
         w_die "$fail_msg"
     fi
-}
-
-winetricks_uninstall_app()
-{
-    # Find the app
-    case $WINETRICKS_OPT_SHAREDPREFIX in
-    0)
-        WINETRICKS_RUN_WINEPREFIX="$W_PREFIXES_ROOT"/$1
-        app="$WINETRICKS_RUN_WINEPREFIX"/dosdevices/c:/run-$1.bat
-        ;;
-    1)
-        w_die "Sorry, this tool can't uninstall apps from a shared wineprefix"
-        ;;
-    esac
-    if ! test -f "$app"
-    then
-        w_die "Can't find app $1 (looked for $app)"
-    fi
-    rm -rf "$WINETRICKS_RUN_WINEPREFIX"
 }
 
 #---- Builtin Verbs ----
@@ -11760,23 +11627,6 @@ winetricks_stats_log_command()
     unset _W_LOGDIR
 }
 
-# Do whatever the current menu says to the given app
-# Unless you're in the run or uninstall menus, that means to install it.
-winetricks_do_app()
-{
-    case $WINETRICKS_CURMENU in
-    run)
-        winetricks_run_app $1
-        ;;
-    uninstall)
-        winetricks_uninstall_app $1
-        ;;
-    *)
-        winetricks_install_app $1
-        ;;
-    esac
-}
-
 # Usage: execute_command verb[=argument]
 execute_command()
 {
@@ -11790,7 +11640,7 @@ execute_command()
     case $1 in
 
     # FIXME: avoid duplicated code
-    apps|benchmarks|dlls|fonts|games|run|uninstall|settings)
+    apps|benchmarks|dlls|fonts|games|settings)
         WINETRICKS_CURMENU=$1
         ;;
 
@@ -11813,44 +11663,44 @@ execute_command()
     attended) winetricks_set_unattended 0 ;;
 
     # Use winecfg if you want a gui for plain old dll overrides
-    alldlls=*) winetricks_do_app $1 ;;
+    alldlls=*) w_call $1 ;;
     *=native) w_do_call native $cmd;;
     *=builtin) w_do_call builtin $cmd;;
     *=disabled) w_do_call disabled $cmd;;
 
     # Hacks for backwards compatibility
-    cc580) winetricks_do_app comctl32 ;;
-    comdlg32.ocx) winetricks_do_app comdlg32ocx ;;
-    dotnet1) winetricks_do_app dotnet11 ;;
-    dotnet2) winetricks_do_app dotnet20 ;;
-    fm20) winetricks_do_app controlpad ;;   # art2kmin also comes with fm20.dll
-    fontsmooth-bgr) winetricks_do_app fontsmooth=bgr ;;
-    fontsmooth-disable) winetricks_do_app fontsmooth=disable ;;
-    fontsmooth-gray) winetricks_do_app fontsmooth=gray ;;
-    fontsmooth-rgb) winetricks_do_app fontsmooth=rgb ;;
-    glsl-disable) winetricks_do_app glsl=disabled ;;
-    glsl-enable) winetricks_do_app glsl=enabled ;;
-    ie6_full) winetricks_do_app ie6 ;;
-    jscript) winetricks_do_app wsh56js ;;            # FIXME: use wsh57 instead?
-    mwo=disabled) winetricks_do_app mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
-    npm-repack) winetricks_do_app npm=repack ;;
-    oss) winetricks_do_app sound=oss ;;
-    psm=off) winetricks_do_app psm=disabled ;;
-    psm=on) winetricks_do_app psm=enabled ;;
-    python) winetricks_do_app python26 ;;
-    python-comtypes) winetricks_do_app python26_comtypes ;;
-    vbrun60) winetricks_do_app vb6run ;;
-    vcrun2005sp1) winetricks_do_app vcrun2005 ;;
-    vcrun2008sp1) winetricks_do_app vcrun2008 ;;
-    vsm-hard) winetricks_do_app vsm=hardware ;;
-    wsh56) winetricks_do_app wsh57 ;;
-    xlive) winetricks_do_app gfw ;;
+    cc580) w_call comctl32 ;;
+    comdlg32.ocx) w_call comdlg32ocx ;;
+    dotnet1) w_call dotnet11 ;;
+    dotnet2) w_call dotnet20 ;;
+    fm20) w_call controlpad ;;   # art2kmin also comes with fm20.dll
+    fontsmooth-bgr) w_call fontsmooth=bgr ;;
+    fontsmooth-disable) w_call fontsmooth=disable ;;
+    fontsmooth-gray) w_call fontsmooth=gray ;;
+    fontsmooth-rgb) w_call fontsmooth=rgb ;;
+    glsl-disable) w_call glsl=disabled ;;
+    glsl-enable) w_call glsl=enabled ;;
+    ie6_full) w_call ie6 ;;
+    jscript) w_call wsh56js ;;            # FIXME: use wsh57 instead?
+    mwo=disabled) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
+    npm-repack) w_call npm=repack ;;
+    oss) w_call sound=oss ;;
+    psm=off) w_call psm=disabled ;;
+    psm=on) w_call psm=enabled ;;
+    python) w_call python26 ;;
+    python-comtypes) w_call python26_comtypes ;;
+    vbrun60) w_call vb6run ;;
+    vcrun2005sp1) w_call vcrun2005 ;;
+    vcrun2008sp1) w_call vcrun2008 ;;
+    vsm-hard) w_call vsm=hardware ;;
+    wsh56) w_call wsh57 ;;
+    xlive) w_call gfw ;;
 
     # Normal verbs, with metadata and load_ functions
     *)
         if winetricks_metadata_exists $1
         then
-            winetricks_do_app $1
+            w_call $1
         else
             echo Unknown arg $1
             winetricks_usage
@@ -11866,7 +11716,7 @@ then
 
     # If user specifies menu on commandline, execute that command, but don't commit to commandline mode
     # FIXME: this code is duplicated several times; unify it
-    if echo "$WINETRICKS_CATEGORIES" "$WINETRICKS_COMMANDMENUS" | grep -w "$1" > /dev/null
+    if echo "$WINETRICKS_CATEGORIES" | grep -w "$1" > /dev/null
     then
         WINETRICKS_CURMENU=$1
         shift
@@ -11892,8 +11742,6 @@ then
         do
             case $WINETRICKS_CURMENU in
             main) verbs=`winetricks_mainmenu` ;;
-            run) verbs=`winetricks_installed_menu` ;;
-            uninstall) verbs=`winetricks_installed_menu` ;;
             settings) verbs=`winetricks_settings_menu` ;;
             *) verbs="`winetricks_showmenu`" ;;
             esac
@@ -11907,7 +11755,7 @@ then
                 else
                     WINETRICKS_CURMENU=main
                 fi
-            elif echo "$WINETRICKS_CATEGORIES" "$WINETRICKS_COMMANDMENUS" | grep -w "$verbs" > /dev/null
+            elif echo "$WINETRICKS_CATEGORIES" | grep -w "$verbs" > /dev/null
             then
                 WINETRICKS_CURMENU=$verbs
             else
