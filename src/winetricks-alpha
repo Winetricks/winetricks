@@ -339,7 +339,7 @@ w_download_to()
         # redhat.com decompresses liberation-fonts.tar.gz!
         # Note: this causes other sites to compress downloads, hence
         # the kludge further down.  See http://code.google.com/p/winezeug/issues/detail?id=77
-        echo Downloading $_W_url
+        echo Downloading $_W_url to $_W_cache
         if [ -x "`which wget 2>/dev/null`" ]
         then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
@@ -3912,7 +3912,7 @@ load_msls31()
 {
     # Needed by native richedit and internet explorer
     w_download http://download.microsoft.com/download/WindowsInstaller/Install/2.0/W9XMe/EN-US/InstMsiA.exe e739c40d747e7c27aacdb07b50925b1635ee7366
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msi2/InstMsiA.exe
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msls31/InstMsiA.exe
     w_try cp -f "$W_TMP"/msls31.dll "$W_SYSTEM32_DLLS"
 }
 
