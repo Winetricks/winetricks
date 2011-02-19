@@ -68,6 +68,9 @@
 # Name of this version of winetricks (YYYYMMDD)
 WINETRICKS_VERSION=20110218-alpha
 
+# FIXME: maybe obey XDG_DATA_HOME
+W_PREFIXES_ROOT="${WINE_PREFIXES:-$HOME/.local/share/wineprefixes}"
+
 #---- Public Functions ----
 
 # Display warning message
@@ -1257,6 +1260,55 @@ winetricks_detect_sudo()
     fi
 }
 
+# Display prefix menu, get which wineprefix the user wants to work with
+winetricks_prefixmenu()
+{
+    case $LANG in
+    *)   _W_msg_title="Winetricks - choose a wineprefix"
+         _W_msg_body='What do you want to do?'
+         _W_msg_new='Install a game into a new wineprefix'
+         _W_msg_default="Modify the default wineprefix ($WINEPREFIX)"
+         ;;
+    esac
+
+    case $WINETRICKS_GUI in
+    zenity)
+        echo -n "zenity \
+            --title '$_W_msg_title' \
+            --text '$_W_msg_body' \
+            --list \
+            --radiolist \
+            --column '' \
+            --column '' \
+            --column '' \
+            --height $WINETRICKS_MENU_HEIGHT \
+            --width $WINETRICKS_MENU_WIDTH \
+            --hide-column 2 \
+            FALSE games      '$_W_msg_new' \
+            FALSE main       '$_W_msg_default' \
+            " \
+            > "$WINETRICKS_WORKDIR"/zenity.sh
+
+        if ls $W_PREFIXES_ROOT/*/user.reg > /dev/null 2>&1
+        then
+            for prefix in $W_PREFIXES_ROOT/*/user.reg
+            do
+                q="${prefix%%/user.reg}"
+                p="${q##*/}"
+                echo -n " FALSE prefix=$p 'Modify wineprefix $p ($W_PREFIXES_ROOT/$p)' "
+            done >> $WINETRICKS_WORKDIR/zenity.sh
+        fi
+
+        sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
+        ;;
+
+    kdialog)
+        w_die "kdialog not supported yet"
+        ;;
+    esac
+    unset _W_msg_body _W_msg_title _W_msg_new _W_msg_default
+}
+
 # Display main menu, get which submenu the user wants
 winetricks_mainmenu()
 {
@@ -1269,6 +1321,7 @@ winetricks_mainmenu()
          _W_msg_fonts='Install a font'
          _W_msg_games='Installér et spil'
          _W_msg_settings='Change Wine settings'
+         _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
          _W_msg_unattended1="Switch to unattended mode, i.e. automatic installs"
          ;;
@@ -1280,6 +1333,7 @@ winetricks_mainmenu()
          _W_msg_fonts='Schriftart installieren'
          _W_msg_games='Windows-Spiel installieren'
          _W_msg_settings='Change Wine settings'
+         _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
          _W_msg_unattended1="Switch to unattended mode, i.e. automatic installs"
          ;;
@@ -1291,6 +1345,7 @@ winetricks_mainmenu()
          _W_msg_fonts='Install a font'
          _W_msg_games='Install a game'
          _W_msg_settings='Change settings'
+         _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
          _W_msg_unattended1="Switch to unattended mode, i.e. automatic installs"
          ;;
@@ -1302,9 +1357,11 @@ winetricks_mainmenu()
 
     case $WINETRICKS_GUI in
     zenity)
-        zenity \
-            --title "$_W_msg_title" \
-            --text "$_W_msg_body" \
+        # Don't display games menu if isolate-games given
+        (
+          echo -n "zenity \
+            --title '$_W_msg_title' \
+            --text '$_W_msg_body' \
             --list \
             --radiolist \
             --column '' \
@@ -1313,14 +1370,21 @@ winetricks_mainmenu()
             --height $WINETRICKS_MENU_HEIGHT \
             --width $WINETRICKS_MENU_WIDTH \
             --hide-column 2 \
-            FALSE dlls       "$_W_msg_dlls" \
-            FALSE fonts      "$_W_msg_fonts" \
-            FALSE games      "$_W_msg_games" \
-            FALSE benchmarks "$_W_msg_benchmarks" \
-            FALSE apps       "$_W_msg_apps" \
-            FALSE settings   "$_W_msg_settings" \
-            FALSE $_W_cmd_unattended "$_W_msg_unattended" \
-         | tr '|' ' '
+            FALSE dlls       '$_W_msg_dlls' \
+            FALSE fonts      '$_W_msg_fonts' "
+          if test $WINETRICKS_OPT_SHAREDPREFIX = 1
+          then
+            echo -n "FALSE games      '$_W_msg_games' "
+          fi
+          echo -n " \
+            FALSE benchmarks '$_W_msg_benchmarks' \
+            FALSE apps       '$_W_msg_apps' \
+            FALSE settings   '$_W_msg_settings' \
+            FALSE annihilate '$_W_msg_annihilate' \
+            FALSE $_W_cmd_unattended '$_W_msg_unattended' \
+         "
+         ) > "$WINETRICKS_WORKDIR"/zenity.sh
+        sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
         ;;
 
     kdialog)
@@ -1335,6 +1399,7 @@ winetricks_mainmenu()
                 benchmarks "$_W_msg_benchmarks" off \
                 apps       "$_W_msg_apps" off \
                 settings   "$_W_msg_settings" off \
+                annihilate "$_W_msg_annihilate" off \
                 $_W_cmd_unattended "$_W_msg_unattended" off \
 
         ;;
@@ -2125,7 +2190,7 @@ winetricks_set_wineprefix()
         WINEPREFIX="$W_PREFIXES_ROOT/$1"
     fi
     export WINEPREFIX
-    #echo "WINEPREFIX is now $WINEPREFIX"
+    echo "WINEPREFIX is now $WINEPREFIX" >&2
     mkdir -p "`dirname "$WINEPREFIX"`"
 
     # Run wine here to force creation of the wineprefix so it's there when we want to make the cache symlink a bit later.
@@ -2221,6 +2286,19 @@ winetricks_set_wineprefix()
     fi
 }
 
+winetricks_annihilate_wineprefix()
+{
+    w_skip_windows "No wineprefix to delete on windows" && return
+
+    w_warn "Deleting everything inside $WINEPREFIX."
+    # FIXME: confirm with user
+    rm -rf "$WINEPREFIX"/*
+    rm -rf "$WINEPREFIX"
+
+    # FIXME: recover more nicely.  At moment, have to restart to avoid trouble.
+    exit 0
+}
+
 winetricks_init()
 {
     #---- Private Variables ----
@@ -2240,7 +2318,7 @@ winetricks_init()
     done
 
     # Which subdirectory of WINETRICKS_METADATA is currently active (or main, if none)
-    WINETRICKS_CURMENU=main
+    WINETRICKS_CURMENU=pickprefix
 
     # Delete work directory after each run, on exit either graceful or abrupt
     trap winetricks_kill_handler 0 1 2 3 6
@@ -2314,9 +2392,6 @@ winetricks_init()
         else
             WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
         fi
-        # FIXME: agree on location common with other wine frontends?
-        # FIXME: maybe obey XDG_DATA_HOME
-        W_PREFIXES_ROOT="${WINE_PREFIXES:-$HOME/.local/share/wineprefixes}"
         ;;
     esac
     winetricks_set_wineprefix
@@ -2404,6 +2479,7 @@ list-cached: list cached-and-ready-to-install applications
 list-download: list applications which can be downloaded automatically
 list-manual-download: list applications which can be downloaded with some help from the user
 list-installed: list already-installed applications
+prefix=foobar select WINEPREFIX=$W_PREFIXES_ROOT/foobar
 _EOF_
         ;;
     esac
@@ -11642,7 +11718,7 @@ execute_command()
     case $1 in
 
     # FIXME: avoid duplicated code
-    apps|benchmarks|dlls|fonts|games|settings)
+    apps|benchmarks|dlls|fonts|games|pickprefix|settings)
         WINETRICKS_CURMENU=$1
         ;;
 
@@ -11656,6 +11732,7 @@ execute_command()
         ;;
 
     # Hard-coded verbs
+    main) WINETRICKS_CURMENU=main ;;
     list) winetricks_list_all ;;
     list-cached) winetricks_list_cached ;;
     list-download) winetricks_list_download ;;
@@ -11663,6 +11740,8 @@ execute_command()
     list-installed) winetricks_list_installed ;;
     unattended) winetricks_set_unattended 1 ;;
     attended) winetricks_set_unattended 0 ;;
+    prefix=*) winetricks_set_wineprefix $arg ;;
+    annihilate) winetricks_annihilate_wineprefix ;;
 
     # Use winecfg if you want a gui for plain old dll overrides
     alldlls=*) w_call $1 ;;
@@ -11744,6 +11823,7 @@ then
         do
             case $WINETRICKS_CURMENU in
             main) verbs=`winetricks_mainmenu` ;;
+            pickprefix) verbs=`winetricks_prefixmenu` ;;
             settings) verbs=`winetricks_settings_menu` ;;
             *) verbs="`winetricks_showmenu`" ;;
             esac
@@ -11751,12 +11831,11 @@ then
             if test "$verbs" = ""
             then
                 # "user didn't pick anything, back up a level in the menu"
-                if test $WINETRICKS_CURMENU = main
-                then
-                    break
-                else
-                    WINETRICKS_CURMENU=main
-                fi
+                case $WINETRICKS_CURMENU in
+                pickprefix) break ;;
+                main) WINETRICKS_CURMENU=pickprefix ;;
+                *)    WINETRICKS_CURMENU=main ;;
+                esac
             elif echo "$WINETRICKS_CATEGORIES" | grep -w "$verbs" > /dev/null
             then
                 WINETRICKS_CURMENU=$verbs
@@ -11767,7 +11846,13 @@ then
                 do
                     execute_command $verb
                 done
-                WINETRICKS_CURMENU=main
+                
+                # After installing an isolated app, return to prefix picker,
+                # not main.
+                case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+                games-0) WINETRICKS_CURMENU=pickprefix ;;
+                *)     WINETRICKS_CURMENU=main ;;
+                esac
             fi
         done
         ;;
