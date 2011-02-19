@@ -3376,10 +3376,8 @@ load_gdiplus()
 #----------------------------------------------------------------
 
 w_metadata gecko dlls \
-   title="Gecko (not normally needed)" \
-   publisher="Mozilla" \
-   year="2010" \
-   media="download"
+   title="Gecko (usually installed by distro)" \
+   publisher="WineHQ/Mozilla"
 
 load_gecko()
 {
@@ -3395,7 +3393,7 @@ load_gecko()
 
 w_metadata gecko110 dlls \
    title="Gecko 1.1.0 (not normally needed)" \
-   publisher="Mozilla" \
+   publisher="WineHQ/Mozilla" \
    year="2010" \
    media="download" \
    file1="wine_gecko-1.1.0-x86.cab" \
