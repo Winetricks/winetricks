@@ -7173,7 +7173,9 @@ load_algodoo_demo()
             winwait, Algodoo, Ready to Install
             ;send {Enter}
             ControlClick, TNewButton4  ; Next
-            winwait, Algodoo, Completing
+        }
+        winwait, Algodoo, Completing
+        if ( u > 0 ) {
             sleep 500
             send {Space}{Tab}{Space}{Tab}{Space}{Enter}   ; decline to run app or view tutorials
         }
