@@ -2285,6 +2285,9 @@ winetricks_annihilate_wineprefix()
     rm -rf "$WINEPREFIX"/*
     rm -rf "$WINEPREFIX"
 
+    # Also remove menu items.
+    find ~/.local/share/applications/wine -type f -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
+
     # FIXME: recover more nicely.  At moment, have to restart to avoid trouble.
     exit 0
 }
