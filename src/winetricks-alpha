@@ -1285,7 +1285,7 @@ winetricks_prefixmenu()
             --width $WINETRICKS_MENU_WIDTH \
             --hide-column 2 \
             FALSE games      '$_W_msg_new' \
-            FALSE main       '$_W_msg_default' \
+            TRUE  main       '$_W_msg_default' \
             " \
             > "$WINETRICKS_WORKDIR"/zenity.sh
 
@@ -1319,7 +1319,6 @@ winetricks_mainmenu()
          _W_msg_benchmarks='Install a Windows benchmark'
          _W_msg_dlls="Install a Windows DLL"
          _W_msg_fonts='Install a font'
-         _W_msg_games='Installér et spil'
          _W_msg_settings='Change Wine settings'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
@@ -1331,7 +1330,6 @@ winetricks_mainmenu()
          _W_msg_benchmarks='Windows-Benchmark installieren'
          _W_msg_dlls="Windows-DLL installieren"
          _W_msg_fonts='Schriftart installieren'
-         _W_msg_games='Windows-Spiel installieren'
          _W_msg_settings='Change Wine settings'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
@@ -1343,7 +1341,6 @@ winetricks_mainmenu()
          _W_msg_benchmarks='Install a benchmark'
          _W_msg_dlls="Install a DLL"
          _W_msg_fonts='Install a font'
-         _W_msg_games='Install a game'
          _W_msg_settings='Change settings'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
@@ -1357,7 +1354,6 @@ winetricks_mainmenu()
 
     case $WINETRICKS_GUI in
     zenity)
-        # Don't display games menu if isolate-games given
         (
           echo -n "zenity \
             --title '$_W_msg_title' \
@@ -1371,12 +1367,7 @@ winetricks_mainmenu()
             --width $WINETRICKS_MENU_WIDTH \
             --hide-column 2 \
             FALSE dlls       '$_W_msg_dlls' \
-            FALSE fonts      '$_W_msg_fonts' "
-          if test $WINETRICKS_OPT_SHAREDPREFIX = 1
-          then
-            echo -n "FALSE games      '$_W_msg_games' "
-          fi
-          echo -n " \
+            FALSE fonts      '$_W_msg_fonts' \
             FALSE benchmarks '$_W_msg_benchmarks' \
             FALSE apps       '$_W_msg_apps' \
             FALSE settings   '$_W_msg_settings' \
@@ -1395,7 +1386,6 @@ winetricks_mainmenu()
                 "$_W_msg_body"\
                 dlls       "$_W_msg_dlls" off \
                 fonts      "$_W_msg_fonts" off \
-                games      "$_W_msg_games" off \
                 benchmarks "$_W_msg_benchmarks" off \
                 apps       "$_W_msg_apps" off \
                 settings   "$_W_msg_settings" off \
@@ -11823,7 +11813,16 @@ then
         do
             case $WINETRICKS_CURMENU in
             main) verbs=`winetricks_mainmenu` ;;
-            pickprefix) verbs=`winetricks_prefixmenu` ;;
+            pickprefix)
+                verbs=`winetricks_prefixmenu`;
+                # Cheezy hack: choosing 'games' in pickprefix menu == whether to isolate.
+                if test "$verbs" = games
+                then 
+                    WINETRICKS_OPT_SHAREDPREFIX=0
+                else
+                    WINETRICKS_OPT_SHAREDPREFIX=1
+                fi
+                ;;
             settings) verbs=`winetricks_settings_menu` ;;
             *) verbs="`winetricks_showmenu`" ;;
             esac
