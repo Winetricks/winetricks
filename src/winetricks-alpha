@@ -1289,11 +1289,11 @@ winetricks_prefixmenu()
             " \
             > "$WINETRICKS_WORKDIR"/zenity.sh
 
-        if ls $W_PREFIXES_ROOT/*/user.reg > /dev/null 2>&1
+        if ls -d $W_PREFIXES_ROOT/*/dosdevices > /dev/null 2>&1
         then
-            for prefix in $W_PREFIXES_ROOT/*/user.reg
+            for prefix in $W_PREFIXES_ROOT/*/dosdevices
             do
-                q="${prefix%%/user.reg}"
+                q="${prefix%%/dosdevices}"
                 p="${q##*/}"
                 echo -n " FALSE prefix=$p 'Modify wineprefix $p ($W_PREFIXES_ROOT/$p)' "
             done >> $WINETRICKS_WORKDIR/zenity.sh
