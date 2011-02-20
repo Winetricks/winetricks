@@ -2302,6 +2302,12 @@ winetricks_annihilate_wineprefix()
     # Also remove menu items.
     find ~/.local/share/applications/wine -type f -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
 
+    # Also remove desktop items.
+    # FIXME: source ~/.config/desktop-dirs and $XDG_DESKTOP_DIR instead of Desktop
+    # Desktop might be synonym for home directory, so only go one level
+    # deep to avoid extreme slowdown if user has lots of files
+    find ~/Desktop -maxdepth 1 -type f -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
+
     # FIXME: recover more nicely.  At moment, have to restart to avoid trouble.
     exit 0
 }
