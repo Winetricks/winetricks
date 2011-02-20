@@ -7555,6 +7555,11 @@ load_bioshock_demo()
         sleep 3000 ; wait for splash screen to close
     "
 
+    if w_workaround_wine_bug 6971
+    then
+        w_call mwo=force
+    fi
+
     w_declare_exe "$W_PROGRAMS_X86_WIN\\2K Games\\BioShock Demo\\Builds\\Release" "Bioshock.exe"
 }
 
