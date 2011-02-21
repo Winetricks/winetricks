@@ -1554,6 +1554,8 @@ winetricks_showmenu()
                 --column Year \
                 --column Media \
                 --column Status \
+                --column Size/MB \
+                --column Time/sec \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -1578,7 +1580,9 @@ winetricks_showmenu()
                     "\"$publisher\"" \
                     "\"$year\"" \
                     "\"$media\"" \
-                    "\"$flags\""
+                    "\"$flags\"" \
+                    "\"$size_MB\"" \
+                    "\"$time_sec\"" 
             fi
             )
         done >> $WINETRICKS_WORKDIR/zenity.sh
@@ -7675,7 +7679,7 @@ load_bfbc2()
 
 w_metadata bladekitten_demo games \
     title="Blade Kitten Demo" \
-    publisher="Krome Studios Pty Ltd." \
+    publisher="Krome Studios" \
     year="2010" \
     media="download" \
     file1="BladeKittenDemoInstall.exe" \
@@ -11563,6 +11567,63 @@ load_winxp()
 }
 
 #----------------------------------------------------------------
+
+#---- Derived Metadata ----
+# Generated automatically by measuring time and space requirements of all verbs
+# size_MB includes size of virgin wineprefix, but not the cached installer
+
+for data in \
+    algodoo_demo:size_MB=165,time_sec=30 \
+    aoe3_demo:size_MB=4473,time_sec=330 \
+    aoe_demo:size_MB=165,time_sec=27 \
+    bioshock_demo:size_MB=7510,time_sec=1217 \
+    bladekitten_demo:size_MB=1446,time_sec=165 \
+    cnc3_demo:size_MB=3845,time_sec=3407 \
+    cod4mw_demo:size_MB=5660 \
+    cod_demo:size_MB=572,time_sec=116 \
+    dirt2_demo:size_MB=6308,time_sec=947 \
+    divinity2_demo:size_MB=6082,time_sec=3353 \
+    eve:size_MB=13847,time_sec=1918 \
+    fifa11_demo:size_MB=4933,time_sec=767 \
+    gothic4_demo:size_MB=7719,time_sec=1298 \
+    guildwars:size_MB=223,time_sec=351 \
+    hegemonygold_demo:size_MB=2330,time_sec=345 \
+    hon:size_MB=2815,time_sec=288 \
+    hphbp_demo:size_MB=2900,time_sec=441 \
+    imvu:size_MB=197,time_sec=37 \
+    lhp_demo:size_MB=3190,time_sec=647 \
+    maxmagicmarker_demo:size_MB=219,time_sec=31 \
+    mb_warband_demo:size_MB=2651,time_sec=364 \
+    nfsshift_demo:size_MB=6040,time_sec=1217 \
+    osmos_demo:size_MB=97,time_sec=13 \
+    plantsvszombies:size_MB=198,time_sec=36 \
+    puzzleagent_demo:size_MB=635,time_sec=104 \
+    sammax304_demo:size_MB=1642,time_sec=287 \
+    tmnationsforever:size_MB=2377,time_sec=385 \
+    wog:size_MB=158,time_sec=19 \
+    zootycoon2_demo:size_MB=421,time_sec=123
+do
+    cmd=${data%%:*}
+    file="`echo "$WINETRICKS_METADATA"/*/$cmd.vars`"
+    if test -f "$file"
+    then
+        case $data in
+        *size_MB*)
+            size_MB=${data##*size_MB=}       # remove anything before value
+            size_MB=${size_MB%%,*}           # remove anything after value
+            echo size_MB=$size_MB >> "$file"
+            ;;
+        esac
+
+        case $data in
+        *time_sec*)
+            time_sec=${data##*time_sec=}
+            time_sec=${time_sec%%,*}
+            echo time_sec=$time_sec >> "$file"
+        esac
+    fi
+    unset size_MB time_sec
+done
 
 #---- Main Program ----
 
