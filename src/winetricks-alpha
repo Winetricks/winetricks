@@ -1562,6 +1562,7 @@ winetricks_showmenu()
              ;;
         esac > "$WINETRICKS_WORKDIR"/zenity.sh
 
+        > $WINETRICKS_WORKDIR/installed.txt
         for metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
         do
             code=`winetricks_metadata_basename $metadatafile`
@@ -1571,10 +1572,16 @@ winetricks_showmenu()
             . $metadatafile
             if test "$W_OPT_SHOWBROKEN" = 1 || test "$wine_showstoppers" = ""
             then
-		# Compute cached and downloadable flags
-		flags=""
-		winetricks_is_cached $code && flags="$_W_cached"
-                echo -n " " FALSE \
+                # Compute cached and downloadable flags
+                flags=""
+                winetricks_is_cached $code && flags="$_W_cached"
+                installed=FALSE
+                if winetricks_is_installed $code
+                then
+                    installed=TRUE
+                    echo $code >> $WINETRICKS_WORKDIR/installed.txt
+                fi
+                echo -n " " $installed \
                     $code \
                     "\"$title\"" \
                     "\"$publisher\"" \
@@ -1587,7 +1594,11 @@ winetricks_showmenu()
             )
         done >> $WINETRICKS_WORKDIR/zenity.sh
 
-        sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
+        # Filter out any verb that's already installed
+        sh "$WINETRICKS_WORKDIR"/zenity.sh |
+            tr '|' '\012' |
+            fgrep -v -x -f "$WINETRICKS_WORKDIR"/installed.txt |
+            tr '\012' ' '
         ;;
 
     kdialog)
@@ -1647,7 +1658,7 @@ winetricks_is_cached()
 # You must have already loaded its metadata before calling
 winetricks_is_installed()
 {
-    unset _W_file
+    unset _W_file _W_file_unix
     if test "$installed_exe1"
     then
         _W_file="$installed_exe1"
@@ -1655,16 +1666,25 @@ winetricks_is_installed()
     then
         _W_file="$installed_file1"
     fi
-    if test "$_W_file"
+    # Compute wineprefix for this app
+    case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+    games-0)
+        _W_prefix="$W_PREFIXES_ROOT/$1"
+        ;;
+    *)
+        _W_prefix="$WINEPREFIX"
+        ;;
+    esac
+    if test "$_W_file" && test -d "$_W_prefix/dosdevices"
     then
-        _W_file_unix="`w_pathconv -u "$_W_file"`"
+        _W_file_unix="`WINEPREFIX="$_W_prefix" w_pathconv -u "$_W_file"`"
         if test -f "$_W_file_unix" && ! grep -q "Wine placeholder DLL" "$_W_file_unix"
         then
-            unset _W_file _W_file_unix
+            unset _W_file _W_file_unix _W_prefix
             return 0  # installed
         fi
     fi
-    unset _W_file _W_file_unix
+    unset _W_file _W_file_unix _W_prefix
     return 1  # not installed
 }
 
