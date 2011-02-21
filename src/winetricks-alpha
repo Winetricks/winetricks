@@ -1228,7 +1228,7 @@ winetricks_detect_gui()
         WINETRICKS_GUI=zenity
 
         WINETRICKS_MENU_HEIGHT=500
-        WINETRICKS_MENU_WIDTH=900
+        WINETRICKS_MENU_WIDTH=1010
     elif test -x "`which kdialog 2>/dev/null`"
     then
         echo "Zenity not found!  Using kdialog as poor substitute."
@@ -1494,14 +1494,18 @@ winetricks_showmenu()
     case $LANG in
     da*) _W_msg_title='Vælg en pakke'
          _W_msg_body='Vilken pakke vil du installere?'
+         _W_cached="cached"   
          ;;
     de*) _W_msg_title='Pakete auswählen'
          _W_msg_body='Welche Pakete möchten Sie installieren?'
+         _W_cached="gecached" 
          ;;
     *)   _W_msg_title='Select a package to install'
          _W_msg_body='Which package(s) would you like to install?'
+         _W_cached="cached"   
          ;;
     esac
+
 
     case $WINETRICKS_GUI in
     zenity)
@@ -1517,6 +1521,7 @@ winetricks_showmenu()
                 --column Udgiver \
                 --column År \
                 --column Medie \
+                --column Status \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -1532,6 +1537,7 @@ winetricks_showmenu()
                 --column Herausgeber \
                 --column Jahr \
                 --column Media \
+                --column Status \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -1547,6 +1553,7 @@ winetricks_showmenu()
                 --column Publisher \
                 --column Year \
                 --column Media \
+                --column Status \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -1562,12 +1569,16 @@ winetricks_showmenu()
             . $metadatafile
             if test "$W_OPT_SHOWBROKEN" = 1 || test "$wine_showstoppers" = ""
             then
+		# Compute cached and downloadable flags
+		flags=""
+		winetricks_is_cached $code && flags="$_W_cached"
                 echo -n " " FALSE \
                     $code \
                     "\"$title\"" \
                     "\"$publisher\"" \
                     "\"$year\"" \
-                    "\"$media\""
+                    "\"$media\"" \
+                    "\"$flags\""
             fi
             )
         done >> $WINETRICKS_WORKDIR/zenity.sh
@@ -9283,7 +9294,7 @@ load_kotor1()
 #--------------------------------------------------------------------
 
 w_metadata kotor2 games \
-    title="Star Wars: Knights of the Old Republic 2: Sith Lords (UK)" \
+    title="Star Wars: Knights of the Old Republic 2" \
     publisher="LucasArts" \
     year="2005" \
     media="cd" \
