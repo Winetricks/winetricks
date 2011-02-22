@@ -1776,8 +1776,9 @@ winetricks_append_to_flags()
 # Format is "verb  title  (publisher, year) [flags]"
 winetricks_list_all()
 {
+    # Note: doh123 relies on 'winetricks list' to list main menu categories
     case $WINETRICKS_CURMENU in
-    main) echo "$WINETRICKS_CATEGORIES" | tr ' ' '\012' ; return;;
+    pickprefix|main) echo "$WINETRICKS_CATEGORIES" | tr ' ' '\012' ; return;;
     esac
 
     case $LANG in

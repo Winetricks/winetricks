@@ -55,7 +55,14 @@ srcdir=`cd $srcdir; pwd`
 
 test_speed()
 {
-    /usr/bin/time -p --output=time.log sh winetricks-alpha $1
+    if ! /usr/bin/time -p --output=time.log sh winetricks-alpha $1 > foo.log
+    then
+        fail "winetricks-alpha $1 returned status $?"
+    fi
+    if test `wc -l < foo.log` -lt 5
+    then
+        fail "winetricks-alpha $1 returned too few lines"
+    fi
     seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
     echo test_speed: winetricks-alpha $1 took $seconds seconds
     # Longest runtime as of 11 Dec 2010 is 5 seconds on an e8400 with cygwin
