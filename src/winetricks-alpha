@@ -924,12 +924,10 @@ w_wine_version_in()
 #w_wine_version_not_in_test 3 0  ,1.2
 #echo test passed
 
-# Usage: workaround_wine_bug bugnumber [good-version-range ...]
-# False (nonzero status) on Windows.
-# True (zero status) on Wine unless good-wineversion-range is set
-# and matches the current wine version.
-# For debugging: if you want to skip a bug's workaround, put the bug number in the
-# environment variable WINETRICKS_BLACKLIST to disable it.
+# Usage: workaround_wine_bug bugnumber [message] [good-wine-version-range ...]
+# Returns true and outputs given msg if the workaround needs to be applied.
+# For debugging: if you want to skip a bug's workaround, put the bug number in 
+# the environment variable WINETRICKS_BLACKLIST to disable it.
 w_workaround_wine_bug()
 {
     if test "$WINE" = ""
@@ -937,10 +935,15 @@ w_workaround_wine_bug()
         echo No need to work around wine bug $1 on windows
         return 1
     fi
+    case "$2" in
+    [0-9]*) w_die "bug: want message in w_workaround_wine_bug arg 2, got $2" ;;
+    "") _W_msg="";;
+    *)  _W_msg="-- $2";;
+    esac
 
-    if test "$2" && w_wine_version_in $2 $3 $4 $5
+    if test "$3" && w_wine_version_in $3 $4 $5 $6
     then
-        echo Current wine should not suffer from wine bug $1, so not applying workaround
+        echo Current wine does not have wine bug $1, so not applying workaround
         return 1
     fi
 
@@ -951,9 +954,9 @@ w_workaround_wine_bug()
         ;;
     esac
     case $LANG in
-    da*) w_warn "Arbejder uden om wine-fejl $1" ;;
-    de*) w_warn "Wine-Fehler $1 wird umgegangen" ;;
-    *)   w_warn "Working around wine bug $1" ;;
+    da*) w_warn "Arbejder uden om wine-fejl ${1} $_W_msg" ;;
+    de*) w_warn "Wine-Fehler ${1} wird umgegangen $_W_msg" ;;
+    *)   w_warn "Working around wine bug ${1} $_W_msg" ;;
     esac
     return 0
 }
@@ -4220,7 +4223,7 @@ load_quicktime72()
        QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
     fi
 
-    if w_workaround_wine_bug 9366  1.1.22,
+    if w_workaround_wine_bug 9366 ""  1.1.22,
     then
         w_call gdiplus
         w_call vcrun2005      # no bug number, but same era
@@ -4274,7 +4277,7 @@ load_quicktime76()
        QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
     fi
 
-    if w_workaround_wine_bug 9366  1.1.22,
+    if w_workaround_wine_bug 9366 ""  1.1.22,
     then
         w_call gdiplus
         w_call vcrun2005      # no bug number, but same era
@@ -4732,7 +4735,7 @@ load_vcrun2010()
     # See http://www.microsoft.com/downloads/details.aspx?FamilyID=a7b7a05e-6de6-4d3a-a423-37bf0912db84
     w_download http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 372d9c1670343d3fb252209ba210d4dc4d67d358
 
-    if w_workaround_wine_bug 23427  1.3.5,
+    if w_workaround_wine_bug 23427 ""  1.3.5,
     then
         w_call msxml3
     fi
@@ -5827,7 +5830,7 @@ w_metadata firefox4 apps \
 
 load_firefox4()
 {
-    if w_workaround_wine_bug 22972 1.3.0,
+    if w_workaround_wine_bug 22972 "" 1.3.0,
     then
         w_die  "Requires wine-1.3.0 or later to install"
     fi
@@ -6331,7 +6334,7 @@ w_metadata office2007pro apps \
 
 load_office2007pro()
 {
-    if w_workaround_wine_bug 14980
+    if w_workaround_wine_bug 14980 "Using native riched20"
     then
        w_override_app_dlls winword.exe n riched20
        w_override_app_dlls excel.exe n riched20
@@ -6423,7 +6426,7 @@ load_psdkwin7()
 {
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en
     w_call dotnet20
-    if w_workaround_wine_bug 21509 1.2,
+    if w_workaround_wine_bug 21509 "" 1.2,
     then
         w_call gdiplus     # work around http://bugs.winehq.org/show_bug.cgi?id=21509
     fi
@@ -6736,7 +6739,7 @@ load_vc2005express()
 {
     # Thanks to http://blogs.msdn.com/astebner/articles/551674.aspx for the recipe
     w_call dotnet20
-    if w_workaround_wine_bug 20029  1.3.9,
+    if w_workaround_wine_bug 20029 ""  1.3.9,
     then
         w_call msxml6
     fi
@@ -6788,12 +6791,12 @@ load_vc2005trial()
     then
         w_warn "Install fails in recent wine"
     fi
-    if w_workaround_wine_bug 25331 1.1.35,1.3.4 1.3.9,
+    if w_workaround_wine_bug 25331 "" 1.1.35,1.3.4 1.3.9,
     then
         w_warn "Install fails with wine older than 1.1.35 or newer than wine-1.3.4."
     fi
     w_call dotnet20
-    if w_workaround_wine_bug 20029  1.3.9,
+    if w_workaround_wine_bug 20029 ""  1.3.9,
     then
         w_call msxml6
     fi
@@ -9687,11 +9690,11 @@ load_masseffect2()
         w_call nocrashdialog
     fi
 
-    if w_workaround_wine_bug 23126 1.3.0,
+    if w_workaround_wine_bug 23126 "" 1.3.0,
     then
         w_call vcrun2005
     fi
-    if w_workaround_wine_bug 23125 1.3.0,
+    if w_workaround_wine_bug 23125 "" 1.3.0,
     then
         w_call d3dx10
     fi
@@ -9847,7 +9850,7 @@ load_mb_warband_demo()
     then
         w_warn "Patch wine as described in bug 6971 to use xinput2"
     fi
-    if grep -q -i nvidia /proc/bus/pci/devices && w_workaround_wine_bug 13490 1.2,
+    if grep -q -i nvidia /proc/bus/pci/devices && w_workaround_wine_bug 13490 "" 1.2,
     then
         w_warn "This game crashes on startup in wine with nvidia unless you apply the patch from wine bug 13490, run with wine-1.1.38, or use WINEDEBUG=+relay wine mw_warband.exe 2>&1 > /dev/null"
     fi
@@ -10071,7 +10074,7 @@ load_puzzleagent_demo()
         WinWaitClose, Puzzle Agent
     "
 
-    if w_workaround_wine_bug 25210  1.3.8,
+    if w_workaround_wine_bug 25210 ""  1.3.8,
     then
         w_call vcrun2008
     fi
@@ -10136,7 +10139,7 @@ load_sims3()
         w_call dotnet20
     fi
 
-    if w_workaround_wine_bug 21517 1.3.8,
+    if w_workaround_wine_bug 21517 "" 1.3.8,
     then
         w_call d3dx9_36
     fi
