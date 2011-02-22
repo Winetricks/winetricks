@@ -1322,6 +1322,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='Run winecfg'
          _W_msg_regedit='Run regedit'
          _W_msg_taskmgr='Run taskmgr'
+         _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
          _W_msg_unattended1="Switch to unattended mode, i.e. automatic installs"
@@ -1336,6 +1337,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='Run winecfg'
          _W_msg_regedit='Run regedit'
          _W_msg_taskmgr='Run taskmgr'
+         _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
          _W_msg_unattended1="Switch to unattended mode, i.e. automatic installs"
@@ -1350,6 +1352,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='Run winecfg'
          _W_msg_regedit='Run regedit'
          _W_msg_taskmgr='Run taskmgr'
+         _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
          _W_msg_unattended1="Switch to unattended mode, i.e. automatic installs"
@@ -1382,6 +1385,7 @@ winetricks_mainmenu()
             FALSE winecfg    '$_W_msg_winecfg' \
             FALSE regedit    '$_W_msg_regedit' \
             FALSE taskmgr    '$_W_msg_taskmgr' \
+            FALSE shell      '$_W_msg_shell' \
             FALSE annihilate '$_W_msg_annihilate' \
             FALSE $_W_cmd_unattended '$_W_msg_unattended' \
          "
@@ -1403,6 +1407,7 @@ winetricks_mainmenu()
                 winecfg    "$_W_msg_winecfg" off \
                 regedit    "$_W_msg_regedit" off \
                 taskmgr    "$_W_msg_taskmgr" off \
+                shell      "$_W_msg_shell" off \
                 annihilate "$_W_msg_annihilate" off \
                 $_W_cmd_unattended "$_W_msg_unattended" off \
 
@@ -11753,6 +11758,34 @@ winetricks_stats_log_command()
     unset _W_LOGDIR
 }
 
+# Launch a new terminal window if in gui, or 
+# spawn a shell in the current window if commandline.
+# New shell contains proper WINEPREFIX and WINE environment variables.
+# May be useful when debugging verbs.
+winetricks_shell()
+{
+    (
+    cd "$W_DRIVE_C"
+    export WINE
+
+    case $WINETRICKS_GUI in
+    none)
+        $SHELL
+        ;;
+    *)
+        for term in gnome-terminal konsole Terminal xterm
+        do
+            if test `which $term` != ""
+            then
+                $term
+                break
+            fi
+        done
+        ;;
+    esac
+    )
+}
+
 # Usage: execute_command verb[=argument]
 execute_command()
 {
@@ -11793,6 +11826,7 @@ execute_command()
     winecfg) $WINE winecfg ;;
     regedit) $WINE regedit ;;
     taskmgr) $WINE taskmgr & ;;
+    shell) winetricks_shell ;;
 
     # Use winecfg if you want a gui for plain old dll overrides
     alldlls=*) w_call $1 ;;
