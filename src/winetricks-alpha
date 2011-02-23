@@ -8636,6 +8636,57 @@ load_demolition_company_demo()
 
 #----------------------------------------------------------------
 
+w_metadata dragonage2_demo games \
+    title="Dragon Age II demo" \
+    publisher="EA/Bioware" \
+    year="2011" \
+    media="download" \
+    file1="DragonAge2Demo_F93M2qCj_EnEsItPlRu.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Dragon Age 2 Demo/bin_ship/DragonAge2Demo.exe"
+
+load_dragonage2_demo()
+{
+    w_download http://na.llnet.bioware.cdn.ea.com/u/f/eagames/bioware/dragonage2/demo/DragonAge2Demo_F93M2qCj_EnEsItPlRu.exe a94715cd7943533a3cf1d84d40e667b04e1abc2e
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetWinDelay 500
+        SetTitleMatchMode, 2
+        run, DragonAge2Demo_F93M2qCj_EnEsItPlRu.exe
+        winwait, Installer Language
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            send {Enter}
+            winwait, Dragon Age II Demo Setup
+            send {Enter}
+            winwait, Dragon Age II Demo Setup, License
+            send !a
+            send {Enter}
+            winwait, Dragon Age II Demo Setup, Select
+            send {Enter}
+        }
+        winwait, Dragon Age II Demo Setup, Completed
+        if ( u > 0 ) {
+            send {Enter}
+            winwait, Dragon Age II Demo Setup, Completing
+            send {Enter}
+        }
+        winwaitclose
+    "
+    if w_workaround_wine_bug 26205 "installing DirectX runtime libraries"
+    then
+        w_call d3dx9_36
+        w_call d3dx11_43
+    fi
+    if w_workaround_wine_bug 26211 "installing native devenum to get sound in logo movie"
+    then
+        w_call devenum
+    fi
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Dragon Age 2 Demo" "DragonAge2Launcher.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata eve games \
     title="EVE Online Tyrannis" \
     publisher="CCP Games" \
