@@ -2632,6 +2632,15 @@ helper_directx_dl()
     DIRECTX_NAME=directx_feb2010_redist.exe
 }
 
+helper_directx_Jun2010()
+{
+    # June 2010 DirectX 9c User Redistributable
+    # http://www.microsoft.com/downloads/en/details.aspx?FamilyID=3b170b25-abab-4bc3-ae91-50ceb6d8fa8d
+    w_download_to directx9 http://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe
+
+    DIRECTX_NAME=directx_Jun2010_redist.exe
+}
+
 helper_d3dx9_xx()
 {
     dllname=d3dx9_$1
@@ -2913,6 +2922,31 @@ w_metadata d3dx9_42 dlls \
 load_d3dx9_42()
 {
     helper_d3dx9_xx 42
+}
+
+#----------------------------------------------------------------
+
+w_metadata d3dx11_43 dlls \
+   title="MS d3dx11_43.dll" \
+   publisher="Microsoft" \
+   year="2010" \
+   media="download" \
+   file1="../directx9/directx_Jun2010_redist.exe" \
+   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx11_43.dll"
+
+load_d3dx11_43()
+{
+    dllname=d3dx11_43
+
+    helper_directx_Jun2010
+
+    w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
+    for x in "$W_TMP"/*.cab
+    do
+      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
+    done
+
+    w_override_dlls native $dllname
 }
 
 #----------------------------------------------------------------
