@@ -2250,7 +2250,12 @@ winetricks_set_wineprefix()
     *unknown*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
     esac
 
-    W_DRIVE_C="$WINEPREFIX/dosdevices/c:"
+    case "$OS" in
+    "Windows_NT")
+        W_DRIVE_C="/cygdrive/c" ;;
+    *)
+        W_DRIVE_C="$WINEPREFIX/dosdevices/c:" ;;
+    esac
 
     # Kludge: use Temp instead of temp to avoid \t expansion in w_try
     # but use temp in unix path because that's what wine creates, and having both temp and Temp
