@@ -6097,7 +6097,7 @@ load_ie7()
 #----------------------------------------------------------------
 
 w_metadata ie8 apps \
-   title="Internet Explorer 8 (broken)" \
+   title="Internet Explorer 8" \
    publisher="Microsoft" \
    year="2009" \
    media="download" \
@@ -6174,8 +6174,28 @@ load_ie8()
         $WINE regsvr32 /i $i > /dev/null 2>&1
     done
 
-    # FIXME: According to http://www.wine-reviews.net/wine-reviews/microsoft/internet-explorer-8-on-linux-with-wine.html
-    # may also need native msctf, msimtf, and uxtheme.  Is this why the UI doesn't work yet?
+    if w_workaround_wine_bug 25648 "Setting TabProcGrowth=0 to avoid hang"
+    then
+        cat > "$W_TMP"/set-tabprocgrowth.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main]
+"TabProcGrowth"=dword:00000000
+
+_EOF_
+        w_try_regedit "$W_TMP_WIN"\\set-tabprocgrowth.reg
+    fi
+
+    # Seeing is believing
+    case $WINETRICKS_GUI in
+    none)
+        w_warn "To start ie8, use the command $WINE '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
+        ;;
+    *)
+        w_warn "Starting ie8.  To start it later, use the command $WINE '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
+        $WINE "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore" http://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
+        ;;
+    esac
 }
 
 #----------------------------------------------------------------
