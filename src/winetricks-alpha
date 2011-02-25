@@ -1270,7 +1270,13 @@ winetricks_prefixmenu()
          _W_msg_body='What do you want to do?'
          _W_msg_new='Install a game into a new wineprefix'
          _W_msg_default="Modify the default wineprefix ($WINEPREFIX)"
+         _W_msg_unattended0="Disable silent install"
+         _W_msg_unattended1="Enable silent install"
          ;;
+    esac
+    case "$W_OPT_UNATTENDED" in
+    1) _W_cmd_unattended=attended; _W_msg_unattended="$_W_msg_unattended0" ;;
+    *) _W_cmd_unattended=unattended; _W_msg_unattended="$_W_msg_unattended1" ;;
     esac
 
     case $WINETRICKS_GUI in
@@ -1300,6 +1306,7 @@ winetricks_prefixmenu()
                 echo -n " FALSE prefix=$p 'Modify wineprefix $p ($W_PREFIXES_ROOT/$p)' "
             done >> $WINETRICKS_WORKDIR/zenity.sh
         fi
+        echo -n " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> $WINETRICKS_WORKDIR/zenity.sh
 
         sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
         ;;
@@ -1327,8 +1334,6 @@ winetricks_mainmenu()
          _W_msg_taskmgr='Run taskmgr'
          _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
-         _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
-         _W_msg_unattended1="Switch to unattended mode, i.e. automatic installs"
          ;;
     de*) _W_msg_title='Pakettyp auswählen'
          _W_msg_body='Was möchten Sie tun?'
@@ -1342,11 +1347,9 @@ winetricks_mainmenu()
          _W_msg_taskmgr='Run taskmgr'
          _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
-         _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
-         _W_msg_unattended1="Switch to unattended mode, i.e. automatic installs"
          ;;
     *)   _W_msg_title="Winetricks - current bottle is '$WINEPREFIX'"
-         _W_msg_body='What would you like to do with Wine?'
+         _W_msg_body='What would you like to do to this wineprefix?'
          _W_msg_apps='Install other software'
          _W_msg_benchmarks='Install a benchmark'
          _W_msg_dlls="Install a DLL"
@@ -1357,13 +1360,7 @@ winetricks_mainmenu()
          _W_msg_taskmgr='Run taskmgr'
          _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
-         _W_msg_unattended0="Switch to attended mode, i.e. non-automatic installs"
-         _W_msg_unattended1="Switch to unattended mode, i.e. automatic installs"
          ;;
-    esac
-    case "$W_OPT_UNATTENDED" in
-    1) _W_cmd_unattended=attended; _W_msg_unattended="$_W_msg_unattended0" ;;
-    *) _W_cmd_unattended=unattended; _W_msg_unattended="$_W_msg_unattended1" ;;
     esac
 
     case $WINETRICKS_GUI in
@@ -1390,7 +1387,6 @@ winetricks_mainmenu()
             FALSE taskmgr    '$_W_msg_taskmgr' \
             FALSE shell      '$_W_msg_shell' \
             FALSE annihilate '$_W_msg_annihilate' \
-            FALSE $_W_cmd_unattended '$_W_msg_unattended' \
          "
          ) > "$WINETRICKS_WORKDIR"/zenity.sh
         sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
@@ -12025,12 +12021,15 @@ then
             pickprefix)
                 verbs=`winetricks_prefixmenu`;
                 # Cheezy hack: choosing 'games' in pickprefix menu == whether to isolate.
-                if test "$verbs" = games
-                then 
-                    WINETRICKS_OPT_SHAREDPREFIX=0
-                else
-                    WINETRICKS_OPT_SHAREDPREFIX=1
-                fi
+                case "$verbs" in
+                games) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
+                *)     WINETRICKS_OPT_SHAREDPREFIX=1 ;;
+                esac
+                # Cheezy hack #2: choosing 'attended' or 'unattended' leaves you in same menu
+                case "$verbs" in
+                attended) winetricks_set_unattended 0 ; continue;;
+                unattended) winetricks_set_unattended 1 ; continue;;
+                esac
                 ;;
             settings) verbs=`winetricks_settings_menu` ;;
             *) verbs="`winetricks_showmenu`" ;;
