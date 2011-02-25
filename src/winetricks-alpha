@@ -11949,8 +11949,6 @@ execute_command()
 
 if ! test "$WINETRICKS_LIB"
 then
-    winetricks_detect_sudo
-
     # If user specifies menu on commandline, execute that command, but don't commit to commandline mode
     # FIXME: this code is duplicated several times; unify it
     if echo "$WINETRICKS_CATEGORIES" | grep -w "$1" > /dev/null
@@ -11975,6 +11973,7 @@ then
         # GUI case
         # No non-option arguments given, so read them from GUI, and loop until user quits
         winetricks_detect_gui
+        winetricks_detect_sudo
         while true
         do
             case $WINETRICKS_CURMENU in
@@ -12027,6 +12026,7 @@ then
     *)
         winetricks_stats_init
         # Commandline case
+        winetricks_detect_sudo
         # User gave commandline arguments, so just run those verbs and exit
         for verb
         do
