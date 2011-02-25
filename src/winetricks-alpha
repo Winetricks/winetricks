@@ -10201,13 +10201,12 @@ w_metadata sims3 games \
 
 load_sims3()
 {
-    # Launcher needs .net.  (But you don't need the launcher to play the game, so this may be overkill.)
-    if false && w_workaround_wine_bug 22350
+    if w_workaround_wine_bug 22350 "Launcher needs .net"
     then
         w_call dotnet20
     fi
 
-    if w_workaround_wine_bug 21517 "" 1.3.8,
+    if w_workaround_wine_bug 21517 "Old wine needs native DirectX for this game" 1.3.8,
     then
         w_call d3dx9_36
     fi
