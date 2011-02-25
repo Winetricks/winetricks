@@ -2234,7 +2234,7 @@ winetricks_set_wineprefix()
         WINEPREFIX="$W_PREFIXES_ROOT/$1"
     fi
     export WINEPREFIX
-    echo "WINEPREFIX is now $WINEPREFIX" >&2
+    #echo "WINEPREFIX is now $WINEPREFIX" >&2
     mkdir -p "`dirname "$WINEPREFIX"`"
 
     # Run wine here to force creation of the wineprefix so it's there when we want to make the cache symlink a bit later.
