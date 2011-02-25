@@ -79,13 +79,10 @@ w_warn()
     echo "$@"
     echo "------------------------------------------------------"
 
-    # For some reason, nulls were showing up in $@?!, causing truncated output
-    # in zenity, so use tr to replace NUL chars with spaces.
-    msg="`echo $@ | tr '\000' ' '`"
     case $WINETRICKS_GUI in
-    zenity) zenity --error --title=winetricks --text="$msg" --no-wrap;;
-    kdialog) kdialog --title winetricks --error "$msg" ;;
-    none) ;;
+    zenity) echo zenity; zenity --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    kdialog) echo kdialog; kdialog --title winetricks --error "$@" ;;
+    none) echo none;;
     esac
 }
 
