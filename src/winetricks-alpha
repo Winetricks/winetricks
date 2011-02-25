@@ -79,11 +79,17 @@ w_warn()
     echo "$@"
     echo "------------------------------------------------------"
 
-    case $WINETRICKS_GUI in
-    zenity) echo zenity; zenity --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
-    kdialog) echo kdialog; kdialog --title winetricks --error "$@" ;;
-    none) echo none;;
+    case "$W_OPT_UNATTENDED" in
+    1) _W_timeout="--timeout 5";;
     esac
+
+    case $WINETRICKS_GUI in
+    zenity) zenity $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    kdialog) kdialog --title winetricks --error "$@" ;;
+    none) ;;
+    esac
+
+    unset _W_timeout
 }
 
 # Display fatal error message and terminate script
