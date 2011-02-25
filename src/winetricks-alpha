@@ -10057,7 +10057,7 @@ load_osmos_demo()
         WinWaitClose
     "
 
-    if w_workaround_wine_bug 24416
+    if w_workaround_wine_bug 24416 "installing C runtime library" 1.3.8,
     then
         w_call vcrun2005
     fi
