@@ -2386,9 +2386,6 @@ winetricks_init()
     # Delete work directory after each run, on exit either graceful or abrupt
     trap winetricks_kill_handler 0 1 2 3 6
 
-    # Which GUI helper to use (none/zenity/kdialog).  See winetricks_detect_gui.
-    WINETRICKS_GUI=none
-
     # Whether to always cache cached iso's (1) or only use cache if present (0)
     # Can be inherited from environment or set via -k, defaults to off
     WINETRICKS_OPT_KEEPISOS=${WINETRICKS_OPT_KEEPISOS:-0}
@@ -2574,6 +2571,9 @@ if ! test "$WINETRICKS_LIB"
 then
     WINETRICKS_SRCDIR=`dirname $0`
     WINETRICKS_SRCDIR=`cd $WINETRICKS_SRCDIR; /bin/pwd`
+
+    # Which GUI helper to use (none/zenity/kdialog).  See winetricks_detect_gui.
+    WINETRICKS_GUI=none
 
     # Handle options before init, to avoid starting wine for --help or --version
     while winetricks_handle_option $1
