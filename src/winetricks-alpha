@@ -8624,6 +8624,84 @@ load_demolition_company_demo()
 
 #----------------------------------------------------------------
 
+w_metadata dragonage games \
+    title="Dragon Age: Origins" \
+    publisher="Bioware / EA" \
+    year="2009" \
+    media="dvd" \
+    file1="DragonAge.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Dragon Age/bin_ship/daorigins.exe"
+
+load_dragonage()
+{
+    w_read_key
+
+    if w_workaround_wine_bug 22191 "Installer has a non-fatal crash on exit"
+    then
+        w_call nocrashdialog
+    fi
+    # game can do this, why do we need to?
+    w_call physx
+    if w_workaround_wine_bug 24837 "Installing C++ runtime library"
+    then
+        w_call vcrun2005
+    fi
+
+    w_mount DragonAge
+
+    w_ahk_do "
+        Run, ${W_ISO_MOUNT_LETTER}:Setup.exe
+        SetTitleMatchMode, 2
+        winwait, Installer Language
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            send {Enter}
+            winwait, Dragon Age: Origins Setup
+            ControlClick Next, Dragon Age: Origins Setup
+            winwait, Dragon Age: Origins Setup, End User License
+            sleep 1000
+            ;ControlClick Button4, Dragon Age: Origins Setup  ; agree
+            send {Tab}a  ; agree
+            ;ControlClick I agree, Dragon Age: Origins Setup
+            send {Enter} ; continue
+            SetTitleMatchMode, 1
+            winwait, Dragon Age: Origins, Registration
+            send $W_KEY
+            send {Enter}
+            winwait, Dragon Age: Origins Setup, Install Type
+            Sleep 1000
+            send {Enter}
+        }
+        loop 100
+        {
+            IfWinExist, Dragon Age: Origins Setup
+                sleep 60000
+        }
+        exit 0
+    "
+
+    if w_workaround_wine_bug 22308 "tell user how to work around blurry cut scenes"
+    then
+        w_warn "Turn off frame buffer effects to avoid blurry cut scenes.  See http://bugs.winehq.org/show_bug.cgi?id=22307"
+    fi
+    if w_workaround_wine_bug 22383 "use strictdrawordering to reduce flickering"
+    then
+        w_call strictdrawordering=enabled
+    fi
+    if w_workaround_wine_bug 23730 "tell user how to reduce flickering"
+    then
+        w_warn "Run with WINEDEBUG=-all to reduce flickering."
+    fi
+    if w_workaround_wine_bug 23081 "tell user another way to reduce flickering"
+    then
+        w_warn "If you still see flickering, try applying the patch from http://bugs.winehq.org/show_bug.cgi?id=23081"
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Dragon Age" "bin_ship\\daorigins.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata dragonage2_demo games \
     title="Dragon Age II demo" \
     publisher="EA/Bioware" \
