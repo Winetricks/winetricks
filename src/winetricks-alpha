@@ -9920,6 +9920,90 @@ load_masseffect2()
 
 #----------------------------------------------------------------
 
+w_metadata masseffect2_demo games \
+    title="Mass Effect 2" \
+    publisher="BioWare" \
+    year="2010" \
+    media="download" \
+    file1="MassEffect2DemoEN.exe" 
+
+load_masseffect2_demo()
+{
+    w_download http://masseffect.bioware.com/cdn/A/ME2_DEMO/MassEffect2DemoEN.exe cda9a25387a98e29772b3ccdcf609f87188285e2
+
+    if w_workaround_wine_bug 22091
+    then
+        w_warn "Will probably hang at end of installer.  If a crash dialog comes up, you can kill it, it's done."
+        w_call nocrashdialog
+    fi
+
+    if w_workaround_wine_bug 23126 "wine-1.3.[0-9]*"
+    then
+        w_call vcrun2005
+    fi
+    if w_workaround_wine_bug 23125 "wine-1.3.[0-9]*"
+    then
+        w_call d3dx10
+    fi
+    if w_workaround_wine_bug 23151
+    then
+        w_warn "Disabling glsl to workaround wine bug 23151. Users of nvidia cards will get weird effects without this. If you're on ATI/Intel, you can revert this with 'winetricks glsl=enabled'"
+        w_call glsl=disabled
+    fi
+    if w_workaround_wine_bug 22919
+    then
+        w_call physx
+    fi
+
+    mkdir -p "$W_TMP/$W_PACKAGE"
+    case "$OS" in
+        "Windows_NT")
+            cp "$W_CACHE/$W_PACKAGE/MassEffect2DemoEN.exe" "$W_TMP" ;;
+        *)
+            ln -sf "$W_CACHE/$W_PACKAGE/MassEffect2DemoEN.exe" "$W_TMP" ;;
+    esac
+    cd "$W_TMP"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, MassEffect2DemoEN.exe
+        winwait, Mass Effect 2 Demo
+        Sleep 1000
+        send {Enter}
+        winwait, Mass Effect 2 Demo, conflicts
+        Sleep 1000
+        send {Enter}
+        winwait, Mass Effect, License
+        ControlClick, Button4
+        ;ControlClick, Button2
+        send {Enter}
+        winwait, Mass Effect, Install Type
+        ControlClick, Button2
+        ; Some installs may not get to this point due to an installer hang/crash (bug 22919)
+        ; The hang/crash happens after the Physx install but does not seem to affect gameplay
+        loop
+        {
+            ifwinexist, Mass Effect, Finish
+            {
+                winkill, Mass Effect
+                break
+            }
+            Process, exist, Installer.exe
+            me2pid = %ErrorLevel%
+            if me2pid = 0
+                break
+            sleep 1000
+        }
+    "
+    if w_workaround_wine_bug 6971
+    then
+        echo "See http://appdb.winehq.org/objectManager.php?sClass=version&iId=19125 for info on how to patch wine to work around bug 6971"
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mass Effect 2 Demo\\Binaries" "MassEffect2.EXE"
+}
+
+#----------------------------------------------------------------
+
 w_metadata maxmagicmarker_demo games \
     title="Max & the Magic Marker Demo" \
     publisher="Press Play" \
