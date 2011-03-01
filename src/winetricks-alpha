@@ -526,7 +526,10 @@ w_umount()
 {
     if test "$WINE" = ""
     then
-        w_die Windows not yet supported
+        # Windows
+        winetricks_load_vcdmount
+        cd "$VCD_DIR"
+        w_try vcdmount.exe /u
     else
         echo "Running $WINETRICKS_SUDO umount $W_ISO_MOUNT_ROOT"
         case "$WINETRICKS_SUDO" in
@@ -2058,6 +2061,46 @@ winetricks_cache_iso()
     eject $WINETRICKS_DEV || true    # punt if eject not found (as on cygwin)
 }
 
+winetricks_load_vcdmount()
+{
+    if test "$WINE" != ""
+    then
+        return
+    fi
+
+    # Call only on real Windows.
+    # Sets VCD_DIR and W_ISO_MOUNT_ROOT
+
+    # The only free mount tool I know for Windows Vista is Virtual CloneDrive,
+    # which can be downloaded at
+    # http://www.slysoft.com/en/virtual-clonedrive.html
+    # FIXME: actually install it here
+
+    # Locate vcdmount.exe.
+    VCD_DIR="Elaborate Bytes/VirtualCloneDrive"
+    if test ! -x "$W_PROGRAMS_UNIX/$VCD_DIR/vcdmount.exe" && test ! -x "$W_PROGRAMS_X86_UNIX/$VCD_DIR/vcdmount.exe"
+    then
+        w_warn "Installing Virtual CloneDrive"
+        w_download_to vcd http://static.slysoft.com/SetupVirtualCloneDrive.exe
+        # have to use cmd else vista won't let cygwin run .exe's?
+        chmod +x "$W_CACHE"/vcd/SetupVirtualCloneDrive.exe
+        cd "$W_CACHE/vcd"
+        cmd /c SetupVirtualCloneDrive.exe
+    fi
+    if test -x "$W_PROGRAMS_UNIX/$VCD_DIR/vcdmount.exe"
+    then
+        VCD_DIR="$W_PROGRAMS_UNIX/$VCD_DIR"
+    elif test -x "$W_PROGRAMS_X86_UNIX/$VCD_DIR/vcdmount.exe"
+    then
+        VCD_DIR="$W_PROGRAMS_X86_UNIX/$VCD_DIR"
+    else
+        w_die "can't find Virtual CloneDrive?"
+    fi
+    # FIXME: Use WMI to locate the drive named
+    # "ELBY CLONEDRIVE..." using WMI as described in
+    # http://delphihaven.wordpress.com/2009/07/05/using-wmi-to-get-a-drive-friendly-name/
+}
+
 winetricks_mount_cached_iso()
 {
     # On entry, WINETRICKS_IMG is already set
@@ -2065,7 +2108,28 @@ winetricks_mount_cached_iso()
 
     if test "$WINE" = ""
     then
-        w_die Windows not yet supported
+        winetricks_load_vcdmount
+        my_img_win="`w_pathconv -w $WINETRICKS_IMG | tr '\012' ' ' | sed 's/ $//'`"
+        cd "$VCD_DIR"
+        w_try vcdmount.exe /l=$letter "$my_img_win"
+
+        tries=0
+        while test $tries -lt 20
+        do
+            for W_ISO_MOUNT_LETTER in e f g h i j k
+            do
+                # let user blacklist drive letters
+                echo "$WINETRICKS_MOUNT_LETTER_IGNORE" | grep -q "$W_ISO_MOUNT_LETTER" && continue
+                W_ISO_MOUNT_ROOT=/cygdrive/$W_ISO_MOUNT_LETTER
+                if find $W_ISO_MOUNT_ROOT -iname 'setup*' -o -iname '*.exe' -o -iname '*.msi'
+                then
+                    break 2
+                fi
+            done
+            tries=`expr $tries + 1`
+            echo "Waiting for mount to finish mounting"
+            sleep 1
+        done
     else
         # Linux
         # FIXME: find a way to mount or copy from image without sudo
