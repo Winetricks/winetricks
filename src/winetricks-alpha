@@ -176,6 +176,7 @@ w_read_key()
     0) W_KEY=dummy_to_make_autohotkey_happy ; return 0 ;;
     esac
 
+    mkdir -p "$W_CACHE/$W_PACKAGE"
     _W_keyfile="$W_CACHE/$W_PACKAGE/key.txt"
     if ! test -f "$_W_keyfile"
     then
