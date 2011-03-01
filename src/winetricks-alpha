@@ -10359,12 +10359,13 @@ load_riseofnations_demo()
 #----------------------------------------------------------------
 
 w_metadata sims3 games \
-    title="The Sims 3" \
+    title="The Sims 3 (drm broken on wine)" \
     publisher="EA" \
     year="2009" \
     media="dvd" \
     file1="Sims3.iso" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/The Sims 3/Game/Bin/TS3.EXE"
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/The Sims 3/Game/Bin/TS3.EXE" \
+    wine_showstoppers="26273"
 
 load_sims3()
 {
@@ -10416,15 +10417,13 @@ load_sims3()
     "
     w_umount
 
-    cd "$W_PROGRAMS_UNIX/Electronic Arts/The Sims 3/Game/Bin"
-    echo "Sims3 version info:"
-    cat skuversion.txt
-
-    w_download http://na.llnet.eadownloads.ea.com/u/f/sims/sims3/patches/Sims3_1.6.6.002001_from_1.0.631.00001.exe 02703d296417750005326ff0d37295fa434a3f49
+    # DVD Region code is last digit.
+    # FIXME: download appropriate one rather than just US version.
+    w_download http://akamai.cdn.ea.com/eadownloads/u/f/sims/sims3/patches/TS3_1.19.44.010001_Update.exe 7d21a81aaea70bf102267456df4629ce68be0cc8
 
     cd "$W_CACHE"/$W_PACKAGE
     w_ahk_do "
-        run Sims3_1.6.6.002001_from_1.0.631.00001.exe
+        run TS3_1.19.44.010001_Update.exe
         SetTitleMatchMode, 2
         winwait, - InstallShield Wizard, Complete
         u = $W_OPT_UNATTENDED
@@ -10433,8 +10432,6 @@ load_sims3()
         }
         winwaitclose
     "
-
-    # FIXME: apply next patch, too
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\The Sims 3\\Game\\Bin" "TS3.EXE"
 }
