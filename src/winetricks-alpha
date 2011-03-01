@@ -1845,16 +1845,20 @@ winetricks_read_bytes()
 # Usage: read_hex offset count device
 winetricks_read_hex()
 {
-    hexdump -s $1 -n $2 -e $2'/1 "%01x " "\n"' $3 | sed 's/  *$//'
+    od -j $1 -N $2 -t x1 $3          | # offset $1, count $2, single byte hex format, file $3
+       sed 's/^[^ ]* //'             | # remove address
+       sed '$d'                        # remove final line which is just final offset
 }
 
 # Usage: read_decimal offset device
-# Reads four byte word, outputs in decimal.
+# Reads single four byte word, outputs in decimal.
 # Uses default endianness.
 # udf uses little endian words, so this only works on little endian machines.
 winetricks_read_decimal()
 {
-    hexdump -s $1 -n 4 -e '1/4 "%4d " "\n"' $2
+    od -j $1 -N 4  -t u4 $2          | # offset $1, byte count 4, four byte decimal format, file $2
+       sed 's/^[^ ]* //'             | # remove address
+       sed '$d'                        # remove final line which is just final offset
 }
 
 winetricks_read_udf_volume_name()
@@ -1887,7 +1891,7 @@ winetricks_read_udf_volume_name()
     tagid=`winetricks_read_hex 524288 2 $1`
     : echo tagid is $tagid
     case "$tagid" in
-    "2 0") : echo Found AVDP ;;
+    "02 00") : echo Found AVDP ;;
     *) echo "Did not find AVDP (tagid was $tagid)"; exit 1;;
     esac
 
@@ -1901,7 +1905,7 @@ winetricks_read_udf_volume_name()
     tagid=`winetricks_read_hex $offset 2 $1`
     : echo tagid is $tagid
     case "$tagid" in
-    "1 0") : echo Found MVD ;;
+    "01 00") : echo Found MVD ;;
     *) echo Did not find MVD; exit 1;;
     esac
 
@@ -1913,7 +1917,7 @@ winetricks_read_udf_volume_name()
 
     # 5. Profit!
     case $width in
-    8)   winetricks_read_bytes $offset 30 $1 | sed 's/  *$//' ;;
+    08)   winetricks_read_bytes $offset 30 $1 | sed 's/  *$//' ;;
     10)  winetricks_read_bytes $offset 30 $1 | tr -d '\000' | sed 's/  *$//' ;;
     *) echo "Unhandled dvd volname character width '$width'"; exit 1;;
     esac
