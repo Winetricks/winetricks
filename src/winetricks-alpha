@@ -10024,9 +10024,11 @@ load_masseffect2_demo()
     fi
 
     mkdir -p "$W_TMP/$W_PACKAGE"
+    # Don't let self-extractor write into $W_CACHE
     case "$OS" in
         "Windows_NT")
-            cp "$W_CACHE/$W_PACKAGE/MassEffect2DemoEN.exe" "$W_TMP" ;;
+            cp "$W_CACHE/$W_PACKAGE/MassEffect2DemoEN.exe" "$W_TMP"
+            chmod +x "$W_TMP"/MassEffect2DemoEN.exe ;;
         *)
             ln -sf "$W_CACHE/$W_PACKAGE/MassEffect2DemoEN.exe" "$W_TMP" ;;
     esac
