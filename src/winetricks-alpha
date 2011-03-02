@@ -10430,6 +10430,41 @@ load_riseofnations_demo()
 
 #----------------------------------------------------------------
 
+w_metadata secondlife games \
+    title="Second Life Viewer" \
+    publisher="Linden Labs" \
+    year="2003-2011" \
+    media="download" \
+    file1="Second_Life_2-5-0-220251_Setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/SecondLifeViewer2/SecondLife.exe"
+
+load_secondlife()
+{
+    w_download http://download.cloud.secondlife.com/Viewer-2-5/Second_Life_2-5-0-220251_Setup.exe 841b089eb8b7b782718538c697cba5fd714f5eac
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, Second_Life_2-5-0-220251_Setup.exe
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            winwait, Installer Language
+            send {Enter}
+            winwait, Installation Folder
+            send {Enter}
+        }
+        winwait, Second Life, Start Second Life now
+        if ( u > 0 ) {
+            send {Tab}{Enter}
+        }
+        winwaitclose
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\SecondLifeViewer2" "SecondLife.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata sims3 games \
     title="The Sims 3 (drm broken on wine)" \
     publisher="EA" \
