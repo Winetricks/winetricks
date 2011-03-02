@@ -356,7 +356,8 @@ w_download_to()
         else
            # curl doesn't get filename from the location given by the server!
            # fortunately, we know it
-           curl -L -o "$_W_file" -C - --header "Accept-Encoding: gzip,deflate" ${_W_cookiejar:+--cookie "$_W_cookiejar"} "$_W_url"
+           # autohotkey doesn't like curl's user agent!
+           curl -L -o "$_W_file" -C - -A "Mozilla/5.0 (compatible; Konqueror/2.1.1; X11)" --header "Accept-Encoding: gzip,deflate" ${_W_cookiejar:+--cookie "$_W_cookiejar"} "$_W_url"
         fi
         if test $? != 0
         then
