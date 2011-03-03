@@ -10769,6 +10769,46 @@ load_tmnationsforever()
 
 #----------------------------------------------------------------
 
+w_metadata sammax301_demo games \
+    title="Sam & Max 304: The Penal Zone" \
+    publisher="Telltale Games" \
+    year="2010" \
+    media="download" \
+    file1="SamMax301_PC_setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Telltale Games/Sam and Max - The Devil's Playhouse/The Penal Zone/SamMax301.exe"
+
+load_sammax301_demo()
+{
+    w_download http://gamedaily.newaol.com/pub/SamMax301_PC_Setup.exe 83f47b7f3a5074a6e29bdc9b4f1fd2c4471d9641
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetWinDelay 500
+        run SamMax301_PC_setup.exe
+        winwait Sam and Max The Penal Zone Setup, Welcome
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick button2 ; Next
+            winwait Sam and Max The Penal Zone Setup, DirectX
+            controlclick button5 ; Uncheck check directx
+            controlclick button2 ; Next
+            winwait Sam and Max The Penal Zone Setup, License
+            controlclick button2 ; I Agree
+            winwait Sam and Max The Penal Zone Setup, Location
+            controlclick button2 ; Install
+            winwait Sam and Max The Penal Zone Setup, Finish
+            controlclick button4 ; Uncheck play now 
+            controlclick button5 ; Uncheck create shortcut
+            controlclick button2 ; Finish
+        }
+        winwaitclose Sam and Max The Penal Zone Setup
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Telltale Games\\Sam and Max - The Devil's Playhouse\\The Penal Zone" "SamMax301.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata sammax304_demo games \
     title="Sam & Max 304: Beyond the Alley of the Dolls" \
     publisher="Telltale Games" \
