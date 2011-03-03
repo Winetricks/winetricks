@@ -352,7 +352,7 @@ w_download_to()
            # close the connection unless you tell it to (control-C or closing
            # the socket)
            # Disable retries for gog.com (which requires higher level retries)
-           winetricks_wget_progress -O "$_W_file" -nd -c --read-timeout=300 --tries=1 --retry-connrefused --header "Accept-Encoding: gzip,deflate" ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} "$_W_url"
+           winetricks_wget_progress -O "$_W_file" -U "Firefox on Windows XP: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14" -nd -c --read-timeout=300 --tries=1 --retry-connrefused --header "Accept-Encoding: gzip,deflate" ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} "$_W_url"
         else
            # curl doesn't get filename from the location given by the server!
            # fortunately, we know it
@@ -10358,6 +10358,25 @@ load_osmos_demo()
     fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\OsmosDemo" "OsmosDemo.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata penpenxmas games \
+    title="Pen-Pen Xmas Olympics" \
+    publisher="Army of Trolls / Black Cat" \
+    year="2007" \
+    media="download" \
+    file1="PenPenXmasOlympics100.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/PPO/PPO.exe"
+
+load_penpenxmas()
+{
+    w_download http://retrospec.sgn.net/download/files/PenPenXmasOlympics100.exe 36ec83cffa0ad3cc19dea33193b54bdaaea6db5b
+
+    cd "$W_CACHE/$W_PACKAGE"
+    $WINE PenPenXmasOlympics100.exe $W_UNATTENDED_SLASH_S
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\PPO" "PPO.exe"
 }
 
 #----------------------------------------------------------------
