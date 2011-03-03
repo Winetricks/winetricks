@@ -1130,13 +1130,6 @@ w_do_call()
         fi
         # Calling subshell must explicitly propagate error code with exit $?
     ) || exit $?
-
-    # Kludge: some verbs are allowed to affect the environment
-    case $1 in
-    sandbox)
-        W_CACHE_WIN="`w_pathconv -w $W_CACHE | tr '\012' ' ' | sed 's/ $//'`"
-        ;;
-    esac
 }
 
 # If you want to check exit status yourself, use w_do_call
@@ -2340,7 +2333,9 @@ winetricks_set_wineprefix()
     fi
 
     case "$OS" in
-     "Windows_NT") ;;
+     "Windows_NT")
+        W_CACHE_WIN="`w_pathconv -w $W_CACHE`"
+        ;;
      *)
         # For case where z: doesn't exist or / is writable (!),
         # make a drive letter for W_CACHE.  Clean it up on exit.
@@ -2355,13 +2350,11 @@ winetricks_set_wineprefix()
                 break
             fi
         done
+        W_CACHE_WIN="${letter}:"
         ;;
     esac
 
     W_WINDIR_UNIX="$W_DRIVE_C/windows"
-
-    # FIXME: move those tr's and sed's into w_pathconv, if they're still needed?
-    W_CACHE_WIN="`w_pathconv -w $W_CACHE | tr '\012' ' ' | sed 's/ $//'`"
 
     # FIXME: move that tr into w_pathconv, if it's still needed?
     W_PROGRAMS_UNIX="`w_pathconv -u "$W_PROGRAMS_WIN" | tr -d '\015' `"
