@@ -8210,42 +8210,34 @@ load_crysis2_demo_mp()
     # FIXME: ahk_do doesn't seem to like the '®' character? (Full window title is 'Crysis® 2 Demo Setup', so use 'Demo Setup' instead) 
     w_ahk_do "
         SetTitleMatchMode, 2
+        SetWinDelay, 500
         run, Crysis_2_Multiplayer_Demo.exe
+        winwait, Microsoft Visual C++ 2008 Redistributable Setup
         u = $W_OPT_UNATTENDED
-        if ( u > 0 ) 
-        {
-            winwait, Microsoft Visual C++ 2008 Redistributable Setup
-            sleep 500
+        if ( u > 0 ) {
             controlclick, Button12 ; Next
             winwait, Visual C++, License
-            sleep 500
             controlclick, Button11 ; Agree
-            sleep 500
             controlclick, Button8 ; Install
             winwait, Setup, configuring
             winwaitclose
             winwait, Visual C++, Complete
-            sleep 500
             controlclick, Button2 ; Finish
             winwait, Demo Setup, Please read the End User
-            sleep 500
             controlclick, Button1, Demo Setup, Please read the End User
-            sleep 500
             controlclick, Button3, Demo Setup, Please read the End User
             ; Again for DirectX
             winwait, Demo Setup, Please read the following End
-            sleep 500
             controlclick, Button1, Demo Setup, Please read the following End
-            sleep 500
             controlclick, Button3, Demo Setup, Please read the following End
             winwait,Demo Setup, Ready to install
-            sleep 500
             controlclick, Button1, Demo Setup, Ready to install
-            winwait, Demo Setup, Click the Finish button
-            sleep 500
-            controlclick, Button1, Demo Setup, Click the Finish button
         }
-        winwaitclose
+        winwait, Demo Setup, Click the Finish button
+        if ( u > 0 ) 
+            controlclick, Button1, Demo Setup, Click the Finish button
+
+        winwaitclose, Demo Setup, Click the Finish button
     "
     
     if w_workaround_wine_bug 26283
