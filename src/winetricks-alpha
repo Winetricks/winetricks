@@ -8201,6 +8201,68 @@ load_civ4_demo()
 
 #----------------------------------------------------------------
 
+w_metadata crysis2_demo_mp games \
+   title="Crysis 2: Multiplayer Demo" \
+   publisher="EA" \
+   year="2011" \
+   media="download" \
+   file1="Crysis_2_Multiplayer_Demo.exe" \
+   installed_file1="$W_PROGRAMS_X86_WIN/Electronic Arts/Crytek/Crysis 2 Demo/bin32/Crysis2Demo.exe"
+
+load_crysis2_demo_mp()
+{
+    w_download "http://static.cdn.ea.com/crytek/u/f/crysis2/Crysis_2_Multiplayer_Demo.exe" 58b135f7fe74dfa367edafd2f2bcc0af094be77e
+
+    cd "$W_CACHE/$W_PACKAGE"
+    # FIXME: ahk_do doesn't seem to like the '®' character? (Full window title is 'Crysis® 2 Demo Setup', so use 'Demo Setup' instead) 
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, Crysis_2_Multiplayer_Demo.exe
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) 
+        {
+            winwait, Microsoft Visual C++ 2008 Redistributable Setup
+            sleep 500
+            controlclick, Button12 ; Next
+            winwait, Visual C++, License
+            sleep 500
+            controlclick, Button11 ; Agree
+            sleep 500
+            controlclick, Button8 ; Install
+            winwait, Setup, configuring
+            winwaitclose
+            winwait, Visual C++, Complete
+            sleep 500
+            controlclick, Button2 ; Finish
+            winwait, Demo Setup, Please read the End User
+            sleep 500
+            controlclick, Button1, Demo Setup, Please read the End User
+            sleep 500
+            controlclick, Button3, Demo Setup, Please read the End User
+            ; Again for DirectX
+            winwait, Demo Setup, Please read the following End
+            sleep 500
+            controlclick, Button1, Demo Setup, Please read the following End
+            sleep 500
+            controlclick, Button3, Demo Setup, Please read the following End
+            winwait,Demo Setup, Ready to install
+            sleep 500
+            controlclick, Button1, Demo Setup, Ready to install
+            winwait, Demo Setup, Click the Finish button
+            sleep 500
+            controlclick, Button1, Demo Setup, Click the Finish button
+        }
+        winwaitclose
+    "
+    
+    if w_workaround_wine_bug 26283
+    then
+        w_warn "The game has some nasty flickering, see http://bugs.winehq.org/show_bug.cgi?id=26283"
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata darknesswithin2_demo games \
     title="Darkness Within 2 Demo" \
     publisher="Zoetrope Interactive" \
