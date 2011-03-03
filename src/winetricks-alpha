@@ -8483,6 +8483,77 @@ load_deusex2_demo()
 
 #----------------------------------------------------------------
 
+w_metadata diablo2 games \
+    title="Diablo II" \
+    publisher="Blizzard" \
+    year="2000" \
+    media="cd" \
+    file1="INSTALL.iso" \
+    file2="PLAYDISC.iso" \
+    file3="CINEMATICS.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Diablo II/Diablo II.exe"
+
+load_diablo2()
+{
+    w_download http://ftp.blizzard.com/pub/diablo2/patches/PC/D2Patch_113c.exe c78761bfb06999a9788f25a23a1ed30260ffb8ab
+
+    w_read_key
+
+    w_mount INSTALL
+    w_ahk_do "
+        SetWinDelay 500
+        run ${W_ISO_MOUNT_LETTER}:setup.exe
+        winwait, Diablo II Setup
+        send {i}
+        winwait, Choose Installation Size
+        send {u}
+        send {Enter}
+        send {Raw}$USERNAME
+        send {Tab}{Raw}$W_KEY
+        send {Enter}
+        winwait, Diablo II - choose install directory
+        send {Enter}
+        winwait, Desktop Shortcut
+        send {N}
+        winwait, Insert Disc"
+    w_mount PLAYDISC
+    # Needed by patch 1.13c to avoid disc swapping
+    cp "$W_ISO_MOUNT_ROOT"/d2music.mpq "$W_PROGRAMS_UNIX/Diablo II/"
+    w_ahk_do "
+        send, {Enter}
+        Sleep 1000
+        winwait, Insert Disc"
+    w_mount CINEMATICS
+    w_ahk_do "
+        send, {Enter}
+        Sleep 1000
+        winwait, Insert Disc"
+    w_mount INSTALL
+    w_ahk_do "
+        send, {Enter}
+        Sleep 1000
+        winwait, View ReadMe?
+        ControlClick &No, View ReadMe?
+        winwait, Register Diablo II Electronically?
+        send {N}
+        winwait, Diablo II Setup - Video Test
+        ControlClick &Cancel, Diablo II Setup - Video Test
+        winclose, Diablo II Setup"
+
+    cd "$W_CACHE"/$W_PACKAGE
+    w_try "$WINE" D2Patch_113c.exe
+    w_ahk_do "
+        winwait Blizzard Updater v2.72
+        send {Enter}
+        winwait Diablo II
+        ControlClick &Cancel, Diablo II"
+    # Dagnabbit, the darn updater starts the game after it updates, no matter what I do?
+    killall "Game.exe"
+
+    # Runs better in window
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Diablo II" "Diablo II.exe -d3d9 -w"
+}
+
 w_metadata dirt2_demo games \
     title="Dirt 2 Demo" \
     publisher="Codemasters" \
