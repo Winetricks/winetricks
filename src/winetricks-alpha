@@ -10548,6 +10548,76 @@ load_puzzleagent_demo()
 
 #----------------------------------------------------------------
 
+w_metadata rayman2_demo games \
+    title="Rayman 2 High Demo" \
+    publisher="Ubisoft" \
+    year="1999" \
+    media="download" \
+    file1="rayman2high.zip" \
+    installed_exe1="c:/UbiSoft/Rayman2Demo/Rayman2Demo.exe"
+
+load_rayman2_demo()
+{
+    w_download "ftp://ftp.ubisoft.com/Rayman2/rayman2high.zip" 14b2ad6f41e2e1358f3a4a5167d67a7111ea4fb5
+
+    cd "$W_TMP"
+    w_try unzip "$W_CACHE/$W_PACKAGE/rayman2high.zip"
+
+    if w_workaround_wine_bug 16596
+    then
+        w_call vd=800x600
+    fi
+
+    if w_workaround_wine_bug 21159
+    then
+        w_call dinput
+    fi
+
+    w_ahk_do "
+        SetWinDelay 500
+        SetTitleMatchMode, 3
+        Run, SETUP.EXE
+        WinWaitActive, UBI Soft Installer - Language Choice
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            ControlClick button1 ; OK
+            WinWait, Ubi Soft Installer - Rayman 2 Demo
+            ControlClick button1 ; Install
+            WinWait, Ubi Soft Installer - Configuration choice
+            ControlClick button1 ; Install
+            WinWait, Ubi Soft Installer - Installation Directory
+            ControlClick button1 ; OK
+            WinWait, Ubi Soft Installer - Shortcut Choice
+            ControlClick button1 ; OK
+            WinWait, Ubi Soft Installer - Information file
+            ControlClick button2 ; No
+        }
+        WinWait, Ubi Soft Installer - Rayman 2 Demo
+        if ( u > 0 ) {
+            ControlClick button4 ; Quit
+        }
+        WinWaitClose
+    "
+
+    myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/rayman2_demo\" wine "'C:\\\\\\windows\\\\\\UbiSoft\\\\\\SetupUbi.exe -play Rayman2'
+    mymenu="$HOME/Desktop/To Play Rayman 2 Demo.desktop"
+    if test -f "$mymenu" && w_workaround_wine_bug 26303 "Fixing desktop entry"
+    then
+        # this is a hack, hopefully the wine bug will be fixed soon
+        sed -i "s,Exec=.*,$myexec," "$mymenu"
+    fi
+    mymenu="$HOME/.local/share/applications/wine/Programs/Ubi Soft Games/Rayman 2 Demo/1 To Play Rayman 2 Demo.desktop"
+    if test -f "$mymenu" && w_workaround_wine_bug 26304 "Fixing system menu"
+    then
+        # this is a hack, hopefully the wine bug will be fixed soon
+        sed -i "s,Exec=.*,$myexec," "$mymenu"
+    fi
+
+    w_declare_exe "c:\\UbiSoft\\Rayman2Demo" "Rayman2Demo.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata riseofnations_demo games \
     title="Rise of Nations Trial" \
     publisher="Microsoft" \
