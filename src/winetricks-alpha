@@ -12192,6 +12192,15 @@ done
 
 #---- Main Program ----
 
+winetricks_stats_save()
+{
+    # Save opt-in status
+    if test "$WINETRICKS_STATS_REPORT"
+    then
+        echo "$WINETRICKS_STATS_REPORT" > $W_CACHE/track_usage
+    fi
+}
+
 winetricks_stats_init()
 {
     # Load opt-in status if not already set by a commandline option
@@ -12225,12 +12234,7 @@ winetricks_stats_init()
             ;;
         esac
     fi
-
-    # Save opt-in status
-    if test "$WINETRICKS_STATS_REPORT"
-    then
-        echo "$WINETRICKS_STATS_REPORT" > $W_CACHE/track_usage
-    fi
+    winetricks_stats_save
 }
 
 # Retrieve a short string with the operating system name and version
@@ -12418,6 +12422,9 @@ execute_command()
 
 if ! test "$WINETRICKS_LIB"
 then
+    # If user opted out, save that preference now.
+    winetricks_stats_save
+
     # If user specifies menu on commandline, execute that command, but don't commit to commandline mode
     # FIXME: this code is duplicated several times; unify it
     if echo "$WINETRICKS_CATEGORIES" | grep -w "$1" > /dev/null
