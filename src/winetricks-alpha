@@ -1,12 +1,39 @@
 #!/bin/sh
-# LGPL
-# Copyright 2010 Dan Kegel
-# Experimental cleanup of winetricks
+
+# Name of this version of winetricks (YYYYMMDD)
+WINETRICKS_VERSION=20110222-alpha
+
+#--------------------------------------------------------------------
+#
+# Winetricks is a package manager for win32 dlls and applications.
+# Features:
+# - Consists of a single shell script - no installation required
+# - Downloads packages automatically from original trusted sources
+# - Points out and works around known wine bugs automatically
+# - Both commandline and GUI operation
+# - Can install many packages in silent (unattended) mode
+# - Multiplatform; written for Linux, but supports MacOSX and Cygwin, too
+# See http://winetricks.org for documentation and tutorials.
 #
 #--------------------------------------------------------------------
-# See http://code.google.com/p/winezeug/wiki/ConvergedFrontends
 #
-# This script, and the verbs it invokes, should follow these Coding standards:
+# Copyright
+#   Copyright (C) 2007-2011 Dan Kegel <dank@kegel.com> et al
+# License
+#   This program is free software; you can redistribute it and/or
+#   modify it under the terms of the GNU Lesser General Public
+#   License as published by the Free Software Foundation; either
+#   version 2 of the License, or (at your option) any later
+#   version.
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Lesser General Public License for more details.
+#   You should have received a copy of the GNU Lesser General Public
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#--------------------------------------------------------------------
+# Coding standards:
 #
 # Portability:
 # - Portability matters, as this script is run on many operating systems
@@ -65,8 +92,6 @@
 #
 #--------------------------------------------------------------------
 
-# Name of this version of winetricks (YYYYMMDD)
-WINETRICKS_VERSION=20110222-alpha
 # FIXME: maybe obey XDG_DATA_HOME
 W_PREFIXES_ROOT="${WINE_PREFIXES:-$HOME/.local/share/wineprefixes}"
 
