@@ -3293,14 +3293,11 @@ load_directx9()
     w_override_dlls native d3dx9_38 d3dx9_39 d3dx9_40 d3dx9_41 d3dx9_42 d3dx9_43 d3dxof
     w_override_dlls native dciman32 ddrawex devenum dmband dmcompos dmime dmloader dmscript dmstyle
     w_override_dlls native dmsynth dmusic dmusic32 dnsapi dplay dplayx dpnaddr dpnet dpnhpast dpnlobby
-    w_override_dlls native dswave dxdiagn mscoree msdmo qcap quartz streamci
+    w_override_dlls native dswave dxdiagn msdmo qcap quartz streamci
     w_override_dlls native dxdiag.exe
     w_override_dlls builtin d3d8 d3d9 dinput dinput8 dsound
 
     w_try $WINE "$W_TMP_WIN"\\DXSETUP.exe $W_UNATTENDED_SLASH_SILENT
-
-    # reenable mscoree, or other installs may fail, see issue 25
-    w_override_dlls builtin,native mscoree
 }
 
 #----------------------------------------------------------------
