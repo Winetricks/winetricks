@@ -234,7 +234,7 @@ w_pathconv()
         ;;
      *)
         case "$@" in
-        -u?c:\\*|-u?C:\\*|-u?c:/|-u?C:/) winetricks_wintounix "$2" ;;
+        -u?c:\\*|-u?C:\\*|-u?c:/*|-u?C:/*) winetricks_wintounix "$2" ;;
         *) winetricks_early_wine winepath "$@" ;;
         esac
         ;;
