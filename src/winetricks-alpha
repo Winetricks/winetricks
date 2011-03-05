@@ -5,7 +5,7 @@ WINETRICKS_VERSION=20110222-alpha
 
 #--------------------------------------------------------------------
 #
-# Winetricks is a package manager for win32 dlls and applications.
+# Winetricks is a package manager for win32 dlls and applications on posix.
 # Features:
 # - Consists of a single shell script - no installation required
 # - Downloads packages automatically from original trusted sources
@@ -13,6 +13,17 @@ WINETRICKS_VERSION=20110222-alpha
 # - Both commandline and GUI operation
 # - Can install many packages in silent (unattended) mode
 # - Multiplatform; written for Linux, but supports MacOSX and Cygwin, too
+#
+# Uses the following non-Posix system tools:
+# - wine is used to execute win32 apps except on cygwin.
+# - cabextract, unzip, and 7z are needed by some verbs.
+# - wget or curl is needed for downloading.
+# - sha1sum or openssl is needed for verifying downloads.
+# - zenity is needed by the GUI, though it can limp along somewhat with kdialog.
+# - xdg-open (if present) is used to open download pages for the
+#   user when downloads cannot be fully automated.
+# - sudo is used to mount .iso images if the user cached them with -k option.
+#
 # See http://winetricks.org for documentation and tutorials.
 #
 #--------------------------------------------------------------------
