@@ -5369,7 +5369,7 @@ load_corefonts()
     w_register_font Timesi.TTF "Times New Roman Italic"
 
     w_try_cabextract -q --directory="$W_TMP" "$W_CACHE"/corefonts/trebuc32.exe
-    w_try cp -f "$W_TMP"/trebuc*.ttf "$W_FONTSDIR_UNIX"
+    w_try cp -f "$W_TMP"/[tT]rebuc*.ttf "$W_FONTSDIR_UNIX"
     w_register_font Trebuc.TTF "Trebucet MS"
     w_register_font Trebucbd.TTF "Trebucet MS Bold"
     w_register_font Trebucbi.TTF "Trebucet MS Bold Italic"
