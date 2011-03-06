@@ -2539,7 +2539,7 @@ winetricks_init()
     WINETRICKS_OPT_DD=${WINETRICKS_OPT_DD:-dd}
 
     # whether to use shared wineprefix (1) or unique wineprefix for each app (0)
-    WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-1}
+    WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-0}
 
     # Mac folks tend to not have sha1sum, but we can make do with openssl
     if [ -x "`which sha1sum 2>/dev/null`" ]
@@ -2673,6 +2673,7 @@ Options:
 -V|--version: display version and exit
 -h|--help: display this message and exit
 --isolate-games: install each game in its own bottle
+--no-isolate-games: install each game in its own bottle (default)
 --noclean: don't delete temp directories (useful during debugging)
 --gui: show gui diagnostics even when driven by commandline
 --showbroken: even show verbs that are currently broken in wine
@@ -2700,6 +2701,7 @@ winetricks_handle_option()
     -V|--version) winetricks_print_version ; exit 0;;
     -h|--help) winetricks_usage ; exit 0 ;;
     --isolate-games) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
+    --no-isolate-games) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
     --noclean) W_OPT_NOCLEAN=1 ;;
     --gui) winetricks_detect_gui;;
     --showbroken) W_OPT_SHOWBROKEN=1 ;;
