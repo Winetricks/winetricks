@@ -1171,7 +1171,7 @@ w_do_call()
 
         # FIXME: This deletes the Temp directory created above and creates a new one, which is a bit messy.
         case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-        games-0) winetricks_set_wineprefix $cmd
+        apps-0|benchmarks-0|games-0) winetricks_set_wineprefix $cmd
         esac
 
         test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
@@ -1349,7 +1349,9 @@ winetricks_prefixmenu()
     case $LANG in
     *)   _W_msg_title="Winetricks - choose a wineprefix"
          _W_msg_body='What do you want to do?'
-         _W_msg_new='Install a game into a new wineprefix'
+         _W_msg_apps='Install an app'
+         _W_msg_games='Install a game'
+         _W_msg_benchmarks='Install a benchmark'
          _W_msg_default="Modify the default wineprefix ($WINEPREFIX)"
          _W_msg_unattended0="Disable silent install"
          _W_msg_unattended1="Enable silent install"
@@ -1373,7 +1375,9 @@ winetricks_prefixmenu()
             --height $WINETRICKS_MENU_HEIGHT \
             --width $WINETRICKS_MENU_WIDTH \
             --hide-column 2 \
-            FALSE games      '$_W_msg_new' \
+            FALSE apps       '$_W_msg_apps' \
+            FALSE benchmarks '$_W_msg_benchmarks' \
+            FALSE games      '$_W_msg_games' \
             TRUE  main       '$_W_msg_default' \
             " \
             > "$WINETRICKS_WORKDIR"/zenity.sh
@@ -1405,8 +1409,6 @@ winetricks_mainmenu()
     case $LANG in
     da*) _W_msg_title='Vælg en pakke-kategori'
          _W_msg_body='Hvad ønsker du at gøre?'
-         _W_msg_apps='Installér et program'
-         _W_msg_benchmarks='Install a Windows benchmark'
          _W_msg_dlls="Install a Windows DLL"
          _W_msg_fonts='Install a font'
          _W_msg_settings='Change Wine settings'
@@ -1418,8 +1420,6 @@ winetricks_mainmenu()
          ;;
     de*) _W_msg_title='Pakettyp auswählen'
          _W_msg_body='Was möchten Sie tun?'
-         _W_msg_apps='Windows-Programm installieren'
-         _W_msg_benchmarks='Windows-Benchmark installieren'
          _W_msg_dlls="Windows-DLL installieren"
          _W_msg_fonts='Schriftart installieren'
          _W_msg_settings='Change Wine settings'
@@ -1429,11 +1429,9 @@ winetricks_mainmenu()
          _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          ;;
-    *)   _W_msg_title="Winetricks - current bottle is '$WINEPREFIX'"
+    *)   _W_msg_title="Winetricks - current prefix is '$WINEPREFIX'"
          _W_msg_body='What would you like to do to this wineprefix?'
-         _W_msg_apps='Install other software'
-         _W_msg_benchmarks='Install a benchmark'
-         _W_msg_dlls="Install a DLL"
+         _W_msg_dlls="Install a Windows DLL or component"
          _W_msg_fonts='Install a font'
          _W_msg_settings='Change settings'
          _W_msg_winecfg='Run winecfg'
@@ -1460,8 +1458,6 @@ winetricks_mainmenu()
             --hide-column 2 \
             FALSE dlls       '$_W_msg_dlls' \
             FALSE fonts      '$_W_msg_fonts' \
-            FALSE benchmarks '$_W_msg_benchmarks' \
-            FALSE apps       '$_W_msg_apps' \
             FALSE settings   '$_W_msg_settings' \
             FALSE winecfg    '$_W_msg_winecfg' \
             FALSE regedit    '$_W_msg_regedit' \
@@ -1499,7 +1495,7 @@ winetricks_mainmenu()
 winetricks_settings_menu()
 {
     case $LANG in
-    *)   _W_msg_title='Pick a setting'
+    *)   _W_msg_title="Winetricks - current prefix is '$WINEPREFIX'"
          _W_msg_body='Which setting(s) would you like to change?'
          ;;
     esac
@@ -1585,7 +1581,7 @@ winetricks_showmenu()
          _W_msg_body='Welche Pakete möchten Sie installieren?'
          _W_cached="gecached" 
          ;;
-    *)   _W_msg_title='Select a package to install'
+    *)   _W_msg_title="Winetricks - current prefix is '$WINEPREFIX'"
          _W_msg_body='Which package(s) would you like to install?'
          _W_cached="cached"   
          ;;
@@ -1753,7 +1749,7 @@ winetricks_is_installed()
     fi
     # Compute wineprefix for this app
     case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-    games-0)
+    apps-0|benchmarks-0|games-0)
         _W_prefix="$W_PREFIXES_ROOT/$1"
         ;;
     *)
@@ -2672,8 +2668,8 @@ Options:
 -v|--verbose: echo all commands as they are executed
 -V|--version: display version and exit
 -h|--help: display this message and exit
---isolate-games: install each game in its own bottle
---no-isolate-games: install each game in its own bottle (default)
+--isolate: install each app or game in its own bottle
+--no-isolate: install each app or game in its own bottle (default)
 --noclean: don't delete temp directories (useful during debugging)
 --gui: show gui diagnostics even when driven by commandline
 --showbroken: even show verbs that are currently broken in wine
@@ -2700,8 +2696,8 @@ winetricks_handle_option()
     -v|--verbose) set -x ;;
     -V|--version) winetricks_print_version ; exit 0;;
     -h|--help) winetricks_usage ; exit 0 ;;
-    --isolate-games) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
-    --no-isolate-games) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
+    --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
+    --no-isolate) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
     --noclean) W_OPT_NOCLEAN=1 ;;
     --gui) winetricks_detect_gui;;
     --showbroken) W_OPT_SHOWBROKEN=1 ;;
@@ -6074,7 +6070,7 @@ load_fontxplorer()
 
 #----------------------------------------------------------------
 
-w_metadata ie6 apps \
+w_metadata ie6 dlls \
    title="Internet Explorer 6" \
    publisher="Microsoft" \
    year="2002" \
@@ -6167,7 +6163,7 @@ load_ie6()
 
 #----------------------------------------------------------------
 
-w_metadata ie7 apps \
+w_metadata ie7 dlls \
    title="Internet Explorer 7" \
    publisher="Microsoft" \
    year="2008" \
@@ -6261,7 +6257,7 @@ load_ie7()
 
 #----------------------------------------------------------------
 
-w_metadata ie8 apps \
+w_metadata ie8 dlls \
    title="Internet Explorer 8" \
    publisher="Microsoft" \
    year="2009" \
@@ -7084,7 +7080,7 @@ load_wm9codecs()
     w_try $WINE WM9Codecs9x.exe $W_UNATTENDED_SLASH_Q
 }
 
-w_metadata wmp9 apps \
+w_metadata wmp9 dlls \
    title="Windows Media Player 9" \
    publisher="Microsoft" \
    year="2003" \
@@ -7129,7 +7125,7 @@ load_wmp9()
 
 #----------------------------------------------------------------
 
-w_metadata wmp10 apps \
+w_metadata wmp10 dlls \
    title="Windows Media Player 10" \
    publisher="Microsoft" \
    year="2006" \
@@ -12677,9 +12673,9 @@ then
             main) verbs=`winetricks_mainmenu` ;;
             pickprefix)
                 verbs=`winetricks_prefixmenu`;
-                # Cheezy hack: choosing 'games' in pickprefix menu == whether to isolate.
+                # Cheezy hack: choosing type of package in pickprefix menu == whether to isolate.
                 case "$verbs" in
-                games) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
+                apps|benchmarks|games) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
                 *)     WINETRICKS_OPT_SHAREDPREFIX=1 ;;
                 esac
                 # Cheezy hack #2: choosing 'attended' or 'unattended' leaves you in same menu
@@ -12714,7 +12710,7 @@ then
                 # After installing an isolated app, return to prefix picker,
                 # not main.
                 case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-                games-0) WINETRICKS_CURMENU=pickprefix ;;
+                apps-0|benchmarks-0|games-0) WINETRICKS_CURMENU=pickprefix ;;
                 *)     WINETRICKS_CURMENU=main ;;
                 esac
             fi
