@@ -1173,9 +1173,16 @@ w_do_call()
             w_die "No such verb $1"
         fi
 
-        # FIXME: This deletes the Temp directory created above and creates a new one, which is a bit messy.
+        # If needed, set the app's wineprefix
         case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-        apps-0|benchmarks-0|games-0) winetricks_set_wineprefix $cmd
+        apps-0|benchmarks-0|games-0)
+            winetricks_set_wineprefix $cmd
+            # If it's a new wineprefix, give it metadata
+            if test ! -f "$WINEPREFIX"/wrapper.cfg
+            then
+                echo ww_name=\"$title\" > "$WINEPREFIX"/wrapper.cfg
+            fi
+            ;;
         esac
 
         test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
@@ -1347,6 +1354,14 @@ winetricks_detect_sudo()
     fi
 }
 
+winetricks_get_prefix_var()
+{
+    (
+        . "$W_PREFIXES_ROOT/$p/wrapper.cfg"
+        eval echo \$ww_$1
+    )
+}
+
 # Display prefix menu, get which wineprefix the user wants to work with
 winetricks_prefixmenu()
 {
@@ -1356,7 +1371,7 @@ winetricks_prefixmenu()
          _W_msg_apps='Install an app'
          _W_msg_games='Install a game'
          _W_msg_benchmarks='Install a benchmark'
-         _W_msg_default="Modify the default wineprefix ($WINEPREFIX)"
+         _W_msg_default="Select the default wineprefix"
          _W_msg_unattended0="Disable silent install"
          _W_msg_unattended1="Enable silent install"
          ;;
@@ -1392,7 +1407,13 @@ winetricks_prefixmenu()
             do
                 q="${prefix%%/dosdevices}"
                 p="${q##*/}"
-                echo -n " FALSE prefix=$p 'Modify wineprefix $p ($W_PREFIXES_ROOT/$p)' "
+                if test -f "$W_PREFIXES_ROOT/$p/wrapper.cfg"
+                then
+                    _W_msg_name="$p (`winetricks_get_prefix_var name`)"
+                else
+                    _W_msg_name="$p"
+                fi
+                echo -n " FALSE prefix=$p 'Select $_W_msg_name' "
             done >> $WINETRICKS_WORKDIR/zenity.sh
         fi
         echo -n " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> $WINETRICKS_WORKDIR/zenity.sh
@@ -1404,7 +1425,7 @@ winetricks_prefixmenu()
         w_die "kdialog not supported yet"
         ;;
     esac
-    unset _W_msg_body _W_msg_title _W_msg_new _W_msg_default
+    unset _W_msg_body _W_msg_title _W_msg_new _W_msg_default _W_msg_name
 }
 
 # Display main menu, get which submenu the user wants
