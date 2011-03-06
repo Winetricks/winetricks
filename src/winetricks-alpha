@@ -108,6 +108,32 @@ W_PREFIXES_ROOT="${WINE_PREFIXES:-$HOME/.local/share/wineprefixes}"
 
 #---- Public Functions ----
 
+# Ask permission to continue
+w_askpermission()
+{
+    echo "------------------------------------------------------"
+    echo "$@"
+    echo "------------------------------------------------------"
+
+    case "$W_OPT_UNATTENDED" in
+    1) _W_timeout="--timeout 5";;
+    esac
+
+    case $WINETRICKS_GUI in
+    zenity) zenity $_W_timeout --question --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    kdialog) kdialog --title winetricks --warningcontinuecancel "$@" ;;
+    none) echo -n "Press Y or N, then Enter: " ; read response ; test "$response" = Y || test "$response" = y;;
+    esac
+
+    if test $? -ne 0
+    then
+        w_die "Operation cancelled, quitting."
+        exec false
+    fi
+
+    unset _W_timeout
+}
+
 # Display warning message
 w_warn()
 {
@@ -2459,8 +2485,7 @@ winetricks_annihilate_wineprefix()
 {
     w_skip_windows "No wineprefix to delete on windows" && return
 
-    w_warn "Deleting everything inside $WINEPREFIX."
-    # FIXME: confirm with user
+    w_askpermission "Delete $WINEPREFIX, its apps, icons, and menu items?"
     rm -rf "$WINEPREFIX"/*
     rm -rf "$WINEPREFIX"
 
