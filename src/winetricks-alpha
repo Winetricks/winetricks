@@ -5998,25 +5998,33 @@ load_dxdiag()
 #----------------------------------------------------------------
 
 w_metadata firefox apps \
-   title="Firefox 3.6.13" \
+   title="Firefox 3.6.15" \
    publisher="Mozilla" \
    year="2010" \
    media="download" \
-   file1="Firefox Setup 3.6.13.exe" \
+   file1="Firefox Setup 3.6.15.exe" \
    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox()
 {
-    w_download "http://releases.mozilla.org//pub/mozilla.org/firefox/releases/3.6.13/win32/en-US/Firefox%20Setup%203.6.13.exe" ac9a021dc07c9a269b547b2a5b07719f61cd9368 "Firefox Setup 3.6.13.exe"
+    w_download "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/3.6.15/win32/en-US/Firefox%20Setup%203.6.15.exe" b1282da22c99f017f6839e45e6197f9901653ef8 "Firefox Setup 3.6.15.exe"
     cd "$W_CACHE"/firefox
     if test $W_OPT_UNATTENDED = 1
     then
-       w_try $WINE "Firefox Setup 3.6.13.exe" -ms
+       w_try $WINE "Firefox Setup 3.6.15.exe" -ms
     else
-       w_try $WINE "Firefox Setup 3.6.13.exe"
+       w_try $WINE "Firefox Setup 3.6.15.exe"
     fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
+
+    myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/firefox\" wine cmd /c 'C:\\\\\\Run-firefox.bat'"
+    mymenu="$HOME/.local/share/applications/wine/Programs/Mozilla Firefox/Mozilla Firefox.desktop"
+    if test -f "$mymenu" && w_workaround_wine_bug 26304 "Fixing system menu"
+    then
+        # this is a hack, hopefully the wine bug will be fixed soon
+        sed -i "s,Exec=.*,$myexec," "$mymenu"
+    fi
 }
 
 #----------------------------------------------------------------
