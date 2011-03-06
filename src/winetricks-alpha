@@ -1441,6 +1441,7 @@ winetricks_mainmenu()
          _W_msg_regedit='Run regedit'
          _W_msg_taskmgr='Run taskmgr'
          _W_msg_shell='Run a commandline shell (for debugging)'
+         _W_msg_folder='Browse files'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          ;;
     de*) _W_msg_title='Pakettyp auswählen'
@@ -1452,6 +1453,7 @@ winetricks_mainmenu()
          _W_msg_regedit='Run regedit'
          _W_msg_taskmgr='Run taskmgr'
          _W_msg_shell='Run a commandline shell (for debugging)'
+         _W_msg_folder='Browse files'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          ;;
     *)   _W_msg_title="Winetricks - current prefix is '$WINEPREFIX'"
@@ -1463,6 +1465,7 @@ winetricks_mainmenu()
          _W_msg_regedit='Run regedit'
          _W_msg_taskmgr='Run taskmgr'
          _W_msg_shell='Run a commandline shell (for debugging)'
+         _W_msg_folder='Browse files'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          ;;
     esac
@@ -1488,6 +1491,7 @@ winetricks_mainmenu()
             FALSE regedit    '$_W_msg_regedit' \
             FALSE taskmgr    '$_W_msg_taskmgr' \
             FALSE shell      '$_W_msg_shell' \
+            FALSE folder     '$_W_msg_folder' \
             FALSE annihilate '$_W_msg_annihilate' \
          "
          ) > "$WINETRICKS_WORKDIR"/zenity.sh
@@ -1509,6 +1513,7 @@ winetricks_mainmenu()
                 regedit    "$_W_msg_regedit" off \
                 taskmgr    "$_W_msg_taskmgr" off \
                 shell      "$_W_msg_shell" off \
+                folder     "$_W_msg_folder" off \
                 annihilate "$_W_msg_annihilate" off \
                 $_W_cmd_unattended "$_W_msg_unattended" off \
 
@@ -12617,6 +12622,7 @@ execute_command()
     attended) winetricks_set_unattended 0 ;;
     prefix=*) winetricks_set_wineprefix $arg ;;
     annihilate) winetricks_annihilate_wineprefix ;;
+    folder) xdg-open "$WINEPREFIX" ;;
     winecfg) $WINE winecfg ;;
     regedit) $WINE regedit ;;
     taskmgr) $WINE taskmgr & ;;
