@@ -95,6 +95,12 @@ test_app_checksums()
     fi
 }
 
+# Return the number of blocks available in the system
+total_df()
+{
+    df | grep -v /dev/loop | awk '/^\// { sum += $4 } END { print sum }'
+}
+
 test_app()
 {
     app=$1
@@ -112,7 +118,7 @@ test_app()
     mkdir -p $WINEPREFIX
 
     # Watch transient disk space
-    DF_START=`df $WINEPREFIX | awk '/\// { print $4 }' `
+    DF_START=`total_df`
     if test -d ~/.cache/winetricks/$app
     then
         DU_CACHE_START=`du -s ~/.cache/winetricks/$app | awk '{print $1}'`
@@ -120,7 +126,7 @@ test_app()
         DU_CACHE_START=0
     fi
     touch df-daemon
-    (set +x; while test -f df-daemon; do df $WINEPREFIX ; sleep 1; done ) > df-during.log &
+    (set +x; while test -f df-daemon; do total_df; sleep 1; done ) > df-during.log &
 
     # Isolate us from the user's home directory
     sh -x winetricks-alpha sandbox
@@ -143,7 +149,7 @@ test_app()
     fi
 
     # Total max disk usage = max df change plus any initial blocks in cache
-    DF_MIN=`cat df-during.log | awk '/\// { if (min == "" || $4 < min) min=$4; } END {print min}' `
+    DF_MIN=`cat df-during.log | awk '{ if (min == "" || $1 < min) min=$1; } END {print min}' `
     DF_DIFF=`expr $DF_START - $DF_MIN`
     TOTAL=`expr $DF_DIFF + $DU_CACHE_START`
     echo "test_app: ${app}: max_disk $TOTAL blocks."
@@ -167,6 +173,7 @@ test_app()
 
 test_install_cached_or_download()
 {
+    #sh winetricks-alpha list-cached list-download | fgrep -x -f games.txt > ticd.log
     sh winetricks-alpha list-cached list-download > ticd.log
     if grep .------------------- ticd.log
     then
