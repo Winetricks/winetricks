@@ -9535,7 +9535,8 @@ load_hegemonygold_demo()
         w_warn "This game works, but has some rendering glitches in Wine."
     fi
 
-    w_download "http://www.longbowgames.com/downloads/Hegemony%20Gold%20Installer.exe" cb08360a732b2fb1d42d61f842dbedd0f0535a27 HegemonyGoldInstaller.exe
+    # 6 Mar 2011: 8c4d8aa8f997b106c78b065a4b200e5e1ab846a8
+    w_download "http://www.longbowgames.com/downloads/Hegemony%20Gold%20Installer.exe" 8c4d8aa8f997b106c78b065a4b200e5e1ab846a8 HegemonyGoldInstaller.exe
 
     cd "$W_CACHE/$W_PACKAGE"
 
