@@ -2586,6 +2586,15 @@ winetricks_init()
     *)     WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net;;
     esac
 
+    if ! test "$USERNAME"
+    then
+        # Posix only requires LOGNAME to be defined, and sure enough, when
+        # logging in via console and startx in ubuntu, USERNAME is not set!
+        # I tried using only LOGNAME in this script, but it's so easy to slip
+        # and use USERNAME, so define it here if needed.
+        USERNAME="$LOGNAME"
+    fi
+
     #---- Public Variables ----
 
     # Where application installers are cached
@@ -8674,9 +8683,11 @@ load_diablo2()
     cd "$W_CACHE"/$W_PACKAGE
     w_try "$WINE" D2Patch_113c.exe
     w_ahk_do "
-        winwait Blizzard Updater v2.72
+        winwait, Blizzard Updater v2.72, has completed
+        Sleep 1000
         send {Enter}
         winwait Diablo II
+        Sleep 1000
         ControlClick &Cancel, Diablo II"
     # Dagnabbit, the darn updater starts the game after it updates, no matter what I do?
     killall "Game.exe"
