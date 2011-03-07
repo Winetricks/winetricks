@@ -12828,9 +12828,9 @@ then
             if test "$verbs" = ""
             then
                 # "user didn't pick anything, back up a level in the menu"
-                case $WINETRICKS_CURMENU in
-                pickprefix) break ;;
-                main) WINETRICKS_CURMENU=pickprefix ;;
+                case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+                apps-0|benchmarks-0|games-0|main-*) WINETRICKS_CURMENU=pickprefix ;;
+                pickprefix-*) break ;;
                 *)    WINETRICKS_CURMENU=main ;;
                 esac
             elif echo "$WINETRICKS_CATEGORIES" | grep -w "$verbs" > /dev/null
