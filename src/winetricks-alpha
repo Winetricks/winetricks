@@ -1422,7 +1422,25 @@ winetricks_prefixmenu()
         ;;
 
     kdialog)
-        w_die "kdialog not supported yet"
+        (
+        echo -n "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --radiolist '$_W_msg_body' games      '$_W_msg_games' off benchmarks '$_W_msg_benchmarks' off apps '$_W_msg_apps' off main '$_W_msg_default' on "
+        if ls -d $W_PREFIXES_ROOT/*/dosdevices > /dev/null 2>&1
+        then
+            for prefix in $W_PREFIXES_ROOT/*/dosdevices
+            do
+                q="${prefix%%/dosdevices}"
+                p="${q##*/}"
+                if test -f "$W_PREFIXES_ROOT/$p/wrapper.cfg"
+                then
+                    _W_msg_name="$p (`winetricks_get_prefix_var name`)"
+                else
+                    _W_msg_name="$p"
+                fi
+                echo -n "$p 'Select $_W_msg_name' off "
+	    done
+	fi
+        ) > "$WINETRICKS_WORKDIR"/kdialog.sh
+        sh "$WINETRICKS_WORKDIR"/kdialog.sh
         ;;
     esac
     unset _W_msg_body _W_msg_title _W_msg_new _W_msg_default _W_msg_name
@@ -1506,8 +1524,6 @@ winetricks_mainmenu()
                 "$_W_msg_body"\
                 dlls       "$_W_msg_dlls" off \
                 fonts      "$_W_msg_fonts" off \
-                benchmarks "$_W_msg_benchmarks" off \
-                apps       "$_W_msg_apps" off \
                 settings   "$_W_msg_settings" off \
                 winecfg    "$_W_msg_winecfg" off \
                 regedit    "$_W_msg_regedit" off \
@@ -1633,6 +1649,8 @@ winetricks_showmenu()
                 --column År \
                 --column Medie \
                 --column Status \
+                --column Size (MB) \
+                --column Time (sec) \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -1649,6 +1667,8 @@ winetricks_showmenu()
                 --column Jahr \
                 --column Media \
                 --column Status \
+                --column Größe (MB) \
+                --column Zeit (sec) \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -1665,8 +1685,8 @@ winetricks_showmenu()
                 --column Year \
                 --column Media \
                 --column Status \
-                --column Size/MB \
-                --column Time/sec \
+                --column Size (MB) \
+                --column Time (sec) \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
