@@ -105,7 +105,8 @@ test_app()
 {
     app=$1
 
-    export WINEPREFIX=$HOME/winetrickstest-prefixes/$app
+    export WINE_PREFIXES=$HOME/winetrickstest-prefixes
+    export WINEPREFIX=$WINE_PREFIXES/$app
     DRIVE_C="$WINEPREFIX/dosdevices/c:"
 
     # change if you don't want to skip ones already installed
@@ -153,6 +154,10 @@ test_app()
     DF_DIFF=`expr $DF_START - $DF_MIN`
     TOTAL=`expr $DF_DIFF + $DU_CACHE_START`
     echo "test_app: ${app}: max_disk $TOTAL blocks."
+
+    TOTAL_MB=`expr $TOTAL / 1024`
+    mkdir -p measurements
+    echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> measurements/$app.dat
 
     # Work around dangling processes (whether normal or the fault of wine or the verb script)
     case $app in
@@ -202,9 +207,9 @@ test_install_cached_or_download()
 
 test_speed list
 test_speed list-download
+test_install_cached_or_download
 test_speed list-cached
 test_speed list-installed
-test_install_cached_or_download
 
 echo "Test over, $errors failures."
 test $errors = 0
