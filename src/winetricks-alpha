@@ -1374,6 +1374,7 @@ winetricks_prefixmenu()
          _W_msg_default="Select the default wineprefix"
          _W_msg_unattended0="Disable silent install"
          _W_msg_unattended1="Enable silent install"
+         _W_msg_help="View help"
          ;;
     esac
     case "$W_OPT_UNATTENDED" in
@@ -1394,6 +1395,7 @@ winetricks_prefixmenu()
             --height $WINETRICKS_MENU_HEIGHT \
             --width $WINETRICKS_MENU_WIDTH \
             --hide-column 2 \
+            FALSE help       '$_W_msg_help' \
             FALSE apps       '$_W_msg_apps' \
             FALSE benchmarks '$_W_msg_benchmarks' \
             FALSE games      '$_W_msg_games' \
@@ -1423,7 +1425,7 @@ winetricks_prefixmenu()
 
     kdialog)
         (
-        echo -n "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --radiolist '$_W_msg_body' games      '$_W_msg_games' off benchmarks '$_W_msg_benchmarks' off apps '$_W_msg_apps' off main '$_W_msg_default' on "
+        echo -n "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --radiolist '$_W_msg_help' help off '$_W_msg_body' games      '$_W_msg_games' off benchmarks '$_W_msg_benchmarks' off apps '$_W_msg_apps' off main '$_W_msg_default' on "
         if ls -d $W_PREFIXES_ROOT/*/dosdevices > /dev/null 2>&1
         then
             for prefix in $W_PREFIXES_ROOT/*/dosdevices
@@ -1443,7 +1445,7 @@ winetricks_prefixmenu()
         sh "$WINETRICKS_WORKDIR"/kdialog.sh
         ;;
     esac
-    unset _W_msg_body _W_msg_title _W_msg_new _W_msg_default _W_msg_name
+    unset _W_msg_help _W_msg_body _W_msg_title _W_msg_new _W_msg_default _W_msg_name
 }
 
 # Display main menu, get which submenu the user wants
@@ -12678,6 +12680,7 @@ execute_command()
 
     # Hard-coded verbs
     main) WINETRICKS_CURMENU=main ;;
+    help) w_try xdg-open http://winetricks.org/help ;;
     list) winetricks_list_all ;;
     list-cached) winetricks_list_cached ;;
     list-download) winetricks_list_download ;;
@@ -12814,7 +12817,7 @@ then
                 # After installing an isolated app, return to prefix picker,
                 # not main.
                 case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-                apps-0|benchmarks-0|games-0) WINETRICKS_CURMENU=pickprefix ;;
+                pickprefix-*|apps-0|benchmarks-0|games-0) WINETRICKS_CURMENU=pickprefix ;;
                 *)     WINETRICKS_CURMENU=main ;;
                 esac
             fi
