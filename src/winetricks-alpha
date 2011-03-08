@@ -10400,27 +10400,31 @@ load_masseffect2_demo()
     esac
     cd "$W_TMP"
     w_ahk_do "
+        SetWinDelay 1000
         SetTitleMatchMode, 2
         run, MassEffect2DemoEN.exe
         winwait, Mass Effect 2 Demo
-        Sleep 1000
-        send {Enter}
-        winwait, Mass Effect 2 Demo, conflicts
-        Sleep 1000
-        send {Enter}
-        winwait, Mass Effect, License
-        ControlClick, Button4
-        ;ControlClick, Button2
-        send {Enter}
-        winwait, Mass Effect, Install Type
-        ControlClick, Button2
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            send {Enter}
+            winwait, Mass Effect 2 Demo, conflicts
+            send {Enter}
+            winwait, Mass Effect, License
+            ControlClick, Button4
+            ;ControlClick, Button2
+            send {Enter}
+            winwait, Mass Effect, Install Type
+            ControlClick, Button2
+        }
         ; Some installs may not get to this point due to an installer hang/crash (bug 22919)
         ; The hang/crash happens after the Physx install but does not seem to affect gameplay
         loop
         {
             ifwinexist, Mass Effect, Finish
             {
-                winkill, Mass Effect
+                if ( u > 0 ) {
+                    winkill, Mass Effect
+                }
                 break
             }
             Process, exist, Installer.exe
@@ -10430,12 +10434,36 @@ load_masseffect2_demo()
             sleep 1000
         }
     "
-    if w_workaround_wine_bug 6971 "See http://wiki.winehq.org/Bug6971 for wine patch to fix mouse"
+    if test `which wine-hotfix-6971` != ""
     then
-        :
+        if w_workaround_wine_bug 6971 "Pointing menu and icon at wine-hotfix-6971 so mouse will work, assuming your X supports XInput2"
+        then
+            w_declare_exe "$W_PROGRAMS_X86_WIN\\Mass Effect 2 Demo\\Binaries" "MassEffect2.EXE"
+            myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/masseffect2_demo\" wine-hotfix-6971 cmd /c 'C:\\\\\\Run-masseffect2_demo.bat'"
+
+            mymenu="$HOME/Desktop/Mass Effect 2 Demo.desktop"
+            # FIXME: add timeout here
+            while test ! -f "$mymenu"
+            do
+                echo "waiting for winemenubuilder to finish..."
+                sleep 1
+            done
+            if test -f "$mymenu"
+            then
+                # this is a hack, hopefully the wine bug will be fixed soon
+                sed -i "s,Exec=.*,$myexec," "$mymenu"
+            fi
+            mymenu="$HOME/.local/share/applications/wine/Programs/Mass Effect 2 Demo/Mass Effect 2 Demo.desktop"
+            if test -f "$mymenu"
+            then
+                # this is a hack, hopefully the wine bug will be fixed soon
+                sed -i "s,Exec=.*,$myexec," "$mymenu"
+            fi
+        fi
+    else
+        w_workaround_wine_bug 6971 "See http://wiki.winehq.org/Bug6971 for wine patch to fix mouse"
     fi
 
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mass Effect 2 Demo\\Binaries" "MassEffect2.EXE"
 }
 
 #----------------------------------------------------------------
