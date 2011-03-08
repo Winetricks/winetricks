@@ -12597,23 +12597,7 @@ winetricks_os_description()
     case "$OS" in
     "Windows_NT")
         echo windows ;;
-    *)  SW_VERS=`which sw_vers 2>/dev/null``
-        LSB_RELEASE=`which lsb_release 2>/dev/null``
-        if test -x "$SW_VERS"
-        then
-            # Mac
-            $SW_VERS -productName; $SW_VERS -productVersion
-        elif test -x "$LSB_RELEASE"
-        then
-            # Linux
-            $LSB_RELEASE -d | sed 's/Description: *//'
-        elif test -f /etc/gentoo-release
-        then
-            cat /etc/gentoo-release
-        else
-            echo "unknown"
-        fi
-        ;;
+    *)  echo "$WINETRICKS_WINE_VERSION" ;;
     esac 
     ) | tr '\012' ' '
 }
@@ -12629,6 +12613,7 @@ winetricks_stats_report()
     echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
 
     report="os=`winetricks_os_description`&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
+    report="`echo $report | tr -d ' '`"
     # Just do a HEAD request with the raw commandline.  
     # Yes, this can be fooled by caches.  That's ok.
     if [ -x "`which wget 2>/dev/null`" ]
