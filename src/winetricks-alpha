@@ -12814,11 +12814,22 @@ then
                     execute_command $verb
                 done
                 
-                # After installing an isolated app, return to prefix picker,
-                # not main.
-                case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-                pickprefix-*|apps-0|benchmarks-0|games-0) WINETRICKS_CURMENU=pickprefix ;;
-                *)     WINETRICKS_CURMENU=main ;;
+                case "$verbs" in
+                prefix=*)
+                    # after picking a prefix, want to land in main.
+                    WINETRICKS_CURMENU=main ;;
+                *)
+                    case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+                    pickprefix-*|apps-0|benchmarks-0|games-0) 
+                        # After installing isolated app, return to prefix picker
+                        WINETRICKS_CURMENU=pickprefix
+                        ;;
+                    *)
+                         # Otherwise go to main menu.
+                         WINETRICKS_CURMENU=main
+                         ;;
+                    esac
+                    ;;
                 esac
             fi
         done
