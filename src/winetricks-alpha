@@ -2786,26 +2786,6 @@ then
     winetricks_init
 fi
  
-winetricks_run_app()
-{
-    # Find the app
-    case $WINETRICKS_OPT_SHAREDPREFIX in
-    0)
-        WINETRICKS_RUN_WINEPREFIX="$W_PREFIXES_ROOT"/$1
-        app="$WINETRICKS_RUN_WINEPREFIX"/dosdevices/c:/run-$1.bat
-        ;;
-    1)
-        WINETRICKS_RUN_WINEPREFIX="$WINEPREFIX"
-        app="$W_DRIVE_C/run-$1.bat"
-        ;;
-    esac
-    if ! test -f "$app"
-    then
-        w_die "Can't find app $1 (looked for $app)"
-    fi
-    WINEPREFIX="$WINETRICKS_RUN_WINEPREFIX" $WINE cmd /c C:\\run-$1.bat
-}
-
 winetricks_install_app()
 {
     case $LANG in
