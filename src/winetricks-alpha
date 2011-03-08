@@ -6048,7 +6048,9 @@ load_cygwin()
 
 #----------------------------------------------------------------
 
-w_metadata dxdiag apps \
+# dxdiag is a system component that one usually adds to an existing wineprefix,
+# so it belongs in 'dlls', not apps.
+w_metadata dxdiag dlls \
    title="DirectX Diagnostic Tool" \
    publisher="Microsoft" \
    year="2010" \
