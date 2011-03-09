@@ -1374,12 +1374,18 @@ winetricks_prefixmenu()
          _W_msg_default="Select the default wineprefix"
          _W_msg_unattended0="Disable silent install"
          _W_msg_unattended1="Enable silent install"
+         _W_msg_showbroken0="Hide broken apps (e.g. those with DRM problems)"
+         _W_msg_showbroken1="Show broken apps (e.g. those with DRM problems)"
          _W_msg_help="View help"
          ;;
     esac
     case "$W_OPT_UNATTENDED" in
     1) _W_cmd_unattended=attended; _W_msg_unattended="$_W_msg_unattended0" ;;
     *) _W_cmd_unattended=unattended; _W_msg_unattended="$_W_msg_unattended1" ;;
+    esac
+    case "$W_OPT_SHOWBROKEN" in
+    1) _W_cmd_showbroken=hidebroken; _W_msg_showbroken="$_W_msg_showbroken0" ;;
+    *) _W_cmd_showbroken=showbroken; _W_msg_showbroken="$_W_msg_showbroken1" ;;
     esac
 
     case $WINETRICKS_GUI in
@@ -1419,6 +1425,7 @@ winetricks_prefixmenu()
             done >> $WINETRICKS_WORKDIR/zenity.sh
         fi
         echo -n " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> $WINETRICKS_WORKDIR/zenity.sh
+        echo -n " FALSE $_W_cmd_showbroken '$_W_msg_showbroken'" >> $WINETRICKS_WORKDIR/zenity.sh
 
         sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
         ;;
@@ -12716,6 +12723,8 @@ execute_command()
     list-installed) winetricks_list_installed ;;
     unattended) winetricks_set_unattended 1 ;;
     attended) winetricks_set_unattended 0 ;;
+    showbroken) W_OPT_SHOWBROKEN=1 ;;
+    hidebroken) W_OPT_SHOWBROKEN=0 ;;
     prefix=*) winetricks_set_wineprefix $arg ;;
     annihilate) winetricks_annihilate_wineprefix ;;
     folder) xdg-open "$WINEPREFIX" ;;
