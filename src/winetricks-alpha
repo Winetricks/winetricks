@@ -1903,7 +1903,7 @@ winetricks_list_all()
 {
     # Note: doh123 relies on 'winetricks list' to list main menu categories
     case $WINETRICKS_CURMENU in
-    pickprefix|main) echo "$WINETRICKS_CATEGORIES" | tr ' ' '\012' ; return;;
+    prefix|main) echo "$WINETRICKS_CATEGORIES" | tr ' ' '\012' ; return;;
     esac
 
     case $LANG in
@@ -2574,7 +2574,7 @@ winetricks_init()
     done
 
     # Which subdirectory of WINETRICKS_METADATA is currently active (or main, if none)
-    WINETRICKS_CURMENU=pickprefix
+    WINETRICKS_CURMENU=prefix
 
     # Delete work directory after each run, on exit either graceful or abrupt
     trap winetricks_kill_handler 0 1 2 3 6
@@ -12693,7 +12693,7 @@ execute_command()
     case $1 in
 
     # FIXME: avoid duplicated code
-    apps|benchmarks|dlls|fonts|games|pickprefix|settings)
+    apps|benchmarks|dlls|fonts|games|prefix|settings)
         WINETRICKS_CURMENU=$1
         ;;
 
@@ -12806,9 +12806,9 @@ then
         do
             case $WINETRICKS_CURMENU in
             main) verbs=`winetricks_mainmenu` ;;
-            pickprefix)
+            prefix)
                 verbs=`winetricks_prefixmenu`;
-                # Cheezy hack: choosing type of package in pickprefix menu == whether to isolate.
+                # Cheezy hack: choosing type of package in prefix menu == whether to isolate.
                 case "$verbs" in
                 apps|benchmarks|games) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
                 *)     WINETRICKS_OPT_SHAREDPREFIX=1 ;;
@@ -12827,8 +12827,8 @@ then
             then
                 # "user didn't pick anything, back up a level in the menu"
                 case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-                apps-0|benchmarks-0|games-0|main-*) WINETRICKS_CURMENU=pickprefix ;;
-                pickprefix-*) break ;;
+                apps-0|benchmarks-0|games-0|main-*) WINETRICKS_CURMENU=prefix ;;
+                prefix-*) break ;;
                 *)    WINETRICKS_CURMENU=main ;;
                 esac
             elif echo "$WINETRICKS_CATEGORIES" | grep -w "$verbs" > /dev/null
@@ -12848,14 +12848,14 @@ then
                     WINETRICKS_CURMENU=main ;;
                 *)
                     case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-                    pickprefix-*|apps-0|benchmarks-0|games-0) 
+                    prefix-*|apps-0|benchmarks-0|games-0) 
                         # After installing isolated app, return to prefix picker
-                        WINETRICKS_CURMENU=pickprefix
+                        WINETRICKS_CURMENU=prefix
                         ;;
                     *)
-                         # Otherwise go to main menu.
-                         WINETRICKS_CURMENU=main
-                         ;;
+                        # Otherwise go to main menu.
+                        WINETRICKS_CURMENU=main
+                        ;;
                     esac
                     ;;
                 esac
