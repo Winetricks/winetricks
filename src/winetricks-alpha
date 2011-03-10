@@ -6140,12 +6140,12 @@ load_firefox()
 #----------------------------------------------------------------
 
 w_metadata firefox4 apps \
-   title="Firefox 4.0 Beta 12" \
+   title="Firefox 4.0 RC 1" \
    publisher="Mozilla" \
    year="2011" \
    media="download" \
-   file1="Firefox Setup 4.0 Beta 12.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox 4.0 Beta 12/firefox.exe"
+   file1="Firefox Setup 4.0 RC 1.exe" \
+   installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox 4.0 RC 1/firefox.exe"
 
 load_firefox4()
 {
@@ -6154,16 +6154,16 @@ load_firefox4()
         w_die  "Requires wine-1.3.0 or later to install"
     fi
 
-    w_download "http://mozilla.tsukuba.wide.ad.jp//firefox/releases/4.0b12/win32/en-US/Firefox%20Setup%204.0%20Beta%2012.exe" 628cef740712cfd87c261be110acc5887337a681 "Firefox Setup 4.0 Beta 12.exe"
+    w_download "http://mirror.metrocast.net/mozilla/firefox/releases/4.0rc1/win32/en-US/Firefox%20Setup%204.0%20RC%201.exe" d1d51442edea0c968ee03293d023520aa6c60453 "Firefox Setup 4.0 RC 1.exe"
     cd "$W_CACHE"/firefox4
     if test $W_OPT_UNATTENDED = 1
     then
-       w_try $WINE "Firefox Setup 4.0 Beta 12.exe" -ms
+       w_try $WINE "Firefox Setup 4.0 RC 1.exe" -ms
     else
-       w_try $WINE "Firefox Setup 4.0 Beta 12.exe"
+       w_try $WINE "Firefox Setup 4.0 RC 1.exe"
     fi
 
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox 4.0 Beta 12" firefox.exe
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox 4.0 RC 1" firefox.exe
 }
 
 #----------------------------------------------------------------
