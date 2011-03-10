@@ -10546,7 +10546,7 @@ load_masseffect2_demo()
             sleep 1000
         }
     "
-    if test `which wine-hotfix-6971` != ""
+    if test `which wine-hotfix-6971` 2> /dev/null
     then
         if w_workaround_wine_bug 6971 "Pointing menu and icon at wine-hotfix-6971 so mouse will work, assuming your X supports XInput2"
         then
@@ -12782,7 +12782,7 @@ winetricks_shell()
     *)
         for term in gnome-terminal konsole Terminal xterm
         do
-            if test `which $term` != ""
+            if test `which $term` 2> /dev/null
             then
                 $term
                 break
