@@ -427,6 +427,13 @@ w_download_to()
         # Note: this causes other sites to compress downloads, hence
         # the kludge further down.  See http://code.google.com/p/winezeug/issues/detail?id=77
         echo Downloading $_W_url to $_W_cache
+
+        # For sites that prefer mozilla in the useragent, set W_BROWSERAGENT=1
+        case "$W_BROWSERAGENT" in
+        1) _W_agent="Mozilla/5.0 (compatible; Konqueror/2.1.1; X11)" ;;
+        *) _W_agent= ;;
+        esac
+
         if [ -x "`which wget 2>/dev/null`" ]
         then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
@@ -441,6 +448,7 @@ w_download_to()
                -c --read-timeout=300 --tries=1 --retry-connrefused \
                --header "Accept-Encoding: gzip,deflate" \
                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
+               ${_W_agent:+--user-agent="$_W_agent"} \
                "$_W_url"
         else
            # curl doesn't get filename from the location given by the server!
@@ -448,6 +456,7 @@ w_download_to()
            curl -L -o "$_W_file" -C - \
                --header "Accept-Encoding: gzip,deflate" \
                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
+               ${_W_agent:+--user-agent "$_W_agent"} \
                "$_W_url"
         fi
         if test $? != 0
@@ -645,6 +654,7 @@ w_ahk_do()
 {
     if ! test -f "$W_CACHE/ahk/AutoHotkey.exe"
     then
+        W_BROWSERAGENT=1 \
         w_download_to ahk http://www.autohotkey.com/download/AutoHotkey104805.zip b3981b13fbc45823131f69d125992d6330212f27 
         w_try_unzip -d "$W_CACHE/ahk"  "$W_CACHE/ahk/AutoHotkey104805.zip" AutoHotkey.exe AU3_Spy.exe
         chmod +x "$W_CACHE/ahk/AutoHotkey.exe"
@@ -5930,6 +5940,7 @@ w_metadata autohotkey apps \
 
 load_autohotkey()
 {
+    W_BROWSERAGENT=1 \
     w_download http://www.autohotkey.net/programs/AutoHotkey104805_Install.exe 13e5a9ca6d5b7705f1cd02560c3af4d38b1904fc
     cd "$W_CACHE"/autohotkey
     w_try $WINE AutoHotkey104805_Install.exe $W_UNATTENDED_SLASH_S
@@ -10798,6 +10809,7 @@ w_metadata penpenxmas games \
 
 load_penpenxmas()
 {
+    W_BROWSERAGENT=1 \
     w_download http://retrospec.sgn.net/download/files/PenPenXmasOlympics100.exe 36ec83cffa0ad3cc19dea33193b54bdaaea6db5b
 
     cd "$W_CACHE/$W_PACKAGE"
