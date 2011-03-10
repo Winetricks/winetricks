@@ -5378,17 +5378,17 @@ load_corefonts()
     # Added More Fonts (see msttcorefonts)
     # [*] Pointed w_download to sites that actually contained the
     # fonts to w_download of 04-03-2008)
-    #w_download $WINETRICKS_SOURCEFORGE/corefonts/andale32.exe c4db8cbe42c566d12468f5fdad38c43721844c69
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/arial32.exe 6d75f8436f39ab2da5c31ce651b7443b4ad2916e
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/arialb32.exe d45cdab84b7f4c1efd6d1b369f50ed0390e3d344
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/comic32.exe 2371d0327683dcc5ec1684fe7c275a8de1ef9a51
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/courie32.exe 06a745023c034f88b4135f5e294fece1a3c1b057
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/georgi32.exe 90e4070cb356f1d811acb943080bf97e419a8f1e
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/impact32.exe 86b34d650cfbbe5d3512d49d2545f7509a55aad2
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/times32.exe 20b79e65cdef4e2d7195f84da202499e3aa83060
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/trebuc32.exe 50aab0988423efcc9cf21fac7d64d534d6d0a34a
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/verdan32.exe f5b93cedf500edc67502f116578123618c64a42a
-    w_download $WINETRICKS_SOURCEFORGE/corefonts/webdin32.exe 2fb4a42c53e50bc70707a7b3c57baf62ba58398f
+    #w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/andale32.exe c4db8cbe42c566d12468f5fdad38c43721844c69
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/arial32.exe 6d75f8436f39ab2da5c31ce651b7443b4ad2916e
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/arialb32.exe d45cdab84b7f4c1efd6d1b369f50ed0390e3d344
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/comic32.exe 2371d0327683dcc5ec1684fe7c275a8de1ef9a51
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/courie32.exe 06a745023c034f88b4135f5e294fece1a3c1b057
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/georgi32.exe 90e4070cb356f1d811acb943080bf97e419a8f1e
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/impact32.exe 86b34d650cfbbe5d3512d49d2545f7509a55aad2
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/times32.exe 20b79e65cdef4e2d7195f84da202499e3aa83060
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/trebuc32.exe 50aab0988423efcc9cf21fac7d64d534d6d0a34a
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/verdan32.exe f5b93cedf500edc67502f116578123618c64a42a
+    w_download $WINETRICKS_SOURCEFORGE/project/corefonts/the%20fonts/final/webdin32.exe 2fb4a42c53e50bc70707a7b3c57baf62ba58398f
 
     # Natively installed versions of these fonts will cause the installers
     # to exit silently. Because there are apps out there that depend on the
@@ -8421,6 +8421,47 @@ load_crysis2_demo_mp()
     then
         w_warn "The game has some nasty flickering, see http://bugs.winehq.org/show_bug.cgi?id=26283"
     fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata csi6_demo games \
+    title="CSI: Fatal Conspiracy Demo" \
+    publisher="Ubisoft" \
+    year="2010" \
+    media="manual_download" \
+    file1="CSI6_PC_Demo_05.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Telltale Games/CSI - Fatal Conspiracy Demo/CSI6Demo.exe"
+
+load_csi6_demo()
+{
+    w_download_manual http://www.fileplanet.com/217175/download/CSI:-Fatal-Conspiracy-Demo CSI6_PC_Demo_05.exe 28473b4dc9760b659f24a397192b74d170b593bb
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetWinDelay 500
+        SetTitleMatchMode, 2
+        run, CSI6_PC_Demo_05.exe
+        winwait, Installer Language
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            send {Enter}   ; Accept default (english)
+            winwait, CSI - Fatal Conspiracy Demo Setup
+            send {Enter}   ; Next
+            winwait, CSI - Fatal Conspiracy Demo Setup, License
+            send {Enter}   ; Agree
+            winwait, CSI - Fatal Conspiracy Demo Setup, Location
+            send {Enter}   ; Install
+        }
+        winwait, CSI - Fatal Conspiracy Demo Setup, Finish
+        if ( u > 0 ) {
+            ControlClick Button4
+            send {Enter}   ; Finish
+            WinWaitClose
+        }
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Telltale Games\\CSI - Fatal Conspiracy Demo" "CSI6Demo.exe"
 }
 
 #----------------------------------------------------------------
