@@ -4803,7 +4803,7 @@ w_metadata  vb5run dlls \
    year="2001" \
    media="download" \
    file1="msvbvm50.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/Msvbvm50.dll"
+   installed_file1="$W_SYSTEM32_DLLS_WIN/msvbvm50.dll"
 
 load_vb5run()
 {
@@ -4820,7 +4820,7 @@ w_metadata  vb6run dlls \
    year="2004" \
    media="download" \
    file1="vbrun60sp6.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/Msvbvm60.dll"
+   installed_file1="$W_SYSTEM32_DLLS_WIN/MSVBVM60.DLL"
 
 load_vb6run()
 {
@@ -7094,7 +7094,7 @@ load_vc2005trial()
 
     # Unpack ISO (how handy that 7z can do this!)
     # Only the windows version of 7z can handle .img files?
-    w_call 7zip
+    WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
     cd "$W_PROGRAMS_X86_UNIX"/7-Zip
     w_try $WINE 7z.exe x -y -o"$W_TMP_WIN" "$W_CACHE_WIN\\vc2005trial\\En_vs_2005_vsts_180_Trial.img"
 
