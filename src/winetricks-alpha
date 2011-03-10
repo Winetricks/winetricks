@@ -1233,7 +1233,7 @@ w_do_call()
         then
             if ! winetricks_is_installed $1
             then
-                w_die "$1 install completed, but installed file $installed_exe1 $installed_file1 not found"
+                w_die "$1 install completed, but installed file $_W_file_unix not found"
             fi
         fi
         # Calling subshell must explicitly propagate error code with exit $?
@@ -1841,7 +1841,7 @@ winetricks_is_installed()
             return 0  # installed
         fi
     fi
-    unset _W_file _W_file_unix _W_prefix
+    unset _W_file _W_prefix  # leak _W_file_unix for caller.  Is this wise?
     return 1  # not installed
 }
 
