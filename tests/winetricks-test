@@ -130,7 +130,7 @@ test_app()
     (set +x; while test -f df-daemon; do total_df; sleep 1; done ) > df-during.log &
 
     # Isolate us from the user's home directory
-    sh -x winetricks sandbox
+    sh winetricks sandbox
 
     echo "Installing $app"
     if ! /usr/bin/time -p --output=time.log sh winetricks -q $app
