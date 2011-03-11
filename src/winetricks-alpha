@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Name of this version of winetricks (YYYYMMDD)
-WINETRICKS_VERSION=20110310-alpha
+WINETRICKS_VERSION=20110311
 
 #--------------------------------------------------------------------
 #
@@ -10259,7 +10259,7 @@ load_lhp_demo()
 
     if w_workaround_wine_bug 23397
     then
-        w_warn "If sound stutters, try switching to OSS sound in winecfg (winetricks-alpha sound=oss)"
+        w_warn "If sound stutters, try switching to OSS sound in winecfg (winetricks sound=oss)"
     fi
 
     # Work around locale issues by symlinking the app's directory to not have a funny char

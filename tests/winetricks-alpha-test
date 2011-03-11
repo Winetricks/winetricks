@@ -1,5 +1,5 @@
 #!/bin/sh
-# Regression test for winetricks-alpha
+# Regression test for winetricks
 
 set -x
 
@@ -55,20 +55,20 @@ srcdir=`cd $srcdir; pwd`
 
 test_speed()
 {
-    if ! /usr/bin/time -p --output=time.log sh winetricks-alpha $1 > foo.log
+    if ! /usr/bin/time -p --output=time.log sh winetricks $1 > foo.log
     then
-        fail "winetricks-alpha $1 returned status $?"
+        fail "winetricks $1 returned status $?"
     fi
     if test `wc -l < foo.log` -lt 5
     then
-        fail "winetricks-alpha $1 returned too few lines"
+        fail "winetricks $1 returned too few lines"
     fi
     seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
-    echo test_speed: winetricks-alpha $1 took $seconds seconds
+    echo test_speed: winetricks $1 took $seconds seconds
     # Longest runtime as of 11 Dec 2010 is 5 seconds on an e8400 with cygwin
     if test $seconds -gt 7
     then
-        fail "test_speed: winetricks-alpha $1 took $seconds seconds"
+        fail "test_speed: winetricks $1 took $seconds seconds"
     fi
 }
 
@@ -130,10 +130,10 @@ test_app()
     (set +x; while test -f df-daemon; do total_df; sleep 1; done ) > df-during.log &
 
     # Isolate us from the user's home directory
-    sh -x winetricks-alpha sandbox
+    sh -x winetricks sandbox
 
     echo "Installing $app"
-    if ! /usr/bin/time -p --output=time.log sh winetricks-alpha -q $app
+    if ! /usr/bin/time -p --output=time.log sh winetricks -q $app
     then
         rm df-daemon
         fail "test_app $app failed!"
@@ -143,7 +143,7 @@ test_app()
     seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
     echo "test_app: ${app}: install_time $seconds seconds."
 
-    sh winetricks-alpha -q list-installed > list-installed.out
+    sh winetricks -q list-installed > list-installed.out
     if ! grep -w $app list-installed.out
     then
         fail "test app $app not installed after install?"
@@ -178,8 +178,8 @@ test_app()
 
 test_install_cached_or_download()
 {
-    #sh winetricks-alpha list-cached list-download | fgrep -x -f games.txt > ticd.log
-    sh winetricks-alpha list-cached list-download > ticd.log
+    #sh winetricks list-cached list-download | fgrep -x -f games.txt > ticd.log
+    sh winetricks list-cached list-download > ticd.log
     if grep .------------------- ticd.log
     then
         fail "output of list-cached list-download contained garbage"
@@ -190,7 +190,7 @@ test_install_cached_or_download()
     do
         test_app $a
     done
-    sh winetricks-alpha list-cached > cached.txt
+    sh winetricks list-cached > cached.txt
     # Verbs that are just wrappers around others don't detect cache/install
     # state yet.  
     # Verbs that are just informative placeholders don't ever download (gecko).
