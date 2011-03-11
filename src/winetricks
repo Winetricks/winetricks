@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Name of this version of winetricks (YYYYMMDD)
-WINETRICKS_VERSION=20110311
+WINETRICKS_VERSION=20110311b
 
 #--------------------------------------------------------------------
 #
@@ -4000,68 +4000,18 @@ load_l3codecx()
 
 #----------------------------------------------------------------
 
-w_metadata  mdac25 dlls \
-   title="Microsoft Data Access Components 2.5 sp3" \
-   publisher="Microsoft" \
-   year="2002" \
-   media="download" \
-   file1="mdac_typ.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Common Files/System/ADO/msado21.tlb"
-
-load_mdac25()
-{
-    # http://www.microsoft.com/downloads/en/details.aspx?FamilyID=c57692e9-dde7-4a60-b586-5d4fd6794db6
-    w_download http://download.microsoft.com/download/e/e/4/ee4fe9ee-6fa1-4ab6-ab8c-fe1769f4edcf/mdac_typ.exe 09e974a5dbebaaa08c7985a4a1126886dc05fd87
-    load_native_mdac
-    w_set_winver nt40
-    if [ $W_UNATTENDED_SLASH_Q ]
-    then
-        w_try $WINE "$W_CACHE"/mdac25/mdac_typ.exe /q /C:"setup /QNT"
-    else
-        w_try $WINE "$W_CACHE"/mdac25/mdac_typ.exe
-    fi
-    w_unset_winver
-}
-
-#----------------------------------------------------------------
-
-w_metadata  mdac27 dlls \
-   title="Microsoft Data Access Components 2.7 sp1" \
-   publisher="Microsoft" \
-   year="2006" \
-   media="download" \
-   file1="mdac_typ.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Common Files/System/ADO/msado26.tlb"
-
-load_mdac27()
-{
-    # http://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
-    w_download http://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
-    load_native_mdac
-    w_set_winver win2k
-    if [ $W_UNATTENDED_SLASH_Q ]
-    then
-        w_try $WINE "$W_CACHE"/mdac27/mdac_typ.exe /q /C:"setup /QNT"
-    else
-        w_try $WINE "$W_CACHE"/mdac27/mdac_typ.exe
-    fi
-    w_unset_winver
-}
-
-#----------------------------------------------------------------
-
 w_metadata  mdac28 dlls \
-   title="Microsoft Data Access Components 2.8" \
+   title="Microsoft Data Access Components 2.8 sp1" \
    publisher="Microsoft" \
-   year="2003" \
+   year="2005" \
    media="download" \
    file1="MDAC_TYP.EXE" \
    installed_file1="$W_PROGRAMS_X86_WIN/Common Files/System/ADO/msado27.tlb"
 
 load_mdac28()
 {
-    # http://www.microsoft.com/downloads/en/details.aspx?FamilyID=6c050fe3-c795-4b7d-b037-185d0506396c
-    w_download http://download.microsoft.com/download/c/d/f/cdfd58f1-3973-4c51-8851-49ae3777586f/MDAC_TYP.EXE 91bd59f0b02b67f3845105b15a0f3502b9a2216a
+    # http://www.microsoft.com/downloads/en/details.aspx?familyid=78cac895-efc2-4f8e-a9e0-3a1afbd5922e
+    w_download http://download.microsoft.com/download/4/a/a/4aafff19-9d21-4d35-ae81-02c48dcbbbff/MDAC_TYP.EXE 4fbc272c79da59e38818924d8575accb0af776fb
     load_native_mdac
     w_set_winver win98
     cd "$W_CACHE"/mdac28
