@@ -8413,13 +8413,14 @@ load_csi6_demo()
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
-        SetWinDelay 500
+        SetWinDelay 1000
         SetTitleMatchMode, 2
         run, CSI6_PC_Demo_05.exe
-        winwait, Installer Language
+        winwait, Installer Language, Please select
         u = $W_OPT_UNATTENDED
         if ( u > 0 ) {
-            send {Enter}   ; Accept default (english)
+            ControlClick, Button1   ; Accept default (english)
+            ;send {Enter}   ; Accept default (english)
             winwait, CSI - Fatal Conspiracy Demo Setup
             send {Enter}   ; Next
             winwait, CSI - Fatal Conspiracy Demo Setup, License
