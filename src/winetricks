@@ -7140,7 +7140,7 @@ w_metadata wmp9 dlls \
    year="2003" \
    media="download" \
    file1="MPSetup.exe" \
-   installed_file1="$W_SYSTEM32_DLLS"/l3codeca.acm
+   installed_file1="$W_SYSTEM32_DLLS"/l3codeca.acmx
 
 load_wmp9()
 {
@@ -10859,6 +10859,70 @@ load_puzzleagent_demo()
     fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Telltale Games\\Puzzle Agent\\Puzzle Agent" "Grickle101.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata rct3deluxe games \
+    title="RollerCoaster Tycoon 3 Deluxe (drm broken on wine)" \
+    publisher="Atari" \
+    year="2004" \
+    media="cd" \
+    file1="RCT3.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Atari/RollerCoaster Tycoon 3/RCT3.EXE"\
+    wine_showstoppers="21448"
+
+load_rct3deluxe()
+{
+    w_mount RCT3
+
+    if w_workaround_wine_bug 26396
+    then
+        w_call quartz
+    fi
+
+    # FIXME: make videos and music work
+    # Game still doesn't show .wmv logo videos nor play .wma background audio in menu
+    # though it does in Jake's screencast.  Loading wmp9 and devenum gets it to 
+    # try to load the .wmv logos, but it crashes in quartz :-(   
+    # But at least it's playable without the logo videos and background.
+
+    w_ahk_do "
+        SetWinDelay 500
+        SetTitleMatchMode, 2
+        run ${W_ISO_MOUNT_LETTER}:setup-rtc3.exe
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            WinWait, Select Setup Language
+            controlclick, TButton1   ; accept
+            WinWait Setup - RollerCoaster Tycoon 3, Welcome
+            controlclick, TButton1   ; Next
+            WinWait Setup - RollerCoaster Tycoon 3, License
+            controlclick, TRadioButton1   ; Accept
+            sleep 500
+            controlclick, TButton2   ; Next
+            WinWait Setup - RollerCoaster Tycoon 3, Destination
+            controlclick, TButton3   ; Next
+            WinWait Setup - RollerCoaster Tycoon 3, Start Menu
+            controlclick, TButton4   ; Next
+            WinWait Setup - RollerCoaster Tycoon 3, Additional
+            controlclick, TButton4   ; Next
+            WinWait Setup - RollerCoaster Tycoon 3, begin
+            controlclick, TButton4   ; Install
+            WinWait, Atari Product Registration
+            controlclick, Button6   ; Close
+            WinWait, Product Registration, skip
+            controlclick, Button2   ; Yes, skip
+        }
+        WinWait Setup - RollerCoaster Tycoon 3, finished
+        if ( u > 0 ) {
+            controlclick, TNewCheckListBox1   ; uncheck Launch
+            controlclick, TButton4   ; Finish
+        }
+        WinWaitClose Setup - RollerCoaster Tycoon 3, finished
+        "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Atari\\RollerCoaster Tycoon 3" RCT3.EXE
 }
 
 #----------------------------------------------------------------
