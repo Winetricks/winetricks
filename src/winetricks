@@ -138,6 +138,24 @@ w_askpermission()
     unset _W_timeout
 }
 
+# Display info message.  Time out quickly if user doesn't click.
+w_info()
+{
+    echo "------------------------------------------------------"
+    echo "$@"
+    echo "------------------------------------------------------"
+
+    _W_timeout="--timeout 3"
+
+    case $WINETRICKS_GUI in
+    zenity) zenity $_W_timeout --info --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    kdialog) kdialog --title winetricks --msgbox "$@" ;;
+    none) ;;
+    esac
+
+    unset _W_timeout
+}
+
 # Display warning message
 w_warn()
 {
@@ -7800,6 +7818,7 @@ load_bioshock_demo()
 {
     w_download http://us.download.nvidia.com/downloads/nZone/demos/nzd_BioShockPC.zip 7a19186602cec5210e4505b58965e8c04945b3cf
 
+    w_info "Unzipping demo, installer will start in about 30 seconds."
     w_try unzip "$W_CACHE/$W_PACKAGE/nzd_BioShockPC.zip" -d "$W_TMP/$W_PACKAGE"
     cd "$W_TMP/$W_PACKAGE/BioShock PC Demo"
 
