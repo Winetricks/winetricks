@@ -9420,6 +9420,136 @@ load_fifa11_demo()
 
 #----------------------------------------------------------------
 
+w_metadata mfsxde games \
+    title="Microsoft Flight Simulator X: Deluxe Edition" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="dvd" \
+    file1="FSX DISK 1.iso" \
+    file2="FSX DISK 2.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Microsoft Flight Simulator X/fsx.exe" \
+    wine_showstoppers="26411"
+
+load_mfsxde()
+{
+    w_workaround_wine_bug 26411 "Game hangs on first screen for me"
+
+    if w_workaround_wine_bug 25139 "Setting virtual desktop so license screen shows up on first run"
+    then
+        w_call vd=1024x768
+    fi
+
+    w_mount "FSX DISK 1"
+
+    if w_workaround_wine_bug 25558 "Copying disc to hard drive.  This will take a few minutes."
+    then
+        cd "$W_CACHE/$W_PACKAGE"
+        # Copy takes a LONG time, so offer a way to avoid copy while debugging verb
+        if test ! -f bothdiscs/setup.exe
+        then
+            mkdir bothdiscs
+            cd bothdiscs
+            w_try cp -r "$W_ISO_MOUNT_ROOT"/* .
+
+            # A few files are on both DVDs. Remove them manually so cp doesn't complain.
+            rm -f DVDCheck.exe autorun.inf fsx.ico vcredist_x86.exe
+
+            # Make the directories writable, else 2nd disc copy will fail.
+            w_try chmod -R +w .
+
+            w_mount "FSX DISK 2"
+
+            # On Linux, use symlinks for disc 2.  (On Cygwin, we'd have to copy.)
+            w_try ln -s "$W_ISO_MOUNT_ROOT"/* .
+
+            # Make the files writable, otherwise you'll get errors when trying to remove bothdiscs.
+            chmod -R +w .
+
+            # If you leave it mounted, it doesn't ask for the second disk to be inserted.
+            # If you mount it without extracting though, the install fails. 
+            # Apparently it uses the files from the cache, but does a disk check.
+        else
+            cd bothdiscs
+        fi
+    else
+        w_die "non-broken case not yet supported for this game"
+    fi
+
+    w_ahk_do "
+        SetWinDelay 1000
+        SetTitleMatchMode, 2
+        run setup.exe,,,mfs_pid
+        winwait, Microsoft Flight Simulator X, To continue, click Install
+        ControlClick, Button1, Microsoft Flight Simulator X, To continue
+        ; Accept license:
+        winwait, Flight Simulator X - End User License Agreement
+        controlclick, Button1, Flight Simulator X - End User License Agreement
+        winwait, Microsoft Flight Simulator X Product Activation Wizard
+        ; Activate later, currently broken on Wine, see http://bugs.winehq.org/show_bug.cgi?id=25579
+        controlclick, Button2, Microsoft Flight Simulator X Product Activation Wizard
+        sleep 1000
+        controlclick, Button5, Microsoft Flight Simulator X Product Activation Wizard
+        ; Close main window:
+        winwait, Microsoft Flight Simulator, LEARNING CENTER
+        ; A winclose/winkill isn't forceful enough:
+        process, close, fsx.exe
+        ; Setup doesn't close on its own, because this process doesn't exit cleanly
+        process, close, IDriver.exe
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Microsoft Flight Simulator X" "fsx.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata mfsx_demo games \
+    title="Microsoft Flight Simulator X Demo" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="FSXDemo.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Microsoft Flight Simulator X Demo/fsx.exe" \
+    wine_showstoppers="26411"
+
+load_mfsx_demo()
+{
+    w_workaround_wine_bug 26411 "Game hangs on first screen for me"
+
+    if w_workaround_wine_bug 25139 "Setting virtual desktop so license screen shows up on first run"
+    then
+        w_call vd=1024x768
+    fi
+
+    w_download http://download.microsoft.com/download/4/7/7/477dcc35-0b98-42c5-b06f-7ded38a40491/FSXDemo.exe cbb13d2a7918f409f224eab7d3a2014330fc87bc
+    cd "$W_TMP"
+    unzip "$W_CACHE/$W_PACKAGE"/FSXDemo.exe
+    w_ahk_do "
+        SetWinDelay 1000
+        SetTitleMatchMode, 2
+        run setup.exe,,,mfs_pid
+        winwait, Microsoft Flight Simulator X, To continue, click Install
+        ControlClick, Button1, Microsoft Flight Simulator X, To continue
+        ; Accept license:
+        winwait, Flight Simulator X - End User License Agreement
+        controlclick, Button1, Flight Simulator X - End User License Agreement
+        winwait, Microsoft Flight Simulator X Product Activation Wizard
+        ; Activate later, currently broken on Wine, see http://bugs.winehq.org/show_bug.cgi?id=25579
+        controlclick, Button2, Microsoft Flight Simulator X Product Activation Wizard
+        sleep 1000
+        controlclick, Button5, Microsoft Flight Simulator X Product Activation Wizard
+        ; Close main window:
+        winwait, Microsoft Flight Simulator, LEARNING CENTER
+        ; A winclose/winkill isn't forceful enough:
+        process, close, fsx.exe
+        ; Setup doesn't close on its own, because this process doesn't exit cleanly
+        process, close, IDriver.exe
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Microsoft Flight Simulator X" "fsx.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata gothic4_demo games \
     title="Gothic 4 demo (drm broken on wine)" \
     publisher="Jowood" \
