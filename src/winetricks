@@ -468,7 +468,8 @@ w_download_to()
                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
                ${_W_agent:+--user-agent="$_W_agent"} \
                "$_W_url"
-        else
+        elif [ -x "`which curl 2>/dev/null`" ]
+        then
            # curl doesn't get filename from the location given by the server!
            # fortunately, we know it
            curl -L -o "$_W_file" -C - \
@@ -476,6 +477,8 @@ w_download_to()
                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
                ${_W_agent:+--user-agent "$_W_agent"} \
                "$_W_url"
+        else
+            w_die "Please install wget (or, if that's not available, curl)"
         fi
         if test $? != 0
         then
