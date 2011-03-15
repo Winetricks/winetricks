@@ -9150,21 +9150,32 @@ load_dragonage()
         exit 0
     "
 
-    if w_workaround_wine_bug 22308 "tell user how to work around blurry cut scenes"
+    # FIXME: does this directory name change in win7?
+    ini="$W_DRIVE_C/users/$USERNAME/My Documents/BioWare/Dragon Age/Settings/DragonAge.ini"
+    if ! test -f "$ini"
     then
-        w_warn "Turn off frame buffer effects to avoid blurry cut scenes.  See http://bugs.winehq.org/show_bug.cgi?id=22307"
+        w_warn "$ini not found?"
+    else
+        cp -f "$ini" "$ini.old"
     fi
-    if w_workaround_wine_bug 22383 "use strictdrawordering to reduce flickering"
+    if w_workaround_wine_bug 22308 "Setting EnableFrameBufferEffects=0 to work around blurry cut scenes"
+    then
+        sed 's,EnableFrameBufferEffects=1,EnableFrameBufferEffects=0,' < "$ini" > "$ini.new"
+        mv -f "$ini.new" "$ini"
+    fi
+    if w_workaround_wine_bug 22383 "use strictdrawordering to avoid video problems"
     then
         w_call strictdrawordering=enabled
     fi
-    if w_workaround_wine_bug 23730 "tell user how to reduce flickering"
+    if w_workaround_wine_bug 22557 "Setting UseVSync=0 to avoid black menu"
     then
-        w_warn "Run with WINEDEBUG=-all to reduce flickering."
+        sed 's,UseVSync=1,UseVSync=0,' < "$ini" > "$ini.new"
+        mv -f "$ini.new" "$ini"
     fi
-    if w_workaround_wine_bug 23081 "tell user another way to reduce flickering"
+    if w_workaround_wine_bug 26435 "Setting SoundDisabled=0 to fix sound"
     then
-        w_warn "If you still see flickering, try applying the patch from http://bugs.winehq.org/show_bug.cgi?id=23081"
+        sed 's,SoundDisabled=1,SoundDisabled=0,' < "$ini" > "$ini.new"
+        mv -f "$ini.new" "$ini"
     fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Dragon Age" "bin_ship\\daorigins.exe"
