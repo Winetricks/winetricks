@@ -13104,7 +13104,7 @@ winetricks_stats_report()
     echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
 
     report="os=`winetricks_os_description`&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
-    report="`echo $report | tr -d ' '`"
+    report="`echo $report | tr ' ' '%20'`"
     # Just do a HEAD request with the raw commandline.  
     # Yes, this can be fooled by caches.  That's ok.
     if [ -x "`which wget 2>/dev/null`" ]
