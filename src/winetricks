@@ -1088,6 +1088,7 @@ w_workaround_wine_bug()
     de*) w_warn "Wine-Fehler ${1} wird umgegangen $_W_msg" ;;
     *)   w_warn "Working around wine bug ${1} $_W_msg" ;;
     esac
+    winetricks_stats_log_command w_workaround_wine_bug "$*"
     return 0
 }
 
@@ -1241,6 +1242,7 @@ w_do_call()
 
         # We'd like to get rid of W_PACKAGE, but for now, just set it as late as possible.
         W_PACKAGE=$1
+        winetricks_stats_log_command $*
         w_try load_$cmd $arg
 
         # User-specific postinstall hook.
@@ -13160,8 +13162,6 @@ winetricks_shell()
 # Usage: execute_command verb[=argument]
 execute_command()
 {
-    winetricks_stats_log_command $*
-
     case $1 in
     *=*) arg=`echo $1 | sed 's/.*=//'`; cmd=`echo $1 | sed 's/=.*//'`;;
     *) cmd=$1; arg="" ;;
