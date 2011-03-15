@@ -1209,14 +1209,20 @@ w_do_call()
         fi
 
         # If needed, set the app's wineprefix
-        case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-        apps-0|benchmarks-0|games-0)
-            winetricks_set_wineprefix $cmd
-            # If it's a new wineprefix, give it metadata
-            if test ! -f "$WINEPREFIX"/wrapper.cfg
-            then
-                echo ww_name=\"$title\" > "$WINEPREFIX"/wrapper.cfg
-            fi
+        case "$OS" in
+        Windows_NT)
+            ;;
+        *)
+            case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+            apps-0|benchmarks-0|games-0)
+                winetricks_set_wineprefix $cmd
+                # If it's a new wineprefix, give it metadata
+                if test ! -f "$WINEPREFIX"/wrapper.cfg
+                then
+                    echo ww_name=\"$title\" > "$WINEPREFIX"/wrapper.cfg
+                fi
+                ;;
+            esac
             ;;
         esac
 
@@ -1840,25 +1846,41 @@ winetricks_is_installed()
     elif test "$installed_file1"
     then
         _W_file="$installed_file1"
+    else
+        return 1  # not installed
     fi
-    # Compute wineprefix for this app
-    case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
-    apps-0|benchmarks-0|games-0)
-        _W_prefix="$W_PREFIXES_ROOT/$1"
-        ;;
-    *)
-        _W_prefix="$WINEPREFIX"
-        ;;
-    esac
-    if test "$_W_file" && test -d "$_W_prefix/dosdevices"
-    then
-        _W_file_unix="`WINEPREFIX="$_W_prefix" w_pathconv -u "$_W_file"`"
-        if test -f "$_W_file_unix" && ! grep -q "Wine placeholder DLL" "$_W_file_unix"
+
+    case "$OS" in
+    Windows_NT)
+        # On Windows, there's no wineprefix, just check if file's there
+        _W_file_unix="`w_pathconv -u "$_W_file"`"
+        if test -f "$_W_file_unix"
         then
             unset _W_file _W_file_unix _W_prefix
             return 0  # installed
         fi
-    fi
+        ;;
+    *)
+        # Compute wineprefix for this app
+        case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+        apps-0|benchmarks-0|games-0)
+            _W_prefix="$W_PREFIXES_ROOT/$1"
+            ;;
+        *)
+            _W_prefix="$WINEPREFIX"
+            ;;
+        esac
+        if test -d "$_W_prefix/dosdevices"
+        then
+            _W_file_unix="`WINEPREFIX="$_W_prefix" w_pathconv -u "$_W_file"`"
+            if test -f "$_W_file_unix" && ! grep -q "Wine placeholder DLL" "$_W_file_unix"
+            then
+                unset _W_file _W_file_unix _W_prefix
+                return 0  # installed
+            fi
+        fi
+        ;;
+    esac
     unset _W_file _W_prefix  # leak _W_file_unix for caller.  Is this wise?
     return 1  # not installed
 }
