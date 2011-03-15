@@ -8330,6 +8330,53 @@ load_cod4mw_demo()
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Activision\\Call of Duty 4 - Modern Warfare Demo" "iw3sp.exe"
 }
 
+#----------------------------------------------------------
+
+w_metadata cojbib_demo games \
+    title="Call of Juarez: Bound in Blood Demo" \
+    publisher="Ubisoft" \
+    year="2009" \
+    media="download" \
+    file1="CoJ2PC_20090713_DEMO_16_buy_now_INSTALLER.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Demo/Techland/Call of Juarez - Bound in Blood SP Demo/CoJBiBDemo_x86.exe"
+
+load_cojbib_demo()
+{
+    w_download http://gamedaily.newaol.com/pub/CoJ2PC_20090713_DEMO_16_buy_now_INSTALLER.exe 6426101f6c77bacd57c8449b12a3c76db7f761f0
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode 2
+        SetWinDelay 500
+        run CoJ2PC_20090713_DEMO_16_buy_now_INSTALLER.exe
+        winwait Setup, language
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick button1 ; next
+            winwait Call of Juarez, Welcome
+            controlclick button1 ; next
+            winwait Call of Juarez, License
+            controlclick button2 ; yes
+            winwait Call of Juarez, Location
+            controlclick button1 ; next
+            winwait Call of Juarez, Start
+            controlclick button1 ; next
+        }
+        winwait Call of Juarez, Complete
+        if ( u > 0 )
+            controlclick button2 ; next
+
+        winwaitclose Call of Juarez
+    "
+
+    if w_workaround_wine_bug 9612 "setting maxshadowsize=0"
+    then
+        w_call dsoundbug9612
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Demo\\Techland\\Call of Juarez - Bound in Blood SP Demo" "CoJBiBDemo_x86.exe"
+}
+
 #----------------------------------------------------------------
 
 w_metadata civ4_demo games \
