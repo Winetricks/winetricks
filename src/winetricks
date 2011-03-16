@@ -10551,6 +10551,43 @@ load_lemonysnicket()
 
 #----------------------------------------------------------------
 
+w_metadata luxor_ar games \
+    title="Luxor Amun Rising" \
+    publisher="MumboJumbo" \
+    year="2006" \
+    media="cd" \
+    file1="LUXOR_AMUNRISING.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/MumboJumbo/Luxor Amun Rising/Luxor AR.exe"
+
+load_luxor_ar()
+{
+    w_mount LUXOR_AMUNRISING
+
+    w_ahk_do "
+        SetWinDelay, 500
+        SetTitleMatchMode, 2
+        run, ${W_ISO_MOUNT_LETTER}:Luxor_AR_Setup.exe
+        winwait, Luxor
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            ControlClick, Button2   ; Agree
+            winwait, Folder
+            ControlClick, Button2   ; Install
+            winwait, Completed
+            ControlClick, Button2   ; Next
+        }
+        winwait, Success
+        if ( u > 0 ) {
+            ControlClick, Button6   ; Uncheck Play
+            ControlClick, Button2   ; Close
+        }
+        winwaitclose
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\MumboJumbo\\Luxor Amun Rising" "Luxor AR.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata masseffect2 games \
     title="Mass Effect 2 (drm broken on wine)" \
     publisher="BioWare" \
