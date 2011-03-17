@@ -2228,14 +2228,26 @@ winetricks_cache_iso()
       WINETRICKS_DD_PID=$!
       ;;
     esac
+    echo $WINETRICKS_DD_PID > $WINETRICKS_WORKDIR/dd-pid
 
     # Note: if user presses ^C, winetricks_cleanup will call winetricks_iso_cleanup
-    while ps -p $WINETRICKS_DD_PID > /dev/null 2>&1
-    do
-      sleep 5
-      ls -l "$W_CACHE"/temp.iso
-    done
-    unset WINETRICKS_DD_PID
+    case $WINETRICKS_GUI in
+    none)
+        while ps -p $WINETRICKS_DD_PID > /dev/null 2>&1
+        do
+          sleep 5
+          ls -l "$W_CACHE"/temp.iso
+        done
+        ;;
+    *)
+        while ps -p $WINETRICKS_DD_PID > /dev/null 2>&1
+        do
+          echo 1
+          sleep 2
+        done | zenity --title "Copying to $_W_expected_volname.iso" --progress --pulsate --auto-kill
+        ;;
+    esac
+    rm $WINETRICKS_WORKDIR/dd-pid
 
     mv "$W_CACHE"/temp.iso "$WINETRICKS_IMG"
 
@@ -2443,10 +2455,10 @@ winetricks_cleanup()
 winetricks_kill_handler()
 {
     #echo "Caught signal, cleaning up."
-    case "$WINETRICKS_DD_PID" in
-    "") ;;
-    *) kill $WINETRICKS_DD_PID ;;
-    esac
+    if test -f $WINETRICKS_WORKDIR/dd-pid
+    then
+        kill `cat "$WINETRICKS_WORKDIR/dd-pid"`
+    fi
     winetricks_cleanup
     #echo "Done cleanup, quitting."
     exit
