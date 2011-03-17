@@ -9202,6 +9202,8 @@ load_dragonage()
     fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Dragon Age" "bin_ship\\daorigins.exe"
+
+    w_workaround_wine_bug 26211 "You may need to kill DAO or its launcher after each run.  The Process view of taskmgr makes this relatively easy."
 }
 
 #----------------------------------------------------------------
