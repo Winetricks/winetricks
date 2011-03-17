@@ -168,7 +168,7 @@ w_warn()
     esac
 
     case $WINETRICKS_GUI in
-    zenity) zenity $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    zenity) zenity $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
     kdialog) kdialog --title winetricks --error "$@" ;;
     none) ;;
     esac
@@ -9133,7 +9133,7 @@ load_dragonage()
 
     if test "$WINETRICKS_OPT_KEEPISOS" != 1 &&  \
        test ! -f "$W_CACHE/dragonage/DragonAge.iso" &&  \
-       w_workaround_wine_bug 26459 "Archiving ISO to work around a disc detection problem"
+       w_workaround_wine_bug 26459 "Making and mounting an .iso to work around 'Failed to authenticate the disk' error.  After each reboot, you'll need to do [sudo mount -o ro,loop '$W_CACHE/dragonage/DragonAge.iso' /mnt/winetricks] to play Dragon Age.  Someday this will be automated."
     then
         WINETRICKS_OPT_KEEPISOS=1 w_mount DragonAge
     else
