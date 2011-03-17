@@ -9119,9 +9119,17 @@ load_dragonage()
         w_call vcrun2005
     fi
 
-    w_mount DragonAge
+    if test "$WINETRICKS_OPT_KEEPISOS" != 1 &&  \
+       test ! -f "$W_CACHE/dragonage/DragonAge.iso" &&  \
+       w_workaround_wine_bug 26459 "Archiving ISO to work around a disc detection problem"
+    then
+        WINETRICKS_OPT_KEEPISOS=1 w_mount DragonAge
+    else
+        w_mount DragonAge
+    fi
 
     w_ahk_do "
+        SetWinDelay 1000
         Run, ${W_ISO_MOUNT_LETTER}:Setup.exe
         SetTitleMatchMode, 2
         winwait, Installer Language
@@ -9131,7 +9139,6 @@ load_dragonage()
             winwait, Dragon Age: Origins Setup
             ControlClick Next, Dragon Age: Origins Setup
             winwait, Dragon Age: Origins Setup, End User License
-            sleep 1000
             ;ControlClick Button4, Dragon Age: Origins Setup  ; agree
             send {Tab}a  ; agree
             ;ControlClick I agree, Dragon Age: Origins Setup
@@ -9140,17 +9147,19 @@ load_dragonage()
             winwait, Dragon Age: Origins, Registration
             send $W_KEY
             send {Enter}
-            winwait, Dragon Age: Origins Setup, Install Type
-            Sleep 1000
+        }
+        winwait, Dragon Age: Origins Setup, Install Type
+        if ( u > 0 )
             send {Enter}
-        }
-        loop 100
-        {
-            IfWinExist, Dragon Age: Origins Setup
-                sleep 60000
-        }
-        exit 0
+        winwaitclose
     "
+    # Since the installer explodes on exit, just wait for the
+    # last file it's known to create
+    while ! test -f "$W_PROGRAMS_X86_UNIX/Dragon Age/bin_ship/DAOriginsLauncher-MCE.png"
+    do
+        w_info "Waiting for installer to finish..."
+        sleep 1
+    done
 
     # FIXME: does this directory name change in win7?
     ini="$W_DRIVE_C/users/$USERNAME/My Documents/BioWare/Dragon Age/Settings/DragonAge.ini"
