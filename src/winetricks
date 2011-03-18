@@ -2455,7 +2455,7 @@ winetricks_cleanup()
 winetricks_kill_handler()
 {
     #echo "Caught signal, cleaning up."
-    if test -f $WINETRICKS_WORKDIR/dd-pid
+    if test -f "$WINETRICKS_WORKDIR/dd-pid"
     then
         kill `cat "$WINETRICKS_WORKDIR/dd-pid"`
     fi
@@ -13161,6 +13161,7 @@ winetricks_stats_report()
     *) return;;
     esac
 
+    WINETRICKS_STATS_BREADCRUMBS=`cat "$WINETRICKS_WORKDIR"/breadcrumbs | tr '\012' ' '`
     echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
 
     report="os=`winetricks_os_description`&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
@@ -13179,7 +13180,7 @@ winetricks_stats_report()
 winetricks_stats_log_command()
 {
     # log what we execute for possible later statistics reporting
-    WINETRICKS_STATS_BREADCRUMBS="$WINETRICKS_STATS_BREADCRUMBS $*"
+    echo "$*" >> "$WINETRICKS_WORKDIR/breadcrumbs"
 
     # and for the user's own reference later, when figuring out what he did
     case "$OS" in
