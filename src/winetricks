@@ -10821,12 +10821,18 @@ load_masseffect2_demo()
             myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/masseffect2_demo\" wine-hotfix-6971 cmd /c 'C:\\\\\\Run-masseffect2_demo.bat'"
 
             mymenu="$HOME/Desktop/Mass Effect 2 Demo.desktop"
-            # FIXME: add timeout here
+            me2tries=0
             while test ! -f "$mymenu"
             do
+                if test $me2tries -gt 120
+                then
+                    w_die "timeout waiting for winemenubuilder to finish :-("
+                fi
+                me2tries=`expr $me2tries + 1`
                 echo "waiting for winemenubuilder to finish..."
                 sleep 1
             done
+            unset me2tries
             if test -f "$mymenu"
             then
                 # this is a hack, hopefully the wine bug will be fixed soon
