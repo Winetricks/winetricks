@@ -3542,6 +3542,9 @@ load_dotnet20()
     w_download http://kegel.com/wine/l_intl.nls 0d2e3f025bcdf852b192c9408a361ac2659fa249
     w_try cp -f "$W_CACHE"/dotnet20/l_intl.nls "$W_SYSTEM32_DLLS"
 
+    # Hans' workaround to avoid winehq nonbug 26464, crash in servicemodelreg.exe
+    rm -rf "$W_WINDIR_UNIX"/Microsoft.NET/Framework/v2.0.50727
+
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
     w_download http://download.microsoft.com/download/5/6/7/567758a3-759e-473e-bf8f-52154438565a/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
     if [ "$W_UNATTENDED_SLASH_Q"x = ""x ]
