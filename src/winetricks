@@ -9903,7 +9903,7 @@ w_metadata guildwars games \
 
 load_guildwars()
 {
-    w_download "http://guildwars.com/download" a7c4c8cb3b8cbee20707dcf8176d3da6a1686c05 GwSetup.exe
+    w_download "http://guildwars.com/download/" a7c4c8cb3b8cbee20707dcf8176d3da6a1686c05 GwSetup.exe
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -10063,17 +10063,17 @@ w_metadata hon games \
     publisher="S2 Games" \
     year="2010" \
     media="download" \
-    file1="HoNClient-2.0.12.exe" \
+    file1="HoNClient-2.0.17.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Heroes of Newerth/hon.exe"
 
 load_hon()
 {
-    w_download http://dl.heroesofnewerth.com/HoNClient-2.0.12.exe 003f1f8c64df6c52775fe93be76d0bc1cd919109
+    w_download http://dl.heroesofnewerth.com/HoNClient-2.0.17.exe 0387e48929f8a0c5991e0082061986ca79ef11bd
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
-        run, HoNClient-2.0.12.exe
+        run, HoNClient-2.0.17.exe
         winwait, Heroes of Newerth
         u = $W_OPT_UNATTENDED
         if ( u > 0 ) {
