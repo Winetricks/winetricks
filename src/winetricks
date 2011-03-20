@@ -1329,7 +1329,7 @@ w_do_call()
         mkdir -p "$W_TMP"
 
         # Don't install if already installed
-        if winetricks_is_installed $1
+        if test "$WINETRICKS_FORCE" != 1 && winetricks_is_installed $1
         then
             echo "$1 already installed, skipping"
             return 0
@@ -2898,6 +2898,7 @@ Options:
 --isolate: install each app or game in its own bottle
 --no-isolate: install each app or game in its own bottle (default)
 --noclean: don't delete temp directories (useful during debugging)
+--force: don't check whether packages were already installed
 --gui: show gui diagnostics even when driven by commandline
 --showbroken: even show verbs that are currently broken in wine
 Miscellaneous verbs:
@@ -2926,6 +2927,7 @@ winetricks_handle_option()
     --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
     --no-isolate) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
     --noclean) W_OPT_NOCLEAN=1 ;;
+    --force) WINETRICKS_FORCE=1;;
     --gui) winetricks_detect_gui;;
     --showbroken) W_OPT_SHOWBROKEN=1 ;;
     --optin) WINETRICKS_STATS_REPORT=1;;
