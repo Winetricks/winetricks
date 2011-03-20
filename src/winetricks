@@ -3830,8 +3830,8 @@ w_metadata flash dlls \
    media="download" \
    file1="install_flash_player.exe" \
    file2="install_flash_player_ax.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10m_Plugin.exe" \
-   installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10m_ActiveX.exe"
+   installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10n_Plugin.exe" \
+   installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10n_ActiveX.exe"
 
 load_flash()
 {
@@ -3842,7 +3842,8 @@ load_flash()
     # http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_active_x.msi
     # 2010-11-04: sha1sum 58412bcc83e349be50cafe0e1c46e19088620866
     # 2011-02-12: sha1sum 944c1f2055cd85af37ef44629773c2cf1d02a21c
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_ax.exe 944c1f2055cd85af37ef44629773c2cf1d02a21c
+    # 2011-02-24: sha1sum f2e6a3f486423d6c1be48ad80fb3b7d4cdafd29d
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_ax.exe f2e6a3f486423d6c1be48ad80fb3b7d4cdafd29d
     cd "$W_CACHE"/flash
 
     if [ $W_UNATTENDED_SLASH_Q ]
@@ -3855,7 +3856,8 @@ load_flash()
     # Mozilla / Firefox plugin
     # 2010-11-04: sha1sum 09f2491c5bec7286155234f4e6e1af70c7cef78f
     # 2011-02-12: sha1sum 4a650caf62d8841d14b9d7888ab9b69d5d6f617a
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player.exe 4a650caf62d8841d14b9d7888ab9b69d5d6f617a
+    # 2011-02-24: sha1sum 009c908cdb73fba18b34e798b1f601ed964102a1
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player.exe 009c908cdb73fba18b34e798b1f601ed964102a1
     if [ $W_UNATTENDED_SLASH_Q ]
     then
         w_try $WINE install_flash_player.exe /install
@@ -7345,7 +7347,7 @@ w_metadata wmp9 dlls \
    year="2003" \
    media="download" \
    file1="MPSetup.exe" \
-   installed_file1="$W_SYSTEM32_DLLS"/l3codeca.acmx
+   installed_file1="$W_SYSTEM32_DLLS"/l3codeca.acm
 
 load_wmp9()
 {
