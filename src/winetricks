@@ -621,6 +621,101 @@ w_download_manual()
     w_download_manual_to $W_PACKAGE "$@"
 }
 
+# Usage:
+# w_steam_install_game steamidnum windowtitle
+w_steam_install_game()
+{
+    _W_steamid=$1
+    _W_steamtitle="$2"
+
+    # These should be loaded from a config file, but we haven't yet defined one
+    if [ "$W_STEAM_ID"x = ""x ] # steam id not supplied
+    then
+        w_die "You must supply W_STEAM_ID= with your steam login name"
+    fi
+    if [ "$W_STEAM_PASSWORD"x = ""x ] # steam password not supplied
+    then
+        w_die "You must supply W_STEAM_PASSWORD= with your steam password"
+    fi
+
+    # Install the steam runtime
+    WINETRICKS_OPT_SHAREDPREFIX=1 w_call steam
+
+    # Steam puts up a bunch of windows.  Here's the sequence:
+    # "Steam - Updating" - wait for it to close.  May appear twice in a row.
+    # "Steam - Login" - wait for it to close (credentials already given on cmdline)
+    # "Steam" (small window) - connecting, wait for it to close
+    # "Steam" (large window) - the main window
+    # "Steam - Updates News" - close it forcefully
+    # "Install - $title" - send enter, click a couple checkboxes, send enter again
+    # "Updating $title" - small download progress dialog
+    # "Steam - Ready" game install done.  (Only comes up if main window not up.)
+
+    cd "$W_PROGRAMS_X86_UNIX/Steam"
+    w_ahk_do "
+        SetTitleMatchMode 2 
+        SetWinDelay 500
+        ; Run steam once until it finishes its initial update.  
+        ; For me, this exits at 26%.
+        run, Steam.exe
+        winwait, Steam - Updating
+        winwaitclose, Steam
+        process close, Steam.exe
+        ; Run a second time; let it finish updating, then kill it.
+        run steam.exe
+        winwait Steam - Updating
+        winwaitclose
+        process close, Steam.exe
+        ; Run a third time, have it log in, wait until it has finished connecting
+        run steam.exe -applaunch $_W_steamid -login $W_STEAM_ID $W_STEAM_PASSWORD 
+        winwait Steam  ; wait for login window
+        winwaitclose
+        winwait Steam  ; wait for small <<connecting>> window
+        winwaitclose
+        ; Run a fourth time, have it install the app.
+        run steam.exe -applaunch $_W_steamid
+        winwait Install - $_W_steamtitle
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            ;msgbox Sleeping 20 seconds
+            ;sleep 20000 ; slight down-time at this point
+            ;msgbox Sending enter
+            ;winactivate
+            send {enter}          ; next (for 1st of 3 pages of install dialog)
+            sleep 1000
+            click 32, 91          ; uncheck create menu item?
+            click 32, 119         ; check create desktop icon?
+            send {enter}          ; next (for 2nd of 3 pages of install dialog)
+            ; dismiss any news dialogs, and click 'next' on third page of install dialog
+            loop
+            {
+                sleep 1000
+                ifwinexist Steam - Updates News
+                    winclose
+                send {enter}      ; next (for 3rd of 3 pages of install dialog)
+                ifwinnotexist $_W_steamtitle
+                    break
+            }
+        }
+        ; relaunch to coax steam into showing its nice small download progress dialog
+        process close, Steam.exe
+        run steam.exe -login $W_STEAM_ID $W_STEAM_PASSWORD -applaunch $_W_steamid
+        winwait Ready -
+        process close, Steam.exe
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam" "steam.exe -login $W_STEAM_ID $W_STEAM_PASSWORD -applaunch $_W_steamid"
+
+    myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/$W_PACKAGE\" wine cmd /c 'C:\\\\\\Run-$W_PACKAGE.bat'"
+    mymenu="$HOME/.local/share/applications/wine/Programs/Steam/$_W_steamtitle.desktop"
+    if test -f "$mymenu" && w_workaround_wine_bug 26487 "Fixing system menu"
+    then
+        sed -i "s,Exec=.*,$myexec," "$mymenu"
+    fi
+
+    unset _W_steamid _W_steamtitle
+}
+
 # Usage: w_mount "volume name"
 # FIXME: should take mount option 'unhide' for poorly mastered discs
 w_mount()
@@ -7014,7 +7109,8 @@ w_metadata steam apps \
 
 load_steam()
 {
-    w_download http://storefront.steampowered.com/download/SteamInstall.msi a0ca8791b7b2e96665ee059e03eebbfb3d95be55
+    # 18 Mar 2011 7f2fee9ffeaba8424a6c76d6c95b794735ac9959
+    w_download http://storefront.steampowered.com/download/SteamInstall.msi 7f2fee9ffeaba8424a6c76d6c95b794735ac9959
     cd "$W_CACHE"/steam
     w_try $WINE msiexec /i SteamInstall.msi $W_UNATTENDED_SLASH_Q
     if ! test -f "$W_FONTSDIR_UNIX/Times.TTF"
@@ -7022,10 +7118,7 @@ load_steam()
         w_warn "Installing corefonts to prvent a Steam crash; see wine bug 22751"
         w_call corefonts
     fi
-    if w_workaround_wine_bug 22053
-    then
-        w_warn "Once Steam is running, disable player notifications and in-game chat in Settings, or games will crash on launch; see wine bug 22053"
-    fi
+    w_workaround_wine_bug 22053 "Once Steam is running, disable player notifications and in-game chat in Settings, or games will crash on launch; see wine bug 22053"
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam" "Steam.exe"
 }
@@ -12311,6 +12404,83 @@ load_zootycoon2_demo()
         "
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Zoo Tycoon 2 Trial Version" "zt2demoretail.exe"
+}
+
+#----------------------------------------------------------------
+# Steam Games
+#----------------------------------------------------------------
+
+w_metadata alienswarm_steam games \
+    title="Alien Swarm (Steam)" \
+    publisher="Valve" \
+    year="2010" \
+    media="download" \
+    installed_exe="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/alien swarm/swarm.exe"
+
+load_alienswarm_steam()
+{
+    w_steam_install_game 630 "Alien Swarm"
+}
+
+#----------------------------------------------------------------
+
+w_metadata borderlands_steam games \
+    title="Borderlands (Steam, nonfree)" \
+    publisher="2K Games" \
+    year="2009" \
+    media="download" \
+    installed_exe="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/borderlands/Binaries/Borderlands.exe"
+
+load_borderlands_steam()
+{
+    w_steam_install_game 8980 "Borderlands"
+}
+
+#----------------------------------------------------------------
+
+w_metadata ruse_demo_steam games \
+    title="Ruse Demo (Steam)" \
+    publisher="Ubisoft" \
+    year="2010" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/r.u.s.e. demo/Ruse.exe"
+
+load_ruse_demo_steam()
+{
+    w_steam_install_game 33310 "R.U.S.E."
+
+    if w_workaround_wine_bug 26041
+    then
+        w_call xact
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata supermeatboy_steam games \
+    title="Super Meat Boy (Steam, nonfree)" \
+    publisher="Independent" \
+    year="2010" \
+    media="download" \
+    installed_exe="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/super meat boy/SuperMeatBoy.exe"
+
+load_supermeatboy_steam()
+{
+    w_steam_install_game 40800 "Super Meat Boy"
+}
+
+#----------------------------------------------------------------
+
+w_metadata wormsreloaded_demo_steam games \
+    title="Worms Reloaded Demo (Steam)" \
+    publisher="Team17" \
+    year="2010" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/worms reloaded/WormsReloaded.exe"
+
+load_wormsreloaded_demo_steam()
+{
+    w_steam_install_game 22690 "Worms Reloaded"
 }
 
 #----------------------------------------------------------------
