@@ -12453,9 +12453,9 @@ load_ruse_demo_steam()
 {
     w_steam_install_game 33310 "R.U.S.E."
 
-    if w_workaround_wine_bug 26041
+    if w_workaround_wine_bug 21939 "Installing Windows Media so game can start"
     then
-        w_call xact
+        w_call wmp9
     fi
 }
 
