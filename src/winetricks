@@ -7115,12 +7115,16 @@ load_steam()
     w_download http://storefront.steampowered.com/download/SteamInstall.msi 7f2fee9ffeaba8424a6c76d6c95b794735ac9959
     cd "$W_CACHE"/steam
     w_try $WINE msiexec /i SteamInstall.msi $W_UNATTENDED_SLASH_Q
-    if ! test -f "$W_FONTSDIR_UNIX/Times.TTF"
+    if ! test -f "$W_FONTSDIR_UNIX/Times.TTF" && \
+       w_workaround_wine_bug 22751 "Installing corefonts to prevent a Steam crash"
     then
-        w_warn "Installing corefonts to prvent a Steam crash; see wine bug 22751"
         w_call corefonts
     fi
-    w_workaround_wine_bug 22053 "Once Steam is running, disable player notifications and in-game chat in Settings, or games will crash on launch; see wine bug 22053"
+    # Not all users need this disabled, but let's play it safe for now
+    if w_workaround_wine_bug 22053 "Disabling gameoverlayrenderer to prevent game crashes on some machines."
+    then
+        w_override_dlls disabled gameoverlayrenderer
+    fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam" "Steam.exe"
 }
