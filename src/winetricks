@@ -12565,6 +12565,24 @@ load_ruse_demo_steam()
     then
         w_call wmp9
     fi
+
+    if w_workaround_wine_bug 22016 "Turning off HDR to avoid washed out graphics"
+    then
+        for dir in "$W_PROGRAMS_X86_UNIX/Steam/userdata"/*/config
+        do
+            file=../33310/local/Option.ini
+            if test -f $file
+            then
+                sed -i "s/UseHDR = true/UseHDR = false/" $file
+            else
+                mkdir -p ../33310/local
+                cat > "$file" <<_EOF_
+[advanced_video]
+        UseHDR = false
+_EOF_
+            fi
+        done
+    fi
 }
 
 #----------------------------------------------------------------
