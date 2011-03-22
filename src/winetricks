@@ -1316,6 +1316,12 @@ w_metadata()
     # Used to use perl here, but that was too slow on cygwin.
     for arg
     do
+        case "$arg" in
+        installed_exe1=/*) w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_exe1, should be a windows path";;
+        esac
+        case "$arg" in
+        installed_file1=/*) w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_file1, should be a windows path";;
+        esac
         # Use longest match when stripping value,
         # and shortest match when stripping name,
         # so descriptions can have embedded equals signs
@@ -4022,7 +4028,7 @@ w_metadata gecko110 dlls \
    year="2010" \
    media="download" \
    file1="wine_gecko-1.1.0-x86.cab" \
-   installed_file1="$W_SYSTEM32_DLLS/gecko/1.1.0/wine_gecko/nspr4.dll"
+   installed_file1="$W_SYSTEM32_DLLS_WIN/gecko/1.1.0/wine_gecko/nspr4.dll"
 
 load_gecko110()
 {
@@ -4060,7 +4066,7 @@ w_metadata gecko120 dlls \
    year="2011" \
    media="download" \
    file1="wine_gecko-1.2.0-x86.msi" \
-   installed_file1="$W_SYSTEM32_DLLS/gecko/1.2.0/wine_gecko/nspr4.dll"
+   installed_file1="$W_SYSTEM32_DLLS_WIN/gecko/1.2.0/wine_gecko/nspr4.dll"
 
 load_gecko120()
 {
@@ -4269,7 +4275,7 @@ w_metadata kde apps \
     year="2011" \
     media="download" \
     file1="kdewin-installer-gui-0.9.8-1.exe" \
-    installed_exe1="$W_PROGRAMS_UNIX/kde/etc/installer.ini" \
+    installed_exe1="$W_PROGRAMS_WIN/kde/etc/installer.ini" \
     homepage="http://windows.kde.org" \
     unattended="no"
 
@@ -4407,7 +4413,7 @@ w_metadata mozillabuild apps \
     year="2010" \
     media="download" \
     file1="MozillaBuildSetup-1.5.1.exe" \
-    installed_file1="$W_DRIVE_C/mozilla-build/start-l10n.bat" \
+    installed_file1="c:/mozilla-build/start-l10n.bat" \
     homepage="https://wiki.mozilla.org/MozillaBuild"
 
 load_mozillabuild()
@@ -4540,7 +4546,7 @@ w_metadata msmask dlls \
     year="2009" \
     media="download" \
     file1="MSMASK32.CAB" \
-    installed_file1="$W_SYSTEM32_DLLS/msmask32.ocx"
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msmask32.ocx"
 
 load_msmask()
 {
@@ -4648,7 +4654,7 @@ w_metadata openwatcom apps \
     year="2010" \
     media="download" \
     file1="open-watcom-c-win32-1.9.exe" \
-    installed_file1="$W_DRIVE_C/WATCOM/owsetenv.bat" \
+    installed_file1="c:/WATCOM/owsetenv.bat" \
     homepage="http://www.openwatcom.org"
 
 load_openwatcom()
@@ -4685,7 +4691,7 @@ w_metadata pdh dlls \
     year="2001" \
     media="download" \
     file1="pdhinst.exe" \
-    installed_file1="$W_SYSTEM32_DLLS/pdh.dll"
+    installed_file1="$W_SYSTEM32_DLLS_WIN/pdh.dll"
 
 load_pdh()
 {
@@ -5308,7 +5314,7 @@ w_metadata vjrun20 dlls \
    year="2007" \
    media="download" \
    file1="vjredist.exe" \
-   installed_file1="$W_DRIVE_C/windows/Microsoft.NET/Framework/VJSHARP/VJSharpSxS10.dll"
+   installed_file1="c:/windows/Microsoft.NET/Framework/VJSHARP/VJSharpSxS10.dll"
 
 load_vjrun20()
 {
@@ -5432,7 +5438,7 @@ w_metadata wsh56js dlls \
    year="2006" \
    media="download" \
    file1="Windows2000-KB917344-56-x86-enu.exe" \
-   installed_file1="$W_DRIVE_C/windows/inf/jscren.inf"
+   installed_file1="c:/windows/inf/jscren.inf"
 
 load_wsh56js()
 {
@@ -5554,7 +5560,7 @@ w_metadata xmllite dlls \
     year="2006" \
     media="download" \
     file1="WindowsXP-KB915865-v11-x86-ENU.exe" \
-    installed_file1="$W_SYSTEM32_DLLS/xmllite.dll"
+    installed_file1="$W_SYSTEM32_DLLS_WIN/xmllite.dll"
 
 load_xmllite()
 {
@@ -6236,7 +6242,7 @@ w_metadata colorprofile apps \
    year="2005" \
    media="download" \
    file1="ColorProfile.exe" \
-   installed_exe1="$W_DRIVE_C/windows/system32/spool/drivers/color/sRGB Color Space Profile.icm"
+   installed_exe1="c:/windows/system32/spool/drivers/color/sRGB Color Space Profile.icm"
 
 load_colorprofile()
 {
@@ -7454,7 +7460,7 @@ w_metadata wmp9 dlls \
    year="2003" \
    media="download" \
    file1="MPSetup.exe" \
-   installed_file1="$W_SYSTEM32_DLLS"/l3codeca.acm
+   installed_file1="$W_SYSTEM32_DLLS_WIN"/l3codeca.acm
 
 load_wmp9()
 {
@@ -7499,7 +7505,7 @@ w_metadata wmp10 dlls \
    year="2006" \
    media="download" \
    file1="MP10Setup.exe" \
-   installed_file1="$W_SYSTEM32_DLLS"/l3codecp.acm
+   installed_file1="$W_SYSTEM32_DLLS_WIN/l3codecp.acm"
 
 load_wmp10()
 {
