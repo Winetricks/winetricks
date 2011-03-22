@@ -677,10 +677,6 @@ w_steam_install_game()
         winwait Install - $_W_steamtitle
         u = $W_OPT_UNATTENDED
         if ( u > 0 ) {
-            ;msgbox Sleeping 20 seconds
-            ;sleep 20000 ; slight down-time at this point
-            ;msgbox Sending enter
-            ;winactivate
             send {enter}          ; next (for 1st of 3 pages of install dialog)
             sleep 1000
             click 32, 91          ; uncheck create menu item?
