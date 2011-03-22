@@ -12116,6 +12116,26 @@ _EOF_
 
 #----------------------------------------------------------------
 
+w_metadata wglgears benchmarks \
+    title="wglgears" \
+    publisher="Clinton L. Jeffery" \
+    year="2005" \
+    media="download" \
+    file1="wglgears.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/misc/wglgears.exe"
+
+load_wglgears()
+{
+    w_download http://www.cs.nmsu.edu/~jeffery/win32/wglgears.exe d65d2098bc11af76cb614946342913b1af62924d
+    mkdir -p "$W_PROGRAMS_X86_UNIX/misc"
+    cp "$W_CACHE"/wglgears/wglgears.exe "$W_PROGRAMS_X86_UNIX/misc"
+    chmod +x "$W_PROGRAMS_X86_UNIX/misc/wglgears.exe"
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\misc" wglgears.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata stalker_pripyat_bench benchmarks \
     title="S.T.A.L.K.E.R Call of Pripyat benchmark" \
     publisher="GSC Game World" \
