@@ -7379,9 +7379,9 @@ load_wmp9()
     w_try_regedit /D "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Cdr4_2K"
     w_try_regedit /D "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Cdralw2k"
 
-    w_unset_winver
-
     load_wm9codecs
+
+    w_unset_winver
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Windows Media Player" "wmplayer.exe"
 }
@@ -7416,6 +7416,8 @@ load_wmp10()
     w_try_regedit /D "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Cdralw2k"
 
     load_wm9codecs
+
+    w_unset_winver
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Windows Media Player" "wmplayer.exe"
 }
