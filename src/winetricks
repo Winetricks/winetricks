@@ -4043,7 +4043,7 @@ load_gecko110()
         ;;
     esac
 
-    w_download "http://downloads.sourceforge.net/wine/wine_gecko-1.1.0-x86.cab" 1b6c637207b6f032ae8a52841db9659433482714 wine_gecko-1.1.0-x86.cab
+    w_download http://downloads.sourceforge.net/project/wine/Wine%20Gecko/1.1.0/wine_gecko-1.1.0-x86.cab 1b6c637207b6f032ae8a52841db9659433482714
 
     mkdir -p "$W_SYSTEM32_DLLS/gecko/1.1.0"
     cd "$W_SYSTEM32_DLLS/gecko/1.1.0"
@@ -4079,7 +4079,7 @@ load_gecko120()
         ;;
     esac
 
-    w_download "http://downloads.sourceforge.net/wine/wine_gecko-1.2.0-x86.msi" 6964d1877668ab7da07a60f6dcf23fb0e261a808 wine_gecko-1.2.0-x86.msi
+    w_download http://downloads.sourceforge.net/project/wine/Wine%20Gecko/1.2.0/wine_gecko-1.2.0-x86.msi 6964d1877668ab7da07a60f6dcf23fb0e261a808
 
     w_try $WINE msiexec /i "$W_CACHE"/gecko120/wine_gecko-1.2.0-x86.msi $W_UNATTENDED_SLASH_Q
 }
@@ -7298,7 +7298,8 @@ load_vc2005express()
     fi
 
     # http://blogs.msdn.com/b/astebner/archive/2006/03/14/551674.aspx
-    w_download http://go.microsoft.com/fwlink/?linkid=57034 1ae44e4eaf8c61c3a39e573fd6efd9889e940529 VC.iso
+    # http://go.microsoft.com/fwlink/?linkid=57034
+    w_download http://download.microsoft.com/download/A/9/1/A91D6B2B-A798-47DF-9C7E-A97854B7DD18/VC.iso 1ae44e4eaf8c61c3a39e573fd6efd9889e940529
 
     # Unpack ISO (how handy that 7z can do this!)
     cd "$W_TMP"
@@ -10982,7 +10983,7 @@ w_metadata masseffect2_demo games \
 
 load_masseffect2_demo()
 {
-    w_download http://masseffect.bioware.com/cdn/A/ME2_DEMO/MassEffect2DemoEN.exe cda9a25387a98e29772b3ccdcf609f87188285e2
+    w_download http://static.cdn.ea.com/bioware/u/f/eagames/bioware/masseffect2/ME2_DEMO/MassEffect2DemoEN.exe cda9a25387a98e29772b3ccdcf609f87188285e2
 
     if w_workaround_wine_bug 22091 "May hang or crash at end of install, but should install ok."
     then
@@ -11007,7 +11008,6 @@ load_masseffect2_demo()
         w_call physx
     fi
 
-    mkdir -p "$W_TMP/$W_PACKAGE"
     # Don't let self-extractor write into $W_CACHE
     case "$OS" in
         "Windows_NT")
