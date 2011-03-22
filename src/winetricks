@@ -7441,7 +7441,8 @@ load_wm9codecs()
     # Note: must install WMP9 or 10 first, or installer will complain and abort.
 
     # See http://www.microsoft.com/downloads/details.aspx?FamilyID=06fcaab7-dcc9-466b-b0c4-04db144bb601
-    w_download http://download.microsoft.com/download/5/c/2/5c29d825-61eb-4b16-8eb8-58367d0464d5/WM9Codecs9x.exe 8b76bdcbea0057eb12b7966edab4b942ddacc253
+    # Used by direct calls from load_wmp9, so have to specify cache directory.
+    w_download_to wm9codecs http://download.microsoft.com/download/5/c/2/5c29d825-61eb-4b16-8eb8-58367d0464d5/WM9Codecs9x.exe 8b76bdcbea0057eb12b7966edab4b942ddacc253
     cd "$W_CACHE/wm9codecs"
     w_set_winver win2k
     w_try $WINE WM9Codecs9x.exe $W_UNATTENDED_SLASH_Q
