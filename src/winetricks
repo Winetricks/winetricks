@@ -23,6 +23,7 @@ WINETRICKS_VERSION=20110318
 # - xdg-open (if present) is used to open download pages for the
 #   user when downloads cannot be fully automated.
 # - sudo is used to mount .iso images if the user cached them with -k option.
+# - perl is used to munge steam config files
 # On ubuntu, the following lines can be used to install all the prereqs:
 #    sudo add-apt-repository ppa:ubuntu-wine/ppa
 #    sudo apt-get update
@@ -621,6 +622,103 @@ w_download_manual()
     w_download_manual_to $W_PACKAGE "$@"
 }
 
+# Turn off news, overlays, and friend interaction in steam
+# Run from inside c:\Program Files\Steam
+w_steam_safemode()
+{
+    cat > "$W_CACHE/steamconfig.pl" <<"_EOF_"
+#!/usr/bin/perl
+# Parse steam's localconfig.vcf, add settings to it, and write it out again
+# The file is a recursive dictionary
+#
+# FILE :== CONTAINER
+#
+# VALUE :== "name" "value" NEWLINE
+#
+# CONTAINER :== "name" NEWLINE "{" NEWLINE ( VALUE | CONTAINER ) * "}" NEWLINE
+#
+# We load it into a recursive hash.
+
+use strict;
+use warnings;
+
+sub read_into_container{
+    my( $pcontainer ) = @_;
+
+    $_ = <FILE> || die "Can't read first line of container";
+    /{/ || die "First line of container was not {";
+    while (<FILE>) {
+       chomp;
+       if (/"([^"]*)"\s*"([^"]*)"$/) {
+	   ${$pcontainer}{$1} = $2;
+       } elsif (/"([^"]*)"$/) {
+           my( %newcon, $name );
+	   $name = $1;
+	   read_into_container(\%newcon);
+	   ${$pcontainer}{$name} = \%newcon;
+        } elsif (/}/) {
+	   return;
+	} else {
+	   die "huh?";
+	}
+    }
+}
+
+sub dump_container{
+    my( $pcontainer, $indent ) = @_;
+    foreach (sort(keys(%{$pcontainer}))) {
+	my( $val ) = ${$pcontainer}{$_};
+	if (ref $val eq 'HASH') {
+	    print "${indent}\"$_\"\n";
+	    print "${indent}{\n";
+	    dump_container($val, "$indent\t");
+	    print "${indent}}\n";
+	} else {
+	    print "${indent}\"${_}\"\t\t\"$val\"\n";
+	}
+    }
+}
+
+# Disable anything unsafe or annoying
+sub disable_notifications{
+    my( $pcontainer ) = @_;
+    ${$pcontainer}{"friends"}{"PersonaStateDesired"} = 	"1";
+    ${$pcontainer}{"friends"}{"Notifications_ShowIngame"} = "0";
+    ${$pcontainer}{"friends"}{"Sounds_PlayIngame"} = "0";
+    ${$pcontainer}{"friends"}{"Notifications_ShowOnline"} = "0";
+    ${$pcontainer}{"friends"}{"Sounds_PlayOnline"} = "0";
+    ${$pcontainer}{"friends"}{"Notifications_ShowMessage"} = "0";
+    ${$pcontainer}{"friends"}{"Sounds_PlayMessage"} = "0";
+    ${$pcontainer}{"friends"}{"AutoSignIntoFriends"} = "0";
+    ${$pcontainer}{"News"}{"NotifyAvailableGames"} = "0";
+    ${$pcontainer}{"system"}{"EnableGameOverlay"} = "0";
+}
+
+# Read the file
+my(%top);
+open FILE, $ARGV[0] || die "can't open ".$ARGV[0];
+my($line);
+$line = <FILE> || die "Could not read first line from ".$ARGV[0];
+$line =~ /"UserLocalConfigStore"/ || die "this is not a localconfig.vdf file";
+read_into_container(\%top);
+
+# Modify it
+disable_notifications(\%top);
+
+# Write modified file
+print "\"UserLocalConfigStore\"\n";
+print "{\n";
+dump_container(\%top, "\t");
+print "}\n";
+_EOF_
+
+for file in userdata/*/config/localconfig.vdf
+do
+    cp "$file" "$file.old"
+    perl "$W_CACHE"/steamconfig.pl "$file.old" > "$file"
+done
+}
+
 # Usage:
 # w_steam_install_game steamidnum windowtitle
 w_steam_install_game()
@@ -699,6 +797,12 @@ w_steam_install_game()
         winwait Ready -
         process close, Steam.exe
     "
+
+    # Not all users need this disabled, but let's play it safe for now
+    if w_workaround_wine_bug 22053 "Disabling ingame notifications to prevent game crashes on some machines."
+    then
+        w_steam_safemode
+    fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam" "steam.exe -login $W_STEAM_ID $W_STEAM_PASSWORD -applaunch $_W_steamid"
 
