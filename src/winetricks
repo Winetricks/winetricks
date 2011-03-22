@@ -6167,7 +6167,7 @@ w_metadata 7zip apps \
 load_7zip()
 {
     # FIXME: use more up to date version
-    w_download http://downloads.sourceforge.net/sevenzip/7z465.exe c36012e960fa3932cd23f30ac5b0fe722740243a
+    w_download http://downloads.sourceforge.net/project/sevenzip/7-Zip/4.65/7z465.exe c36012e960fa3932cd23f30ac5b0fe722740243a
     cd "$W_CACHE"/7zip
     w_try $WINE 7z465.exe $W_UNATTENDED_SLASH_S
     w_declare_exe "$W_PROGRAMS_X86_WIN\\7-Zip" "7z.exe %1 %2 %3 %4 %5"
