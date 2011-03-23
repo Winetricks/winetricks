@@ -5515,6 +5515,7 @@ load_xact()
     do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xactengine*.dll' "$x"
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xaudio*.dll' "$x"
+      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'x3daudio*.dll' "$x"
     done
 
     # Register xactengine?_?.dll, xaudio?_?.dll
