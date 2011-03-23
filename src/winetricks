@@ -1658,7 +1658,7 @@ winetricks_prefixmenu()
 
         if ls -d $W_PREFIXES_ROOT/*/dosdevices > /dev/null 2>&1
         then
-            for prefix in $W_PREFIXES_ROOT/*/dosdevices
+            for prefix in "$W_PREFIXES_ROOT"/*/dosdevices
             do
                 q="${prefix%%/dosdevices}"
                 p="${q##*/}"
@@ -1680,9 +1680,9 @@ winetricks_prefixmenu()
     kdialog)
         (
         printf %s "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --radiolist '$_W_msg_help' help off '$_W_msg_body' games      '$_W_msg_games' off benchmarks '$_W_msg_benchmarks' off apps '$_W_msg_apps' off main '$_W_msg_default' on "
-        if ls -d $W_PREFIXES_ROOT/*/dosdevices > /dev/null 2>&1
+        if ls -d "$W_PREFIXES_ROOT"/*/dosdevices > /dev/null 2>&1
         then
-            for prefix in $W_PREFIXES_ROOT/*/dosdevices
+            for prefix in "$W_PREFIXES_ROOT"/*/dosdevices
             do
                 q="${prefix%%/dosdevices}"
                 p="${q##*/}"
