@@ -127,7 +127,7 @@ w_askpermission()
     case $WINETRICKS_GUI in
     zenity) zenity $_W_timeout --question --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
     kdialog) kdialog --title winetricks --warningcontinuecancel "$@" ;;
-    none) echo -n "Press Y or N, then Enter: " ; read response ; test "$response" = Y || test "$response" = y;;
+    none) printf %s "Press Y or N, then Enter: " ; read response ; test "$response" = Y || test "$response" = y;;
     esac
 
     if test $? -ne 0
@@ -281,7 +281,7 @@ w_read_key()
         *zenity) W_KEY=`zenity --entry --text "$_W_keymsg"` ;;
         *kdialog) W_KEY=`kdialog --inputbox "$_W_keymsg"` ;;
         *xmessage) w_die "sorry, can't read key from gui with xmessage" ;;
-        none) echo -n "$_W_keymsg": ; read W_KEY ;;
+        none) printf %s "$_W_keymsg": ; read W_KEY ;;
         esac
         if test "$W_KEY" = ""
         then
@@ -303,7 +303,7 @@ winetricks_wintounix()
     # Remove drive letter and colon
     _W_winp="${_W_winp_#??}"
     # Prepend the location of drive c
-    echo -n ${WINEPREFIX}/dosdevices/c:
+    printf %s ${WINEPREFIX}/dosdevices/c:
     # Change backslashes to slashes
     echo $_W_winp | sed 's,\\,/,g' 
 }
@@ -1637,7 +1637,7 @@ winetricks_prefixmenu()
 
     case $WINETRICKS_GUI in
     zenity)
-        echo -n "zenity \
+        printf %s "zenity \
             --title '$_W_msg_title' \
             --text '$_W_msg_body' \
             --list \
@@ -1668,18 +1668,18 @@ winetricks_prefixmenu()
                 else
                     _W_msg_name="$p"
                 fi
-                echo -n " FALSE prefix=$p 'Select $_W_msg_name' "
+                printf %s " FALSE prefix=$p 'Select $_W_msg_name' "
             done >> $WINETRICKS_WORKDIR/zenity.sh
         fi
-        echo -n " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> $WINETRICKS_WORKDIR/zenity.sh
-        echo -n " FALSE $_W_cmd_showbroken '$_W_msg_showbroken'" >> $WINETRICKS_WORKDIR/zenity.sh
+        printf %s " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> $WINETRICKS_WORKDIR/zenity.sh
+        printf %s " FALSE $_W_cmd_showbroken '$_W_msg_showbroken'" >> $WINETRICKS_WORKDIR/zenity.sh
 
         sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
         ;;
 
     kdialog)
         (
-        echo -n "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --radiolist '$_W_msg_help' help off '$_W_msg_body' games      '$_W_msg_games' off benchmarks '$_W_msg_benchmarks' off apps '$_W_msg_apps' off main '$_W_msg_default' on "
+        printf %s "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --radiolist '$_W_msg_help' help off '$_W_msg_body' games      '$_W_msg_games' off benchmarks '$_W_msg_benchmarks' off apps '$_W_msg_apps' off main '$_W_msg_default' on "
         if ls -d $W_PREFIXES_ROOT/*/dosdevices > /dev/null 2>&1
         then
             for prefix in $W_PREFIXES_ROOT/*/dosdevices
@@ -1692,7 +1692,7 @@ winetricks_prefixmenu()
                 else
                     _W_msg_name="$p"
                 fi
-                echo -n "$p 'Select $_W_msg_name' off "
+                printf %s "$p 'Select $_W_msg_name' off "
 	    done
 	fi
         ) > "$WINETRICKS_WORKDIR"/kdialog.sh
@@ -1747,7 +1747,7 @@ winetricks_mainmenu()
     case $WINETRICKS_GUI in
     zenity)
         (
-          echo -n "zenity \
+          printf %s "zenity \
             --title '$_W_msg_title' \
             --text '$_W_msg_body' \
             --list \
@@ -1805,7 +1805,7 @@ winetricks_settings_menu()
     case $WINETRICKS_GUI in
     zenity)
         case $LANG in
-        da*) echo -n "zenity \
+        da*) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -1817,7 +1817,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-       de*) echo -n "zenity \
+       de*) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -1829,7 +1829,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-        *) echo -n "zenity \
+        *) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -1850,7 +1850,7 @@ winetricks_settings_menu()
             title='?'
             author='?'
             . $metadatafile
-            echo -n " " FALSE \
+            printf %s " " FALSE \
                     $code \
                     "\"$title\""
             )
@@ -1861,7 +1861,7 @@ winetricks_settings_menu()
 
     kdialog)
         (
-        echo -n "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --checklist '$_W_msg_body' "
+        printf %s "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --checklist '$_W_msg_body' "
         winetricks_list_all | sed 's/\([^ ]*\)  *\(.*\)/\1 "\1 - \2" off /' | tr '\012' ' '
         ) > "$WINETRICKS_WORKDIR"/kdialog.sh
         sh "$WINETRICKS_WORKDIR"/kdialog.sh
@@ -1893,7 +1893,7 @@ winetricks_showmenu()
     case $WINETRICKS_GUI in
     zenity)
         case $LANG in
-        da*) echo -n "zenity \
+        da*) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -1911,7 +1911,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-       de*) echo -n "zenity \
+       de*) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -1929,7 +1929,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-        *) echo -n "zenity \
+        *) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -1968,15 +1968,16 @@ winetricks_showmenu()
                     installed=TRUE
                     echo $code >> $WINETRICKS_WORKDIR/installed.txt
                 fi
-                echo -n " " $installed \
+                printf %s " $installed \
                     $code \
-                    "\"$title\"" \
-                    "\"$publisher\"" \
-                    "\"$year\"" \
-                    "\"$media\"" \
-                    "\"$flags\"" \
-                    "\"$size_MB\"" \
-                    "\"$time_sec\"" 
+                    \"$title\" \
+                    \"$publisher\" \
+                    \"$year\" \
+                    \"$media\" \
+                    \"$flags\" \
+                    \"$size_MB\" \
+                    \"$time_sec\" \
+                " 
             fi
             )
         done >> $WINETRICKS_WORKDIR/zenity.sh
@@ -1990,7 +1991,7 @@ winetricks_showmenu()
 
     kdialog)
         (
-        echo -n "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --checklist '$_W_msg_body' "
+        printf %s "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --checklist '$_W_msg_body' "
         winetricks_list_all | sed 's/\([^ ]*\)  *\(.*\)/\1 "\1 - \2" off /' | tr '\012' ' '
         ) > "$WINETRICKS_WORKDIR"/kdialog.sh
         sh "$WINETRICKS_WORKDIR"/kdialog.sh
