@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Name of this version of winetricks (YYYYMMDD)
-WINETRICKS_VERSION=20110318
+WINETRICKS_VERSION=20110324
 
 #--------------------------------------------------------------------
 #
@@ -56,6 +56,7 @@ WINETRICKS_VERSION=20110318
 # - No bash, zsh, or csh extensions; only use features from
 #   the Posix standard shell and utilities; see
 #   http://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html
+# - 'checkbashism -p -x winetricks' should show no warnings (per Debian policy)
 # - Prefer classic sh idioms as described in e.g.
 #   "Portable Shell Programming" by Bruce Blinn, ISBN: 0-13-451494-7
 # - If there is no universally available program for a needed function,
