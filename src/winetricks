@@ -1284,7 +1284,7 @@ w_workaround_wine_bug()
     de*) w_warn "Wine-Fehler ${1} wird umgegangen $_W_msg" ;;
     *)   w_warn "Working around wine bug ${1} $_W_msg" ;;
     esac
-    winetricks_stats_log_command w_workaround_wine_bug "$*"
+    winetricks_stats_log_command w_workaround_wine_bug-$1
     return 0
 }
 
@@ -13603,7 +13603,7 @@ winetricks_stats_report()
     echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
 
     report="os=`winetricks_os_description`&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
-    report="`echo $report | tr ' ' '%20'`"
+    report="`echo $report | sed 's/ /%20/g'`"
     # Just do a HEAD request with the raw commandline.  
     # Yes, this can be fooled by caches.  That's ok.
     if [ -x "`which wget 2>/dev/null`" ]
