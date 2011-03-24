@@ -505,7 +505,7 @@ w_download_to()
         unset _W_dl_olddir
     done
 
-    if test "$3" -a ! "$checksum_ok"
+    if test "$3" && test ! "$checksum_ok"
     then 
         w_verify_sha1sum $3  "$_W_cache/$_W_file"
     fi
@@ -2850,7 +2850,7 @@ winetricks_init()
     WINETRICKS_CURMENU=prefix
 
     # Delete work directory after each run, on exit either graceful or abrupt
-    trap winetricks_kill_handler 0 1 2 3 6
+    trap winetricks_kill_handler EXIT HUP INT QUIT ABRT
 
     # Whether to always cache cached iso's (1) or only use cache if present (0)
     # Can be inherited from environment or set via -k, defaults to off
