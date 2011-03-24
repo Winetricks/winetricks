@@ -9816,6 +9816,54 @@ load_fifa11_demo()
 
 #----------------------------------------------------------------
 
+w_metadata hordesoforcs2_demo games \
+    title="Hordes of Orcs 2 Demo" \
+    publisher="Freeverse" \
+    year="2010" \
+    media="download" \
+    file1="HoO2Demo.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Hordes of Orcs 2 Demo/HoO2.exe"
+
+load_hordesoforcs2_demo()
+{
+    w_download_manual http://www.fileplanet.com/216619/download/Hordes-of-Orcs-2-Demo HoO2Demo.exe 1ba26d35697e359f89a30915140e471fadc675da
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetWinDelay 500
+        SetTitleMatchMode, slow
+        run HoO2Demo.exe
+        WinWait,Orcs
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            WinActivate
+            ControlFocus, Button1, Hordes ; Next
+            sleep 500
+            Send n       ; next
+            WinWait,Orcs,conditions
+            ControlFocus, Button4, Hordes, agree
+            Send {Space}
+            Send {Enter}  ; next
+            WinWait,Orcs,files
+            Send {Enter}  ; next
+            WinWait,Orcs,exist              ; Destination does not exist, create?
+            Send {Enter}  ; yes
+            WinWait,Orcs,Start
+            Send {Enter}  ; Start
+        }
+        WinWait,Orcs,successfully
+        if ( u > 0 ) {
+            Send {Space}  ; Finish
+        }
+        winwaitclose Orcs
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Hordes of Orcs 2 Demo" "HoO2.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata mfsxde games \
     title="Microsoft Flight Simulator X: Deluxe Edition" \
     publisher="Microsoft" \
