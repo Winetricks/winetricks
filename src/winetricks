@@ -1420,7 +1420,7 @@ w_do_call()
         *)
             case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
             apps-0|benchmarks-0|games-0)
-                winetricks_set_wineprefix $cmd
+                winetricks_set_wineprefix "$cmd"
                 # If it's a new wineprefix, give it metadata
                 if test ! -f "$WINEPREFIX"/wrapper.cfg
                 then
@@ -1668,7 +1668,7 @@ winetricks_prefixmenu()
                 else
                     _W_msg_name="$p"
                 fi
-                printf %s " FALSE prefix=$p 'Select $_W_msg_name' "
+                printf %s " FALSE prefix='$p' 'Select $_W_msg_name' "
             done >> $WINETRICKS_WORKDIR/zenity.sh
         fi
         printf %s " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> $WINETRICKS_WORKDIR/zenity.sh
@@ -1692,7 +1692,7 @@ winetricks_prefixmenu()
                 else
                     _W_msg_name="$p"
                 fi
-                printf %s "$p 'Select $_W_msg_name' off "
+                printf %s "prefix='$p' 'Select $_W_msg_name' off "
 	    done
 	fi
         ) > "$WINETRICKS_WORKDIR"/kdialog.sh
@@ -1730,7 +1730,7 @@ winetricks_mainmenu()
          _W_msg_folder='Browse files'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          ;;
-    *)   _W_msg_title="Winetricks - current prefix is '$WINEPREFIX'"
+    *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
          _W_msg_body='What would you like to do to this wineprefix?'
          _W_msg_dlls="Install a Windows DLL or component"
          _W_msg_fonts='Install a font'
@@ -1797,7 +1797,7 @@ winetricks_mainmenu()
 winetricks_settings_menu()
 {
     case $LANG in
-    *)   _W_msg_title="Winetricks - current prefix is '$WINEPREFIX'"
+    *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
          _W_msg_body='Which setting(s) would you like to change?'
          ;;
     esac
@@ -1883,7 +1883,7 @@ winetricks_showmenu()
          _W_msg_body='Welche Pakete möchten Sie installieren?'
          _W_cached="gecached" 
          ;;
-    *)   _W_msg_title="Winetricks - current prefix is '$WINEPREFIX'"
+    *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
          _W_msg_body='Which package(s) would you like to install?'
          _W_cached="cached"   
          ;;
@@ -13660,12 +13660,12 @@ winetricks_shell()
 # Usage: execute_command verb[=argument]
 execute_command()
 {
-    case $1 in
+    case "$1" in
     *=*) arg=`echo $1 | sed 's/.*=//'`; cmd=`echo $1 | sed 's/=.*//'`;;
-    *) cmd=$1; arg="" ;;
+    *) cmd="$1"; arg="" ;;
     esac
 
-    case $1 in
+    case "$1" in
 
     # FIXME: avoid duplicated code
     apps|benchmarks|dlls|fonts|games|prefix|settings)
@@ -13693,7 +13693,7 @@ execute_command()
     attended) winetricks_set_unattended 0 ;;
     showbroken) W_OPT_SHOWBROKEN=1 ;;
     hidebroken) W_OPT_SHOWBROKEN=0 ;;
-    prefix=*) winetricks_set_wineprefix $arg ;;
+    prefix=*) winetricks_set_wineprefix "$arg" ;;
     annihilate) winetricks_annihilate_wineprefix ;;
     folder) xdg-open "$WINEPREFIX" ;;
     winecfg) $WINE winecfg ;;
@@ -13739,7 +13739,7 @@ execute_command()
     *)
         if winetricks_metadata_exists $1
         then
-            w_call $1
+            w_call "$1"
         else
             echo Unknown arg $1
             winetricks_usage
@@ -13814,16 +13814,18 @@ then
             else
                 winetricks_stats_init
                 # Otherwise user picked one or more real verbs.
-                for verb in $verbs
-                do
-                    execute_command $verb
-                done
-                
                 case "$verbs" in
                 prefix=*)
+                    # prefix menu is special, it only returns one verb, and the
+                    # verb can contain spaces
+                    execute_command "$verbs"
                     # after picking a prefix, want to land in main.
                     WINETRICKS_CURMENU=main ;;
                 *)
+                    for verb in $verbs
+                    do
+                        execute_command "$verb"
+                    done
                     case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
                     prefix-*|apps-0|benchmarks-0|games-0) 
                         # After installing isolated app, return to prefix picker
@@ -13857,7 +13859,7 @@ then
                 verb="`echo $verb | sed 's,.*/,,;s,.verb,,'`"
                 ;;
             esac
-            execute_command $verb
+            execute_command "$verb"
         done
         ;;
 
