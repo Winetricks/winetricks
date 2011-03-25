@@ -5121,21 +5121,10 @@ load_vb6run()
 
 #----------------------------------------------------------------
 
-w_metadata  vcrun6 dlls \
-   title="Visual C++ 6 sp4 libraries (mfc42, msvcp60, msvcrt)" \
-   publisher="Microsoft" \
-   year="2000" \
-   media="download" \
-   file1="vc6redistsetup_enu.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/mfc42u.dll"
-
-load_vcrun6()
-{
-    # Load the Visual C++ 6 runtime libraries, including the elusive mfc42u.dll
-
+winetricks_vcrun6_helper() {
     if test ! -f "$W_CACHE"/vcrun6/vcredist.exe
     then
-       w_download http://download.microsoft.com/download/vc60pro/update/1/w9xnt4/en-us/vc6redistsetup_enu.exe 382c8f5a7f41189af8d4165cf441f274b7e2a457
+       w_download_to vcrun6 http://download.microsoft.com/download/vc60pro/update/1/w9xnt4/en-us/vc6redistsetup_enu.exe 382c8f5a7f41189af8d4165cf441f274b7e2a457
 
        w_try $WINE "$W_CACHE"/vcrun6/vc6redistsetup_enu.exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
        if test ! -f "$W_TMP"/vcredist.exe
@@ -5144,6 +5133,21 @@ load_vcrun6()
        fi
        mv "$W_TMP"/vcredist.exe "$W_CACHE"/vcrun6
     fi
+}
+
+w_metadata  vcrun6 dlls \
+   title="Visual C++ 6 sp4 libraries (mfc42, msvcp60, msvcrt)" \
+   publisher="Microsoft" \
+   year="2000" \
+   media="download" \
+   file1="vc6redistsetup_enu.exe" \
+   installed_file1="$W_SYSTEM32_DLLS_WIN/msvcrt.dll"
+
+load_vcrun6()
+{
+    # Load the Visual C++ 6 runtime libraries, including the elusive mfc42u.dll
+    winetricks_vcrun6_helper
+
     # Delete some fake dlls to avoid vcredist installer warnings
     rm -f "$W_SYSTEM32_DLLS"/comcat.dll
     rm -f "$W_SYSTEM32_DLLS"/msvcrt.dll
@@ -5160,7 +5164,7 @@ load_vcrun6()
 
     # And then some apps need mfc42u.dll, dunno what right way
     # is to get it, vcredist doesn't install it by default?
-    w_try_cabextract "$W_CACHE"/vcrun6/vcredist.exe -d "$W_SYSTEM32_DLLS" -F mfc42u.dll
+    load_mfc42
 
     w_override_dlls native,builtin msvcrt
 }
@@ -5175,7 +5179,9 @@ w_metadata  mfc42 dlls \
 
 load_mfc42()
 {
-    w_call vcrun6
+    winetricks_vcrun6_helper
+
+    w_try_cabextract "$W_CACHE"/vcrun6/vcredist.exe -d "$W_SYSTEM32_DLLS" -F "mfc42*.dll"
 }
 
 #----------------------------------------------------------------
@@ -5190,7 +5196,7 @@ w_metadata  vcrun6sp6 dlls \
    year="2004" \
    media="download" \
    file1="Vs6sp6.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/mfc42u.dll"
+   installed_file1="$W_SYSTEM32_DLLS_WIN/msvcrt.dll"
 
 load_vcrun6sp6()
 {
@@ -5219,6 +5225,7 @@ load_vcrun6sp6()
     # And then some apps need mfc42u.dll, dunno what right way
     # is to get it, vcredist doesn't install it by default?
     w_try_cabextract vcredist.exe -d "$W_SYSTEM32_DLLS" -F mfc42u.dll
+    # Should the mfc42 verb install this one instead?
 
     w_override_dlls native,builtin msvcrt
 }
