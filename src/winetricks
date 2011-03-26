@@ -11822,6 +11822,105 @@ load_sims3()
 
 #----------------------------------------------------------------
 
+w_metadata simsmed games \
+    title="The Sims Medieval (drm broken on wine)" \
+    publisher="EA" \
+    year="2011" \
+    media="dvd" \
+    file1="TSimsM.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/The Sims Medieval/Game/Bin/TSM.exe" \
+    wine_showstoppers="26273"
+
+load_simsmed()
+{
+    if w_workaround_wine_bug 21517 "Old wine needs native DirectX for this game" 1.3.8,
+    then
+        w_call d3dx9_36
+    fi
+
+    w_read_key
+
+    w_mount TSimsM
+    # Default lang, USA, accept defaults, uncheck EA dl mgr, uncheck readme
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run ${W_ISO_MOUNT_LETTER}:SimsMedievalSetup.exe
+        winwait, Choose Setup Language
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            send {Enter}
+            SetTitleMatchMode, 2
+            winwait, - InstallShield Wizard
+            sleep 1000
+            ControlClick &Next >, - InstallShield Wizard
+            sleep 1000
+            send uuuuuu{Tab}{Tab}{Enter}
+            WinWait, Sims, License
+            ControlClick Button3   ; Accept
+            sleep 1000
+            ControlClick Button1   ; Next
+            sleep 1000
+            send {Raw}$W_KEY
+            send {Enter}
+            winwait, - InstallShield Wizard, Setup Type
+            send {Enter}
+            winwait, - InstallShield Wizard, Click Install to begin
+            send {Enter}
+            ; FIXME: work around bug 25535 only if needed
+             winwait,,.NET Framework 4 has not been installed
+             ControlClick Button3  ; Finish
+             winwait, .NET Framework Initialization Error
+             send {Enter}
+            winwait, Sims, Customer Experience Improvement
+            send {Enter}           ; Next
+        }
+        winwait, - InstallShield Wizard, Complete
+        if ( u > 0 ) {
+            ControlClick Button1   ; Don't view readme
+            send {Enter}           ; Finish
+        }
+        winwaitclose
+    "
+
+    # DVD Region code is last digit.
+    # FIXME: download appropriate one rather than just US version.
+    w_download http://akamai.cdn.ea.com/eadownloads/u/f/sims/sims/patches/TheSimsMedievalPatch_1.1.10.00001_Update.exe 7214ced8af7315741e05024faeacf9053b999b1b
+
+    cd "$W_CACHE"/$W_PACKAGE
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetWinDelay 500
+        run TheSimsMedievalPatch_1.1.10.00001_Update.exe
+        winwait, Medieval, will reset any in-progress quests
+        send {Enter}
+        winwait, Medieval, Welcome
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            send {Enter}
+        }
+        winwait, - InstallShield Wizard, Complete
+        if ( u > 0 ) {
+            ControlClick Finish, - InstallShield Wizard
+        }
+        winwaitclose
+    "
+
+    if w_workaround_wine_bug 25535 ".net 4 doesn't install on Wine, fixing menu to run game directly"
+    then
+        myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/$W_PACKAGE\" wine cmd /c 'C:\\\\\\Run-$W_PACKAGE.bat'"
+        mymenu="$HOME/.local/share/applications/wine/Programs/Electronic Arts/The Sims Medieval/The Sims™ Medieval.desktop"
+        if test -f "$mymenu" && w_workaround_wine_bug 26487 "Fixing system menu"
+        then
+            sed -i "s,Exec=.*,$myexec," "$mymenu"
+        fi
+        echo FIXME: fix icon, too
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\The Sims Medieval\\Game\\Bin" "TSM.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata starcraft2_demo games \
     title="Starcraft II Demo" \
     publisher="Blizzard" \
