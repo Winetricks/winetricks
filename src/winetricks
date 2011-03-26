@@ -304,7 +304,7 @@ winetricks_wintounix()
     # Remove drive letter and colon
     _W_winp="${_W_winp_#??}"
     # Prepend the location of drive c
-    printf %s ${WINEPREFIX}/dosdevices/c:
+    printf %s "$WINEPREFIX"/dosdevices/c:
     # Change backslashes to slashes
     echo $_W_winp | sed 's,\\,/,g' 
 }
