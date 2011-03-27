@@ -121,9 +121,10 @@ w_askpermission()
     echo "$@"
     echo "------------------------------------------------------"
 
-    case "$W_OPT_UNATTENDED" in
-    1) _W_timeout="--timeout 5";;
-    esac
+    if test $W_OPT_UNATTENDED
+    then
+        _W_timeout="--timeout 5"
+    fi
 
     case $WINETRICKS_GUI in
     zenity) zenity $_W_timeout --question --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
@@ -165,9 +166,10 @@ w_warn()
     echo "$@"
     echo "------------------------------------------------------"
 
-    case "$W_OPT_UNATTENDED" in
-    1) _W_timeout="--timeout 5";;
-    esac
+    if test $W_OPT_UNATTENDED
+    then
+        _W_timeout="--timeout 5"
+    fi
 
     case $WINETRICKS_GUI in
     zenity) zenity $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
@@ -258,9 +260,11 @@ w_try_unzip()
 
 w_read_key()
 {
-    case "$W_OPT_UNATTENDED" in
-    0) W_KEY=dummy_to_make_autohotkey_happy ; return 0 ;;
-    esac
+    if test ! $W_OPT_UNATTENDED
+    then
+        W_KEY=dummy_to_make_autohotkey_happy
+        return 0
+    fi
 
     mkdir -p "$W_CACHE/$W_PACKAGE"
     _W_keyfile="$W_CACHE/$W_PACKAGE/key.txt"
@@ -2671,6 +2675,12 @@ winetricks_kill_handler()
 
 winetricks_set_unattended()
 {
+    # We shouldn't use all these extra variables.  Instead, we should
+    # use ${foo+bar} to jam in commandline options for silent install 
+    # only if W_OPT_UNATTENDED is nonempty.  See
+    # http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_02
+    # So in attended mode, W_OPT_UNATTENDED should be empty.
+
     case $1 in
     1)
         W_OPT_UNATTENDED=1
@@ -2682,7 +2692,7 @@ winetricks_set_unattended()
         W_UNATTENDED_SLASH_SILENT="/silent"
         ;;
     *)
-        W_OPT_UNATTENDED=0
+        W_OPT_UNATTENDED=""
         W_UNATTENDED_DASH_Q=""
         W_UNATTENDED_SLASH_Q=""
         W_UNATTENDED_SLASH_S=""
@@ -3746,7 +3756,7 @@ load_dotnet11()
     w_call corefonts
 
     # Use builtin regsvcs.exe to work around http://bugs.winehq.org/show_bug.cgi?id=25120
-    if test $W_OPT_UNATTENDED = 1
+    if test $W_OPT_UNATTENDED
     then
         WINEDLLOVERRIDES="regsvcs.exe=b" w_try $WINE "$W_CACHE"/dotnet11/dotnetfx.exe /q /C:"install /q"
     else
@@ -3769,7 +3779,7 @@ load_dotnet11sp1()
     w_call dotnet11
     w_download http://download.microsoft.com/download/8/b/4/8b4addd8-e957-4dea-bdb8-c4e00af5b94b/NDP1.1sp1-KB867460-X86.exe 74a5b25d65a70b8ecd6a9c301a0aea10d8483a23
 
-    if test $W_OPT_UNATTENDED = 1
+    if test $W_OPT_UNATTENDED
     then
         WINEDLLOVERRIDES="regsvcs.exe=b" w_try $WINE "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe /q /C:"install /q"
     else
@@ -5608,7 +5618,7 @@ load_xmllite()
         # Put a dummy catalog file in place
         mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
         w_try cp -f "$W_CACHE"/xmllite/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
-        if test $W_OPT_UNATTENDED != 1
+        if test ! $W_OPT_UNATTENDED
         then
             w_warn "xmllite's interactive installer will hang at the end, but otherwise work."
         fi
@@ -6407,7 +6417,7 @@ load_firefox()
 {
     w_download "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/3.6.15/win32/en-US/Firefox%20Setup%203.6.15.exe" b1282da22c99f017f6839e45e6197f9901653ef8 "Firefox Setup 3.6.15.exe"
     cd "$W_CACHE"/firefox
-    if test $W_OPT_UNATTENDED = 1
+    if test $W_OPT_UNATTENDED
     then
        w_try $WINE "Firefox Setup 3.6.15.exe" -ms
     else
@@ -6444,7 +6454,7 @@ load_firefox4()
 
     w_download "http://mirror.metrocast.net/mozilla/firefox/releases/4.0/win32/en-US/Firefox%20Setup%204.0.exe" e76f9ae709f6e4fe1d046cf74ea69bc8380e7c55 "Firefox Setup 4.0.exe"
     cd "$W_CACHE"/firefox4
-    if test $W_OPT_UNATTENDED = 1
+    if test $W_OPT_UNATTENDED
     then
        w_try $WINE "Firefox Setup 4.0.exe" -ms
     else
@@ -6933,7 +6943,7 @@ load_office2007pro()
     w_mount OFFICE12
     w_read_key
 
-    if [ $W_OPT_UNATTENDED = 1 ]
+    if test $W_OPT_UNATTENDED
     then
         # See
         # http://blogs.technet.com/b/office_resource_kit/archive/2009/01/29/configure-a-silent-install-of-the-2007-office-system-with-config-xml.aspx
@@ -7171,7 +7181,7 @@ load_safari()
 _EOF_
     fi
 
-    if test $W_OPT_UNATTENDED = 1
+    if test $W_OPT_UNATTENDED
     then
         w_warn "Safari's silent install is broken under wine. See http://bugs.winehq.org/show_bug.cgi?id=23493. You should do a regular install if you want to use Safari."
         w_try $WINE SafariSetup.exe /qn
@@ -7290,8 +7300,8 @@ load_utorrent()
     w_download http://download.utorrent.com/beta/utorrent-2.2.1-beta-beta-24649.upx.exe 82e81e1484b4e8654b83908509f3777532c6fcb3
 
     case "$W_OPT_UNATTENDED" in
-    0) _W_opt="" ;;
-    *) _W_opt="/PERFORMINSTALL /NORUN" ;;
+    1) _W_opt="/PERFORMINSTALL /NORUN" ;;
+    *) _W_opt="" ;;
     esac
     cd "$W_CACHE/$W_PACKAGE"
     $WINE utorrent-2.2.1-beta-beta-24649.upx.exe $_W_opt
