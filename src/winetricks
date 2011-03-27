@@ -8070,6 +8070,84 @@ load_aoe_demo()
 
 #----------------------------------------------------------------
 
+w_metadata acreedbro games \
+    title="Assassin's Creed Brotherhood" \
+    publisher="Ubisoft" \
+    year="2011" \
+    media="dvd" \
+    file1="ACB.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Assassin's Creed Brotherhood/AssassinsCreedBrotherhood.exe"
+
+load_acreedbro()
+{
+    w_mount ACB
+    w_read_key
+    w_ahk_do "
+        SetWinDelay 1000
+        SetTitleMatchMode, 2
+        run ${W_ISO_MOUNT_LETTER}:setup.exe
+        winwait, Brotherhood, Choose
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            WinActivate
+            send {Enter}
+            ;ControlClick, Button3   ; Accept default (english)
+            winwait, Brotherhood, Welcome
+            WinActivate
+            send {Enter}   ; Next
+            winwait, Brotherhood, License
+            WinActivate
+            send a         ; Agree
+            sleep 500
+            send {Enter}   ; Next
+            winwait, Brotherhood, begin
+            send {Enter}   ; Install
+        }
+        winwait, Brotherhood, Finish
+        if ( u > 0 ) {
+            ControlClick Button4
+            send {Enter}   ; Finish
+        }
+        WinWaitClose
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Assassin's Creed Brotherhood" AssassinsCreedBrotherhood.exe
+
+    w_download http://static3.cdn.ubi.com/ac_brotherhood/ac_brotherhood_1.01_ww.exe a2b76f16616709cc16537b0e98faa4181ca904ce
+
+    if w_workaround_wine_bug 26562 "Disabling glsl for smoother rendering"
+    then
+        w_call glsl=disabled
+    fi
+
+    w_info "Applying patch $W_CACHE/$W_PACKAGE/ac_brotherhood_1.01_ww.exe..."
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetWinDelay 1000
+        SetTitleMatchMode, 2
+        run ac_brotherhood_1.01_ww.exe
+        WinWait, Choose Setup Language, Select
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            send {Enter}
+            winwait, Brotherhood 1.01, License
+            WinActivate
+            send a         ; Agree
+            sleep 500
+            send {Enter}   ; Next
+            winwait, Brotherhood 1.01, Details
+            ControlClick Button1  ; Next
+        }
+        winwait, Brotherhood 1.01, Complete
+        if ( u > 0 ) {
+            send {Enter}
+        }
+        WinWaitClose
+    "
+}
+
+#----------------------------------------------------------------
+
 w_metadata atmosphir games \
     title="Atmosphir" \
     publisher="Minor Studios" \
