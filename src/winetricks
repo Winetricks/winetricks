@@ -11987,11 +11987,15 @@ load_simsmed()
     then
         myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/$W_PACKAGE\" wine cmd /c 'C:\\\\\\Run-$W_PACKAGE.bat'"
         mymenu="$HOME/.local/share/applications/wine/Programs/Electronic Arts/The Sims Medieval/The Sims™ Medieval.desktop"
-        if test -f "$mymenu" && w_workaround_wine_bug 26487 "Fixing system menu"
+        if test -f "$mymenu"
         then
             sed -i "s,Exec=.*,$myexec," "$mymenu"
         fi
-        echo FIXME: fix icon, too
+        mymenu="$HOME/Desktop/The Sims™ Medieval.desktop"
+        if test -f "$mymenu"
+        then
+            sed -i "s,Exec=.*,$myexec," "$mymenu"
+        fi
     fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\The Sims Medieval\\Game\\Bin" "TSM.exe"
