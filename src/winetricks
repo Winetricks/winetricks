@@ -8140,6 +8140,21 @@ load_acreedbro()
     if w_workaround_wine_bug 26562 "Disabling glsl for smoother rendering"
     then
         w_call glsl=disabled
+
+        # And turn off after-effects to fix depth of field problem caused
+        # by disabling glsl...
+        cd "$W_DRIVE_C/users/$USERNAME/My Documents"
+        dir="Ubisoft/Assassin's Creed Brotherhood"
+        file="$dir/ACBrotherhood.ini"
+        if test -f "$file"
+        then
+            mv "$file" "$file.old"
+            sed 's,PostFX=[0-9]*,PostFX=0,' < "$file.old" > "$file"
+        else
+            mkdir -p "$dir"
+            echo "[Graphics]" > "$file"
+            echo "PostFX=0" >> "$file"
+        fi
     fi
 
     w_info "Applying patch $W_CACHE/$W_PACKAGE/ac_brotherhood_1.01_ww.exe..."
@@ -8166,6 +8181,27 @@ load_acreedbro()
         }
         WinWaitClose
     "
+
+    if test `which wine-hotfix-6971` 2> /dev/null
+    then
+        if w_workaround_wine_bug 6971 "Pointing menu and icon at wine-hotfix-6971 to fix mouse problems"
+        then
+            myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/$W_PACKAGE\" wine-hotfix-6971 cmd /c 'C:\\\\\\Run-$W_PACKAGE.bat'"
+
+            mymenu="$HOME/Desktop/Assassin's Creed Brotherhood.desktop"
+            if test -f "$mymenu"
+            then
+                sed -i "s,Exec=.*,$myexec," "$mymenu"
+            fi
+            mymenu="$HOME/.local/share/applications/wine/Programs/Ubisoft/Assassin's Creed Brotherhood/Assassin's Creed Brotherhood.desktop"
+            if test -f "$mymenu"
+            then
+                sed -i "s,Exec=.*,$myexec," "$mymenu"
+            fi
+        fi
+    else
+        w_workaround_wine_bug 6971 "See http://wiki.winehq.org/Bug6971 for wine patch to fix mouse"
+    fi
 }
 
 #----------------------------------------------------------------
