@@ -2632,7 +2632,9 @@ winetricks_mount_real_volume()
 
     if test "$WINE" = ""
     then
-        w_die Windows not yet supported
+        # Assume already mounted, just get drive letter
+        W_ISO_MOUNT_LETTER=`awk '/iso/ {print $1}' < /proc/mounts | tr -d :`
+        W_ISO_MOUNT_ROOT=`awk '/iso/ {print $2}' < /proc/mounts`
     else
         while ! winetricks_is_mounted "$_W_expected_volname"
         do
