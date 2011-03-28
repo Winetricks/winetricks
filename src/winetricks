@@ -775,8 +775,22 @@ w_steam_install_game()
         winwaitclose
         winwait Steam  ; wait for small <<connecting>> window
         winwaitclose
+     "
+
+if [ "$STEAM_DVD" = "TRUE" ]
+then
+     w_ahk_do "
+        ; Run a fourth time, have it install the app.
+        run steam.exe -install ${W_ISO_MOUNT_LETTER}:\\
+     "
+else
+     w_ahk_do "
         ; Run a fourth time, have it install the app.
         run steam.exe -applaunch $_W_steamid
+     "
+fi
+
+     w_ahk_do "
         winwait Install - $_W_steamtitle
         if ( w_opt_unattended > 0 ) {
             send {enter}          ; next (for 1st of 3 pages of install dialog)
@@ -795,7 +809,21 @@ w_steam_install_game()
                     break
             }
         }
-        ; relaunch to coax steam into showing its nice small download progress dialog
+    "
+
+if [ "$STEAM_DVD" = "TRUE" ]
+then
+    # Wait for install to finish
+    while true
+    do
+        grep "SetHasAllLocalContent(true) called for $_W_steamid" "$W_PROGRAMS_X86_UNIX/Steam/logs/download_log.txt" && break
+        sleep 5
+    done
+fi
+
+    w_ahk_do "
+        ; For DVD's: theoretically, it should be installed now, but most games want to download updates. Do that now.
+        ; For regular downloads: relaunch to coax steam into showing its nice small download progress dialog
         process close, Steam.exe
         run steam.exe -login $W_STEAM_ID $W_STEAM_PASSWORD -applaunch $_W_steamid
         winwait Ready -
@@ -10523,6 +10551,27 @@ load_hegemony_demo()
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Longbow Digital Arts\\Hegemony Philip of Macedon" "Hegemony Philip of Macedon.exe"
 }
+
+#----------------------------------------------------------------
+
+w_metadata homefront games \
+    title="HOMEFRONT" \
+    publisher="THQ" \
+    year="2011" \
+    media="dvd" \
+    file1="HOMEFRONT.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/homefront/Binaries/HOMEFRONT.exe"
+
+load_homefront()
+{
+    w_mount "HOMEFRONT"
+
+    STEAM_DVD=TRUE
+    w_steam_install_game 55100 "HOMEFRONT"
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam\\steamapps\\common\\homefront\\Binaries" "HOMEFRONT.exe"
+}
+
 
 #----------------------------------------------------------------
 
