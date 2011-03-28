@@ -13921,6 +13921,16 @@ execute_command()
     taskmgr) $WINE taskmgr & ;;
     shell) winetricks_shell ;;
 
+    # These have to come before *=disabled to avoid looking like dlls
+    fontsmooth=disable*) w_call fontsmooth=disable ;;
+    glsl=disable*) w_call glsl=disabled ;;
+    multisampling=disable*) w_call multisampling=disabled ;;
+    mwo=disable*) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
+    psm=disable*) w_call psm=disabled ;;
+    rtlm=disable*) w_call rtlm=disabled ;;
+    sound=disable*) w_call sound=disabled ;;
+    strictdrawordering=disable*) w_call strictdrawordering=disabled ;;
+
     # Use winecfg if you want a gui for plain old dll overrides
     alldlls=*) w_call $1 ;;
     *=native) w_do_call native $cmd;;
@@ -13941,7 +13951,6 @@ execute_command()
     glsl-enable) w_call glsl=enabled ;;
     ie6_full) w_call ie6 ;;
     jscript) w_call wsh56js ;;            # FIXME: use wsh57 instead?
-    mwo=disabled) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
     npm-repack) w_call npm=repack ;;
     oss) w_call sound=oss ;;
     psm=off) w_call psm=disabled ;;
