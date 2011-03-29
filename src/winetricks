@@ -13047,12 +13047,20 @@ load_wormsreloaded_demo_steam()
 
 winetricks_set_dsound_var()
 {
-    echo "Setting DirectSound $1 to $2"
+    arg=$2
+    case $2 in
+    [Ff]*) arg=Full;;
+    [Ss]*) arg=Standard;;
+    [Bs]*) arg=Basic;;
+    [Ee]*) arg=Emulation;;
+    esac
+
+    echo "Setting DirectSound $1 to $arg"
     cat > "$W_TMP"/set-dsound.reg <<_EOF_
 REGEDIT4
 
 [HKEY_CURRENT_USER\Software\Wine\DirectSound]
-"$1"="$2"
+"$1"="$arg"
 
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\set-dsound.reg
@@ -13102,12 +13110,12 @@ winetricks_set_wined3d_var()
     *) w_die "illegal value $2 for $1";;
     esac
 
-    echo "Setting Direct3D/$1 to $2"
+    echo "Setting Direct3D/$1 to $arg"
     cat > "$W_TMP"/set-wined3d.reg <<_EOF_
 REGEDIT4
 
 [HKEY_CURRENT_USER\Software\Wine\Direct3D]
-"$1"="$2"
+"$1"="$arg"
 
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\set-wined3d.reg
@@ -13243,7 +13251,7 @@ load_mwo()
 REGEDIT4
 
 [HKEY_CURRENT_USER\Software\Wine\DirectInput]
-"MouseWarpOverride"="$1"
+"MouseWarpOverride"="$arg"
 
 _EOF_
     w_try_regedit "$W_TMP"/set-mwo.reg
@@ -13292,10 +13300,10 @@ load_fontsmooth()
 REGEDIT4
 
 [HKEY_CURRENT_USER\Control Panel\Desktop]
-"FontSmoothing"="0"
+"FontSmoothing"="$FontSmoothing"
 "FontSmoothingGamma"=dword:00000578
-"FontSmoothingOrientation"=dword:00000001
-"FontSmoothingType"=dword:00000000
+"FontSmoothingOrientation"=dword:0000000$FontSmoothingOrientation
+"FontSmoothingType"=dword:0000000$FontSmoothingType
 
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\fontsmooth.reg
