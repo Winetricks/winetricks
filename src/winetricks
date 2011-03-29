@@ -12985,6 +12985,48 @@ load_supermeatboy_steam()
 
 #----------------------------------------------------------------
 
+w_metadata trine_steam games \
+    title="Trine (Steam)" \
+    publisher="Frozenbyte" \
+    year="2009" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/trine/trine_launcher.exe"
+
+load_trine_steam()
+{
+    w_steam_install_game 35700 "Trine"
+
+    if w_workaround_wine_bug 21939 "Installing Windows Media Player so game can start"
+    then
+        w_call wmp9
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam\\steamapps\\common\\trine" "trine_launcher.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata trine_demo_steam games \
+    title="Trine Demo (Steam)" \
+    publisher="Frozenbyte" \
+    year="2009" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/trine demo/trine_launcher.exe"
+
+load_trine_demo_steam()
+{
+    w_steam_install_game 35710 "Trine Demo"
+
+    if w_workaround_wine_bug 21939 "Installing Windows Media Player so game can start"
+    then
+        w_call wmp9
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam\\steamapps\\common\\trine demo" "trine_launcher.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata wormsreloaded_demo_steam games \
     title="Worms Reloaded Demo (Steam)" \
     publisher="Team17" \
