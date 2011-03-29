@@ -10617,27 +10617,6 @@ load_hegemony_demo()
 
 #----------------------------------------------------------------
 
-w_metadata homefront games \
-    title="HOMEFRONT" \
-    publisher="THQ" \
-    year="2011" \
-    media="dvd" \
-    file1="HOMEFRONT.iso" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/homefront/Binaries/HOMEFRONT.exe"
-
-load_homefront()
-{
-    w_mount "HOMEFRONT"
-
-    STEAM_DVD=TRUE
-    w_steam_install_game 55100 "HOMEFRONT"
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam\\steamapps\\common\\homefront\\Binaries" "HOMEFRONT.exe"
-}
-
-
-#----------------------------------------------------------------
-
 w_metadata hon games \
     title="Heroes of Newerth" \
     publisher="S2 Games" \
