@@ -8285,6 +8285,68 @@ load_atmosphir()
 
 #----------------------------------------------------------------
 
+w_metadata avatar_demo games \
+    title="James Camerons Avatar: The Game Demo" \
+    publisher="Ubisoft" \
+    year="2009" \
+    media="download" \
+    file1="Avatar_The_Game_Demo.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Demo/James Cameron's AVATAR - THE GAME (Demo)/bin/AvatarDemo.exe"
+
+load_avatar_demo()
+{
+    w_download http://gamedaily.newaol.com/pub/Avatar_The_Game_Demo.exe 8d8e4c82312962706bd2620406d592db4f0fa9c1
+
+    if w_workaround_wine_bug 23094 "Installing Visual C++ 2005 runtime to avoid installer crash"
+    then
+        w_call vcrun2005
+    fi
+
+    cd "$W_TMP"
+    w_try unrar x "$W_CACHE/$W_PACKAGE/Avatar_The_Game_Demo.exe"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetWinDelay 500
+        run, setup.exe
+        winwait, Language
+        u = $W_OPT_UNATTENDED
+        if ( u > 0 ) {
+            controlclick, Button1
+            winwait, AVATAR, Welcome
+            controlclick, Button1
+            winwait, AVATAR, License
+            controlclick, Button5
+            controlclick, Button2
+            winwait, AVATAR, setup type
+            controlclick, Button2
+        }
+        winwait AVATAR
+        if ( u > 0 ) {
+            ; Strange CRC error workaround. Will check this out. Stay tuned.
+            loop
+            {
+                ifwinexist, CRC Error
+                {
+                    winactivate, CRC Error
+                    controlclick, Button3, CRC Error ; ignore
+                }
+                ifwinexist, AVATAR, Complete
+                {
+                    controlclick, Button4
+                    break
+                }
+                sleep 1000
+            }
+        }
+        winwaitclose AVATAR
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Demo\\James Cameron's AVATAR - THE GAME (Demo)\\bin" "AvatarDemo.exe"
+
+    w_workaround_wine_bug 24639 "If game is silent, try winetricks dsoundhw=Emulation"
+    w_workaround_wine_bug 26590 "If game seems slow, try winetricks glsl=disabled"
+}
+
+
 w_metadata bttf101 games \
     title="Back to the Future Episode 1" \
     publisher="Telltale" \
