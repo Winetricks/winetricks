@@ -14061,6 +14061,13 @@ execute_command()
     sound=disable*) w_call sound=disabled ;;
     strictdrawordering=disable*) w_call strictdrawordering=disabled ;;
 
+    # For convenience, allow users to use lower case and abbreviate.
+    # FIXME: expand this?
+    dsoundhw=f*) w_call dsoundhw=Full ;;
+    dsoundhw=s*) w_call dsoundhw=Standard ;;
+    dsoundhw=b*) w_call dsoundhw=Basic ;;
+    dsoundhw=e*) w_call dsoundhw=Emulation ;;
+
     # Use winecfg if you want a gui for plain old dll overrides
     alldlls=*) w_call $1 ;;
     *=native) w_do_call native $cmd;;
