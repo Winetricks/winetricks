@@ -8230,6 +8230,15 @@ load_acreedbro()
         fi
     fi
 
+    # FIXME: figure out why these executables don't exit, and do a proper workaround or fix
+    sleep 10
+    if ps augxw | grep -i exe | egrep 'winemenubuilder.exe|setup.exe|PnkBstrA.exe | egrep -v egrep'
+    then
+        w_warn "Killing processes so patcher does not complain about game still running"
+        wineserver -k
+        sleep 10
+    fi
+
     w_info "Applying patch $W_CACHE/$W_PACKAGE/ac_brotherhood_1.01_ww.exe..."
 
     cd "$W_CACHE/$W_PACKAGE"
