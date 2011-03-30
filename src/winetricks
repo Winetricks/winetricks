@@ -159,12 +159,12 @@ w_info()
     unset _W_timeout
 }
 
-# Display warning message
+# Display warning message to stderr (since it is called inside redirected code)
 w_warn()
 {
-    echo "------------------------------------------------------"
-    echo "$@"
-    echo "------------------------------------------------------"
+    echo "------------------------------------------------------" >&2
+    echo "$@" >&2
+    echo "------------------------------------------------------" >&2
 
     if test $W_OPT_UNATTENDED
     then
