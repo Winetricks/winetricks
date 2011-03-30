@@ -1640,7 +1640,8 @@ winetricks_get_prefix_var()
 {
     (
         . "$W_PREFIXES_ROOT/$p/wrapper.cfg"
-        eval echo \$ww_$1
+        # The cryptic sed is there to turn ' into '\''
+        eval echo \$ww_$1 | sed "s/'/'\\\''/"
     )
 }
 
