@@ -1352,10 +1352,10 @@ w_metadata()
     for arg
     do
         case "$arg" in
-        installed_exe1=/*) w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_exe1, should be a windows path";;
-        esac
-        case "$arg" in
-        installed_file1=/*) w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_file1, should be a windows path";;
+        installed_exe1=/*)
+            w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_exe1, should be a windows path";;
+        installed_file1=/*)
+            w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_file1, should be a windows path";;
         esac
         # Use longest match when stripping value,
         # and shortest match when stripping name,
@@ -1738,8 +1738,8 @@ winetricks_prefixmenu()
                     _W_msg_name="$p"
                 fi
                 printf %s "prefix='$p' 'Select $_W_msg_name' off "
-	    done
-	fi
+            done
+        fi
         ) > "$WINETRICKS_WORKDIR"/kdialog.sh
         sh "$WINETRICKS_WORKDIR"/kdialog.sh
         ;;
