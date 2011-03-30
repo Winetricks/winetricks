@@ -127,8 +127,8 @@ w_askpermission()
     fi
 
     case $WINETRICKS_GUI in
-    zenity) zenity $_W_timeout --question --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
-    kdialog) kdialog --title winetricks --warningcontinuecancel "$@" ;;
+    zenity) $WINETRICKS_GUI $_W_timeout --question --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
     none) printf %s "Press Y or N, then Enter: " ; read response ; test "$response" = Y || test "$response" = y;;
     esac
 
@@ -151,8 +151,8 @@ w_info()
     _W_timeout="--timeout 3"
 
     case $WINETRICKS_GUI in
-    zenity) zenity $_W_timeout --info --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
-    kdialog) kdialog --title winetricks --msgbox "$@" ;;
+    zenity) $WINETRICKS_GUI $_W_timeout --info --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    kdialog) $WINETRICKS_GUI --title winetricks --msgbox "$@" ;;
     none) ;;
     esac
 
@@ -172,8 +172,8 @@ w_warn()
     fi
 
     case $WINETRICKS_GUI in
-    zenity) zenity $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
-    kdialog) kdialog --title winetricks --error "$@" ;;
+    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
+    kdialog) $WINETRICKS_GUI --title winetricks --error "$@" ;;
     none) ;;
     esac
 
@@ -355,7 +355,7 @@ winetricks_wget_progress()
         (
             wget "$@" 2>&1 |
             sed -u 's/^.* \+\([0-9]\+%\) \+\([0-9,.]\+[GMKB]\) \+\([0-9hms,.]\+\).*$/\1\n# Downloading... \2 (\3)/' | \
-            zenity --progress --width 400 --title="$_W_file" --auto-kill --auto-close
+            $WINETRICKS_GUI --progress --width 400 --title="$_W_file" --auto-kill --auto-close
         )
         err=$?
         if test $err -gt 128 
@@ -1818,7 +1818,7 @@ winetricks_mainmenu()
         ;;
 
     kdialog)
-        kdialog --geometry 600x400+100+100 \
+        $WINETRICKS_GUI --geometry 600x400+100+100 \
                 --title "$_W_msg_title" \
                 --separate-output \
                 --radiolist \
@@ -2492,7 +2492,7 @@ winetricks_cache_iso()
         do
           echo 1
           sleep 2
-        done | zenity --title "Copying to $_W_expected_volname.iso" --progress --pulsate --auto-kill
+        done | $WINETRICKS_GUI --title "Copying to $_W_expected_volname.iso" --progress --pulsate --auto-kill
         ;;
     esac
     rm $WINETRICKS_WORKDIR/dd-pid
@@ -13973,12 +13973,12 @@ winetricks_stats_init()
                 declined="OK, winetricks will *not* report statistics.  You won't be asked this question again."
                 ;;
             esac
-            if zenity --question --text "$question" --title "$title"
+            if $WINETRICKS_GUI --question --text "$question" --title "$title"
             then
-                zenity --info --text "$thanks"
+                $WINETRICKS_GUI --info --text "$thanks"
                 WINETRICKS_STATS_REPORT=1
             else
-                zenity --info --text "$declined"
+                $WINETRICKS_GUI --info --text "$declined"
                 WINETRICKS_STATS_REPORT=0
             fi
             echo $WINETRICKS_STATS_REPORT > "$W_CACHE"/track_usage
