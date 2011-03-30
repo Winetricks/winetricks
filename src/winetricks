@@ -2478,15 +2478,16 @@ winetricks_cache_iso()
     echo $WINETRICKS_DD_PID > $WINETRICKS_WORKDIR/dd-pid
 
     # Note: if user presses ^C, winetricks_cleanup will call winetricks_iso_cleanup
+    # FIXME: add progress bar for kde, too
     case $WINETRICKS_GUI in
-    none)
+    none|kdialog)
         while ps -p $WINETRICKS_DD_PID > /dev/null 2>&1
         do
           sleep 5
           ls -l "$W_CACHE"/temp.iso
         done
         ;;
-    *)
+    zenity)
         while ps -p $WINETRICKS_DD_PID > /dev/null 2>&1
         do
           echo 1
