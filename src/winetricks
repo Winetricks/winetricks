@@ -6480,23 +6480,23 @@ load_dxdiag()
 
 #----------------------------------------------------------------
 
-w_metadata firefox apps \
-   title="Firefox 3.6.15" \
+w_metadata firefox3 apps \
+   title="Firefox 3.6.16" \
    publisher="Mozilla" \
-   year="2010" \
+   year="2011" \
    media="download" \
-   file1="Firefox Setup 3.6.15.exe" \
+   file1="Firefox Setup 3.6.16.exe" \
    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
-load_firefox()
+load_firefox3()
 {
-    w_download "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/3.6.15/win32/en-US/Firefox%20Setup%203.6.15.exe" b1282da22c99f017f6839e45e6197f9901653ef8 "Firefox Setup 3.6.15.exe"
-    cd "$W_CACHE"/firefox
+    w_download "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/3.6.16/win32/en-US/Firefox%20Setup%203.6.16.exe" e5d943353556970fca7df08c6b81ec7015f54d7a "Firefox Setup 3.6.16.exe"
+    cd "$W_CACHE"/firefox3
     if test $W_OPT_UNATTENDED
     then
-       w_try $WINE "Firefox Setup 3.6.15.exe" -ms
+       w_try $WINE "Firefox Setup 3.6.16.exe" -ms
     else
-       w_try $WINE "Firefox Setup 3.6.15.exe"
+       w_try $WINE "Firefox Setup 3.6.16.exe"
     fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
@@ -6512,7 +6512,7 @@ load_firefox()
 
 #----------------------------------------------------------------
 
-w_metadata firefox4 apps \
+w_metadata firefox apps \
    title="Firefox 4.0" \
    publisher="Mozilla" \
    year="2011" \
@@ -6520,7 +6520,7 @@ w_metadata firefox4 apps \
    file1="Firefox Setup 4.0.exe" \
    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
-load_firefox4()
+load_firefox()
 {
     if w_workaround_wine_bug 22972 "" 1.3.0,
     then
@@ -6528,7 +6528,7 @@ load_firefox4()
     fi
 
     w_download "http://mirror.metrocast.net/mozilla/firefox/releases/4.0/win32/en-US/Firefox%20Setup%204.0.exe" e76f9ae709f6e4fe1d046cf74ea69bc8380e7c55 "Firefox Setup 4.0.exe"
-    cd "$W_CACHE"/firefox4
+    cd "$W_CACHE"/firefox
     if test $W_OPT_UNATTENDED
     then
        w_try $WINE "Firefox Setup 4.0.exe" -ms
@@ -14233,6 +14233,7 @@ execute_command()
     comdlg32.ocx) w_call comdlg32ocx ;;
     dotnet1) w_call dotnet11 ;;
     dotnet2) w_call dotnet20 ;;
+    firefox4) w_call firefox ;;
     fm20) w_call controlpad ;;   # art2kmin also comes with fm20.dll
     fontsmooth-bgr) w_call fontsmooth=bgr ;;
     fontsmooth-disable) w_call fontsmooth=disable ;;
