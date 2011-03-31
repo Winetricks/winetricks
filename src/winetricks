@@ -11647,6 +11647,58 @@ load_nfsshift_demo()
 
 #----------------------------------------------------------------
 
+w_metadata oblivion games \
+    title="Elder Scrolls: Oblivion" \
+    publisher="Bethesda Game Studios" \
+    year="2006" \
+    media="dvd" \
+    file1="Oblivion.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Bethesda Softworks/Oblivion/Oblivion.exe"
+
+load_oblivion()
+{
+    w_mount "Oblivion"
+
+    cd "$W_ISO_MOUNT_ROOT"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, Setup.exe
+        winwait, Oblivion, Welcome to the
+        if ( w_opt_unattended > 0 ) {
+            sleep 500
+            controlclick, Button1
+            winwait, Oblivion, License Agreement
+            sleep 500
+            controlclick, Button3
+            sleep 500
+            controlclick, Button1
+            winwait, Oblivion, Choose Destination
+            sleep 500
+            controlclick, Button1
+            winwait, Oblivion, Ready to Install
+            sleep 500
+            controlclick, Button1
+            winwait, Oblivion, Complete
+            sleep 500
+            controlclick, Button1
+            sleep 500
+            controlclick, Button2
+            sleep 500
+            controlclick, Button3
+        }
+        winwaitclose, Oblivion, Complete
+    "
+
+    if w_workaround_wine_bug 20074 "Installing native d3dx9_36"
+    then
+        w_call d3dx9_36
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Bethesda Softworks\\Oblivion" "Oblivion.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata osmos_demo games \
     title="Osmos demo" \
     publisher="Hemisphere Games" \
