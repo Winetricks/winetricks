@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -x
 for url in ` grep '^ *w_download ' winetricks | sort | grep http | sed 's/^ *//' | awk '{print $2}' | tr -d '"'"'" `
 do
     echo -n "$url "
