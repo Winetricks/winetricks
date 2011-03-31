@@ -4854,7 +4854,8 @@ w_metadata quicktime72 dlls \
 load_quicktime72()
 {
     # http://www.apple.com/support/downloads/quicktime72forwindows.html
-    w_download 'http://wsidecar.apple.com/cgi-bin/nph-reg3rdpty2.pl/product=14402&cat=59&platform=osx&method=sa/QuickTimeInstaller.exe' bb89981f10cf21de57b9453e53cf81b9194271a9
+    # http://www.oldapps.com/quicktime_player.php?old_quicktime=6
+    w_download http://download.oldapps.com/Quicktime/quicktimeplayer72.exe bb89981f10cf21de57b9453e53cf81b9194271a9
 
     unset QUICKTIME_QUIET
     if test "$W_UNATTENDED_SLASH_Q" != ""
