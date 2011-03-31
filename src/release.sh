@@ -7,4 +7,4 @@ echo Pushing version $version
 tar -czvf winetricks-$version.tgz winetricks
 sha1sum winetricks-$version.tgz > winetricks-$version.tgz.sha1.txt
 scp winetricks-$version.tgz winetricks-$version.tgz.sha1.txt kegel.com:public_html/winetricks/download/releases/
-scp winetricks kegel.com:public_html/kegel/wine/
+scp winetricks kegel.com:public_html/winetricks/
