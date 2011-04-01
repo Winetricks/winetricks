@@ -9922,12 +9922,12 @@ w_metadata eve games \
     publisher="CCP Games" \
     year="2010" \
     media="download" \
-    file1="EVE_Premium_Setup_177290_m.exe" \
+    file1="EVE_Premium_Setup_237081_m.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/CCP/EVE/eve.exe"
 
 load_eve()
 {
-    w_download "http://content.eveonline.com/EVE_Premium_Setup_177290_m.exe" 92624334ed5a431c1b516161ecf7280882b388f6
+    w_download "http://content.eveonline.com/EVE_Premium_Setup_237081_m.exe" 37934c14d4cdcccf36da35ed4562e1b2fa2a1cd5
 
     if w_workaround_wine_bug 18221
     then
@@ -9936,7 +9936,7 @@ load_eve()
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
-        run, EVE_Premium_Setup_177290_m.exe
+        run, EVE_Premium_Setup_237081_m.exe
         WinWait, EVE Online Installer
         if ( w_opt_unattended > 0 ) {
             WinActivate
@@ -9947,14 +9947,12 @@ load_eve()
             WinWait, EVE,Choose Install
             WinActivate
             send {Enter}         ; Install
-            WinWait, EVE,Installation Complete
+            WinWait, EVE,has been installed
             WinActivate
-            send {Enter}         ; next
-            WinWait, EVE,Installation Complete
-            WinActivate
-            Send {Tab}{Tab}{Tab} ; select Launch
-            Send {Space}         ; untick Launch
-            Send {Enter}         ; Finish
+            ;Send {Tab}{Tab}{Tab} ; select Launch
+            ;Send {Space}         ; untick Launch
+	    ControlClick Button4  ; untick Launch
+            Send {Enter}         ; Finish (Button2)
         }
         WinWaitClose, EVE Online Installer
     "
