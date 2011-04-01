@@ -9096,27 +9096,44 @@ load_crysis2()
     w_mount "Crysis 2"
     w_ahk_do "
         SetTitleMatchMode, 2
-        SetWinDelay, 500
+        SetWinDelay, 1000
         run ${W_ISO_MOUNT_LETTER}:EASetup.exe
-        winwait, Microsoft Visual C++ 2008 Redistributable Setup
         if ( w_opt_unattended > 0 ) {
-            controlclick, Button12 ; Next
-            winwait, Visual C++, License
-            controlclick, Button11 ; Agree
-            controlclick, Button8 ; Install
-            winwait, Setup, configuring
-            winwaitclose
-            winwait, Visual C++, Complete
-            controlclick, Button2 ; Finish
+            Loop {
+                ; On Windows, this window does not pop up
+                ifWinExist, Microsoft Visual C++ 2008 Redistributable Setup
+                {
+                    winwait, Microsoft Visual C++ 2008 Redistributable Setup
+                    controlclick, Button12 ; Next
+                    winwait, Visual C++, License
+                    controlclick, Button11 ; Agree
+                    controlclick, Button8 ; Install
+                    winwait, Setup, configuring
+                    winwaitclose
+                    winwait, Visual C++, Complete
+                    controlclick, Button2 ; Finish
+                    break
+                }
+                ifWinExist, Setup, Please read the End User
+                {
+                    break
+                }
+                sleep 1000
+            }
             winwait, Setup, Please read the End User
-            controlclick, Button1, Setup, Please read the End User
-            controlclick, Button3, Setup, Please read the End User
+            controlclick, Button1     ; accept
+            sleep 500
+            ;controlclick, Button3     ; next
+            send {Enter}
             ; Again for DirectX
             winwait, Setup, Please read the following End
-            controlclick, Button1, Setup, Please read the following End
-            controlclick, Button3, Setup, Please read the following End
+            ;controlclick, Button1     ; accept
+            send a
+            sleep 1000
+            ;controlclick, Button3     ; next
+            send {Enter}
             winwait,Setup, Ready to install
-            controlclick, Button1, Setup, Ready to install
+            controlclick, Button1
         }
         winwait, Setup, Click the Finish button
         if ( w_opt_unattended > 0 ) {
