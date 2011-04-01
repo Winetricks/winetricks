@@ -8766,7 +8766,7 @@ load_cim_demo()
     # 29 Mar 2011 d40408b59bc0e6e33b564e9bbb55dbab6c44c630, Inno Setup installer
     w_download http://www.pcgamestore.com/games/cities-in-motion-nbsp/trial/cim-demo-1-0-8.exe d40408b59bc0e6e33b564e9bbb55dbab6c44c630
     cd "$W_CACHE/$W_PACKAGE"
-    $WINE cim-demo-1-0-8.exe ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
+    w_try $WINE cim-demo-1-0-8.exe ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Cities In Motion Demo" "Cities In Motion.exe"
 }
 
