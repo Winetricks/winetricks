@@ -8252,6 +8252,11 @@ load_acreedbro()
         fi
     fi
 
+    if w_workaround_wine_bug 26583 "Installing native d3dx9_36"
+    then
+        w_call d3dx9_36
+    fi
+
     # FIXME: figure out why these executables don't exit, and do a proper workaround or fix
     sleep 10
     if ps augxw | grep -i exe | egrep 'winemenubuilder.exe|setup.exe|PnkBstrA.exe | egrep -v egrep'
