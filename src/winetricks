@@ -260,7 +260,7 @@ w_try_unzip()
 
 w_read_key()
 {
-    if test ! $W_OPT_UNATTENDED
+    if test ! "$W_OPT_UNATTENDED"
     then
         W_KEY=dummy_to_make_autohotkey_happy
         return 0
@@ -5694,7 +5694,7 @@ load_xmllite()
         # Put a dummy catalog file in place
         mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
         w_try cp -f "$W_CACHE"/xmllite/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
-        if test ! $W_OPT_UNATTENDED
+        if test ! "$W_OPT_UNATTENDED"
         then
             w_warn "xmllite's interactive installer will hang at the end, but otherwise work."
         fi
