@@ -2717,7 +2717,7 @@ winetricks_kill_handler()
 winetricks_set_unattended()
 {
     # We shouldn't use all these extra variables.  Instead, we should
-    # use ${foo+bar} to jam in commandline options for silent install 
+    # use ${foo:-bar} to jam in commandline options for silent install 
     # only if W_OPT_UNATTENDED is nonempty.  See
     # http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_02
     # So in attended mode, W_OPT_UNATTENDED should be empty.
@@ -8749,6 +8749,25 @@ load_blobby_volley()
     then
         w_warn "You may need to apply a patch, see http://bugs.winehq.org/show_bug.cgi?id=4432#c15"
     fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata cim_demo games \
+    title="Cities In Motion Demo" \
+    publisher="Paradox Interactive" \
+    year="2010" \
+    media="download" \
+    file1="cim-demo-1-0-8.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Cities In Motion Demo/Cities In Motion.exe"
+
+load_cim_demo()
+{
+    # 29 Mar 2011 d40408b59bc0e6e33b564e9bbb55dbab6c44c630, Inno Setup installer
+    w_download http://www.pcgamestore.com/games/cities-in-motion-nbsp/trial/cim-demo-1-0-8.exe d40408b59bc0e6e33b564e9bbb55dbab6c44c630
+    cd "$W_CACHE/$W_PACKAGE"
+    $WINE cim-demo-1-0-8.exe ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Cities In Motion Demo" "Cities In Motion.exe"
 }
 
 #----------------------------------------------------------------
