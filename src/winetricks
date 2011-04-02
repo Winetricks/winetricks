@@ -656,32 +656,32 @@ sub read_into_container{
     while (<FILE>) {
        chomp;
        if (/"([^"]*)"\s*"([^"]*)"$/) {
-	   ${$pcontainer}{$1} = $2;
+           ${$pcontainer}{$1} = $2;
        } elsif (/"([^"]*)"$/) {
            my( %newcon, $name );
-	   $name = $1;
-	   read_into_container(\%newcon);
-	   ${$pcontainer}{$name} = \%newcon;
+           $name = $1;
+           read_into_container(\%newcon);
+           ${$pcontainer}{$name} = \%newcon;
         } elsif (/}/) {
-	   return;
-	} else {
-	   die "huh?";
-	}
+           return;
+        } else {
+           die "huh?";
+        }
     }
 }
 
 sub dump_container{
     my( $pcontainer, $indent ) = @_;
     foreach (sort(keys(%{$pcontainer}))) {
-	my( $val ) = ${$pcontainer}{$_};
-	if (ref $val eq 'HASH') {
-	    print "${indent}\"$_\"\n";
-	    print "${indent}{\n";
-	    dump_container($val, "$indent\t");
-	    print "${indent}}\n";
-	} else {
-	    print "${indent}\"${_}\"\t\t\"$val\"\n";
-	}
+        my( $val ) = ${$pcontainer}{$_};
+        if (ref $val eq 'HASH') {
+            print "${indent}\"$_\"\n";
+            print "${indent}{\n";
+            dump_container($val, "$indent\t");
+            print "${indent}}\n";
+        } else {
+            print "${indent}\"${_}\"\t\t\"$val\"\n";
+        }
     }
 }
 
@@ -9990,7 +9990,7 @@ load_eve()
             WinActivate
             ;Send {Tab}{Tab}{Tab} ; select Launch
             ;Send {Space}         ; untick Launch
-	    ControlClick Button4  ; untick Launch
+            ControlClick Button4  ; untick Launch
             Send {Enter}         ; Finish (Button2)
         }
         WinWaitClose, EVE Online Installer
