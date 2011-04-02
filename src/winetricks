@@ -294,7 +294,8 @@ w_read_key()
         fi
         echo "$W_KEY" > "$_W_keyfile"
     fi
-    W_KEY=`cat "$_W_keyfile" | tr -d '[:blank:][=-=]'`
+    W_RAW_KEY=`cat "$_W_keyfile"`
+    W_KEY=`echo $W_RAW_KEY | tr -d '[:blank:][=-=]'`
     unset _W_keyfile _W_keymsg _W_nokeymsg
 }
 
@@ -12512,6 +12513,81 @@ load_tmnationsforever()
     "
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\TmNationsForever" "TmForever.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata trainztcc_2004 games \
+    title="Trainz: The Complete Collection: TRS2004" \
+    publisher="Paradox Interactive" \
+    year="2008" \
+    media="dvd" \
+    file1="TRS2006DVD.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Auran/TRS2004/TRS2004.exe"
+
+load_trainztcc_2004()
+{
+    w_call mfc42
+
+    w_read_key
+    # yup, they got the volume name wrong
+    w_mount TRS2006DVD
+    cd ${W_ISO_MOUNT_ROOT}/TRS2004_SP4_DVD_Installer_BUILD_2370/Installer/Disk1
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetWinDelay 500
+        run setup.exe
+        if ( w_opt_unattended > 0 ) {
+            winwait TRS2004 Setup, Please install the latest drivers
+            send {Enter}
+            winwait TRS2004, Welcome
+            send {Enter}
+            winwait TRS2004, License
+            ControlClick Button2
+            winwait TRS2004, serial
+            winactivate
+            send ${W_RAW_KEY}{Enter}
+            winwait TRS2004, Destination
+            send {Enter}
+            winwait Install DirectX
+            send n
+            winwait Windows Update, Your computer already
+            send {Enter}
+        }
+        winwait TRS2004, Complete
+        if ( w_opt_unattended > 0 ) {
+            send {Space}     ; uncheck View Readme
+            send {Enter}     ; Finish
+        }
+        winwaitclose
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Auran\\TRS2004" "TRS2004.exe"
+
+    # And, while we're at it, also install the accompanying paint shed app
+    cd ${W_ISO_MOUNT_ROOT}/TRAINZ_PAINTSHED
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetWinDelay 500
+        run Trainz_Paint_Shed_Setup.exe
+        if ( w_opt_unattended > 0 ) {
+            winwait Trainz Paint Shed, Welcome
+            send {Enter}
+            winwait Trainz Paint Shed, License
+            send a           ; accept
+            send {Enter}     ; Next
+            winwait Trainz Paint Shed, Destination
+            send {Enter}
+            winwait Trainz Paint Shed, Install
+            send {Enter}
+        }
+        winwait Trainz Paint Shed, Complete
+        if ( w_opt_unattended > 0 ) {
+            send {Enter}     ; Finish
+        }
+        winwaitclose
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Auran\\Trainz Paint Shed" "Trainz Paint Shed.exe" paintshed
 }
 
 #----------------------------------------------------------------
