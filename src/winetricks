@@ -398,7 +398,7 @@ w_download_to()
         _W_file=`basename "$_W_url"`
     fi
     _W_cache="$W_CACHE/$_W_packagename"
-    mkdir -p "$_W_cache"
+    w_try mkdir -p "$_W_cache"
 
     # Try download twice
     checksum_ok=""
