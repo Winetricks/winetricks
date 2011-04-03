@@ -1,0 +1,83 @@
+.\" -*- nroff -*-
+.TH WINE 1 "April 2011" "Winetricks 20110402" "Wine package manager"
+.SH NAME
+winetricks \- manage virtual windows environments using wine
+.SH SYNOPSIS
+.BI "winetricks "
+[options] [verb ... ]
+.br
+.B winetricks --help
+.br
+.B winetricks --version
+.SH DESCRIPTION
+.B winetricks
+is an easy way to work around problems in Wine.
+.PP
+It provides simple commands to
+tweak Wine settings,
+download and install missing Windows DLLs and fonts,
+or install various games or apps with appropriate workarounds for the current version of wine.
+.PP
+It can be used via gui or commandline.  The commandline mode is intended both for interactive use and as a building block in fancier wine frontends and in automated regression testing.
+
+.SH OPTIONS
+.B winetricks
+with no arguments displays a GUI using either Zenity or Kdialog
+.PP
+When invoked with
+.B --help
+or
+.B --version
+as the only argument,
+.B wine
+will simply print a small help message or its version respectively and exit.
+
+.PP
+.SH ENVIRONMENT VARIABLES
+Wine checks several environment variables on startup:
+.TP 
+.I WINEPREFIX
+If set, this specifies the location of the default .wine directory ( usually
+.IR $HOME/.wine 
+).
+.TP 
+.I WINE
+If set, this specifies which wine binary to use by default
+.TP
+.I XDG_CACHE_HOME 
+If set, this is path to system's user data cache (default: $HOME/.cache)
+.I W_CACHE 
+path to Winetricks' user data cache (default: $XDG_CACHE_HOME/winetricks}
+
+.SH AUTHORS
+Dan Kegel, Austin English, and many others.  For a complete list,
+please see the file 
+.B AUTHORS
+in the top-level directory of the source distribution.
+.SH COPYRIGHT
+.B winetricks
+is made available under the terms of the LGPL license. A copy of the
+license is in the file
+.B COPYING
+in the top-level directory of the source distribution.
+.SH BUGS
+.PP
+Bugs may be reported at
+.I http://winetricks.org
+.PP
+.SH AVAILABILITY
+The most recent version of 
+.B winetricks
+can be downloaded from
+.I http://winetricks.org/download/releases/
+.PP
+The latest snapshot of the code may be obtained via svn; see
+.I http://code.google.com/p/winetricks/source/checkout
+.PP
+For further information about 
+.B winetricks
+see
+.I http://winetricks.org
+
+.SH "SEE ALSO"
+.BR wine (1)
