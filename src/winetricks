@@ -841,10 +841,10 @@ fi
                     continue
                 }
                 send {enter}      ; next (for 3rd of 3 pages of install dialog)
-                ifwinnotexist $_W_steamtitle
+                ifwinnotexist Install - $_W_steamtitle
                 {
                     sleep 1000
-                    ifwinnotexist $_W_steamtitle
+                    ifwinnotexist Install - $_W_steamtitle
                         break
                 }
             }
