@@ -836,10 +836,17 @@ fi
             {
                 sleep 1000
                 ifwinexist Steam - Updates News
+                {
                     winclose
+                    continue
+                }
                 send {enter}      ; next (for 3rd of 3 pages of install dialog)
                 ifwinnotexist $_W_steamtitle
-                    break
+                {
+                    sleep 1000
+                    ifwinnotexist $_W_steamtitle
+                        break
+                }
             }
         }
     "
@@ -876,6 +883,8 @@ fi
     if test -f "$mymenu" && w_workaround_wine_bug 26487 "Fixing system menu"
     then
         sed -i "s,Exec=.*,$myexec," "$mymenu"
+    else
+        w_warn "bug: could not find system menu entry $_W_steamtitle"
     fi
 
     unset _W_steamid _W_steamtitle
