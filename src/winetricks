@@ -725,6 +725,46 @@ do
 done
 }
 
+w_question()
+{
+    case $WINETRICKS_GUI in
+    *zenity) zenity --entry --text "$1" ;;
+    *kdialog) kdialog --inputbox "$1" ;;
+    *xmessage) w_die "sorry, can't ask question with xmessage" ;;
+    none) echo -n "$1" >&2 ; read W_ANSWER ; echo $W_ANSWER; unset W_ANSWER;;
+    esac
+}
+
+# Reads steam username and password from environment, cache, or user
+# If had to ask user, cache answer.
+w_steam_getid()
+{
+    #TODO: Translate
+    _W_steamidmsg="Please enter your Steam login ID (not email)"
+    _W_steampasswordmsg="Please enter your Steam password"
+
+    if test ! "$W_STEAM_ID"
+    then
+        if test -f "$W_CACHE"/steam_userid.txt
+        then
+            W_STEAM_ID=`cat "$W_CACHE"/steam_userid.txt`
+        else
+            W_STEAM_ID=`w_question "$_W_steamidmsg"`
+            echo "$W_STEAM_ID" > "$W_CACHE"/steam_userid.txt
+        fi
+    fi
+    if test ! "$W_STEAM_PASSWORD"
+    then
+        if test -f "$W_CACHE"/steam_password.txt
+        then
+            W_STEAM_PASSWORD=`cat "$W_CACHE"/steam_password.txt`
+        else
+            W_STEAM_PASSWORD=`w_question "$_W_steampasswordmsg"`
+            echo "$W_STEAM_PASSWORD" > "$W_CACHE"/steam_password.txt
+        fi
+    fi
+}
+
 # Usage:
 # w_steam_install_game steamidnum windowtitle
 w_steam_install_game()
@@ -732,15 +772,7 @@ w_steam_install_game()
     _W_steamid=$1
     _W_steamtitle="$2"
 
-    # These should be loaded from a config file, but we haven't yet defined one
-    if [ "$W_STEAM_ID"x = ""x ] # steam id not supplied
-    then
-        w_die "You must supply W_STEAM_ID= with your steam login name"
-    fi
-    if [ "$W_STEAM_PASSWORD"x = ""x ] # steam password not supplied
-    then
-        w_die "You must supply W_STEAM_PASSWORD= with your steam password"
-    fi
+    w_steam_getid
 
     # Install the steam runtime
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call steam
