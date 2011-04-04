@@ -13363,7 +13363,15 @@ w_metadata wormsreloaded_demo_steam games \
 
 load_wormsreloaded_demo_steam()
 {
-    w_steam_install_game 22690 "Worms Reloaded"
+    if w_workaround_wine_bug 26646 "Installing xact to enable sound"
+    then
+        w_call xact
+    fi
+    if w_workaround_wine_bug 26646 "Setting dsoundhw=Emulation to fix choppy sound"
+    then
+        w_call dsoundhw=Emulation
+    fi
+    w_steam_install_game 22690 "Worms Reloaded Demo"
 }
 
 #----------------------------------------------------------------
