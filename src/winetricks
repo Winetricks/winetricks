@@ -12273,7 +12273,7 @@ load_simsmed()
         }
         winwait, - InstallShield Wizard, Complete
         if ( w_opt_unattended > 0 ) {
-            ControlClick Button1   ; Don't view readme
+            ControlClick Button1   ; Do not view readme
             send {Enter}           ; Finish
         }
         winwaitclose
