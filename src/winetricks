@@ -11817,25 +11817,7 @@ load_osmos_demo()
     w_download http://gamedaily.newaol.com/pub/OsmosDemo_Installer_1.5.6.exe 7568f97100a73985a0fd625b63b205f4477578e8
 
     cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run OsmosDemo_Installer_1.5.6.exe
-        winwait, Osmos, License
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            controlclick, Button2, Osmos Demo Setup, License Agreement
-            winwait, Osmos Demo Setup, Choose Install Location
-            sleep 500
-            controlclick, Button2, Osmos Demo Setup, Choose Install Location
-            winwait, Osmos Demo Setup, Choose Start Menu Folder
-            sleep 500
-            controlclick, Button2, Osmos Demo Setup, Choose Start Menu Folder
-            winwait, Osmos Demo Setup, Installation Complete
-            sleep 500
-            controlclick, Button2, Osmos Demo Setup, Installation Complete
-        }
-        WinWaitClose
-    "
+    w_try $WINE OsmosDemo_Installer_1.5.6.exe ${W_OPT_UNATTENDED:+ /S}
 
     if w_workaround_wine_bug 24416 "installing C runtime library" 1.3.8,
     then
