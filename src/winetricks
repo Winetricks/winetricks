@@ -12264,11 +12264,31 @@ load_simsmed()
             send {Enter}
             winwait, - InstallShield Wizard, Click Install to begin
             send {Enter}
-            ; FIXME: work around bug 25535 only if needed
-             winwait,,.NET Framework 4 has not been installed
-             ControlClick Button3  ; Finish
-             winwait, .NET Framework Initialization Error
-             send {Enter}
+
+            ; Handle possible error messages
+            ; In Wine-1.3.16 and lower, before 
+            ; http://www.winehq.org/pipermail/wine-cvs/2011-March/076262.html,
+            ; wine didn't claim to already have .net 4 installed,
+            ; and ran into bug 25535.
+            Loop 
+            {
+                ; .net 4 install sometimes fails nicely
+                ifWinExist,, .NET Framework 4 has not been installed
+                {
+                    ControlClick Button3    ; Finish
+                }
+                ; .net 4 install sometimes explodes
+                ifWinExist .NET Framework Initialization Error
+                {
+                    send {Enter}
+                }
+                ; When we see this, we're past the rash of error messages
+                ifWinExist, Sims, Customer Experience Improvement
+                    break
+                sleep 1000
+            }
+
+            ; Back to normal flow
             winwait, Sims, Customer Experience Improvement
             send {Enter}           ; Next
         }
