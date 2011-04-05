@@ -12347,22 +12347,22 @@ w_metadata splitsecond games \
     publisher="Disney" \
     year="2010" \
     media="dvd" \
-    file1="15548fabe350e1b65432400aae8c3acfb1c930d8.iso" 
+    file1="SplitSecond.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Disney Interactive Studios/Split Second/SplitSecond.exe"
 
 load_splitsecond()
 {
     if w_workaround_wine_bug 22774 "" 1.3.0
     then
-        echo "On wine, install takes an extra 7 minutes at the end, please be patient."
+        w_warn "On wine, install takes an extra 7 minutes at the end, please be patient."
     fi
 
     if w_workaround_wine_bug 22865
     then
-        echo "This game is currently unplayable on wine due to rendering problems; see winehq bug 22865."
+        w_warn "This game is currently unplayable on wine due to rendering problems; see winehq bug 22865."
     fi
 
-    # Key is used in first run activation.  FIXME: script first run activation.
-    #w_read_key
+    # Key is used in first run activation, no need to read it here.
     w_mount SplitSecond
 
     # Aborts with dialog about FirewallInstallHelper.dll if that's not on the path (e.g. in current dir)
