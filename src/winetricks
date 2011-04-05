@@ -12260,6 +12260,7 @@ load_simsmed()
             send {Raw}$W_KEY
             send {Enter}
             winwait, - InstallShield Wizard, Setup Type
+            ControlClick &Complete    ; was not defaulting to complete?
             send {Enter}
             winwait, - InstallShield Wizard, Click Install to begin
             send {Enter}
