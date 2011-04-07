@@ -13086,32 +13086,28 @@ load_ut3()
 
     w_ahk_do "
         run ${W_ISO_MOUNT_LETTER}:SetupUT3.exe
+        SetTitleMatchMode, slow    ; else can't see EULA text
         SetTitleMatchMode, 2
+        SetWinDelay 1000
         WinWait, Choose Setup Language
         if ( w_opt_unattended > 0 ) {
-            sleep 500
             ControlClick Button1   ; OK
             WinWait, Unreal Tournament 3, GAMESPY ; License Agreement
-            sleep 500
             ControlClick Button2   ; Yes
             WinWait, Unreal Tournament 3, UnrealEd ; License Agreement
-            sleep 500
             ControlClick Button2   ; Yes
             WinWait, , Choose Destination
-            sleep 500
             ControlClick Button1   ; Next
-            WinWait, AGEIA PhysX v7.09.13
-            sleep 500
+            WinWait, AGEIA PhysX v7.09.13 Setup, License
             ControlClick Button3   ; Accept
+            sleep 1000
             ControlClick Button4   ; Next
             WinWait, AGEIA PhysX v7.09.13, Finish
-            sleep 500
             ControlClick Button1   ; Finish
             ; game now begins installing
         }
         WinWait, , InstallShield Wizard Complete
         if ( w_opt_unattended > 0 ) {
-            sleep 500
             ControlClick Button4   ; Finish
         }
         WinWaitClose
@@ -13124,18 +13120,14 @@ load_ut3()
         run UT3Patch5.exe
         WinWait, License
         if ( w_opt_unattended > 0 ) {
-            sleep 500
             ControlClick Button1   ; Accept
             WinWait, End User License Agreement
-            sleep 500
             ControlClick Button1   ; Accept
             WinWait, Patch UT3
-            sleep 500
             ControlClick Button1   ; Yes
         }
         WinWait, , UT3 was successfully patched!
         if ( w_opt_unattended > 0 ) {
-            sleep 500
             ControlClick Button1   ; OK
         }
         WinWaitClose
