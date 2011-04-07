@@ -12580,7 +12580,9 @@ load_tmnationsforever()
         w_warn "To fix choppy sound/low fps, try setting Settings/Advanced/Audio to portaudio when starting the game."
     fi
 
-    w_download "http://files.trackmaniaforever.com/tmnationsforever_setup.exe" cab0cf66db0471bc2674a3b1aebc35de0bca6ed0
+    # Before:      cab0cf66db0471bc2674a3b1aebc35de0bca6ed0
+    # 29 Mar 2011: 23388798d5c90ad4a233b4cd7e9fcafd69756978
+    w_download "http://files.trackmaniaforever.com/tmnationsforever_setup.exe" 23388798d5c90ad4a233b4cd7e9fcafd69756978
 
     cd "$W_CACHE/$W_PACKAGE"
 
