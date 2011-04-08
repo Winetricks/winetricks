@@ -7843,7 +7843,7 @@ load_3dmark03()
     # http://www.futuremark.com/benchmarks/3dmark03/download/
     if ! test -f "$W_CACHE/$W_PACKAGE/3DMark03_v360_1901.exe"
     then
-        w_download http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark03_v360_1901.exe 46a439101ddbbe3c9563b5e9651cb61b46ce0619
+        w_download_manual http://www.futuremark.com/download/3dmark03/ 3DMark03_v360_1901.exe 46a439101ddbbe3c9563b5e9651cb61b46ce0619
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
@@ -7903,7 +7903,7 @@ load_3dmark05()
     # http://www.futuremark.com/download/3dmark05/
     if ! test -f "$W_CACHE/$W_PACKAGE/3DMark05_v130_1901.exe"
     then
-        w_download http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark05_v130_1901.exe 8ad6bc2917e22edf5fc95d1fa96cc82515093fb2
+        w_download http://www.ocinside.de/download/3dmark05_v130_1901.exe 8ad6bc2917e22edf5fc95d1fa96cc82515093fb2
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
@@ -7955,7 +7955,7 @@ load_3dmark06()
     # http://www.futuremark.com/benchmarks/3dmark06/download/
     if ! test -f "$W_CACHE/$W_PACKAGE/3DMark06_v120_1901.exe"
     then
-        w_download http://www.bulletproofnerds.com/uploadedfiles/futuremark/3DMark06_v120_1901.exe 2e4a52d5b0f7caebd7b4407dfa9e258ac623b5dd
+        w_download http://www.ocinside.de/download/3dmark06_v120_1901.exe 2e4a52d5b0f7caebd7b4407dfa9e258ac623b5dd
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
