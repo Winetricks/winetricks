@@ -351,6 +351,22 @@ w_verify_sha1sum()
     unset _W_vs_wantsum _W_vs_file _W_vs_gotsum
 }
 
+# wget outputs progress messages that look like this:
+#      0K .......... .......... .......... .......... ..........  0%  823K 40s
+# This function replaces each such line with the pair of lines
+# 0%
+# # Downloading... 823K (40s)
+# It uses minimal buffering, so each line is output immediately
+# and the user can watch progress as it happens.
+
+winetricks_parse_wget_progress()
+{
+    # Parse a percentage, a size, and a time into $1, $2 and $3
+    # then use them to create the output line.
+    sed -u \
+       's/^.* \+\([0-9]\+%\) \+\([0-9,.]\+[GMKB]\) \+\([0-9hms,.]\+\).*$/\1\n# Downloading... \2 (\3)/' 
+}
+
 # Execute wget, and if in gui mode, also show a graphical progress bar
 winetricks_wget_progress()
 {
@@ -360,7 +376,7 @@ winetricks_wget_progress()
         # the --auto-kill kills the subshell, not the current shell
         (
             wget "$@" 2>&1 |
-            sed -u 's/^.* \+\([0-9]\+%\) \+\([0-9,.]\+[GMKB]\) \+\([0-9hms,.]\+\).*$/\1\n# Downloading... \2 (\3)/' | \
+            winetricks_parse_wget_progress | \
             $WINETRICKS_GUI --progress --width 400 --title="$_W_file" --auto-kill --auto-close
         )
         err=$?
