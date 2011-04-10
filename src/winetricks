@@ -4454,6 +4454,30 @@ load_l3codecx()
 
 #----------------------------------------------------------------
 
+# FIXME: installed location is
+# $W_PROGRAMS_X86_WIN/Gemeinsame Dateien/System/ADO/msado26.tlb
+# in German... need a variable W_COMMONFILES or something like that
+
+w_metadata  mdac27 dlls \
+   title="Microsoft Data Access Components 2.7 sp1" \
+   publisher="Microsoft" \
+   year="2006" \
+   media="download" \
+   file1="mdac_typ.exe" \
+   installed_file1="$W_PROGRAMS_X86_WIN/Common Files/System/ADO/msado26.tlb"
+
+load_mdac27()
+{
+    # http://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
+    w_download_manual http://download.cnet.com/Microsoft-Data-Access-Components-MDAC-2-7-Service-Pack-1-Refresh/3000-10250_4-10729498.html mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
+    load_native_mdac
+    w_set_winver win2k
+    w_try $WINE "$W_CACHE"/mdac27/mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup /QNT"}
+    w_unset_winver
+}
+
+#----------------------------------------------------------------
+
 w_metadata  mdac28 dlls \
    title="Microsoft Data Access Components 2.8 sp1" \
    publisher="Microsoft" \
