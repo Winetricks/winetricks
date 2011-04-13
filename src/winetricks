@@ -8773,6 +8773,121 @@ load_bladekitten_demo()
 
 #----------------------------------------------------------------
 
+w_metadata braid_demo games \
+    title="Braid Demo" \
+    publisher="Number None" \
+    year="2009" \
+    media="download" \
+    file1="braid_windows_r3.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Braid/braid.exe"
+
+load_braid_demo()
+{
+    if ! test -f "$W_CACHE/$W_PACKAGE/braid_windows_r3.exe"
+    then
+        w_download http://download.instantaction.com/games/pgh_legacy/braid_windows_r3.exe 7ea08ddbf5f2fb2f38057d930389b5af7d737e2c
+    fi
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, braid_windows_r3.exe
+        if ( w_opt_unattended > 0 ) {
+            winwait, Braid, install
+            controlclick, TButton1
+            winwait, Braid, Destination
+            controlclick, TButton3
+            winwait, Braid, Ready to Install
+            controlclick, TButton3
+            winwait, Setup, Finishing installation
+            sleep 5000
+            ; Workaround_winebug 21761
+            ifwinactive, Setup, ShellExecuteEx failed
+            {
+                controlclick, Button1
+            }
+        }
+        winwait, Braid, finished
+        if ( w_opt_unattended > 0 )
+            controlclick, TButton3
+        winwaitclose, Braid, finished
+    "
+
+    if w_workaround_wine_bug 22161
+    then
+        w_call d3dx9_36
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Braid" "braid.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata braid games \
+    title="Braid" \
+    publisher="Number None" \
+    year="2009" \
+    media="download" \
+    file1="braid_windows_r3.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Braid/braid.exe"
+
+load_braid()
+{
+    if ! test -f "$W_CACHE/$W_PACKAGE/braid_windows_r3.exe"
+    then
+        w_download http://download.instantaction.com/games/pgh_legacy/braid_windows_r3.exe 7ea08ddbf5f2fb2f38057d930389b5af7d737e2c
+    fi
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, braid_windows_r3.exe
+        if ( w_opt_unattended > 0 ) {
+            winwait, Braid, install
+            controlclick, TButton1
+            winwait, Braid, Destination
+            controlclick, TButton3
+            winwait, Braid, Ready to Install
+            controlclick, TButton3
+            winwait, Setup, Finishing installation
+            sleep 5000
+            ; Workaround_winebug 21761
+            ifwinactive, Setup, ShellExecuteEx failed
+            {
+                controlclick, Button1
+            }
+        }
+        winwait, Braid, finished
+        if ( w_opt_unattended > 0 )
+            controlclick, TButton3
+        winwaitclose, Braid, finished
+    "
+
+    if w_workaround_wine_bug 22161
+    then
+        w_call d3dx9_36
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Braid" "braid.exe"
+
+    w_read_key 
+    cd "$W_DRIVE_C"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, run-$W_PACKAGE.bat
+        winwait, Braid, Enter Registration
+        controlclick, Button4
+        winwait, Enter Registration
+        send {Raw}$W_RAW_KEY
+        controlclick, Button1
+        sleep 5000
+        ; FIXME: Desktop resolution isn't reset after exit
+        process, close, braid.exe
+    "
+}
+
+#----------------------------------------------------------------
+
 w_metadata cnc3_demo games \
     title="Command and Conquer 3 Demo" \
     publisher="EA" \
