@@ -4567,7 +4567,8 @@ w_metadata mono210 dlls \
 load_mono210()
 {
     w_download http://ftp.novell.com/pub/mono/archive/2.10.1/windows-installer/2/mono-2.10.1-gtksharp-2.12.10-win32-2.exe 7067b1c6cc530738bfd63c3ef38271c2dcc387fe 
-    w_try $WINE "$W_CACHE"/mono210/mono-2.10.1-gtksharp-2.12.10-win32-2.exe $W_UNATTENDED_SLASH_SILENT
+    cd "$W_CACHE"/mono210
+    w_try $WINE mono-2.10.1-gtksharp-2.12.10-win32-2.exe $W_UNATTENDED_SLASH_SILENT
 }
 
 #----------------------------------------------------------------
