@@ -9194,6 +9194,83 @@ load_cod4mw_demo()
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Activision\\Call of Duty 4 - Modern Warfare Demo" "iw3sp.exe"
 }
 
+#----------------------------------------------------------------
+
+w_metadata cod5_waw games \
+    title="Call of Duty 5: World at War" \
+    publisher="Activision" \
+    year="2008" \
+    media="dvd" \
+    file1="5330161c7960f0770e6b05f498ab9fd13be4cfad.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Activision/Call of Duty - World at War/CoDWaW.exe"
+
+load_cod5_waw()
+{
+    w_mount CODWAW
+    
+    w_read_key
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, ${W_ISO_MOUNT_LETTER}:setup.exe
+        winwait, Call of Duty, Key Code
+        sleep 1000
+        Send $W_KEY
+        sleep 1000
+        ControlClick, Button1, Call of Duty, Key Code
+        winwait, Key Code Check
+        sleep 1000
+        controlclick, Button1, Key Code Check
+        winwait, Call of Duty, License Agreement
+        sleep 1000
+        controlclick, Button5, Call of Duty, License Agreement
+        sleep 1000
+        controlclick, Button2, Call of Duty, License Agreement
+        ; It wants to install PunkBuster here...OH BOY! Luckily, we can say no (see below)
+        winwait, PunkBuster, Anti-Cheat software system
+        sleep 1000
+        controlclick, Button1, PunkBuster, Anti-Cheat software system
+        winwait, Call of Duty, install PunkBuster
+        sleep 1000
+        ; Punkbuster: both are scripted below, so you can toggle which one you want.
+        ; No:
+        ; controlclick, Button2, Call of Duty, install PunkBuster
+        ; Yes:
+        controlclick, Button1, Call of Duty, install PunkBuster
+        winwait, PunkBuster, License
+        sleep 1000
+        controlclick, Button5, PunkBuster, License
+        sleep 1000
+        controlclick, Button2, PunkBuster, License
+        ; /end punkbuster
+        winwait, Call of Duty, Minimum System
+        sleep 1000
+        controlclick, Button1, Call of Duty, Minimum System
+        winwait, Call of Duty, Setup Type
+        sleep 1000
+        controlclick, Button1, Call of Duty, Setup Type
+        ; Exits silently after install
+        ; Need to wait here else next verb will run before this one is done
+        winwaitclose, Call of Duty
+    "
+
+    # FIXME: Install latest updates
+
+    if w_workaround_wine_bug 16241 "Working around sound bug by setting Win7 mode" 1.3.12,
+    then
+        set_app_winver CodWaW.exe win7
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Activision\\Call of Duty - World at War" "CoDWaW.exe"
+
+    if w_workaround_wine_bug 219
+    then
+        w_warn "This game's copy-protection scheme does not currently work in Wine."
+    else
+        w_warn "This game is copy-protected, and requires the real disc in a real drive to run."
+    fi
+}
+
 #----------------------------------------------------------
 
 w_metadata cojbib_demo games \
