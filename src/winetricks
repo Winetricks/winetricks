@@ -9590,6 +9590,73 @@ load_darknesswithin2_demo()
 
 #----------------------------------------------------------------
 
+w_metadata deadspace games \
+    title="Dead Space" \
+    publisher="EA" \
+    year="2008" \
+    media="dvd" \
+    file1="DEADSPACE.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Dead Space/Dead Space.exe"
+
+load_deadspace()
+{
+    w_mount DEADSPACE
+
+    if w_workaround_wine_bug 23324
+    then
+        msvcrun_me_harder="
+            winwait, Microsoft
+            controlclick, Button1
+            "
+    else
+        msvcrun_me_harder=""
+    fi
+
+    w_read_key
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        ; note: if this is the second run, the installer skips the registration code prompt
+        run, ${W_ISO_MOUNT_LETTER}:EASetup.exe
+        winwait, Dead
+        send {Enter}
+        winwait, Dead, Registration Code
+        send {RAW}$W_KEY
+        Sleep 1000
+        controlclick, Button2
+        $msvcrun_me_harder
+        winwait, Setup, License
+        Sleep 1000
+        controlclick, Button1
+        Sleep 1000
+        send {Enter}
+        winwait, Setup, License
+        Sleep 1000
+        controlclick, Button1
+        Sleep 1000
+        send {Enter}
+        winwait, Setup, Destination
+        Sleep 1000
+        controlclick, Button1
+        winwait, Setup, begin
+        Sleep 1000
+        controlclick, Button1
+        winwait, Setup, Finish
+        Sleep 1000
+        controlclick, Button5
+        controlclick, Button1
+    "
+
+    if w_workaround_wine_bug 26079
+    then
+        w_call d3dx9_36
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Dead Space" "Dead Space.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata deadspace2 games \
     title="Dead Space 2 (drm broken on wine)" \
     publisher="EA" \
