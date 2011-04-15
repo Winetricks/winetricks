@@ -12875,6 +12875,59 @@ load_splitsecond()
 
 #----------------------------------------------------------------
 
+w_metadata splitsecond_demo games \
+    title="Split Second Demo" \
+    publisher="Disney" \
+    year="2010" \
+    media="download" \
+    file1="SplitSecondDemo_FilePlanet.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Disney Interactive Studios/Split Second/SplitSecondDEMO.exe"
+
+load_splitsecond_demo()
+{
+    w_download_manual http://www.fileplanet.com/212404/210000/fileinfo/Split/Second-Demo SplitSecondDemo_FilePlanet.exe 72b070712cfe951297263fae143521b45dae16b4
+
+    if w_workaround_wine_bug 22774 "" 1.3.0
+    then
+        w_warn "On wine, install takes an extra 7 minutes at the end, please be patient."
+    fi
+
+    if w_workaround_wine_bug 22865
+    then
+        w_warn "This game is currently unplayable on wine due to rendering problems; see winehq bug 22865."
+    fi
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, SplitSecondDemo_FilePlanet.exe 
+        winwait, Split, Language
+        ;ControlClick, Next, Split, Language  ; does not quite work, have to use {Enter} instead
+        Send {Enter}
+        winwait, Split, game installation
+        ControlClick, Button1, Split, game installation
+        winwait, Split, license
+        ControlClick, Button5, Split, license
+        ControlClick, Button2, Split, license
+        winwait, Split, DirectX
+        ControlClick, Button5, Split, DirectX
+        ControlClick, Button2, Split, DirectX
+        winwait, Split, installation path
+        ControlClick, Button1, Split, installation path
+        winwait, Split, Game features
+        ControlClick, Button2, Split, Game features
+        winwait, Split, start copying
+        ControlClick, Button1, Split, start copying
+        winwait, Split, completed
+        ControlClick, Button1, Split, completed
+        ControlClick, Button4, Split, completed
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Disney Interactive Studios\\Split Second Demo" "SplitSecondDEMO.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata spore games \
     title="Spore" \
     publisher="EA" \
