@@ -12875,6 +12875,70 @@ load_splitsecond()
 
 #----------------------------------------------------------------
 
+w_metadata spore games \
+    title="Spore" \
+    publisher="EA" \
+    year="2008" \
+    media="dvd" \
+    file1="SPORE.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/SPORE/Sporebin/SporeApp.exe"
+
+load_spore()
+{
+    w_mount SPORE
+
+    w_read_key
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, ${W_ISO_MOUNT_LETTER}:SPORESetup.exe
+        winwait, Language
+        if ( w_opt_unattended > 0 ) {
+            sleep 500
+            controlclick, Button1
+            winwait, SPORE, Welcome
+            sleep 500
+            controlclick, Button1
+            winwait, SPORE, License
+            sleep 500
+            controlclick, Button3
+            sleep 500
+            controlclick, Button1
+            winwait, SPORE, Registration Code
+            send {RAW}$W_KEY
+            sleep 500
+            controlclick, Button2
+            winwait, SPORE, Setup Type
+            sleep 500
+            controlclick, Button6
+            winwait, SPORE, Shortcut
+            sleep 500
+            controlclick, Button6
+            winwait, SPORE, begin
+            sleep 500
+            controlclick, Button1
+            winwait, Question
+            ; download managers are usually a pain, so always say no to such questions
+            sleep 500
+            controlclick, Button2
+        }
+        winwait, SPORE, complete
+        sleep 500
+        if ( w_opt_unattended > 0 ) {
+            controlclick, Button1
+            sleep 500
+            controlclick, Button2
+            sleep 500
+            controlclick, Button4
+        }
+        winwaitclose, SPORE, complete
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\SPORE\\Sporebin" "SporeApp.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata starcraft2_demo games \
     title="Starcraft II Demo" \
     publisher="Blizzard" \
