@@ -9590,6 +9590,29 @@ load_darknesswithin2_demo()
 
 #----------------------------------------------------------------
 
+w_metadata darkspore_beta_demo games \
+    title="Darkspore Beta Demo" \
+    publisher="Electronic Arts" \
+    year="2011" \
+    media="download" \
+    file1="DarksporeBetaFull.zip" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Darkspore/DarksporeBin/Darkspore.exe"
+
+load_darkspore_beta_demo()
+{
+    # 13 Apr 2011 1278e50e021b9ca6265f93da5455796cfa34c979
+    w_download http://static.cdn.ea.com/darkspore/u/f/base/temp/DarksporeBetaFull.zip 1278e50e021b9ca6265f93da5455796cfa34c979
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try_unzip DarksporeBetaFull.zip -d "$W_TMP"
+    cd "$W_TMP/Darkspore"
+    chmod +x setup.exe
+    w_try $WINE setup.exe
+    # TODO: implement unattended mode
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Darkspore\\DarksporeBin" "Darkspore.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata deadspace games \
     title="Dead Space" \
     publisher="EA" \
