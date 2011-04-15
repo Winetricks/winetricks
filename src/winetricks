@@ -11996,6 +11996,100 @@ load_mb_warband_demo()
 
 #----------------------------------------------------------------
 
+w_metadata mise games \
+    title="Monkey Island: Special Edition" \
+    publisher="LucasArts" \
+    year="2009" \
+    media="dvd" \
+    file1="SecretOfMonkeyIslandSE_ddsetup.zip" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/LucasArts/The Secret of Monkey Island Special Edition/MISE.exe"
+
+load_mise()
+{
+    w_download_manual "http://www.direct2drive.com/8241/product/Buy-The-Secret-of-Monkey-Island(R):-Special-Edition-Download" SecretOfMonkeyIslandSE_ddsetup.zip 2e32458698c9ec7ebce94ae5c57531a3fe1dbb9e
+
+    if w_workaround_wine_bug 22161
+    then
+        # Doesn't crash, but you only get a black screen and a flood of d3dx fixme's without native d3dx9_36
+        w_call d3dx9_36
+    fi
+
+    if w_workaround_wine_bug 24545
+    then
+        # Game wants to install directx, but we delete it. It really only needs xact for x3daudio?_?.dll
+        w_call xact
+    fi
+
+    if w_workaround_wine_bug 24547
+    then
+        # It really does need vcrun2005, for msvp80.dll (and potentially one stub from msvcr80)
+        w_call vcrun2005
+    fi
+
+    mkdir -p "$W_TMP/$W_PACKAGE"
+    cd "$W_TMP/$W_PACKAGE"
+
+    # Don't extract DirectX/dotnet35 installers, they just take up extra time and aren't needed. Luckily, MISE copes well and just skips them if they are missing:
+    w_try unzip "$W_CACHE/$W_PACKAGE"/SecretOfMonkeyIslandSE_ddsetup.zip -x DirectX* dotnet*
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, setup.exe
+        WinWait, The Secret of Monkey Island, This wizard will guide you
+        sleep 1000
+        ControlClick, Button2
+        WinWait, The Secret of Monkey Island, License Agreement
+        sleep 1000
+        ControlSend, RichEdit20A1, {CTRL}{END}
+        sleep 1000
+        ControlClick, Button4
+        sleep 1000
+        ControlClick, Button2
+        WinWait, The Secret of Monkey Island, Setup Type
+        sleep 1000
+        ControlClick, Button2
+        WinWait, The Secret of Monkey Island, Click Finish
+        sleep 1000
+        ControlClick, Button2
+        "
+
+    # FIXME: This app has two different keys - you can use either one.  How do we handle that with w_read_key?
+    if test -f "$W_CACHE"/$W_PACKAGE/activationcode.txt
+    then
+        MISE_KEY=`cat "$W_CACHE"/$W_PACKAGE/activationcode.txt`
+        w_ahk_do "
+            SetTitleMatchMode, 2
+            run, $W_PROGRAMS_X86_WIN\\LucasArts\\The Secret of Monkey Island Special Edition\\MISE.exe
+            winwait, Product Activation
+            ControlClick, Edit1 ; Activation Code
+            send $MISE_KEY
+            ControlClick Button4 ; Activate Online
+            winwait, Product Activation, SUCCESSFUL
+            winClose
+	    sleep 1000
+	    Process, Close, MISE.exe
+        "
+    elif test -f "$W_CACHE"/$W_PACKAGE/unlockcode.txt
+    then
+        MISE_KEY=`cat "$W_CACHE"/$W_PACKAGE/unlockcode.txt`
+        w_ahk_do "
+            SetTitleMatchMode, 2
+            run, $W_PROGRAMS_X86_WIN\\LucasArts\\The Secret of Monkey Island Special Edition\\MISE.exe
+            winwait, Product Activation
+            ControlClick, Edit3 ; Unlock Code
+            send $MISE_KEY
+            ControlClick Button6 ; Activate manual
+            winClose
+            sleep 1000
+            Process, Close, MISE.exe
+        "
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\LucasArts\\The Secret of Monkey Island Special Edition" "MISE.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata nfsshift_demo games \
     title="Need For Speed: SHIFT Demo" \
     publisher="EA" \
@@ -12194,6 +12288,67 @@ load_plantsvszombies()
     "
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\PopCap Games\\Plants vs. Zombies" "PlantsVsZombies.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata popfs games \
+    title="Prince of Persia The Forgotten Sands" \
+    publisher="Ubisoft" \
+    year="2010" \
+    media="dvd" \
+    file1="PoP_TFS.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Prince of Persia The Forgotten Sands/Prince of Persia.exe"
+
+load_popfs()
+{
+    w_mount PoP_TFS
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, ${W_ISO_MOUNT_LETTER}:Setup.exe
+        winwait, Prince of Persia, Language
+        if ( w_opt_unattended > 0 ) {
+            sleep 500
+            ControlClick, Button3
+            winwait, Prince of Persia, Welcome
+            sleep 500
+            ControlClick, Button1
+            winwait, Prince of Persia, License
+            sleep 500
+            ControlClick, Button5
+            sleep 500
+            ControlClick, Button2
+            winwait, Prince of Persia, Click Install
+            sleep 500
+            ControlClick, Button1
+            ; Avoid error when creating desktop shortcut
+            Loop
+            {
+                IfWinActive, Prince of Persia, Click Finish
+                    break
+                IfWinExist, Prince of Persia, desktop shortcut
+                {
+                sleep 500
+                    ControlClick, Button1, Prince of Persia, desktop shortcut
+                    break
+                }
+                sleep 5000
+            }
+        }
+        winwait, Prince of Persia, Click Finish
+        if ( w_opt_unattended > 0 ) {
+            sleep 500
+            ControlClick, Button4
+        }
+    "
+
+if w_workaround_wine_bug 24346
+then
+    w_call dsoundbug9612
+fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Prince of Persia The Forgotten Sands" "Prince of Persia.exe"
 }
 
 #----------------------------------------------------------------
