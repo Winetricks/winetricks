@@ -919,24 +919,43 @@ fi
     unset _W_steamid _W_steamtitle
 }
 
-# Usage: w_mount "volume name"
+# Usage: w_mount "volume name" [filename-to-check [discnum]]
+# Some games have two volumes with identical volume names.
+# For these, please specify discnum 1 for first disc, discnum 2 for 2nd, etc.,
+# else caching can't work.
 # FIXME: should take mount option 'unhide' for poorly mastered discs
 w_mount()
 {
-    WINETRICKS_IMG="$W_CACHE/$W_PACKAGE/$1.iso"
+    if test "$3"
+    then
+        WINETRICKS_IMG="$W_CACHE/$W_PACKAGE/$1-$3.iso"
+    else
+        WINETRICKS_IMG="$W_CACHE/$W_PACKAGE/$1.iso"
+    fi
     mkdir -p "$W_CACHE/$W_PACKAGE"
 
     if test -f "$WINETRICKS_IMG"
     then
-        winetricks_mount_cached_iso "$1"
+        winetricks_mount_cached_iso
     else
+        if test "$WINETRICKS_OPT_KEEPISOS" = 0 || test "$2"
+        then
+            while true
+            do
+                winetricks_mount_real_volume "$1"
+                if test -f "$W_ISO_MOUNT_ROOT/$2"
+                then
+                    break
+                else
+                    w_warn "Wrong disc inserted, $2 not found"
+                fi
+            done
+        fi
+
         case "$WINETRICKS_OPT_KEEPISOS" in
-        0)
-            winetricks_mount_real_volume "$1"
-            ;;
         1)
             winetricks_cache_iso "$1"
-            winetricks_mount_cached_iso "$1"
+            winetricks_mount_cached_iso
             ;;
         esac
     fi
@@ -10280,6 +10299,94 @@ load_dragonage()
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Dragon Age" "bin_ship\\daorigins.exe"
 
     w_workaround_wine_bug 26211 "You may need to kill DAO or its launcher after each run.  The Process view of taskmgr makes this relatively easy."
+}
+
+#----------------------------------------------------------------
+
+w_metadata dragonage_ue games \
+    title="Dragon Age: Origins - Ultimate Edition" \
+    publisher="Bioware / EA" \
+    year="2010" \
+    media="dvd" \
+    file1="DRAGONAGE-1.iso" \
+    file2="DRAGONAGE-2.iso" 
+
+load_dragonage_ue()
+{
+    w_read_key
+
+    w_mount DRAGONAGE Setup.exe 1
+
+    # Annoyingly, it runs a webrowser so you can activate the extra stuff. Disable that, and w_warn the user after install:
+    WINEDLLOVERRIDES="winebrowser.exe="
+    export WINEDLLOVERRIDES
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetTitleMatchMode, slow
+        SetWinDelay 1000
+        Run, ${W_ISO_MOUNT_LETTER}:Setup.exe
+        winwait, Installer, English
+        if ( w_opt_unattended > 0 ) {
+            ControlClick Button1, Installer, English
+            winwait, Dragon Age: Origins Setup
+            ControlClick Button2, Dragon Age: Origins Setup
+            winwait, Dragon Age: Origins Setup, License Agreement
+            ControlClick Button4, Dragon Age: Origins Setup
+            ControlClick Button2, Dragon Age: Origins Setup
+            winwait, Dragon Age: Origins, Registration
+            controlclick, Edit1
+            sleep 1000
+            send $W_KEY
+            send {Enter}
+            winwait, Dragon Age: Origins Setup, Install Type
+            controlclick, Button2, Dragon Age: Origins Setup, Install Type
+            winwait, Dragon Age: Origins Setup, expanded content
+            controlclick, Button1
+        }
+        winwait, Insert Disc...
+    "
+    w_mount DRAGONAGE data/ultimate_en.rar 2
+
+    w_ahk_do "
+        sleep 5000
+        SetTitleMatchMode, 2
+        if ( w_opt_unattended > 0 ) {
+            controlclick, Button2, Insert Disc...
+            winwait, Dragon Age, Setup was completed successfully
+            controlclick, Button2, Dragon Age, Setup was completed successfully
+        }
+        winwait, Dragon Age, Click Finish to close
+        if ( w_opt_unattended > 0 ) {
+            controlclick, Button5, Dragon Age, Click Finish to close
+            controlclick, Button2, Dragon Age, Click Finish to close
+        }
+        winwaitclose
+    "
+
+    if w_workaround_wine_bug 22307
+    then
+        w_warn "Turn off frame buffer effects to avoid blurry cut scenes.  See http://bugs.winehq.org/show_bug.cgi?id=22307"
+    fi
+
+    if w_workaround_wine_bug 22383
+    then
+        w_try_winetricks strictdrawordering=enabled
+    fi
+
+    if w_workaround_wine_bug 23730
+    then
+        w_warn "Run with WINEDEBUG=-all to reduce flickering."
+    fi
+
+    if w_workaround_wine_bug 23081
+    then
+        w_warn "If you still see flickering, try applying the patch from http://bugs.winehq.org/show_bug.cgi?id=23081"
+    fi
+
+    w_warn "To activate the additional content, visit http://social.bioware.com/redeem_code.php?path=/dragonage/pc/dlcactivate/en"
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Dragon Age" "bin_ship\\daorigins.exe"
 }
 
 #----------------------------------------------------------------
