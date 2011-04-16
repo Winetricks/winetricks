@@ -11595,7 +11595,8 @@ load_lhp_demo()
     *UTF-8*|*utf8*) ;;
     *)
         w_warn "This installer fails in non-utf-8 locales.  Doing 'export LANG=en_US.UTF-8'."
-        export LANG=en_US.UTF-8
+        LANG=en_US.UTF-8
+        export LANG
         ;;
     esac
 
