@@ -11112,44 +11112,6 @@ load_hegemony_demo()
 
 #----------------------------------------------------------------
 
-w_metadata hon games \
-    title="Heroes of Newerth" \
-    publisher="S2 Games" \
-    year="2010" \
-    media="download" \
-    file1="HoNClient-2.0.17.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Heroes of Newerth/hon.exe"
-
-load_hon()
-{
-    w_download http://dl.heroesofnewerth.com/HoNClient-2.0.17.exe 0387e48929f8a0c5991e0082061986ca79ef11bd
-
-    cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run, HoNClient-2.0.17.exe
-        winwait, Heroes of Newerth
-        if ( w_opt_unattended > 0 ) {
-            controlclick, Button2, Heroes of Newerth
-            winwait, Heroes of Newerth, License
-            controlclick, Button2, Heroes of Newerth, License
-            winwait, Heroes of Newerth, Components
-            controlclick, Button2, Heroes of Newerth, Components
-            winwait, Heroes of Newerth, Install Location
-            controlclick, Button2, Heroes of Newerth, Install Location
-            winwait, Heroes of Newerth, Start Menu
-            controlclick, Button2, Heroes of Newerth, Start Menu
-            winwait, Heroes of Newerth, Finish
-            controlclick, Button2, Heroes of Newerth, Finish
-        }
-        winwaitclose, Heroes of Newerth, Finish
-    "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Heroes of Newerth" "hon.exe"
-}
-
-#----------------------------------------------------------------
-
 w_metadata hphbp_demo games \
     title="Harry Potter & The Half Blood Prince Demo" \
     publisher="EA" \
