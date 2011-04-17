@@ -3137,33 +3137,35 @@ _EOF_
         ;;
     *)
         cat <<_EOF_
-Usage: $0 [options] [verb|path-to-verb] ...
+Usage: $0 [options] [command|verb|path-to-verb] ...
 Executes given verbs.  Each verb installs an application or changes a setting.
+
 Options:
--k|--keep_isos: cache isos (allows later installation without disc)
--q|--unattended: don't ask any questions, just install automatically
--r|--ddrescue: alternate method of disc access (helps with scratched discs)
--v|--verbose: echo all commands as they are executed
--V|--version: display version and exit
--h|--help: display this message and exit
---isolate: install each app or game in its own bottle
---no-isolate: install each app or game in its own bottle (default)
---noclean: don't delete temp directories (useful during debugging)
---force: don't check whether packages were already installed
---gui: show gui diagnostics even when driven by commandline
---showbroken: even show verbs that are currently broken in wine
+-k|--keep_isos        Cache isos (allows later installation without disc)
+-q|--unattended       Don't ask any questions, just install automatically
+-r|--ddrescue         Use only when caching scratched discs
+-v|--verbose          Echo all commands as they are executed
+-V|--version          Display version and exit
+-h|--help             Display this message and exit
+--isolate             Install each app or game in its own bottle (default)
+--no-isolate          Don't install each app or game in its own bottle
+--noclean             Don't delete temp directories (useful during debugging)
+--force               Don't check whether packages were already installed
+--gui                 Show gui diagnostics even when driven by commandline
+--showbroken          Even show verbs that are currently broken in wine
+
 Commands:
-list: list categories
-dlls list: list verbs in category 'dlls'
-settings list: list verbs in category 'settings'
-games list: list verbs in category 'games'
-apps list: list verbs in category 'applications'
-benchmarks list: list verbs in category 'games'
-list-cached: list cached-and-ready-to-install applications
-list-download: list applications which can be downloaded automatically
-list-manual-download: list applications which can be downloaded with some help from the user
-list-installed: list already-installed applications
-prefix=foobar select WINEPREFIX=$W_PREFIXES_ROOT/foobar
+list                  list categories
+apps list             list verbs in category 'applications'
+benchmarks list       list verbs in category 'benchmarks'
+dlls list             list verbs in category 'dlls'
+games list            list verbs in category 'games'
+settings list         list verbs in category 'settings'
+list-cached           list cached-and-ready-to-install verbs
+list-download         list verbs which download automatically
+list-manual-download  list verbs which download with some help from the user
+list-installed        list already-installed verbs
+prefix=foobar         select WINEPREFIX=$W_PREFIXES_ROOT/foobar
 _EOF_
         ;;
     esac
