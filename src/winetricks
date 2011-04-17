@@ -3125,7 +3125,7 @@ Optionen:
 -v|--verbose: alle ausgeführten Kommandos anzeigen
 -V|--version: Programmversion anzeigen
 -h|--help: diese Hilfemeldung anzeigen
-Sonstige Verben:
+Verben:
 apps: Typ 'Andwendungen' auswählen
 games: Typ 'Spiele' auswählen
 list: Verben von ausgewählte Typ auflisten
@@ -3152,10 +3152,13 @@ Options:
 --force: don't check whether packages were already installed
 --gui: show gui diagnostics even when driven by commandline
 --showbroken: even show verbs that are currently broken in wine
-Miscellaneous verbs:
-apps: select type 'apps'
-games: select type 'games'
-list: list verbs from selected category.  (To see all games, do 'games list'.)
+Commands:
+list: list categories
+dlls list: list verbs in category 'dlls'
+settings list: list verbs in category 'settings'
+games list: list verbs in category 'games'
+apps list: list verbs in category 'applications'
+benchmarks list: list verbs in category 'games'
 list-cached: list cached-and-ready-to-install applications
 list-download: list applications which can be downloaded automatically
 list-manual-download: list applications which can be downloaded with some help from the user
