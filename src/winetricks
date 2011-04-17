@@ -3962,6 +3962,44 @@ load_dotnet20()
 
 #----------------------------------------------------------------
 
+w_metadata dotnet20sp2 dlls \
+   title="MS .NET 2.0 SP2 (experimental)" \
+   publisher="Microsoft" \
+   year="2009" \
+   media="download" \
+   file1="NetFx20SP2_x86.exe" \
+   installed_file1="c:/windows/winsxs/manifests/x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.3053_x-ww_b80fa8ca.cat"
+
+load_dotnet20sp2()
+{
+    if w_workaround_wine_bug 22521 "wine version too old" 1.3.18,
+    then
+        w_die "wine-1.3.18 or later required to install dotnet20sp2"
+    fi
+
+    w_call dotnet20
+
+    WINEDLLOVERRIDES=
+    if w_workaround_wine_bug 22521 "Adding registry key, setting windows version so installer works"
+    then
+        # Recipe from http://bugs.winehq.org/show_bug.cgi?id=22521
+        $WINE reg add "HKLM\Software\Microsoft\Net Framework Setup\NDP\v2.0.50727" /v Version /d "2.0.50727" /f
+        w_set_winver win2k
+        WINEDLLOVERRIDES=regsvcs.exe,mscorsvw.exe=b 
+        export WINEDLLOVERRIDES
+    fi
+
+    # http://www.microsoft.com/downloads/details.aspx?familyid=5B2C0358-915B-4EB5-9B1D-10E506DA9D0F
+    w_download http://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 22d776d4d204863105a5db99e8b8888be23c61a7
+    w_try $WINE "$W_CACHE"/dotnet20sp2/NetFx20SP2_x86.exe 
+    # FIXME: add ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
+    # once we fix the exit status 67, or if that turns out to be harmless.
+
+    w_unset_winver
+}
+
+#----------------------------------------------------------------
+
 w_metadata dotnet30 dlls \
    title="MS .NET 3.0" \
    publisher="Microsoft" \
