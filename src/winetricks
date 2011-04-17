@@ -6722,13 +6722,15 @@ load_fontxplorer()
 
 #----------------------------------------------------------------
 
+# FIXME: ie6 always installs to C:/Program Files even if LANG is de_DE.utf-8,
+# so we have to hard code that, but that breaks on 64 bit windows.
 w_metadata ie6 dlls \
    title="Internet Explorer 6" \
    publisher="Microsoft" \
    year="2002" \
    media="download" \
    file1="ie60.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Internet Explorer/iedetect.dll"
+   installed_file1="c:/Program Files/Internet Explorer/iedetect.dll"
 
 load_ie6()
 {
