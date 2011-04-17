@@ -3940,8 +3940,10 @@ load_dotnet20()
     # Recipe from http://bugs.winehq.org/show_bug.cgi?id=10467#c57
     w_set_winver win2k
     # See http://kegel.com/wine/l_intl-sh.txt for how l_intl.nls was generated
-    w_download http://kegel.com/wine/l_intl.nls 0d2e3f025bcdf852b192c9408a361ac2659fa249
-    w_try cp -f "$W_CACHE"/dotnet20/l_intl.nls "$W_SYSTEM32_DLLS"
+    # Use zip rather than naked file to get past strange web proxies
+    w_download http://kegel.com/wine/l_intl.zip 5cc2665e9a518a2e560d3aeac6758d0cd8ec3a2a
+
+    w_try_unzip -d "$W_SYSTEM32_DLLS" "$W_CACHE"/dotnet20/l_intl.zip
 
     # Hans' workaround to avoid winehq nonbug 26464, crash in servicemodelreg.exe
     rm -rf "$W_WINDIR_UNIX"/Microsoft.NET/Framework/v2.0.50727
