@@ -8211,40 +8211,33 @@ load_amnesia_tdd_demo()
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
+        SetWinDelay 500
         SetTitleMatchMode, 2
         run amnesia_tdd_demo_1.0.1.exe
         WinWait,Select Setup Language,language
         if ( w_opt_unattended > 0 ) {
-            Sleep 2000
+            WinActivate
             ;ControlClick TNewButton1 ; OK
             send {Enter}              ; button click fails on vista?
             WinWait,Setup - Amnesia - The Dark Descent Demo,Welcome
-            Sleep 500
             ControlClick TNewButton1 ; Next
             WinWait,Setup - Amnesia - The Dark Descent Demo,License
-            Sleep 500
             ControlClick TNewRadioButton1 ; agree
             Sleep 500
             ControlClick TNewButton2 ; Next
             WinWait,Setup - Amnesia - The Dark Descent Demo,Destination
-            Sleep 500
             ControlClick TNewButton3 ; Next
             WinWait,Folder Does Not Exist,created
-            Sleep 500
             ControlClick Button1 ; OK
             WinWait,Setup - Amnesia - The Dark Descent Demo,should
-            Sleep 500
             ControlClick TNewButton4 ; Next
             WinWait,Setup - Amnesia - The Dark Descent Demo,should
-            Sleep 500
             ControlClick TNewButton4 ; Next
             WinWait,Setup - Amnesia - The Dark Descent Demo,installing
-            Sleep 500
             ControlClick TNewButton4 ; Install
         }
         WinWait,Setup - Amnesia - The Dark Descent Demo,finished
         if ( w_opt_unattended > 0 ) {
-            Sleep 500
             ControlClick TNewButton4 ; Finish
         }
         WinWaitClose,Setup - Amnesia - The Dark Descent Demo,finished
