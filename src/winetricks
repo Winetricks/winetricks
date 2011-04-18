@@ -7562,7 +7562,8 @@ w_metadata utorrent3 apps \
 
 load_utorrent3()
 {
-    w_download http://download.utorrent.com/beta/utorrent-3.0-latest.exe db7d3cb8ab5849ce78cb15e2439646e1f0d73947
+    # 15 Apr 2011: sha1sum a5f198207919e8f2091a9b4459d7d6fc8a63e874
+    w_download http://download.utorrent.com/beta/utorrent-3.0-latest.exe a5f198207919e8f2091a9b4459d7d6fc8a63e874
 
     case "$W_OPT_UNATTENDED" in
     0) _W_opt="" ;;
