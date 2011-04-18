@@ -7542,7 +7542,8 @@ load_utorrent()
     # Dev 17 2010 2.2 sha1sum 0c95bdfba07421fe706b30ee2ec6779217c5dce4, hangs, see wine bug 24946
     # Feb 11 2011 2.2.1beta sha1sum 82e81e1484b4e8654b83908509f3777532c6fcb3
     # Mar 28 2011 2.2.1 sha1sum 7049109e4d3f72338d54b42ae37ecf38fafed46f
-    w_download http://download.utorrent.com/2.2.1/utorrent.exe 7049109e4d3f72338d54b42ae37ecf38fafed46f
+    # Apr 14 2011 2.2.1 sha1sum b1378d7cbe5d1e1b168ce44def8f59facdc046d5
+    w_download http://download.utorrent.com/2.2.1/utorrent.exe b1378d7cbe5d1e1b168ce44def8f59facdc046d5
 
     w_try cp -f "$W_CACHE/utorrent/utorrent.exe" "$W_WINDIR_UNIX"/utorrent.exe
 
