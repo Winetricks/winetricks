@@ -4729,6 +4729,12 @@ load_msi2()
     rm -f "$W_SYSTEM32_DLLS"/msi.dll
     rm -f "$W_SYSTEM32_DLLS"/msiexec.exe
 
+    # Avoid "instMSIA.exe returned status 20.  Aborting."
+    if w_workaround_wine_bug 26816 "Removing fake mspatcha to skip version check" ,1.3.16
+    then
+        rm -f "$W_SYSTEM32_DLLS"/mspatcha.dll
+    fi
+
     cd "$W_CACHE"/msi2
     WINEDLLOVERRIDES="msi,msiexec.exe=n" w_try $WINE InstMSIA.exe $W_UNATTENDED_SLASH_Q
 
