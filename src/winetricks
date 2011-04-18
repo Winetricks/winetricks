@@ -13194,7 +13194,8 @@ load_starcraft2_demo()
         }
         "
     # Wait untill game is launched, then kill it
-    sleep 2
+    # FIXME: do this in autohotkey, and actually wait for process to start
+    sleep 5
     killall SC2.exe
     w_declare_exe "$W_PROGRAMS_X86_WIN\\StarCraft II Demo" "StarCraft II.exe"
 }
