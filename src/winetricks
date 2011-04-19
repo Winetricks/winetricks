@@ -8217,8 +8217,7 @@ load_amnesia_tdd_demo()
         WinWait,Select Setup Language,language
         if ( w_opt_unattended > 0 ) {
             WinActivate
-            ;ControlClick TNewButton1 ; OK
-            send {Enter}              ; button click fails on vista?
+            ControlClick, TNewButton1 ; OK
             WinWait,Setup - Amnesia - The Dark Descent Demo,Welcome
             ControlClick TNewButton1 ; Next
             WinWait,Setup - Amnesia - The Dark Descent Demo,License
