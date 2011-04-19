@@ -9670,11 +9670,48 @@ load_darkspore_beta_demo()
     # 13 Apr 2011 1278e50e021b9ca6265f93da5455796cfa34c979
     w_download http://static.cdn.ea.com/darkspore/u/f/base/temp/DarksporeBetaFull.zip 1278e50e021b9ca6265f93da5455796cfa34c979
     cd "$W_CACHE/$W_PACKAGE"
-    w_try_unzip DarksporeBetaFull.zip -d "$W_TMP"
-    cd "$W_TMP/Darkspore"
-    chmod +x setup.exe
-    w_try $WINE setup.exe
-    # TODO: implement unattended mode
+    # Unzip that file in the cache by hand if desired for quick debugging
+    if test ! -d Darkspore
+    then
+        # Otherwise unzip it for the user, but not in the cache
+        w_try_unzip DarksporeBetaFull.zip -d "$W_TMP"
+        cd "$W_TMP"
+        chmod +x Darkspore/setup.exe
+    fi
+    cd Darkspore
+    w_ahk_do "
+        SetWinDelay 1000
+        SetTitleMatchMode, 2
+        run setup.exe 
+        if ( w_opt_unattended > 0 ) {
+            winwait, Choose Setup Language
+            controlclick, Button1    ; ok (accept default, English)
+            winwait, InstallShield Wizard, Welcome
+            controlclick, Button1    ; Next
+            winwait, InstallShield Wizard, License Agreement
+            controlclick, Button3    ; Accept
+            sleep 1000
+            controlclick, Button1    ; Next
+            winwait, InstallShield Wizard, Select Features
+            controlclick, Button5    ; Next
+            winwait, InstallShield Wizard, Ready to Install the Program
+            controlclick, Button1    ; Install
+            winwait, DirectX
+            controlclick, Button1    ; Accept       
+            sleep 1000
+            controlclick, Button4    ; Next
+            winwait, DirectX, DirectX setup
+            controlclick, Button4
+            winwait, DirectX, components installed
+            controlclick, Button5    ; Finish
+        }
+        winwait, InstallShield Wizard, You are now ready
+        if ( w_opt_unattended > 0 ) {
+            controlclick, Button1    ; Uncheck View Readme.txt
+            controlclick, Button4    ; Finish
+        }
+        WinWaitClose, InstallShield Wizard    
+    "
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Darkspore\\DarksporeBin" "Darkspore.exe"
 }
 
