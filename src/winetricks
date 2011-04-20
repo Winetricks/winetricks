@@ -757,8 +757,8 @@ done
 w_question()
 {
     case $WINETRICKS_GUI in
-    *zenity) zenity --entry --text "$1" ;;
-    *kdialog) kdialog --inputbox "$1" ;;
+    *zenity) $WINETRICKS_GUI --entry --text "$1" ;;
+    *kdialog) $WINETRICKS_GUI --inputbox "$1" ;;
     *xmessage) w_die "sorry, can't ask question with xmessage" ;;
     none) echo -n "$1" >&2 ; read W_ANSWER ; echo $W_ANSWER; unset W_ANSWER;;
     esac
