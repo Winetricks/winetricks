@@ -13558,6 +13558,59 @@ load_sammax304_demo()
 
 #----------------------------------------------------------------
 
+w_metadata tropico3_demo games \
+    title="Tropico 3 Demo" \
+    publisher="Kalypso Media GmbH" \
+    year="2009" \
+    media="download" \
+    file1="Tropico3Demo.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Kalypso/Tropico 3 Demo/Tropico3 Demo.exe"
+
+load_tropico3_demo()
+{
+    w_download_manual "http://www.tropico3.com/?p=downloads" Tropico3Demo.exe e031749db346ac3a87a675787c81eb1ca8cb5909
+
+    if w_workaround_wine_bug 24819 "Disabling gameux"
+    then
+        w_override_dlls disabled gameux
+    fi
+
+    cd "$W_CACHE/$W_PACKAGE"
+
+    w_ahk_do "
+        SetWinDelay 1000
+        SetTitleMatchMode, 2
+        Run, Tropico3Demo.exe
+        WinWait,Installer
+        if ( w_opt_unattended > 0 ) {
+            ControlClick Button1 ; OK
+            WinWait,Tropico,Welcome
+            ControlClick Button2 ; Next
+            WinWait,Tropico,License
+            ControlClick Button2 ; Agree
+            WinWait,Tropico,Typical
+            ControlClick Button2 ; Next
+        }
+        WinWait,Tropico,Completing
+        if ( w_opt_unattended > 0 ) {
+            ControlClick Button4 ; Uncheck Run Now
+            ControlClick Button2 ; Finish
+        }
+        WinWaitClose
+    "
+
+    w_workaround_wine_bug 16328 "seawater is invisible in this wine, please update to 1.3.9 or later" 1.3.9,
+
+    if w_workaround_wine_bug 24845 "disabling mmdevapi to fix sound"
+    then
+        w_override_dlls disabled mmdevapi
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Kalypso\\Tropico 3 Demo" "Tropico3 Demo.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata singularity games \
     title="Singularity" \
     publisher="Activision" \
