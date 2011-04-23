@@ -7751,20 +7751,20 @@ load_vc2005trial()
 #----------------------------------------------------------------
 
 w_metadata vlc apps \
-   title="VLC media player 1.1.5" \
+   title="VLC media player" \
    publisher="videolan.org" \
    year="2010" \
    media="download" \
-   file1="vlc-1.1.5-win32.exe" \
+   file1="vlc-1.1.9-win32.exe" \
    installed_file1="$W_PROGRAMS_X86_WIN/VideoLAN/VLC/vlc.exe" \
    homepage="http://www.videolan.org/vlc/"
 
 load_vlc()
 {
-    w_download $WINETRICKS_SOURCEFORGE/vlc/vlc-1.1.5-win32.exe 11a14856e07b28d5c637c38f5191915f787fb85e
+    w_download $WINETRICKS_SOURCEFORGE/vlc/$file1 7128f6e43d6550fcc2574b9c82c5153ff47efcf6
     cd "$W_CACHE"/vlc
-    w_try $WINE vlc-1.1.5-win32.exe $W_UNATTENDED_SLASH_S
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\VideoLAN\\VLC" "vlc.exe"
+    w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /S}
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\VideoLAN\\VLC" vlc.exe
 }
 
 #----------------------------------------------------------------
