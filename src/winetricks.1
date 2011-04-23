@@ -1,17 +1,13 @@
 .\" -*- nroff -*-
-.TH WINETRICKS 1 "April 2011" "Winetricks 20110402" "Wine package manager"
+.TH WINETRICKS 1 "April 2011" "Winetricks 20110417" "Wine package manager"
 .SH NAME
 winetricks \- manage virtual windows environments using wine
 .SH SYNOPSIS
 .BI "winetricks "
 [options] [verb ... ]
-.br
-.B winetricks --help
-.br
-.B winetricks --version
 .SH DESCRIPTION
 .B winetricks
-is an easy way to work around problems in Wine.
+is an easy way to work around common problems in Wine.
 .PP
 It provides simple commands to
 tweak Wine settings,
@@ -20,17 +16,111 @@ or install various games or apps with appropriate workarounds for the current ve
 .PP
 It can be used via gui or commandline.  The commandline mode is intended both for interactive use and as a building block in fancier wine frontends and in automated regression testing.
 
-.SH OPTIONS
 .B winetricks
-with no arguments displays a GUI using either Zenity or Kdialog
+with no arguments displays a GUI using either Zenity or Kdialog.
+
+.SH OPTIONS
+.TP
+.B -k|--keep_isos
+Cache isos (allows later installation without disc)
+.TP
+.B
+-q|--unattended       
+Don't ask any questions, just install automatically
+.TP
+.B
+-r|--ddrescue         
+Use only when caching scratched discs
+.TP
+.B
+-v|--verbose          
+Echo all commands as they are executed
+.TP
+.B
+-V|--version          
+Display version and exit
+.TP
+.B
+-h|--help             
+Display this message and exit
+.TP
+.B
+--no-isolate          
+Don't install each app or game in its own bottle
+.TP
+.B
+--noclean             
+Don't delete temp directories (useful during debugging)
+.TP
+.B
+--force               
+Don't check whether packages were already installed
+.TP
+.B
+--gui                 
+Show gui diagnostics even when driven by commandline
+.TP
+.B
+--showbroken          
+Even show verbs that are currently broken in wine
+
+.SH
+Commands:
+
+.TP
+.B
+list                  
+list categories
+.TP
+.B
+apps list             
+list verbs in category 'applications'
+.TP
+.B
+benchmarks list       
+list verbs in category 'benchmarks'
+.TP
+.B
+dlls list             
+list verbs in category 'dlls'
+.TP
+.B
+games list            
+list verbs in category 'games'
+.TP
+.B
+settings list         
+list verbs in category 'settings'
+.TP
+.B
+list-cached           
+list cached-and-ready-to-install verbs
+.TP
+.B
+list-download         
+list verbs which download automatically
+.TP
+.B
+list-manual-download  
+list verbs which download with some help from the user
+.TP
+.B
+list-installed        
+list already-installed verbs
+.TP
+.B
+prefix=foobar         
+select WINEPREFIX=$HOME/.local/share/wineprefixes/foobar
+
 .PP
-When invoked with
-.B --help
-or
-.B --version
-as the only argument,
-.B wine
-will simply print a small help message or its version respectively and exit.
+.SH EXAMPLES
+
+.TP
+To see list of available packages to install:
+winetricks list-download
+.TP
+To install a package:
+winetricks 7zip
 
 .PP
 .SH ENVIRONMENT VARIABLES
@@ -51,9 +141,7 @@ path to Winetricks' user data cache (default: $XDG_CACHE_HOME/winetricks}
 
 .SH AUTHORS
 Dan Kegel, Austin English, and many others.  For a complete list,
-please see the file 
-.B AUTHORS
-in the top-level directory of the source distribution.
+please see the "Copyright" section in the file 'winetricks'. 
 .SH COPYRIGHT
 .B winetricks
 is made available under the terms of the LGPL license. A copy of the
