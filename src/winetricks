@@ -8999,6 +8999,38 @@ load_braid()
 
 #----------------------------------------------------------------
 
+w_metadata cnc_tiberian_sun games \
+    title="Command and Conquer: Tiberian Sun (2010 edition)" \
+    publisher="EA" \
+    year="1999" \
+    media="download" \
+    file1="OfficialCnCTiberianSun.rar" \
+    installed_exe1="$W_PROGRAMS_X86_WIN\\EA Games\\Command & Conquer The First Decade\\Command & Conquer(tm) Tiberian Sun(tm)\\SUN\\Game.exe"
+
+load_cnc_tiberian_sun()
+{
+    w_download \
+        http://na.llnet.cnc3tv.ea.com/u/f/eagames/cnc3/cnc3tv/Classic/$file1 \
+        591aabd639fb9f2d2476a2150f3c00b1162674f5
+
+    cd "$W_PROGRAMS_X86_UNIX"
+    # FIXME: we need a progress indicator when unpacking large archives
+    w_info "Unpacking rar file.  This will take a minute."
+    w_try unrar x "$W_CACHE/$W_PACKAGE/$file1"
+
+    if w_workaround_wine_bug 26911 \
+        "Setting dsoundhw=Emulation so sound works in skirmish mode"
+    then
+        w_call dsoundhw=Emulation
+    fi
+
+    w_declare_exe \
+        "$W_PROGRAMS_X86_WIN\\EA Games\\Command & Conquer The First Decade\\Command & Conquer(tm) Tiberian Sun(tm)\\SUN" \
+        Game.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata cnc3_demo games \
     title="Command and Conquer 3 Demo" \
     publisher="EA" \
