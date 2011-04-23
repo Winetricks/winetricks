@@ -193,6 +193,30 @@ w_warn()
     unset _W_timeout
 }
 
+# Display warning message to stderr (since it is called inside redirected code)
+# And give gui user option to cancel (for when used in a loop)
+# If user cancels, exit status is 1
+w_warn_cancel()
+{
+    echo "------------------------------------------------------" >&2
+    echo "$@" >&2
+    echo "------------------------------------------------------" >&2
+
+    if test $W_OPT_UNATTENDED
+    then
+        _W_timeout="--timeout 5"
+    fi
+
+    # Zenity has no cancel button, but will set status to 1 if you click the go-away X
+    case $WINETRICKS_GUI in
+    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
+    kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
+    none) ;;
+    esac
+
+    # can't unset, it clears status
+}
+
 # Display fatal error message and terminate script
 w_die()
 {
@@ -2754,9 +2778,9 @@ winetricks_mount_real_volume()
     # Wait for user to insert disc.
 
     case $LANG in
-    da*)_W_mountmsg="Indsæt og montér venligst disken '$_W_expected_volname' (krævet af pakken '$_PACKAGE')" ;;
-    de*)_W_mountmsg="Disc '$_W_expected_volname' bitte einlegen und montieren (für Pakete '$W_PACKAGE')" ;;
-    *)  _W_mountmsg="Please insert and mount volume '$_W_expected_volname' (needed for package '$W_PACKAGE')" ;;
+    da*)_W_mountmsg="Indsæt venligst disken '$_W_expected_volname' (krævet af pakken '$_PACKAGE')" ;;
+    de*)_W_mountmsg="Disc '$_W_expected_volname' bitte einlegen (für Pakete '$W_PACKAGE')" ;;
+    *)  _W_mountmsg="Please insert volume '$_W_expected_volname' (needed for package '$W_PACKAGE')" ;;
     esac
 
     if test "$WINE" = ""
@@ -2767,7 +2791,7 @@ winetricks_mount_real_volume()
     else
         while ! winetricks_is_mounted "$_W_expected_volname"
         do
-            w_warn "$_W_mountmsg"
+            w_try w_warn_cancel "$_W_mountmsg"
             # In non-gui case, give user two seconds to futz with disc drive before spamming him again
             sleep 2
         done
