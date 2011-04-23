@@ -47,6 +47,7 @@ WINETRICKS_VERSION=20110417
 #   Copyright (C) 2010 Eleazar Galano <eg.galano@gmail.com>
 #   Copyright (C) 2010 Travis Athougies <iammisc@gmail.com>
 #   Copyright (C) 2011 Scott Jackson <sjackson2@gmx.com>
+#   Copyright (C) 2011 Trevor Johnson
 #
 # License
 #   This program is free software; you can redistribute it and/or
@@ -7248,6 +7249,24 @@ $W_CACHE/$W_PACKAGE/key.txt and rerun."
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" OUTLOOK.EXE  outlook2007
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" MSPUB.EXE  publisher2007
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" INFOPATH.EXE  infopath2007
+}
+
+#----------------------------------------------------------------
+
+w_metadata opera apps \
+   title="Opera 11" \
+   publisher="Opera Software" \
+   year="2011" \
+   media="download" \
+   file1="Opera_1110_en_Setup.exe" \
+   installed_exe1="$W_PROGRAMS_X86_WIN/Opera/opera.exe"
+
+load_opera()
+{
+    w_download "ftp://ftp.opera.com/pub/opera/win/1110/en/Opera_1110_en_Setup.exe" e0aa457b0fbe3d2caca1eb1d9a311dcd85ba7e14
+    cd "$W_CACHE"/$W_PACKAGE
+    w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /silent /launchopera 0 /allusers}
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Opera" opera.exe
 }
 
 #----------------------------------------------------------------
