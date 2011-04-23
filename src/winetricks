@@ -9811,7 +9811,7 @@ load_deadspace2()
     # You'll need to comment out the five "rm -rf"'s, too.
     if test ! -f easetup.exe      
     then
-        w_try cp -r "$W_ISO_MOUNT_ROOT"/* .
+        w_try cp -R "$W_ISO_MOUNT_ROOT"/* .
         # Make the directories writable, else 2nd disc copy will fail.
         w_try chmod -R +w .
         w_mount Disc2
@@ -10880,7 +10880,7 @@ load_mfsxde()
         then
             mkdir bothdiscs
             cd bothdiscs
-            w_try cp -r "$W_ISO_MOUNT_ROOT"/* .
+            w_try cp -R "$W_ISO_MOUNT_ROOT"/* .
 
             # A few files are on both DVDs. Remove them manually so cp doesn't complain.
             rm -f DVDCheck.exe autorun.inf fsx.ico vcredist_x86.exe
