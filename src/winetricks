@@ -805,6 +805,7 @@ w_steam_getid()
         else
             W_STEAM_ID=`w_question "$_W_steamidmsg"`
             echo "$W_STEAM_ID" > "$W_CACHE"/steam_userid.txt
+            chmod 600 "$W_CACHE"/steam_userid.txt
         fi
     fi
     if test ! "$W_STEAM_PASSWORD"
@@ -815,6 +816,7 @@ w_steam_getid()
         else
             W_STEAM_PASSWORD=`w_question "$_W_steampasswordmsg"`
             echo "$W_STEAM_PASSWORD" > "$W_CACHE"/steam_password.txt
+            chmod 600 "$W_CACHE"/steam_password.txt
         fi
     fi
 }
