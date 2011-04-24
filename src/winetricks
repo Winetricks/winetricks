@@ -12451,6 +12451,45 @@ load_mise()
 
 #----------------------------------------------------------------
 
+w_metadata myth2_demo games \
+    title="Myth II: Soulblighter demo" \
+    publisher="Bungie Studios" \
+    year="1998" \
+    media="download" \
+    file1="Myth2_Demo_171.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Myth II Demo/Myth II Demo.exe" \
+    homepage="http://www.bungie.net/Projects/Myth/"
+
+load_myth2_demo()
+{
+    w_download http://tain.totalcodex.net/items/download/myth-ii-demo-windows \
+        598621565e2bb82473579e3a1f9533f131ba8ad7 $file1
+    cd "$W_CACHE/$W_PACKAGE"
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetWinDelay 500
+        run, $file1
+        winwait, Setup, Welcome
+        if ( w_opt_unattended > 0 ) {
+            send {Enter} ; next
+            winwait, Setup, Components
+            send {Enter} ; next
+            winwait, Setup, Location
+            send {Enter} ; install
+        }
+        winwait, Setup, Complete
+        if ( w_opt_unattended > 0 ) {
+            controlclick, Button4   ; Don't run
+            controlclick, Button2   ; Finish
+        }
+        winwaitclose
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Myth II Demo" "Myth II Demo.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata nfsshift_demo games \
     title="Need For Speed: SHIFT Demo" \
     publisher="EA" \
