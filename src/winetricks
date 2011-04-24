@@ -4172,19 +4172,18 @@ load_dsound()
 
 # FIXME: update winetricks_is_installed to look at installed_file2
 w_metadata flash dlls \
-   title="Flash Player" \
+   title="Flash Player 10" \
    publisher="Adobe" \
-   year="2010" \
+   year="2011" \
    media="download" \
    file1="install_flash_player.exe" \
    file2="install_flash_player_ax.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10o_Plugin.exe" \
-   installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10o_ActiveX.exe"
+   installed_file1= "$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10p_Plugin.exe" \
+   installed_file2= "$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10p_ActiveX.exe" \
+   homepage="http://www.adobe.com/products/flashplayer/"
 
 load_flash()
 {
-    # www.adobe.com/products/flashplayer/
-
     # Active X plugin
     # http://blogs.adobe.com/psirt/2008/03/preparing_for_april_flash_play.html
     # http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_active_x.msi
@@ -4192,28 +4191,23 @@ load_flash()
     # 2011-02-12: sha1sum 944c1f2055cd85af37ef44629773c2cf1d02a21c
     # 2011-02-24: sha1sum f2e6a3f486423d6c1be48ad80fb3b7d4cdafd29d
     # 2011-03-15: sha1sum 07908231028f68098902d5aa52812b7e27f8497a
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_ax.exe 07908231028f68098902d5aa52812b7e27f8497a
+    # 2011-04-12: sha1sum 80b547dde20c0e80f739c3ba66be1065a94e4244
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_ax.exe \
+        80b547dde20c0e80f739c3ba66be1065a94e4244
     cd "$W_CACHE"/flash
 
-    if [ $W_UNATTENDED_SLASH_Q ]
-    then
-        w_try $WINE install_flash_player_ax.exe /install
-    else
-        w_try $WINE install_flash_player_ax.exe
-    fi
+    w_try $WINE install_flash_player_ax.exe ${W_OPT_UNATTENDED:+ /install}
 
     # Mozilla / Firefox plugin
     # 2010-11-04: sha1sum 09f2491c5bec7286155234f4e6e1af70c7cef78f
     # 2011-02-12: sha1sum 4a650caf62d8841d14b9d7888ab9b69d5d6f617a
     # 2011-02-24: sha1sum 009c908cdb73fba18b34e798b1f601ed964102a1
     # 2011-03-15: sha1sum 487b7003386ba80da00fa56cfd1d33241b8a0e41
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player.exe 487b7003386ba80da00fa56cfd1d33241b8a0e41
-    if [ $W_UNATTENDED_SLASH_Q ]
-    then
-        w_try $WINE install_flash_player.exe /install
-    else
-        w_try $WINE install_flash_player.exe
-    fi
+    # 2011-04-12: sha1sum 706523aa1af2e77f9ae7727202ebe0f0f5e71a39
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player.exe \
+        706523aa1af2e77f9ae7727202ebe0f0f5e71a39
+
+    w_try $WINE install_flash_player.exe ${W_OPT_UNATTENDED:+ /install}
 }
 
 #----------------------------------------------------------------
