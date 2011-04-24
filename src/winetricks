@@ -8634,6 +8634,7 @@ load_avatar_demo()
         winwait, Language
         u = $W_OPT_UNATTENDED
         if ( u > 0 ) {
+            WinActivate
             controlclick, Button1
             winwait, AVATAR, Welcome
             controlclick, Button1
@@ -10461,6 +10462,7 @@ load_dragonage()
         SetTitleMatchMode, 2
         winwait, Installer Language
         if ( w_opt_unattended > 0 ) {
+            WinActivate
             send {Enter}
             winwait, Dragon Age: Origins Setup
             ControlClick Next, Dragon Age: Origins Setup
