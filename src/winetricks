@@ -9596,6 +9596,27 @@ load_civ4_demo()
 
 #----------------------------------------------------------------
 
+w_metadata crayonphysics_demo games \
+    title="Crayon Physics Deluxe demo" \
+    publisher="Kloonigames" \
+    year="2011" \
+    media="download" \
+    file1="crayon_release52demo.exe" \
+    installed_exe1="$W_PROGRAMS_WIN/Crayon Physics Deluxe Demo/crayon.exe" \
+    homepage="http://crayonphysics.com"
+
+load_crayonphysics_demo()
+{
+    w_download \
+        http://crayonphysicsdeluxe.s3.amazonaws.com/$file1 \
+        4ffd64c630f69e7cf024ef946c2c64c8c4ce4eac
+    # Inno Setup installer
+    w_try $WINE "$W_CACHE/$W_PACKAGE/$file1" ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Crayon Physics Deluxe Demo" crayon.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata crysis2 games \
    title="Crysis 2" \
    publisher="EA" \
