@@ -4527,6 +4527,25 @@ load_kde()
 
 #----------------------------------------------------------------
 
+w_metadata kindle apps \
+    title="Amazon Kindle" \
+    publisher="Amazon" \
+    year="2011" \
+    media="download" \
+    file1="KindleForPC-installer.exe" \
+    installed_exe1="$W_PROGRAMS_WIN/Amazon/Kindle For PC/Kindle.exe" \
+    homepage="http://www.amazon.com/gp/feature.html/?docId=1000426311"
+
+load_kindle()
+{
+    w_download http://kindleforpc.amazon.com/32337/$file1 \
+        2ad916877f418ceb8bdc4ae13b0c5e9099ffb8d7
+    w_try $WINE $W_CACHE/kindle/$file1 ${W_OPT_UNATTENDED:+ /S}
+    w_declare_exe "$W_PROGRAMS_WIN\\Amazon\\Kindle For PC" Kindle.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata l3codecx dlls \
    title="MPEG Layer-3 Audio Codec for Microsoft DirectShow" \
    publisher="Microsoft" \
