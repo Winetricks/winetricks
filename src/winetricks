@@ -1520,7 +1520,7 @@ w_declare_exe()
     cat > "$W_DRIVE_C/run-$_W_name.bat" <<__EOF__
 ${W_PROGRAMS_DRIVE}:
 cd "$_W_dir"
-$_W_exe
+$_W_exe %*
 __EOF__
     unset _W_dir _W_exe _W_name
 }
@@ -6507,7 +6507,7 @@ load_7zip()
     w_download http://downloads.sourceforge.net/project/sevenzip/7-Zip/4.65/7z465.exe c36012e960fa3932cd23f30ac5b0fe722740243a
     cd "$W_CACHE"/7zip
     w_try $WINE 7z465.exe $W_UNATTENDED_SLASH_S
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\7-Zip" "7z.exe %1 %2 %3 %4 %5"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\7-Zip" "7z.exe"
 }
 
 #----------------------------------------------------------------
@@ -8025,7 +8025,7 @@ load_3dmark2000()
 c:
 cd "$W_PROGRAMS_X86_WIN\MadOnion.com\3DMark2000"
 REM possible wine cmd bug: "3dmark2000" aborts, but ".\3dmark2000" works
-.\3DMark2000
+.\3DMark2000 %*
 __EOF__
 
 }
@@ -9267,7 +9267,7 @@ load_cod_demo()
 $setvar
 c:
 cd "$W_PROGRAMS_X86_WIN\\Call of Duty Single Player Demo"
-CoDSP.exe
+CoDSP.exe %*
 __EOF__
 
 }
@@ -9360,7 +9360,7 @@ load_cod1()
 $setvar
 c:
 cd "$W_PROGRAMS_X86_WIN\\Call of Duty"
-CoDSP.exe
+CoDSP.exe %*
 __EOF__
 
     w_warn "This game is copy-protected, and requires the real disc in a real drive to run."
