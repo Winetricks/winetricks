@@ -5538,16 +5538,17 @@ load_vcrun2003()
 w_metadata vcrun2005 dlls \
    title="Visual C++ 2005 libraries (mfc80,msvcp80,msvcr80)" \
    publisher="Microsoft" \
-   year="2005" \
+   year="2011" \
    media="download" \
    file1="vcredist_x86.exe" \
-   installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.4053_x-ww_b77cec8e/mfc80.dll"
+   installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.5592_x-ww_e87e0bcd/mfc80.dll"
 
 load_vcrun2005()
 {
-    # SP1 + ATL security fix build 4053 (MS09-035)
-    # See http://www.microsoft.com/downloads/details.aspx?familyid=766A6AF7-EC73-40FF-B072-9112BAB119C2
-    w_download http://download.microsoft.com/download/6/B/B/6BB661D6-A8AE-4819-B79F-236472F6070C/vcredist_x86.exe e052789ebad7dc8d6f8505a9295b0576babd125e
+    # build 5592, April 2011 security update, see 
+    # http://www.microsoft.com/technet/security/bulletin/MS11-025.mspx and 
+    # http://support.microsoft.com/kb/2467175
+    w_download http://download.microsoft.com/download/3/0/5/305BF178-5F7C-489E-8F39-C3257429E832/vcredist_x86.exe 3badcd6e356c9511ad2e71010fa4684954091e09
     cd "$W_CACHE"/vcrun2005
     w_override_dlls native,builtin msvcr80
     w_try $WINE vcredist_x86.exe $W_UNATTENDED_SLASH_Q
@@ -5558,16 +5559,17 @@ load_vcrun2005()
 w_metadata vcrun2008 dlls \
    title="Visual C++ 2008 libraries (mfc90,msvcp90,msvcr90)" \
    publisher="Microsoft" \
-   year="2008" \
+   year="2011" \
    media="download" \
    file1="vcredist_x86.exe" \
-   installed_file1="C:/windows/winsxs/x86_Microsoft.VC90.MFC_1fc8b3b9a1e18e3b_9.0.30729.4148_x-ww_a57c1f53/mfc90.dll"
+   installed_file1="C:/windows/winsxs/x86_Microsoft.VC90.MFC_1fc8b3b9a1e18e3b_9.0.30729.5570_x-ww_d5fe2ecb/mfc90.dll"
 
 load_vcrun2008()
 {
-    # SP1 + ATL security fix build 4148 (MS09-035)
-    # See http://www.microsoft.com/downloads/details.aspx?familyid=2051a0c1-c9b5-4b0a-a8f5-770a549fd78c
-    w_download http://download.microsoft.com/download/9/7/7/977B481A-7BA6-4E30-AC40-ED51EB2028F2/vcredist_x86.exe bd18409cfe75b88c2a9432d36d96f4bf125a3237
+    # build 5570, April 2011 security update, see 
+    # http://www.microsoft.com/technet/security/bulletin/MS11-025.mspx and 
+    # http://support.microsoft.com/kb/2467174
+    w_download http://download.microsoft.com/download/7/E/D/7ED72B8A-D457-4DF0-B455-42A85FA157FF/vcredist_x86.exe 0361fcefc78b0ab4896ca1837551aeda5175f6fd
     w_override_dlls native,builtin msvcr90
     cd "$W_CACHE"/vcrun2008
     w_try $WINE vcredist_x86.exe $W_UNATTENDED_SLASH_Q
