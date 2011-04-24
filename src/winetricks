@@ -6546,6 +6546,25 @@ load_autohotkey()
 
 #----------------------------------------------------------------
 
+w_metadata borders apps \
+   title="Borders Desktop (Kobo e-book reader)" \
+   publisher="Kobo" \
+   year="2011" \
+   media="download" \
+   file1="KoboSetup.exe" \
+   installed_exe1="$W_PROGRAMS_X86_WIN/Borders Desktop/Borders Desktop.exe" \
+   homepage="http://www.borders.com/online/store/MediaView_ereaderapps"
+
+load_borders()
+{
+    w_download http://download.kobobooks.com/desktop/1/$file1
+    cd "$W_CACHE"/borders
+    w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /S}
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Borders Desktop" "Borders Desktop.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata cmake apps \
    title="CMake 2.8" \
    publisher="Kitware" \
