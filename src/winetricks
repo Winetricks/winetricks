@@ -9162,6 +9162,53 @@ load_cnc3_demo()
 
 #----------------------------------------------------------------
 
+w_metadata cnc_redalert3_demo games \
+    title="Command & Conquer Red Alert 3 Demo" \
+    publisher="EA" \
+    year="2008" \
+    media="download" \
+    file1="RedAlert3Demo.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Red Alert 3 Demo/RA3Demo.exe"
+
+load_cnc_redalert3_demo()
+{
+    w_download http://gamedaily.newaol.com/pub/$file1 f909b87cc12e386a51be51ede708634348c8af48
+
+    if test ! "$W_OPT_UNATTENDED"
+    then
+        w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
+    else
+        w_ahk_do "
+            SetWinDelay 1000
+            SetTitleMatchMode, 2
+            run $W_CACHE/$W_PACKAGE/$file1
+            winwait, Demo, readme
+            send {enter}                           ; Install button
+            winwait, Demo, Agreement
+            ControlFocus, TNewCheckListBox1, accept
+            send {space}                           ; accept license
+            sleep 1000
+            send N                                 ; Next
+            winwait, Demo, Agreement ; DirectX
+            ControlFocus, TNewCheckListBox1, accept
+            send {space}                           ; accept license
+            sleep 1000
+            send N                                 ; Next
+            winwait, Demo, Next
+            send N                                 ; Next
+            winwait, Demo, Install
+            send {enter}                           ; Really install
+            winwait, Demo, Finish
+            send F                                 ; finish
+            WinWaitClose
+        "
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Red Alert 3 Demo" RA3Demo.exe
+}
+
+#----------------------------------------------------------------
+
 # http://appdb.winehq.org/objectManager.php?sClass=version&iId=9320
 w_metadata  blobby_volley games \
    title="Blobby Volley" \
