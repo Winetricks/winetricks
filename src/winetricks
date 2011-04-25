@@ -577,14 +577,14 @@ w_download_to()
 w_open_webpage()
 {
     # See http://www.dwheeler.com/essays/open-files-urls.html
-    for _W_cmd in xdg-open sdtwebclient cygstart open true
+    for _W_cmd in xdg-open sdtwebclient cygstart open firefox true
     do
         if test -n `which $_W_cmd`
         then
             break
         fi
     done
-    $_W_cmd "$1"
+    $_W_cmd "$1" &
     unset _W_cmd
 }
 
