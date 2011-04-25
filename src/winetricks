@@ -15526,11 +15526,12 @@ winetricks_os_description()
 
 winetricks_stats_report()
 {
-    # If and only if user has opted in to usage tracking, report the usage.
+    # If user has opted in to usage tracking, report what he used (if anything)
     case "$WINETRICKS_STATS_REPORT" in
     1) ;;
     *) return;;
     esac
+    test -f "$WINETRICKS_WORKDIR"/breadcrumbs || return
 
     WINETRICKS_STATS_BREADCRUMBS=`cat "$WINETRICKS_WORKDIR"/breadcrumbs | tr '\012' ' '`
     echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
