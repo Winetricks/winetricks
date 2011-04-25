@@ -3170,18 +3170,17 @@ Usage: $0 [options] [command|verb|path-to-verb] ...
 Executes given verbs.  Each verb installs an application or changes a setting.
 
 Options:
--k|--keep_isos        Cache isos (allows later installation without disc)
--q|--unattended       Don't ask any questions, just install automatically
--r|--ddrescue         Use only when caching scratched discs
--v|--verbose          Echo all commands as they are executed
--V|--version          Display version and exit
--h|--help             Display this message and exit
---isolate             Install each app or game in its own bottle (default)
---no-isolate          Don't install each app or game in its own bottle
---noclean             Don't delete temp directories (useful during debugging)
---force               Don't check whether packages were already installed
---gui                 Show gui diagnostics even when driven by commandline
---showbroken          Even show verbs that are currently broken in wine
+    --force           Don't check whether packages were already installed
+    --gui             Show gui diagnostics even when driven by commandline
+-k, --keep_isos       Cache isos (allows later installation without disc)
+    --no-clean        Don't delete temp directories (useful during debugging)
+    --no-isolate      Don't install each app or game in its own bottle
+-q, --unattended      Don't ask any questions, just install automatically
+-r, --ddrescue        Retry hard when caching scratched discs
+    --showbroken      Even show verbs that are currently broken in wine
+-v, --verbose         Echo all commands as they are executed
+-h, --help            Display this message and exit
+-V, --version         Display version and exit
 
 Commands:
 list                  list categories
@@ -3211,7 +3210,7 @@ winetricks_handle_option()
     -h|--help) winetricks_usage ; exit 0 ;;
     --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
     --no-isolate) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
-    --noclean) W_OPT_NOCLEAN=1 ;;
+    --no-clean) W_OPT_NOCLEAN=1 ;;
     --force) WINETRICKS_FORCE=1;;
     --gui) winetricks_detect_gui;;
     --showbroken) W_OPT_SHOWBROKEN=1 ;;
