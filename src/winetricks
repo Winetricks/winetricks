@@ -2929,6 +2929,9 @@ winetricks_set_wineprefix()
         ;;
     esac
 
+    # FIXME wrong on 64 bit windows for now
+    W_COMMONFILES_X86_WIN="`$WINE cmd.exe /c echo "%CommonProgramFiles%" | tr -d '\015'`"
+
     W_WINDIR_UNIX="$W_DRIVE_C/windows"
 
     # FIXME: move that tr into w_pathconv, if it's still needed?
@@ -3308,7 +3311,7 @@ w_metadata  adobeair dlls \
    year="2010" \
    media="download" \
    file1="AdobeAIRInstaller.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Common Files/Adobe AIR/Versions/1.0/Adobe AIR.dll"
+   installed_file1="$W_COMMONFILES_X86_WIN/Adobe AIR/Versions/1.0/Adobe AIR.dll"
 
 load_adobeair()
 {
@@ -3351,7 +3354,7 @@ w_metadata  art2kmin dlls \
    year="2007" \
    media="download" \
    file1="AccessRuntime.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Common Files/Microsoft Shared/OFFICE12/ACEES.DLL"
+   installed_file1="$W_COMMONFILES_X86_WIN/Microsoft Shared/OFFICE12/ACEES.DLL"
 
 load_art2kmin()
 {
@@ -4491,7 +4494,7 @@ w_metadata jet40 dlls \
    year="2003" \
    media="download" \
    file1="jet40sp8_9xnt.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Common Files/Microsoft shared/dao/dao360.dll"
+   installed_file1="$W_COMMONFILES_X86_WIN/Microsoft shared/dao/dao360.dll"
 
 load_jet40()
 {
@@ -4578,7 +4581,7 @@ w_metadata  mdac27 dlls \
    year="2006" \
    media="download" \
    file1="mdac_typ.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Common Files/System/ADO/msado26.tlb"
+   installed_file1="$W_COMMONFILES_X86_WIN/System/ADO/msado26.tlb"
 
 load_mdac27()
 {
@@ -4598,7 +4601,7 @@ w_metadata  mdac28 dlls \
    year="2005" \
    media="download" \
    file1="MDAC_TYP.EXE" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Common Files/System/ADO/msado27.tlb"
+   installed_file1="$W_COMMONFILES_X86_WIN/System/ADO/msado27.tlb"
 
 load_mdac28()
 {
