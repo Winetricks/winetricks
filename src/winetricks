@@ -572,6 +572,22 @@ w_download_to()
     fi
 }
 
+# Open a web browser for the user to the give page
+# Usage: w_open_webpage url
+w_open_webpage()
+{
+    # See http://www.dwheeler.com/essays/open-files-urls.html
+    for _W_cmd in xdg-open sdtwebclient cygstart open true
+    do
+        if test -n `which $_W_cmd`
+        then
+            break
+        fi
+    done
+    $_W_cmd "$1"
+    unset _W_cmd
+}
+
 # Download a file
 # Usage: w_download url [sha1sum [filename [cookie jar]]]
 # Caches downloads in winetrickscache/$W_PACKAGE
@@ -664,12 +680,11 @@ w_download_manual_to()
         mkdir -p "$W_CACHE/$_W_packagename"
         case "$OS" in
         "Windows_NT")
-            cygstart "$W_CACHE/$_W_packagename"
-            cygstart "$_W_url" ;;
+            cygstart "$W_CACHE/$_W_packagename" ;;
         *)
-            xdg-open "$W_CACHE/$_W_packagename"
-            xdg-open "$_W_url" ;;
+            xdg-open "$W_CACHE/$_W_packagename" ;;
         esac
+        w_open_webpage "$_W_url"
         sleep 3   # give some time for browser to open
         w_die "$_W_dlmsg"
         # FIXME: wait in loop until file is finished?
@@ -15621,7 +15636,7 @@ execute_command()
 
     # Hard-coded verbs
     main) WINETRICKS_CURMENU=main ;;
-    help) w_try xdg-open http://winetricks.org/help ;;
+    help) w_open_webpage http://winetricks.org/help ;;
     list) winetricks_list_all ;;
     list-cached) winetricks_list_cached ;;
     list-download) winetricks_list_download ;;
