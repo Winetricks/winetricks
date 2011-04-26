@@ -13488,7 +13488,7 @@ w_metadata starcraft2_demo games \
 
 load_starcraft2_demo()
 {
-    w_download_manual http://www.bigdownload.com/games/starcraft-ii-wings-of-liberty/pc/starcraft-2-wings-of-liberty-demo SC2-WingsOfLiberty-enUS-Demo-Installer.zip 4c06ad755fbde73f135a7359bf6bfdbd2c6eb00e
+    w_download http://gamedaily.newaol.com/pub/SC2-WingsOfLiberty-enUS-Demo-Installer.zip 4c06ad755fbde73f135a7359bf6bfdbd2c6eb00e
 
     cd "$W_TMP"
     w_try_unzip "$W_CACHE/$W_PACKAGE"/SC2-WingsOfLiberty-enUS-Demo-Installer.zip
@@ -13536,12 +13536,12 @@ load_starcraft2_demo()
             ControlClick, x800 y500   ; Finish
             winwaitclose
             ; no way to tell game to not start?
+            process, wait, SC2.exe
+            sleep 2000
+            process, close, SC2.exe
         }
         "
-    # Wait untill game is launched, then kill it
-    # FIXME: do this in autohotkey, and actually wait for process to start
-    sleep 5
-    killall SC2.exe
+
     w_declare_exe "$W_PROGRAMS_X86_WIN\\StarCraft II Demo" "StarCraft II.exe"
 }
 
