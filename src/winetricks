@@ -9910,32 +9910,23 @@ load_darknesswithin2_demo()
 
 #----------------------------------------------------------------
 
-w_metadata darkspore_beta_demo games \
-    title="Darkspore Beta Demo" \
-    publisher="Electronic Arts" \
+w_metadata darkspore games \
+    title="Darkspore" \
+    publisher="EA" \
     year="2011" \
-    media="download" \
-    file1="DarksporeBetaFull.zip" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Darkspore/DarksporeBin/Darkspore.exe"
+    media="dvd" \
+    file1="DARKSPORE.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Darkspore/DarksporeBin/Darkspore.exe" \
+    homepage="http://darkspore.com/"
 
-load_darkspore_beta_demo()
+load_darkspore()
 {
-    # 13 Apr 2011 1278e50e021b9ca6265f93da5455796cfa34c979
-    w_download http://static.cdn.ea.com/darkspore/u/f/base/temp/DarksporeBetaFull.zip 1278e50e021b9ca6265f93da5455796cfa34c979
-    cd "$W_CACHE/$W_PACKAGE"
-    # Unzip that file in the cache by hand if desired for quick debugging
-    if test ! -d Darkspore
-    then
-        # Otherwise unzip it for the user, but not in the cache
-        w_try_unzip DarksporeBetaFull.zip -d "$W_TMP"
-        cd "$W_TMP"
-        chmod +x Darkspore/setup.exe
-    fi
-    cd Darkspore
+    # Mount disc, verify that expected file is present
+    w_mount DARKSPORE Darkspore.ico
     w_ahk_do "
         SetWinDelay 1000
         SetTitleMatchMode, 2
-        run setup.exe 
+        run ${W_ISO_MOUNT_LETTER}:setup.exe
         if ( w_opt_unattended > 0 ) {
             winwait, Choose Setup Language
             controlclick, Button1    ; ok (accept default, English)
