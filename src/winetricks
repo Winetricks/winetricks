@@ -917,7 +917,11 @@ fi
                     winclose
                     continue
                 }
-                send {enter}      ; next (for 3rd of 3 pages of install dialog)
+                ifwinexist Install - $_W_steamtitle
+                {
+                    winactivate
+                    send {enter}      ; next (for 3rd of 3 pages of install dialog)
+                }
                 ifwinnotexist Install - $_W_steamtitle
                 {
                     sleep 1000
