@@ -9100,9 +9100,17 @@ load_braid()
         send {Raw}$W_RAW_KEY
         controlclick, Button1
         sleep 5000
-        ; FIXME: Desktop resolution isn't reset after exit
         process, close, braid.exe
     "
+
+    # Fix resolution for user:
+    if [ -x "`which xrandr`" ]
+    then
+        xrandr -s 0
+    else
+        w_warn "Xrandr is not available, not sure how to fix resolution, sorry!"
+    fi
+
 }
 
 #----------------------------------------------------------------
