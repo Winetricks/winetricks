@@ -995,7 +995,7 @@ w_mount()
             while true
             do
                 winetricks_mount_real_volume "$1"
-                if test -f "$W_ISO_MOUNT_ROOT/$2"
+                if test "$2" = "" || test -f "$W_ISO_MOUNT_ROOT/$2"
                 then
                     break
                 else
