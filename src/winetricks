@@ -5083,7 +5083,7 @@ w_metadata quicktime72 dlls \
    publisher="Apple" \
    year="2010" \
    media="download" \
-   file1="QuickTimeInstaller.exe" \
+   file1="quicktimeplayer72.exe" \
    installed_file1="c:/windows/Installer/{95A890AA-B3B1-44B6-9C18-A8F7AB3EE7FC}/QTPlayer.ico"
 
 load_quicktime72()
@@ -5111,7 +5111,7 @@ load_quicktime72()
     fi
 
     cd "$W_CACHE"/quicktime72
-    w_try $WINE QuickTimeInstaller.exe ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $QUICKTIME_QUIET > /dev/null 2>&1
+    w_try $WINE quicktimeplayer72.exe ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $QUICKTIME_QUIET > /dev/null 2>&1
 
     if w_workaround_wine_bug 11681
     then
@@ -5131,6 +5131,7 @@ load_quicktime72()
         fi
     fi
 }
+
 #----------------------------------------------------------------
 
 w_metadata quicktime76 dlls \
