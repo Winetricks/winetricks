@@ -5311,7 +5311,7 @@ load_usp10()
 {
     # http://en.wikipedia.org/wiki/Uniscribe
     # http://www.microsoft.com/downloads/details.aspx?familyid=cebbacd8-c094-4255-b702-de3bb768148f
-    w_download http://download.microsoft.com/download/WindowsInstaller/Install/2.0/W9XMe/EN-US/InstMsiA.exe e739c40d747e7c27aacdb07b50925b1635ee7366
+    w_download_to msi2 http://download.microsoft.com/download/WindowsInstaller/Install/2.0/W9XMe/EN-US/InstMsiA.exe e739c40d747e7c27aacdb07b50925b1635ee7366
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msi2/InstMsiA.exe
     w_try cp -f "$W_TMP"/usp10.dll "$W_SYSTEM32_DLLS"
     w_override_dlls native,builtin usp10
