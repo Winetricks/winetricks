@@ -6741,23 +6741,18 @@ load_dxdiag()
 #----------------------------------------------------------------
 
 w_metadata firefox3 apps \
-   title="Firefox 3.6.16" \
+   title="Firefox 3.6.17" \
    publisher="Mozilla" \
    year="2011" \
    media="download" \
-   file1="Firefox Setup 3.6.16.exe" \
+   file1="Firefox Setup 3.6.17.exe" \
    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox3()
 {
-    w_download "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/3.6.16/win32/en-US/Firefox%20Setup%203.6.16.exe" e5d943353556970fca7df08c6b81ec7015f54d7a "Firefox Setup 3.6.16.exe"
+    w_download "http://download.mozilla.org/?product=firefox-3.6.17&os=win&lang=en-US" 193ea12732e52d8195e96ba22289e83afbed09f4 "Firefox Setup 3.6.17.exe"
     cd "$W_CACHE"/firefox3
-    if test $W_OPT_UNATTENDED
-    then
-       w_try $WINE "Firefox Setup 3.6.16.exe" -ms
-    else
-       w_try $WINE "Firefox Setup 3.6.16.exe"
-    fi
+    w_try $WINE "Firefox Setup 3.6.17.exe" ${W_OPT_UNATTENDED:+ -ms}
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
 
