@@ -13536,6 +13536,7 @@ load_smbx()
             Send {Enter}
             WinWait, Setup - Super Mario Bros. X, Additional Tasks
             Send {Enter}
+            ; Do not install bloatware
             WinWait, Setup - Super Mario Bros. X, Recommended by
             IfWinExist, Setup - Super Mario Bros. X, AVG
             {
@@ -13543,14 +13544,19 @@ load_smbx()
                 Click
                 Send {Enter}
             }
-            else
+            IfWinExist, Setup - Super Mario Bros. X, RealPlayer
             {
-                IfWinExist, Setup - Super Mario Bros. X, RealPlayer
-                {
-                    MouseMove, 35,245
-                    Click
-                    Send {Enter}
-                }
+                MouseMove, 35,245
+                Click
+                Send {Enter}
+            }
+            SetTitleMatchMode RegEx
+            ; the darn thing alternates between ARO and Advanced Registry Optimizer
+            IfWinExist, Setup - Super Mario Bros. X, A.*R.*O.*2011
+            {
+                MouseMove, 31,277
+                Click
+                Send {Enter}
             }
             WinWait, Setup - Super Mario Bros. X, Ready to Install
             Send {Enter}
