@@ -7503,20 +7503,22 @@ w_metadata spotify apps \
 
 load_spotify()
 {
-    w_download http://www.spotify.com/download/Spotify%20Installer.exe f26712b576baa1c78112a05474293deef39f7f62 SpotifyInstaller.exe
+    #             0.4.9  f26712b576baa1c78112a05474293deef39f7f62 
+    # 29 Apr 2011 0.4.10 4becb04f8ad08a3ff59d6830bf1d998fcca1815b
+    w_download http://www.spotify.com/download/Spotify%20Installer.exe 4becb04f8ad08a3ff59d6830bf1d998fcca1815b SpotifyInstaller.exe
 
     cd "$W_CACHE"/spotify
 
     w_ahk_do "
         SetTitleMatchMode, 2
         run SpotifyInstaller.exe
-        WinWait, Spotify 0.4.9 Setup, Location
+        WinWait, Spotify, Location
         if ( w_opt_unattended > 0 ) {
             Sleep 500
             ControlClick Button7 ; Start after install
             Sleep 500
             ControlClick Button2 ; Install
-            WinWait, Spotify 0.4.9 Setup, Complete
+            WinWait, Spotify, Complete
             Sleep 500
             ControlClick Button2 ; Close
         }
