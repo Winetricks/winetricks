@@ -3625,6 +3625,31 @@ load_d3dx9_42()
 
 #----------------------------------------------------------------
 
+w_metadata d3dx9_43 dlls \
+   title="MS d3dx9_43.dll" \
+   publisher="Microsoft" \
+   year="2010" \
+   media="download" \
+   file1="../directx9/directx_Jun2010_redist.exe" \
+   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_43.dll"
+
+load_d3dx9_43()
+{
+    dllname=d3dx9_43
+
+    helper_directx_Jun2010
+
+    w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
+    for x in "$W_TMP"/*.cab
+    do
+      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
+    done
+
+    w_override_dlls native $dllname
+}
+
+#----------------------------------------------------------------
+
 w_metadata d3dx11_42 dlls \
    title="MS d3dx11_42.dll" \
    publisher="Microsoft" \
