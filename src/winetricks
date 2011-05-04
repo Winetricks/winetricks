@@ -12617,6 +12617,66 @@ load_nfsshift_demo()
 
 #----------------------------------------------------------------
 
+w_metadata nfsworld games \
+    title="Need For Speed World" \
+    publisher="EA" \
+    year="2010" \
+    media="download" \
+    file1="setup_386.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need For Speed World/GameLauncher.exe"
+
+load_nfsworld()
+{
+    w_workaround_wine_bug 27047 "Game fails with corrupt executable error in wine-1.3.19 and earlier" 1.3.20,
+
+    # This changes frequently, I'm afraid
+    # Be careful to update $file1 when you update the url
+    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.34.386/setup_386.exe 0ae88d65bad16808db43f99c775f74d4d3eb1b40
+
+    w_workaround_wine_bug 27048 "The patcher hangs a lot.  When it does, retry the patch (you may need to kill it first).  After five or ten tries, it should work."
+
+    # FIXME: file bugs for these
+    w_call ie7
+    w_call dotnet20
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetWinDelay 500
+        SetTitleMatchMode, 2
+        run $file1
+        winwait Setup - Need For Speed
+        if ( w_opt_unattended > 0 ) {
+            ControlClick TNewButton1        ; Next
+            winwait Setup - Need For Speed, License
+            ControlClick TNewRadioButton1   ; Accept
+            sleep 1000
+            ControlClick TNewButton2        ; Next
+            winwait Setup - Need For Speed, be installed
+            ControlClick TNewButton3        ; Next
+            winwait Setup - Need For Speed, be downloaded
+            ControlClick TNewButton4        ; Next
+            winwait Setup - Need For Speed, shortcuts
+            ControlClick TNewButton5        ; Next
+            winwait Setup - Need For Speed, Tasks
+            ControlClick TNewButton5        ; Next
+            winwait Setup - Need For Speed, Ready to Install
+            ControlClick TNewButton5        ; Next
+        }
+        winwait Setup - Need For Speed, Completing
+        if ( w_opt_unattended > 0 ) {
+            send {Space}                    ; uncheck readme
+            send {Tab}
+            send {Space}                    ; uncheck launch
+            ControlClick TNewButton5        ; Finish
+        }
+        winwaitclose
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Need For Speed World" GameLauncher.exe
+}
+
+
+#----------------------------------------------------------------
+
 w_metadata oblivion games \
     title="Elder Scrolls: Oblivion" \
     publisher="Bethesda Game Studios" \
