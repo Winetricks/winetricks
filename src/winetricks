@@ -4730,14 +4730,14 @@ w_metadata mono210 dlls \
    publisher="Novell" \
    year="2011" \
    media="download" \
-   file1="mono-2.10.1-gtksharp-2.12.10-win32-2.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.10.1/bin/mono-2.0.dll"
+   file1="mono-2.10.2-gtksharp-2.12.10-win32-5.exe" \
+   installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.10.2/bin/mono-2.0.dll"
 
 load_mono210()
 {
-    w_download http://ftp.novell.com/pub/mono/archive/2.10.1/windows-installer/2/mono-2.10.1-gtksharp-2.12.10-win32-2.exe 7067b1c6cc530738bfd63c3ef38271c2dcc387fe 
+    w_download http://ftp.novell.com/pub/mono/archive/2.10.2/windows-installer/5/mono-2.10.2-gtksharp-2.12.10-win32-5.exe 630769a5bf70d025308c994920d3826dbadb03f5
     cd "$W_CACHE"/mono210
-    w_try $WINE mono-2.10.1-gtksharp-2.12.10-win32-2.exe $W_UNATTENDED_SLASH_SILENT
+    w_try $WINE mono-2.10.2-gtksharp-2.12.10-win32-5.exe $W_UNATTENDED_SLASH_SILENT
 }
 
 #----------------------------------------------------------------
