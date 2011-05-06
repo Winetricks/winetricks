@@ -52,6 +52,7 @@ WINETRICKS_VERSION=20110429
 #   Copyright (C) 2011 Franco Junio
 #   Copyright (C) 2011 Craig Sanders
 #   Copyright (C) 2011 Matthew Bauer <mjbauer95>
+#   Copyright (C) 2011 Giuseppe Dia
 #
 # License
 #   This program is free software; you can redistribute it and/or
@@ -4778,6 +4779,27 @@ load_msasn1()
     w_try_cabextract i386/msasn1.dl_
     w_try cp msasn1.dll "$W_SYSTEM32_DLLS"
     w_try rm -rf i386
+}
+
+#----------------------------------------------------------------
+
+w_metadata msflxgrd dlls \
+   title="MS FlexGrid Control (msflxgrd.ocx)" \
+   publisher="Microsoft" \
+   year="2009" \
+   media="download" \
+   file1="msflxgrd.cab" \
+   installed_file1="$W_SYSTEM32_DLLS_WIN/MSFlxGrd.Ocx"
+
+load_msflxgrd()
+{
+    # http://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
+    # may 2011: f497c3b390cd80d5bcd1f13d5c0c68b206369aa7
+    w_download http://activex.microsoft.com/controls/vb6/msflxgrd.cab f497c3b390cd80d5bcd1f13d5c0c68b206369aa7
+
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msflxgrd/msflxgrd.cab
+    w_try cp -f "$W_TMP"/[Mm][Ss][Ff][Ll][Xx][Gg][Rr][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
+    w_try_regsvr MSFlxGrd.Ocx
 }
 
 #----------------------------------------------------------------
