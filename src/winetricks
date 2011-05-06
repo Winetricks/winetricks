@@ -12696,6 +12696,89 @@ load_nfsworld()
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Need For Speed World" GameLauncher.exe
 }
 
+#----------------------------------------------------------------
+
+w_metadata nfsworld_mono games \
+    title="Need For Speed World (using Mono)" \
+    publisher="EA" \
+    year="2010" \
+    media="download" \
+    file1="setup_386.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need For Speed World/GameLauncher.exe"
+
+load_nfsworld_mono()
+{
+    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.25.386/setup_386.exe 0ae88d65bad16808db43f99c775f74d4d3eb1b40
+
+    if w_workaround_wine_bug 25658 "Installing Mono 2.6"
+    then
+        # newer mono fails?
+        w_call mono26
+        # Work around bug fixed in later versions of mono (thanks, Vincent)
+        w_download http://madewokherd.nfshost.com/omgsecret/mono-winebug23458.tar.gz \
+             156a7d79e70864b67af22315ae257dc798cb2a2e
+        w_try tar -C "$W_PROGRAMS_X86_UNIX/Mono-2.6.7/lib" -xvf "$W_CACHE/$W_PACKAGE"/mono-winebug23458.tar.gz
+    fi
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetWinDelay 500
+        SetTitleMatchMode, 2
+        run $file1
+        winwait Setup - Need For Speed
+        if ( w_opt_unattended > 0 ) {
+            ControlClick TNewButton1        ; Next
+            winwait Setup - Need For Speed, License
+            ControlClick TNewRadioButton1   ; Accept
+            sleep 1000
+            ControlClick TNewButton2        ; Next
+            winwait Setup - Need For Speed, be installed
+            ControlClick TNewButton3        ; Next
+            winwait Setup - Need For Speed, be downloaded
+            ControlClick TNewButton4        ; Next
+            winwait Setup - Need For Speed, shortcuts
+            ControlClick TNewButton5        ; Next
+            winwait Setup - Need For Speed, Tasks
+            ControlClick TNewButton5        ; Next
+            winwait Setup - Need For Speed, Ready to Install
+            ControlClick TNewButton5        ; Next
+            ;winwait Setup, do not have Microsoft .NET 2.0   ; only on old wine
+            ;send {Enter}
+        }
+        winwait Setup - Need For Speed, Completing
+        if ( w_opt_unattended > 0 ) {
+            send {Space}                    ; uncheck readme
+            send {Tab}
+            send {Space}                    ; uncheck launch (Vincent says let it launch?)
+            ControlClick TNewButton5        ; Finish
+        }
+        winwaitclose
+    "
+
+    # Work around winebrowser snafu mentioned in http://bugs.winehq.org/show_bug.cgi?id=13891
+    # else you'll quickly get a dialog saying the app is broken
+    # FIXME: file a bug for this
+    if w_workaround_wine_bug 0000 "Kludging registry entry for winebrowser so patcher starts"
+    then
+        $WINE reg add "HKCR\\http\\shell\\open\\command" /ve /d "C:\\windows\\system32\\winebrowser.exe -nohome \"%1\"" /f
+    fi
+
+    # Create custom start batch file
+    cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
+c:
+
+rem To work around mono bug mentioned by Vincent, do
+rem    find $WINEPREFIX/drive_c/users/$USERNAME/Local\\ Settings -name user.config -exec rm \{} \;
+rem before running this.
+rem (del /s is horribly broken, see http://bugs.winehq.org/show_bug.cgi?id=26885)
+cd "c:\\users\\%USERNAME%\\Local Settings\\Application Data\\Electronic Arts Inc" 
+dir /s user.config
+
+cd "C:\\Program Files\\Electronic Arts\\Need For Speed World"
+GameLauncher.exe
+__EOF__
+
+}
 
 #----------------------------------------------------------------
 
