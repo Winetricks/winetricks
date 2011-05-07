@@ -7545,7 +7545,8 @@ load_spotify()
 {
     #             0.4.9  f26712b576baa1c78112a05474293deef39f7f62 
     # 29 Apr 2011 0.4.10 4becb04f8ad08a3ff59d6830bf1d998fcca1815b
-    w_download http://www.spotify.com/download/Spotify%20Installer.exe 4becb04f8ad08a3ff59d6830bf1d998fcca1815b SpotifyInstaller.exe
+    # 7 may 2011         a3c7daecf1051c4aaab544e6b66753617c0706b1
+    w_download http://www.spotify.com/download/Spotify%20Installer.exe a3c7daecf1051c4aaab544e6b66753617c0706b1 SpotifyInstaller.exe
 
     cd "$W_CACHE"/spotify
 
@@ -7738,7 +7739,8 @@ load_utorrent()
     # Feb 11 2011 2.2.1beta sha1sum 82e81e1484b4e8654b83908509f3777532c6fcb3
     # Mar 28 2011 2.2.1 sha1sum 7049109e4d3f72338d54b42ae37ecf38fafed46f
     # Apr 14 2011 2.2.1 sha1sum b1378d7cbe5d1e1b168ce44def8f59facdc046d5
-    w_download http://download.utorrent.com/2.2.1/utorrent.exe b1378d7cbe5d1e1b168ce44def8f59facdc046d5
+    # 7 May 2011        sha1sum 2932c9ed1c1225e485f7e3dd2ed267aa7d568c80
+    w_download http://download.utorrent.com/2.2.1/utorrent.exe 2932c9ed1c1225e485f7e3dd2ed267aa7d568c80
 
     w_try cp -f "$W_CACHE/utorrent/utorrent.exe" "$W_WINDIR_UNIX"/utorrent.exe
 
@@ -7759,7 +7761,8 @@ load_utorrent3()
 {
     # 15 Apr 2011: sha1sum a5f198207919e8f2091a9b4459d7d6fc8a63e874
     # 27 Apr 2011: sha1sum d969f0c61cf2b2afaea4121f097ef690dffbf771
-    w_download http://download.utorrent.com/beta/utorrent-3.0-latest.exe d969f0c61cf2b2afaea4121f097ef690dffbf771
+    # 7 May 2011: sha1sum 1793a7b15d905a9fa82f9a969a96fa53abaac04c
+    w_download http://download.utorrent.com/beta/utorrent-3.0-latest.exe 1793a7b15d905a9fa82f9a969a96fa53abaac04c
 
     case "$W_OPT_UNATTENDED" in
     0) _W_opt="" ;;

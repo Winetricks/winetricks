@@ -14,6 +14,9 @@ BLACKLIST="$BLACKLIST|amnesia_tdd_demo|wowtrial|mfsxde"
 # steam verbs I don't have
 BLACKLIST="$BLACKLIST|borderlands|supermeatboy|trine"
 
+# Verbs known to update frequently
+QUICKCHECK="flash spotify dc2ba_demo utorrent utorrent3 hegemonygold_demo"
+
 # Check for programs this script (or winetricks) uses.  
 # Better to find out they're missing now than in the
 # middle of a two day run.
@@ -209,6 +212,18 @@ test_install_cached_or_download()
         cat download-but-not-cached.txt
     fi
 }
+
+# Test the frequent download-changes-checksum offenders first
+(
+cache="$HOME/winetricks-quickcheck-cache"
+rm -rf "$cache"
+export W_CACHE="$cache" 
+for a in $QUICKCHECK
+do
+   rm -rf $HOME/winetrickstest-prefixes/$a
+   test_app $a
+done
+)
 
 test_speed list
 test_speed list-download
