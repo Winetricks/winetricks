@@ -4603,7 +4603,7 @@ load_kindle()
 {
     w_download http://kindleforpc.amazon.com/32337/KindleForPC-installer.exe \
         2ad916877f418ceb8bdc4ae13b0c5e9099ffb8d7
-    w_try $WINE $W_CACHE/kindle/$file1 ${W_OPT_UNATTENDED:+ /S}
+    w_try $WINE "$W_CACHE"/kindle/$file1 ${W_OPT_UNATTENDED:+ /S}
     w_declare_exe "$W_PROGRAMS_WIN\\Amazon\\Kindle For PC" Kindle.exe
 }
 
@@ -6626,7 +6626,7 @@ load_adobe_diged()
 {
     w_download http://kb2.adobe.com/cps/403/kb403051/attachments/setup.exe 4c79685408fa6ca12ef8bb0e0eaa4a846e21f915
     # NSIS installer
-    w_try $WINE $W_CACHE/$W_PACKAGE/setup.exe ${W_OPT_UNATTENDED:+ /S}
+    w_try $WINE "$W_CACHE"/$W_PACKAGE/setup.exe ${W_OPT_UNATTENDED:+ /S}
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Adobe\\Adobe Digital Editions" \
         digitaleditions.exe
 }
@@ -7278,7 +7278,7 @@ load_nook()
     w_download \
         http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe \
         4a06a529b93ed33c3518326d874b40d8d7b70e7a
-    $WINE $W_CACHE/nook/$file1 ${W_OPT_UNATTENDED:+ /S}
+    $WINE "$W_CACHE"/nook/$file1 ${W_OPT_UNATTENDED:+ /S}
     # normally has exit status 199?
     w_declare_exe "$W_PROGRAMS_WIN\\Barnes & Noble\\BNDesktopReader" "BNDReader.exe"
 }
@@ -15661,7 +15661,7 @@ winetricks_stats_save()
     # Save opt-in status
     if test "$WINETRICKS_STATS_REPORT"
     then
-        echo "$WINETRICKS_STATS_REPORT" > $W_CACHE/track_usage
+        echo "$WINETRICKS_STATS_REPORT" > "$W_CACHE"/track_usage
     fi
 }
 
