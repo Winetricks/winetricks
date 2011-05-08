@@ -364,7 +364,8 @@ w_pathconv()
 {
     case "$OS" in
      "Windows_NT")
-        cygpath "$@"
+        # for some reason, cygpath turns some spaces into newlines?!
+        cygpath "$@" | tr '\012' '\040' | sed 's/ $//'
         ;;
      *)
         case "$@" in
