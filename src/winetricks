@@ -1132,15 +1132,17 @@ w_override_no_dlls()
 
 w_override_all_dlls()
 {
-    # Disable all but the commonly used DLLs Wine doesn't have a credible alternative for
-    # i.e. Don't disallow msvcp80 or d3dx9_* for now
-    # d3dx9_24.dll d3dx9_25.dll d3dx9_26.dll d3dx9_27.dll d3dx9_28.dll d3dx9_29.dll d3dx9_30.dll d3dx9_31.dll d3dx9_32.dll d3dx9_33.dll d3dx9_34.dll d3dx9_35.dll d3dx9_36.dll d3dx9_37.dll d3dx9_38.dll d3dx9_39.dll d3dx9_40.dll d3dx9_41.dll d3dx9_42.dll d3dxof.dll 
+    # Disable all known native Microsoft DLLs in favor of Wine's builtin ones
     w_override_dlls builtin \
         acledit aclui activeds actxprxy advapi32 advpack amstream atl authz avicap32 \
         avifil32 avifilebavrt bcrypt browseui cabinet capi2032 cards cfgmgr32 clusapi \
         comcat comctl32 comdlg32 commdlg compobj compstui credui crtdll crypt32 cryptdlg \
         cryptdll cryptnet cryptui ctapi32 ctl3d ctl3d32 ctl3dv2 d3d10 \
         d3d10core d3d8 d3d9 d3dim d3drm \
+        d3dx9_24 d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 \
+        d3dx9_29 d3dx9_30 d3dx9_31 d3dx9_32 d3dx9_33 \
+        d3dx9_34 d3dx9_35 d3dx9_36 d3dx9_37 d3dx9_38 \
+        d3dx9_39 d3dx9_40 d3dx9_41 d3dx9_42 d3dx9_43 \
         d3dxof dbghelp dciman32 ddeml ddraw ddrawex \
         devenum dinput dinput8 dispdib dispex dmband dmcompos dmime dmloader dmscript \
         dmstyle dmsynth dmusic dmusic32 dnsapi dplay dplayx dpnaddr dpnet dpnhpast \
@@ -1151,8 +1153,11 @@ w_override_all_dlls()
         localui lz32 lzexpand mapi32 mapistub mciavi32 mcicda mciqtz32 mciseq mciwave \
         midimap mlang mmdevapi mmsystem mpr mprapi msacm msacm32 mscat32 mscms \
         mscoree msctf msdaps msdmo msftedit mshtml msi msimg32 msimtf msisip \
-        msnet32 msrle32 mssign32 mssip32 mstask msvcirt msvcr70 msvcr71 msvcr80 \
-        msvcr90 msvcrt msvcrt20 msvcrt40 msvcrtd msvfw32 msvidc32 msvideo mswsock msxml3 \
+        msnet32 msrle32 mssign32 mssip32 mstask msvcirt \
+        msvcr70 msvcr71 msvcr80 msvcr90 msvcr100 \
+        msvcp70 msvcp71 msvcp80 msvcp90 msvcp100 \
+        msvcrt msvcrt20 msvcrt40 msvcrtd \
+        msvfw32 msvidc32 msvideo mswsock msxml3 \
         msxml4 nddeapi netapi32 newdev ntdll ntdsapi ntprint objsel odbc32 odbccp32 \
         ole2 ole2conv ole2disp ole2nls ole2prox ole2thk ole32 oleacc oleaut32 olecli \
         olecli32 oledb32 oledlg olepro32 olesvr olesvr32 olethk32 openal32 opengl32 pdh \
@@ -15025,7 +15030,7 @@ _EOF_
 w_metadata alldlls=default settings \
     title="Remove all DLL overrides"
 w_metadata alldlls=builtin settings \
-    title="Override most common DLLs to builtin (except msvcp90 and d3d9x_xx)"
+    title="Override most common DLLs to builtin"
 
 load_alldlls()
 {
