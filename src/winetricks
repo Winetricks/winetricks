@@ -8472,7 +8472,7 @@ load_amnesia_tdd_demo()
 #----------------------------------------------------------------
 
 w_metadata aoe3_demo games \
-    title="Age of Empires III" \
+    title="Age of Empires III Trial" \
     publisher="Microsoft" \
     year="2005" \
     media="download" \
@@ -8485,7 +8485,7 @@ load_aoe3_demo()
     w_download "http://download.microsoft.com/download/a/5/2/a525997e-8423-435b-b694-08118d235064/aoe3trial.exe" \
         2b0a123243092d79f910db5691d99d469f7c17c3
 
-    if w_workaround_wine_bug 24897
+    if w_workaround_wine_bug 24897 "Installing msxml4 to avoid font problem" 1.3.9,
     then
         w_call msxml4
     fi
@@ -8511,7 +8511,7 @@ load_aoe3_demo()
         WinWaitClose
     "
 
-    if w_workaround_wine_bug 24911
+    if w_workaround_wine_bug 24911 "Installing devnum, dmsynth, and quartz to get sound working" 1.3.9,
     then
         # On some systems, only quartz is needed?
         # appdb says that l3codecx is also needed?
