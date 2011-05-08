@@ -5,7 +5,7 @@ do
     echo -n "$url "
     curl --connect-timeout 10 --retry 6 -s -S -I "$url" > tmp
     cat tmp >> tmp.all
-    if test "`grep HTTP < tmp | grep " 200 " `" = ""
+    if test "`grep HTTP < tmp | egrep " 200 | 302 " `" = ""
     then
         echo "----------"
         echo "$url bad"
