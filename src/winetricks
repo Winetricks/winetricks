@@ -12759,6 +12759,11 @@ load_nfsworld()
     w_call ie7
     w_call dotnet20
 
+    if w_workaround_wine_bug 26915 "installing corefonts so help works"
+    then
+        w_call corefonts
+    fi
+
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetWinDelay 500
@@ -12806,7 +12811,7 @@ w_metadata nfsworld_mono games \
 
 load_nfsworld_mono()
 {
-    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.25.386/setup_386.exe 0ae88d65bad16808db43f99c775f74d4d3eb1b40
+    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.34.386/setup_386.exe 0ae88d65bad16808db43f99c775f74d4d3eb1b40
 
     if w_workaround_wine_bug 25658 "Installing Mono 2.6"
     then
@@ -12816,6 +12821,11 @@ load_nfsworld_mono()
         w_download http://madewokherd.nfshost.com/omgsecret/mono-winebug23458.tar.gz \
              156a7d79e70864b67af22315ae257dc798cb2a2e
         w_try tar -C "$W_PROGRAMS_X86_UNIX/Mono-2.6.7/lib" -xvf "$W_CACHE/$W_PACKAGE"/mono-winebug23458.tar.gz
+    fi
+
+    if w_workaround_wine_bug 26915 "installing corefonts so help works"
+    then
+        w_call corefonts
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
@@ -15539,7 +15549,6 @@ for data in \
     comctl32:size_MB=49,time_sec=1 \
     comdlg32ocx:size_MB=49,time_sec=1 \
     controlpad:size_MB=69,time_sec=4 \
-    corefonts:size_MB=52,time_sec=4 \
     corefonts:size_MB=62,time_sec=2 \
     crypt32:size_MB=178,time_sec=71 \
     crysis2:size_MB=8259,time_sec=1200 \
