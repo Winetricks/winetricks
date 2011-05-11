@@ -1060,7 +1060,7 @@ w_ahk_do()
 w_opt_unattended = ${W_OPT_UNATTENDED:-0}
 $@
 _EOF_
-    $WINE "$W_CACHE_WIN/ahk/AutoHotkey.exe" "$W_TMP_WIN"\\tmp.ahk
+    w_try $WINE "$W_CACHE_WIN\\ahk\\AutoHotkey.exe" "$W_TMP_WIN"\\tmp.ahk
     unset _W_CR
 }
 
