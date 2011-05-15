@@ -7844,7 +7844,8 @@ load_utorrent()
     # Mar 28 2011 2.2.1 sha1sum 7049109e4d3f72338d54b42ae37ecf38fafed46f
     # Apr 14 2011 2.2.1 sha1sum b1378d7cbe5d1e1b168ce44def8f59facdc046d5
     # 7 May 2011        sha1sum 2932c9ed1c1225e485f7e3dd2ed267aa7d568c80
-    w_download http://download.utorrent.com/2.2.1/utorrent.exe 2932c9ed1c1225e485f7e3dd2ed267aa7d568c80
+    # 14 May 2011 removed checksum, updates too quickly to track :-(
+    w_download http://download.utorrent.com/2.2.1/utorrent.exe
 
     w_try cp -f "$W_CACHE/utorrent/utorrent.exe" "$W_WINDIR_UNIX"/utorrent.exe
 
