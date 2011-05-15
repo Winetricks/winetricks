@@ -12894,15 +12894,15 @@ w_metadata osmos_demo games \
     publisher="Hemisphere Games" \
     year="2009" \
     media="download" \
-    file1="OsmosDemo_Installer_1.5.6.exe" \
+    file1="OsmosDemo_Installer_1.6.0.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/OsmosDemo/OsmosDemo.exe"
 
 load_osmos_demo()
 {
-    w_download http://gamedaily.newaol.com/pub/OsmosDemo_Installer_1.5.6.exe 7568f97100a73985a0fd625b63b205f4477578e8
+    w_download http://www.hemispheregames.com/blog/wp-content/uploads/2010/01/OsmosDemo_Installer_1.6.0.exe 4880eb20ff850bf337bbae20455ee90f614e507e
 
     cd "$W_CACHE/$W_PACKAGE"
-    w_try $WINE OsmosDemo_Installer_1.5.6.exe ${W_OPT_UNATTENDED:+ /S}
+    w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /S}
 
     if w_workaround_wine_bug 24416 "installing C runtime library" 1.3.8,
     then
