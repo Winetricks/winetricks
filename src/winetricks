@@ -12573,18 +12573,22 @@ load_mise()
 #----------------------------------------------------------------
 
 w_metadata myth2_demo games \
-    title="Myth II: Soulblighter demo" \
-    publisher="Bungie Studios" \
-    year="1998" \
+    title="Myth II demo 1.7.2" \
+    publisher="Project Magma" \
+    year="2011" \
     media="download" \
-    file1="Myth2_Demo_171.exe" \
+    file1="Myth2_Demo_172.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Myth II Demo/Myth II Demo.exe" \
-    homepage="http://www.bungie.net/Projects/Myth/"
+    homepage="http://projectmagma.net/"
 
 load_myth2_demo()
 {
+    # Originally a 1998 game by Bungie; according to Wikipedia, they handed the
+    # source code to Project Magma for further development.
+
+    # 1 May 2011 1.7.2 sha1sum e0a8f707377e71314a471a09ad2a55179ea44588
     w_download http://tain.totalcodex.net/items/download/myth-ii-demo-windows \
-        598621565e2bb82473579e3a1f9533f131ba8ad7 $file1
+        e0a8f707377e71314a471a09ad2a55179ea44588 $file1
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
