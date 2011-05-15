@@ -7643,9 +7643,16 @@ load_spotify()
     #             0.4.9  f26712b576baa1c78112a05474293deef39f7f62 
     # 29 Apr 2011 0.4.10 4becb04f8ad08a3ff59d6830bf1d998fcca1815b
     # 7 may 2011         a3c7daecf1051c4aaab544e6b66753617c0706b1
-    w_download http://www.spotify.com/download/Spotify%20Installer.exe a3c7daecf1051c4aaab544e6b66753617c0706b1 SpotifyInstaller.exe
+    # updates too frequently to check checksum :-(
+    w_download http://www.spotify.com/download/Spotify%20Installer.exe
 
     cd "$W_CACHE"/spotify
+    # w_download doesn't handle renaming for us without a checksum, tsk.
+    # And autohotkey thinks % is a variable reference.
+    if test ! -f SpotifyInstaller.exe
+    then
+        cp Spotify%20Installer.exe SpotifyInstaller.exe
+    fi
 
     w_ahk_do "
         SetTitleMatchMode, 2
