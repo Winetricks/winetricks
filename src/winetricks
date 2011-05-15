@@ -3340,20 +3340,22 @@ helper_d3dx9_xx()
 #----------------------------------------------------------------
 
 w_metadata  adobeair dlls \
-   title="Adobe AIR 2.5.1" \
+   title="Adobe AIR 2.6" \
    publisher="Adobe" \
-   year="2010" \
+   year="2011" \
    media="download" \
    file1="AdobeAIRInstaller.exe" \
-   installed_file1="$W_COMMONFILES_X86_WIN/Adobe AIR/Versions/1.0/Adobe AIR.dll"
+   installed_file1="$W_COMMONFILES_X86_WIN/Adobe AIR/Versions/1.0/Adobe AIR.dll" \
+   homepage="http://www.adobe.com/products/air/"
 
 load_adobeair()
 {
     # 2010-02-02: sha1sum 5c95f51a680f8c175a92755238127be4ad22c53b
     # 2010-02-20: sha1sum 6f03e723bd855abbe00eb8fdf22da54fb49c62db
     # 2010-07-29: 2.0.2 sha1sum 7b93aedaf48ad7854940e7a4e7d9394a255e888b
-    # 2010-12-08: 2.1.5 sha1sum 2664207ca8e836f5070ee356064829a39785a92e
-    w_download http://airdownload.adobe.com/air/win/download/2.5.1/AdobeAIRInstaller.exe 2664207ca8e836f5070ee356064829a39785a92e
+    # 2010-12-08: 2.5.1 sha1sum 2664207ca8e836f5070ee356064829a39785a92e
+    # 2011-04-13: 2.6   sha1sum 3d9c2f9d8f3533424cfea84d61fcb9464278d9fc
+    w_download http://airdownload.adobe.com/air/win/download/2.6/AdobeAIRInstaller.exe 3d9c2f9d8f3533424cfea84d61fcb9464278d9fc
     cd "$W_CACHE"/adobeair
     w_try $WINE AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
 }
