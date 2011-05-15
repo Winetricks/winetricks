@@ -385,7 +385,7 @@ w_verify_sha1sum()
     _W_vs_gotsum=`$WINETRICKS_SHA1SUM < $_W_vs_file | sed 's/ .*//'`
     if [ "$_W_vs_gotsum"x != "$_W_vs_wantsum"x ]
     then
-       w_die "sha1sum mismatch!  Rename $_W_vs_file and try again."
+        w_die "sha1sum mismatch!  Rename $_W_vs_file and try again."
     fi
     unset _W_vs_wantsum _W_vs_file _W_vs_gotsum
 }
@@ -890,22 +890,22 @@ w_steam_install_game()
         winwaitclose
         winwait Steam  ; wait for small <<connecting>> window
         winwaitclose
-     "
+    "
 
 if [ "$STEAM_DVD" = "TRUE" ]
 then
-     w_ahk_do "
+    w_ahk_do "
         ; Run a fourth time, have it install the app.
         run steam.exe -install ${W_ISO_MOUNT_LETTER}:\\
-     "
+    "
 else
-     w_ahk_do "
+    w_ahk_do "
         ; Run a fourth time, have it install the app.
         run steam.exe -applaunch $_W_steamid
-     "
+    "
 fi
 
-     w_ahk_do "
+    w_ahk_do "
         winwait Install - $_W_steamtitle
         if ( w_opt_unattended > 0 ) {
             send {enter}          ; next (for 1st of 3 pages of install dialog)
@@ -1077,9 +1077,9 @@ w_skip_windows()
 {
     case "$OS" in
     "Windows_NT")
-      echo "Skipping operation '$1' on Windows"
-      return 0
-      ;;
+        echo "Skipping operation '$1' on Windows"
+        return 0
+        ;;
     esac
     return 1
 }
@@ -1478,7 +1478,7 @@ w_workaround_wine_bug()
 
 # Function for verbs to register themselves so they show up in the menu.
 # Example:
-# w_metadata  wog games \
+# w_metadata wog games \
 #   title="World of Goo Demo" \
 #   pub="2D Boy" \
 #   year="2008" \
@@ -2015,8 +2015,8 @@ winetricks_settings_menu()
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
-             ;;
-       de*) printf %s "zenity \
+            ;;
+        de*) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2027,7 +2027,7 @@ winetricks_settings_menu()
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
-             ;;
+            ;;
         *) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
@@ -2039,7 +2039,7 @@ winetricks_settings_menu()
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
-             ;;
+            ;;
         esac > "$WINETRICKS_WORKDIR"/zenity.sh
 
         for metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
@@ -2109,8 +2109,8 @@ winetricks_showmenu()
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
-             ;;
-       de*) printf %s "zenity \
+            ;;
+        de*) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2216,7 +2216,7 @@ winetricks_metadata_basename()
 # Returns true if given verb has been registered
 winetricks_metadata_exists()
 {
-   test -f "$WINETRICKS_METADATA"/*/$1.vars
+    test -f "$WINETRICKS_METADATA"/*/$1.vars
 }
 
 # Returns true if given verb has been cached
@@ -2431,8 +2431,8 @@ winetricks_read_bytes()
 winetricks_read_hex()
 {
     od -j $1 -N $2 -t x1 $3          | # offset $1, count $2, single byte hex format, file $3
-       sed 's/^[^ ]* //'             | # remove address
-       sed '$d'                        # remove final line which is just final offset
+        sed 's/^[^ ]* //'             | # remove address
+        sed '$d'                        # remove final line which is just final offset
 }
 
 # Usage: read_decimal offset device
@@ -2442,8 +2442,8 @@ winetricks_read_hex()
 winetricks_read_decimal()
 {
     od -j $1 -N 4  -t u4 $2          | # offset $1, byte count 4, four byte decimal format, file $2
-       sed 's/^[^ ]* //'             | # remove address
-       sed '$d'                        # remove final line which is just final offset
+        sed 's/^[^ ]* //'             | # remove address
+        sed '$d'                        # remove final line which is just final offset
 }
 
 winetricks_read_udf_volume_name()
@@ -3076,12 +3076,12 @@ winetricks_init()
     # Mac folks tend to not have sha1sum, but we can make do with openssl
     if [ -x "`which sha1sum 2>/dev/null`" ]
     then
-       WINETRICKS_SHA1SUM="sha1sum"
+        WINETRICKS_SHA1SUM="sha1sum"
     elif [ -x "`which openssl 2>/dev/null`" ]
     then
-       WINETRICKS_SHA1SUM="openssl dgst -sha1"
+        WINETRICKS_SHA1SUM="openssl dgst -sha1"
     else
-       w_die "No sha1sum utility available."
+        w_die "No sha1sum utility available."
     fi
 
     # Which sourceforge mirror to use.  Rotate based on time, since
@@ -3340,13 +3340,13 @@ helper_d3dx9_xx()
 #----------------------------------------------------------------
 
 w_metadata  adobeair dlls \
-   title="Adobe AIR 2.6" \
-   publisher="Adobe" \
-   year="2011" \
-   media="download" \
-   file1="AdobeAIRInstaller.exe" \
-   installed_file1="$W_COMMONFILES_X86_WIN/Adobe AIR/Versions/1.0/Adobe AIR.dll" \
-   homepage="http://www.adobe.com/products/air/"
+    title="Adobe AIR 2.6" \
+    publisher="Adobe" \
+    year="2011" \
+    media="download" \
+    file1="AdobeAIRInstaller.exe" \
+    installed_file1="$W_COMMONFILES_X86_WIN/Adobe AIR/Versions/1.0/Adobe AIR.dll" \
+    homepage="http://www.adobe.com/products/air/"
 
 load_adobeair()
 {
@@ -3363,12 +3363,12 @@ load_adobeair()
 #----------------------------------------------------------------
 
 w_metadata amstream dlls \
-   title="MS amstream.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/amstream.dll"
+    title="MS amstream.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/amstream.dll"
 
 load_amstream()
 {
@@ -3384,13 +3384,13 @@ load_amstream()
 
 #----------------------------------------------------------------
 
-w_metadata  art2kmin dlls \
-   title="MS Access 2007 runtime" \
-   publisher="Microsoft" \
-   year="2007" \
-   media="download" \
-   file1="AccessRuntime.exe" \
-   installed_file1="$W_COMMONFILES_X86_WIN/Microsoft Shared/OFFICE12/ACEES.DLL"
+w_metadata art2kmin dlls \
+    title="MS Access 2007 runtime" \
+    publisher="Microsoft" \
+    year="2007" \
+    media="download" \
+    file1="AccessRuntime.exe" \
+    installed_file1="$W_COMMONFILES_X86_WIN/Microsoft Shared/OFFICE12/ACEES.DLL"
 
 load_art2kmin()
 {
@@ -3402,13 +3402,13 @@ load_art2kmin()
 
 #----------------------------------------------------------------
 
-w_metadata  atmlib dlls \
-   title="Adobe Type Manager" \
-   publisher="Adobe" \
-   year="2009" \
-   media="download" \
-   file1="W2KSP4_EN.EXE" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/atmlib.dll"
+w_metadata atmlib dlls \
+    title="Adobe Type Manager" \
+    publisher="Adobe" \
+    year="2009" \
+    media="download" \
+    file1="W2KSP4_EN.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/atmlib.dll"
 
 load_atmlib()
 {
@@ -3423,13 +3423,13 @@ load_atmlib()
 
 #----------------------------------------------------------------
 
-w_metadata  comctl32 dlls \
-   title="MS common controls 5.80" \
-   publisher="Microsoft" \
-   year="2001" \
-   media="download" \
-   file1="cc32inst.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/comctl32.dll"
+w_metadata comctl32 dlls \
+    title="MS common controls 5.80" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="cc32inst.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/comctl32.dll"
 
 load_comctl32()
 {
@@ -3451,13 +3451,13 @@ load_comctl32()
 
 #----------------------------------------------------------------
 
-w_metadata  comdlg32ocx dlls \
-   title="Common Dialog ActiveX Control for VB6" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="comdlg32.cab" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/comdlg32.ocx"
+w_metadata comdlg32ocx dlls \
+    title="Common Dialog ActiveX Control for VB6" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="comdlg32.cab" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/comdlg32.ocx"
 
 load_comdlg32ocx()
 {
@@ -3470,13 +3470,13 @@ load_comdlg32ocx()
 
 #----------------------------------------------------------------
 
-w_metadata  crypt32 dlls \
-   title="MS crypt32" \
-   publisher="Microsoft" \
-   year="2003" \
-   media="download" \
-   file1="Q823182_XPE_SP2_X86_ENU.EXE" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/crypt32.dll"
+w_metadata crypt32 dlls \
+    title="MS crypt32" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="Q823182_XPE_SP2_X86_ENU.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/crypt32.dll"
 
 load_crypt32()
 {
@@ -3492,13 +3492,13 @@ load_crypt32()
 #----------------------------------------------------------------
 
 w_metadata d3dcompiler_43 dlls \
-   title="MS d3dcompiler_43.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_Jun2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dcompiler_43.dll" \
-   wine_showstoppers="24013"   # list a showstopper to hide this from average users for now
+    title="MS d3dcompiler_43.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dcompiler_43.dll" \
+    wine_showstoppers="24013"   # list a showstopper to hide this from average users for now
 
 load_d3dcompiler_43()
 {
@@ -3518,12 +3518,12 @@ load_d3dcompiler_43()
 #----------------------------------------------------------------
 
 w_metadata d3dx9 dlls \
-   title="MS d3dx9_??.dll from DirectX 9 redistributable" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_24.dll"
+    title="MS d3dx9_??.dll from DirectX 9 redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_24.dll"
 
 load_d3dx9()
 {
@@ -3545,12 +3545,12 @@ load_d3dx9()
 #----------------------------------------------------------------
 
 w_metadata d3dx9_26 dlls \
-   title="MS d3dx9_26.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_26.dll"
+    title="MS d3dx9_26.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_26.dll"
 
 load_d3dx9_26()
 {
@@ -3560,12 +3560,12 @@ load_d3dx9_26()
 #----------------------------------------------------------------
 
 w_metadata d3dx9_28 dlls \
-   title="MS d3dx9_28.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_28.dll"
+    title="MS d3dx9_28.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_28.dll"
 
 load_d3dx9_28()
 {
@@ -3575,12 +3575,12 @@ load_d3dx9_28()
 #----------------------------------------------------------------
 
 w_metadata d3dx9_31 dlls \
-   title="MS d3dx9_31.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_31.dll"
+    title="MS d3dx9_31.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_31.dll"
 
 load_d3dx9_31()
 {
@@ -3590,12 +3590,12 @@ load_d3dx9_31()
 #----------------------------------------------------------------
 
 w_metadata d3dx9_35 dlls \
-   title="MS d3dx9_35.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_35.dll"
+    title="MS d3dx9_35.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_35.dll"
 
 load_d3dx9_35()
 {
@@ -3605,12 +3605,12 @@ load_d3dx9_35()
 #----------------------------------------------------------------
 
 w_metadata d3dx9_36 dlls \
-   title="MS d3dx9_36.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_36.dll"
+    title="MS d3dx9_36.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_36.dll"
 
 load_d3dx9_36()
 {
@@ -3620,12 +3620,12 @@ load_d3dx9_36()
 #----------------------------------------------------------------
 
 w_metadata d3dx9_42 dlls \
-   title="MS d3dx9_42.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_42.dll"
+    title="MS d3dx9_42.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_42.dll"
 
 load_d3dx9_42()
 {
@@ -3635,12 +3635,12 @@ load_d3dx9_42()
 #----------------------------------------------------------------
 
 w_metadata d3dx9_43 dlls \
-   title="MS d3dx9_43.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_Jun2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_43.dll"
+    title="MS d3dx9_43.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_43.dll"
 
 load_d3dx9_43()
 {
@@ -3660,12 +3660,12 @@ load_d3dx9_43()
 #----------------------------------------------------------------
 
 w_metadata d3dx11_42 dlls \
-   title="MS d3dx11_42.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_Jun2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx11_42.dll"
+    title="MS d3dx11_42.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx11_42.dll"
 
 load_d3dx11_42()
 {
@@ -3685,12 +3685,12 @@ load_d3dx11_42()
 #----------------------------------------------------------------
 
 w_metadata d3dx11_43 dlls \
-   title="MS d3dx11_43.dll" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_Jun2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx11_43.dll"
+    title="MS d3dx11_43.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx11_43.dll"
 
 load_d3dx11_43()
 {
@@ -3710,12 +3710,12 @@ load_d3dx11_43()
 #----------------------------------------------------------------
 
 w_metadata d3dx10 dlls \
-   title="MS d3dx10_??.dll from DirectX user redistributable" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx10_33.dll"
+    title="MS d3dx10_??.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx10_33.dll"
 
 load_d3dx10()
 {
@@ -3736,12 +3736,12 @@ load_d3dx10()
 #----------------------------------------------------------------
 
 w_metadata d3dxof dlls \
-   title="MS d3dxof.dll from DirectX user redistributable" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dxof.dll"
+    title="MS d3dxof.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dxof.dll"
 
 load_d3dxof()
 {
@@ -3756,12 +3756,12 @@ load_d3dxof()
 #----------------------------------------------------------------
 
 w_metadata devenum dlls \
-   title="MS devenum.dll from DirectX user redistributable" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/devenum.dll"
+    title="MS devenum.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/devenum.dll"
 
 load_devenum()
 {
@@ -3776,12 +3776,12 @@ load_devenum()
 #----------------------------------------------------------------
 
 w_metadata dinput dlls \
-   title="MS dinput.dll; breaks mouse, use only on Rayman 2 etc." \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/dinput.dll"
+    title="MS dinput.dll; breaks mouse, use only on Rayman 2 etc." \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dinput.dll"
 
 load_dinput()
 {
@@ -3796,12 +3796,12 @@ load_dinput()
 #----------------------------------------------------------------
 
 w_metadata dinput8 dlls \
-   title="MS DirectInput 8 from DirectX user redistributable" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/dinput8.dll"
+    title="MS DirectInput 8 from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dinput8.dll"
 
 load_dinput8()
 {
@@ -3816,12 +3816,12 @@ load_dinput8()
 #----------------------------------------------------------------
 
 w_metadata directmusic dlls \
-   title="MS DirectMusic from DirectX user redistributable" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/dmusic.dll"
+    title="MS DirectMusic from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmusic.dll"
 
 load_directmusic()
 {
@@ -3861,12 +3861,12 @@ load_directmusic()
 #----------------------------------------------------------------
 
 w_metadata directplay dlls \
-   title="MS DirectPlay from DirectX user redistributable" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/dplayx.dll"
+    title="MS DirectPlay from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dplayx.dll"
 
 load_directplay()
 {
@@ -3889,12 +3889,12 @@ load_directplay()
 #----------------------------------------------------------------
 
 w_metadata directx9 dlls \
-   title="MS DirectX 9 (Usually overkill.  Try d3dx9_36 first)" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx10_33.dll"
+    title="MS DirectX 9 (Usually overkill.  Try d3dx9_36 first)" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx10_33.dll"
 
 load_directx9()
 {
@@ -3916,7 +3916,7 @@ load_directx9()
 
     cd "$W_CACHE"/directx9
     WINEDLLOVERRIDES="wintrust=b,mscoree=,ddraw,d3d8,d3d9,dsound,dinput=n" \
-       w_try $WINE $DIRECTX_NAME /t:"$W_TMP_WIN" $W_UNATTENDED_SLASH_Q
+        w_try $WINE $DIRECTX_NAME /t:"$W_TMP_WIN" $W_UNATTENDED_SLASH_Q
 
     # How many of these do we really need?
     # We should probably remove most of these...?
@@ -3935,12 +3935,12 @@ load_directx9()
 #----------------------------------------------------------------
 
 w_metadata dmsynth dlls \
-   title="MS midi synthesizer from DirectX user redistributable" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/dmsynth.dll"
+    title="MS midi synthesizer from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmsynth.dll"
 
 load_dmsynth()
 {
@@ -3957,12 +3957,12 @@ load_dmsynth()
 #----------------------------------------------------------------
 
 w_metadata dotnet11 dlls \
-   title="MS .NET 1.1" \
-   publisher="Microsoft" \
-   year="2003" \
-   media="download" \
-   file1="dotnetfx.exe" \
-   installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/ndpsetup.ico"
+    title="MS .NET 1.1" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="dotnetfx.exe" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/ndpsetup.ico"
 
 load_dotnet11()
 {
@@ -3996,12 +3996,12 @@ load_dotnet11()
 #----------------------------------------------------------------
 
 w_metadata dotnet11sp1 dlls \
-   title="MS .NET 1.1 SP1" \
-   publisher="Microsoft" \
-   year="2004" \
-   media="download" \
-   file1="NDP1.1sp1-KB867460-X86.exe" \
-   installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/security.config"
+    title="MS .NET 1.1 SP1" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="NDP1.1sp1-KB867460-X86.exe" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/security.config"
 
 load_dotnet11sp1()
 {
@@ -4019,12 +4019,12 @@ load_dotnet11sp1()
 #----------------------------------------------------------------
 
 w_metadata dotnet20 dlls \
-   title="MS .NET 2.0" \
-   publisher="Microsoft" \
-   year="2006" \
-   media="download" \
-   file1="dotnetfx.exe" \
-   installed_file1="c:/windows/Microsoft.NET/Framework/v2.0.50727/mscorlib.dll"
+    title="MS .NET 2.0" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="dotnetfx.exe" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/v2.0.50727/mscorlib.dll"
 
 load_dotnet20()
 {
@@ -4045,9 +4045,9 @@ load_dotnet20()
     w_download http://download.microsoft.com/download/5/6/7/567758a3-759e-473e-bf8f-52154438565a/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
     if [ "$W_UNATTENDED_SLASH_Q"x = ""x ]
     then
-       w_try $WINE "$W_CACHE"/dotnet20/dotnetfx.exe
+        w_try $WINE "$W_CACHE"/dotnet20/dotnetfx.exe
     else
-       w_try $WINE "$W_CACHE"/dotnet20/dotnetfx.exe /q /c:"install.exe /q"
+        w_try $WINE "$W_CACHE"/dotnet20/dotnetfx.exe /q /c:"install.exe /q"
     fi
     w_unset_winver
 
@@ -4063,12 +4063,12 @@ load_dotnet20()
 #----------------------------------------------------------------
 
 w_metadata dotnet20sp2 dlls \
-   title="MS .NET 2.0 SP2 (experimental)" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="NetFx20SP2_x86.exe" \
-   installed_file1="c:/windows/winsxs/manifests/x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.3053_x-ww_b80fa8ca.cat"
+    title="MS .NET 2.0 SP2 (experimental)" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="NetFx20SP2_x86.exe" \
+    installed_file1="c:/windows/winsxs/manifests/x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.3053_x-ww_b80fa8ca.cat"
 
 load_dotnet20sp2()
 {
@@ -4101,12 +4101,12 @@ load_dotnet20sp2()
 #----------------------------------------------------------------
 
 w_metadata dotnet30 dlls \
-   title="MS .NET 3.0" \
-   publisher="Microsoft" \
-   year="2006" \
-   media="download" \
-   file1="dotnetfx3.exe" \
-   installed_file1="c:/windows/Microsoft.NET/Framework/v3.0/Microsoft .NET Framework 3.0/logo.bmp"
+    title="MS .NET 3.0" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="dotnetfx3.exe" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/v3.0/Microsoft .NET Framework 3.0/logo.bmp"
 
 load_dotnet30()
 {
@@ -4131,7 +4131,7 @@ load_dotnet30()
     for lang in ar cs da de el es fi fr he it jp ko nb nl pl pt-BR pt-PT ru \
                 sv tr zh-CHS zh-CHT
     do
-       ln -sf "${W_SYSTEM32_DLLS}/spupdsvc.exe" "${LANGPACKS_BASE_PATH}/dotnetfx3langpack${lang}.exe"
+        ln -sf "${W_SYSTEM32_DLLS}/spupdsvc.exe" "${LANGPACKS_BASE_PATH}/dotnetfx3langpack${lang}.exe"
     done
 
     w_set_winver winxp
@@ -4148,12 +4148,12 @@ load_dotnet30()
 #----------------------------------------------------------------
 
 w_metadata dotnet35 dlls \
-   title="MS .NET 3.5" \
-   publisher="Microsoft" \
-   year="2007" \
-   media="download" \
-   file1="dotnetfx35.exe" \
-   installed_file1="c:/windows/Microsoft.NET/Framework/v3.5/MSBuild.exe"
+    title="MS .NET 3.5" \
+    publisher="Microsoft" \
+    year="2007" \
+    media="download" \
+    file1="dotnetfx35.exe" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/v3.5/MSBuild.exe"
 
 load_dotnet35()
 {
@@ -4196,12 +4196,12 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata dxdiagn dlls \
-   title="DirectX Diagnostic Library" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/dxdiagn.dll"
+    title="DirectX Diagnostic Library" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dxdiagn.dll"
 
 load_dxdiagn()
 {
@@ -4215,12 +4215,12 @@ load_dxdiagn()
 #----------------------------------------------------------------
 
 w_metadata dsound dlls \
-   title="MS DirectSound from DirectX user redistributable" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/dsound.dll"
+    title="MS DirectSound from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dsound.dll"
 
 load_dsound()
 {
@@ -4238,15 +4238,15 @@ load_dsound()
 
 # FIXME: update winetricks_is_installed to look at installed_file2
 w_metadata flash dlls \
-   title="Flash Player 10" \
-   publisher="Adobe" \
-   year="2011" \
-   media="download" \
-   file1="install_flash_player.exe" \
-   file2="install_flash_player_ax.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10q_Plugin.exe" \
-   installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10q_ActiveX.exe" \
-   homepage="http://www.adobe.com/products/flashplayer/"
+    title="Flash Player 10" \
+    publisher="Adobe" \
+    year="2011" \
+    media="download" \
+    file1="install_flash_player.exe" \
+    file2="install_flash_player_ax.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10q_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10q_ActiveX.exe" \
+    homepage="http://www.adobe.com/products/flashplayer/"
 
 load_flash()
 {
@@ -4281,12 +4281,12 @@ load_flash()
 #----------------------------------------------------------------
 
 w_metadata gdiplus dlls \
-   title="MS GDI+" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="WindowsXP-KB975337-x86-ENU.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/gdiplus.dll"
+    title="MS GDI+" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="WindowsXP-KB975337-x86-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/gdiplus.dll"
 
 load_gdiplus()
 {
@@ -4311,8 +4311,8 @@ load_gdiplus()
 #----------------------------------------------------------------
 
 w_metadata gecko dlls \
-   title="Gecko (usually installed by distro)" \
-   publisher="WineHQ/Mozilla"
+    title="Gecko (usually installed by distro)" \
+    publisher="WineHQ/Mozilla"
 
 load_gecko()
 {
@@ -4327,12 +4327,12 @@ load_gecko()
 #----------------------------------------------------------------
 
 w_metadata gecko110 dlls \
-   title="Gecko 1.1.0 (not normally needed)" \
-   publisher="WineHQ/Mozilla" \
-   year="2010" \
-   media="download" \
-   file1="wine_gecko-1.1.0-x86.cab" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/gecko/1.1.0/wine_gecko/nspr4.dll"
+    title="Gecko 1.1.0 (not normally needed)" \
+    publisher="WineHQ/Mozilla" \
+    year="2010" \
+    media="download" \
+    file1="wine_gecko-1.1.0-x86.cab" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/gecko/1.1.0/wine_gecko/nspr4.dll"
 
 load_gecko110()
 {
@@ -4365,12 +4365,12 @@ _EOF_
 }
 
 w_metadata gecko120 dlls \
-   title="Gecko 1.2.0 (not normally needed)" \
-   publisher="WineHQ/Mozilla" \
-   year="2011" \
-   media="download" \
-   file1="wine_gecko-1.2.0-x86.msi" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/gecko/1.2.0/wine_gecko/nspr4.dll"
+    title="Gecko 1.2.0 (not normally needed)" \
+    publisher="WineHQ/Mozilla" \
+    year="2011" \
+    media="download" \
+    file1="wine_gecko-1.2.0-x86.msi" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/gecko/1.2.0/wine_gecko/nspr4.dll"
 
 load_gecko120()
 {
@@ -4391,13 +4391,13 @@ load_gecko120()
 
 #----------------------------------------------------------------
 
-w_metadata  gfw dlls \
-   title="MS Games For Windows Live (xlive.dll)" \
-   publisher="Microsoft" \
-   year="2008" \
-   media="download" \
-   file1="gfwlivesetupmin.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/xlive.dll"
+w_metadata gfw dlls \
+    title="MS Games For Windows Live (xlive.dll)" \
+    publisher="Microsoft" \
+    year="2008" \
+    media="download" \
+    file1="gfwlivesetupmin.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/xlive.dll"
 
 load_gfw()
 {
@@ -4414,13 +4414,13 @@ load_gfw()
 
 #----------------------------------------------------------------
 
-w_metadata  glut dlls \
-   title="The glut utility library for OpenGL" \
-   publisher="Mark J. Kilgard" \
-   year="2001" \
-   media="download" \
-   file1="glut-3.7.6-bin.zip" \
-   installed_file1="c:/glut-3.7.6-bin/glut32.lib"
+w_metadata glut dlls \
+    title="The glut utility library for OpenGL" \
+    publisher="Mark J. Kilgard" \
+    year="2001" \
+    media="download" \
+    file1="glut-3.7.6-bin.zip" \
+    installed_file1="c:/glut-3.7.6-bin/glut32.lib"
 
 load_glut()
 {
@@ -4434,10 +4434,10 @@ load_glut()
 # um, codecs are kind of clustered here.  They probably deserve their own real category.
 
 w_metadata allcodecs dlls \
-   title="All codecs (dirac, ffdshow, icodecs, l3codecx, xvid) except wmp" \
-   publisher="various" \
-   year="1998-2009" \
-   media="download"
+    title="All codecs (dirac, ffdshow, icodecs, l3codecx, xvid) except wmp" \
+    publisher="various" \
+    year="1998-2009" \
+    media="download"
 
 load_allcodecs()
 {
@@ -4451,12 +4451,12 @@ load_allcodecs()
 #----------------------------------------------------------------
 
 w_metadata dirac dlls \
-   title="The Dirac directshow filter v1.0.2" \
-   publisher="Dirac" \
-   year="2009" \
-   media="download" \
-   file1="DiracDirectShowFilter-1.0.2.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Dirac/DiracDecoder.dll"
+    title="The Dirac directshow filter v1.0.2" \
+    publisher="Dirac" \
+    year="2009" \
+    media="download" \
+    file1="DiracDirectShowFilter-1.0.2.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Dirac/DiracDecoder.dll"
 
 load_dirac()
 {
@@ -4490,13 +4490,13 @@ load_dirac()
 #----------------------------------------------------------------
 
 w_metadata ffdshow dlls \
-   title="ffdshow video codecs" \
-   publisher="doom9 folks" \
-   year="2010" \
-   media="download" \
-   file1="ffdshow_beta7_rev3154_20091209.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/ffdshow/ff_liba52.dll" \
-   homepage="http://ffdshow-tryout.sourceforge.net"
+    title="ffdshow video codecs" \
+    publisher="doom9 folks" \
+    year="2010" \
+    media="download" \
+    file1="ffdshow_beta7_rev3154_20091209.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/ffdshow/ff_liba52.dll" \
+    homepage="http://ffdshow-tryout.sourceforge.net"
 
 load_ffdshow()
 {
@@ -4508,12 +4508,12 @@ load_ffdshow()
 #----------------------------------------------------------------
 
 w_metadata icodecs dlls \
-   title="Indeo codecs" \
-   publisher="Intel" \
-   year="1998" \
-   media="download" \
-   file1="codinstl.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/ir50_32.dll"
+    title="Indeo codecs" \
+    publisher="Intel" \
+    year="1998" \
+    media="download" \
+    file1="codinstl.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/ir50_32.dll"
 
 load_icodecs()
 {
@@ -4552,12 +4552,12 @@ load_icodecs()
 #----------------------------------------------------------------
 
 w_metadata jet40 dlls \
-   title="MS Jet 4.0 Service Pack 8" \
-   publisher="Microsoft" \
-   year="2003" \
-   media="download" \
-   file1="jet40sp8_9xnt.exe" \
-   installed_file1="$W_COMMONFILES_X86_WIN/Microsoft shared/dao/dao360.dll"
+    title="MS Jet 4.0 Service Pack 8" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="jet40sp8_9xnt.exe" \
+    installed_file1="$W_COMMONFILES_X86_WIN/Microsoft shared/dao/dao360.dll"
 
 load_jet40()
 {
@@ -4615,12 +4615,12 @@ load_kindle()
 #----------------------------------------------------------------
 
 w_metadata l3codecx dlls \
-   title="MPEG Layer-3 Audio Codec for Microsoft DirectShow" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/l3codecx.ax"
+    title="MPEG Layer-3 Audio Codec for Microsoft DirectShow" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/l3codecx.ax"
 
 load_l3codecx()
 {
@@ -4638,13 +4638,13 @@ load_l3codecx()
 # $W_PROGRAMS_X86_WIN/Gemeinsame Dateien/System/ADO/msado26.tlb
 # in German... need a variable W_COMMONFILES or something like that
 
-w_metadata  mdac27 dlls \
-   title="Microsoft Data Access Components 2.7 sp1" \
-   publisher="Microsoft" \
-   year="2006" \
-   media="download" \
-   file1="mdac_typ.exe" \
-   installed_file1="$W_COMMONFILES_X86_WIN/System/ADO/msado26.tlb"
+w_metadata mdac27 dlls \
+    title="Microsoft Data Access Components 2.7 sp1" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="mdac_typ.exe" \
+    installed_file1="$W_COMMONFILES_X86_WIN/System/ADO/msado26.tlb"
 
 load_mdac27()
 {
@@ -4658,13 +4658,13 @@ load_mdac27()
 
 #----------------------------------------------------------------
 
-w_metadata  mdac28 dlls \
-   title="Microsoft Data Access Components 2.8 sp1" \
-   publisher="Microsoft" \
-   year="2005" \
-   media="download" \
-   file1="MDAC_TYP.EXE" \
-   installed_file1="$W_COMMONFILES_X86_WIN/System/ADO/msado27.tlb"
+w_metadata mdac28 dlls \
+    title="Microsoft Data Access Components 2.8 sp1" \
+    publisher="Microsoft" \
+    year="2005" \
+    media="download" \
+    file1="MDAC_TYP.EXE" \
+    installed_file1="$W_COMMONFILES_X86_WIN/System/ADO/msado27.tlb"
 
 load_mdac28()
 {
@@ -4684,13 +4684,13 @@ load_mdac28()
 
 #----------------------------------------------------------------
 
-w_metadata  mfc40 dlls \
-   title="MS mfc40 (Microsoft Foundation Classes from Visual C++ 4.0)" \
-   publisher="Microsoft" \
-   year="2004" \
-   media="download" \
-   file1="ole2v.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/MFC40.DLL"
+w_metadata mfc40 dlls \
+    title="MS mfc40 (Microsoft Foundation Classes from Visual C++ 4.0)" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="ole2v.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/MFC40.DLL"
 
 load_mfc40()
 {
@@ -4703,12 +4703,12 @@ load_mfc40()
 #----------------------------------------------------------------
 
 w_metadata mono26 dlls \
-   title="Mono 2.6 (.NET compatability)" \
-   publisher="Novell" \
-   year="2009" \
-   media="download" \
-   file1="mono-2.6.7-gtksharp-2.12.10-win32-2.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.6.7/bin/mono.dll"
+    title="Mono 2.6 (.NET compatability)" \
+    publisher="Novell" \
+    year="2009" \
+    media="download" \
+    file1="mono-2.6.7-gtksharp-2.12.10-win32-2.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.6.7/bin/mono.dll"
 
 load_mono26()
 {
@@ -4720,12 +4720,12 @@ load_mono26()
 #----------------------------------------------------------------
 
 w_metadata mono28 dlls \
-   title="Mono 2.8 (.NET compatability)" \
-   publisher="Novell" \
-   year="2010" \
-   media="download" \
-   file1="mono-2.8.2-gtksharp-2.12.10-win32-1.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.8.2/bin/mono-2.0.dll"
+    title="Mono 2.8 (.NET compatability)" \
+    publisher="Novell" \
+    year="2010" \
+    media="download" \
+    file1="mono-2.8.2-gtksharp-2.12.10-win32-1.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.8.2/bin/mono-2.0.dll"
 
 load_mono28()
 {
@@ -4737,12 +4737,12 @@ load_mono28()
 #----------------------------------------------------------------
 
 w_metadata mono210 dlls \
-   title="Mono 2.10 (.NET compatability)" \
-   publisher="Novell" \
-   year="2011" \
-   media="download" \
-   file1="mono-2.10.2-gtksharp-2.12.10-win32-5.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.10.2/bin/mono-2.0.dll"
+    title="Mono 2.10 (.NET compatability)" \
+    publisher="Novell" \
+    year="2011" \
+    media="download" \
+    file1="mono-2.10.2-gtksharp-2.12.10-win32-5.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.10.2/bin/mono-2.0.dll"
 
 load_mono210()
 {
@@ -4772,12 +4772,12 @@ load_mozillabuild()
 #----------------------------------------------------------------
 
 w_metadata msasn1 dlls \
-   title="MS ASN1" \
-   publisher="Microsoft" \
-   year="2003" \
-   media="download" \
-   file1="W2KSP4_EN.EXE" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msasn1.dll"
+    title="MS ASN1" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="W2KSP4_EN.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msasn1.dll"
 
 load_msasn1()
 {
@@ -4794,12 +4794,12 @@ load_msasn1()
 #----------------------------------------------------------------
 
 w_metadata msflxgrd dlls \
-   title="MS FlexGrid Control (msflxgrd.ocx)" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="msflxgrd.cab" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/MSFlxGrd.Ocx"
+    title="MS FlexGrid Control (msflxgrd.ocx)" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="msflxgrd.cab" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/MSFlxGrd.Ocx"
 
 load_msflxgrd()
 {
@@ -4815,12 +4815,12 @@ load_msflxgrd()
 #----------------------------------------------------------------
 
 w_metadata mshflxgd dlls \
-   title="MS Hierarchical FlexGrid Control (mshflxgd.ocx)" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="MSHFLXGD.CAB" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/mshflxgd.ocx"
+    title="MS Hierarchical FlexGrid Control (mshflxgd.ocx)" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="MSHFLXGD.CAB" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mshflxgd.ocx"
 
 load_mshflxgd()
 {
@@ -4838,12 +4838,12 @@ load_mshflxgd()
 #----------------------------------------------------------------
 
 w_metadata msi2 dlls \
-   title="Windows Installer 2.0" \
-   publisher="Microsoft" \
-   year="2001" \
-   media="download" \
-   file1="InstMsiA.exe" \
-   installed_exe1="$W_SYSTEM32_DLLS_WIN/msiexec.exe"
+    title="Windows Installer 2.0" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="InstMsiA.exe" \
+    installed_exe1="$W_SYSTEM32_DLLS_WIN/msiexec.exe"
 
 load_msi2()
 {
@@ -4876,12 +4876,12 @@ load_msi2()
 #----------------------------------------------------------------
 
 w_metadata msscript dlls \
-   title="MS Windows Script Control" \
-   publisher="Microsoft" \
-   year="2004" \
-   media="download" \
-   file1="sct10en.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msscript.ocx"
+    title="MS Windows Script Control" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="sct10en.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msscript.ocx"
 
 load_msscript()
 {
@@ -4896,12 +4896,12 @@ load_msscript()
 #----------------------------------------------------------------
 
 w_metadata msls31 dlls \
-   title="MS Line Services" \
-   publisher="Microsoft" \
-   year="2001" \
-   media="download" \
-   file1="../msi2/InstMsiA.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msls31.dll"
+    title="MS Line Services" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="../msi2/InstMsiA.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msls31.dll"
 
 load_msls31()
 {
@@ -4936,12 +4936,12 @@ load_msmask()
 #----------------------------------------------------------------
 
 w_metadata msxml3 dlls \
-   title="MS XML Core Services 3.0" \
-   publisher="Microsoft" \
-   year="2005" \
-   media="manual_download" \
-   file1="msxml3.msi" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msxml3.dll"
+    title="MS XML Core Services 3.0" \
+    publisher="Microsoft" \
+    year="2005" \
+    media="manual_download" \
+    file1="msxml3.msi" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msxml3.dll"
 
 load_msxml3()
 {
@@ -4962,12 +4962,12 @@ load_msxml3()
 #----------------------------------------------------------------
 
 w_metadata msxml4 dlls \
-   title="MS XML Core Services 4.0" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="msxml.msi" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msxml4.dll"
+    title="MS XML Core Services 4.0" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="msxml.msi" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msxml4.dll"
 
 load_msxml4()
 {
@@ -4985,12 +4985,12 @@ load_msxml4()
 #----------------------------------------------------------------
 
 w_metadata msxml6 dlls \
-   title="MS XML Core Services 6.0 sp1" \
-   publisher="Microsoft" \
-   year="2007" \
-   media="download" \
-   file1="msxml6_x86.msi" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msxml6.dll"
+    title="MS XML Core Services 6.0 sp1" \
+    publisher="Microsoft" \
+    year="2007" \
+    media="download" \
+    file1="msxml6_x86.msi" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msxml6.dll"
 
 load_msxml6()
 {
@@ -5005,13 +5005,13 @@ load_msxml6()
 #----------------------------------------------------------------
 
 w_metadata ogg dlls \
-   title="OpenCodecs 0.84: flac, speex, theora, vorbis, WebM" \
-   publisher="xiph.org" \
-   year="2010" \
-   media="download" \
-   file1="opencodecs_0.84.17338.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Xiph.Org/Open Codecs/AxPlayer.dll" \
-   homepage="http://xiph.org/dshow"
+    title="OpenCodecs 0.84: flac, speex, theora, vorbis, WebM" \
+    publisher="xiph.org" \
+    year="2010" \
+    media="download" \
+    file1="opencodecs_0.84.17338.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Xiph.Org/Open Codecs/AxPlayer.dll" \
+    homepage="http://xiph.org/dshow"
 
 load_ogg()
 {
@@ -5079,12 +5079,12 @@ load_pdh()
 #----------------------------------------------------------------
 
 w_metadata physx dlls \
-   title="PhysX" \
-   publisher="NVidia" \
-   year="2010" \
-   media="download" \
-   file1="PhysX_9.10.0129_SystemSoftware.exe" \
-   installed_file1="$W_PROGRAMS_WIN/NVIDIA Corporation/PhysX/Engine/v2.8.3/PhysXCore.dll"
+    title="PhysX" \
+    publisher="NVidia" \
+    year="2010" \
+    media="download" \
+    file1="PhysX_9.10.0129_SystemSoftware.exe" \
+    installed_file1="$W_PROGRAMS_WIN/NVIDIA Corporation/PhysX/Engine/v2.8.3/PhysXCore.dll"
 
 load_physx()
 {
@@ -5099,12 +5099,12 @@ load_physx()
 #----------------------------------------------------------------
 
 w_metadata pngfilt dlls \
-   title="pngfilt.dll (from ie6)" \
-   publisher="Microsoft" \
-   year="2002" \
-   media="download" \
-   file1="q328970.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/pngfilt.dll"
+    title="pngfilt.dll (from ie6)" \
+    publisher="Microsoft" \
+    year="2002" \
+    media="download" \
+    file1="q328970.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/pngfilt.dll"
 
 load_pngfilt()
 {
@@ -5117,12 +5117,12 @@ load_pngfilt()
 #----------------------------------------------------------------
 
 w_metadata quartz dlls \
-   title="quartz.dll (from Directx 9 user redistributable)" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/quartz.dll"
+    title="quartz.dll (from Directx 9 user redistributable)" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/quartz.dll"
 
 load_quartz()
 {
@@ -5139,12 +5139,12 @@ load_quartz()
 #----------------------------------------------------------------
 
 w_metadata quicktime72 dlls \
-   title="Apple Quicktime 7.2" \
-   publisher="Apple" \
-   year="2010" \
-   media="download" \
-   file1="quicktimeplayer72.exe" \
-   installed_file1="c:/windows/Installer/{95A890AA-B3B1-44B6-9C18-A8F7AB3EE7FC}/QTPlayer.ico"
+    title="Apple Quicktime 7.2" \
+    publisher="Apple" \
+    year="2010" \
+    media="download" \
+    file1="quicktimeplayer72.exe" \
+    installed_file1="c:/windows/Installer/{95A890AA-B3B1-44B6-9C18-A8F7AB3EE7FC}/QTPlayer.ico"
 
 load_quicktime72()
 {
@@ -5155,7 +5155,7 @@ load_quicktime72()
     unset QUICKTIME_QUIET
     if test "$W_UNATTENDED_SLASH_Q" != ""
     then
-       QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
+        QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
     fi
 
     if w_workaround_wine_bug 9366 ""  1.1.22,
@@ -5195,12 +5195,12 @@ load_quicktime72()
 #----------------------------------------------------------------
 
 w_metadata quicktime76 dlls \
-   title="Apple Quicktime 7.6" \
-   publisher="Apple" \
-   year="2010" \
-   media="download" \
-   file1="QuickTimeInstaller.exe" \
-   installed_file1="c:/windows/Installer/{57752979-A1C9-4C02-856B-FBB27AC4E02C}/QTPlayer.ico"
+    title="Apple Quicktime 7.6" \
+    publisher="Apple" \
+    year="2010" \
+    media="download" \
+    file1="QuickTimeInstaller.exe" \
+    installed_file1="c:/windows/Installer/{57752979-A1C9-4C02-856B-FBB27AC4E02C}/QTPlayer.ico"
 
 load_quicktime76()
 {
@@ -5210,7 +5210,7 @@ load_quicktime76()
     unset QUICKTIME_QUIET
     if test "$W_UNATTENDED_SLASH_Q"
     then
-       QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
+        QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
     fi
 
     if w_workaround_wine_bug 9366 ""  1.1.22,
@@ -5249,12 +5249,12 @@ load_quicktime76()
 #----------------------------------------------------------------
 
 w_metadata riched20 dlls \
-   title="MS RichEdit Control version 2.0 (riched20.dll, riched32.dll)" \
-   publisher="Microsoft" \
-   year="1999" \
-   media="download" \
-   file1="Q249973i.EXE" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/riched20.dll"
+    title="MS RichEdit Control version 2.0 (riched20.dll, riched32.dll)" \
+    publisher="Microsoft" \
+    year="1999" \
+    media="download" \
+    file1="Q249973i.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/riched20.dll"
 
 load_riched20()
 {
@@ -5271,13 +5271,13 @@ load_riched20()
 # We may need a better way to distinguish between installed files.
 
 w_metadata riched30 dlls \
-   title="MS RichEdit Control version 3.0 (riched20.dll, msls31.dll)" \
-   publisher="Microsoft" \
-   year="2001" \
-   media="download" \
-   file1="InstMsiA.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/riched20.dll" \
-   installed_file2="$W_SYSTEM32_DLLS_WIN/msls31.dll"
+    title="MS RichEdit Control version 3.0 (riched20.dll, msls31.dll)" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="InstMsiA.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/riched20.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/msls31.dll"
 
 load_riched30()
 {
@@ -5297,12 +5297,12 @@ load_riched30()
 #----------------------------------------------------------------
 
 w_metadata richtx32 dlls \
-   title="MS Rich TextBox Control 6.0" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="richtx32.cab" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/RichTx32.Ocx"
+    title="MS Rich TextBox Control 6.0" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="richtx32.cab" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/RichTx32.Ocx"
 
 load_richtx32()
 {
@@ -5314,12 +5314,12 @@ load_richtx32()
 #----------------------------------------------------------------
 
 w_metadata secur32 dlls \
-   title="MS Security Support Provider Interface" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="Windows2000-KB959426-x86-ENU.EXE" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/secur32.dll"
+    title="MS Security Support Provider Interface" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="Windows2000-KB959426-x86-ENU.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/secur32.dll"
 
 load_secur32()
 {
@@ -5332,12 +5332,12 @@ load_secur32()
 #----------------------------------------------------------------
 
 w_metadata shockwave dlls \
-   title="Shockwave" \
-   publisher="Adobe" \
-   year="2010" \
-   media="download" \
-   file1="sw_lic_full_installer.msi" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/Adobe/Shockwave 11/shockwave_Projector_Loader.dcr"
+    title="Shockwave" \
+    publisher="Adobe" \
+    year="2010" \
+    media="download" \
+    file1="sw_lic_full_installer.msi" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Adobe/Shockwave 11/shockwave_Projector_Loader.dcr"
 
 load_shockwave() {
     # Not silent enough, use msi instead
@@ -5359,13 +5359,13 @@ load_shockwave() {
 
 #----------------------------------------------------------------
 
-w_metadata  usp10 dlls \
-   title="Uniscribe 1.325 " \
-   publisher="Microsoft" \
-   year="2001" \
-   media="download" \
-   file1="../msi2/InstMsiA.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/usp10.dll"
+w_metadata usp10 dlls \
+    title="Uniscribe 1.325 " \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="../msi2/InstMsiA.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/usp10.dll"
 
 load_usp10()
 {
@@ -5379,13 +5379,13 @@ load_usp10()
 
 #----------------------------------------------------------------
 
-w_metadata  vb2run dlls \
-   title="MS Visual Basic 2 runtime" \
-   publisher="Microsoft" \
-   year="1993" \
-   media="download" \
-   file1="VBRUN200.EXE" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/VBRUN200.DLL"
+w_metadata vb2run dlls \
+    title="MS Visual Basic 2 runtime" \
+    publisher="Microsoft" \
+    year="1993" \
+    media="download" \
+    file1="VBRUN200.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/VBRUN200.DLL"
 
 load_vb2run()
 {
@@ -5398,13 +5398,13 @@ load_vb2run()
 
 #----------------------------------------------------------------
 
-w_metadata  vb3run dlls \
-   title="MS Visual Basic 3 runtime" \
-   publisher="Microsoft" \
-   year="1998" \
-   media="download" \
-   file1="vb3run.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/Vbrun300.dll"
+w_metadata vb3run dlls \
+    title="MS Visual Basic 3 runtime" \
+    publisher="Microsoft" \
+    year="1998" \
+    media="download" \
+    file1="vb3run.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Vbrun300.dll"
 
 load_vb3run()
 {
@@ -5416,13 +5416,13 @@ load_vb3run()
 
 #----------------------------------------------------------------
 
-w_metadata  vb4run dlls \
-   title="MS Visual Basic 4 runtime" \
-   publisher="Microsoft" \
-   year="1998" \
-   media="download" \
-   file1="vb4run.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/Vb40032.dll"
+w_metadata vb4run dlls \
+    title="MS Visual Basic 4 runtime" \
+    publisher="Microsoft" \
+    year="1998" \
+    media="download" \
+    file1="vb4run.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Vb40032.dll"
 
 load_vb4run()
 {
@@ -5435,13 +5435,13 @@ load_vb4run()
 
 #----------------------------------------------------------------
 
-w_metadata  vb5run dlls \
-   title="MS Visual Basic 5 runtime" \
-   publisher="Microsoft" \
-   year="2001" \
-   media="download" \
-   file1="msvbvm50.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msvbvm50.dll"
+w_metadata vb5run dlls \
+    title="MS Visual Basic 5 runtime" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="msvbvm50.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msvbvm50.dll"
 
 load_vb5run()
 {
@@ -5452,13 +5452,13 @@ load_vb5run()
 
 #----------------------------------------------------------------
 
-w_metadata  vb6run dlls \
-   title="MS Visual Basic 6 runtime sp6" \
-   publisher="Microsoft" \
-   year="2004" \
-   media="download" \
-   file1="vbrun60sp6.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/MSVBVM60.DLL"
+w_metadata vb6run dlls \
+    title="MS Visual Basic 6 runtime sp6" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="vbrun60sp6.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/MSVBVM60.DLL"
 
 load_vb6run()
 {
@@ -5497,24 +5497,24 @@ load_vb6run()
 winetricks_vcrun6_helper() {
     if test ! -f "$W_CACHE"/vcrun6/vcredist.exe
     then
-       w_download_to vcrun6 http://download.microsoft.com/download/vc60pro/update/1/w9xnt4/en-us/vc6redistsetup_enu.exe 382c8f5a7f41189af8d4165cf441f274b7e2a457
+        w_download_to vcrun6 http://download.microsoft.com/download/vc60pro/update/1/w9xnt4/en-us/vc6redistsetup_enu.exe 382c8f5a7f41189af8d4165cf441f274b7e2a457
 
-       w_try $WINE "$W_CACHE"/vcrun6/vc6redistsetup_enu.exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
-       if test ! -f "$W_TMP"/vcredist.exe
-       then
-          w_die vcredist.exe not found
-       fi
-       mv "$W_TMP"/vcredist.exe "$W_CACHE"/vcrun6
+        w_try $WINE "$W_CACHE"/vcrun6/vc6redistsetup_enu.exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
+        if test ! -f "$W_TMP"/vcredist.exe
+        then
+            w_die vcredist.exe not found
+        fi
+        mv "$W_TMP"/vcredist.exe "$W_CACHE"/vcrun6
     fi
 }
 
-w_metadata  vcrun6 dlls \
-   title="Visual C++ 6 sp4 libraries (mfc42, msvcp60, msvcrt)" \
-   publisher="Microsoft" \
-   year="2000" \
-   media="download" \
-   file1="vc6redistsetup_enu.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msvcrt.dll"
+w_metadata vcrun6 dlls \
+    title="Visual C++ 6 sp4 libraries (mfc42, msvcp60, msvcrt)" \
+    publisher="Microsoft" \
+    year="2000" \
+    media="download" \
+    file1="vc6redistsetup_enu.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msvcrt.dll"
 
 load_vcrun6()
 {
@@ -5542,13 +5542,13 @@ load_vcrun6()
     w_override_dlls native,builtin msvcrt
 }
 
-w_metadata  mfc42 dlls \
-   title="Visual C++ 6 sp4 mfc42 library (mfc42); same as vcrun6" \
-   publisher="Microsoft" \
-   year="2000" \
-   media="download" \
-   file1="../vcrun6/vc6redistsetup_enu.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/mfc42u.dll"
+w_metadata mfc42 dlls \
+    title="Visual C++ 6 sp4 mfc42 library (mfc42); same as vcrun6" \
+    publisher="Microsoft" \
+    year="2000" \
+    media="download" \
+    file1="../vcrun6/vc6redistsetup_enu.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc42u.dll"
 
 load_mfc42()
 {
@@ -5563,13 +5563,13 @@ load_mfc42()
 # between sp4 and sp6, it would have to check size or version of a file,
 # or maybe a registry key.
 
-w_metadata  vcrun6sp6 dlls \
-   title="Visual C++ 6 sp6 libraries (with fixes in atl and mfc)" \
-   publisher="Microsoft" \
-   year="2004" \
-   media="download" \
-   file1="Vs6sp6.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msvcrt.dll"
+w_metadata vcrun6sp6 dlls \
+    title="Visual C++ 6 sp6 libraries (with fixes in atl and mfc)" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="Vs6sp6.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msvcrt.dll"
 
 load_vcrun6sp6()
 {
@@ -5605,13 +5605,13 @@ load_vcrun6sp6()
 
 #----------------------------------------------------------------
 
-w_metadata  vcrun2003 dlls \
-   title="Visual C++ 2003 libraries (mfc71,msvcp71,msvcr71)" \
-   publisher="Microsoft" \
-   year="2003" \
-   media="download" \
-   file1="BZEditW32_1.6.5_Installer.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/msvcp71.dll"
+w_metadata vcrun2003 dlls \
+    title="Visual C++ 2003 libraries (mfc71,msvcp71,msvcr71)" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="BZEditW32_1.6.5_Installer.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msvcp71.dll"
 
 load_vcrun2003()
 {
@@ -5626,12 +5626,12 @@ load_vcrun2003()
 #----------------------------------------------------------------
 
 w_metadata vcrun2005 dlls \
-   title="Visual C++ 2005 libraries (mfc80,msvcp80,msvcr80)" \
-   publisher="Microsoft" \
-   year="2011" \
-   media="download" \
-   file1="vcredist_x86.exe" \
-   installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.5592_x-ww_e87e0bcd/mfc80.dll"
+    title="Visual C++ 2005 libraries (mfc80,msvcp80,msvcr80)" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="vcredist_x86.exe" \
+    installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.5592_x-ww_e87e0bcd/mfc80.dll"
 
 load_vcrun2005()
 {
@@ -5647,12 +5647,12 @@ load_vcrun2005()
 #----------------------------------------------------------------
 
 w_metadata vcrun2008 dlls \
-   title="Visual C++ 2008 libraries (mfc90,msvcp90,msvcr90)" \
-   publisher="Microsoft" \
-   year="2011" \
-   media="download" \
-   file1="vcredist_x86.exe" \
-   installed_file1="C:/windows/winsxs/x86_Microsoft.VC90.MFC_1fc8b3b9a1e18e3b_9.0.30729.5570_x-ww_d5fe2ecb/mfc90.dll"
+    title="Visual C++ 2008 libraries (mfc90,msvcp90,msvcr90)" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="vcredist_x86.exe" \
+    installed_file1="C:/windows/winsxs/x86_Microsoft.VC90.MFC_1fc8b3b9a1e18e3b_9.0.30729.5570_x-ww_d5fe2ecb/mfc90.dll"
 
 load_vcrun2008()
 {
@@ -5668,12 +5668,12 @@ load_vcrun2008()
 #----------------------------------------------------------------
 
 w_metadata vcrun2010 dlls \
-   title="Visual C++ 2010 libraries (mfc100,msvcp100,msvcr100)" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="vcredist_x86.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/mfc100.dll"
+    title="Visual C++ 2010 libraries (mfc100,msvcp100,msvcr100)" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="vcredist_x86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc100.dll"
 
 load_vcrun2010()
 {
@@ -5693,12 +5693,12 @@ load_vcrun2010()
 #----------------------------------------------------------------
 
 w_metadata vjrun20 dlls \
-   title="MS Visual J# 2.0 SE libraries (requires dotnet20)" \
-   publisher="Microsoft" \
-   year="2007" \
-   media="download" \
-   file1="vjredist.exe" \
-   installed_file1="c:/windows/Microsoft.NET/Framework/VJSharp/VJSharpSxS10.dll"
+    title="MS Visual J# 2.0 SE libraries (requires dotnet20)" \
+    publisher="Microsoft" \
+    year="2007" \
+    media="download" \
+    file1="vjredist.exe" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/VJSharp/VJSharpSxS10.dll"
 
 load_vjrun20()
 {
@@ -5724,12 +5724,12 @@ load_vjrun20()
 #----------------------------------------------------------------
 
 w_metadata windowscodecs dlls \
-   title="MS Windows Imaging Component" \
-   publisher="Microsoft" \
-   year="2006" \
-   media="download" \
-   file1="wic_x86_enu.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/WindowsCodecs.dll"
+    title="MS Windows Imaging Component" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="wic_x86_enu.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/WindowsCodecs.dll"
 
 load_windowscodecs()
 {
@@ -5749,12 +5749,12 @@ load_windowscodecs()
 #----------------------------------------------------------------
 
 w_metadata winhttp dlls \
-   title="MS Windows HTTP Services" \
-   publisher="Microsoft" \
-   year="2005" \
-   media="download" \
-   file1="Windows2000-KB842773-x86-ENU.EXE" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/winhttp.dll"
+    title="MS Windows HTTP Services" \
+    publisher="Microsoft" \
+    year="2005" \
+    media="download" \
+    file1="Windows2000-KB842773-x86-ENU.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/winhttp.dll"
 
 load_winhttp()
 {
@@ -5767,12 +5767,12 @@ load_winhttp()
 #----------------------------------------------------------------
 
 w_metadata wininet dlls \
-   title="MS Windows Internet API" \
-   publisher="Microsoft" \
-   year="1999" \
-   media="download" \
-   file1="3725.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/wininet.dll"
+    title="MS Windows Internet API" \
+    publisher="Microsoft" \
+    year="1999" \
+    media="download" \
+    file1="3725.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/wininet.dll"
 
 load_wininet()
 {
@@ -5788,12 +5788,12 @@ load_wininet()
 #----------------------------------------------------------------
 
 w_metadata wmi dlls \
-   title="Windows Management Instrumentation (aka WBEM) Core 1.5" \
-   publisher="Microsoft" \
-   year="2000" \
-   media="download" \
-   file1="wmi9x.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/wbem/wbemcore.dll"
+    title="Windows Management Instrumentation (aka WBEM) Core 1.5" \
+    publisher="Microsoft" \
+    year="2000" \
+    media="download" \
+    file1="wmi9x.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/wbem/wbemcore.dll"
 
 load_wmi()
 {
@@ -5817,12 +5817,12 @@ load_wmi()
 #----------------------------------------------------------------
 
 w_metadata wsh56js dlls \
-   title="MS Windows scripting 5.6, jscript only, no cscript" \
-   publisher="Microsoft" \
-   year="2006" \
-   media="download" \
-   file1="Windows2000-KB917344-56-x86-enu.exe" \
-   installed_file1="c:/windows/inf/jscren.inf"
+    title="MS Windows scripting 5.6, jscript only, no cscript" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="Windows2000-KB917344-56-x86-enu.exe" \
+    installed_file1="c:/windows/inf/jscren.inf"
 
 load_wsh56js()
 {
@@ -5837,12 +5837,12 @@ load_wsh56js()
 #----------------------------------------------------------------
 
 w_metadata wsh56vb dlls \
-   title="MS Windows scripting 5.6, vbscript only, no cscript" \
-   publisher="Microsoft" \
-   year="2007" \
-   media="download" \
-   file1="vbs56men.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/vbscript.dll"
+    title="MS Windows scripting 5.6, vbscript only, no cscript" \
+    publisher="Microsoft" \
+    year="2007" \
+    media="download" \
+    file1="vbs56men.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/vbscript.dll"
 
 load_wsh56vb()
 {
@@ -5857,12 +5857,12 @@ load_wsh56vb()
 #----------------------------------------------------------------
 
 w_metadata wsh57 dlls \
-   title="MS Windows Scripting Host 5.7" \
-   publisher="Microsoft" \
-   year="2007" \
-   media="download" \
-   file1="scripten.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/scrrun.dll"
+    title="MS Windows Scripting Host 5.7" \
+    publisher="Microsoft" \
+    year="2007" \
+    media="download" \
+    file1="scripten.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/scrrun.dll"
 
 load_wsh57()
 {
@@ -5879,12 +5879,12 @@ load_wsh57()
 #----------------------------------------------------------------
 
 w_metadata xact dlls \
-   title="MS XACT Engine" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/xactengine2_0.dll"
+    title="MS XACT Engine" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/xactengine2_0.dll"
 
 load_xact()
 {
@@ -5912,12 +5912,12 @@ load_xact()
 #----------------------------------------------------------------
 
 w_metadata xact_jun2010 dlls \
-   title="MS XACT Engine" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_Jun2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/xactengine2_0.dll"
+    title="MS XACT Engine" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/xactengine2_0.dll"
 
 load_xact_jun2010()
 {
@@ -5945,12 +5945,12 @@ load_xact_jun2010()
 #----------------------------------------------------------------
 
 w_metadata xinput dlls \
-   title="Microsoft XInput (Xbox controller support)" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/xinput1_1.dll"
+    title="Microsoft XInput (Xbox controller support)" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/xinput1_1.dll"
 
 load_xinput()
 {
@@ -6005,7 +6005,7 @@ load_xmllite()
 
 #----------------------------------------------------------------
 
-w_metadata  xvid dlls \
+w_metadata xvid dlls \
     title="Xvid Video Codec" \
     publisher="xvid.org" \
     year="2009" \
@@ -6026,12 +6026,12 @@ load_xvid()
 #----------------------------------------------------------------
 
 w_metadata baekmuk fonts \
-   title="Baekmuk Korean fonts" \
-   publisher="Wooderart Inc. / kldp.net" \
-   year="1999" \
-   media="download" \
-   file1="ttf-baekmuk_2.2.orig.tar.gz" \
-   installed_file1="$W_FONTSDIR_WIN/batang.ttf"
+    title="Baekmuk Korean fonts" \
+    publisher="Wooderart Inc. / kldp.net" \
+    year="1999" \
+    media="download" \
+    file1="ttf-baekmuk_2.2.orig.tar.gz" \
+    installed_file1="$W_FONTSDIR_WIN/batang.ttf"
 
 load_baekmuk()
 {
@@ -6050,10 +6050,10 @@ load_baekmuk()
 #----------------------------------------------------------------
 
 w_metadata cjkfonts fonts \
-   title="All Chinese, Japanese, Korean fonts and aliases" \
-   publisher="various" \
-   date="1999-2010" \
-   media="download"
+    title="All Chinese, Japanese, Korean fonts and aliases" \
+    publisher="various" \
+    date="1999-2010" \
+    media="download"
 
 load_cjkfonts()
 {
@@ -6066,12 +6066,12 @@ load_cjkfonts()
 #----------------------------------------------------------------
 
 w_metadata corefonts fonts \
-   title="MS Arial, Courier, Times fonts" \
-   publisher="Microsoft" \
-   year="2008" \
-   media="download" \
-   file1="arial32.exe" \
-   installed_file1="$W_FONTSDIR_WIN/Arial.TTF"
+    title="MS Arial, Courier, Times fonts" \
+    publisher="Microsoft" \
+    year="2008" \
+    media="download" \
+    file1="arial32.exe" \
+    installed_file1="$W_FONTSDIR_WIN/Arial.TTF"
 
 load_corefonts()
 {
@@ -6169,12 +6169,12 @@ load_corefonts()
 #----------------------------------------------------------------
 
 w_metadata droid fonts \
-   title="Droid fonts" \
-   publisher="Ascender Corporation" \
-   year="2009" \
-   media="download" \
-   file1="DroidSans-Bold.ttf" \
-   installed_file1="$W_FONTSDIR_WIN/DroidSans-Bold.ttf"
+    title="Droid fonts" \
+    publisher="Ascender Corporation" \
+    year="2009" \
+    media="download" \
+    file1="DroidSans-Bold.ttf" \
+    installed_file1="$W_FONTSDIR_WIN/DroidSans-Bold.ttf"
 
 do_droid() {
     w_download ${DROID_URL}$1';hb=HEAD'   $3  $1
@@ -6201,12 +6201,12 @@ load_droid()
 #----------------------------------------------------------------
 
 w_metadata eufonts fonts \
-   title="Updated fonts for Romanian and Bulgarian" \
-   publisher="Microsoft" \
-   year="2008" \
-   media="download" \
-   file1="EUupdate.EXE" \
-   installed_file1="$W_FONTSDIR_WIN/trebucbd.ttf"
+    title="Updated fonts for Romanian and Bulgarian" \
+    publisher="Microsoft" \
+    year="2008" \
+    media="download" \
+    file1="EUupdate.EXE" \
+    installed_file1="$W_FONTSDIR_WIN/trebucbd.ttf"
 
 load_eufonts()
 {
@@ -6235,9 +6235,9 @@ load_eufonts()
 #----------------------------------------------------------------
 
 w_metadata fakechinese fonts \
-   title="Creates aliases for Chinese fonts using WenQuanYi fonts" \
-   publisher="wenq.org" \
-   year="2009"
+    title="Creates aliases for Chinese fonts using WenQuanYi fonts" \
+    publisher="wenq.org" \
+    year="2009"
 
 load_fakechinese()
 {
@@ -6256,9 +6256,9 @@ load_fakechinese()
 #----------------------------------------------------------------
 
 w_metadata fakejapanese fonts \
-   title="Creates aliases for Japanese fonts using Takao fonts" \
-   publisher="Jun Kobayashi" \
-   year="2010"
+    title="Creates aliases for Japanese fonts using Takao fonts" \
+    publisher="Jun Kobayashi" \
+    year="2010"
 
 load_fakejapanese()
 {
@@ -6280,9 +6280,9 @@ load_fakejapanese()
 #----------------------------------------------------------------
 
 w_metadata fakekorean fonts \
-   title="Creates aliases for Korean fonts using Baekmuk fonts" \
-   publisher="Wooderart Inc. / kldp.net" \
-   year="1999"
+    title="Creates aliases for Korean fonts using Baekmuk fonts" \
+    publisher="Wooderart Inc. / kldp.net" \
+    year="1999"
 
 load_fakekorean()
 {
@@ -6307,11 +6307,11 @@ load_fakekorean()
 #----------------------------------------------------------------
 
 w_metadata fontfix fonts \
-   title="Updated Arphic fonts" \
-   publisher="Arphic" \
-   year="2007" \
-   media="download" \
-   file1="ttf-arphic-ukai_0.1.20060108.orig.tar.gz"
+    title="Updated Arphic fonts" \
+    publisher="Arphic" \
+    year="2007" \
+    media="download" \
+    file1="ttf-arphic-ukai_0.1.20060108.orig.tar.gz"
 
 load_fontfix()
 {
@@ -6355,12 +6355,12 @@ load_fontfix()
 #----------------------------------------------------------------
 
 w_metadata liberation fonts \
-   title="Red Hat Liberation fonts (Sans, Serif, Mono)" \
-   publisher="Red Hat" \
-   year="2008" \
-   media="download" \
-   file1="liberation-fonts-1.04.tar.gz" \
-   installed_file1="$W_FONTSDIR_WIN/LiberationMono-BoldItalic.ttf"
+    title="Red Hat Liberation fonts (Sans, Serif, Mono)" \
+    publisher="Red Hat" \
+    year="2008" \
+    media="download" \
+    file1="liberation-fonts-1.04.tar.gz" \
+    installed_file1="$W_FONTSDIR_WIN/LiberationMono-BoldItalic.ttf"
 
 load_liberation()
 {
@@ -6396,12 +6396,12 @@ load_liberation()
 #----------------------------------------------------------------
 
 w_metadata lucida fonts \
-   title="MS Lucida Console font" \
-   publisher="Microsoft" \
-   year="1998" \
-   media="download" \
-   file1="eurofixi.exe" \
-   installed_file1="$W_FONTSDIR_WIN/lucon.ttf"
+    title="MS Lucida Console font" \
+    publisher="Microsoft" \
+    year="1998" \
+    media="download" \
+    file1="eurofixi.exe" \
+    installed_file1="$W_FONTSDIR_WIN/lucon.ttf"
 
 load_lucida()
 {
@@ -6413,12 +6413,12 @@ load_lucida()
 #----------------------------------------------------------------
 
 w_metadata opensymbol fonts \
-   title="OpenSymbol fonts (replacement for Wingdings)" \
-   publisher="OpenOffice.org" \
-   year="2010" \
-   media="download" \
-   file1="ttf-opensymbol_3.2.1-11+squeeze2_all.deb" \
-   installed_file1="$W_FONTSDIR_WIN/opens___.ttf"
+    title="OpenSymbol fonts (replacement for Wingdings)" \
+    publisher="OpenOffice.org" \
+    year="2010" \
+    media="download" \
+    file1="ttf-opensymbol_3.2.1-11+squeeze2_all.deb" \
+    installed_file1="$W_FONTSDIR_WIN/opens___.ttf"
 
 load_opensymbol()
 {
@@ -6437,12 +6437,12 @@ load_opensymbol()
 #----------------------------------------------------------------
 
 w_metadata tahoma fonts \
-   title="MS Tahoma font (not part of corefonts)" \
-   publisher="Microsoft" \
-   year="2007" \
-   media="download" \
-   file1="tahoma32.exe" \
-   installed_file1="$W_FONTSDIR_WIN/tahoma.ttf"
+    title="MS Tahoma font (not part of corefonts)" \
+    publisher="Microsoft" \
+    year="2007" \
+    media="download" \
+    file1="tahoma32.exe" \
+    installed_file1="$W_FONTSDIR_WIN/tahoma.ttf"
 
 load_tahoma()
 {
@@ -6464,12 +6464,12 @@ load_tahoma()
 #----------------------------------------------------------------
 
 w_metadata takao fonts \
-   title="Takao Japanese fonts" \
-   publisher="Jun Kobayashi" \
-   year="2010" \
-   media="download" \
-   file1="takao-fonts-ttf-003.02.01.zip" \
-   installed_file1="$W_FONTSDIR_WIN/TakaoGothic.ttf"
+    title="Takao Japanese fonts" \
+    publisher="Jun Kobayashi" \
+    year="2010" \
+    media="download" \
+    file1="takao-fonts-ttf-003.02.01.zip" \
+    installed_file1="$W_FONTSDIR_WIN/TakaoGothic.ttf"
 
 load_takao()
 {
@@ -6491,13 +6491,13 @@ load_takao()
 #----------------------------------------------------------------
 
 w_metadata uff fonts \
-   title="Ubuntu Font Family" \
-   publisher="Ubuntu" \
-   year="2010" \
-   media="download" \
-   file1="ubuntu-font-family-0.70.1.zip" \
-   installed_file1="$W_FONTSDIR_WIN/Ubuntu-R.ttf" \
-   homepage="https://launchpad.net/ubuntu-font-family"
+    title="Ubuntu Font Family" \
+    publisher="Ubuntu" \
+    year="2010" \
+    media="download" \
+    file1="ubuntu-font-family-0.70.1.zip" \
+    installed_file1="$W_FONTSDIR_WIN/Ubuntu-R.ttf" \
+    homepage="https://launchpad.net/ubuntu-font-family"
 
 load_uff()
 {
@@ -6515,12 +6515,12 @@ load_uff()
 #----------------------------------------------------------------
 
 w_metadata wenquanyi fonts \
-   title="WenQuanYi CJK font" \
-   publisher="wenq.org" \
-   year="2009" \
-   media="download" \
-   file1="wqy-microhei-0.2.0-beta.tar.gz" \
-   installed_file1="$W_FONTSDIR_WIN/wqy-microhei.ttc"
+    title="WenQuanYi CJK font" \
+    publisher="wenq.org" \
+    year="2009" \
+    media="download" \
+    file1="wqy-microhei-0.2.0-beta.tar.gz" \
+    installed_file1="$W_FONTSDIR_WIN/wqy-microhei.ttc"
 
 load_wenquanyi()
 {
@@ -6536,12 +6536,12 @@ load_wenquanyi()
 #----------------------------------------------------------------
 
 w_metadata unifont fonts \
-   title="Unifont alternative to Arial Unicode MS" \
-   publisher="Roman Czyborra / GNU" \
-   year="2008" \
-   media="download" \
-   file1="unifont-5.1.20080907.zip" \
-   installed_file1="$W_FONTSDIR_WIN/unifont.ttf"
+    title="Unifont alternative to Arial Unicode MS" \
+    publisher="Roman Czyborra / GNU" \
+    year="2008" \
+    media="download" \
+    file1="unifont-5.1.20080907.zip" \
+    installed_file1="$W_FONTSDIR_WIN/unifont.ttf"
 
 load_unifont()
 {
@@ -6559,10 +6559,10 @@ load_unifont()
 #----------------------------------------------------------------
 
 w_metadata allfonts fonts \
-   title="All fonts" \
-   publisher="various" \
-   year="1998-2010" \
-   media="download" 
+    title="All fonts" \
+    publisher="various" \
+    year="1998-2010" \
+    media="download" 
 
 load_allfonts()
 {
@@ -6582,12 +6582,12 @@ load_allfonts()
 #----------------------------------------------------------------
 
 w_metadata 7zip apps \
-   title="7-Zip" \
-   publisher="Igor Pavlov" \
-   year="1999" \
-   media="download" \
-   file1="7z465.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/7-Zip/7z.exe"
+    title="7-Zip" \
+    publisher="Igor Pavlov" \
+    year="1999" \
+    media="download" \
+    file1="7z465.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/7-Zip/7z.exe"
 
 load_7zip()
 {
@@ -6600,13 +6600,13 @@ load_7zip()
 
 #----------------------------------------------------------------
 
-w_metadata  abiword apps \
-   title="AbiWord 2.8.6" \
-   publisher="AbiSource" \
-   year="2010" \
-   media="download" \
-   file1="abiword-setup-2.8.6.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/AbiWord/bin/AbiWord.exe"
+w_metadata abiword apps \
+    title="AbiWord 2.8.6" \
+    publisher="AbiSource" \
+    year="2010" \
+    media="download" \
+    file1="abiword-setup-2.8.6.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/AbiWord/bin/AbiWord.exe"
 
 load_abiword()
 {
@@ -6639,12 +6639,12 @@ load_adobe_diged()
 #----------------------------------------------------------------
 
 w_metadata autohotkey apps \
-   title="Autohotkey" \
-   publisher="autohotkey.org" \
-   year="2010" \
-   media="download" \
-   file1="AutoHotkey104805_Install.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/AutoHotkey/AutoHotkey.exe"
+    title="Autohotkey" \
+    publisher="autohotkey.org" \
+    year="2010" \
+    media="download" \
+    file1="AutoHotkey104805_Install.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/AutoHotkey/AutoHotkey.exe"
 
 load_autohotkey()
 {
@@ -6657,13 +6657,13 @@ load_autohotkey()
 #----------------------------------------------------------------
 
 w_metadata borders apps \
-   title="Borders Desktop (Kobo e-book reader)" \
-   publisher="Kobo" \
-   year="2011" \
-   media="download" \
-   file1="KoboSetup.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Borders Desktop/Borders Desktop.exe" \
-   homepage="http://www.borders.com/online/store/MediaView_ereaderapps"
+    title="Borders Desktop (Kobo e-book reader)" \
+    publisher="Kobo" \
+    year="2011" \
+    media="download" \
+    file1="KoboSetup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Borders Desktop/Borders Desktop.exe" \
+    homepage="http://www.borders.com/online/store/MediaView_ereaderapps"
 
 load_borders()
 {
@@ -6676,12 +6676,12 @@ load_borders()
 #----------------------------------------------------------------
 
 w_metadata cmake apps \
-   title="CMake 2.8" \
-   publisher="Kitware" \
-   year="2010" \
-   media="download" \
-   file1="cmake-2.8.2-win32-x86.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/CMake 2.8/bin/cmake-gui.exe"
+    title="CMake 2.8" \
+    publisher="Kitware" \
+    year="2010" \
+    media="download" \
+    file1="cmake-2.8.2-win32-x86.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/CMake 2.8/bin/cmake-gui.exe"
 
 load_cmake()
 {
@@ -6695,12 +6695,12 @@ load_cmake()
 #----------------------------------------------------------------
 
 w_metadata colorprofile apps \
-   title="Standard RGB color profile" \
-   publisher="Microsoft" \
-   year="2005" \
-   media="download" \
-   file1="ColorProfile.exe" \
-   installed_exe1="c:/windows/system32/spool/drivers/color/sRGB Color Space Profile.icm"
+    title="Standard RGB color profile" \
+    publisher="Microsoft" \
+    year="2005" \
+    media="download" \
+    file1="ColorProfile.exe" \
+    installed_exe1="c:/windows/system32/spool/drivers/color/sRGB Color Space Profile.icm"
 
 load_colorprofile()
 {
@@ -6715,12 +6715,12 @@ load_colorprofile()
 #----------------------------------------------------------------
 
 w_metadata controlpad apps \
-   title="MS ActiveX Control Pad" \
-   publisher="Microsoft" \
-   year="1997" \
-   media="download" \
-   file1="setuppad.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/ActiveX Control Pad/PED.EXE"
+    title="MS ActiveX Control Pad" \
+    publisher="Microsoft" \
+    year="1997" \
+    media="download" \
+    file1="setuppad.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/ActiveX Control Pad/PED.EXE"
 
 load_controlpad()
 {
@@ -6749,12 +6749,12 @@ load_controlpad()
 #----------------------------------------------------------------
 
 w_metadata cygwin apps \
-   title="cygwin" \
-   publisher="Red Hat" \
-   year="2009" \
-   media="download" \
-   file1="setup.exe" \
-   installed_exe1="C:/cygwin/bin/sh.exe"
+    title="cygwin" \
+    publisher="Red Hat" \
+    year="2009" \
+    media="download" \
+    file1="setup.exe" \
+    installed_exe1="C:/cygwin/bin/sh.exe"
 
 load_cygwin()
 {
@@ -6785,12 +6785,12 @@ load_cygwin()
 # dxdiag is a system component that one usually adds to an existing wineprefix,
 # so it belongs in 'dlls', not apps.
 w_metadata dxdiag dlls \
-   title="DirectX Diagnostic Tool" \
-   publisher="Microsoft" \
-   year="2010" \
-   media="download" \
-   file1="../directx9/directx_feb2010_redist.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/dxdiag.exe"
+    title="DirectX Diagnostic Tool" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dxdiag.exe"
 
 load_dxdiag()
 {
@@ -6819,12 +6819,12 @@ load_dxdiag()
 #----------------------------------------------------------------
 
 w_metadata firefox3 apps \
-   title="Firefox 3.6.17" \
-   publisher="Mozilla" \
-   year="2011" \
-   media="download" \
-   file1="Firefox Setup 3.6.17.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
+    title="Firefox 3.6.17" \
+    publisher="Mozilla" \
+    year="2011" \
+    media="download" \
+    file1="Firefox Setup 3.6.17.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox3()
 {
@@ -6846,12 +6846,12 @@ load_firefox3()
 #----------------------------------------------------------------
 
 w_metadata firefox apps \
-   title="Firefox 4.0.1" \
-   publisher="Mozilla" \
-   year="2011" \
-   media="download" \
-   file1="Firefox Setup 4.0.1.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
+    title="Firefox 4.0.1" \
+    publisher="Mozilla" \
+    year="2011" \
+    media="download" \
+    file1="Firefox Setup 4.0.1.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox()
 {
@@ -6870,13 +6870,13 @@ load_firefox()
 #----------------------------------------------------------------
 
 w_metadata fontxplorer apps \
-   title="Font Xplorer 1.2.2" \
-   publisher="Moon Software" \
-   year="2001" \
-   media="download" \
-   file1="Font_Xplorer_122_Free.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Font Xplorer/FXplorer.exe" \
-   homepage="http://www.moonsoftware.com/fxplorer.asp"
+    title="Font Xplorer 1.2.2" \
+    publisher="Moon Software" \
+    year="2001" \
+    media="download" \
+    file1="Font_Xplorer_122_Free.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Font Xplorer/FXplorer.exe" \
+    homepage="http://www.moonsoftware.com/fxplorer.asp"
 
 load_fontxplorer()
 {
@@ -6890,13 +6890,13 @@ load_fontxplorer()
 #----------------------------------------------------------------
 
 w_metadata irfanview apps \
-   title="Irfanview" \
-   publisher="Irfan Skiljan" \
-   year="2011" \
-   media="download" \
-   file1="iview428_setup.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/IrfanView/i_view32.exe" \
-   homepage="http://www.irfanview.com/"
+    title="Irfanview" \
+    publisher="Irfan Skiljan" \
+    year="2011" \
+    media="download" \
+    file1="iview428_setup.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/IrfanView/i_view32.exe" \
+    homepage="http://www.irfanview.com/"
 
 load_irfanview()
 {
@@ -6961,12 +6961,12 @@ load_irfanview()
 # FIXME: ie6 always installs to C:/Program Files even if LANG is de_DE.utf-8,
 # so we have to hard code that, but that breaks on 64 bit windows.
 w_metadata ie6 dlls \
-   title="Internet Explorer 6" \
-   publisher="Microsoft" \
-   year="2002" \
-   media="download" \
-   file1="ie60.exe" \
-   installed_file1="c:/Program Files/Internet Explorer/iedetect.dll"
+    title="Internet Explorer 6" \
+    publisher="Microsoft" \
+    year="2002" \
+    media="download" \
+    file1="ie60.exe" \
+    installed_file1="c:/Program Files/Internet Explorer/iedetect.dll"
 
 load_ie6()
 {
@@ -7054,12 +7054,12 @@ load_ie6()
 #----------------------------------------------------------------
 
 w_metadata ie7 dlls \
-   title="Internet Explorer 7" \
-   publisher="Microsoft" \
-   year="2008" \
-   media="download" \
-   file1="IE7-WindowsXP-x86-enu.exe" \
-   installed_file1="c:/windows/ie7.log"
+    title="Internet Explorer 7" \
+    publisher="Microsoft" \
+    year="2008" \
+    media="download" \
+    file1="IE7-WindowsXP-x86-enu.exe" \
+    installed_file1="c:/windows/ie7.log"
 
 load_ie7()
 {
@@ -7148,12 +7148,12 @@ load_ie7()
 #----------------------------------------------------------------
 
 w_metadata ie8 dlls \
-   title="Internet Explorer 8" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="IE8-WindowsXP-x86-ENU.exe" \
-   installed_file1="c:/windows/ie8_main.log"
+    title="Internet Explorer 8" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="IE8-WindowsXP-x86-ENU.exe" \
+    installed_file1="c:/windows/ie8_main.log"
 
 load_ie8()
 {
@@ -7252,13 +7252,13 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata mingw apps \
-   title="Minimalist GNU for Windows, including GCC for Windows" \
-   publisher="GNU" \
-   year="2010-2011" \
-   media="download" \
-   file1="binutils-2.21-2-mingw32-bin.tar.lzma" \
-   installed_exe1="c:/MinGW/bin/gcc.exe" \
-   homepage="http://mingw.org/wiki/Getting_Started"
+    title="Minimalist GNU for Windows, including GCC for Windows" \
+    publisher="GNU" \
+    year="2010-2011" \
+    media="download" \
+    file1="binutils-2.21-2-mingw32-bin.tar.lzma" \
+    installed_exe1="c:/MinGW/bin/gcc.exe" \
+    homepage="http://mingw.org/wiki/Getting_Started"
 
 load_mingw()
 {
@@ -7296,13 +7296,13 @@ load_mingw()
 #----------------------------------------------------------------
 
 w_metadata mpc apps \
-   title="Media Player Classic - Home Cinema" \
-   publisher="doom9 folks" \
-   year="2010" \
-   media="download" \
-   file1="MPC-HomeCinema.1.4.2499.0.x86.zip" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Media Player Classic/mpc-hc.exe" \
-   homepage="http://mpc-hc.sourceforge.net"
+    title="Media Player Classic - Home Cinema" \
+    publisher="doom9 folks" \
+    year="2010" \
+    media="download" \
+    file1="MPC-HomeCinema.1.4.2499.0.x86.zip" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Media Player Classic/mpc-hc.exe" \
+    homepage="http://mpc-hc.sourceforge.net"
 
 load_mpc()
 {
@@ -7318,12 +7318,12 @@ load_mpc()
 #----------------------------------------------------------------
 
 w_metadata mspaint apps \
-   title="MS Paint" \
-   publisher="Microsoft" \
-   year="2001" \
-   media="download" \
-   file1="paintnt.exe" \
-   installed_exe1="c:/windows/MSPAINT.EXE"
+    title="MS Paint" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="paintnt.exe" \
+    installed_exe1="c:/windows/MSPAINT.EXE"
 
 load_mspaint()
 {
@@ -7337,13 +7337,13 @@ load_mspaint()
 #----------------------------------------------------------------
 
 w_metadata nook apps \
-   title="Nook for PC (e-book reader)" \
-   publisher="Barnes & Noble" \
-   year="2011" \
-   media="download" \
-   file1="bndr2_setup_latest.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Barnes & Noble/BNDesktopReader/BNDReader.exe" \
-   homepage="http://www.barnesandnoble.com/u/free-nook-apps/379002321/"
+    title="Nook for PC (e-book reader)" \
+    publisher="Barnes & Noble" \
+    year="2011" \
+    media="download" \
+    file1="bndr2_setup_latest.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Barnes & Noble/BNDesktopReader/BNDReader.exe" \
+    homepage="http://www.barnesandnoble.com/u/free-nook-apps/379002321/"
 
 load_nook()
 {
@@ -7360,12 +7360,12 @@ load_nook()
 #----------------------------------------------------------------
 
 w_metadata office2003pro apps \
-   title="Microsoft Office 2003 Professional" \
-   publisher="Microsoft" \
-   year="2002" \
-   media="cd" \
-   file1="setup.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Office/Office11/WINWORD.EXE"
+    title="Microsoft Office 2003 Professional" \
+    publisher="Microsoft" \
+    year="2002" \
+    media="cd" \
+    file1="setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Office/Office11/WINWORD.EXE"
 
 load_office2003pro()
 {
@@ -7417,24 +7417,24 @@ load_office2003pro()
 #----------------------------------------------------------------
 
 w_metadata office2007pro apps \
-   title="Microsoft Office 2007 Professional" \
-   publisher="Microsoft" \
-   year="2006" \
-   media="cd" \
-   file1="setup.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Microsoft Office/Office12/WINWORD.EXE"
+    title="Microsoft Office 2007 Professional" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="cd" \
+    file1="setup.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Microsoft Office/Office12/WINWORD.EXE"
 
 load_office2007pro()
 {
     if w_workaround_wine_bug 14980 "Using native riched20"
     then
-       w_override_app_dlls winword.exe n riched20
-       w_override_app_dlls excel.exe n riched20
-       w_override_app_dlls powerpnt.exe n riched20
-       w_override_app_dlls msaccess.exe n riched20
-       w_override_app_dlls outlook.exe n riched20
-       w_override_app_dlls mspub.exe n riched20
-       w_override_app_dlls infopath.exe n riched20
+        w_override_app_dlls winword.exe n riched20
+        w_override_app_dlls excel.exe n riched20
+        w_override_app_dlls powerpnt.exe n riched20
+        w_override_app_dlls msaccess.exe n riched20
+        w_override_app_dlls outlook.exe n riched20
+        w_override_app_dlls mspub.exe n riched20
+        w_override_app_dlls infopath.exe n riched20
     fi
 
     w_mount OFFICE12
@@ -7482,12 +7482,12 @@ $W_CACHE/$W_PACKAGE/key.txt and rerun."
 #----------------------------------------------------------------
 
 w_metadata opera apps \
-   title="Opera 11" \
-   publisher="Opera Software" \
-   year="2011" \
-   media="download" \
-   file1="Opera_1110_en_Setup.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Opera/opera.exe"
+    title="Opera 11" \
+    publisher="Opera Software" \
+    year="2011" \
+    media="download" \
+    file1="Opera_1110_en_Setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Opera/opera.exe"
 
 load_opera()
 {
@@ -7500,12 +7500,12 @@ load_opera()
 #----------------------------------------------------------------
 
 w_metadata psdk2003 apps \
-   title="MS Platform SDK 2003" \
-   publisher="Microsoft" \
-   year="2003" \
-   media="download" \
-   file1="PSDK-x86.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Microsoft Platform SDK for Windows Server 2003 R2/SetEnv.Cmd"
+    title="MS Platform SDK 2003" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="PSDK-x86.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Microsoft Platform SDK for Windows Server 2003 R2/SetEnv.Cmd"
 
 load_psdk2003()
 {
@@ -7525,12 +7525,12 @@ load_psdk2003()
 #----------------------------------------------------------------
 
 w_metadata psdkwin7 apps \
-   title="MS Windows 7 SDK" \
-   publisher="Microsoft" \
-   year="2009" \
-   media="download" \
-   file1="winsdk_web.exe" \
-   installed_exe1="C:/Program Files/Microsoft SDKs/Windows/v7.0/Bin/SetEnv.Cmd"
+    title="MS Windows 7 SDK" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="winsdk_web.exe" \
+    installed_exe1="C:/Program Files/Microsoft SDKs/Windows/v7.0/Bin/SetEnv.Cmd"
 
 load_psdkwin7()
 {
@@ -7576,12 +7576,12 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata python26 apps \
-   title="Python Interpreter, version 2.6.2" \
-   publisher="Python Software Foundaton" \
-   year="2009" \
-   media="download" \
-   file1="python-2.6.2.msi" \
-   installed_exe1="c:/Python26/python.exe"
+    title="Python Interpreter, version 2.6.2" \
+    publisher="Python Software Foundaton" \
+    year="2009" \
+    media="download" \
+    file1="python-2.6.2.msi" \
+    installed_exe1="c:/Python26/python.exe"
 
 load_python26()
 {
@@ -7633,12 +7633,12 @@ load_python26_comtypes()
 #----------------------------------------------------------------
 
 w_metadata spotify apps \
-   title="Spotify - All the music, all the time" \
-   publisher="Spotify" \
-   year="2011" \
-   media="download" \
-   file1="SpotifyInstaller.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Spotify/spotify.exe"
+    title="Spotify - All the music, all the time" \
+    publisher="Spotify" \
+    year="2011" \
+    media="download" \
+    file1="SpotifyInstaller.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Spotify/spotify.exe"
 
 load_spotify()
 {
@@ -7677,13 +7677,13 @@ load_spotify()
 
 #----------------------------------------------------------------
 
-w_metadata  safari apps \
-   title="Safari" \
-   publisher="Apple" \
-   year="2010" \
-   media="download" \
-   file1="SafariSetup.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Safari/Safari.exe"
+w_metadata safari apps \
+    title="Safari" \
+    publisher="Apple" \
+    year="2010" \
+    media="download" \
+    file1="SafariSetup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Safari/Safari.exe"
 
 load_safari()
 {
@@ -7720,12 +7720,12 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata sketchup apps \
-   title="Sketchup 8" \
-   publisher="Google" \
-   year="2010" \
-   media="download" \
-   file1="GoogleSketchUpWEN.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Google/Google SketchUp 8/SketchUp.exe"
+    title="Sketchup 8" \
+    publisher="Google" \
+    year="2010" \
+    media="download" \
+    file1="GoogleSketchUpWEN.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Google/Google SketchUp 8/SketchUp.exe"
 
 load_sketchup()
 {
@@ -7799,12 +7799,12 @@ load_songbird()
 #----------------------------------------------------------------
 
 w_metadata steam apps \
-   title="Steam" \
-   publisher="Valve" \
-   year="2010" \
-   media="download" \
-   file1="SteamInstall.msi" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/Steam/Steam.exe"
+    title="Steam" \
+    publisher="Valve" \
+    year="2010" \
+    media="download" \
+    file1="SteamInstall.msi" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/Steam.exe"
 
 load_steam()
 {
@@ -7813,7 +7813,7 @@ load_steam()
     cd "$W_CACHE"/steam
     w_try $WINE msiexec /i SteamInstall.msi $W_UNATTENDED_SLASH_Q
     if ! test -f "$W_FONTSDIR_UNIX/Times.TTF" && \
-       w_workaround_wine_bug 22751 "Installing corefonts to prevent a Steam crash"
+        w_workaround_wine_bug 22751 "Installing corefonts to prevent a Steam crash"
     then
         w_call corefonts
     fi
@@ -7829,12 +7829,12 @@ load_steam()
 #----------------------------------------------------------------
 
 w_metadata utorrent apps \
-   title="µTorrent 2.2.1" \
-   publisher="BitTorrent" \
-   year="2011" \
-   media="download" \
-   file1="utorrent.exe" \
-   installed_exe1="c:/windows/utorrent.exe"
+    title="µTorrent 2.2.1" \
+    publisher="BitTorrent" \
+    year="2011" \
+    media="download" \
+    file1="utorrent.exe" \
+    installed_exe1="c:/windows/utorrent.exe"
 
 load_utorrent()
 {
@@ -7857,12 +7857,12 @@ load_utorrent()
 #----------------------------------------------------------------
 
 w_metadata utorrent3 apps \
-   title="µTorrent 3.0" \
-   publisher="BitTorrent" \
-   year="2011" \
-   media="download" \
-   file1="utorrent-3.0-latest.exe" \
-   installed_exe1="$W_PROGRAMS_X86_WIN/uTorrent/uTorrent.exe"
+    title="µTorrent 3.0" \
+    publisher="BitTorrent" \
+    year="2011" \
+    media="download" \
+    file1="utorrent-3.0-latest.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/uTorrent/uTorrent.exe"
 
 load_utorrent3()
 {
@@ -8013,13 +8013,13 @@ load_vc2005trial()
 #----------------------------------------------------------------
 
 w_metadata vlc apps \
-   title="VLC media player" \
-   publisher="videolan.org" \
-   year="2010" \
-   media="download" \
-   file1="vlc-1.1.9-win32.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/VideoLAN/VLC/vlc.exe" \
-   homepage="http://www.videolan.org/vlc/"
+    title="VLC media player" \
+    publisher="videolan.org" \
+    year="2010" \
+    media="download" \
+    file1="vlc-1.1.9-win32.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/VideoLAN/VLC/vlc.exe" \
+    homepage="http://www.videolan.org/vlc/"
 
 load_vlc()
 {
@@ -8032,12 +8032,12 @@ load_vlc()
 #----------------------------------------------------------------
 
 w_metadata wme9 apps \
-   title="MS Windows Media Encoder 9 (broken in wine)" \
-   publisher="Microsoft" \
-   year="2002" \
-   media="download" \
-   file1="WMEncoder.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Windows Media Components/Encoder/wmenc.exe"
+    title="MS Windows Media Encoder 9 (broken in wine)" \
+    publisher="Microsoft" \
+    year="2002" \
+    media="download" \
+    file1="WMEncoder.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Windows Media Components/Encoder/wmenc.exe"
 
 load_wme9()
 {
@@ -8070,12 +8070,12 @@ load_wm9codecs()
 }
 
 w_metadata wmp9 dlls \
-   title="Windows Media Player 9" \
-   publisher="Microsoft" \
-   year="2003" \
-   media="download" \
-   file1="MPSetup.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN"/l3codeca.acm
+    title="Windows Media Player 9" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="MPSetup.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN"/l3codeca.acm
 
 load_wmp9()
 {
@@ -8115,12 +8115,12 @@ load_wmp9()
 #----------------------------------------------------------------
 
 w_metadata wmp10 dlls \
-   title="Windows Media Player 10" \
-   publisher="Microsoft" \
-   year="2006" \
-   media="download" \
-   file1="MP10Setup.exe" \
-   installed_file1="$W_SYSTEM32_DLLS_WIN/l3codecp.acm"
+    title="Windows Media Player 10" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="MP10Setup.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/l3codecp.acm"
 
 load_wmp10()
 {
@@ -9002,12 +9002,12 @@ load_bioshock_demo()
 
 #----------------------------------------------------------------
 
-w_metadata  bfbc2 games \
-   title="Battlefield Bad Company 2" \
-   publisher="EA" \
-   year="2010" \
-   media="dvd" \
-   file1="BFBC2.iso"
+w_metadata bfbc2 games \
+    title="Battlefield Bad Company 2" \
+    publisher="EA" \
+    year="2010" \
+    media="dvd" \
+    file1="BFBC2.iso"
 
 load_bfbc2()
 {
@@ -9400,13 +9400,13 @@ load_cnc_redalert3_demo()
 #----------------------------------------------------------------
 
 # http://appdb.winehq.org/objectManager.php?sClass=version&iId=9320
-w_metadata  blobby_volley games \
-   title="Blobby Volley" \
-   publisher="Daniel Skoraszewsky" \
-   year="2000" \
-   media="manual_download" \
-   file1="blobby.zip" \
-   installed_exe1="c:/BlobbyVolley/volley.exe"
+w_metadata blobby_volley games \
+    title="Blobby Volley" \
+    publisher="Daniel Skoraszewsky" \
+    year="2000" \
+    media="manual_download" \
+    file1="blobby.zip" \
+    installed_exe1="c:/BlobbyVolley/volley.exe"
 
 load_blobby_volley()
 {
@@ -9782,12 +9782,12 @@ load_cojbib_demo()
 #----------------------------------------------------------------
 
 w_metadata civ4_demo games \
-   title="Civilization IV Demo" \
-   publisher="Firaxis Games" \
-   year="2005" \
-   media="manual_download" \
-   file1="Civilization4_Demo.zip" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Firaxis Games/Sid Meier's Civilization 4 Demo/Civilization4.exe"
+    title="Civilization IV Demo" \
+    publisher="Firaxis Games" \
+    year="2005" \
+    media="manual_download" \
+    file1="Civilization4_Demo.zip" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Firaxis Games/Sid Meier's Civilization 4 Demo/Civilization4.exe"
 
 load_civ4_demo()
 {
@@ -9855,12 +9855,12 @@ load_crayonphysics_demo()
 #----------------------------------------------------------------
 
 w_metadata crysis2 games \
-   title="Crysis 2" \
-   publisher="EA" \
-   year="2011" \
-   media="dvd" \
-   file1="Crysis2.exe" \
-   installed_file1="$W_PROGRAMS_X86_WIN/Electronic Arts/Crytek/Crysis 2/bin32/Crysis2.exe"
+    title="Crysis 2" \
+    publisher="EA" \
+    year="2011" \
+    media="dvd" \
+    file1="Crysis2.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Electronic Arts/Crytek/Crysis 2/bin32/Crysis2.exe"
 
 load_crysis2()
 {
@@ -10424,7 +10424,7 @@ load_dirt2_demo()
 
     if w_workaround_wine_bug 23532
     then
-       w_call gfw 
+        w_call gfw 
     fi
 
     if w_workaround_wine_bug 24868
@@ -10617,8 +10617,8 @@ load_dragonage()
     fi
 
     if test "$WINETRICKS_OPT_KEEPISOS" != 1 &&  \
-       test ! -f "$W_CACHE/dragonage/DragonAge.iso" &&  \
-       w_workaround_wine_bug 26459 "Making and mounting an .iso to work around 'Failed to authenticate the disk' error.  After each reboot, you'll need to do [sudo mount -o ro,loop '$W_CACHE/dragonage/DragonAge.iso' /mnt/winetricks] to play Dragon Age.  Someday this will be automated."
+        test ! -f "$W_CACHE/dragonage/DragonAge.iso" &&  \
+        w_workaround_wine_bug 26459 "Making and mounting an .iso to work around 'Failed to authenticate the disk' error.  After each reboot, you'll need to do [sudo mount -o ro,loop '$W_CACHE/dragonage/DragonAge.iso' /mnt/winetricks] to play Dragon Age.  Someday this will be automated."
     then
         WINETRICKS_OPT_KEEPISOS=1 w_mount DragonAge
     else
@@ -12060,12 +12060,12 @@ load_lswcs()
 
 #----------------------------------------------------------------
 
-w_metadata  lemonysnicket games \
-   title="Lemony Snicket: A Series of Unfortunate Events" \
-   publisher="Activision" \
-   year="2004" \
-   media="cd" \
-   file1="Lemony Snicket.iso"
+w_metadata lemonysnicket games \
+    title="Lemony Snicket: A Series of Unfortunate Events" \
+    publisher="Activision" \
+    year="2004" \
+    media="cd" \
+    file1="Lemony Snicket.iso"
 
 load_lemonysnicket()
 {
@@ -12548,8 +12548,8 @@ load_mise()
             ControlClick Button4 ; Activate Online
             winwait, Product Activation, SUCCESSFUL
             winClose
-	    sleep 1000
-	    Process, Close, MISE.exe
+            sleep 1000
+            Process, Close, MISE.exe
         "
     elif test -f "$W_CACHE"/$W_PACKAGE/unlockcode.txt
     then
@@ -14357,12 +14357,12 @@ load_stalker_pripyat_bench()
 
 #----------------------------------------------------------------
 
-w_metadata  torchlight games \
-   title="Torchlight - boxed version" \
-   publisher="Runic Games" \
-   year="2009" \
-   media="dvd" \
-   file1="Torchlight.iso"
+w_metadata torchlight games \
+    title="Torchlight - boxed version" \
+    publisher="Runic Games" \
+    year="2009" \
+    media="dvd" \
+    file1="Torchlight.iso"
 
 load_torchlight()
 {
@@ -14396,7 +14396,7 @@ load_torchlight()
 
 #----------------------------------------------------------------
 
-w_metadata  twfc games \
+w_metadata twfc games \
     title="Transformers: War for Cybertron" \
     publisher="Activision" \
     year="2010" \
@@ -14543,7 +14543,7 @@ load_ut3()
 
 #----------------------------------------------------------------
 
-w_metadata  wog games \
+w_metadata wog games \
     title="World of Goo Demo" \
     publisher="2D Boy" \
     year="2008" \
