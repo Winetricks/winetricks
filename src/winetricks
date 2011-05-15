@@ -7867,7 +7867,8 @@ load_utorrent3()
     # 15 Apr 2011: sha1sum a5f198207919e8f2091a9b4459d7d6fc8a63e874
     # 27 Apr 2011: sha1sum d969f0c61cf2b2afaea4121f097ef690dffbf771
     # 7 May 2011: sha1sum 1793a7b15d905a9fa82f9a969a96fa53abaac04c
-    w_download http://download.utorrent.com/beta/utorrent-3.0-latest.exe 1793a7b15d905a9fa82f9a969a96fa53abaac04c
+    # 14 May: removed checksum, changes too often to track
+    w_download http://download.utorrent.com/beta/utorrent-3.0-latest.exe
 
     case "$W_OPT_UNATTENDED" in
     0) _W_opt="" ;;
