@@ -14053,19 +14053,19 @@ w_metadata sammax301_demo games \
     title="Sam & Max 301: The Penal Zone" \
     publisher="Telltale Games" \
     year="2010" \
-    media="download" \
-    file1="SamMax301_PC_setup.exe" \
+    media="manual_download" \
+    file1="SamMax301_PC_Setup.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Telltale Games/Sam and Max - The Devil's Playhouse/The Penal Zone/SamMax301.exe"
 
 load_sammax301_demo()
 {
-    w_download http://gamedaily.newaol.com/pub/SamMax301_PC_Setup.exe 83f47b7f3a5074a6e29bdc9b4f1fd2c4471d9641
+    w_download_manual "http://www.fileplanet.com/211314/210000/fileinfo/Sam-&-Max:-Devil's-Playhouse---Episode-One-Demo" SamMax301_PC_Setup.exe 83f47b7f3a5074a6e29bdc9b4f1fd2c4471d9641
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         SetWinDelay 500
-        run SamMax301_PC_setup.exe
+        run SamMax301_PC_Setup.exe
         winwait Sam and Max The Penal Zone Setup, Welcome
         if ( w_opt_unattended > 0 ) {
             controlclick button2 ; Next
