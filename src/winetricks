@@ -674,10 +674,11 @@ w_download_manual_to()
     _W_file="$3"
     _W_sha1sum="$4"
 
-    if test media="download"
-    then
+    case "$media" in
+    "download")
         w_info "FAIL: bug: media type is download, but w_download_manual was called.  Programmer, please change verb's media type to manual_download."
-    fi
+        ;;
+    esac
 
     case $LANG in
     da*) _W_dlmsg="Hent venligst filen $_W_file fra $_W_url og placér den i $W_CACHE/$_W_packagename, kør derefter dette skript.";;
