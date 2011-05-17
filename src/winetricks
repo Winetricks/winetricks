@@ -14092,24 +14092,18 @@ w_metadata sammax304_demo games \
     title="Sam & Max 304: Beyond the Alley of the Dolls" \
     publisher="Telltale Games" \
     year="2010" \
-    media="download" \
-    file1="SamMax304_v02.18_unlockable_securom_pa_BigDownload.exe" \
+    media="manual_download" \
+    file1="SamMax304_PC_setup.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Telltale Games/Sam and Max - The Devil's Playhouse/Beyond the Alley of the Dolls/SamMax304.exe"
 
 load_sammax304_demo()
 {
-    if ! test -f "$W_CACHE/$W_PACKAGE"/SamMax304_v02.18_unlockable_securom_pa_BigDownload.exe
-    then
-        w_download "http://gamedaily.newaol.com/pub/SamMax304_BigDownload.exe.zip" 5d3cefcf0c654d3646105e14cb3d06c61feb32f3
-        cd "$W_CACHE/$W_PACKAGE"
-        w_try_unzip SamMax304_BigDownload.exe.zip
-        rm -f SamMax304_BigDownload.exe.zip
-    fi
+    w_download_manual "http://www.fileplanet.com/214770/210000/fileinfo/Sam-&-Max:-The-Devi's-Playhouse---Beyond-the-Alley-of-the-Dolls-Demo" SamMax304_PC_setup.exe 1a385a1f1e83770c973e6457b923b7a44bbe44d8
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
-        Run, SamMax304_v02.18_unlockable_securom_pa_BigDownload.exe
+        Run, $file1
         WinWait,Sam and Max Beyond the Alley of the Dolls Setup
         if ( w_opt_unattended > 0 ) {
             ControlClick Button2 ; Next
