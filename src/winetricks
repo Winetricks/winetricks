@@ -4613,7 +4613,8 @@ load_kindle()
 {
     w_download http://kindleforpc.amazon.com/32337/KindleForPC-installer.exe \
         2ad916877f418ceb8bdc4ae13b0c5e9099ffb8d7
-    w_try $WINE "$W_CACHE"/kindle/$file1 ${W_OPT_UNATTENDED:+ /S}
+    cd "$W_CACHE"/kindle
+    w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /S}
     w_declare_exe "$W_PROGRAMS_WIN\\Amazon\\Kindle For PC" Kindle.exe
 }
 
@@ -5010,18 +5011,19 @@ load_msxml6()
 #----------------------------------------------------------------
 
 w_metadata ogg dlls \
-    title="OpenCodecs 0.84: flac, speex, theora, vorbis, WebM" \
+    title="OpenCodecs 0.85: flac, speex, theora, vorbis, WebM" \
     publisher="xiph.org" \
-    year="2010" \
+    year="2011" \
     media="download" \
-    file1="opencodecs_0.84.17338.exe" \
+    file1="opencodecs_0.85.17777.exe" \
     installed_file1="$W_PROGRAMS_X86_WIN/Xiph.Org/Open Codecs/AxPlayer.dll" \
     homepage="http://xiph.org/dshow"
 
 load_ogg()
 {
-    w_download http://downloads.xiph.org/releases/oggdsf/opencodecs_0.84.17338.exe 6151ab79e6ae246208cdf707e080f01c93d95deb
-    w_try $WINE "$W_CACHE"/ogg/opencodecs_0.84.17338.exe $W_UNATTENDED_SLASH_S
+    w_download http://downloads.xiph.org/releases/oggdsf/opencodecs_0.85.17777.exe 386cf7cd29ffcbf8705eff8c8233de448ecf33ab
+    cd "$W_CACHE"/ogg
+    w_try $WINE $file1 $W_UNATTENDED_SLASH_S
 }
 
 #----------------------------------------------------------------
@@ -6913,12 +6915,13 @@ load_irfanview()
         w_call mfc42
     fi
 
+    cd "$W_CACHE/$W_PACKAGE"
     if test "$W_OPT_UNATTENDED"
     then
         w_ahk_do "
             SetWinDelay 200
             SetTitleMatchMode, 2
-            run $W_CACHE/$W_PACKAGE/$file1
+            run $file1
             winwait, Setup, This program will install
             winactivate, Setup, This program will install
             winwaitactive, Setup, This program will install
@@ -6956,7 +6959,7 @@ load_irfanview()
             winwaitclose
         "
     else
-        w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
+        w_try "$WINE" $file1
     fi
     w_declare_exe "$W_PROGRAMS_X86_WIN\\IrfanView" "i_view32.exe"
 }
@@ -7357,7 +7360,8 @@ load_nook()
     w_download \
         http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe \
         4a06a529b93ed33c3518326d874b40d8d7b70e7a
-    $WINE "$W_CACHE"/nook/$file1 ${W_OPT_UNATTENDED:+ /S}
+    cd "$W_CACHE"/nook
+    $WINE $file1 ${W_OPT_UNATTENDED:+ /S}
     # normally has exit status 199?
     w_declare_exe "$W_PROGRAMS_WIN\\Barnes & Noble\\BNDesktopReader" "BNDReader.exe"
 }
@@ -9369,14 +9373,15 @@ load_cnc_redalert3_demo()
 {
     w_download http://gamedaily.newaol.com/pub/RedAlert3Demo.exe f909b87cc12e386a51be51ede708634348c8af48
 
+    cd "$W_CACHE/$W_PACKAGE"
     if test ! "$W_OPT_UNATTENDED"
     then
-        w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
+        w_try "$WINE" $file1
     else
         w_ahk_do "
             SetWinDelay 1000
             SetTitleMatchMode, 2
-            run $W_CACHE/$W_PACKAGE/$file1
+            run $file1
             winwait, Demo, readme
             send {enter}                           ; Install button
             winwait, Demo, Agreement
