@@ -13680,6 +13680,58 @@ load_spore()
 
 #----------------------------------------------------------------
 
+w_metadata spore_cc_demo games \
+    title="Spore Creature Creator trial" \
+    publisher="EA" \
+    year="2008" \
+    media="download" \
+    file1="792248d6ad421d577132c2b648bbed45_scc_trial_na.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/SPORE/Sporebin/SporeCreatureCreator.exe"
+
+load_spore_cc_demo()
+{
+    w_download http://na.llnet.cdn.ea.com/u/f/eagames/spore/scc/promo/792248d6ad421d577132c2b648bbed45_scc_trial_na.exe 06da5558e6ebbc39d2fac955eceab78cf8470e07
+
+    w_info "The installer runs on for about a minute after it's done."
+
+    cd "$W_CACHE/$W_PACKAGE"
+    if test "$W_OPT_UNATTENDED"
+    then
+        w_ahk_do "
+            SetWinDelay 1000
+            SetTitleMatchMode, 2
+            run $file1
+            winwait, Wizard, Welcome to the SPORE
+            send N
+            winwait, Wizard, Please read the following
+            send a
+            send N
+            winwait, Wizard, your setup
+            send N
+            winwait, Wizard, options below
+            send N
+            winwait, Wizard, We're ready
+            send i
+            winwait, Question, do not install the latest
+            send N        ; reject EA Download Manager
+            winwait, Wizard, Launch
+            send {SPACE}{DOWN}{SPACE}{ENTER}
+            winwaitclose
+        "
+        while ps | grep $file1 | grep -v grep > /dev/null
+        do
+            w_info "Waiting for installer to finish."
+            sleep 2
+        done
+    else
+        w_try "$WINE" "$file1"
+    fi
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\SPORE\\Sporebin" \
+        "SporeCreatureCreator.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata starcraft2_demo games \
     title="Starcraft II Demo" \
     publisher="Blizzard" \
