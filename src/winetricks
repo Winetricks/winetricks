@@ -8040,6 +8040,79 @@ load_vlc()
 
 #----------------------------------------------------------------
 
+w_metadata winamp apps \
+    title="Winamp" \
+    publisher="AOL (Nullsoft)" \
+    year="2011" \
+    media="download" \
+    file1="winamp561_full_emusic-7plus_en-us.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Winamp/winamp.exe" \
+    homepage="http://www.winamp.com"
+
+load_winamp()
+{
+    w_info "may send information while installing, see http://www.microsoft.com/security/portal/Threat/Encyclopedia/Entry.aspx?threatid=159633"
+    w_download \
+        http://download.nullsoft.com/winamp/client/winamp561_full_emusic-7plus_en-us.exe 21eeab7c68beba0acd59ec452b772641ae784d0a
+    cd "$W_CACHE/$W_PACKAGE"
+    if test $W_OPT_UNATTENDED
+    then
+        w_ahk_do "
+            SetWinDelay 500
+            SetTitleMatchMode, 2
+            Run $file1
+            WinWait, Winamp Installer, Welcome to the Winamp installer
+            ControlClick, Button2
+            WinWait, Winamp Installer, License Agreement
+            ControlClick, Button2
+            WinWait, Winamp Installer, Choose Install Location
+            ControlClick, Button2
+            WinWait, Winamp Installer, Choose Components
+            ControlClick, Button2
+            WinWait, Winamp Installer, Choose Start Options
+            ControlClick, Button2
+            WinWait, Winamp Installer, Get the Most Out of Winamp
+            ControlClick, Button4 ; decline Winamp toolbar
+            Sleep 200
+            ControlClick, Button5 ; decline AOL Search
+            Sleep 200
+            ControlClick, Button6 ; decline eMusic
+            Sleep 200
+            ControlClick, Button2
+            Loop
+            {
+                ifWinExist, Winamp Installer, Installation Complete
+                {
+                    break
+                }
+                ifWinExist, Winamp Installer, Recommended
+                {
+                    WinActivate, Winamp Installer, Recommended
+                    WinWaitActive, Winamp Installer, Recommended
+                    MouseClick, left, 32, 279 ; decline OpenCandy offers
+                    Sleep 200
+                    ControlClick, Button2
+                    WinWaitClose, Winamp Installer, Recommended
+                    continue
+                }
+                Sleep 200
+            }
+            WinWait, Winamp Installer, Installation Complete
+            WinActivate, Winamp Installer, Installation Complete
+            WinWaitActive, Winamp Installer, Installation Complete
+            send {Tab}{Tab}{Tab}{Space}   ; don't launch
+            Sleep 500
+            send {Enter}                  ; Finish
+            WinWaitClose
+        "
+    else
+        w_try "$WINE" "$file1"
+    fi
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Winamp" "winamp.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata wme9 apps \
     title="MS Windows Media Encoder 9 (broken in wine)" \
     publisher="Microsoft" \
