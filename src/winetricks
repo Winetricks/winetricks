@@ -588,13 +588,14 @@ w_open_webpage()
     # See http://www.dwheeler.com/essays/open-files-urls.html
     for _W_cmd in xdg-open sdtwebclient cygstart open firefox true
     do
-        if test -n `which $_W_cmd`
+        _W_cmdpath=`which $_W_cmd`
+        if test -n "$_W_cmdpath"
         then
             break
         fi
     done
     $_W_cmd "$1" &
-    unset _W_cmd
+    unset _W_cmd _W_cmdpath
 }
 
 # Download a file
