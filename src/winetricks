@@ -982,6 +982,137 @@ fi
     unset _W_steamid _W_steamtitle
 }
 
+#----------------------------------------------------------------
+
+# Generic GOG.com installer
+# Usage: game_id game_title [other_files,size [reader_control [run_command [download_id [install_dir [installer_size_and_sha1]]]]]]
+# game_id
+#     Used for main installer name and download url.
+# game_title
+#     Used for AutoHotKey and installation path in bat script.
+# other_files
+#     Extra installer files, in one string, space-separated.
+# reader_control
+#     If set, the control id of the configuration pannel checkbox controling
+#     Adobe Reader installation.
+#     Some games don't have it, some games do with different ids.
+# run_command
+#     Used for bat script, relative to installation path.
+# download_id
+#     For games which download url doesn't match their game_id
+# install_dir
+#     If different from game_title
+# installer_size_and_sha1
+#     exe file SHA1.
+wintricks_load_gog()
+{
+    game_id="$1"
+    game_title="$2"
+    other_files="$3"
+    reader_control="$4"
+    run_command="$5"
+    download_id="$6"
+    install_dir="$7"
+    installer_size_and_sha1="$8"
+
+    if [ "$download_id"x = ""x ]
+    then
+        download_id="$game_id"
+    fi
+    if [ "$install_dir"x = ""x ]
+    then
+        install_dir="$game_title"
+    fi
+
+    installer_path="$W_CACHE/$W_PACKAGE"
+    mkdir -p "$installer_path"
+    installer="setup_$game_id.exe"
+
+    if test "$installer_size_and_sha1"x = ""x
+    then
+        files="$installer $other_files"
+    else
+        files="$installer,$installer_size_and_sha1 $other_files"
+    fi
+
+    file_id=0
+    for file_and_size_and_sha1 in $files
+    do
+        case "$file_and_size_and_sha1" in
+        *,*,*)
+            sha1sum=`echo $file_and_size_and_sha1 | sed "s/.*,//"`
+            minsize=`echo $file_and_size_and_sha1 | sed 's/[^,]*,\([^,]*\),.*/\1/'`
+            file=`echo $file_and_size_and_sha1 | sed 's/,.*//'`
+            ;;
+        *,*) 
+            sha1sum=""
+            minsize=`echo $file_and_size_and_sha1 | sed 's/.*,//'`
+            file=`echo $file_and_size_and_sha1 | sed 's/,.*//'`
+            ;;
+        *)
+            sha1sum=""
+            minsize=1
+            file=$file_and_size_and_sha1
+            ;;
+        esac
+        file_path="$installer_path/$file"
+        if ! test -s "$file_path" || test `stat -Lc%s "$file_path"` -lt $minsize
+        then
+            # FIXME: bring back automated download
+            w_download_manual "https://www.gog.com/en/download/game/$download_id/$file_id" "$file"
+            check_sha1=1
+            filesize=`stat -Lc%s "$file_path"`
+            if test $minsize -gt 1 -a $filesize -ne $minsize
+            then
+                check_sha1=""
+                w_warn "Expected file size $minsize, please report new size $filesize."
+            fi
+            if test "$check_sha1" != "" -a "$sha1sum"x != ""x
+            then
+                w_verify_sha1sum "$sha1sum" "$file_path"
+            fi
+        fi
+        file_id=`expr $file_id + 1`
+    done
+
+    cd "$installer_path"
+    w_ahk_do "
+        run $installer
+        WinWait, Setup - $game_title, Start installation
+        ControlGet, checkbox_state, Checked,, TCheckBox1 ; EULA
+        if (checkbox_state != 1) {
+            ControlClick, TCheckBox1
+        }
+        if (\"$reader_control\") {
+            ControlClick, TMCoPShadowButton1 ; Options
+            Loop, 10
+            {
+                ControlGet, visible, Visible,, $reader_control
+                if (visible)
+                {
+                    break
+                }
+                Sleep, 1000
+            }
+            ControlGet, checkbox_state, Checked,, $reader_control ; Unckeck Adobe/Foxit Reader
+            if (checkbox_state != 0) {
+                ControlClick, $reader_control
+            }
+        }
+        ControlClick, TMCoPShadowButton2 ; Start Installation
+        WinWait, Setup - $game_title, Exit Installer
+        ControlClick, TMCoPShadowButton1 ; Exit Installer
+        "
+
+    if test "$run_command"x != ""x
+    then
+        w_declare_exe "$W_PROGRAMS_X86_WIN\\GOG.com\\$install_dir" "$run_command"
+    fi
+}
+
+#----------------------------------------------------------------
+
+
 # Usage: w_mount "volume name" [filename-to-check [discnum]]
 # Some games have two volumes with identical volume names.
 # For these, please specify discnum 1 for first disc, discnum 2 for 2nd, etc.,
@@ -14876,6 +15007,41 @@ load_zootycoon2_demo()
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Zoo Tycoon 2 Trial Version" "zt2demoretail.exe"
 }
+
+#----------------------------------------------------------------
+# Gog.com games
+#----------------------------------------------------------------
+
+w_metadata beneath_a_steel_sky_gog games \
+    title="Beneath a Steel Sky (GOG.com, free)" \
+    publisher="Virgin Interactive" \
+    year="1994" \
+    file1="setup_beneath_a_steel_sky.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/GOG.com/Beneath a Steel Sky/ScummVM/scummvm.exe"
+
+load_beneath_a_steel_sky_gog()
+{
+    wintricks_load_gog "beneath_a_steel_sky" "Beneath a Steel Sky" "" "TsCheckBox4" "ScummVM\\scummvm.exe -c \"C:\\Program Files\\GOG.com\\Beneath a Steel Sky\\beneath.ini\" beneath" "" "" "75176395,1f99e12643529baa91fecfb206139a8921d9589c"
+}
+
+# Brief HOWTO for adding a GOG game:
+# - "beneath_a_steel_sky" is the installer exe name, minus "setup_" and ".exe"
+# - "Beneath a Steel Sky" is installer window title, minus "Setup - "
+# - There are no other files for this game, so this parameter is empty.
+#   Otherwise it should be of the following form:
+#   file_name[,length[,sha1sum]] [...]
+# - "TsCheckBox4" is the control name for the checkbox deciding whether it will
+#   install some reader (Foxit in this case, could be acrobat reader). That
+#   installation is enabled by default, and would just bloat the generic
+#   AutoHotKey script, so it gets disabled.
+# - "ScummVM\\[...]" is the command line to run the game, as fetched from the
+#   shortcut/launcher installer/wine creates, which will be used in BAT scripts
+#   created by wisotool
+# - The part in the url which is specific to this game is identical to its "id"
+#   (first parameter), so this parameter is left out.
+# - The install directory is the same as installer window title (second
+#   parameter), so this parameter is left out.
+# - Main installer size and sha1sum, separated by a comma.
 
 #----------------------------------------------------------------
 # Steam Games
