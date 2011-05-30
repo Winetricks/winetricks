@@ -7627,12 +7627,12 @@ w_metadata opera apps \
     publisher="Opera Software" \
     year="2011" \
     media="download" \
-    file1="Opera_1110_en_Setup.exe" \
+    file1="Opera_1111_en_Setup.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Opera/opera.exe"
 
 load_opera()
 {
-    w_download "ftp://ftp.opera.com/pub/opera/win/1110/en/Opera_1110_en_Setup.exe" e0aa457b0fbe3d2caca1eb1d9a311dcd85ba7e14
+    w_download ftp://ftp.opera.com/pub/opera/win/1111/en/Opera_1111_en_Setup.exe 36c34feb0fa7e4611bb0480a38d51a16bc9443d8
     cd "$W_CACHE"/$W_PACKAGE
     w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /silent /launchopera 0 /allusers}
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Opera" opera.exe
