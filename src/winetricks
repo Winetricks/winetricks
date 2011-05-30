@@ -244,7 +244,7 @@ w_try()
     # This is a problem when trying to pass environment variables to e.g. wine.
     # Adding an explicit export here works around it, so add any we use.
     export WINEDLLOVERRIDES
-    echo Executing "$@"
+    printf '%s\n' "Executing $*"
 
     # On Vista, we need to jump through a few hoops to run commands in cygwin.
     # First, .exe's need to have the executable bit set.
