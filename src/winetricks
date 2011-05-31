@@ -15445,6 +15445,32 @@ _EOF_
 }
 
 #----------------------------------------------------------------
+# X11 Driver settings
+
+w_metadata grabfullscreen=y settings \
+    title="Force cursor clipping for full-screen windows (needed by some games)"
+w_metadata grabfullscreen=n settings \
+    title="Disable cursor clipping for full-screen windows (default)"
+
+load_grabfullscreen()
+{
+    case $1 in
+    y|n) arg=$1;;
+    *) w_die "illegal value $1 for GrabFullscreen";;
+    esac
+
+    echo "Setting GrabFullscreen to $arg"
+    cat > "$W_TMP"/set-gfs.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+"GrabFullscreen"="$arg"
+
+_EOF_
+    w_try_regedit "$W_TMP"/set-gfs.reg
+}
+
+#----------------------------------------------------------------
 # Other settings
 
 #----------------------------------------------------------------
