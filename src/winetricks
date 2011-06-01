@@ -9221,7 +9221,7 @@ w_metadata bioshock2 games \
     publisher="2K Games" \
     year="2010" \
     media="dvd" \
-    file1="Bioshock 2.iso" \
+    file1="BIOSHOCK_2.iso" \
     wine_showstoppers="7065" \
     installed_exe1="$W_PROGRAMS_X86_WIN/2K Games/BioShock 2/SP/Builds/Binaries/Bioshock2Launcher.exe" \
     installed_exe2="$W_PROGRAMS_X86_WIN/2K Games/BioShock 2/MP/Builds/Binaries/Bioshock2Launcher.exe"
@@ -9230,7 +9230,7 @@ load_bioshock2()
 {
     w_workaround_wine_bug 7065 "This game won't work in Wine because its disc check fails."
 
-    w_mount "Bioshock 2"
+    w_mount BIOSHOCK_2
     w_ahk_do "
         SetWinDelay 1000
         SetTitleMatchMode, 2
@@ -15140,6 +15140,21 @@ w_metadata alienswarm_steam games \
 load_alienswarm_steam()
 {
     w_steam_install_game 630 "Alien Swarm"
+}
+
+#----------------------------------------------------------------
+
+w_metadata bioshock2_steam games \
+    title="Bioshock 2 (Steam)" \
+    publisher="2k" \
+    year="2010" \
+    media="download" \
+    wine_showstoppers="7065" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/bioshock2/blort.exe"
+
+load_bioshock2_steam()
+{
+    w_steam_install_game 8850 "Bioshock 2"
 }
 
 #----------------------------------------------------------------
