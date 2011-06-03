@@ -6220,15 +6220,19 @@ w_metadata xvid dlls \
     publisher="xvid.org" \
     year="2009" \
     media="download" \
-    file1="Xvid-1.2.2-07062009.exe" \
+    file1="Xvid-1.3.2-20110601.exe" \
     installed_file1="$W_PROGRAMS_X86_WIN/Xvid/xvid.ico"
 
 load_xvid()
 {
     w_call vcrun6
-    w_download http://www.koepi.info/Xvid-1.2.2-07062009.exe 435203e7f713c4484ca4f50f43e847f3dc118962
+    w_download http://www.koepi.info/Xvid-1.3.2-20110601.exe 0a11498a96f75ad019c4c7d06161504140337dc0
     cd "$W_CACHE"/xvid
-    w_try $WINE Xvid-1.2.2-07062009.exe $W_UNATTENDED_SLASH_SILENT
+    if w_workaround_wine_bug 27380 "Installing msvcr80 to avoid crash in setavi32.exe"
+    then
+        w_call vcrun2008
+    fi
+    w_try $WINE $file1 ${W_OPT_UNATTENDED:+ --mode unattended --decode_divx 1 --decode_3ivx 1 --decode_other 1}
 }
 
 #----------------------------------------------------------------
