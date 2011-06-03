@@ -1009,7 +1009,7 @@ fi
 #     If different from game_title
 # installer_size_and_sha1
 #     exe file SHA1.
-wintricks_load_gog()
+winetricks_load_gog()
 {
     game_id="$1"
     game_title="$2"
@@ -15179,7 +15179,20 @@ w_metadata beneath_a_steel_sky_gog games \
 
 load_beneath_a_steel_sky_gog()
 {
-    wintricks_load_gog "beneath_a_steel_sky" "Beneath a Steel Sky" "" "TsCheckBox4" "ScummVM\\scummvm.exe -c \"C:\\Program Files\\GOG.com\\Beneath a Steel Sky\\beneath.ini\" beneath" "" "" "75176395,1f99e12643529baa91fecfb206139a8921d9589c"
+    winetricks_load_gog "beneath_a_steel_sky" "Beneath a Steel Sky" "" "TsCheckBox4" "ScummVM\\scummvm.exe -c \"C:\\Program Files\\GOG.com\\Beneath a Steel Sky\\beneath.ini\" beneath" "" "" "75176395,1f99e12643529baa91fecfb206139a8921d9589c"
+}
+
+w_metadata sacrifice_gog games \
+    title="Sacrifice (GOG.com)" \
+    publisher="Interplay" \
+    year="2000" \
+    media="manual_download" \
+    file1="setup_sacrifice.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/GOG.com/Sacrifice/Sacrifice.exe"
+
+load_sacrifice_gog()
+{
+    winetricks_load_gog "sacrifice" "Sacrifice" "" "TsCheckBox2" "sacrifice" "" "" "591161642,63e77685599ce20c08b004a9fa3324e466ce1679"
 }
 
 # Brief HOWTO for adding a GOG game:
