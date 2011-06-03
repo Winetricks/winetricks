@@ -57,6 +57,7 @@ WINETRICKS_VERSION=20110429
 #   Copyright (C) 2011 Craig Sanders
 #   Copyright (C) 2011 Matthew Bauer <mjbauer95>
 #   Copyright (C) 2011 Giuseppe Dia
+#   Copyright (C) 2011 Łukasz Wojniłowicz
 #
 # License
 #   This program is free software; you can redistribute it and/or
@@ -324,6 +325,9 @@ w_read_key()
             ;;
         de*) _W_keymsg="Bitte einen Key für Pakete '$W_PACKAGE' eingeben"
             _W_nokeymsg="Keinen Key eingegeben?"
+            ;;
+        pl*) _W_keymsg="Proszę podać klucz dla programu '$W_PACKAGE'"
+            _W_nokeymsg="Nie podano klucza"
             ;;
         *)  _W_keymsg="Please enter the key for app '$W_PACKAGE'"
             _W_nokeymsg="No key given"
@@ -688,6 +692,7 @@ w_download_manual_to()
     case $LANG in
     da*) _W_dlmsg="Hent venligst filen $_W_file fra $_W_url og placér den i $W_CACHE/$_W_packagename, kør derefter dette skript.";;
     de*) _W_dlmsg="Bitte laden Sie $_W_file von $_W_url runter, stellen Sie's in $W_CACHE/$_W_packagename, dann wiederholen Sie diesen Kommando.";;
+    pl*) _W_dlmsg="Proszę pobrać plik $_W_file z $_W_url, następnie umieścić go w $W_CACHE/$_W_packagename, a na końcu uruchomić ponownie ten skrytp.";;
     *) _W_dlmsg="Please download $_W_file from $_W_url, place it in $W_CACHE/$_W_packagename, then re-run this script.";;
     esac
 
@@ -1607,6 +1612,7 @@ w_workaround_wine_bug()
     case $LANG in
     da*) w_warn "Arbejder uden om wine-fejl ${1} $_W_msg" ;;
     de*) w_warn "Wine-Fehler ${1} wird umgegangen $_W_msg" ;;
+    pl*) w_warn "Obchodzenie błędu w wine ${1} $_W_msg" ;;
     *)   w_warn "Working around wine bug ${1} $_W_msg" ;;
     esac
     winetricks_stats_log_command w_workaround_wine_bug-$1
@@ -2066,6 +2072,18 @@ winetricks_mainmenu()
          _W_msg_folder='Browse files'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX" 
          ;;
+    pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
+         _W_msg_body='What would you like to do to this wineprefix?'
+         _W_msg_dlls="Zainstaluj Windowsową bibliotekę DLL lub komponent"
+         _W_msg_fonts='Zainstaluj czcionkę'
+         _W_msg_settings='Zmień ustawienia'
+         _W_msg_winecfg='Uruchom winecfg'
+         _W_msg_regedit='Uruchom regedit'
+         _W_msg_taskmgr='Uruchom taskmgr'
+         _W_msg_shell='Uruchom powłokę wiersza poleceń (dla debugowania)'
+         _W_msg_folder='Przeglądaj pliki'
+         _W_msg_annihilate="Usuń WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO WINEPREFIXA" 
+         ;;
     *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
          _W_msg_body='What would you like to do to this wineprefix?'
          _W_msg_dlls="Install a Windows DLL or component"
@@ -2165,6 +2183,18 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
+        pl*) printf %s "zenity \
+                --title '$_W_msg_title' \
+                --text '$_W_msg_body' \
+                --list \
+                --checklist \
+                --column '' \
+                --column Ustawienie \
+                --column Nazwa \
+                --height $WINETRICKS_MENU_HEIGHT \
+                --width $WINETRICKS_MENU_WIDTH \
+                "
+            ;;
         *) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
@@ -2219,6 +2249,10 @@ winetricks_showmenu()
          _W_msg_body='Welche Pakete möchten Sie installieren?'
          _W_cached="gecached" 
          ;;
+    pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
+         _W_msg_body='Które paczki chesz zainstalować?'
+         _W_cached="zarchiwizowane"   
+         ;;
     *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
          _W_msg_body='Which package(s) would you like to install?'
          _W_cached="cached"   
@@ -2261,6 +2295,24 @@ winetricks_showmenu()
                 --column Status \
                 --column 'Größe (MB)' \
                 --column 'Zeit (sec)' \
+                --height $WINETRICKS_MENU_HEIGHT \
+                --width $WINETRICKS_MENU_WIDTH \
+                "
+             ;;
+        pl*) printf %s "zenity \
+                --title '$_W_msg_title' \
+                --text '$_W_msg_body' \
+                --list \
+                --checklist \
+                --column '' \
+                --column Paczka \
+                --column Nazwa \
+                --column Wydawca \
+                --column Rok \
+                --column Media \
+                --column Status \
+                --column 'Rozmiar (MB)' \
+                --column 'Czas (sek)' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -2506,6 +2558,7 @@ winetricks_list_all()
     case $LANG in
     da*) _W_cached="cached"   ; _W_download="kan hentes"    ;;
     de*) _W_cached="gecached" ; _W_download="herunterladbar";;
+    pl*) _W_cached="zarchiwizowane"   ; _W_download="do pobrania"  ;;
     *)   _W_cached="cached"   ; _W_download="downloadable"  ;;
     esac
 
@@ -2741,6 +2794,7 @@ winetricks_cache_iso()
             case $LANG in
             da*)  w_warn "Forkert disk [$_W_volname] indsat. Indsæt venligst disken [$_W_expected_volname]" ;;
             de*)  w_warn "Falsche Disk [$_W_volname] eingelegt.  Bitte legen Sie Disk [$_W_expected_volname] ein!" ;;
+        pl*)  w_warn "Włożono zły dysk [$_W_volname].  Proszę włożyć dysk [$_W_expected_volname]" ;;
             *)    w_warn "Wrong disc [$_W_volname] inserted.  Please insert disc [$_W_expected_volname]" ;;
             esac
 
@@ -2957,6 +3011,7 @@ winetricks_mount_real_volume()
     case $LANG in
     da*)_W_mountmsg="Indsæt venligst disken '$_W_expected_volname' (krævet af pakken '$_PACKAGE')" ;;
     de*)_W_mountmsg="Disc '$_W_expected_volname' bitte einlegen (für Pakete '$W_PACKAGE')" ;;
+    pl*)  _W_mountmsg="Proszę włożyć dysk '$_W_expected_volname' (potrzebny paczce '$W_PACKAGE')" ;;
     *)  _W_mountmsg="Please insert volume '$_W_expected_volname' (needed for package '$W_PACKAGE')" ;;
     esac
 
@@ -3420,6 +3475,7 @@ winetricks_install_app()
     case $LANG in
     da*) fail_msg="Installationen af pakken $1 fejlede" ;;
     de*) fail_msg="Installieren von Pakete $1 gescheitert" ;;
+    pl*) fail_msg="Niepowodzenie przy instalacji paczki $1" ;;
     *)   fail_msg="Failed to install package $1" ;;
     esac
 
@@ -3752,6 +3808,21 @@ w_metadata d3dx9_36 dlls \
 load_d3dx9_36()
 {
     helper_d3dx9_xx 36
+}
+
+#----------------------------------------------------------------
+
+w_metadata d3dx9_39 dlls \
+    title="MS d3dx9_39.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_39.dll"
+
+load_d3dx9_39()
+{
+    helper_d3dx9_xx 39
 }
 
 #----------------------------------------------------------------
@@ -11958,17 +12029,17 @@ w_metadata imvu games \
     publisher="IMVU" \
     year="2004" \
     media="download" \
-    file1="InstallIMVU_453.0.exe" \
+    file1="InstallIMVU_460.0_st_c.exe" \
     installed_exe1="c:/users/$LOGNAME/Application Data/IMVUClient/IMVUClient.exe"
 
 load_imvu()
 {
-    w_download http://static-akm.imvu.com/imvufiles/installers/InstallIMVU_453.0.exe 78c6ea5366b617c4d1418be164e40616412b8fc2
+    w_download http://static-akm.imvu.com/imvufiles/installers/InstallIMVU_460.0_st_c.exe
 
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
-        Run, InstallIMVU_453.0.exe
+        Run, $file1
         SetTitleMatchMode, 2
         if ( w_opt_unattended > 0 ) {
             WinWait,IMVU Setup, Welcome
