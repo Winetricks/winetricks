@@ -11178,14 +11178,15 @@ load_dragonage2_demo()
 w_metadata eve games \
     title="EVE Online Tyrannis" \
     publisher="CCP Games" \
-    year="2010" \
+    year="2011" \
     media="download" \
-    file1="EVE_Premium_Setup_237081_m.exe" \
+    file1="EVE_Premium_Setup_264377_m.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/CCP/EVE/eve.exe"
 
 load_eve()
 {
-    w_download "http://content.eveonline.com/EVE_Premium_Setup_237081_m.exe" 37934c14d4cdcccf36da35ed4562e1b2fa2a1cd5
+    # http://www.eveonline.com/download/?fallback=1&
+    w_download http://content.eveonline.com/EVE_Premium_Setup_264377_m.exe 00d930853c68d2a75f29558b344f885f6c2ff6a7
 
     if w_workaround_wine_bug 18221
     then
@@ -11194,7 +11195,7 @@ load_eve()
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
-        run, EVE_Premium_Setup_237081_m.exe
+        run, $file1
         WinWait, EVE Online Installer
         if ( w_opt_unattended > 0 ) {
             WinActivate
