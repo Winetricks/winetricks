@@ -8807,33 +8807,43 @@ load_amnesia_tdd_demo()
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
-        SetWinDelay 500
+        SetWinDelay 1000
         SetTitleMatchMode, 2
         run amnesia_tdd_demo_1.0.1.exe
         WinWait,Select Setup Language,language
         if ( w_opt_unattended > 0 ) {
             WinActivate
-            ControlClick, TNewButton1 ; OK
+            ;ControlClick, TNewButton1; OK
+            send {Enter}              ; OK
             WinWait,Setup - Amnesia - The Dark Descent Demo,Welcome
-            ControlClick TNewButton1 ; Next
+            ;ControlClick TNewButton1 ; Next
+            send {Enter}              ; Next
             WinWait,Setup - Amnesia - The Dark Descent Demo,License
             ControlClick TNewRadioButton1 ; agree
-            Sleep 500
-            ControlClick TNewButton2 ; Next
+            Sleep 1000
+            send !n                   ; Next
+            ;send {Enter}             ; Next
+            ;ControlClick TNewButton2 ; Next
             WinWait,Setup - Amnesia - The Dark Descent Demo,Destination
-            ControlClick TNewButton3 ; Next
+            ;ControlClick TNewButton3 ; Next
+            send {Enter}              ; Next
             WinWait,Folder Does Not Exist,created
-            ControlClick Button1 ; OK
-            WinWait,Setup - Amnesia - The Dark Descent Demo,should
-            ControlClick TNewButton4 ; Next
-            WinWait,Setup - Amnesia - The Dark Descent Demo,should
-            ControlClick TNewButton4 ; Next
+            ;ControlClick Button1     ; OK
+            send {Enter}              ; OK
+            WinWait,Setup - Amnesia - The Dark Descent Demo,shortcuts
+            ;ControlClick TNewButton4 ; Next
+            send {Enter}              ; Next
+            WinWait,Setup - Amnesia - The Dark Descent Demo,additional tasks
+            ;ControlClick TNewButton4 ; Next
+            send {Enter}              ; Next
             WinWait,Setup - Amnesia - The Dark Descent Demo,installing
-            ControlClick TNewButton4 ; Install
+            ;ControlClick TNewButton4 ; Install
+            send {Enter}              ; Install
         }
         WinWait,Setup - Amnesia - The Dark Descent Demo,finished
         if ( w_opt_unattended > 0 ) {
-            ControlClick TNewButton4 ; Finish
+            ;ControlClick TNewButton4 ; Finish
+            send {Enter}              ; Finish
         }
         WinWaitClose,Setup - Amnesia - The Dark Descent Demo,finished
     "
