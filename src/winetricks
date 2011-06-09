@@ -7205,7 +7205,7 @@ load_ie6()
     fi
 
     # Change the override to the native so we are sure we use and register them
-    w_override_dlls native,builtin iexplore.exe itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi urlmon
+    w_override_dlls native,builtin iexplore.exe inetcpl.cpl itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi urlmon
 
     # Remove the fake dlls, if any
     mv "$W_PROGRAMS_UNIX"/"Internet Explorer"/iexplore.exe "$W_PROGRAMS_UNIX"/"Internet Explorer"/iexplore.exe.bak
@@ -7220,7 +7220,10 @@ load_ie6()
 
     # Workaround http://bugs.winehq.org/show_bug.cgi?id=21009
     # See also http://code.google.com/p/winezeug/issues/detail?id=78
-    rm -f "$W_SYSTEM32_DLLS"/browseui.dll "$W_SYSTEM32_DLLS"/inseng.dll
+    rm -f "$W_SYSTEM32_DLLS"/browseui.dll "$W_SYSTEM32_DLLS"/inseng.dll 
+    
+    # Otherwise regsvr32 crashes later
+    rm -f "$W_SYSTEM32_DLLS"/inetcpl.cpl
 
     # Work around http://bugs.winehq.org/show_bug.cgi?id=25432
     w_try_cabextract -F inseng.dll "$W_TMP/IE 6.0 Full/ACTSETUP.CAB"
@@ -7246,8 +7249,8 @@ load_ie6()
     # FIXME: whittle down this list
     cd "$W_SYSTEM32_DLLS"
     for i in actxprxy.dll browseui.dll browsewm.dll cdfview.dll ddraw.dll \
-      dispex.dll dsound.dll iedkcs32.dll iepeers.dll iesetup.dll \
-      imgutil.dll inetcomm.dll inseng.dll isetup.dll jscript.dll laprxy.dll \
+      dispex.dll dsound.dll iedkcs32.dll iepeers.dll iesetup.dll imgutil.dll \
+      inetcomm.dll inetcpl.cpl inseng.dll isetup.dll jscript.dll laprxy.dll \
       mlang.dll mshtml.dll mshtmled.dll msi.dll msident.dll \
       msoeacct.dll msrating.dll mstime.dll msxml3.dll occache.dll \
       ole32.dll oleaut32.dll olepro32.dll pngfilt.dll quartz.dll \
