@@ -4525,6 +4525,24 @@ load_gdiplus()
 
 #----------------------------------------------------------------
 
+w_metadata glidewrapper dlls \
+    title="GlideWrapper" \
+    publisher="Rolf Neuberger" \
+    year="2005" \
+    media="download" \
+    file1="GlideWrapper084c.exe" \
+    installed_file1="c:/windows/glide3x.dll"
+
+load_glidewrapper()
+{
+    w_download http://www.zeckensack.de/glide/archive/GlideWrapper084c.exe 7a9d60a18b660473742b476465e9aea7bd5ab6f8
+    cd "$W_CACHE/$W_PACKAGE"
+    # NSIS installer
+    w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /S}
+}
+
+#----------------------------------------------------------------
+
 w_metadata gecko dlls \
     title="Gecko (usually installed by distro)" \
     publisher="WineHQ/Mozilla"
@@ -12843,6 +12861,71 @@ load_maxmagicmarker_demo()
     mv "max and the magic markerdemo pc" "max and the magic markerdemo pc"_Data
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\$W_PACKAGE" "max and the magic markerdemo pc.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata mdk games \
+    title="MDK (3dfx)" \
+    publisher="Playmates International" \
+    year="1997" \
+    media="cd" \
+    file1="MDK.iso" \
+    installed_exe1="C:/SHINY/MDK/MDK3DFX.EXE"
+
+load_mdk()
+{
+    # Needed even on Windows, some people say.  Haven't tried the D3D version on win7 yet.
+    w_call glidewrapper
+
+    w_download http://www.falconfly.de/downloads/patch-mdk3dfx.zip edcff0160c62d23b00c55c0bdfa38a6e90d925b0
+
+    w_mount MDK
+    cd "$W_ISO_MOUNT_ROOT"
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetTitleMatchMode, slow
+        run ${W_ISO_MOUNT_LETTER}:setup.exe
+        winwait, MDK
+        if ( w_opt_unattended > 0 ) {
+            click, left, 80, 80   ; USA
+            winwait, Welcome, purchasing MDK
+            ControlClick, Button1    ; Next
+            winwait, Select Target Platform
+            ControlClick, Button6    ; Next
+            winwait, Select Installation Options
+            ControlClick, Button3    ; Large
+            ControlClick, Button6    ; Next
+            winwait, Destination
+            ControlClick, Button1    ; Next
+            winwait, Program Folder
+            ControlClick, Button2    ; Next
+            winwait, Start
+            ControlClick, Button1    ; Next
+            Loop {
+                IfWinExist, Setup, ProgramFolder
+                    send {Enter}
+                IfWinExist, Setup Complete
+                    break
+                sleep 500
+            }
+        }
+        WinWait, Setup Complete
+        if ( w_opt_unattended > 0 ) {
+            ControlClick, Button1  ; uncheck readme
+            ControlClick, Button4  ; Finish
+            WinWait, Question, DirectX
+            ControlClick, Button2  ; No
+            WinWait, Information, complete
+            ControlClick, Button1  ; No
+        }
+        WinWaitClose
+    "
+    cd "$W_DRIVE_C/SHINY/MDK"
+    w_try_unzip "$W_CACHE/$W_PACKAGE"/patch-mdk3dfx.zip
+
+    w_declare_exe "C:\\SHINY\\MDK" "MDK3DFX.EXE"
+    # TODO: wine fails to install menu items, add a workaround for that
 }
 
 #----------------------------------------------------------------
