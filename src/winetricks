@@ -6213,12 +6213,15 @@ w_metadata xmllite dlls \
     publisher="Microsoft" \
     year="2006" \
     media="download" \
-    file1="WindowsXP-KB915865-v11-x86-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/xmllite.dll"
 
 load_xmllite()
 {
-    w_download http://download.microsoft.com/download/f/9/6/f964059a-3747-4ed8-9326-ba1e639031b1/WindowsXP-KB915865-v11-x86-ENU.exe 226d246a1c64e693791de5c727509002d089b0d5
+    case $LANG in
+    en*) w_download http://download.microsoft.com/download/f/9/6/f964059a-3747-4ed8-9326-ba1e639031b1/WindowsXP-KB915865-v11-x86-ENU.exe 226d246a1c64e693791de5c727509002d089b0d5 ;;
+    fr*) w_download http://download.microsoft.com/download/4/1/d/41de58a0-6715-4d3e-99e7-ff0c11283d1b/WindowsXP-KB915865-v11-x86-FRA.exe abb70b6a96be7dce453b00877739e90c6f3efba0 ;;
+    *) w_die "sorry, xmllite install not yet implemented for language $LANG" ;;
+    esac
 
     if w_workaround_wine_bug 16013
     then
@@ -6235,7 +6238,10 @@ load_xmllite()
 
     cd "$W_CACHE"/xmllite
     w_override_dlls native xmllite
-    w_try $WINE WindowsXP-KB915865-v11-x86-ENU.exe $W_UNATTENDED_SLASH_Q
+    case $LANG in
+    en*) w_try $WINE WindowsXP-KB915865-v11-x86-ENU.exe $W_UNATTENDED_SLASH_Q ;;
+    fr*) w_try $WINE WindowsXP-KB915865-v11-x86-FRA.exe $W_UNATTENDED_SLASH_Q ;;
+    esac
 }
 
 #----------------------------------------------------------------
