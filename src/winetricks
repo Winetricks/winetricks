@@ -5865,18 +5865,19 @@ w_metadata vcrun2005 dlls \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
-    file1="vcredist_x86.exe" \
-    installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.5592_x-ww_e87e0bcd/mfc80.dll"
+    file1="vcredist_x86.EXE" \
+    installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.6195_x-ww_150c9e8b/mfc80.dll"
 
 load_vcrun2005()
 {
-    # build 5592, April 2011 security update, see 
-    # http://www.microsoft.com/technet/security/bulletin/MS11-025.mspx and 
-    # http://support.microsoft.com/kb/2467175
-    w_download http://download.microsoft.com/download/3/0/5/305BF178-5F7C-489E-8F39-C3257429E832/vcredist_x86.exe 3badcd6e356c9511ad2e71010fa4684954091e09
+    # June 2011 security update, see 
+    # http://www.microsoft.com/technet/security/bulletin/MS11-025.mspx or
+    # http://support.microsoft.com/kb/2538242
+    w_download http://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x86.EXE b8fab0bb7f62a24ddfe77b19cd9a1451abd7b847
+
     cd "$W_CACHE"/vcrun2005
     w_override_dlls native,builtin msvcr80
-    w_try $WINE vcredist_x86.exe $W_UNATTENDED_SLASH_Q
+    w_try $WINE $file1 $W_UNATTENDED_SLASH_Q
 }
 
 #----------------------------------------------------------------
