@@ -5888,17 +5888,17 @@ w_metadata vcrun2008 dlls \
     year="2011" \
     media="download" \
     file1="vcredist_x86.exe" \
-    installed_file1="C:/windows/winsxs/x86_Microsoft.VC90.MFC_1fc8b3b9a1e18e3b_9.0.30729.5570_x-ww_d5fe2ecb/mfc90.dll"
+    installed_file1="C:/windows/winsxs/x86_Microsoft.VC90.MFC_1fc8b3b9a1e18e3b_9.0.30729.6161_x-ww_028bc148/mfc90.dll"
 
 load_vcrun2008()
 {
-    # build 5570, April 2011 security update, see 
-    # http://www.microsoft.com/technet/security/bulletin/MS11-025.mspx and 
-    # http://support.microsoft.com/kb/2467174
-    w_download http://download.microsoft.com/download/7/E/D/7ED72B8A-D457-4DF0-B455-42A85FA157FF/vcredist_x86.exe 0361fcefc78b0ab4896ca1837551aeda5175f6fd
+    # June 2011 security update, see 
+    # http://www.microsoft.com/technet/security/bulletin/MS11-025.mspx or
+    # http://support.microsoft.com/kb/2538242
+    w_download http://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 470640aa4bb7db8e69196b5edb0010933569e98d
     w_override_dlls native,builtin msvcr90
     cd "$W_CACHE"/vcrun2008
-    w_try $WINE vcredist_x86.exe $W_UNATTENDED_SLASH_Q
+    w_try $WINE $file1 $W_UNATTENDED_SLASH_Q
 }
 
 #----------------------------------------------------------------
