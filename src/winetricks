@@ -315,7 +315,14 @@ w_read_key()
     fi
 
     mkdir -p "$W_CACHE/$W_PACKAGE"
+
+    # backwards compatibile location
+    # Auth doesn't belong in cache, since restoring it requires user input
     _W_keyfile="$W_CACHE/$W_PACKAGE/key.txt"
+    if ! test -f "$_W_keyfile" 
+    then
+        _W_keyfile="$WINETRICKS_AUTH/$W_PACKAGE/key.txt"
+    fi
     if ! test -f "$_W_keyfile"
     then
         # read key from user
@@ -3322,6 +3329,7 @@ winetricks_init()
         WINETRICKS_POST="${WINETRICKS_POST:-$HOME/.local/share/winetricks/postinstall}"
     fi
     test -d "$W_CACHE" || mkdir -p "$W_CACHE"
+    WINETRICKS_AUTH="${WINETRICKS_AUTH:-$HOME/.local/share/winetricks/auth}"
 
     # System-specific variables
     case "$OS" in
@@ -6895,15 +6903,45 @@ load_adobe_diged()
 #----------------------------------------------------------------
 
 w_metadata audible apps \
-    title="Audible.com Download Helper / Player" \
+    title="Audible.com Manager / Player" \
+    publisher="Audible" \
+    year="2011" \
+    media="download" \
+    file1="ActiveSetupN.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Audible/Bin/Manager.exe" \
+    homepage="http://www.audible.com"
+
+load_audible()
+{
+    w_download http://download.audible.com/AM50/ActiveSetupN.exe 49f501471912ccca442bcc1c8f2c69160579f712
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetWinDelay 500
+        SetTitleMatchMode, 2
+        Run, $file1
+        WinWait, AudibleManager Setup
+        ControlClick, Button3  ; accept
+        WinWait, AudibleManager Setup, Start by
+        ControlClick, Button6 ; OK
+        WinWaitClose
+        WinWait, AudibleManager  ; the dang thing starts up
+        WinKill
+    "
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Audible\\Bin" Manager.exe
+}
+
+#----------------------------------------------------------------
+
+w_metadata audibledm apps \
+    title="Audible.com Download Manager" \
     publisher="Audible" \
     year="2011" \
     media="download" \
     file1="AudibleDM_iTunesSetup.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Audible/Bin/AudibleDownloadHelper.exe " \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Audible/Bin/AudibleDownloadHelper.exe" \
     homepage="http://www.audible.com"
 
-load_audible()
+load_audibledm()
 {
     w_download http://download.audible.com/AM50/AudibleDM_iTunesSetup.exe 03261d77a59ebbceedf6683b5301c162bc0c7788
     cd "$W_CACHE/$W_PACKAGE"
