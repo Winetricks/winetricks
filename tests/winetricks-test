@@ -4,7 +4,7 @@
 set -x
 
 # verbs known to not work in -q mode yet
-BLACKLIST="cygwin|kde|psdk2003|psdkwin7"
+BLACKLIST="cygwin|kde|psdk2003|psdkwin7|dotnet20sp2"
 # verbs that hang in -q because of simple problem we should work around soon
 BLACKLIST="$BLACKLIST|vc2005trial"
 # verbs that are too slow
@@ -217,7 +217,7 @@ test_install_cached_or_download()
 }
 
 # Test the frequent download-changes-checksum offenders first
-(
+false && (
 cache="$HOME/winetricks-quickcheck-cache"
 rm -rf "$cache"
 export W_CACHE="$cache" 
