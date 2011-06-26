@@ -192,7 +192,6 @@ test_app()
 
 test_install_cached_or_download()
 {
-    #sh winetricks list-cached list-download | fgrep -x -f games.txt > ticd.log
     sh winetricks list-cached list-download > ticd.log
     if grep .------------------- ticd.log
     then
@@ -200,7 +199,20 @@ test_install_cached_or_download()
         exit 1
     fi
     sort -u < ticd.log | egrep -v "$BLACKLIST" > ticd.verbs
-    for a in `cat ticd.verbs`
+
+    if false
+    then
+        # Split into two, only do half
+        nverbs=`cat ticd.verbs | wc -l`
+        firsthalf=`expr $nverbs / 2`
+        sed '$firsthalf+1,$d' < ticd.verbs > ticd-1.verbs 
+        sed '1,$firsthalfd'   < ticd.verbs > ticd-2.verbs 
+        VERBS=`cat ticd-1.verbs`
+    else
+        VERBS=`cat ticd.verbs`
+    fi
+
+    for a in $VERBS
     do
         test_app $a
     done
@@ -212,6 +224,12 @@ test_install_cached_or_download()
     BLACKLIST_CACHE="allfonts|cjkfonts|allcodecs|gecko|gecko110|fontfix"
     cat ticd.verbs | egrep -vw "$BLACKLIST_CACHE" > download.txt
     comm -23 download.txt cached.txt > download-but-not-cached.txt
+    echo "Supposedly downloadable"
+    cat download.txt
+    echo "Cached"
+    cat cached.txt
+    echo "Downloadable but not cached"
+    cat download-but-not-cached.txt
     if test `wc -l < download-but-not-cached.txt` != 0
     then
         fail "test_install_cached_or_download: asked to install all downloadable apps, but some not listed as cached afterwards"
@@ -220,7 +238,7 @@ test_install_cached_or_download()
 }
 
 # Test the frequent download-changes-checksum offenders first
-false && (
+(
 cache="$HOME/winetricks-quickcheck-cache"
 rm -rf "$cache"
 export W_CACHE="$cache" 
