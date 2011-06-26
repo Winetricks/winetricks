@@ -15,6 +15,9 @@ BLACKLIST="$BLACKLIST|amnesia_tdd_demo|wowtrial|mfsxde"
 BLACKLIST="$BLACKLIST|borderlands|supermeatboy|trine"
 # broken http://bugs.winehq.org/show_bug.cgi?id=26411:
 BLACKLIST="$BLACKLIST|mfsxde|mfsx_demo"
+# only support older versions of wine
+BLACKLIST="$BLACKLIST|gecko110"
+
 # Verbs known to update frequently
 QUICKCHECK="flash spotify utorrent utorrent3 hegemonygold_demo"
 
@@ -206,7 +209,7 @@ test_install_cached_or_download()
     # state yet.  
     # Verbs that are just informative placeholders don't ever download (gecko).
     # And some verbs (gecko110) don't usually install for other reasons.
-    BLACKLIST_CACHE="allfonts|cjkfonts|allcodecs|gecko|gecko110"
+    BLACKLIST_CACHE="allfonts|cjkfonts|allcodecs|gecko|gecko110|fontfix"
     cat ticd.verbs | egrep -vw "$BLACKLIST_CACHE" > download.txt
     comm -23 download.txt cached.txt > download-but-not-cached.txt
     if test `wc -l < download-but-not-cached.txt` != 0
