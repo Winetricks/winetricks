@@ -8638,6 +8638,7 @@ load_3dmark2001()
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
+        SetWinDelay 1000
         SetTitleMatchMode, 2
         run 3dmark2001se_330_100308.exe
         WinWait ahk_class #32770 ; welcome
@@ -8645,21 +8646,16 @@ load_3dmark2001()
             ControlClick Button2  ; Next
             sleep 5000
             WinWait ahk_class #32770 ; License
-            sleep 500
             ControlClick Button2  ; Next
             WinWait ahk_class #32770, Destination
-            sleep 500
             ControlClick Button1  ; Next
             WinWait ahk_class #32770, Start
-            sleep 500
             ControlClick Button1  ; Next
             WinWait,, Registration
-            sleep 500
             ControlClick Button2  ; Next
         }
         WinWait,, Complete
         if ( w_opt_unattended > 0 ) {
-            sleep 500
             ControlClick Button1  ; Unclick View Readme
             ControlClick Button4  ; Finish
         }
@@ -12172,15 +12168,16 @@ load_imvu()
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
-        Run, $file1
         SetTitleMatchMode, 2
+        SetWinDelay 500
+        Run, $file1
         if ( w_opt_unattended > 0 ) {
-            WinWait,IMVU Setup, Welcome
+            WinWait,IMVU Setup, IMVU Extension
+            ControlClick Button4 ; Don't install extension
             Sleep 500
-            ControlClick Button2 ; Install
+            ControlClick Button2 ; Finish
             ; There's no way to tell it not to launch
             WinWait,IMVU Login, chrome
-            Sleep 500
             Click, Left, 29, 230  ; Uncheck [run on startup]
             Sleep 500
             Click, Left, 416, 11  ; Click X on window decoration to close
@@ -14328,7 +14325,8 @@ load_spore_cc_demo()
             winwait, Wizard, options below
             send N
             winwait, Wizard, We're ready
-            send i
+            ;send i       ; didn't take once?
+            ControlClick, Button1
             winwait, Question, do not install the latest
             send N        ; reject EA Download Manager
             winwait, Wizard, Launch
@@ -15160,6 +15158,7 @@ load_wog()
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
+        SetWinDelay 500
         run WorldOfGooDemo.1.0.exe
         winwait, World of Goo Setup, License Agreement
         if ( w_opt_unattended > 0 ) {
