@@ -13226,6 +13226,7 @@ load_myth2_demo()
         run, $file1
         winwait, Setup, Welcome
         if ( w_opt_unattended > 0 ) {
+            winactivate
             send {Enter} ; next
             winwait, Setup, Components
             send {Enter} ; next
