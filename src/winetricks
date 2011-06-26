@@ -9253,13 +9253,13 @@ w_metadata avatar_demo games \
     title="James Camerons Avatar: The Game Demo" \
     publisher="Ubisoft" \
     year="2009" \
-    media="download" \
+    media="manual_download" \
     file1="Avatar_The_Game_Demo.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Demo/James Cameron's AVATAR - THE GAME (Demo)/bin/AvatarDemo.exe"
 
 load_avatar_demo()
 {
-    w_download http://gamedaily.newaol.com/pub/Avatar_The_Game_Demo.exe 8d8e4c82312962706bd2620406d592db4f0fa9c1
+    w_download_manual http://www.fileplanet.com/207386/200000/fileinfo/Avatar:-The-Game-Demo Avatar_The_Game_Demo.exe 8d8e4c82312962706bd2620406d592db4f0fa9c1
 
     if w_workaround_wine_bug 23094 "Installing Visual C++ 2005 runtime to avoid installer crash"
     then
@@ -9815,13 +9815,13 @@ w_metadata cnc_redalert3_demo games \
     title="Command & Conquer Red Alert 3 Demo" \
     publisher="EA" \
     year="2008" \
-    media="download" \
+    media="manual_download" \
     file1="RedAlert3Demo.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Red Alert 3 Demo/RA3Demo.exe"
 
 load_cnc_redalert3_demo()
 {
-    w_download http://gamedaily.newaol.com/pub/RedAlert3Demo.exe f909b87cc12e386a51be51ede708634348c8af48
+    w_download_manual 'http://www.fileplanet.com/194888/190000/fileinfo/Command-&-Conquer:-Red-Alert-3-Demo' RedAlert3Demo.exe f909b87cc12e386a51be51ede708634348c8af48
 
     cd "$W_CACHE/$W_PACKAGE"
     if test ! "$W_OPT_UNATTENDED"
@@ -9909,13 +9909,13 @@ w_metadata cod_demo games \
     title="Call of Duty demo" \
     publisher="Activision" \
     year="2003" \
-    media="download" \
-    file1="Call_Of_Duty_Demo.exe" \
+    media="manual_download" \
+    file1="call_of_duty_demo.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Call of Duty Single Player Demo/CoDSP.exe"
 
 load_cod_demo()
 {
-    w_download "http://gamedaily.newaol.com/pub/Call_Of_Duty_Demo.exe" 1c480a1e64a80f7f97fd0acd9582fe190c64ad8e
+    w_download_manual http://www.gamefront.com/files/968870/call_of_duty_demo_exe Call_Of_Duty_Demo.exe 1c480a1e64a80f7f97fd0acd9582fe190c64ad8e
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -10069,13 +10069,13 @@ w_metadata cod4mw_demo games \
     title="Call of Duty 4 Modern Warfare" \
     publisher="Activision" \
     year="2007" \
-    media="download" \
+    media="manual_download" \
     file1="CoD4MWDemoSetup_v2.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Activision/Call of Duty 4 - Modern Warfare Demo/iw3sp.exe"
 
 load_cod4mw_demo()
 {
-    w_download "http://gamedaily.newaol.com/pub/CoD4MWDemoSetup_v2.exe" 690a5f789a44437ed10784acfdd6418ca4a21886
+    w_download http://download.cnet.com/Call-of-Duty-4-Modern-Warfare/3000-7441_4-11277584.html CoD4MWDemoSetup_v2.exe 690a5f789a44437ed10784acfdd6418ca4a21886
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -10199,13 +10199,13 @@ w_metadata cojbib_demo games \
     title="Call of Juarez: Bound in Blood Demo" \
     publisher="Ubisoft" \
     year="2009" \
-    media="download" \
+    media="manual_download" \
     file1="CoJ2PC_20090713_DEMO_16_buy_now_INSTALLER.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Demo/Techland/Call of Juarez - Bound in Blood SP Demo/CoJBiBDemo_x86.exe"
 
 load_cojbib_demo()
 {
-    w_download http://gamedaily.newaol.com/pub/CoJ2PC_20090713_DEMO_16_buy_now_INSTALLER.exe 6426101f6c77bacd57c8449b12a3c76db7f761f0
+    w_download_manual http://www.gamefront.com/files/14274183/CoJ2PC-20090713-DEMO-16-buy-now-INSTALLER.exe/ CoJ2PC_20090713_DEMO_16_buy_now_INSTALLER.exe 6426101f6c77bacd57c8449b12a3c76db7f761f0
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
