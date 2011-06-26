@@ -13317,9 +13317,9 @@ load_nfsshift_demo()
 w_metadata nfsworld games \
     title="Need For Speed World" \
     publisher="EA" \
-    year="2010" \
+    year="2011" \
     media="download" \
-    file1="setup_386.exe" \
+    file1="setup_441.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need For Speed World/GameLauncher.exe"
 
 load_nfsworld()
@@ -13328,7 +13328,7 @@ load_nfsworld()
 
     # This changes frequently, I'm afraid
     # Be careful to update $file1 when you update the url
-    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.34.386/setup_386.exe 0ae88d65bad16808db43f99c775f74d4d3eb1b40
+    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.35.441/setup_441.exe 0f75ea12fc3fe40dd97bf0b6556ed146de435edf
 
     w_workaround_wine_bug 27048 "The patcher hangs a lot.  When it does, retry the patch (you may need to kill it first).  After five or ten tries, it should work."
 
@@ -13381,14 +13381,14 @@ load_nfsworld()
 w_metadata nfsworld_mono games \
     title="Need For Speed World (using Mono)" \
     publisher="EA" \
-    year="2010" \
+    year="2011" \
     media="download" \
-    file1="setup_386.exe" \
+    file1="setup_441.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need For Speed World/GameLauncher.exe"
 
 load_nfsworld_mono()
 {
-    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.34.386/setup_386.exe 0ae88d65bad16808db43f99c775f74d4d3eb1b40
+    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.35.441/setup_441.exe 0f75ea12fc3fe40dd97bf0b6556ed146de435edf
 
     if w_workaround_wine_bug 25658 "Installing Mono 2.6"
     then
@@ -13449,16 +13449,15 @@ load_nfsworld_mono()
     fi
 
     # Create custom start batch file
+    # FIXME: Before wine-1.3.22, del /s will crash, see http://bugs.winehq.org/show_bug.cgi?id=26885
     cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
 c:
 
-rem To work around mono bug mentioned by Vincent, do
-rem    find $WINEPREFIX/drive_c/users/$USERNAME/Local\\ Settings -name user.config -exec rm \{} \;
-rem before running this.
-rem (del /s is horribly broken, see http://bugs.winehq.org/show_bug.cgi?id=26885)
-cd "c:\\users\\%USERNAME%\\Local Settings\\Application Data\\Electronic Arts Inc" 
-dir /s user.config
+rem Work around mono bug mentioned by Vincent
+cd "c:\\users\\%USERNAME%\\Local Settings\\Application Data"
+if exist "Electronic Arts Inc" del /s "Electronic Arts Inc\\user.config"
 
+echo Warning, do not move window, Vincent says it will break keyboard input
 cd "C:\\Program Files\\Electronic Arts\\Need For Speed World"
 GameLauncher.exe
 __EOF__
