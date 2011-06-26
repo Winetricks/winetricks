@@ -10871,13 +10871,13 @@ w_metadata dirt2_demo games \
     title="Dirt 2 Demo" \
     publisher="Codemasters" \
     year="2009" \
-    media="download" \
+    media="manual_download" \
     file1="Dirt2Demo.zip" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Codemasters/DiRT2 Demo/dirt2.exe"
 
 load_dirt2_demo()
 {
-    w_download "http://gamedaily.newaol.com/pub/Dirt2Demo.zip" 13af1beb8c4f6300e4655045b66aea1f8a29f2b3
+    w_download_manual http://www.joystiq.com/game/dirt-2/download/dirt-2-demo/ Dirt2Demo.zip 13af1beb8c4f6300e4655045b66aea1f8a29f2b3
 
     mkdir "$W_TMP/$W_PACKAGE"
     w_try_unzip -d "$W_TMP/$W_PACKAGE" "$W_CACHE/$W_PACKAGE/Dirt2Demo.zip"
@@ -14361,7 +14361,7 @@ w_metadata starcraft2_demo games \
 
 load_starcraft2_demo()
 {
-    w_download http://gamedaily.newaol.com/pub/SC2-WingsOfLiberty-enUS-Demo-Installer.zip 4c06ad755fbde73f135a7359bf6bfdbd2c6eb00e
+    w_download_manual http://www.fileplanet.com/217982/210000/fileinfo/Starcraft-2-Demo SC2-WingsOfLiberty-enUS-Demo-Installer.zip 4c06ad755fbde73f135a7359bf6bfdbd2c6eb00e
 
     cd "$W_TMP"
     w_try_unzip "$W_CACHE/$W_PACKAGE"/SC2-WingsOfLiberty-enUS-Demo-Installer.zip
