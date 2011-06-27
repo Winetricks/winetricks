@@ -15898,19 +15898,24 @@ load_sandbox()
     # Might want to unpack gecko first, since Wine won't be able to get to /usr/lib/wine after this
     rm -f "$WINEPREFIX/dosdevices/z:"
 
-    # FIXME: these are language-specific, we probably need to localize these
-    # remove symlinks (won't do anything if they're already directories)
-    rm -f "$WINEPREFIX/drive_c/users/$USER/Desktop"
-    rm -f "$WINEPREFIX/drive_c/users/$USER/My Documents"
-    rm -f "$WINEPREFIX/drive_c/users/$USER/My Music"
-    rm -f "$WINEPREFIX/drive_c/users/$USER/My Pictures"
-    rm -f "$WINEPREFIX/drive_c/users/$USER/My Videos"
-    # create replacement directories if needed
-    mkdir -p "$WINEPREFIX/drive_c/users/$USER/Desktop"
-    mkdir -p "$WINEPREFIX/drive_c/users/$USER/My Documents"
-    mkdir -p "$WINEPREFIX/drive_c/users/$USER/My Music"
-    mkdir -p "$WINEPREFIX/drive_c/users/$USER/My Pictures"
-    mkdir -p "$WINEPREFIX/drive_c/users/$USER/My Videos"
+    if test -d "$WINEPREFIX/drive_c/users/$USER/Documents"
+    then
+        for dir in Desktop Documents Music Pictures Videos
+        do
+            rm -f "$WINEPREFIX/drive_c/users/$USER/$dir" > /dev/null 2>&1
+            mkdir -p "$WINEPREFIX/drive_c/users/$USER/$dir"
+        done
+    elif test -d "$WINEPREFIX/drive_c/users/$USER/My Documents"
+    then
+        for dir in Desktop "My Documents" "My Music" "My Pictures" "My Videos"
+        do
+            rm -f "$WINEPREFIX/drive_c/users/$USER/$dir" > /dev/null 2>&1
+            mkdir -p "$WINEPREFIX/drive_c/users/$USER/$dir"
+        done
+    else
+        w_die "don't know name of My Documents folder, can't sandbox"
+    fi
+
 
     # Disable unixfs
     # Unfortunately, when you run with a different version of wine, wine will recreate this key.
