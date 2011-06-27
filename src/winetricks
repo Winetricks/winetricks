@@ -542,10 +542,9 @@ w_download_to()
            # [*] --read-timeout is useful on the adobe server that doesn't
            # close the connection unless you tell it to (control-C or closing
            # the socket)
-           # Disable retries for gog.com (which requires higher level retries)
            winetricks_wget_progress \
                -O "$_W_file" -nd \
-               -c --read-timeout=300 --tries=1 --retry-connrefused \
+               -c --read-timeout=300 --retry-connrefused \
                --header "Accept-Encoding: gzip,deflate" \
                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
                ${_W_agent:+--user-agent="$_W_agent"} \
