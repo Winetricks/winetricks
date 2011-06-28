@@ -391,6 +391,12 @@ w_pathconv()
     esac
 }
 
+# Expand an environment variable and print it to stdout
+w_expand_env()
+{
+    winetricks_early_wine cmd.exe /c echo "%$1%"
+}
+
 # verify an sha1sum
 w_verify_sha1sum()
 {
@@ -1876,7 +1882,7 @@ w_append_path()
     # Prepend $1 to the windows path in the registry.
     # Use printf %s to avoid interpreting backslashes.
     _W_NEW_PATH="`printf %s $1| sed 's,\\\\,\\\\\\\\,g'`"
-    _W_WIN_PATH="`winetricks_early_wine cmd.exe /c echo "%PATH%" | tr -d '\r' | sed 's,\\\\,\\\\\\\\,g'`"
+    _W_WIN_PATH="`w_expand_env PATH | sed 's,\\\\,\\\\\\\\,g'`"
 
     sed 's/$/\r/' > "$W_TMP"/path.reg <<_EOF_
 REGEDIT4
@@ -1907,7 +1913,8 @@ winetricks_early_wine()
     # We used to use WINEDLLOVERRIDES=mshtml= here to suppress the gecko
     # autoinstall, but that yielded wineprefixes that *never* autoinstalled
     # gecko (winezeug bug 223).
-    WINEDEBUG=-all $WINE "$@" 2>/dev/null | sed 's/.*1h.=//'
+    # The tr removes carriage returns so expanded variables don't have crud on the end
+    WINEDEBUG=-all $WINE "$@" 2>/dev/null | sed 's/.*1h.=//' | tr -d '\r'
 }
 
 winetricks_detect_gui()
@@ -3121,7 +3128,7 @@ winetricks_set_wineprefix()
 
     # Run wine here to force creation of the wineprefix so it's there when we want to make the cache symlink a bit later.
     # The folder-name is localized!
-    W_PROGRAMS_WIN="`$WINE cmd.exe /c echo "%ProgramFiles%" | tr -d '\015'`"
+    W_PROGRAMS_WIN="`w_expand_env ProgramFiles`"
     case "$W_PROGRAMS_WIN" in
     "") w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string" ;;
     %*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string '$W_PROGRAMS_WIN' ... can be caused a corrupt wineprefix, an old wine, or by not owning $WINEPREFIX" ;;
@@ -3171,12 +3178,12 @@ winetricks_set_wineprefix()
     esac
 
     # FIXME wrong on 64 bit windows for now
-    W_COMMONFILES_X86_WIN="`$WINE cmd.exe /c echo "%CommonProgramFiles%" | tr -d '\015'`"
+    W_COMMONFILES_X86_WIN="`w_expand_env CommonProgramFiles`"
 
     W_WINDIR_UNIX="$W_DRIVE_C/windows"
 
     # FIXME: move that tr into w_pathconv, if it's still needed?
-    W_PROGRAMS_UNIX="`w_pathconv -u "$W_PROGRAMS_WIN" | tr -d '\015' `"
+    W_PROGRAMS_UNIX="`w_pathconv -u "$W_PROGRAMS_WIN"`"
 
     # 64 bit windows has a second directory for program files
     W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN} (x86)"
@@ -3187,8 +3194,8 @@ winetricks_set_wineprefix()
         W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX}"
     fi
 
-    W_APPDATA_WIN="`winetricks_early_wine cmd.exe /c echo "%AppData%" | tr -d '\015'`"
-    W_APPDATA_UNIX="`w_pathconv -u "$W_APPDATA_WIN" | tr -d '\015' `"
+    W_APPDATA_WIN="`w_expand_env AppData`"
+    W_APPDATA_UNIX="`w_pathconv -u "$W_APPDATA_WIN"`"
 
     # FIXME: get fonts path from SHGetFolderPath
     # See also http://blogs.msdn.com/oldnewthing/archive/2003/11/03/55532.aspx
