@@ -3295,7 +3295,7 @@ winetricks_init()
     # their mirror picker sometimes persistantly sends you to a broken
     # mirror.
     case `date +%S` in
-    *[3])  WINETRICKS_SOURCEFORGE=http://easynews.dl.sourceforge.net/sourceforge ;;
+    *[3])  WINETRICKS_SOURCEFORGE=http://surfnet.dl.sourceforge.net/sourceforge ;;
     *)     WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net;;
     esac
 
@@ -10855,8 +10855,9 @@ w_metadata digitanks_demo games \
 
 load_digitanks_demo()
 {
+    # 8 june 2011: f204b13dc64c1a54fb1aaf27187c6083ebb16acf
     w_download "http://static.digitanks.com/files/digitanks.exe" \
-        4c5c956473e46c7d82765ae97e3218dd751097e5
+        f204b13dc64c1a54fb1aaf27187c6083ebb16acf
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
     if w_workaround_wine_bug 26915 "installing corefonts"
