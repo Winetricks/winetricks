@@ -1915,7 +1915,7 @@ winetricks_early_wine()
     # gecko (winezeug bug 223).
     # The tr removes carriage returns so expanded variables don't have crud on the end
     # The grep works around using new wineprefixes with old wine
-    WINEDEBUG=-all $WINE "$@" 2>/dev/null | sed 's/.*1h.=//' | tr -d '\r' | grep -v "Module not found" 
+    WINEDEBUG=-all $WINE "$@" 2>/dev/null | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v "Module not found" || true)
 }
 
 winetricks_detect_gui()
