@@ -13083,14 +13083,12 @@ w_metadata mb_warband_demo games \
 
 load_mb_warband_demo()
 {
-    if w_workaround_wine_bug 6971
+    if w_workaround_wine_bug 23207 "" 1.3.23,
     then
-        w_warn "Patch wine as described in bug 6971 to use xinput2"
+        w_die "Please upgrade to wine-1.3.23 or later, built with gcc-4.4.5 or later, else game crashes on startup."
     fi
-    if grep -q -i nvidia /proc/bus/pci/devices && w_workaround_wine_bug 13490 "" 1.2,
-    then
-        w_warn "This game crashes on startup in wine with nvidia unless you apply the patch from wine bug 13490, run with wine-1.1.38, or use WINEDEBUG=+relay wine mw_warband.exe 2>&1 > /dev/null"
-    fi
+    w_workaround_wine_bug 6971 "Please upgrade to wine-1.3.23 or later to get mouse to work" 1.3.23,
+    # Mouse still doesn't work quite right after picking menu, see bug 25705.
 
     w_download "http://download.taleworlds.com/mb_warband_setup_1134.exe" 1aac92b6c97869350b80fe7a08f559719deb37d7
 
