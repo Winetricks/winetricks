@@ -1914,7 +1914,8 @@ winetricks_early_wine()
     # autoinstall, but that yielded wineprefixes that *never* autoinstalled
     # gecko (winezeug bug 223).
     # The tr removes carriage returns so expanded variables don't have crud on the end
-    WINEDEBUG=-all $WINE "$@" 2>/dev/null | sed 's/.*1h.=//' | tr -d '\r'
+    # The grep works around using new wineprefixes with old wine
+    WINEDEBUG=-all $WINE "$@" 2>/dev/null | sed 's/.*1h.=//' | tr -d '\r' | grep -v "Module not found" 
 }
 
 winetricks_detect_gui()
