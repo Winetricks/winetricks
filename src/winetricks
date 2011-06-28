@@ -4235,6 +4235,9 @@ w_metadata dotnet11sp1 dlls \
     file1="NDP1.1sp1-KB867460-X86.exe" \
     installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/security.config"
 
+# fixme: sometimes security.config is missing after install, see
+# http://blogs.msdn.com/b/shawnfa/archive/2006/02/09/527688.aspx
+# If this happens often, we may need to change the install check.
 load_dotnet11sp1()
 {
     w_call dotnet11
