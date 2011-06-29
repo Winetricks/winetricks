@@ -14119,6 +14119,86 @@ load_simsmed()
 
 #----------------------------------------------------------------
 
+w_metadata sims3_gen games \
+    title="The Sims 3: Generations (drm broken on Wine)" \
+    publisher="EA" \
+    year="2011" \
+    media="dvd" \
+    file1="Sims3EP04.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/The Sims 3 Generations/Game/Bin/TS3EP04.exe" \
+    wine_showstoppers="26273"
+
+load_sims3_gen()
+{
+    if [ ! -f "$W_PROGRAMS_X86_WIN/Electronic Arts/The Sims 3/Game/Bin/TS3.exe" ]
+    then
+        die "You must have sims3 installed to install sims3_gen!"
+    fi
+
+    w_read_key
+    w_mount Sims3EP04
+    
+    # Default lang, USA, accept defaults, uncheck EA dl mgr, uncheck readme
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        SetWinDelay 1000
+        run ${W_ISO_MOUNT_LETTER}:Sims3EP04Setup.exe
+        winwait, - InstallShield Wizard
+        if ( w_opt_unattended > 0 ) {
+            send {Enter}
+            loop
+            {
+	        SetTitleMatchMode, 2
+                ifwinexist, - InstallShield Wizard, Setup will now attempt to update
+                {
+                    ControlClick, Button1, - InstallShield Wizard
+                    sleep 1000
+                    winwait, - InstallShield Wizard, Setup has finished updating The Sims
+                    sleep 1000
+                    controlclick, Button1, - InstallShield Wizard
+                    sleep 1000
+                }
+                ifwinexist, Sims, License
+                {
+                    winactivate, Sims, License
+                    sleep 1000
+		    ControlClick, Button3
+                    sleep 1000
+                    ControlClick, Button1
+                    sleep 1000
+                    break
+                }
+                sleep 1000
+            }
+            winwait, Sims, Please enter the entire Registration Code
+	    sleep 1000
+            send {Raw}$W_KEY
+            send {Enter}
+            winwait, - InstallShield Wizard, Setup Type
+            ControlClick &Complete    ; was not defaulting to complete?
+            send {Enter}
+            winwait, - InstallShield Wizard, Click Install to begin
+            send {Enter}
+            winwait, - InstallShield Wizard, Would you like to install the latest
+            sleep 1000
+            ControlClick, Button4 ; No thanks
+            sleep 1000
+            ControlClick, Button1
+            sleep 1000
+        }
+        winwait, - InstallShield Wizard, Complete
+        if ( w_opt_unattended > 0 ) {
+            ControlClick Button1   ; Do not view readme
+            send {Enter}           ; Finish
+        }
+        winwaitclose
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\The Sims 3 Generations/Game/Bin" "TS3EP04.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata splitsecond games \
     title="Split Second" \
     publisher="Disney" \
