@@ -7161,19 +7161,46 @@ load_dxdiag()
 
 #----------------------------------------------------------------
 
-w_metadata firefox3 apps \
-    title="Firefox 3.6.17" \
+w_metadata firefox35 apps \
+    title="Firefox 3.5" \
     publisher="Mozilla" \
     year="2011" \
     media="download" \
-    file1="Firefox Setup 3.6.17.exe" \
+    file1="Firefox Setup 3.5.19.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
-load_firefox3()
+load_firefox35()
 {
-    w_download "http://download.mozilla.org/?product=firefox-3.6.17&os=win&lang=en-US" 193ea12732e52d8195e96ba22289e83afbed09f4 "Firefox Setup 3.6.17.exe"
-    cd "$W_CACHE"/firefox3
-    w_try $WINE "Firefox Setup 3.6.17.exe" ${W_OPT_UNATTENDED:+ -ms}
+    w_download "ftp://archive.mozilla.org/pub/mozilla.org/firefox/releases/3.5.19/win32/en-US/Firefox%20Setup%203.5.19.exe" 14c3852e9693b5f17982fa01a0d29f9d1422be79 "$file1"
+    cd "$W_CACHE"/firefox35
+    w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
+
+    myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/firefox\" wine cmd /c 'C:\\\\\\Run-firefox.bat'"
+    mymenu="$HOME/.local/share/applications/wine/Programs/Mozilla Firefox/Mozilla Firefox.desktop"
+    if test -f "$mymenu" && w_workaround_wine_bug 26304 "Fixing system menu"
+    then
+        # this is a hack, hopefully the wine bug will be fixed soon
+        sed -i "s,Exec=.*,$myexec," "$mymenu"
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata firefox36 apps \
+    title="Firefox 3.6 (broken in wine)" \
+    publisher="Mozilla" \
+    year="2011" \
+    media="download" \
+    file1="Firefox Setup 3.6.18.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
+
+load_firefox36()
+{
+    w_download "http://download.mozilla.org/?product=firefox-3.6.18&os=win&lang=en-US" c6673047eec8b909fad67f387e3ef8f8f43d54e3 "$file1"
+    cd "$W_CACHE"/firefox36
+    w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
 
@@ -7189,11 +7216,11 @@ load_firefox3()
 #----------------------------------------------------------------
 
 w_metadata firefox apps \
-    title="Firefox 4.0.1" \
+    title="Firefox 5 (broken in wine)" \
     publisher="Mozilla" \
     year="2011" \
     media="download" \
-    file1="Firefox Setup 4.0.1.exe" \
+    file1="Firefox Setup 5.0.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox()
@@ -7203,9 +7230,9 @@ load_firefox()
         w_die  "Requires wine-1.3.0 or later to install"
     fi
 
-    w_download "http://download.mozilla.org/?product=firefox-4.0.1&os=win&lang=en-US" 54a5d25ae3a4e342268fbc91d240770e9b17fbaf "Firefox Setup 4.0.1.exe"
+    w_download "http://download.mozilla.org/?product=firefox-5.0&os=win&lang=en-US" 288895db0a58b91801c5c1dfc0017131300dba00 "$file1"
     cd "$W_CACHE"/firefox
-    w_try $WINE "Firefox Setup 4.0.1.exe" ${W_OPT_UNATTENDED:+ -ms}
+    w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
 }
@@ -16655,7 +16682,7 @@ execute_command()
     comdlg32.ocx) w_call comdlg32ocx ;;
     dotnet1) w_call dotnet11 ;;
     dotnet2) w_call dotnet20 ;;
-    firefox4) w_call firefox ;;
+    firefox3) w_call firefox35 ;;  # the one that works
     fm20) w_call controlpad ;;   # art2kmin also comes with fm20.dll
     fontsmooth-bgr) w_call fontsmooth=bgr ;;
     fontsmooth-disable) w_call fontsmooth=disable ;;
