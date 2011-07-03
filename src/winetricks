@@ -4881,10 +4881,12 @@ w_metadata jet40 dlls \
     year="2003" \
     media="download" \
     file1="jet40sp8_9xnt.exe" \
-    installed_file1="$W_COMMONFILES_X86_WIN/Microsoft shared/dao/dao360.dll"
+    installed_file1="$W_COMMONFILES_X86_WIN/Microsoft Shared/dao/dao360.dll"
 
 load_jet40()
 {
+    w_call mdac27
+    w_call wsh57
     # http://support.microsoft.com/kb/239114
     # See also http://bugs.winehq.org/show_bug.cgi?id=6085
     # FIXME: "failed with error 2"
@@ -4976,7 +4978,7 @@ load_mdac27()
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
     w_download_manual http://download.cnet.com/Microsoft-Data-Access-Components-MDAC-2-7-Service-Pack-1-Refresh/3000-10250_4-10729498.html mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
     load_native_mdac
-    w_set_winver win2k
+    w_set_winver nt40
     w_try $WINE "$W_CACHE"/mdac27/mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup /QNT"}
     w_unset_winver
 }
