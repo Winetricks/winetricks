@@ -4284,6 +4284,9 @@ load_dotnet20()
     # Hans' workaround to avoid winehq nonbug 26464, crash in servicemodelreg.exe
     rm -rf "$W_WINDIR_UNIX"/Microsoft.NET/Framework/v2.0.50727
 
+    # From Hans' recipe in 16956
+    $WINE reg delete 'HKLM\Software\Microsoft\Net Framework Setup\NDP\v2.0.50727'
+
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
     w_download http://download.microsoft.com/download/5/6/7/567758a3-759e-473e-bf8f-52154438565a/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
     if [ "$W_UNATTENDED_SLASH_Q"x = ""x ]
@@ -4301,6 +4304,62 @@ load_dotnet20()
     # See also http://bugs.winehq.org/show_bug.cgi?id=16577
     # This affects Victoria 2 demo, see http://forum.paradoxplaza.com/forum/showthread.php?p=11523967
     rm -f "$W_SYSTEM32_DLLS"/msvc?80.dll
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet20sp1 dlls \
+    title="MS .NET 2.0 SP1 (experimental)" \
+    publisher="Microsoft" \
+    year="2008" \
+    media="download" \
+    file1="NetFx20SP1_x86.exe" \
+    installed_file1="c:/windows/assembly/NativeImages_v2.0.50727_32/indexb.dat"
+
+load_dotnet20sp1()
+{
+    if w_workaround_wine_bug 16956 "wine version too old" 1.3.22,
+    then
+        w_die "wine-1.3.22 or later required to install dotnet20sp1 properly"
+    fi
+
+    w_call dotnet20
+
+    WINEDLLOVERRIDES=
+    if w_workaround_wine_bug 16956 "Adding registry key, setting windows version so installer works"
+    then
+        # Stop services
+        # Recipe from http://bugs.winehq.org/show_bug.cgi?id=16956
+        # FIXME: use a wrapper function for this
+        wineserver -k
+        # Fight a race condition, see bug 16956 comment 43
+        w_set_winver win2k
+        wineserver -w
+        WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b 
+        export WINEDLLOVERRIDES
+    fi
+
+    w_download http://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe eef5a36924cdf0c02598ccf96aa4f60887a49840
+    cd "$W_CACHE"/dotnet20sp1
+    $WINE NetFx20SP1_x86.exe ${W_OPT_UNATTENDED:+/q} 
+    status=$?
+
+    case $status in
+    0) ;;
+    105) echo "exit status $status - normal, user selected 'restart now'" ;;
+    194) echo "exit status $status - normal, user selected 'restart later'" ;;
+    *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
+
+    # We can't stop installing dotnet20sp1 in win2K mode until wine supports
+    # reparse/junction points
+    # (see http://bugs.winehq.org/show_bug.cgi?id=10467#c57 )
+    # so for now just remove the bogus msvc*80.dll files it installs.
+    # See also http://bugs.winehq.org/show_bug.cgi?id=16577
+    # This affects Victoria 2 demo, see http://forum.paradoxplaza.com/forum/showthread.php?p=11523967
+    rm -f "$W_SYSTEM32_DLLS"/msvc?80.dll
+
+    w_unset_winver
 }
 
 #----------------------------------------------------------------
@@ -4334,7 +4393,8 @@ load_dotnet20sp2()
 
     # http://www.microsoft.com/downloads/details.aspx?familyid=5B2C0358-915B-4EB5-9B1D-10E506DA9D0F
     w_download http://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 22d776d4d204863105a5db99e8b8888be23c61a7
-    w_try $WINE "$W_CACHE"/dotnet20sp2/NetFx20SP2_x86.exe 
+    cd "$W_CACHE"/dotnet20sp2
+    w_try $WINE NetFx20SP2_x86.exe 
     # FIXME: add ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
     # once we fix the exit status 67, or if that turns out to be harmless.
 
