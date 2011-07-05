@@ -80,7 +80,7 @@ WINETRICKS_VERSION=20110629
 # - No bash, zsh, or csh extensions; only use features from
 #   the Posix standard shell and utilities; see
 #   http://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html
-# - 'checkbashism -p -x winetricks' should show no warnings (per Debian policy)
+# - 'checkbashisms -p -x winetricks' should show no warnings (per Debian policy)
 # - Prefer classic sh idioms as described in e.g.
 #   "Portable Shell Programming" by Bruce Blinn, ISBN: 0-13-451494-7
 # - If there is no universally available program for a needed function,
@@ -1079,12 +1079,12 @@ winetricks_load_gog()
             w_download_manual "https://www.gog.com/en/download/game/$download_id/$file_id" "$file"
             check_sha1=1
             filesize=`stat -Lc%s "$file_path"`
-            if test $minsize -gt 1 -a $filesize -ne $minsize
+            if test $minsize -gt 1 && test $filesize -ne $minsize
             then
                 check_sha1=""
                 w_warn "Expected file size $minsize, please report new size $filesize."
             fi
-            if test "$check_sha1" != "" -a "$sha1sum"x != ""x
+            if test "$check_sha1" != "" && test "$sha1sum"x != ""x
             then
                 w_verify_sha1sum "$sha1sum" "$file_path"
             fi
