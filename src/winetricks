@@ -4386,7 +4386,13 @@ load_dotnet20sp2()
     then
         # Recipe from http://bugs.winehq.org/show_bug.cgi?id=22521
         $WINE reg add "HKLM\Software\Microsoft\Net Framework Setup\NDP\v2.0.50727" /v Version /d "2.0.50727" /f
+        # Stop services
+        # Recipe from http://bugs.winehq.org/show_bug.cgi?id=16956
+        # FIXME: use a wrapper function for this
+        wineserver -k
+        # Fight a race condition, see bug 16956 comment 43
         w_set_winver win2k
+        wineserver -w
         WINEDLLOVERRIDES=regsvcs.exe,mscorsvw.exe=b 
         export WINEDLLOVERRIDES
     fi
@@ -4394,9 +4400,15 @@ load_dotnet20sp2()
     # http://www.microsoft.com/downloads/details.aspx?familyid=5B2C0358-915B-4EB5-9B1D-10E506DA9D0F
     w_download http://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 22d776d4d204863105a5db99e8b8888be23c61a7
     cd "$W_CACHE"/dotnet20sp2
-    w_try $WINE NetFx20SP2_x86.exe 
-    # FIXME: add ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
-    # once we fix the exit status 67, or if that turns out to be harmless.
+    $WINE NetFx20SP2_x86.exe ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
+    status=$?
+
+    case $status in
+    0) ;;
+    105) echo "exit status $status - normal, user selected 'restart now'" ;;
+    194) echo "exit status $status - normal, user selected 'restart later'" ;;
+    *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
 
     w_unset_winver
 }
