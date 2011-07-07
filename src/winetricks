@@ -6354,6 +6354,24 @@ load_xmllite()
 
 #----------------------------------------------------------------
 
+w_metadata xna31 dlls \
+    title="MS XNA Framework Redistributable 3.1" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="xnafx31_redist.msi" \
+    installed_file1="C:/windows/assembly/GAC_32/Microsoft.Xna.Framework.Game/3.1.0.0__6d5c3888ef60e27d/Microsoft.Xna.Framework.Game.dll"
+
+load_xna31()
+{
+    w_call dotnet20sp2
+    w_download http://download.microsoft.com/download/5/9/1/5912526C-B950-4662-99B6-119A83E60E5C/xnafx31_redist.msi bdd33b677c9576a63ff2a6f65e12c0563cc116e6
+    cd "$W_CACHE"/xna31
+    w_try $WINE msiexec ${W_OPT_UNATTENDED:+/quiet} /i $file1 
+}
+
+#----------------------------------------------------------------
+
 w_metadata xvid dlls \
     title="Xvid Video Codec" \
     publisher="xvid.org" \
