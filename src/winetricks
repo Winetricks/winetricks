@@ -1076,6 +1076,7 @@ winetricks_load_gog()
         if ! test -s "$file_path" || test `stat -Lc%s "$file_path"` -lt $minsize
         then
             # FIXME: bring back automated download
+            w_note "You have to be logged in to gog, and you have to own the game, for the following URL to work.  Otherwise it gets a 404."
             w_download_manual "https://www.gog.com/en/download/game/$download_id/$file_id" "$file"
             check_sha1=1
             filesize=`stat -Lc%s "$file_path"`
