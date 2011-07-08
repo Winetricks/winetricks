@@ -4286,12 +4286,7 @@ load_dotnet20()
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
     w_download http://download.microsoft.com/download/5/6/7/567758a3-759e-473e-bf8f-52154438565a/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
-    if [ "$W_UNATTENDED_SLASH_Q"x = ""x ]
-    then
-        w_try $WINE dotnetfx.exe
-    else
-        w_try $WINE dotnetfx.exe /q /c:"install.exe /q"
-    fi
+    w_try $WINE dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
     w_unset_winver
 
     # We can't stop installing dotnet20 in win2K mode until wine supports
