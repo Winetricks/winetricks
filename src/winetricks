@@ -58,6 +58,7 @@ WINETRICKS_VERSION=20110629
 #   Copyright (C) 2011 Matthew Bauer <mjbauer95>
 #   Copyright (C) 2011 Giuseppe Dia
 #   Copyright (C) 2011 Łukasz Wojniłowicz
+#   Copyright (C) 2011 Matthew Bozarth
 #
 # License
 #   This program is free software; you can redistribute it and/or
@@ -1076,7 +1077,7 @@ winetricks_load_gog()
         if ! test -s "$file_path" || test `stat -Lc%s "$file_path"` -lt $minsize
         then
             # FIXME: bring back automated download
-            w_note "You have to be logged in to gog, and you have to own the game, for the following URL to work.  Otherwise it gets a 404."
+            w_info "You have to be logged in to gog, and you have to own the game, for the following URL to work.  Otherwise it gets a 404."
             w_download_manual "https://www.gog.com/en/download/game/$download_id/$file_id" "$file"
             check_sha1=1
             filesize=`stat -Lc%s "$file_path"`
@@ -15503,6 +15504,28 @@ w_metadata sacrifice_gog games \
 load_sacrifice_gog()
 {
     winetricks_load_gog "sacrifice" "Sacrifice" "" "TsCheckBox2" "sacrifice" "" "" "591161642,63e77685599ce20c08b004a9fa3324e466ce1679"
+}
+
+w_metadata the_witcher_2_gog games \
+    title="The Witcher 2: Assassins of Kings" \
+    publisher="Atari" \
+    year="2011" \
+    media="manual_download" \
+    file1="setup_the_witcher_2.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/GOG.com/The Witcher 2/bin/witcher2.exe"
+
+load_the_witcher_2_gog()
+{
+    winetricks_load_gog "the_witcher_2" \
+        "The Witcher 2 - Assassins of Kings" \
+        "setup_the_witcher_2-1.bin,2048477,b826cd7b096fd98eab78517752522b2a3ca8af5e\
+        setup_the_witcher_2-2.bin,2050788,a419926e4d02de81d79d586bf893150d3231833c \
+        setup_the_witcher_2-3.bin,2050788,6974cadc29fb8a8795aa245c5f8bb24e5e0cff5e \
+        setup_the_witcher_2-4.bin,2050788,ed79c1e9456801addf6fd6e687528fa01354b0d8 \
+        setup_the_witcher_2-5.bin,1631852,354cb73ae3e73cb88dedc53dd472803862a654cf \
+        setup_the_witcher_2.bin,129136,d3aa93bf147e155c5035ae15444916feabfd47b4" \
+        "" "bin/witcher2.exe" "" "The Witcher 2" \
+        "2308,9ca06383301f242143f69fe08974f9d4d713ac6b"
 }
 
 # Brief HOWTO for adding a GOG game:
