@@ -899,19 +899,30 @@ w_steam_install_game()
         SetWinDelay 500
         ; Run steam once until it finishes its initial update.  
         ; For me, this exits at 26%.
-        run, Steam.exe
-        winwait, Steam - Updating
-        winwaitclose, Steam
-        process close, Steam.exe
-        ; Run a second time; let it finish updating, then kill it.
-        run steam.exe
-        winwait Steam - Updating
-        winwaitclose
-        process close, Steam.exe
-        ; Run a third time, have it log in, wait until it has finished connecting
         run steam.exe -applaunch $_W_steamid -login $W_STEAM_ID $W_STEAM_PASSWORD 
-        winwait Steam  ; wait for login window
+		Loop
+		{
+			ifWinExist, Steam - Updating
+			{
+				winwaitclose, Steam
+				process close, Steam.exe
+				; Run a second time; let it finish updating, then kill it.
+				run steam.exe
+				winwait Steam - Updating
+				winwaitclose
+				process close, Steam.exe
+				; Run a third time, have it log in, wait until it has finished connecting
+				run steam.exe -applaunch $_W_steamid -login $W_STEAM_ID $W_STEAM_PASSWORD 
+			}
+			ifWinExist, Steam Login
+			{
+			    break
+			}
+			sleep 500
+		}
+		; wait for login window to close
         winwaitclose
+
         winwait Steam  ; wait for small <<connecting>> window
         winwaitclose
     "
@@ -15643,6 +15654,21 @@ w_metadata borderlands_steam games \
 load_borderlands_steam()
 {
     w_steam_install_game 8980 "Borderlands"
+}
+
+#----------------------------------------------------------------
+
+w_metadata civ5_demo_steam games \
+    title="Civ V Demo (Steam)" \
+    publisher="2K Games" \
+    year="2010" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/sid meier's civilization v - demo/CivilizationV.exe"
+
+load_civ5_demo_steam()
+{
+    # Retail game code is 8930
+    w_steam_install_game 65900 "Sid Meier's Civilization V - Demo"
 }
 
 #----------------------------------------------------------------
