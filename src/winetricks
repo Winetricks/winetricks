@@ -736,7 +736,7 @@ w_download_manual()
 # Run from inside c:\Program Files\Steam
 w_steam_safemode()
 {
-    cat > "$W_CACHE/steamconfig.pl" <<"_EOF_"
+    cat > "$W_TMP/steamconfig.pl" <<"_EOF_"
 #!/usr/bin/perl
 # Parse steam's localconfig.vcf, add settings to it, and write it out again
 # The file is a recursive dictionary
@@ -825,7 +825,7 @@ _EOF_
 for file in userdata/*/config/localconfig.vdf
 do
     cp "$file" "$file.old"
-    perl "$W_CACHE"/steamconfig.pl "$file.old" > "$file"
+    perl "$W_TMP"/steamconfig.pl "$file.old" > "$file"
 done
 }
 
