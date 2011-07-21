@@ -906,6 +906,7 @@ w_steam_install_game()
             {
                 winwaitclose, Steam
                 process close, Steam.exe
+                sleep 1000
                 ; Run a second time; let it finish updating, then kill it.
                 run steam.exe
                 winwait Steam - Updating
@@ -15710,8 +15711,32 @@ w_metadata civ5_demo_steam games \
 
 load_civ5_demo_steam()
 {
-    # Retail game code is 8930
+    # Start autohotkey watching for directx9 option in the background, and select it when it comes up
+    w_ahk_do  "
+        SetWinDelay 500
+        loop
+        {
+            ifWinExist, Sid Meier's Civilization V - Demo - Steam
+            {
+                winactivate
+                click 26,108    ; select directx9
+                sleep 500
+                click 200,150   ; Play
+            }
+            ifWinExist, Updating Sid Meier's Civilization V - Demo
+            {
+                break
+            }
+            sleep 1000
+        }
+    " &
+    _job=$!
+	# While that's running, install the game.
+	# You'll see *two* Autohotkey icons until that first script
+	# finds the dialog it's looking for, clicks, and exits.
+	w_info "If you already own the full Civ 5 game on steam, the installer won't even appear."
     w_steam_install_game 65900 "Sid Meier's Civilization V - Demo"
+    kill -HUP $_job   # just in case
 }
 
 #----------------------------------------------------------------
