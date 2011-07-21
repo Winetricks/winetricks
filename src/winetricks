@@ -792,7 +792,7 @@ sub dump_container{
 # Disable anything unsafe or annoying
 sub disable_notifications{
     my( $pcontainer ) = @_;
-    ${$pcontainer}{"friends"}{"PersonaStateDesired"} = 	"1";
+    ${$pcontainer}{"friends"}{"PersonaStateDesired"} = "1";
     ${$pcontainer}{"friends"}{"Notifications_ShowIngame"} = "0";
     ${$pcontainer}{"friends"}{"Sounds_PlayIngame"} = "0";
     ${$pcontainer}{"friends"}{"Notifications_ShowOnline"} = "0";
@@ -900,27 +900,27 @@ w_steam_install_game()
         ; Run steam once until it finishes its initial update.  
         ; For me, this exits at 26%.
         run steam.exe -applaunch $_W_steamid -login $W_STEAM_ID $W_STEAM_PASSWORD 
-		Loop
-		{
-			ifWinExist, Steam - Updating
-			{
-				winwaitclose, Steam
-				process close, Steam.exe
-				; Run a second time; let it finish updating, then kill it.
-				run steam.exe
-				winwait Steam - Updating
-				winwaitclose
-				process close, Steam.exe
-				; Run a third time, have it log in, wait until it has finished connecting
-				run steam.exe -applaunch $_W_steamid -login $W_STEAM_ID $W_STEAM_PASSWORD 
-			}
-			ifWinExist, Steam Login
-			{
-			    break
-			}
-			sleep 500
-		}
-		; wait for login window to close
+        Loop
+        {
+            ifWinExist, Steam - Updating
+            {
+                winwaitclose, Steam
+                process close, Steam.exe
+                ; Run a second time; let it finish updating, then kill it.
+                run steam.exe
+                winwait Steam - Updating
+                winwaitclose
+                process close, Steam.exe
+                ; Run a third time, have it log in, wait until it has finished connecting
+                run steam.exe -applaunch $_W_steamid -login $W_STEAM_ID $W_STEAM_PASSWORD 
+            }
+            ifWinExist, Steam Login
+            {
+                break
+            }
+            sleep 500
+        }
+        ; wait for login window to close
         winwaitclose
 
         winwait Steam  ; wait for small <<connecting>> window
@@ -14322,7 +14322,7 @@ load_sims3_gen()
             send {Enter}
             loop
             {
-	        SetTitleMatchMode, 2
+                SetTitleMatchMode, 2
                 ifwinexist, - InstallShield Wizard, Setup will now attempt to update
                 {
                     ControlClick, Button1, - InstallShield Wizard
@@ -14336,7 +14336,7 @@ load_sims3_gen()
                 {
                     winactivate, Sims, License
                     sleep 1000
-		    ControlClick, Button3
+                    ControlClick, Button3
                     sleep 1000
                     ControlClick, Button1
                     sleep 1000
@@ -14345,7 +14345,7 @@ load_sims3_gen()
                 sleep 1000
             }
             winwait, Sims, Please enter the entire Registration Code
-	    sleep 1000
+            sleep 1000
             send {Raw}$W_KEY
             send {Enter}
             winwait, - InstallShield Wizard, Setup Type
