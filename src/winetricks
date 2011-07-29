@@ -10761,6 +10761,109 @@ load_darkspore()
 
 #----------------------------------------------------------------
 
+w_metadata dcuo games \
+    title="DC Universe Online" \
+    publisher="EA" \
+    year="2011" \
+    media="dvd" \
+    file1="DCUO - Disc 1.iso" \
+    file2="DCUO - Disc 2.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Sony Online Entertainment/Installed Games/DC Universe Online Live/LaunchPad.exe"
+
+load_dcuo()
+{
+    # The installer would take care of this, but let's do it first
+    w_call flash
+    if w_workaround_wine_bug 26298 "Installing microsoft runtime libraries"
+    then
+        w_call vcrun2005
+    fi
+    if w_workaround_wine_bug 27279 "Installing microsoft XAct audio"
+    then
+        w_call xact
+    fi
+    if w_workaround_wine_bug 25906 "Installing ie8"
+    then
+        w_call ie8
+    fi
+
+    w_mount "DCUO - Disc 1"
+    w_ahk_do "
+        SetWinDelay 1000
+        SetTitleMatchMode, 2
+        run, ${W_ISO_MOUNT_LETTER}:setup.exe
+        if ( w_opt_unattended > 0 ) {
+	    winwait, DC Universe, Anti-virus
+	    ControlClick, Button1   ; next
+	    winwait, DC Universe, License
+	    ControlClick, Button5   ; accept
+	    sleep 500
+	    ControlClick, Button2   ; next
+	    winwait, DC Universe, Shortcut
+	    ControlClick, Button3   ; next
+	    Loop
+	    {
+		IfWinExist, DC Universe, not enough space
+		{
+		    exit 1          ; dang, have to quit
+		}
+		IfWinExist, DC Universe, Ready
+		{
+		    break
+		}
+		Sleep 1000
+	    }
+	    winwait, DC Universe, Ready
+	    ControlClick, Button1   ; next
+        }
+        winwait, Setup Needs The Next Disk, Please insert disk 2
+    "
+
+    w_mount "DCUO - Disc 2"
+    w_ahk_do "
+        SetWinDelay 1000
+        SetTitleMatchMode, 2
+        winwait, Setup Needs The Next Disk, Please insert disk 2
+        if ( w_opt_unattended > 0 ) {
+	    ControlClick, Button2   ; next
+	    winwaitclose
+	    Loop
+	    {
+		IfWinExist, DirectX, Welcome
+		{
+		    ControlClick, Button1   ; accept
+		    Sleep 1000
+		    ControlClick, Button4   ; next
+		    WinWait, DirectX, Runtime Install
+		    ControlClick, Button4   ; next
+		    WinWait, DirectX, Complete
+		    ControlClick, Button4   ; next
+                    sleep 1000
+                    process, close, dxsetup.exe   ; work around strange 'next button does nothing' bug
+		}
+		IfWinExist, Flash   ; a newer version of flash is already installed
+		{
+		    ControlClick, Button3   ; quit
+		}
+		IfWinExist, DC Universe, Complete
+		{
+		    break
+		}
+		Sleep 1000
+	    }
+        }
+	WinWait, DC Universe, Complete
+        if ( w_opt_unattended > 0 ) {
+	    ControlClick, Button4   ; finish
+        }
+        winwaitclose
+    "
+    w_warn "Now let the wookie install itself, and then quit."
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Sony Online Entertainment\\Installed Games\\DC Universe Online Live" LaunchPad.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata deadspace games \
     title="Dead Space" \
     publisher="EA" \
