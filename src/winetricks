@@ -5744,6 +5744,33 @@ load_shockwave() {
 
 #----------------------------------------------------------------
 
+w_metadata speechsdk dlls \
+    title="MS Speech SDK 5.1" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="SpeechSDK51.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Microsoft Speech SDK 5.1/SAPI51SampleApp.exe"
+
+load_speechsdk()
+{
+    # http://www.microsoft.com/download/en/details.aspx?id=10121
+    w_download http://download.microsoft.com/download/B/4/3/B4314928-7B71-4336-9DE7-6FA4CF00B7B3/SpeechSDK51.exe f69efaee8eb47f8c7863693e8b8265a3c12c4f51
+
+    w_try_unzip -d "$W_TMP" "$W_CACHE"/SpeechSDK51.exe
+
+    # Otherwise it only installs the SDK and not the redistributable:
+    w_set_winver win2k
+    
+    # FIXME: how to get silent mode? Giving it /? says to use /S, but that doesn't work. Arguments after /V are passed to msiexec,
+    # but '/S /Vqn' didn't work either :(.
+    w_try $WINE "$W_TMP"/SpeechSDK51.exe
+
+    w_unset_winver
+}
+
+#----------------------------------------------------------------
+
 w_metadata usp10 dlls \
     title="Uniscribe 1.325 " \
     publisher="Microsoft" \
