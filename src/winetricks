@@ -14068,6 +14068,48 @@ load_puzzleagent_demo()
 
 #----------------------------------------------------------------
 
+w_metadata ragnarok games \
+    title="Ragnarok" \
+    publisher="GRAVITY" \
+    year="2002" \
+    media="download" \
+    file1="iRO-13.2.2-FullInstall-20110421-1717.msi" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Gravity/Ragnarok Online/Ragnarok.exe"
+
+load_ragnarok()
+{
+    if w_workaround_wine_bug 657 ""
+    then
+        w_call vcrun6
+    fi
+    
+    w_download http://download.warpportal.com/ragnarok_client/full/iRO-13.2.2-FullInstall-20110421-1717.msi bda295e3a2a57cd02bd122ed7bf4836ac012369a
+
+    cd "$W_CACHE/$W_PACKAGE"
+
+    w_ahk_do "
+        Run, msiexec /i iRO-13.2.2-FullInstall-20110421-1717.msi
+        SetTitleMatchMode, 2
+        WinWait, Ragnarok Online Setup, Please read the Ragnarok Online License Agreement
+        if ( w_opt_unattended > 0 ) {
+            Sleep 500
+            ControlClick Button1
+            Sleep 500
+            ControlClick Button3
+            }
+            WinWait, Ragnarok Online Setup, Completed the Ragnarok Online Setup Wizard
+        if ( w_opt_unattended > 0 ) {
+            Sleep 500
+            ControlClick Button1 ;Direct
+        }
+    "
+
+    # Game autoupdates:
+    killall "Ragnarok.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata rct3deluxe games \
     title="RollerCoaster Tycoon 3 Deluxe (drm broken on wine)" \
     publisher="Atari" \
