@@ -6055,6 +6055,11 @@ load_vcrun2005()
     cd "$W_CACHE"/vcrun2005
     w_override_dlls native,builtin msvcr80
     w_try $WINE $file1 $W_UNATTENDED_SLASH_Q
+
+    # Remove the builtin manifest, otherwise it is still preferred:
+    rm -rf "$W_WINDIR_UNIX/winsxs/manifests/x86_microsoft.vc80.crt_1fc8b3b9a1e18e3b_8.0.50727.4053_none_deadbeef.manifest"
+    rm -rf "$W_WINDIR_UNIX/winsxs/x86_microsoft.vc80.crt_1fc8b3b9a1e18e3b_8.0.50727.4053_none_deadbeef"
+
 }
 
 #----------------------------------------------------------------
@@ -6076,6 +6081,10 @@ load_vcrun2008()
     w_override_dlls native,builtin msvcr90
     cd "$W_CACHE"/vcrun2008
     w_try $WINE $file1 $W_UNATTENDED_SLASH_Q
+
+    # Remove the builtin manifest, otherwise it is still preferred:
+    rm -rf "$W_WINDIR_UNIX/winsxs/manifests/x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.4148_none_deadbeef.manifest"
+    rm -rf "$W_WINDIR_UNIX/winsxs/x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.4148_none_deadbeef"
 }
 
 #----------------------------------------------------------------
