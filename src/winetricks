@@ -15305,7 +15305,7 @@ load_tropico3_demo()
 
     w_workaround_wine_bug 16328 "seawater is invisible in this wine, please update to 1.3.9 or later" 1.3.9,
 
-    if w_workaround_wine_bug 24845 "disabling mmdevapi to fix sound"
+    if w_workaround_wine_bug 24845 "disabling mmdevapi to fix sound" 1.3.21,
     then
         w_override_dlls disabled mmdevapi
     fi
