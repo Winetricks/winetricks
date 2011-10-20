@@ -1427,6 +1427,22 @@ _EOF_
         w_try_regedit "$W_TMP_WIN"\\set-winver.reg
         return
         ;;
+    win95)
+        # This key is only used for win 95/98:
+
+        echo "Setting Windows version to $1"
+        cat > "$W_TMP"/set-winver.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion]
+"ProductName"="Microsoft Windows 95"
+"SubVersionNumber"=""
+"VersionNumber"="4.0.950"
+
+_EOF_
+        w_try_regedit "$W_TMP_WIN"\\set-winver.reg
+        return
+        ;;
     win98)
         # This key is only used for win 95/98:
 
@@ -1435,6 +1451,7 @@ _EOF_
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion]
+"ProductName"="Microsoft Windows 98"
 "SubVersionNumber"=" A "
 "VersionNumber"="4.10.2222"
 
@@ -16656,6 +16673,16 @@ w_metadata win7 settings \
 load_win7()
 {
     w_set_winver win7
+}
+
+#----------------------------------------------------------------
+
+w_metadata win95 settings \
+    title="Set windows version to Windows 95"
+
+load_win95()
+{
+    w_set_winver win95
 }
 
 #----------------------------------------------------------------
