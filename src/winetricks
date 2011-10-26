@@ -574,10 +574,10 @@ w_download_to()
             w_die "Downloading $_W_url failed"
         fi
         # Need to decompress .exe's that are compressed, else cygwin fails
-        # Only affects cygwin, so don't barf if 'file' not installed
-        _W_filetype=`which file 2>/dev/null`
+        # Also affects ttf files on github
+	_W_filetype=`which file 2>/dev/null`
         case $_W_filetype-$_W_file in
-        /*-*.exe)
+        /*-*.exe|/*-*.ttf)
             case `file "$_W_file"` in
             *gzip*) mv "$_W_file" "$_W_file.gz"; gunzip < "$_W_file.gz" > "$_W_file";;
             esac
@@ -6638,7 +6638,7 @@ w_metadata droid fonts \
     installed_file1="$W_FONTSDIR_WIN/DroidSans-Bold.ttf"
 
 do_droid() {
-    w_download ${DROID_URL}$1';hb=HEAD'   $3  $1
+    w_download ${DROID_URL}$1'?raw=true'   $3  $1
     w_try cp -f "$W_CACHE"/droid/$1 "$W_FONTSDIR_UNIX"
     w_register_font $1 "$2"
 }
@@ -6646,7 +6646,8 @@ do_droid() {
 load_droid()
 {
     # See http://en.wikipedia.org/wiki/Droid_(font)
-    DROID_URL='http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob_plain;f=data/fonts/'
+    # Old url was http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob_plain;f=data/fonts/'
+    DROID_URL='https://github.com/android/platform_frameworks_base/blob/master/data/fonts/'
 
     do_droid DroidSans-Bold.ttf        "Droid Sans Bold"         560e4bcafdebaf29645fbf92633a2ae0d2f9801f
     do_droid DroidSansFallback.ttf     "Droid Sans Fallback"     64de2fde75868ab8d4c6714add08c8f08b3fae1e
