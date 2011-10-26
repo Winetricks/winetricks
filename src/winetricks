@@ -4620,8 +4620,8 @@ w_metadata flash dlls \
     media="download" \
     file1="install_flash_player.exe" \
     file2="install_flash_player_ax.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10u_Plugin.exe" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10u_ActiveX.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10x_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10x_ActiveX.exe" \
     homepage="http://www.adobe.com/products/flashplayer/"
 
 load_flash()
@@ -4637,7 +4637,8 @@ load_flash()
     # 2011-05-13: sha1sum ae401aa3ba54ebe12c2fb3b94cd1bb5881074169
     # 2011-06-13: sha1sum 2c1ae9cf04f67ca611af7df695d3ea4337fb73fc
     # 2011-06-23: sha1sum da3f4b28f77a44b25cfb1453278683b888904714
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_ax.exe da3f4b28f77a44b25cfb1453278683b888904714
+    # 2011-10-26: sha1sum 964199abcbaa9f42273ed5030d039ead03407b76
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_ax.exe 964199abcbaa9f42273ed5030d039ead03407b76
     cd "$W_CACHE"/flash
 
     w_try $WINE install_flash_player_ax.exe ${W_OPT_UNATTENDED:+ /install}
@@ -4652,7 +4653,8 @@ load_flash()
     # 3aefb5132f7c326b046e4bc82e41bf399fc7cf5f
     # 2011-06-13: sha1sum f6248cdda8c5b3d36bb414d67d2373f205e257c7
     # 2011-06-23: sha1sum 8c14f60fa625d26698afceb1e234eaae4637389e
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player.exe 8c14f60fa625d26698afceb1e234eaae4637389e
+    # 2011-10-26: sha1su, a04d5ecc27dbc439d9ca0c994ac7db39a0d3d081
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player.exe a04d5ecc27dbc439d9ca0c994ac7db39a0d3d081
 
     w_try $WINE install_flash_player.exe ${W_OPT_UNATTENDED:+ /install}
 }
