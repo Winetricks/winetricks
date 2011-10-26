@@ -13875,6 +13875,80 @@ __EOF__
 
 #----------------------------------------------------------------
 
+w_metadata njcwp_trial apps \
+    title="NJStar Chinese Word Processor trial" \
+    publisher="NJStar" \
+    year="2009" \
+    media="download" \
+    file1="njcwp.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Chinese WP/Njstar.exe" \
+    homepage="http://www.njstar.com/cms/njstar-chinese-word-processor"
+
+load_njcwp_trial()
+{
+    w_download http://www.njstar.com/download/njcwp.exe 3dca18c077f46592385506c12538a30a0a485268
+    cd "$W_CACHE/$W_PACKAGE"
+    if test "$W_OPT_UNATTENDED"
+    then
+        w_ahk_do "
+        SetTitleMatchMode, 2
+        run $file1
+        WinWait, Setup, Wizard
+        ControlClick Button2 ; next
+        WinWait, Setup, License
+        ControlClick Button2 ; agree
+        WinWait, Setup, Install
+        ControlClick Button2 ; install
+        WinWait, Setup, Completing
+        ControlClick Button4 ; do not launch
+        ControlClick Button2 ; finish
+        WinWaitClose
+        "
+    else
+        w_try $WINE $file1
+    fi
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\NJStar Chinese WP" "Njstar.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata njjwp_trial apps \
+    title="NJStar Japanese Word Processor trial" \
+    publisher="NJStar" \
+    year="2009" \
+    media="download" \
+    file1="njjwp.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Japanese WP/Njstarj.exe" \
+    homepage="http://www.njstar.com/cms/njstar-japanese-word-processor"
+
+load_njjwp_trial()
+{
+    w_download http://www.njstar.com/download/njjwp.exe a9d430299e1b38c4629b79b281e0dff1e39d477b
+    cd "$W_CACHE/$W_PACKAGE"
+    if test "$W_OPT_UNATTENDED"
+    then
+        w_ahk_do "
+        SetTitleMatchMode, 2
+        run $file1
+        WinWait, Setup, Wizard
+        ControlClick Button2 ; next
+        WinWait, Setup, License
+        ControlClick Button2 ; agree
+        WinWait, Setup, Install
+        ControlClick Button2 ; install
+        WinWait, Setup, Completing
+        ControlClick Button4 ; do not launch
+        ControlClick Button2 ; finish
+        WinWaitClose
+        "
+    else
+        w_try $WINE $file1
+    fi
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\NJStar Japanese WP" "Njstarj.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata oblivion games \
     title="Elder Scrolls: Oblivion" \
     publisher="Bethesda Game Studios" \
