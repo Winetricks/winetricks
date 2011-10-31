@@ -7525,6 +7525,8 @@ load_ie3()
 {
     w_warn "This is for debugging purposes only, DO NOT INSTALL."
 
+    w_set_winver win95
+
     # FIXME: /q is quiet, but still has some promps..
     w_download http://www.mirrorservice.org/sites/browsers.evolt.org/browsers/ie/win32/3.02/win95full/msie302m95.exe a55c3834860347342c0b91e0f572124b440eb195
     
@@ -7537,6 +7539,7 @@ REGEDIT4
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\override-dll.reg
 
+    cd "$W_CACHE/$W_PACKAGE"
     $WINE msie302m95.exe
     # IE3 exits with 194 to signal a reboot
     status=$?
