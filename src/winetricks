@@ -8410,12 +8410,17 @@ load_steam()
     # 18 Mar 2011 7f2fee9ffeaba8424a6c76d6c95b794735ac9959
     w_download http://storefront.steampowered.com/download/SteamInstall.msi 7f2fee9ffeaba8424a6c76d6c95b794735ac9959
     cd "$W_CACHE"/steam
-    w_try $WINE msiexec /i SteamInstall.msi $W_UNATTENDED_SLASH_Q
+    
+    # Install corefonts first, so if the user doesn't have cabextract/Wine with cab support, we abort before installing Steam.
+    # FIXME: support using Wine's cab support
     if ! test -f "$W_FONTSDIR_UNIX/Times.TTF" && \
         w_workaround_wine_bug 22751 "Installing corefonts to prevent a Steam crash"
     then
         w_call corefonts
     fi
+
+    w_try $WINE msiexec /i SteamInstall.msi $W_UNATTENDED_SLASH_Q
+
     # Not all users need this disabled, but let's play it safe for now
     if w_workaround_wine_bug 22053 "Disabling gameoverlayrenderer to prevent game crashes on some machines."
     then
