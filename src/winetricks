@@ -12410,7 +12410,7 @@ load_guildwars()
 #----------------------------------------------------------------
  
 w_metadata hegemonygold_demo games \
-    title="Hegemony Gold beta 13" \
+    title="Hegemony Gold" \
     publisher="Longbow Games" \
     year="2011" \
     media="download" \
@@ -12429,7 +12429,9 @@ load_hegemonygold_demo()
     # 6 Mar 2011: 8c4d8aa8f997b106c78b065a4b200e5e1ab846a8
     # 28 Apr 2011: 93677013fc17f014b1640bed070e8bb1b2a17445
     # 25 Jun 2011: 4069656ea3c3760b67d1c5adff37de7472955f72
-    w_download "http://www.longbowgames.com/downloads/Hegemony%20Gold%20Installer.exe" 4069656ea3c3760b67d1c5adff37de7472955f72 HegemonyGoldInstaller.exe
+    # 5 Nov 2011: 723c575ff5fff77941a1c786e28f46c094b8159c
+
+    w_download "http://www.longbowgames.com/downloads/Hegemony%20Gold%20Installer.exe" 723c575ff5fff77941a1c786e28f46c094b8159c HegemonyGoldInstaller.exe
 
     cd "$W_CACHE/$W_PACKAGE"
 
@@ -12452,7 +12454,7 @@ load_hegemonygold_demo()
             ControlClick Button2 ; Install
             WinWait,Hegemony, Completing
             ControlFocus,Button4,launch
-            Sleep 500
+            Sleep 1000
             Send {Space}
             Sleep 500
             ControlClick Button2 ; finish
