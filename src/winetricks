@@ -7114,15 +7114,17 @@ load_audible()
 {
     w_download http://download.audible.com/AM50/ActiveSetupN.exe 49f501471912ccca442bcc1c8f2c69160579f712
     cd "$W_CACHE/$W_PACKAGE"
+    # Use exact title match!
     w_ahk_do "
         SetWinDelay 500
-        SetTitleMatchMode, 2
+        SetTitleMatchMode, 3
         Run, $file1
         WinWait, AudibleManager Setup
         ControlClick, Button3  ; accept
         WinWait, AudibleManager Setup, Start by
         ControlClick, Button6 ; OK
         WinWaitClose
+        ; many windows come and go, quite a few of them starting with AudibleManager, so use exact match to get the real mccoy
         WinWait, AudibleManager  ; the dang thing starts up
         WinKill
     "
