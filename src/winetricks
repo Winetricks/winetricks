@@ -15811,8 +15811,9 @@ w_metadata wot games \
     publisher="Wargaming" \
     year="2011" \
     media="download" \
-    file1="WoT_0.6.6_us_setup.exe" \
-    installed_exe1="c:/Games/World_of_Tanks/WorldOfTanks.exe"
+    file1="WoT_0.6.7_us_setup.exe" \
+    installed_exe1="c:/Games/World_of_Tanks/WorldOfTanks.exe" \
+    wine_showstoppers="20395"   # list a showstopper to hide this from average users for now
 
 load_wot()
 {
@@ -15834,8 +15835,8 @@ load_wot()
         w_call ie7
     fi
 
-    # http://cdn1.worldoftanks.com/patches/auto/WoT_0.6.6_us_setup.exe.torrent
-    w_download http://cdn1.worldoftanks.com/patches/auto/WoT_0.6.6_us_setup.exe 8ab0da061dbc95d4f1a1156f547daa13a4641811
+    # http://cdn1.worldoftanks.com/patches/auto/WoT_0.6.7_us_setup.exe.torrent
+    w_download http://cdn1.worldoftanks.com/patches/auto/WoT_0.6.7_us_setup.exe 440c4b3f8269d3746c912db94d697eccb139d3a6
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
