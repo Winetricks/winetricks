@@ -15806,6 +15806,67 @@ load_wog()
 
 #----------------------------------------------------------------
 
+w_metadata wot games \
+    title="World of Tanks" \
+    publisher="Wargaming" \
+    year="2011" \
+    media="download" \
+    file1="WoT_0.6.6_us_setup.exe" \
+    installed_exe1="c:/Games/World_of_Tanks/WorldOfTanks.exe"
+
+load_wot()
+{
+    if w_workaround_wine_bug 20395 "game requires raw input hack"
+    then
+        w_open_webpage https://gist.github.com/895204#gistcomment-41069
+        w_warn "You need to apply rawinput-hack.patch from vincas for this game to work"
+    fi
+    if w_workaround_wine_bug 25370 "installing msxml3 to avoid startup crash"
+    then
+        w_call msxml3
+    fi
+    if w_workaround_wine_bug 11675 "need d3dx9_36 for effects framework"
+    then
+        w_call d3dx9_36
+    fi
+    if w_workaround_wine_bug 25779 "installing ie7 for launcher"
+    then
+        w_call ie7
+    fi
+
+    # http://cdn1.worldoftanks.com/patches/auto/WoT_0.6.6_us_setup.exe.torrent
+    w_download http://cdn1.worldoftanks.com/patches/auto/WoT_0.6.6_us_setup.exe 8ab0da061dbc95d4f1a1156f547daa13a4641811
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        SetWinDelay 500
+        run $file1
+        winwait, Setup - World of Tanks
+        if ( w_opt_unattended > 0 ) {
+            ControlClick, TNewButton1   ; Next
+            winwait, Setup - World of Tanks, Select Destination
+            ControlClick, TNewButton3   ; Next
+            winwait, Setup - World of Tanks, Select Start
+            ControlClick, TNewButton4   ; Next
+            winwait, Setup - World of Tanks, Select Additional
+            ControlClick, TNewButton4   ; Next
+            winwait, Setup - World of Tanks, Ready
+            ControlClick, TNewButton4   ; Next
+        }
+        winwait, Setup - World of Tanks, Completing
+        if ( w_opt_unattended > 0 ) {
+            ControlFocus, TNewCheckListBox1
+            send {space}                      ; uncheck Wiki
+            sleep 500
+            ControlClick, TNewButton4   ; Finish
+            winwaitclose
+        }
+        "
+    w_declare_exe "c:\\Games\\World_of_Tanks" WorldOfTanks.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata wowtrial games \
     title="World of Warcraft trial" \
     publisher="Blizzard" \
