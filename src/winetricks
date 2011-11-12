@@ -7374,18 +7374,23 @@ load_firefox35()
 #----------------------------------------------------------------
 
 w_metadata firefox36 apps \
-    title="Firefox 3.6 (broken in wine)" \
+    title="Firefox 3.6" \
     publisher="Mozilla" \
     year="2011" \
     media="download" \
-    file1="Firefox Setup 3.6.18.exe" \
+    file1="Firefox Setup 3.6.24.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox36()
 {
-    w_download "http://download.mozilla.org/?product=firefox-3.6.18&os=win&lang=en-US" c6673047eec8b909fad67f387e3ef8f8f43d54e3 "$file1"
+    w_download "http://download.mozilla.org/?product=firefox-3.6.24&os=win&lang=en-US" 7d149a9a45fd7cdd9b31b1a966650466b7111f1f "$file1"
     cd "$W_CACHE"/firefox36
     w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
+
+    if w_workaround_wine_bug 29077
+    then
+        w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
+    fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
 
@@ -7400,12 +7405,41 @@ load_firefox36()
 
 #----------------------------------------------------------------
 
-w_metadata firefox apps \
-    title="Firefox 5 (broken in wine)" \
+w_metadata firefox5 apps \
+    title="Firefox 5" \
     publisher="Mozilla" \
     year="2011" \
     media="download" \
     file1="Firefox Setup 5.0.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
+
+load_firefox5()
+{
+    if w_workaround_wine_bug 22972 "" 1.3.0,
+    then
+        w_die  "Requires wine-1.3.0 or later to install"
+    fi
+
+    if w_workaround_wine_bug 29077
+    then
+        w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
+    fi
+
+    w_download "http://download.mozilla.org/?product=firefox-5.0&os=win&lang=en-US" 288895db0a58b91801c5c1dfc0017131300dba00 "$file1"
+    cd "$W_CACHE"/firefox5
+    w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
+}
+
+#----------------------------------------------------------------
+
+w_metadata firefox apps \
+    title="Firefox 8" \
+    publisher="Mozilla" \
+    year="2011" \
+    media="download" \
+    file1="Firefox Setup 8.0.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox()
@@ -7415,7 +7449,12 @@ load_firefox()
         w_die  "Requires wine-1.3.0 or later to install"
     fi
 
-    w_download "http://download.mozilla.org/?product=firefox-5.0&os=win&lang=en-US" 288895db0a58b91801c5c1dfc0017131300dba00 "$file1"
+    if w_workaround_wine_bug 29077
+    then
+        w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
+    fi
+
+    w_download "http://download.mozilla.org/?product=firefox-8.0&os=win&lang=en-US" dbbc497e639cae401dd9e6db6b61018ea0d2b689 "$file1"
     cd "$W_CACHE"/firefox
     w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
