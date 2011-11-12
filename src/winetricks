@@ -8384,16 +8384,16 @@ w_metadata songbird apps \
     title="Songbird" \
     publisher="POTI" \
     year="2010" \
-    media="download" \
-    file1="Songbird_1.9.3-1959_windows-i686-msvc8.exe" \
+    media="manual_download" \
+    file1="Songbird_1.10.1-2160_windows-i686-msvc8.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Songbird/songbird.exe" \
     homepage="http://getsongbird.com"
 
 load_songbird()
 {
-    w_download \
-        http://download.songbirdnest.com/installer/windows/i686-msvc8/Songbird_1.9.3-1959_windows-i686-msvc8.exe \
-        1e6bdc9d5681f44320987cc73cde66f85b3e8032
+    w_download_manual \
+        http://getsongbird.com/system-requirements.php Songbird_1.10.1-2160_windows-i686-msvc8.exe \
+        3939988180e1bfba3f28ff5720942cbbc20b7fbf
     cd "$W_CACHE/songbird"
     w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /S}
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Songbird" songbird.exe
