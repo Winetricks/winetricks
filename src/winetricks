@@ -8769,6 +8769,11 @@ load_wmp9()
         w_die "Installer doesn't support 64-bit architecture."
     fi
 
+    if w_workaround_wine_bug 28994 "virtualprotect problem" -1.3.31
+    then
+        w_die "Sorry, wine-1.3.32 has a bug that keeps wmp9 from installing."
+    fi
+
     w_call wsh57
 
     w_set_winver win2k
