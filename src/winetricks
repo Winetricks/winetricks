@@ -4619,10 +4619,10 @@ w_metadata flash dlls \
     publisher="Adobe" \
     year="2011" \
     media="download" \
-    file1="install_flash_player.exe" \
-    file2="install_flash_player_ax.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10x_Plugin.exe" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10x_ActiveX.exe" \
+    file1="install_flash_player_32bit.exe" \
+    file2="install_flash_player_10_active_x.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil11e_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil11e_ActiveX.exe" \
     homepage="http://www.adobe.com/products/flashplayer/"
 
 load_flash()
@@ -4639,10 +4639,11 @@ load_flash()
     # 2011-06-13: sha1sum 2c1ae9cf04f67ca611af7df695d3ea4337fb73fc
     # 2011-06-23: sha1sum da3f4b28f77a44b25cfb1453278683b888904714
     # 2011-10-26: sha1sum 964199abcbaa9f42273ed5030d039ead03407b76
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player_ax.exe 964199abcbaa9f42273ed5030d039ead03407b76
+    # 2011-11-12: sha1sum 1b84a14b4325a6ae17c590b7c9de749daeca7b6f
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_active_x.exe 1b84a14b4325a6ae17c590b7c9de749daeca7b6f
     cd "$W_CACHE"/flash
 
-    w_try $WINE install_flash_player_ax.exe ${W_OPT_UNATTENDED:+ /install}
+    w_try $WINE install_flash_player_10_active_x.exe ${W_OPT_UNATTENDED:+ /install}
 
     # Mozilla / Firefox plugin
     # 2010-11-04: sha1sum 09f2491c5bec7286155234f4e6e1af70c7cef78f
@@ -4654,10 +4655,41 @@ load_flash()
     # 3aefb5132f7c326b046e4bc82e41bf399fc7cf5f
     # 2011-06-13: sha1sum f6248cdda8c5b3d36bb414d67d2373f205e257c7
     # 2011-06-23: sha1sum 8c14f60fa625d26698afceb1e234eaae4637389e
-    # 2011-10-26: sha1su, a04d5ecc27dbc439d9ca0c994ac7db39a0d3d081
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/install_flash_player.exe a04d5ecc27dbc439d9ca0c994ac7db39a0d3d081
+    # 2011-10-26: sha1sum a04d5ecc27dbc439d9ca0c994ac7db39a0d3d081
+    # 2011-11-12: sha1sum 2e834f95880fd0b96a9db93ff48f1e4178ee0913
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10.exe 2e834f95880fd0b96a9db93ff48f1e4178ee0913
 
-    w_try $WINE install_flash_player.exe ${W_OPT_UNATTENDED:+ /install}
+    w_try $WINE install_flash_player_32bit.exe ${W_OPT_UNATTENDED:+ /install}
+}
+
+#----------------------------------------------------------------
+
+# FIXME: update winetricks_is_installed to look at installed_file2
+w_metadata flash11 dlls \
+    title="Flash Player 11" \
+    publisher="Adobe" \
+    year="2011" \
+    media="download" \
+    file1="install_flash_player_32bit.exe" \
+    file2="install_flash_player_ax_32bit.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil11e_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil11e_ActiveX.exe" \
+    homepage="http://www.adobe.com/products/flashplayer/"
+
+load_flash11()
+{
+    # Active X plugin
+    # 2011-11-12: sha1sum 8314061c4d73c9957dfb4da525d77437ee6abf0e
+    w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.55/install_flash_player_ax_32bit.exe 8314061c4d73c9957dfb4da525d77437ee6abf0e
+    cd "$W_CACHE"/flash
+
+    w_try $WINE install_flash_player_ax_32bit.exe ${W_OPT_UNATTENDED:+ /install}
+
+    # Mozilla / Firefox plugin
+    # 2011-11-12: sha1sum f1f76c35564c9f842a7e005d97f5008173466d46
+    w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.55/install_flash_player_32bit.exe f1f76c35564c9f842a7e005d97f5008173466d46
+
+    w_try $WINE install_flash_player_32bit.exe ${W_OPT_UNATTENDED:+ /install}
 }
 
 #----------------------------------------------------------------
