@@ -12077,13 +12077,12 @@ w_metadata hon games \
     publisher="S2 Games" \
     year="2010" \
     media="download" \
-    file1="HoNClient-2.0.36v2.exe" \
+    file1="HoNClient-2.2.8.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Heroes of Newerth/hon.exe"
 
 load_hon()
 {
-    w_download http://dl.heroesofnewerth.com/HoNClient-2.0.36v2.exe \
-               0e1889279dc07179eeb59e29f803b64d75b688c4
+    w_download http://dl.heroesofnewerth.com/HoNClient-2.2.8.exe 15eb6fc4b5da5b2316e52d955dbfb0797496789c
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
