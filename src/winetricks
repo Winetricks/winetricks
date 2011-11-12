@@ -12593,12 +12593,17 @@ w_metadata imvu games \
     publisher="IMVU" \
     year="2004" \
     media="download" \
-    file1="InstallIMVU_460.0_st_c.exe" \
+    file1="InstallIMVU_465.0_st_c.exe" \
     installed_exe1="c:/users/$LOGNAME/Application Data/IMVUClient/IMVUClient.exe"
 
 load_imvu()
 {
-    w_download http://static-akm.imvu.com/imvufiles/installers/InstallIMVU_460.0_st_c.exe
+    w_download http://static-akm.imvu.com/imvufiles/installers/InstallIMVU_465.0_st_c.exe 3a5c6c335227a5709c5772f91d8407edd07d4012
+
+    if w_workaround_wine_bug 28541 "Installing Visual C++ 2008 runtime to avoid crash on startup"
+    then
+        w_call vcrun2008
+    fi
 
     cd "$W_CACHE/$W_PACKAGE"
 
