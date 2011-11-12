@@ -9888,16 +9888,13 @@ w_metadata bladekitten_demo games \
     title="Blade Kitten Demo" \
     publisher="Krome Studios" \
     year="2010" \
-    media="download" \
+    media="manual_download" \
     file1="BladeKittenDemoInstall.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Krome Studios/Blade Kitten Demo/BladeKitten_Demo.exe"
 
 load_bladekitten_demo()
 {
-    if ! test -f "$W_CACHE/$W_PACKAGE/BladeKittenDemoInstall.exe"
-    then
-        w_download "http://downloads.megagames.com/download.php?file=BladeKittenDemoInstall.exe" 8c41706ff3ad029317e5eb6853c34732498d97c7 BladeKittenDemoInstall.exe
-    fi
+    w_download_manual http://news.bigdownload.com/2010/09/23/download-blade-kitten-demo BladeKittenDemoInstall.exe d3568f94c1ce284b7381e457e9497065bd45001d
 
     cp "$W_CACHE/$W_PACKAGE"/BladeKittenDemoInstall.exe "$W_TMP"
     cd "$W_TMP"
