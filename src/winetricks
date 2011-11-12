@@ -11280,21 +11280,21 @@ w_metadata digitanks_demo games \
     year="2011" \
     media="download" \
     file1="digitanks.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Digitanks/digitanks.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Digitanks/digitanksdemo.exe" \
     homepage="http://www.digitanks.com"
 
 load_digitanks_demo()
 {
     # 8 june 2011: f204b13dc64c1a54fb1aaf27187c6083ebb16acf
-    w_download "http://static.digitanks.com/files/digitanks.exe" \
-        f204b13dc64c1a54fb1aaf27187c6083ebb16acf
+    # 11 Nov 2011: e54ffb07232f434bcfaf7b3d43ddf9affa93ef15
+    w_download "http://static.digitanks.com/files/digitanks.exe" e54ffb07232f434bcfaf7b3d43ddf9affa93ef15
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
     if w_workaround_wine_bug 26915 "installing corefonts"
     then
         w_call corefonts
     fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Digitanks" digitanks.exe
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Digitanks" digitanksdemo.exe
 }
 
 w_metadata dirt2_demo games \
