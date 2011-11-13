@@ -4681,7 +4681,7 @@ load_flash11()
     # Active X plugin
     # 2011-11-12: sha1sum 8314061c4d73c9957dfb4da525d77437ee6abf0e
     w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.55/install_flash_player_ax_32bit.exe 8314061c4d73c9957dfb4da525d77437ee6abf0e
-    cd "$W_CACHE"/flash
+    cd "$W_CACHE"/flash11
 
     w_try $WINE install_flash_player_ax_32bit.exe ${W_OPT_UNATTENDED:+ /install}
 
