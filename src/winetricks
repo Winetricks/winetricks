@@ -13822,7 +13822,7 @@ w_metadata nfsworld games \
     publisher="EA" \
     year="2011" \
     media="download" \
-    file1="setup_482.exe" \
+    file1="setup_659.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need For Speed World/GameLauncher.exe"
 
 load_nfsworld()
@@ -13831,13 +13831,18 @@ load_nfsworld()
 
     # This changes frequently, I'm afraid
     # Be careful to update $file1 when you update the url
-    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.35.482/setup_482.exe a37ae6fa07bbe0086b1766032ed63d3da7948dca
+    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.40.659/akamai/setup_659.exe b1f10af09350e2b3f5ccbc679dbea628e9f432d0
 
     w_workaround_wine_bug 27048 "The patcher hangs a lot.  When it does, retry the patch (you may need to kill it first).  After five or ten tries, it should work."
 
     # FIXME: file bugs for these
     w_call ie7
     w_call dotnet20
+
+    if test "$W_OPT_UNATTENDED" && w_workaround_wine_bug 25961
+    then
+        w_call vcrun2008
+    fi
 
     if w_workaround_wine_bug 26915 "installing corefonts so help works"
     then
@@ -13886,12 +13891,12 @@ w_metadata nfsworld_mono games \
     publisher="EA" \
     year="2011" \
     media="download" \
-    file1="setup_482.exe" \
+    file1="setup_659.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need For Speed World/GameLauncher.exe"
 
 load_nfsworld_mono()
 {
-    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.35.482/setup_482.exe a37ae6fa07bbe0086b1766032ed63d3da7948dca
+    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.40.659/akamai/setup_659.exe b1f10af09350e2b3f5ccbc679dbea628e9f432d0
 
     if w_workaround_wine_bug 25658 "Installing Mono 2.6"
     then
@@ -13901,6 +13906,11 @@ load_nfsworld_mono()
         w_download http://madewokherd.nfshost.com/omgsecret/mono-winebug23458.tar.gz \
              156a7d79e70864b67af22315ae257dc798cb2a2e
         w_try tar -C "$W_PROGRAMS_X86_UNIX/Mono-2.6.7/lib" -xvf "$W_CACHE/$W_PACKAGE"/mono-winebug23458.tar.gz
+    fi
+
+    if test "$W_OPT_UNATTENDED" && w_workaround_wine_bug 25961
+    then
+        w_call vcrun2008
     fi
 
     if w_workaround_wine_bug 26915 "installing corefonts so help works"
