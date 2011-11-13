@@ -13987,12 +13987,12 @@ w_metadata njcwp_trial apps \
     year="2009" \
     media="download" \
     file1="njcwp.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Chinese WP/Njstar.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Chinese WP/njstar.exe" \
     homepage="http://www.njstar.com/cms/njstar-chinese-word-processor"
 
 load_njcwp_trial()
 {
-    w_download http://www.njstar.com/download/njcwp.exe 3dca18c077f46592385506c12538a30a0a485268
+    w_download http://www.njstar.com/download/njcwp.exe 006da155bad1ac4a73b953c98cb821eb7fd96507
     cd "$W_CACHE/$W_PACKAGE"
     if test "$W_OPT_UNATTENDED"
     then
@@ -14013,7 +14013,7 @@ load_njcwp_trial()
     else
         w_try $WINE $file1
     fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\NJStar Chinese WP" "Njstar.exe"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\NJStar Chinese WP" "njstar.exe"
 }
 
 #----------------------------------------------------------------
@@ -14024,12 +14024,12 @@ w_metadata njjwp_trial apps \
     year="2009" \
     media="download" \
     file1="njjwp.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Japanese WP/Njstarj.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Japanese WP/njstarj.exe" \
     homepage="http://www.njstar.com/cms/njstar-japanese-word-processor"
 
 load_njjwp_trial()
 {
-    w_download http://www.njstar.com/download/njjwp.exe a9d430299e1b38c4629b79b281e0dff1e39d477b
+    w_download http://www.njstar.com/download/njjwp.exe 363d22e4ca7b79d0290a8ccdb0fa99169971d418
     cd "$W_CACHE/$W_PACKAGE"
     if test "$W_OPT_UNATTENDED"
     then
@@ -14050,7 +14050,7 @@ load_njjwp_trial()
     else
         w_try $WINE $file1
     fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\NJStar Japanese WP" "Njstarj.exe"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\NJStar Japanese WP" "njstarj.exe"
 }
 
 #----------------------------------------------------------------
