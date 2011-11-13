@@ -13877,6 +13877,7 @@ load_nfsworld()
             send {Space}                    ; uncheck readme
             send {Tab}
             send {Space}                    ; uncheck launch
+            sleep 1000                      ; let launch uncheck take effect?
             ControlClick TNewButton5        ; Finish
         }
         winwaitclose
@@ -13948,6 +13949,7 @@ load_nfsworld_mono()
             send {Space}                    ; uncheck readme
             send {Tab}
             send {Space}                    ; uncheck launch (Vincent says let it launch?)
+            sleep 1000                      ; let launch uncheck take effect?
             ControlClick TNewButton5        ; Finish
         }
         winwaitclose
