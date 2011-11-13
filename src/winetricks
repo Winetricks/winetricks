@@ -14517,6 +14517,7 @@ load_secondlife()
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
+        SetWinDelay 500
         run, Second_Life_2-5-0-220251_Setup.exe
         if ( w_opt_unattended > 0 ) {
             winwait, Installer Language
