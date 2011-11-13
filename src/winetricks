@@ -14305,23 +14305,29 @@ w_metadata ragnarok games \
     title="Ragnarok" \
     publisher="GRAVITY" \
     year="2002" \
-    media="download" \
+    media="manual_download" \
     file1="iRO-13.2.2-FullInstall-20110421-1717.msi" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Gravity/Ragnarok Online/Ragnarok.exe"
 
 load_ragnarok()
 {
-    if w_workaround_wine_bug 657 ""
+    if w_workaround_wine_bug 657 "Visual C++ 6 runtime"
     then
         w_call vcrun6
     fi
-    
-    w_download http://download.warpportal.com/ragnarok_client/full/iRO-13.2.2-FullInstall-20110421-1717.msi bda295e3a2a57cd02bd122ed7bf4836ac012369a
+    if w_workaround_wine_bug 28228 "Installing Visual C++ 2008 runtime"
+    then
+        w_call vcrun2008
+    fi
+
+    # publisher puts SHA1 checksums on download page, nice
+    # BDA295E3A2A57CD02BD122ED7BF4836AC012369A
+    w_download_manual http://www.playragnarok.com/downloads/clientdownload.aspx iRO-13.2.2-FullInstall-20110421-1717.msi bda295e3a2a57cd02bd122ed7bf4836ac012369a
 
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
-        Run, msiexec /i iRO-13.2.2-FullInstall-20110421-1717.msi
+        Run, msiexec /i $file1
         SetTitleMatchMode, 2
         WinWait, Ragnarok Online Setup, Please read the Ragnarok Online License Agreement
         if ( w_opt_unattended > 0 ) {
