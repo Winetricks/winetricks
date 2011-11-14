@@ -6295,6 +6295,9 @@ load_wsh56js()
     w_download http://download.microsoft.com/download/b/c/3/bc3a0c36-fada-497d-a3de-8b0139766f3b/Windows2000-KB917344-56-x86-enu.exe add5f74c5bd4da6cfae47f8306de213ec6ed52c8
 
     cd "$W_CACHE/$W_PACKAGE"
+    w_override_dlls native,builtin jscript
+    # setupapi looks at the versions in new and original jscript.dll, and wine's original is newer than wsh56js's, so have to nuke the original
+    w_try rm "$W_SYSTEM32_DLLS/jscript.dll"
     w_try $WINE Windows2000-KB917344-56-x86-enu.exe $W_UNATTENDED_SLASH_Q
 }
 
@@ -6315,6 +6318,9 @@ load_wsh56vb()
     w_download http://download.microsoft.com/download/IE60/Patch/Q318089/W9XNT4Me/EN-US/vbs56men.exe 48f14a93db33caff271da0c93f334971f9d7cb22
 
     cd "$W_CACHE"/wsh56vb
+    w_override_dlls native,builtin vbscript
+    # setupapi looks at the versions in new and original vbscript.dll, and wine's original is newer than wsh56vb's, so have to nuke the original
+    w_try rm "$W_SYSTEM32_DLLS/vbscript.dll"
     w_try $WINE vbs56men.exe $W_UNATTENDED_SLASH_Q
 }
 
