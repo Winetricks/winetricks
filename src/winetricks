@@ -6271,7 +6271,7 @@ load_wmi()
     w_download http://download.microsoft.com/download/platformsdk/wmi9x/1.5/W9X/EN-US/wmi9x.exe 62752e9c1b879688c26f205eebf07d3783906c3e
 
     w_set_winver win98
-    w_override_dlls native,builtin wbemprox.dll wmiutils.dll
+    w_override_dlls native,builtin wbemprox wmiutils
     # Note: there is a crash in the background towards the end, doesn't seem to hurt; see http://bugs.winehq.org/show_bug.cgi?id=7920
     cd "$W_CACHE"/wmi
     w_try $WINE wmi9x.exe $W_UNATTENDED_SLASH_S
@@ -6342,7 +6342,7 @@ load_wsh57()
     w_try_cabextract -d "$W_SYSTEM32_DLLS" "$W_CACHE"/wsh57/scripten.exe
 
     # Wine doesn't provide the other dll's (yet?)
-    w_override_dlls native,builtin jscript.dll
+    w_override_dlls native,builtin jscript
     w_try_regsvr dispex.dll jscript.dll scrobj.dll scrrun.dll vbscript.dll wshcon.dll wshext.dll
 }
 
@@ -7686,7 +7686,7 @@ load_ie6()
     # Work around http://bugs.winehq.org/show_bug.cgi?id=25432
     w_try_cabextract -F inseng.dll "$W_TMP/IE 6.0 Full/ACTSETUP.CAB"
     mv inseng.dll "$W_SYSTEM32_DLLS"
-    w_override_dlls native inseng.dll
+    w_override_dlls native inseng
 
     cd "$W_TMP/IE 6.0 Full"
     if [ $W_UNATTENDED_SLASH_Q ]
@@ -16640,7 +16640,7 @@ w_metadata forcemono settings \
 
 load_forcemono()
 {
-    w_override_dlls native mscoree.dll
+    w_override_dlls native mscoree
     w_override_dlls disabled mscorsvw.exe
 }
 
