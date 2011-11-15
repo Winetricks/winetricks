@@ -4619,10 +4619,10 @@ w_metadata flash dlls \
     publisher="Adobe" \
     year="2011" \
     media="download" \
-    file1="install_flash_player_32bit.exe" \
+    file1="install_flash_player_10.exe" \
     file2="install_flash_player_10_active_x.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil11e_Plugin.exe" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil11e_ActiveX.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10y_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10y_ActiveX.exe" \
     homepage="http://www.adobe.com/products/flashplayer/"
 
 load_flash()
@@ -4659,7 +4659,7 @@ load_flash()
     # 2011-11-12: sha1sum 2e834f95880fd0b96a9db93ff48f1e4178ee0913
     w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10.exe 2e834f95880fd0b96a9db93ff48f1e4178ee0913
 
-    w_try $WINE install_flash_player_32bit.exe ${W_OPT_UNATTENDED:+ /install}
+    w_try $WINE install_flash_player_10.exe ${W_OPT_UNATTENDED:+ /install}
 }
 
 #----------------------------------------------------------------
