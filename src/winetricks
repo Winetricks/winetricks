@@ -3385,6 +3385,12 @@ winetricks_init()
         else
             WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
         fi
+        _abswine="`which $WINE 2>/dev/null`" 
+        if ! test -x "$_abswine" || ! test -f "$_abswine"
+        then
+            w_die "WINE is $WINE, which is neither on the path nor an executable file"
+        fi
+        unset _abswine
         ;;
     esac
     winetricks_set_wineprefix
