@@ -16516,6 +16516,19 @@ load_rtlm()
 }
 
 #----------------------------------------------------------------
+# AlwaysOffscreen settings
+
+w_metadata ao=enabled settings \
+    title="Enable AlwaysOffscreen"
+w_metadata ao=disabled settings \
+    title="Disable AlwaysOffscreen (default)"
+
+load_ao()
+{
+    winetricks_set_wined3d_var AlwaysOffscreen $1
+}
+
+#----------------------------------------------------------------
 # DirectDraw settings
 
 w_metadata ddr=gdi settings \
@@ -17414,6 +17427,7 @@ execute_command()
     psm=disable*) w_call psm=disabled ;;
     rtlm=disable*) w_call rtlm=disabled ;;
     sound=disable*) w_call sound=disabled ;;
+    ao=disable*) w_call ao=disabled ;;
     strictdrawordering=disable*) w_call strictdrawordering=disabled ;;
 
     # For convenience, allow users to use lower case and abbreviate.
