@@ -5754,6 +5754,23 @@ load_richtx32()
 
 #----------------------------------------------------------------
 
+w_metadata sdl dlls \
+    title="Simple DirectMedia Layer" \
+    publisher="Sam Lantinga" \
+    year="2009" \
+    media="download" \
+    file1="SDL-1.2.14-win32.zip" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/SDL.dll"
+
+load_sdl()
+{
+    # http://www.libsdl.org/download-1.2.php
+    w_download http://www.libsdl.org/release/SDL-1.2.14-win32.zip d22c71d1c2bdf283548187c4b0bd7ef9d0c1fb23
+    w_try_unzip "$W_CACHE"/sdl/SDL-1.2.14-win32.zip -d "$W_SYSTEM32_DLLS" SDL.dll
+}
+
+#----------------------------------------------------------------
+
 w_metadata secur32 dlls \
     title="MS Security Support Provider Interface" \
     publisher="Microsoft" \
