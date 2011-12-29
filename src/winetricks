@@ -307,6 +307,17 @@ w_try_unzip()
     w_try unzip -o -q "$@"
 }
 
+w_try_7z()
+{
+    # Not always installed, but shouldn't be fatal unless it's being used
+    if test ! -x "`which 7z 2>/dev/null`"
+    then
+        w_die "Cannot find 7z.  Please install it (e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip p7zip-plugins')."
+    fi
+
+    w_try 7z "$@"
+}
+
 w_read_key()
 {
     if test ! "$W_OPT_UNATTENDED"
@@ -8623,7 +8634,7 @@ load_vc2005express()
 
     # Unpack ISO (how handy that 7z can do this!)
     cd "$W_TMP"
-    w_try 7z x "$W_CACHE"/vc2005express/VC.iso
+    w_try_7z x "$W_CACHE"/vc2005express/VC.iso
 
     if [ $W_UNATTENDED_SLASH_Q ]
     then
