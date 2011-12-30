@@ -6006,7 +6006,7 @@ winetricks_vcrun6_helper() {
 }
 
 w_metadata vcrun6 dlls \
-    title="Visual C++ 6 sp4 libraries (mfc42, msvcp60, msvcrt)" \
+    title="Visual C++ 6 sp4 libraries (mfc42, msvcp60, msvcrt, msvcirt)" \
     publisher="Microsoft" \
     year="2000" \
     media="download" \
@@ -6040,7 +6040,7 @@ load_vcrun6()
 }
 
 w_metadata mfc42 dlls \
-    title="Visual C++ 6 sp4 mfc42 library (mfc42); same as vcrun6" \
+    title="Visual C++ 6 sp4 mfc42 library; part of vcrun6" \
     publisher="Microsoft" \
     year="2000" \
     media="download" \
@@ -6052,6 +6052,21 @@ load_mfc42()
     winetricks_vcrun6_helper
 
     w_try_cabextract "$W_CACHE"/vcrun6/vcredist.exe -d "$W_SYSTEM32_DLLS" -F "mfc42*.dll"
+}
+
+w_metadata msvcirt dlls \
+    title="Visual C++ 6 sp4 msvcirt library; part of vcrun6" \
+    publisher="Microsoft" \
+    year="2000" \
+    media="download" \
+    file1="../vcrun6/vc6redistsetup_enu.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msvcirt.dll"
+
+load_msvcirt()
+{
+    winetricks_vcrun6_helper
+
+    w_try_cabextract "$W_CACHE"/vcrun6/vcredist.exe -d "$W_SYSTEM32_DLLS" -F msvcirt.dll
 }
 
 #----------------------------------------------------------------
