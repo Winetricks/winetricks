@@ -552,7 +552,11 @@ w_download_to()
         *) _W_agent= ;;
         esac
 
-        if [ -x "`which wget 2>/dev/null`" ]
+        if [ -x "`which axel 2>/dev/null`" ]
+        then
+            # Basic axel support.
+            axel -o "$_W_file" "$_W_url"
+        elif [ -x "`which wget 2>/dev/null`" ]
         then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
            # [*] --retry-connrefused works around the broken sf.net mirroring
@@ -3393,6 +3397,10 @@ winetricks_init()
         if test "$WINEPREFIX"
         then
             WINETRICKS_ORIGINAL_WINEPREFIX="$WINEPREFIX"
+            if test WINETRICKS_OPT_SHAREDPREFIX=0
+            then
+                w_info "To install apps into $WINEPREFIX, give the --no-isolate option"
+            fi
         else
             WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
         fi
