@@ -590,7 +590,7 @@ w_download_to()
         fi
         # Need to decompress .exe's that are compressed, else cygwin fails
         # Also affects ttf files on github
-	_W_filetype=`which file 2>/dev/null`
+        _W_filetype=`which file 2>/dev/null`
         case $_W_filetype-$_W_file in
         /*-*.exe|/*-*.ttf)
             case `file "$_W_file"` in
@@ -4405,7 +4405,7 @@ load_dotnet20sp1()
         # Stop services
         # Recipe from http://bugs.winehq.org/show_bug.cgi?id=16956
         $WINESERVER -k
-	# Fight a race condition, see bug 16956 comment 43
+        # Fight a race condition, see bug 16956 comment 43
         w_set_winver win2k
         $WINESERVER -w
         WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b 
@@ -8926,7 +8926,7 @@ load_wmp9()
 
     if w_workaround_wine_bug 28994 "virtualprotect problem" ,1.3.31 1.3.35,
     then
-        w_die "Please upgrad to wine-1.3.35 to install wmp9."
+        w_die "Please upgrade to wine-1.3.35 to install wmp9."
     fi
 
     w_call wsh57
@@ -9299,22 +9299,22 @@ load_unigine_heaven()
         SetTitleMatchMode, 2
         run msiexec /i $file1
         if ( w_opt_unattended > 0 ) {
-	    WinWait ahk_class MsiDialogCloseClass
-	    Send {Enter}
-	    WinWait ahk_class MsiDialogCloseClass, License
-	    ControlClick Button1 ; Accept
-	    ControlClick Button3 ; Accept
-	    WinWait ahk_class MsiDialogCloseClass, Choose
-	    ControlClick Button1 ; Typical
-	    WinWait ahk_class MsiDialogCloseClass, Ready
-	    ControlClick Button2 ; Install
-	    ; FIXME: on systems with OpenAL already (Win7?), the next four lines
-	    ; are not needed.  We should somehow wait for either OpenAL window
-	    ; *or* Completed window.
-	    WinWait ahk_class OpenAL Installer
-	    ControlClick Button2 ; OK
-	    WinWait ahk_class #32770
-	    ControlClick Button1 ; OK
+            WinWait ahk_class MsiDialogCloseClass
+            Send {Enter}
+            WinWait ahk_class MsiDialogCloseClass, License
+            ControlClick Button1 ; Accept
+            ControlClick Button3 ; Accept
+            WinWait ahk_class MsiDialogCloseClass, Choose
+            ControlClick Button1 ; Typical
+            WinWait ahk_class MsiDialogCloseClass, Ready
+            ControlClick Button2 ; Install
+            ; FIXME: on systems with OpenAL already (Win7?), the next four lines
+            ; are not needed.  We should somehow wait for either OpenAL window
+            ; *or* Completed window.
+            WinWait ahk_class OpenAL Installer
+            ControlClick Button2 ; OK
+            WinWait ahk_class #32770
+            ControlClick Button1 ; OK
         }
         WinWait ahk_class MsiDialogCloseClass, Completed
         if ( w_opt_unattended > 0 ) {
@@ -11046,28 +11046,28 @@ load_dcuo()
         SetTitleMatchMode, 2
         run, ${W_ISO_MOUNT_LETTER}:setup.exe
         if ( w_opt_unattended > 0 ) {
-	    winwait, DC Universe, Anti-virus
-	    ControlClick, Button1   ; next
-	    winwait, DC Universe, License
-	    ControlClick, Button5   ; accept
-	    sleep 500
-	    ControlClick, Button2   ; next
-	    winwait, DC Universe, Shortcut
-	    ControlClick, Button3   ; next
-	    Loop
-	    {
-		IfWinExist, DC Universe, not enough space
-		{
-		    exit 1          ; dang, have to quit
-		}
-		IfWinExist, DC Universe, Ready
-		{
-		    break
-		}
-		Sleep 1000
-	    }
-	    winwait, DC Universe, Ready
-	    ControlClick, Button1   ; next
+            winwait, DC Universe, Anti-virus
+            ControlClick, Button1   ; next
+            winwait, DC Universe, License
+            ControlClick, Button5   ; accept
+            sleep 500
+            ControlClick, Button2   ; next
+            winwait, DC Universe, Shortcut
+            ControlClick, Button3   ; next
+            Loop
+            {
+                IfWinExist, DC Universe, not enough space
+                {
+                    exit 1          ; dang, have to quit
+                }
+                IfWinExist, DC Universe, Ready
+                {
+                    break
+                }
+                Sleep 1000
+            }
+            winwait, DC Universe, Ready
+            ControlClick, Button1   ; next
         }
         winwait, Setup Needs The Next Disk, Please insert disk 2
     "
@@ -11078,36 +11078,36 @@ load_dcuo()
         SetTitleMatchMode, 2
         winwait, Setup Needs The Next Disk, Please insert disk 2
         if ( w_opt_unattended > 0 ) {
-	    ControlClick, Button2   ; next
-	    winwaitclose
-	    Loop
-	    {
-		IfWinExist, DirectX, Welcome
-		{
-		    ControlClick, Button1   ; accept
-		    Sleep 1000
-		    ControlClick, Button4   ; next
-		    WinWait, DirectX, Runtime Install
-		    ControlClick, Button4   ; next
-		    WinWait, DirectX, Complete
-		    ControlClick, Button4   ; next
+            ControlClick, Button2   ; next
+            winwaitclose
+            Loop
+            {
+                IfWinExist, DirectX, Welcome
+                {
+                    ControlClick, Button1   ; accept
+                    Sleep 1000
+                    ControlClick, Button4   ; next
+                    WinWait, DirectX, Runtime Install
+                    ControlClick, Button4   ; next
+                    WinWait, DirectX, Complete
+                    ControlClick, Button4   ; next
                     sleep 1000
                     process, close, dxsetup.exe   ; work around strange 'next button does nothing' bug
-		}
-		IfWinExist, Flash   ; a newer version of flash is already installed
-		{
-		    ControlClick, Button3   ; quit
-		}
-		IfWinExist, DC Universe, Complete
-		{
-		    break
-		}
-		Sleep 1000
-	    }
+                }
+                IfWinExist, Flash   ; a newer version of flash is already installed
+                {
+                    ControlClick, Button3   ; quit
+                }
+                IfWinExist, DC Universe, Complete
+                {
+                    break
+                }
+                Sleep 1000
+            }
         }
-	WinWait, DC Universe, Complete
+        WinWait, DC Universe, Complete
         if ( w_opt_unattended > 0 ) {
-	    ControlClick, Button4   ; finish
+            ControlClick, Button4   ; finish
         }
         winwaitclose
     "
@@ -16295,10 +16295,10 @@ load_civ5_demo_steam()
         }
     " &
     _job=$!
-	# While that's running, install the game.
-	# You'll see *two* Autohotkey icons until that first script
-	# finds the dialog it's looking for, clicks, and exits.
-	w_info "If you already own the full Civ 5 game on steam, the installer won't even appear."
+        # While that's running, install the game.
+        # You'll see *two* Autohotkey icons until that first script
+        # finds the dialog it's looking for, clicks, and exits.
+        w_info "If you already own the full Civ 5 game on steam, the installer won't even appear."
     w_steam_install_game 65900 "Sid Meier's Civilization V - Demo"
     kill -HUP $_job   # just in case
 }
