@@ -3397,10 +3397,24 @@ winetricks_init()
     case "$OS" in
      "Windows_NT")
         WINE=""
+        WINESERVER=""
         W_DRIVE_C="C:/"
         ;;
      *)
         WINE="${WINE:-wine}"
+        if test -x "${WINE}server"
+        then
+            WINESERVER="${WINE}server"
+        elif test -x "`dirname $WINE`/server/wineserver"
+        then
+            WINESERVER="`dirname $WINE`/server/wineserver"
+        elif test -x "`which wineserver`"
+        then
+            WINESERVER="`which wineserver`"
+        else
+            die "wineserver not found!"
+        fi
+
         if test "$WINEPREFIX"
         then
             WINETRICKS_ORIGINAL_WINEPREFIX="$WINEPREFIX"
@@ -4390,11 +4404,10 @@ load_dotnet20sp1()
     then
         # Stop services
         # Recipe from http://bugs.winehq.org/show_bug.cgi?id=16956
-        # FIXME: use a wrapper function for this
-        wineserver -k
-        # Fight a race condition, see bug 16956 comment 43
+        $WINESERVER -k
+	# Fight a race condition, see bug 16956 comment 43
         w_set_winver win2k
-        wineserver -w
+        $WINESERVER -w
         WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b 
         export WINEDLLOVERRIDES
     fi
@@ -4448,11 +4461,10 @@ load_dotnet20sp2()
         $WINE reg add "HKLM\Software\Microsoft\Net Framework Setup\NDP\v2.0.50727" /v Version /d "2.0.50727" /f
         # Stop services
         # Recipe from http://bugs.winehq.org/show_bug.cgi?id=16956
-        # FIXME: use a wrapper function for this
-        wineserver -k
+        $WINESERVER -k
         # Fight a race condition, see bug 16956 comment 43
         w_set_winver win2k
-        wineserver -w
+        $WINESERVER -w
         WINEDLLOVERRIDES=regsvcs.exe,mscorsvw.exe=b 
         export WINEDLLOVERRIDES
     fi
@@ -9501,7 +9513,7 @@ load_aoe3_demo()
             SetTitleMatchMode, 2
             WinKill,Empires
         "
-        # or should we just do wineserver -k, like fable_tlc does?
+        # or should we just do $WINESERVER -k, like fable_tlc does?
         PID=`ps augxw | grep IDriver | grep -v grep | awk '{print $2}'`
         kill $PID
     fi
@@ -9622,7 +9634,7 @@ load_acreedbro()
     if ps augxw | grep -i exe | egrep 'winemenubuilder.exe|setup.exe|PnkBstrA.exe | egrep -v egrep'
     then
         w_warn "Killing processes so patcher does not complain about game still running"
-        wineserver -k
+        $WINESERVER -k
         sleep 10
     fi
 
