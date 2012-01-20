@@ -2884,7 +2884,7 @@ winetricks_cache_iso()
     # Use conv=noerror,sync to replace unreadable blocks with zeroes
     case $WINETRICKS_OPT_DD in
     dd)
-      dd if=$WINETRICKS_DEV of="$W_CACHE"/temp.iso bs=2048 conv=noerror,sync &
+      $WINETRICKS_OPT_DD if=$WINETRICKS_DEV of="$W_CACHE"/temp.iso bs=2048 conv=noerror,sync &
       WINETRICKS_DD_PID=$!
       ;;
     ddrescue)
@@ -2892,7 +2892,7 @@ winetricks_cache_iso()
       then
           w_die "Please install ddrescue first."
       fi
-      ddrescue -v -b 2048 $WINETRICKS_DEV "$W_CACHE"/temp.iso &
+      $WINETRICKS_OPT_DD -v -b 2048 $WINETRICKS_DEV "$W_CACHE"/temp.iso &
       WINETRICKS_DD_PID=$!
       ;;
     esac
