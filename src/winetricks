@@ -6038,12 +6038,12 @@ winetricks_vcrun6_helper() {
 }
 
 w_metadata vcrun6 dlls \
-    title="Visual C++ 6 sp4 libraries (mfc42, msvcp60, msvcrt, msvcirt)" \
+    title="Visual C++ 6 sp4 libraries (mfc42, msvcp60, msvcirt)" \
     publisher="Microsoft" \
     year="2000" \
     media="download" \
     file1="vc6redistsetup_enu.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/msvcrt.dll"
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc42.dll"
 
 load_vcrun6()
 {
@@ -6067,8 +6067,6 @@ load_vcrun6()
     # And then some apps need mfc42u.dll, dunno what right way
     # is to get it, vcredist doesn't install it by default?
     load_mfc42
-
-    w_override_dlls native,builtin msvcrt
 }
 
 w_metadata mfc42 dlls \
