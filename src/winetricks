@@ -3430,6 +3430,11 @@ winetricks_init()
         then
             w_die "WINE is $WINE, which is neither on the path nor an executable file"
         fi
+        case "$WINETRICKS_OPT_VERBOSE" in
+        "1") echo -n "Wine is '$WINE'; Wine version is "
+             $WINE --version || w_die "Can't get wine version"
+             ;;
+        esac
         unset _abswine
         ;;
     esac
@@ -3536,7 +3541,7 @@ winetricks_handle_option()
     -r|--ddrescue) WINETRICKS_OPT_DD=ddrescue ;;
     -k|--keep_isos) WINETRICKS_OPT_KEEPISOS=1 ;;
     -q|--unattended) winetricks_set_unattended 1 ;;
-    -v|--verbose) set -x ;;
+    -v|--verbose) WINETRICKS_OPT_VERBOSE=1; set -x ;;
     -V|--version) winetricks_print_version ; exit 0;;
     -h|--help) winetricks_usage ; exit 0 ;;
     --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
