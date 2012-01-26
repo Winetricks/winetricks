@@ -6181,7 +6181,7 @@ w_metadata vcrun6sp6 dlls \
     year="2004" \
     media="download" \
     file1="Vs6sp6.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/msvcrt.dll"
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc42.dll"
 
 load_vcrun6sp6()
 {
@@ -6211,8 +6211,6 @@ load_vcrun6sp6()
     # is to get it, vcredist doesn't install it by default?
     w_try_cabextract vcredist.exe -d "$W_SYSTEM32_DLLS" -F mfc42u.dll
     # Should the mfc42 verb install this one instead?
-
-    w_override_dlls native,builtin msvcrt
 }
 
 #----------------------------------------------------------------
