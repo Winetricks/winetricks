@@ -1586,6 +1586,9 @@ w_wine_version()
     1.2) _W_minor=2; _W_micro=0;;
     1.2.*) _W_minor=2; _W_micro=`echo $2 | sed 's/.*\.//'`;;
     1.3.*) _W_minor=3; _W_micro=`echo $2 | sed 's/.*\.//'`;;
+    1.4) _W_minor=4; _W_micro=0;;
+    1.4.*) _W_minor=4; _W_micro=`echo $2 | sed 's/.*\.//'`;;
+    1.5.*) _W_minor=5; _W_micro=`echo $2 | sed 's/.*\.//'`;;
     *) w_die "bug: unrecognized version $2";;
     esac
 
@@ -3450,8 +3453,12 @@ winetricks_init()
     # Overridden for windows
     W_ISO_MOUNT_ROOT=/mnt/winetricks
     W_ISO_MOUNT_LETTER=i
-
+    
     WINETRICKS_WINE_VERSION=`winetricks_early_wine --version | sed 's/.*wine/wine/'`
+    # A small hack...
+    case "$WINETRICKS_WINE_VERSION" in
+        wine-1.4-rc*) WINETRICKS_WINE_VERSION="wine-1.3.38"; export WINETRICKS_WINE_VERSION;;
+    esac
     WINETRICKS_WINE_MINOR=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1\.\([0-9]*\)\..*/\1/'`
     WINETRICKS_WINE_MICRO=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/'`
 }
