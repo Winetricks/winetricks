@@ -4646,6 +4646,8 @@ load_dotnet40()
     # http://www.microsoft.com/download/en/details.aspx?id=17718
     w_download http://download.microsoft.com/download/9/5/A/95A9616B-7A37-4AF6-BC36-D6EA96C8DAAE/dotNetFx40_Full_x86_x64.exe 58da3d74db353aad03588cbb5cea8234166d8b99
 
+    w_download_manual http://www.mediafire.com/?v8rw5h1ra7maod4 gacutil-net40.tar.bz2 d40cc1249ea051338c064aff5ba0f1a5f24b59a5
+
     # Remove Mono registry entry:
     $WINE reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
     
@@ -4664,8 +4666,6 @@ load_dotnet40()
 
     $WINE reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Install /t REG_DWORD /d 0001 /f
     $WINE reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Version /t REG_SZ /d "4.0.30319" /f
-
-    w_download_manual http://www.mediafire.com/?v8rw5h1ra7maod4 gacutil-net40.tar.bz2 d40cc1249ea051338c064aff5ba0f1a5f24b59a5
 
     cd "$W_TMP"
     tar -xvjf "$W_CACHE/$W_PACKAGE/gacutil-net40.tar.bz2"
