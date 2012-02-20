@@ -3415,7 +3415,7 @@ winetricks_init()
         then
             WINESERVER="`which wineserver`"
         else
-            die "wineserver not found!"
+            w_die "wineserver not found!"
         fi
 
         if test "$WINEPREFIX"
