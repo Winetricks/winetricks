@@ -3730,6 +3730,27 @@ load_atmlib()
 
 #----------------------------------------------------------------
 
+w_metadata cmd dlls \
+    title="MS cmd.exe" \
+    publisher="Microsoft" \
+    year="2000" \
+    media="download" \
+    file1="Q259622_W2K_SP1_x86_en.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/cmd.exe"
+
+load_cmd()
+{
+    # http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=7541
+    w_download http://download.microsoft.com/download/win2000platform/Patch/Q259622/NT5/EN-US/Q259622_W2K_SP1_x86_en.EXE ab545df50287c26aea7705039cf00471bfeb043c
+
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/cmd/$file1
+    w_try cp "$W_TMP"/cmd.exe "$W_SYSTEM32_DLLS"/cmd.exe
+
+    w_override_dlls native,builtin cmd.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata comctl32 dlls \
     title="MS common controls 5.80" \
     publisher="Microsoft" \
