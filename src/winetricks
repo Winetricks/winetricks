@@ -7639,11 +7639,11 @@ load_firefox5()
 #----------------------------------------------------------------
 
 w_metadata firefox apps \
-    title="Firefox 8" \
+    title="Firefox 10" \
     publisher="Mozilla" \
     year="2011" \
     media="download" \
-    file1="Firefox Setup 8.0.exe" \
+    file1="Firefox Setup 10.0.2.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox()
@@ -7658,7 +7658,7 @@ load_firefox()
         w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
     fi
 
-    w_download "http://download.mozilla.org/?product=firefox-8.0&os=win&lang=en-US" dbbc497e639cae401dd9e6db6b61018ea0d2b689 "$file1"
+    w_download "http://download.mozilla.org/?product=firefox-10.0&os=win&lang=en-US" fa47ff26b14ec94fd6e5c3369d80b11fe153fae3 "$file1"
     cd "$W_CACHE"/firefox
     w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
