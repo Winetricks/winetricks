@@ -3123,20 +3123,13 @@ winetricks_mount_real_volume()
 
 winetricks_cleanup()
 {
-    test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
-    test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
-}
-
-winetricks_kill_handler()
-{
-    #echo "Caught signal, cleaning up."
+    set +e
     if test -f "$WINETRICKS_WORKDIR/dd-pid"
     then
         kill `cat "$WINETRICKS_WORKDIR/dd-pid"`
     fi
-    winetricks_cleanup
-    #echo "Done cleanup, quitting."
-    exit
+    test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
+    test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
 }
 
 winetricks_set_unattended()
@@ -3332,7 +3325,7 @@ winetricks_init()
     WINETRICKS_CURMENU=prefix
 
     # Delete work directory after each run, on exit either graceful or abrupt
-    trap winetricks_kill_handler EXIT HUP INT QUIT ABRT
+    trap winetricks_cleanup EXIT HUP INT QUIT ABRT
 
     # Whether to always cache cached iso's (1) or only use cache if present (0)
     # Can be inherited from environment or set via -k, defaults to off
@@ -17663,6 +17656,7 @@ then
     fi
 
     case "$1" in
+    die) w_die "we who are about to die salute you." ;;
     volnameof=*)
         # Debug code.  Remove later?
         # Since linux's volname command can't handle dvds, winetricks has its own,
