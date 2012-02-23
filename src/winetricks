@@ -4558,7 +4558,8 @@ load_dotnet30()
     w_set_winver winxp
 
     # Delete FontCache 3.0 service, it's in Wine for Mono, breaks native .NET
-    w_try $WINE sc delete "FontCache3.0.0.0"
+    # OK if this fails, that just means you have an older wine.
+    $WINE sc delete "FontCache3.0.0.0"
     cd "$W_CACHE"/dotnet30
     w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
 }
