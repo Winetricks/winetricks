@@ -4438,6 +4438,9 @@ load_dotnet20sp1()
         export WINEDLLOVERRIDES
     fi
 
+    # Workaround Wine/Mono integration:
+    $WINE reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v2.0.50727" /v Version /t REG_SZ /d "2.0.50727" /f
+
     w_download http://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe eef5a36924cdf0c02598ccf96aa4f60887a49840
     cd "$W_CACHE"/dotnet20sp1
     $WINE NetFx20SP1_x86.exe ${W_OPT_UNATTENDED:+/q} 
