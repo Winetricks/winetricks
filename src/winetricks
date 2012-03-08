@@ -8693,8 +8693,8 @@ w_metadata utorrent apps \
     title="µTorrent 2.2.1" \
     publisher="BitTorrent" \
     year="2011" \
-    media="download" \
-    file1="utorrent.exe" \
+    media="manual_download" \
+    file1="utorrent_2.2.1.exe" \
     installed_exe1="c:/windows/utorrent.exe"
 
 load_utorrent()
@@ -8708,9 +8708,10 @@ load_utorrent()
     # Apr 14 2011 2.2.1 sha1sum b1378d7cbe5d1e1b168ce44def8f59facdc046d5
     # 7 May 2011        sha1sum 2932c9ed1c1225e485f7e3dd2ed267aa7d568c80
     # 14 May 2011 removed checksum, updates too quickly to track :-(
-    w_download http://download.utorrent.com/2.2.1/utorrent.exe
+    # 7 Mar 2012 sha1sum c6d9a80c02898139b17194d10293f17ecef054cb
+    w_download_manual "http://www.oldapps.com/utorrent.php?old_utorrent=38" utorrent_2.2.1.exe c6d9a80c02898139b17194d10293f17ecef054cb
 
-    w_try cp -f "$W_CACHE/utorrent/utorrent.exe" "$W_WINDIR_UNIX"/utorrent.exe
+    w_try cp -f "$W_CACHE/utorrent/$file1" "$W_WINDIR_UNIX"/utorrent.exe
 
     w_declare_exe "c:\\windows" "utorrent.exe"
 }
@@ -8718,11 +8719,11 @@ load_utorrent()
 #----------------------------------------------------------------
 
 w_metadata utorrent3 apps \
-    title="µTorrent 3.0" \
+    title="µTorrent 3.1" \
     publisher="BitTorrent" \
     year="2011" \
     media="download" \
-    file1="utorrent-3.0-latest.exe" \
+    file1="uTorrent.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/uTorrent/uTorrent.exe"
 
 load_utorrent3()
@@ -8731,14 +8732,15 @@ load_utorrent3()
     # 27 Apr 2011: sha1sum d969f0c61cf2b2afaea4121f097ef690dffbf771
     # 7 May 2011: sha1sum 1793a7b15d905a9fa82f9a969a96fa53abaac04c
     # 14 May: removed checksum, changes too often to track
-    w_download http://download.utorrent.com/beta/utorrent-3.0-latest.exe
+    # 7 Mar 2012: sha1sum 73ba69b5d0004239a709af5db57c88c9d9c8f7b2
+    w_download http://download.utorrent.com/3.1.2/uTorrent.exe 73ba69b5d0004239a709af5db57c88c9d9c8f7b2
 
     case "$W_OPT_UNATTENDED" in
     0) _W_opt="" ;;
     *) _W_opt="/PERFORMINSTALL /NORUN" ;;
     esac
     cd "$W_CACHE/$W_PACKAGE"
-    $WINE utorrent-3.0-latest.exe $_W_opt
+    $WINE $file1 $_W_opt
 
     # dang installer exits with status 1 on success
     status=$?
