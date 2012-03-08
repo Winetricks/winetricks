@@ -8203,7 +8203,8 @@ load_nook()
     # dates from curl --head
     # 10 Feb 2011 sha1sum 4a06a529b93ed33c3518326d874b40d8d7b70e7a
     # 7 Oct 2011 sha1sum 3b0301bd55471cc47cced44501547411fac9fcea
-    w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 3b0301bd55471cc47cced44501547411fac9fcea
+    # 7 Mar 2012 sha1sum e7060a63b9b303ddd820de762d9df254e1c931bc
+    w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe e7060a63b9b303ddd820de762d9df254e1c931bc
     cd "$W_CACHE"/nook
     $WINE $file1 ${W_OPT_UNATTENDED:+ /S}
     # normally has exit status 199?
