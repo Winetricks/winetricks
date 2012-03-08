@@ -10210,7 +10210,7 @@ load_braid_demo()
 {
     if ! test -f "$W_CACHE/$W_PACKAGE/braid_windows_r3.exe"
     then
-        w_download http://download.instantaction.com/games/pgh_legacy/braid_windows_r3.exe 7ea08ddbf5f2fb2f38057d930389b5af7d737e2c
+        w_download http://mirror.3fl.net.au/games/arcade/braid/client/braid_windows_r3.exe 7ea08ddbf5f2fb2f38057d930389b5af7d737e2c
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
@@ -10260,7 +10260,7 @@ load_braid()
 {
     if ! test -f "$W_CACHE/$W_PACKAGE/braid_windows_r3.exe"
     then
-        w_download http://download.instantaction.com/games/pgh_legacy/braid_windows_r3.exe 7ea08ddbf5f2fb2f38057d930389b5af7d737e2c
+        w_download http://mirror.3fl.net.au/games/arcade/braid/client/braid_windows_r3.exe 7ea08ddbf5f2fb2f38057d930389b5af7d737e2c
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
@@ -12695,8 +12695,9 @@ load_hegemonygold_demo()
     # 28 Apr 2011: 93677013fc17f014b1640bed070e8bb1b2a17445
     # 25 Jun 2011: 4069656ea3c3760b67d1c5adff37de7472955f72
     # 5 Nov 2011: 723c575ff5fff77941a1c786e28f46c094b8159c
+    # 8 Mar 2012: 36634314f571e345d082bdefe1150c76ef5610a7
 
-    w_download "http://www.longbowgames.com/downloads/Hegemony%20Gold%20Installer.exe" 723c575ff5fff77941a1c786e28f46c094b8159c HegemonyGoldInstaller.exe
+    w_download "http://www.longbowgames.com/downloads/Hegemony%20Gold%20Installer.exe" 36634314f571e345d082bdefe1150c76ef5610a7 HegemonyGoldInstaller.exe
 
     cd "$W_CACHE/$W_PACKAGE"
 
