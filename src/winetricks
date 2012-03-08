@@ -3414,10 +3414,10 @@ winetricks_init()
         if test "$WINEPREFIX"
         then
             WINETRICKS_ORIGINAL_WINEPREFIX="$WINEPREFIX"
-            if test WINETRICKS_OPT_SHAREDPREFIX=0
-            then
-                w_info "To install apps into $WINEPREFIX, give the --no-isolate option"
-            fi
+            #if test WINETRICKS_OPT_SHAREDPREFIX=0
+            #then
+            #    w_info "To install apps into $WINEPREFIX, give the --no-isolate option"
+            #fi
         else
             WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
         fi
