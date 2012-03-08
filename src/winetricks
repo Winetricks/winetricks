@@ -14712,18 +14712,18 @@ w_metadata secondlife games \
     publisher="Linden Labs" \
     year="2003-2011" \
     media="download" \
-    file1="Second_Life_2-5-0-220251_Setup.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/SecondLifeViewer2/SecondLife.exe"
+    file1="Second_Life_3-2-8-248931_Setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/SecondLifeViewer/SecondLife.exe"
 
 load_secondlife()
 {
-    w_download http://download.cloud.secondlife.com/Viewer-2-5/Second_Life_2-5-0-220251_Setup.exe 841b089eb8b7b782718538c697cba5fd714f5eac
+    w_download http://download.cloud.secondlife.com/Viewer-3/Second_Life_3-2-8-248931_Setup.exe e08c16edc4d2fb68bb6275bed11a259a74918da5
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         SetWinDelay 500
-        run, Second_Life_2-5-0-220251_Setup.exe
+        run, $file1
         if ( w_opt_unattended > 0 ) {
             winwait, Installer Language
             send {Enter}
@@ -14737,7 +14737,7 @@ load_secondlife()
         winwaitclose
     "
 
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\SecondLifeViewer2" "SecondLife.exe"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\SecondLifeViewer" "SecondLife.exe"
 }
 
 #----------------------------------------------------------------
