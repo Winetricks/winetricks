@@ -2081,10 +2081,10 @@ winetricks_prefixmenu()
                     _W_msg_name="$p"
                 fi
                 printf %s " FALSE prefix='$p' 'Select $_W_msg_name' "
-            done >> $WINETRICKS_WORKDIR/zenity.sh
+            done >> "$WINETRICKS_WORKDIR"/zenity.sh
         fi
-        printf %s " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> $WINETRICKS_WORKDIR/zenity.sh
-        printf %s " FALSE $_W_cmd_showbroken '$_W_msg_showbroken'" >> $WINETRICKS_WORKDIR/zenity.sh
+        printf %s " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> "$WINETRICKS_WORKDIR"/zenity.sh
+        printf %s " FALSE $_W_cmd_showbroken '$_W_msg_showbroken'" >> "$WINETRICKS_WORKDIR"/zenity.sh
 
         sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
         ;;
@@ -2290,16 +2290,16 @@ winetricks_settings_menu()
 
         for metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
         do
-            code=`winetricks_metadata_basename $metadatafile`
+            code=`winetricks_metadata_basename "$metadatafile"`
             (
             title='?'
             author='?'
-            . $metadatafile
+            . "$metadatafile"
             printf "%s %s %s %s" " " FALSE \
                     $code \
                     "\"$title\""
             )
-        done >> $WINETRICKS_WORKDIR/zenity.sh
+        done >> "$WINETRICKS_WORKDIR"/zenity.sh
 
         sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
         ;;
@@ -2416,14 +2416,14 @@ winetricks_showmenu()
              ;;
         esac > "$WINETRICKS_WORKDIR"/zenity.sh
 
-        > $WINETRICKS_WORKDIR/installed.txt
+        > "$WINETRICKS_WORKDIR"/installed.txt
         for metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
         do
-            code=`winetricks_metadata_basename $metadatafile`
+            code=`winetricks_metadata_basename "$metadatafile"`
             (
             title='?'
             author='?'
-            . $metadatafile
+            . "$metadatafile"
             if test "$W_OPT_SHOWBROKEN" = 1 || test "$wine_showstoppers" = ""
             then
                 # Compute cached and downloadable flags
@@ -2433,7 +2433,7 @@ winetricks_showmenu()
                 if winetricks_is_installed $code
                 then
                     installed=TRUE
-                    echo $code >> $WINETRICKS_WORKDIR/installed.txt
+                    echo $code >> "$WINETRICKS_WORKDIR"/installed.txt
                 fi
                 printf %s " $installed \
                     $code \
@@ -2447,7 +2447,7 @@ winetricks_showmenu()
                 " 
             fi
             )
-        done >> $WINETRICKS_WORKDIR/zenity.sh
+        done >> "$WINETRICKS_WORKDIR"/zenity.sh
 
         # Filter out any verb that's already installed
         sh "$WINETRICKS_WORKDIR"/zenity.sh |
@@ -2567,8 +2567,8 @@ winetricks_list_cached()
         # Use a subshell to avoid putting metadata in global space
         # If this is too slow, we can unset known metadata by hand
         (
-        code=`winetricks_metadata_basename $_W_metadatafile`
-        . $_W_metadatafile
+        code=`winetricks_metadata_basename "$_W_metadatafile"`
+        . "$_W_metadatafile"
         if winetricks_is_cached $code
         then
             echo $code
@@ -2603,8 +2603,8 @@ winetricks_list_installed()
         # Use a subshell to avoid putting metadata in global space
         # If this is too slow, we can unset known metadata by hand
         (
-        code=`winetricks_metadata_basename $_W_metadatafile`
-        . $_W_metadatafile
+        code=`winetricks_metadata_basename "$_W_metadatafile"`
+        . "$_W_metadatafile"
         if winetricks_is_installed $code
         then
             echo $code
@@ -2646,8 +2646,8 @@ winetricks_list_all()
         # Use a subshell to avoid putting metadata in global space
         # If this is too slow, we can unset known metadata by hand
         (
-        code=`winetricks_metadata_basename $_W_metadatafile`
-        . $_W_metadatafile
+        code=`winetricks_metadata_basename "$_W_metadatafile"`
+        . "$_W_metadatafile"
 
         # Compute cached and downloadable flags
         flags=""
@@ -2899,7 +2899,7 @@ winetricks_cache_iso()
       WINETRICKS_DD_PID=$!
       ;;
     esac
-    echo $WINETRICKS_DD_PID > $WINETRICKS_WORKDIR/dd-pid
+    echo $WINETRICKS_DD_PID > "$WINETRICKS_WORKDIR"/dd-pid
 
     # Note: if user presses ^C, winetricks_cleanup will call winetricks_iso_cleanup
     # FIXME: add progress bar for kde, too
@@ -2919,7 +2919,7 @@ winetricks_cache_iso()
         done | $WINETRICKS_GUI --title "Copying to $_W_expected_volname.iso" --progress --pulsate --auto-kill
         ;;
     esac
-    rm $WINETRICKS_WORKDIR/dd-pid
+    rm "$WINETRICKS_WORKDIR"/dd-pid
 
     mv "$W_CACHE"/temp.iso "$WINETRICKS_IMG"
 
@@ -3050,7 +3050,7 @@ winetricks_is_mounted()
 
     # If that fails, read volume name the hard way for each volume
     # Have to use file to return results from implicit subshell
-    rm -f /tmp/_W_tmp.$LOGNAME
+    rm -f "/tmp/_W_tmp.$USERNAME"
     winetricks_list_mounts . | while true
     do
         IFS= read _W_tmp
@@ -3062,17 +3062,17 @@ winetricks_is_mounted()
         if test "$1" = "$_W_volname"
         then
             # Volume found!  Want to return from function here, but can't
-            echo "$_W_tmp" > /tmp/_W_tmp.$LOGNAME
+            echo "$_W_tmp" > "/tmp/_W_tmp.$USERNAME"
             break
         fi
     done
 
-    if test -f /tmp/_W_tmp.$LOGNAME
+    if test -f "/tmp/_W_tmp.$USERNAME"
     then
         # Volume found!  Return from function.
-        _W_dev=`cat /tmp/_W_tmp.$LOGNAME | sed 's/ .*//'`
-        _W_mountpoint="`cat /tmp/_W_tmp.$LOGNAME | sed 's/^[^ ]* //'`"
-        rm -f /tmp/_W_tmp.$LOGNAME
+        _W_dev=`cat "/tmp/_W_tmp.$USERNAME" | sed 's/ .*//'`
+        _W_mountpoint="`cat "/tmp/_W_tmp.$USERNAME" | sed 's/^[^ ]* //'`"
+        rm -f "/tmp/_W_tmp.$USERNAME"
         return 0
     fi
 
@@ -3307,8 +3307,17 @@ winetricks_init()
 {
     #---- Private Variables ----
 
+    if ! test "$USERNAME"
+    then
+        # Posix only requires LOGNAME to be defined, and sure enough, when
+        # logging in via console and startx in ubuntu, USERNAME is not set!
+        # I tried using only LOGNAME in this script, but it's so easy to slip
+        # and use USERNAME, so define it here if needed.
+        USERNAME="$LOGNAME"
+    fi
+
     # Ephemeral files for this run
-    WINETRICKS_WORKDIR=/tmp/w.$LOGNAME.$$
+    WINETRICKS_WORKDIR="/tmp/w.$USERNAME.$$"
     test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
 
     # Registering a verb creates a file in WINETRICKS_METADATA
@@ -3355,15 +3364,6 @@ winetricks_init()
     *[3])  WINETRICKS_SOURCEFORGE=http://surfnet.dl.sourceforge.net/sourceforge ;;
     *)     WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net;;
     esac
-
-    if ! test "$USERNAME"
-    then
-        # Posix only requires LOGNAME to be defined, and sure enough, when
-        # logging in via console and startx in ubuntu, USERNAME is not set!
-        # I tried using only LOGNAME in this script, but it's so easy to slip
-        # and use USERNAME, so define it here if needed.
-        USERNAME="$LOGNAME"
-    fi
 
     #---- Public Variables ----
 
@@ -8493,7 +8493,7 @@ w_metadata spotify apps \
     year="2011" \
     media="download" \
     file1="SpotifyInstaller.exe" \
-    installed_exe1="c:/users/$LOGNAME/Application Data/Spotify/spotify.exe"
+    installed_exe1="c:/users/$USERNAME/Application Data/Spotify/spotify.exe"
 
 load_spotify()
 {
@@ -8528,7 +8528,7 @@ load_spotify()
         w_call winhttp
     fi
 
-    w_declare_exe "c:\\users\\$LOGNAME\\Application Data\\Spotify" spotify.exe
+    w_declare_exe "c:\\users\\$USERNAME\\Application Data\\Spotify" spotify.exe
 }
 
 #----------------------------------------------------------------
@@ -12855,7 +12855,7 @@ w_metadata imvu games \
     year="2004" \
     media="download" \
     file1="InstallIMVU_465.0_st_c.exe" \
-    installed_exe1="c:/users/$LOGNAME/Application Data/IMVUClient/IMVUClient.exe"
+    installed_exe1="c:/users/$USERNAME/Application Data/IMVUClient/IMVUClient.exe"
 
 load_imvu()
 {
@@ -12888,7 +12888,7 @@ load_imvu()
         winwaitclose
     "
 
-    w_declare_exe "c:\\users\\$LOGNAME\\Application Data\\IMVUClient" "IMVUClient.exe"
+    w_declare_exe "c:\\users\\$USERNAME\\Application Data\\IMVUClient" "IMVUClient.exe"
 }
 
 #----------------------------------------------------------------
@@ -17514,7 +17514,7 @@ winetricks_stats_report()
 winetricks_stats_log_command()
 {
     # log what we execute for possible later statistics reporting
-    echo "$*" >> "$WINETRICKS_WORKDIR/breadcrumbs"
+    echo "$*" >> "$WINETRICKS_WORKDIR"/breadcrumbs
 
     # and for the user's own reference later, when figuring out what he did
     case "$OS" in
