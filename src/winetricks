@@ -7596,12 +7596,12 @@ w_metadata firefox36 apps \
     publisher="Mozilla" \
     year="2011" \
     media="download" \
-    file1="Firefox Setup 3.6.24.exe" \
+    file1="Firefox Setup 3.6.27.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox36()
 {
-    w_download "http://download.mozilla.org/?product=firefox-3.6.24&os=win&lang=en-US" 7d149a9a45fd7cdd9b31b1a966650466b7111f1f "$file1"
+    w_download "http://www.idg.pl/mirrors/mozilla/firefox/releases/3.6.27/win32/en-US/Firefox%20Setup%203.6.27.exe" 40aae31bcf23e159abebbd175eb27f2cb7226504 "$file1"
     cd "$W_CACHE"/firefox36
     w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
