@@ -7643,7 +7643,7 @@ load_firefox5()
         w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
     fi
 
-    w_download "http://download.mozilla.org/?product=firefox-5.0&os=win&lang=en-US" 288895db0a58b91801c5c1dfc0017131300dba00 "$file1"
+    w_download "ftp://ftp.mozilla.org/pub/firefox/releases/5.0/win32/en-US/Firefox%20Setup%205.0.exe" 288895db0a58b91801c5c1dfc0017131300dba00 "$file1"
     cd "$W_CACHE"/firefox5
     w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
