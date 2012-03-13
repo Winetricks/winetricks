@@ -3450,7 +3450,7 @@ winetricks_init()
     WINETRICKS_WINE_VERSION=`winetricks_early_wine --version | sed 's/.*wine/wine/'`
     # A small hack...
     case "$WINETRICKS_WINE_VERSION" in
-        wine-1.4-rc*) WINETRICKS_WINE_VERSION="wine-1.3.38"; export WINETRICKS_WINE_VERSION;;
+        wine-1.4-*) WINETRICKS_WINE_VERSION="wine-1.4.40"; export WINETRICKS_WINE_VERSION;;
         wine-1.4) WINETRICKS_WINE_VERSION="wine-1.4.0"; export WINETRICKS_WINE_VERSION;;
     esac
     WINETRICKS_WINE_MINOR=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1\.\([0-9]*\)\..*/\1/'`
