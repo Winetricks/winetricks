@@ -9758,7 +9758,7 @@ load_acreedbro()
     then
         if w_workaround_wine_bug 6971 "Pointing menu and icon at wine-hotfix-6971 to fix mouse problems"
         then
-            myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/$W_PACKAGE\" wine-hotfix-6971 cmd /c 'C:\\\\\\Run-$W_PACKAGE.bat'"
+            myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine-hotfix-6971 cmd /c 'C:\\\\\\\\Run-$W_PACKAGE.bat'"
 
             mymenu="$HOME/Desktop/Assassin's Creed Brotherhood.desktop"
             if test -f "$mymenu"
@@ -12612,7 +12612,7 @@ load_gta_vc()
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Rockstar Games\\Grand Theft Auto Vice City" gta-vc.exe
 
-    myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/gta_vc\" wine cmd /c 'C:\\\\\\Run-gta_vc.bat'"
+    myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine cmd /c 'C:\\\\\\\\Run-gta_vc.bat'"
     mymenu="$HOME/.local/share/applications/wine/Programs/Rockstar Games/Grand Theft Auto Vice City/Play GTA Vice City.desktop"
     if test -f "$mymenu" && w_workaround_wine_bug 26304 "Fixing system menu"
     then
@@ -14913,7 +14913,7 @@ load_simsmed()
 
     if w_workaround_wine_bug 25535 ".net 4 doesn't install on Wine, fixing menu to run game directly"
     then
-        myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/$W_PACKAGE\" wine cmd /c 'C:\\\\\\Run-$W_PACKAGE.bat'"
+        myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine cmd /c 'C:\\\\\\\\Run-$W_PACKAGE.bat'"
         mymenu="$HOME/.local/share/applications/wine/Programs/Electronic Arts/The Sims Medieval/The Sims™ Medieval.desktop"
         if test -f "$mymenu"
         then
