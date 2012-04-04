@@ -7579,14 +7579,6 @@ load_firefox35()
     w_try $WINE "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
-
-    myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/firefox\" wine cmd /c 'C:\\\\\\Run-firefox.bat'"
-    mymenu="$HOME/.local/share/applications/wine/Programs/Mozilla Firefox/Mozilla Firefox.desktop"
-    if test -f "$mymenu" && w_workaround_wine_bug 26304 "Fixing system menu"
-    then
-        # this is a hack, hopefully the wine bug will be fixed soon
-        sed -i "s,Exec=.*,$myexec," "$mymenu"
-    fi
 }
 
 #----------------------------------------------------------------
@@ -7611,14 +7603,6 @@ load_firefox36()
     fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
-
-    myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/firefox\" wine cmd /c 'C:\\\\\\Run-firefox.bat'"
-    mymenu="$HOME/.local/share/applications/wine/Programs/Mozilla Firefox/Mozilla Firefox.desktop"
-    if test -f "$mymenu" && w_workaround_wine_bug 26304 "Fixing system menu"
-    then
-        # this is a hack, hopefully the wine bug will be fixed soon
-        sed -i "s,Exec=.*,$myexec," "$mymenu"
-    fi
 }
 
 #----------------------------------------------------------------
