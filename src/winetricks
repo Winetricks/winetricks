@@ -770,8 +770,8 @@ use warnings;
 sub read_into_container{
     my( $pcontainer ) = @_;
 
-    $_ = <FILE> || die "Can't read first line of container";
-    /{/ || die "First line of container was not {";
+    $_ = <FILE> || w_die "Can't read first line of container";
+    /{/ || w_die "First line of container was not {";
     while (<FILE>) {
        chomp;
        if (/"([^"]*)"\s*"([^"]*)"$/) {
@@ -784,7 +784,7 @@ sub read_into_container{
         } elsif (/}/) {
            return;
         } else {
-           die "huh?";
+           w_die "huh?";
         }
     }
 }
@@ -821,10 +821,10 @@ sub disable_notifications{
 
 # Read the file
 my(%top);
-open FILE, $ARGV[0] || die "can't open ".$ARGV[0];
+open FILE, $ARGV[0] || w_die "can't open ".$ARGV[0];
 my($line);
-$line = <FILE> || die "Could not read first line from ".$ARGV[0];
-$line =~ /"UserLocalConfigStore"/ || die "this is not a localconfig.vdf file";
+$line = <FILE> || w_die "Could not read first line from ".$ARGV[0];
+$line =~ /"UserLocalConfigStore"/ || w_die "this is not a localconfig.vdf file";
 read_into_container(\%top);
 
 # Modify it
@@ -1525,7 +1525,7 @@ _EOF_
         $WINE reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
         ;;
     *)
-        die "Invalid Windows version given."
+        w_die "Invalid Windows version given."
         ;;
     esac
 
@@ -14944,7 +14944,7 @@ load_sims3_gen()
 {
     if [ ! -f "$W_PROGRAMS_X86_WIN/Electronic Arts/The Sims 3/Game/Bin/TS3.exe" ]
     then
-        die "You must have sims3 installed to install sims3_gen!"
+        w_die "You must have sims3 installed to install sims3_gen!"
     fi
 
     w_read_key
