@@ -14640,7 +14640,7 @@ load_rayman2_demo()
         WinWaitClose
     "
 
-    myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/rayman2_demo\" wine "'C:\\\\\\windows\\\\\\UbiSoft\\\\\\SetupUbi.exe -play Rayman2'
+    myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine "'C:\\\\\\\\windows\\\\\\\\UbiSoft\\\\\\\\SetupUbi.exe -play Rayman2'
     mymenu="$HOME/Desktop/To Play Rayman 2 Demo.desktop"
     if test -f "$mymenu" && w_workaround_wine_bug 26303 "Fixing desktop entry"
     then
