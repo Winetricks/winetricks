@@ -8601,9 +8601,8 @@ load_sketchup()
         WinWaitClose
     "
 
-    if w_workaround_wine_bug 14045
+    if w_workaround_wine_bug 14045 "Setting GLConfig Display HW_OK to 1" 1.3.18,
     then
-        echo "Setting GLConfig Display HW_OK to 1"
         cat > "$W_TMP"/glconfigdisplay.reg <<_EOF_
 REGEDIT4
 
