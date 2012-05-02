@@ -4654,8 +4654,37 @@ load_dotnet35()
     w_try_cabextract $W_UNATTENDED_DASH_Q "$W_CACHE"/dotnet35/dotnetfx35.exe
     cd wcu/dotNetFramework
     $WINE dotNetFx35setup.exe /lang:ENU $W_UNATTENDED_SLASH_Q
-
 }
+
+#----------------------------------------------------------------
+
+w_metadata dotnet35sp1 dlls \
+    title="MS .NET 3.5 SP1" \
+    publisher="Microsoft" \
+    year="2008" \
+    media="download" \
+    file1="dotnetfx35.exe" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/v3.5/Microsoft .NET Framework 3.5 SP1/logo.bmp"
+
+load_dotnet35sp1()
+{
+    case "$OS" in
+    "Windows_NT") ;;
+    *) w_warn "dotnet35sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
+    esac
+
+    w_call dotnet35
+    $WINESERVER -w
+    w_call dotnet20sp2
+    $WINESERVER -w
+
+    # http://www.microsoft.com/download/en/details.aspx?id=25150
+    w_download http://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 3dce66bae0dd71284ac7a971baed07030a186918
+
+    cd "$W_CACHE"/dotnet35sp1
+    $WINE dotnetfx35.exe /lang:ENU $W_UNATTENDED_SLASH_Q
+}
+
 #----------------------------------------------------------------
 
 w_metadata dotnet40 dlls \
