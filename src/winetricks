@@ -9907,7 +9907,6 @@ load_avatar_demo()
     "
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Demo\\James Cameron's AVATAR - THE GAME (Demo)\\bin" "AvatarDemo.exe"
 
-    w_workaround_wine_bug 24639 "If game is silent, try winetricks dsoundhw=Emulation"
     w_workaround_wine_bug 26590 "If game seems slow, try winetricks glsl=disabled"
 }
 
@@ -10344,12 +10343,6 @@ load_cnc_tiberian_sun()
     # FIXME: we need a progress indicator when unpacking large archives
     w_info "Unpacking rar file.  This will take a minute."
     w_try unrar x "$W_CACHE/$W_PACKAGE/$file1"
-
-    if w_workaround_wine_bug 26911 \
-        "Setting dsoundhw=Emulation so sound works in skirmish mode"
-    then
-        w_call dsoundhw=Emulation
-    fi
 
     w_declare_exe \
         "$W_PROGRAMS_X86_WIN\\EA Games\\Command & Conquer The First Decade\\Command & Conquer(tm) Tiberian Sun(tm)\\SUN" \
@@ -10827,11 +10820,6 @@ load_cojbib_demo()
 
         winwaitclose Call of Juarez
     "
-
-    if w_workaround_wine_bug 9612 "setting maxshadowsize=0"
-    then
-        w_call dsoundbug9612
-    fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Demo\\Techland\\Call of Juarez - Bound in Blood SP Demo" "CoJBiBDemo_x86.exe"
 }
@@ -14437,11 +14425,6 @@ load_popfs()
         }
     "
 
-if w_workaround_wine_bug 24346
-then
-    w_call dsoundbug9612
-fi
-
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Prince of Persia The Forgotten Sands" "Prince of Persia.exe"
 }
 
@@ -16524,64 +16507,11 @@ load_wormsreloaded_demo_steam()
     then
         w_call xact
     fi
-    if w_workaround_wine_bug 26646 "Setting dsoundhw=Emulation to fix choppy sound"
-    then
-        w_call dsoundhw=Emulation
-    fi
     w_steam_install_game 22690 "Worms Reloaded Demo"
 }
 
 #----------------------------------------------------------------
 # Settings
-#----------------------------------------------------------------
-# DirectSound settings
-
-winetricks_set_dsound_var()
-{
-    arg=$2
-    case $2 in
-    [Ff]*) arg=Full;;
-    [Ss]*) arg=Standard;;
-    [Bb]*) arg=Basic;;
-    [Ee]*) arg=Emulation;;
-    esac
-
-    echo "Setting DirectSound $1 to $arg"
-    cat > "$W_TMP"/set-dsound.reg <<_EOF_
-REGEDIT4
-
-[HKEY_CURRENT_USER\Software\Wine\DirectSound]
-"$1"="$arg"
-
-_EOF_
-    w_try_regedit "$W_TMP_WIN"\\set-dsound.reg
-}
-
-w_metadata dsoundbug9612 settings \
-    title="Use DirectSound MaxShadowSize=0 workaround for wine bug 9612"
-
-load_dsoundbug9612()
-{
-    if w_workaround_wine_bug 9612
-    then
-        winetricks_set_dsound_var MaxShadowSize 0
-    fi
-}
-
-w_metadata dsoundhw=Full settings \
-    title="Set DirectSound hardware acceleration to Full (default)"
-w_metadata dsoundhw=Standard settings \
-    title="Set DirectSound hardware acceleration to Standard"
-w_metadata dsoundhw=Basic settings \
-    title="Set DirectSound hardware acceleration to Basic"
-w_metadata dsoundhw=Emulation settings \
-    title="Set DirectSound hardware acceleration to Emulation"
-
-load_dsoundhw()
-{
-    winetricks_set_dsound_var HardwareAcceleration $1
-}
-
 #----------------------------------------------------------------
 # Direct3D settings
 
@@ -16987,12 +16917,6 @@ w_metadata sound=coreaudio settings \
     title="Set sound driver to Mac CoreAudio"
 w_metadata sound=disabled settings \
     title="Set sound driver to disabled"
-w_metadata sound=esd settings \
-    title="Set sound driver to esound"
-w_metadata sound=jack settings \
-    title="Set sound driver to Jack"
-w_metadata sound=nas settings \
-    title="Set sound driver to NAS"
 w_metadata sound=oss settings \
     title="Set sound driver to OSS"
 
@@ -17616,13 +17540,6 @@ execute_command()
     sound=disable*) w_call sound=disabled ;;
     ao=disable*) w_call ao=disabled ;;
     strictdrawordering=disable*) w_call strictdrawordering=disabled ;;
-
-    # For convenience, allow users to use lower case and abbreviate.
-    # FIXME: expand this?
-    dsoundhw=f*) w_call dsoundhw=Full ;;
-    dsoundhw=s*) w_call dsoundhw=Standard ;;
-    dsoundhw=b*) w_call dsoundhw=Basic ;;
-    dsoundhw=e*) w_call dsoundhw=Emulation ;;
 
     # Use winecfg if you want a gui for plain old dll overrides
     alldlls=*) w_call $1 ;;
