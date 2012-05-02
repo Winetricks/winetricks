@@ -4614,7 +4614,7 @@ load_dotnet30sp1()
 
     # Recipe from http://bugs.winehq.org/show_bug.cgi?id=25060#c10
     w_download http://download.microsoft.com/download/2/5/2/2526f55d-32bc-410f-be18-164ba67ae07d/"XPSEP XP and Server 2003 32 bit.msi" 5d332ebd1025e294adafe72030fe33db707b2c82
-    w_try $WINE msiexec /i "XPSEP XP and Server 2003 32 bit.msi" # ${W_OPT_UNATTENDED:+/q} broken?
+    w_try $WINE msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_OPT_UNATTENDED:+/qb}
     $WINE sc delete FontCache3.0.0.0
 
     $WINE $file1 ${W_OPT_UNATTENDED:+/q}
