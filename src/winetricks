@@ -4235,6 +4235,9 @@ w_metadata directmusic dlls \
 load_directmusic()
 {
 # Untested. Based off http://bugs.winehq.org/show_bug.cgi?id=4805 and http://bugs.winehq.org/show_bug.cgi?id=24911
+
+    w_call dsound
+
     helper_directx_dl
 
     w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
