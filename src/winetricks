@@ -3448,18 +3448,29 @@ winetricks_init()
         ;;
      *)
         WINE="${WINE:-wine}"
-        if test -x "${WINE}server"
-        then
-            WINESERVER="${WINE}server"
-        elif test -x "`dirname $WINE`/server/wineserver"
-        then
-            WINESERVER="`dirname $WINE`/server/wineserver"
-        elif test -x "`which wineserver`"
-        then
-            WINESERVER="`which wineserver`"
-        else
-            w_die "wineserver not found!"
-        fi
+        # Find wineserver.  Some distros (Debian) don't have it on the path,
+        # on the mistaken understanding that user scripts never need it :-(
+        for x in \
+            "$WINESERVER" \
+            "${WINE}server" \
+            "`which wineserver`" \
+            /usr/lib32/wine-unstable/wineserver \
+            /usr/lib/wine-unstable/wineserver \
+            /usr/lib/wine/wineserver \
+            "`dirname $WINE`/server/wineserver" \
+            file-not-found
+        do
+            if test -x "$x"
+            then
+                break
+            fi
+        done
+        case "$x" in
+        file-not-found) 
+            w_die "wineserver not found!" ;;
+        *)
+            WINESERVER="$x" ;;
+        esac
 
         if test "$WINEPREFIX"
         then
