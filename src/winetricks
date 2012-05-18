@@ -6811,6 +6811,26 @@ load_xna31()
 
 #----------------------------------------------------------------
 
+w_metadata xna40 dlls \
+    title="MS XNA Framework Redistributable 4.0" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="xnafx40_redist.msi" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Common Files/Microsoft Shared/XNA/Framework/v4.0/XnaNative.dll"
+
+load_xna40()
+{
+    w_warn "xna40 does not install properly in wine yet"
+    w_call dotnet40
+    # http://www.microsoft.com/en-us/download/details.aspx?id=20914
+    w_download http://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi 49efdc29f65fc8263c196338552c7009fc96c5de
+    cd "$W_CACHE"/xna40
+    w_try $WINE msiexec ${W_OPT_UNATTENDED:+/quiet} /i $file1 
+}
+
+#----------------------------------------------------------------
+
 w_metadata xvid dlls \
     title="Xvid Video Codec" \
     publisher="xvid.org" \
