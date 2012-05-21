@@ -4940,6 +4940,11 @@ load_flash11()
     w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.1.102.55/install_flash_player_32bit.exe f1f76c35564c9f842a7e005d97f5008173466d46
 
     w_try $WINE install_flash_player_32bit.exe ${W_OPT_UNATTENDED:+ /install}
+
+    if w_workaround_wine_bug 25966 "Flash11 still needs native visual c++ 2005 runtimes"
+    then
+        w_call vcrun2005
+    fi
 }
 
 #----------------------------------------------------------------
