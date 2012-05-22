@@ -1318,7 +1318,7 @@ w_override_all_dlls()
 {
     # Disable all known native Microsoft DLLs in favor of Wine's builtin ones
     # Generated with
-    # ls ~/wine-git/dlls | fmt -50 | sed 's/$/ \\/'
+    # find ~/wine-git/dlls -maxdepth 1 -type d -print | sed 's,.*/,,' | sort | fmt -50 | sed 's/$/ \\/'
     w_override_dlls builtin \
         acledit aclui activeds actxprxy adsiid advapi32 \
         advpack amstream apphelp appwiz.cpl atl atl80 \
@@ -1333,38 +1333,33 @@ w_override_all_dlls()
         d3dcompiler_38 d3dcompiler_39 d3dcompiler_40 \
         d3dcompiler_41 d3dcompiler_42 d3dcompiler_43 \
         d3dim d3drm d3dx10_33 d3dx10_34 d3dx10_35 \
-        d3dx10_36 d3dx10_37 d3dx10_38 d3dx10_39 d3dx10_40 \
-        d3dx10_41 d3dx10_42 d3dx10_43 d3dx9_24 d3dx9_25 \
-        d3dx9_26 d3dx9_27 d3dx9_28 d3dx9_29 d3dx9_30 \
-        d3dx9_31 d3dx9_32 d3dx9_33 d3dx9_34 d3dx9_35 \
-        d3dx9_36 d3dx9_37 d3dx9_38 d3dx9_39 d3dx9_40 \
-        d3dx9_41 d3dx9_42 d3dx9_43 d3dxof dbgeng dbghelp \
-        dciman32 ddeml.dll16 ddraw ddrawex devenum \
-        dhcpcsvc dinput dinput8 dispdib.dll16 dispex \
-        display.drv16 dmband dmcompos dmime dmloader \
-        dmscript dmstyle dmsynth dmusic dmusic32 dnsapi \
-        dplay dplayx dpnaddr dpnet dpnhpast dpnlobby \
-        dpwsockx drmclien dsound dssenh dswave dwmapi \
-        dxdiagn dxerr8 dxerr9 dxgi dxguid explorerframe \
-        faultrep fltlib fusion fwpuclnt gameux gdi32 \
-        gdi.exe16 gdiplus glu32 gphoto2.ds gpkcsp hal \
-        hhctrl.ocx hid hlink hnetcfg httpapi iccvid icmp \
-        ieframe ifsmgr.vxd imaadp32.acm imagehlp imm32 \
-        imm.dll16 inetcomm inetcpl.cpl inetmib1 infosoft \
-        initpki inkobj inseng iphlpapi itircl itss \
-        jscript kernel32 keyboard.drv16 krnl386.exe16 \
-        ktmw32 libd3dcompiler.cross.a libd3dcompiler.def \
-        libd3dx9.cross.a libd3dx9.def libkernel.cross.a \
-        libkernel.def libwinspool.cross.a libwinspool.def \
-        libxinput.cross.a libxinput.def loadperf \
-        localspl localui lz32 lzexpand.dll16 \
-        Makedll.rules Makedll.rules.in Makeimplib.rules \
-        Makeimplib.rules.in mapi32 mapistub mciavi32 \
-        mcicda mciqtz32 mciseq mciwave mgmtapi \
-        midimap mlang mmcndmgr mmdevapi mmdevldr.vxd \
-        mmsystem.dll16 monodebg.vxd mountmgr.sys \
-        mouse.drv16 mpr mprapi msacm32 msacm32.drv \
-        msacm.dll16 msadp32.acm mscat32 mscms \
+        d3dx10_36 d3dx10_37 d3dx10_38 d3dx10_39 \
+        d3dx10_40 d3dx10_41 d3dx10_42 d3dx10_43 \
+        d3dx9_24 d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 \
+        d3dx9_29 d3dx9_30 d3dx9_31 d3dx9_32 d3dx9_33 \
+        d3dx9_34 d3dx9_35 d3dx9_36 d3dx9_37 d3dx9_38 \
+        d3dx9_39 d3dx9_40 d3dx9_41 d3dx9_42 d3dx9_43 \
+        d3dxof dbgeng dbghelp dciman32 ddeml.dll16 \
+        ddraw ddrawex devenum dhcpcsvc dinput dinput8 \
+        dispdib.dll16 dispex display.drv16 dlls dmband \
+        dmcompos dmime dmloader dmscript dmstyle dmsynth \
+        dmusic dmusic32 dnsapi dplay dplayx dpnaddr \
+        dpnet dpnhpast dpnlobby dpwsockx drmclien \
+        dsound dssenh dswave dwmapi dxdiagn dxerr8 \
+        dxerr9 dxgi dxguid explorerframe faultrep \
+        fltlib fusion fwpuclnt gameux gdi32 gdi.exe16 \
+        gdiplus glu32 gphoto2.ds gpkcsp hal hhctrl.ocx \
+        hid hlink hnetcfg httpapi iccvid icmp ieframe \
+        ifsmgr.vxd imaadp32.acm imagehlp imm32 imm.dll16 \
+        inetcomm inetcpl.cpl inetmib1 infosoft initpki \
+        inkobj inseng iphlpapi itircl itss jscript \
+        kernel32 keyboard.drv16 krnl386.exe16 ktmw32 \
+        loadperf localspl localui lz32 lzexpand.dll16 \
+        mapi32 mapistub mciavi32 mcicda mciqtz32 mciseq \
+        mciwave mgmtapi midimap mlang mmcndmgr mmdevapi \
+        mmdevldr.vxd mmsystem.dll16 monodebg.vxd \
+        mountmgr.sys mouse.drv16 mpr mprapi msacm32 \
+        msacm32.drv msacm.dll16 msadp32.acm mscat32 mscms \
         mscoree msctf msdaps msdmo msftedit msg711.acm \
         msgsm32.acm mshtml mshtml.tlb msi msident msimg32 \
         msimsg msimtf msisip msisys.ocx msnet32 mspatcha \
