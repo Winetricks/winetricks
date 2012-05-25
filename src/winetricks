@@ -4419,7 +4419,7 @@ w_metadata dotnet11sp1 dlls \
     year="2004" \
     media="download" \
     file1="NDP1.1sp1-KB867460-X86.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/security.config"
+    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/web_hightrust.config.default"
 
 # fixme: sometimes security.config is missing after install, see
 # http://blogs.msdn.com/b/shawnfa/archive/2006/02/09/527688.aspx
@@ -4431,10 +4431,17 @@ load_dotnet11sp1()
 
     if test $W_OPT_UNATTENDED
     then
-        WINEDLLOVERRIDES="regsvcs.exe=b" w_try $WINE "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe /q /C:"install /q"
+        WINEDLLOVERRIDES="regsvcs.exe=b" $WINE "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe /q /C:"install /q"
     else
-        WINEDLLOVERRIDES="regsvcs.exe=b" w_try $WINE "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe
+        WINEDLLOVERRIDES="regsvcs.exe=b" $WINE "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe
     fi
+    status=$?
+
+    case $status in
+    0) ;;
+    105|194) echo "exit status $status - normal, system needs simulated reboot" ;;
+    *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
 }
 
 #----------------------------------------------------------------
