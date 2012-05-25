@@ -3445,13 +3445,13 @@ winetricks_init()
         WINE="${WINE:-wine}"
         # Find wineserver.  Some distros (Debian) don't have it on the path,
         # on the mistaken understanding that user scripts never need it :-(
+        # FIXME: get packagers to put wineserver on the path.
         for x in \
             "$WINESERVER" \
             "${WINE}server" \
             "`which wineserver`" \
-            /usr/lib32/wine-unstable/wineserver \
-            /usr/lib/wine-unstable/wineserver \
-            /usr/lib/wine/wineserver \
+            /usr/lib*/wine-unstable/wineserver \
+            /usr/lib*/wine/wineserver \
             "`dirname $WINE`/server/wineserver" \
             file-not-found
         do
