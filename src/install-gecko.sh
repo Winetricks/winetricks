@@ -1,5 +1,5 @@
 #!/bin/sh
-# Install the Gecko needed by modern wines
+# Install the Gecko and Mono needed by modern wines
 set -ex
 
 install_gecko()
@@ -63,6 +63,30 @@ install_gecko()
     fi
 }
 
+install_mono()
+{
+    case $1 in
+    0.0.4) MONO_SHA1SUM=7d827f7d28a88ae0da95a136573783124ffce4b1;;
+    *) return;;
+    esac
+
+    if test ! -f /usr/share/wine/mono/wine-mono-$1.msi
+    then
+        rm -f wine-mono-$1.msi
+        wget http://downloads.sourceforge.net/wine/wine-mono-$1.msi
+
+        gotsum=`sha1sum < wine-mono-$1.msi | sed 's/(stdin)= //;s/ .*//'`
+        if [ "$gotsum"x != "$MONO_SHA1SUM"x ]
+        then
+           echo "sha1sum mismatch!  Please try again."
+           exit 1
+        fi
+
+        sudo mkdir -p /usr/share/wine/mono
+        sudo mv wine-mono-$1.msi /usr/share/wine/mono/
+    fi
+}
+
 # Install gecko for stable wine and the current dev branch
 myarch=x86
 install_gecko gecko-1.5
@@ -79,3 +103,6 @@ amd64|x86_64)
     install_gecko gecko-1.3
     ;;
 esac
+
+# And mono, too
+install_mono 0.0.4
