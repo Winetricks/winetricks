@@ -4474,6 +4474,9 @@ load_dotnet20()
         w_try_unzip -d "$W_SYSTEM32_DLLS" l_intl.zip
     fi
 
+    # Remove wine-mono if present
+    $WINE uninstaller --remove '{E45D8920-A758-4088-B6C6-31DBB276992E}' || true
+
     # Hans' workaround to avoid winehq nonbug 26464, crash in servicemodelreg.exe
     rm -rf "$W_WINDIR_UNIX"/Microsoft.NET/Framework/v2.0.50727
 
