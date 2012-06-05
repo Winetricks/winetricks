@@ -2,6 +2,14 @@
 # Install the Gecko and Mono needed by modern wines
 set -ex
 
+# Wine installs to /usr/local by default:
+if test -d /usr/local/share/wine
+then
+    WINE_SHARE_PREFIX=/usr/local/share/wine
+else
+    WINE_SHARE_PREFIX=/usr/share/wine
+fi
+
 install_gecko()
 {
     case $1 in
@@ -46,7 +54,7 @@ install_gecko()
         ;;
     esac
 
-    if test ! -f /usr/share/wine/gecko/wine_gecko-$GECKO_VERSION-$myarch$GECKO_SUFFIX
+    if test ! -f $WINE_SHARE_PREFIX/gecko/wine_gecko-$GECKO_VERSION-$myarch$GECKO_SUFFIX
     then
         rm -f wine_gecko-$GECKO_VERSION-$myarch$GECKO_SUFFIX
         wget http://downloads.sourceforge.net/wine/wine_gecko-$GECKO_VERSION-$myarch$GECKO_SUFFIX
@@ -58,8 +66,8 @@ install_gecko()
            exit 1
         fi
 
-        sudo mkdir -p /usr/share/wine/gecko
-        sudo mv wine_gecko-$GECKO_VERSION-$myarch$GECKO_SUFFIX /usr/share/wine/gecko/
+        sudo mkdir -p $WINE_SHARE_PREFIX/gecko
+        sudo mv wine_gecko-$GECKO_VERSION-$myarch$GECKO_SUFFIX $WINE_SHARE_PREFIX/gecko/
     fi
 }
 
@@ -70,7 +78,7 @@ install_mono()
     *) return;;
     esac
 
-    if test ! -f /usr/share/wine/mono/wine-mono-$1.msi
+    if test ! -f $WINE_SHARE_PREFIX/mono/wine-mono-$1.msi
     then
         rm -f wine-mono-$1.msi
         wget http://downloads.sourceforge.net/wine/wine-mono-$1.msi
@@ -82,8 +90,8 @@ install_mono()
            exit 1
         fi
 
-        sudo mkdir -p /usr/share/wine/mono
-        sudo mv wine-mono-$1.msi /usr/share/wine/mono/
+        sudo mkdir -p $WINE_SHARE_PREFIX/mono
+        sudo mv wine-mono-$1.msi $WINE_SHARE_PREFIX/mono
     fi
 }
 
