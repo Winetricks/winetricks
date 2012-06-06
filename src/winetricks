@@ -3452,6 +3452,8 @@ winetricks_init()
             "`which wineserver 2> /dev/null`" \
             /usr/lib*/wine-unstable/wineserver \
             /usr/lib*/wine/wineserver \
+            /usr/lib/*/wine-unstable/wineserver \
+            /usr/lib/*/wine/wineserver \
             "`dirname $WINE`/server/wineserver" \
             file-not-found
         do
