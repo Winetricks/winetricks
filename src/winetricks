@@ -16115,6 +16115,43 @@ load_twfc()
 
 #----------------------------------------------------------------
 
+w_metadata typingofthedead_demo games \
+    title="Typing of the Dead Demo" \
+    publisher="Sega" \
+    year="1999" \
+    media="download" \
+    file1="Tod_e_demo.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/SEGA/TOD-Demo/Tod_e_demo.exe"
+
+load_typingofthedead_demo()
+{
+    w_download "http://downloads.pcworld.com/pub/new/fun_and_games/other/tod-demo.zip" 96fe3edb2431210932af840e29c59bce6b7fc80f
+
+    cd "$W_CACHE/$W_PACKAGE"
+    mkdir "$W_TMP"
+    cd "$W_TMP"
+    w_try_unzip "$W_CACHE/$W_PACKAGE/tod-demo.zip"
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run SETUP.EXE
+        if ( w_opt_unattended > 0 ) {
+            WinWait,InstallShield Wizard,where
+            sleep 1000
+            ControlClick Button1 ; Next
+            WinWait,InstallShield Wizard,icons
+            sleep 1000
+            ControlClick Button2 ; Next
+        }
+        ; installer crashes here?
+        Sleep 20000
+    "
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\SEGA\\TOD-Demo" "Tod_e_demo.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata ut3 games \
     title="Unreal Tournament 3" \
     publisher="Midway Games" \
