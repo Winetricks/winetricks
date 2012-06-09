@@ -3579,6 +3579,7 @@ Options:
 
 Commands:
 list                  list categories
+list-all              list all categories and their verbs
 apps list             list verbs in category 'applications'
 benchmarks list       list verbs in category 'benchmarks'
 dlls list             list verbs in category 'dlls'
@@ -17707,6 +17708,15 @@ execute_command()
     list-download) winetricks_list_download ;;
     list-manual-download) winetricks_list_manual_download ;;
     list-installed) winetricks_list_installed ;;
+    list-all)
+        old_menu="$WINETRICKS_CURMENU"
+        for WINETRICKS_CURMENU in apps benchmarks dlls fonts games prefix settings
+        do
+            echo "===== $WINETRICKS_CURMENU ====="
+            winetricks_list_all
+        done
+        WINETRICKS_CURMENU="$old_menu"
+        ;;
     unattended) winetricks_set_unattended 1 ;;
     attended) winetricks_set_unattended 0 ;;
     showbroken) W_OPT_SHOWBROKEN=1 ;;
