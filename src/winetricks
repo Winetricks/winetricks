@@ -4487,6 +4487,12 @@ load_dotnet20()
     # Breaks .net 3.5 install, leave it out until we figure that out
     #$WINE reg delete "HKLM\\Software\Microsoft\NET Framework Setup\NDP\v2.0.50727"
 
+    # This is a crappy workaround, but it works
+    if w_workaround_wine_bug 30845 "Adding .NETFramework registry key.  Ignore fatal error dialog if it pops up." ,1.5.3
+    then
+        $WINE reg add 'HKLM\Software\Microsoft\.NETFramework' /v InstallRoot /d 'C:\Windows\Microsoft.NET\Framework\' /f
+    fi
+
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
     w_download http://download.microsoft.com/download/5/6/7/567758a3-759e-473e-bf8f-52154438565a/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
     w_try $WINE dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
