@@ -4459,6 +4459,7 @@ w_metadata dotnet20 dlls \
 
 load_dotnet20()
 {
+    w_call remove_mono
     w_call fontfix
 
     # Recipe from http://bugs.winehq.org/show_bug.cgi?id=10467#c57
@@ -4477,15 +4478,8 @@ load_dotnet20()
         w_try_unzip -d "$W_SYSTEM32_DLLS" l_intl.zip
     fi
 
-    # Remove wine-mono if present
-    $WINE uninstaller --remove '{E45D8920-A758-4088-B6C6-31DBB276992E}' || true
-
     # Hans' workaround to avoid winehq nonbug 26464, crash in servicemodelreg.exe
     rm -rf "$W_WINDIR_UNIX"/Microsoft.NET/Framework/v2.0.50727
-
-    # Delete registry keys used to indicate .net 2.x's presence
-    # Breaks .net 3.5 install, leave it out until we figure that out
-    #$WINE reg delete "HKLM\\Software\Microsoft\NET Framework Setup\NDP\v2.0.50727"
 
     # This is a crappy workaround, but it works
     if w_workaround_wine_bug 30845 "Adding .NETFramework registry key.  Ignore fatal error dialog if it pops up." ,1.5.3
@@ -4788,8 +4782,7 @@ load_dotnet40()
         w_download_manual http://www.mediafire.com/?v8rw5h1ra7maod4 gacutil-net40.tar.bz2 d40cc1249ea051338c064aff5ba0f1a5f24b59a5
     fi
 
-    # Remove wine-mono if present
-    $WINE uninstaller --remove '{E45D8920-A758-4088-B6C6-31DBB276992E}' || true
+    w_call remove_mono
 
     # Remove Mono registry entry:
     $WINE reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
@@ -5976,6 +5969,25 @@ load_quicktime76()
         fi
     fi
 }
+
+#----------------------------------------------------------------
+
+w_metadata remove_mono settings \
+    title="Remove builtin wine-mono"
+
+load_remove_mono()
+{
+    # FIXME: fold other .NET cleanups here (registry entries).
+    # Probably should only do that for wine >= 1.5.6
+    mono_uuid="`$WINE uninstaller --list | grep Mono | cut -f1 -d\|`"
+    if test "$mono_uuid"
+    then
+         $WINE uninstaller --remove $mono_uuid
+    else
+        warn "Mono does not appear to be installed."
+    fi
+}
+
 #----------------------------------------------------------------
 
 w_metadata riched20 dlls \
