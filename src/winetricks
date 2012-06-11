@@ -5984,7 +5984,7 @@ load_remove_mono()
     then
          $WINE uninstaller --remove $mono_uuid
     else
-        warn "Mono does not appear to be installed."
+        w_warn "Mono does not appear to be installed."
     fi
 }
 
