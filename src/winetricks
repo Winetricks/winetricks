@@ -4463,11 +4463,12 @@ load_dotnet20()
     w_call fontfix
 
     # Recipe from http://bugs.winehq.org/show_bug.cgi?id=10467#c57
+    # and http://bugs.winehq.org/show_bug.cgi?id=30845#c10
     w_set_winver win2k
 
     cd "$W_CACHE"/dotnet20
 
-    if test ! -f l_intl.nls
+    if test ! -f l_intl.nls && w_workaround_wine_bug 10467 "Install l_intl.nls" 1.1.44,
     then
         # See http://kegel.com/wine/l_intl-sh.txt for how l_intl.nls was generated
         # Use zip rather than naked file to get past strange web proxies
@@ -4479,17 +4480,27 @@ load_dotnet20()
     fi
 
     # Hans' workaround to avoid winehq nonbug 26464, crash in servicemodelreg.exe
-    rm -rf "$W_WINDIR_UNIX"/Microsoft.NET/Framework/v2.0.50727
-
-    # This is a crappy workaround, but it works
-    if w_workaround_wine_bug 30845 "Adding .NETFramework registry key.  Ignore fatal error dialog if it pops up." ,1.5.3
+    if test -d "$W_WINDIR_UNIX"/Microsoft.NET/Framework/v2.0.50727
     then
-        $WINE reg add 'HKLM\Software\Microsoft\.NETFramework' /v InstallRoot /d 'C:\Windows\Microsoft.NET\Framework\' /f
+        rm -rf "$W_WINDIR_UNIX"/Microsoft.NET/Framework/v2.0.50727
     fi
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
     w_download http://download.microsoft.com/download/5/6/7/567758a3-759e-473e-bf8f-52154438565a/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
-    w_try $WINE dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+
+    # A bug that popped up in 1.5.3 was fixed in 1.5.7; until then a
+    # crappy workaround helps
+    if w_workaround_wine_bug 30845 "Adding .NETFramework registry key.  Ignore fatal error dialog if it pops up." ,1.5.3 1.5.5,
+    then
+        $WINE reg add 'HKLM\Software\Microsoft\.NETFramework' /v InstallRoot /d 'C:\Windows\Microsoft.NET\Framework\' /f
+    fi
+
+    if w_workaround_wine_bug 30845 "Using native fusion while installing..." ,1.5.5
+    then
+        w_try env WINEDLLOVERRIDES=mscoree,fusion=n $WINE dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+    else
+        w_try $WINE dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+    fi
     w_unset_winver
 
     # We can't stop installing dotnet20 in win2K mode until wine supports
