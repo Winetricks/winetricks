@@ -4490,12 +4490,12 @@ load_dotnet20()
 
     # A bug that popped up in 1.5.3 was fixed in 1.5.7; until then a
     # crappy workaround helps
-    if w_workaround_wine_bug 30845 "Adding .NETFramework registry key.  Ignore fatal error dialog if it pops up." ,1.5.3 1.5.5,
+    if w_workaround_wine_bug 30845 "Adding .NETFramework registry key.  Ignore fatal error dialog if it pops up." ,1.5.3 1.5.7,
     then
         $WINE reg add 'HKLM\Software\Microsoft\.NETFramework' /v InstallRoot /d 'C:\Windows\Microsoft.NET\Framework\' /f
     fi
 
-    if w_workaround_wine_bug 30845 "Using native fusion while installing..." ,1.5.5
+    if w_workaround_wine_bug 30845 "Using native fusion while installing..." ,1.5.6
     then
         w_try env WINEDLLOVERRIDES=mscoree,fusion=n $WINE dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
     else
