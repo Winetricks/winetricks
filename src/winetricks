@@ -4641,6 +4641,8 @@ load_dotnet30()
         ;;
     esac
 
+    # dotnet20 does this:
+    # w_call remove_mono
     w_call dotnet20
 
     # Delete files and registry keys related to .net 3.x
@@ -4687,6 +4689,8 @@ load_dotnet30sp1()
     *) w_warn "dotnet30sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
+    # dotnet20 does this, which is called by dotnet30:
+    # w_call remove_mono
     w_call dotnet30
 
     w_download http://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 8d779e337920b097aa0c01859912950606e9fc12
