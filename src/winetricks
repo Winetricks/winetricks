@@ -6710,7 +6710,7 @@ load_wsh57()
     w_try_cabextract -d "$W_SYSTEM32_DLLS" "$W_CACHE"/wsh57/scripten.exe
 
     # Wine doesn't provide the other dll's (yet?)
-    w_override_dlls native,builtin jscript
+    w_override_dlls native,builtin jscript scrrun vbscript
     w_try_regsvr dispex.dll jscript.dll scrobj.dll scrrun.dll vbscript.dll wshcon.dll wshext.dll
 }
 
