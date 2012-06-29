@@ -9072,6 +9072,34 @@ load_vc2005trial()
 
 #----------------------------------------------------------------
 
+w_metadata vc2008express apps \
+    title="MS Visual C++ 2008 Express" \
+    publisher="Microsoft" \
+    year="2008" \
+    media="download" \
+    file1="VS2008ExpressENUX1397868.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Visual Studio 9.0/Common7/IDE/VCExpress.exe"
+
+load_vc2008express()
+{
+    w_call dotnet35
+
+    # This is the version without sp1 baked in.  (sp1 requires dotnet35sp1, which doesn't work yet.)
+    w_download http://download.microsoft.com/download/8/B/5/8B5804AD-4990-40D0-A6AA-CE894CBBB3DC/VS2008ExpressENUX1397868.iso 76c6d28274a67741da720744026ea991a70867d1
+
+    # Unpack ISO
+    cd "$W_TMP"
+    w_try_7z x "$W_CACHE"/vc2008express/VS2008ExpressENUX1397868.iso
+    cd VCExpress
+
+    # See also http://blogs.msdn.com/b/astebner/archive/2008/04/25/8425198.aspx
+    w_try $WINE setup.exe $W_UNATTENDED_SLASH_Q
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Visual Studio 9\\Common7\\IDE" "VCExpress.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata vlc apps \
     title="VLC media player" \
     publisher="videolan.org" \
