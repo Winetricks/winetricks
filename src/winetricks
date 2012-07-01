@@ -4355,6 +4355,50 @@ load_directx9()
 
 #----------------------------------------------------------------
 
+w_metadata dxsdk_nov2006 dlls \
+    title="MS DirectX SDK, November 2006 (developers only)" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="dxsdk_aug2006.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Microsoft DirectX SDK (August 2006)/Lib/x86/d3d10.lib"
+
+load_dxsdk_nov2006()
+{
+    w_download http://download.microsoft.com/download/9/e/5/9e5bfc66-a621-4e0d-8bfe-6688058c3f00/dxsdk_aug2006.exe 1e9cdbef391ebfbf781e6c87a375138d8c195c57
+
+    # dxview.dll uses mfc42u while registering
+    w_call mfc42
+
+    cd "$W_TMP"
+    w_try_cabextract "$W_CACHE"/dxsdk_nov2006/dxsdk_aug2006.exe
+    w_try_unzip dxsdk.exe
+    w_try $WINE msiexec /i Microsoft_DirectX_SDK.msi $W_UNATTENDED_SLASH_Q
+}
+
+#----------------------------------------------------------------
+
+w_metadata dxsdk_jun2010 dlls \
+    title="MS DirectX SDK, June 2010 (developers only)" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="DXSDK_Jun10.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Microsoft DirectX SDK (June 2010)/Lib/x86/d3d11.lib"
+
+load_dxsdk_jun2010()
+{
+    w_download http://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe 8fe98c00fde0f524760bb9021f438bd7d9304a69
+
+    # Without dotnet20, install aborts halfway through
+    w_call dotnet20
+
+    cd "$W_TMP"
+    w_try $WINE "$W_CACHE"/dxsdk_jun2010/DXSDK_Jun10.exe ${W_OPT_UNATTENDED:+/U}
+}
+
+#----------------------------------------------------------------
+
 w_metadata dmsynth dlls \
     title="MS midi synthesizer from DirectX user redistributable" \
     publisher="Microsoft" \
