@@ -4355,6 +4355,27 @@ load_directx9()
 
 #----------------------------------------------------------------
 
+w_metadata dx8sdk dlls \
+    title="MS DirectX 8 SDK (developers only)" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="dx81sdk_full.exe" \
+    installed_file1="c:/DXSDK/include/d3dx8math.h"
+
+load_dx8sdk()
+{
+    # http://download.microsoft.com/download/whistler/dx/8.1/w982kmexp/en-us/DX81SDK_FULL.exe
+    w_download http://www.darwinbots.com/numsgil/dx81sdk_full.exe 61b5733209205e942f37431ee40da712e1f50e6a
+
+    cd "$W_TMP"
+    w_try_unzip "$W_CACHE"/dx8sdk/dx81sdk_full.exe
+    cd DXF
+    w_try $WINE setup.exe   # /S/v/qn  for silent mode, but it's broken?
+}
+
+#----------------------------------------------------------------
+
 w_metadata dxsdk_nov2006 dlls \
     title="MS DirectX SDK, November 2006 (developers only)" \
     publisher="Microsoft" \
