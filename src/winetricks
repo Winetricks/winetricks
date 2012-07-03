@@ -4876,7 +4876,7 @@ load_dotnet40()
 
     cd "$W_CACHE/$W_PACKAGE"
 
-    $WINE dotNetFx40_Full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"} || true
+    WINEDLLOVERRIDES=fusion=b $WINE dotNetFx40_Full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"} || true
 
     w_override_dlls native mscoree
 
