@@ -9327,6 +9327,13 @@ load_wmp9()
     # See also http://www.microsoft.com/windows/windowsmedia/player/9series/default.aspx
     w_download http://download.microsoft.com/download/1/b/c/1bc0b1a3-c839-4b36-8f3c-19847ba09299/MPSetup.exe 580536d10657fa3868de2869a3902d31a0de791b
 
+    # Wine's wmvcore crashes when the installer asks it to register itself?
+    w_override_dlls native wmvcore
+    # FIXME: should we override quartz?  Builtin crashes when you play 
+    # anything, but maybe that's bug 30557 and only affects new systems?
+    # Wine's pidgen is too stubby, crashes, see wine bug 31111
+    w_override_app_dlls MPSetup.exe native pidgen
+
     # Have to run twice; see http://bugs.winehq.org/show_bug.cgi?id=1886
     cd "$W_CACHE"/wmp9
     w_try $WINE MPSetup.exe $W_UNATTENDED_SLASH_Q
