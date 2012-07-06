@@ -7981,16 +7981,15 @@ load_fontxplorer()
 w_metadata irfanview apps \
     title="Irfanview" \
     publisher="Irfan Skiljan" \
-    year="2011" \
-    media="download" \
-    file1="iview428_setup.exe" \
+    year="2012" \
+    media="manual_download" \
+    file1="iview433_setup.exe" \
     installed_file1="$W_PROGRAMS_X86_WIN/IrfanView/i_view32.exe" \
     homepage="http://www.irfanview.com/"
 
 load_irfanview()
 {
-    w_download http://www.software.com/files/iview428_setup.exe \
-               a51c3f5fbb651c4c00f13c59d3de9d0f0552ea46
+    w_download_manual http://download.cnet.com/IrfanView/3000-2192_4-10021962.html iview433_setup.exe 79a7ebe2325ad204712761aa3c3a072025b07784
 
     if w_workaround_wine_bug 657 "Installing mfc42"
     then
