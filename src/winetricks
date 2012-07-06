@@ -8791,6 +8791,11 @@ load_spotify()
         cp Spotify%20Installer.exe SpotifyInstaller.exe
     fi
 
+    if w_workaround_wine_bug 27476 "Installing winhttp to work around a facebook integration crash on login and install"
+    then
+        w_call ie7
+    fi
+
     # Install is silent by default, and always starts app
     # So all we have to do here is close app if we want unattended install
     w_ahk_do "
@@ -8802,11 +8807,6 @@ load_spotify()
         }
         WinWaitClose
         "
-
-    if w_workaround_wine_bug 27476 "Installing winhttp to work around a facebook integration crash on login"
-    then
-        w_call winhttp
-    fi
 
     w_declare_exe "c:\\users\\$USERNAME\\Application Data\\Spotify" spotify.exe
 }
