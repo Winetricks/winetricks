@@ -8870,7 +8870,7 @@ w_metadata sketchup apps \
 
 load_sketchup()
 {
-    w_download http://dl.google.com/sketchup/GoogleSketchUpWEN.exe a86dbeb9148118407992828457dba4660febb9f4
+    w_download http://dl.google.com/sketchup/GoogleSketchUpWEN.exe 8a7e270c54eb3b6def797547becd02809ef6e439
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -8878,23 +8878,23 @@ load_sketchup()
         run GoogleSketchUpWEN.exe
         WinWait, SketchUp, Welcome
         if ( w_opt_unattended > 0 ) {
-            Sleep 2000
+            Sleep 4000
             Send {Enter}
             WinWait, SketchUp, License
-            Sleep 500
+            Sleep 1000
             ControlClick Button1 ; accept
-            Sleep 500
-            ControlClick Button3 ; Next
+            Sleep 1000
+            ControlClick Button4 ; Next
             WinWait, SketchUp, Destination
-            Sleep 500
+            Sleep 1000
             ControlClick Button1 ; Next
             WinWait, SketchUp, Ready
-            Sleep 500
+            Sleep 1000
             ControlClick Button1 ; Install
         }
         WinWait, SketchUp, Completed
         if ( w_opt_unattended > 0 ) {
-            Sleep 500
+            Sleep 1000
             ControlClick Button1 ; Finish
         }
         WinWaitClose
