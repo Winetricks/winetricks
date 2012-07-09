@@ -7799,7 +7799,7 @@ w_metadata cygwin apps \
 
 load_cygwin()
 {
-    if w_workaround_wine_bug 21206
+    if w_workaround_wine_bug 24018
     then
         # Wine can't handle current cygwin, so use some random verison of cygwin's setup from mid-2009
         w_download http://kegel.com/cygwin/1.5/setup.exe 5cfb8ebe4f385b0fcffa04d22d607ec75ea05180
@@ -7807,7 +7807,7 @@ load_cygwin()
         # -X option is insecure, but we have to use it because fruitbat.org didn't archive .sig files :-(
         _W_cygopts="-X"
     else
-        w_download http://cygwin.com/setup.exe aaa2552de78e14891937c1fde86032e811cf3c3a
+        w_download http://cygwin.com/setup.exe 9a24bcbcf58d8ab25d9e915399c9be51ac1837c3
         _W_cygopts=
     fi
 
