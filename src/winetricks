@@ -4853,6 +4853,10 @@ load_dotnet35sp1()
     # http://www.microsoft.com/download/en/details.aspx?id=25150
     w_download http://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 3dce66bae0dd71284ac7a971baed07030a186918
 
+    # Work around hang in http://bugs.winehq.org/show_bug.cgi?id=25060#c19
+    WINEDLLOVERRIDES=ngen.exe,mscorsvw.exe=b 
+    export WINEDLLOVERRIDES
+
     cd "$W_CACHE"/dotnet35sp1
     $WINE dotnetfx35.exe /lang:ENU $W_UNATTENDED_SLASH_Q
 }
