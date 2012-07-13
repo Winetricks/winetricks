@@ -4891,11 +4891,6 @@ load_dotnet40()
     # Remove Mono registry entry:
     $WINE reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
 
-    case "$OS" in
-        "Windows_NT") ;;
-        *) w_warn "The installer will fail after the first try, don't freak out." ;;
-    esac
-
     w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
 
     cd "$W_CACHE/$W_PACKAGE"
