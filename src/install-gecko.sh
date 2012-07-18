@@ -1,6 +1,7 @@
 #!/bin/sh
 # Install the Gecko and Mono needed by modern wines
-set -ex
+set -e
+set -x
 
 # Wine installs to /usr/local by default:
 if test -d /usr/local/share/wine
@@ -55,6 +56,14 @@ install_gecko()
         esac
         GECKO_SUFFIX=.msi
         ;;
+    gecko-1.7)
+        GECKO_VERSION=1.7
+        case $myarch in
+        x86)   GECKO_SHA1SUM=efebc4ed7a86708e2dc8581033a3c5d6effe0b0b ;;
+        x86_64) GECKO_SHA1SUM=2253e7ce3a699ddd110c6c9ce4c7ca7e6f7c02f5 ;;
+        esac
+        GECKO_SUFFIX=.msi
+        ;;
     *)
         GECKO_VERSION=1.1.0
         GECKO_SHA1SUM=1b6c637207b6f032ae8a52841db9659433482714
@@ -105,6 +114,7 @@ install_mono()
 
 # Install gecko for stable wine and the current dev branch
 myarch=x86
+install_gecko gecko-1.7
 install_gecko gecko-1.6
 install_gecko gecko-1.5
 install_gecko gecko-1.4
@@ -115,6 +125,7 @@ install_gecko gecko-1.2
 case `arch` in
 amd64|x86_64)
     myarch=x86_64
+    install_gecko gecko-1.7
     install_gecko gecko-1.6
     install_gecko gecko-1.5
     install_gecko gecko-1.4
