@@ -4737,6 +4737,14 @@ w_metadata dotnet30 dlls \
 
 load_dotnet30()
 {
+    if test -f /proc/sys/kernel/yama/ptrace_scope
+    then
+        case `cat /proc/sys/kernel/yama/ptrace_scope` in
+        0) ;;
+        *) echo "=== Warning: /proc/sys/kernel/yama/ptrace_scope is not 0.  If install fails, see http://bugs.winehq.org/show_bug.cgi?id=30410 ===" ;;
+        esac
+    fi
+    
     case "$OS" in
     "Windows_NT")
         osver=`cmd /c ver`
