@@ -9017,6 +9017,11 @@ load_steam()
         w_override_dlls disabled gameoverlayrenderer
     fi
 
+    if w_workaround_wine_bug 31320 "Disabling dwrite.dll to prevent a Steam crash."
+    then
+        w_override_dlls disabled dwrite
+    fi    
+    
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam" "Steam.exe"
 }
 
