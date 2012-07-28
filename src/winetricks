@@ -6414,9 +6414,9 @@ load_vb6run()
 winetricks_vcrun6_helper() {
     if test ! -f "$W_CACHE"/vcrun6/vcredist.exe
     then
-        w_download_to vcrun6 http://download.microsoft.com/download/vc60pro/update/1/w9xnt4/en-us/vc6redistsetup_enu.exe 382c8f5a7f41189af8d4165cf441f274b7e2a457
+        w_download_to vcrun6 http://download.microsoft.com/download/vc60pro/Update/2/W9XNT4/EN-US/VC6RedistSetup_deu.exe a8c4dd33e281c166488846a10edf97ff0ce37044
 
-        w_try $WINE "$W_CACHE"/vcrun6/vc6redistsetup_enu.exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
+        w_try $WINE "$W_CACHE"/vcrun6/vc6redistsetup_deu.exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
         if test ! -f "$W_TMP"/vcredist.exe
         then
             w_die vcredist.exe not found
@@ -6430,7 +6430,7 @@ w_metadata vcrun6 dlls \
     publisher="Microsoft" \
     year="2000" \
     media="download" \
-    file1="vc6redistsetup_enu.exe" \
+    file1="vc6redistsetup_deu.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mfc42.dll"
 
 load_vcrun6()
@@ -6462,7 +6462,7 @@ w_metadata mfc42 dlls \
     publisher="Microsoft" \
     year="2000" \
     media="download" \
-    file1="../vcrun6/vc6redistsetup_enu.exe" \
+    file1="../vcrun6/vc6redistsetup_deu.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mfc42u.dll"
 
 load_mfc42()
@@ -6477,7 +6477,7 @@ w_metadata msvcirt dlls \
     publisher="Microsoft" \
     year="2000" \
     media="download" \
-    file1="../vcrun6/vc6redistsetup_enu.exe" \
+    file1="../vcrun6/vc6redistsetup_deu.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/msvcirt.dll"
 
 load_msvcirt()
