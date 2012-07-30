@@ -6715,19 +6715,20 @@ load_winhttp()
 w_metadata wininet dlls \
     title="MS Windows Internet API" \
     publisher="Microsoft" \
-    year="1999" \
+    year="2008" \
     media="download" \
-    file1="3725.exe" \
+    file1="IE-KB884931-v2-x86-enu.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/wininet.dll"
 
 load_wininet()
 {
-    # This is an updated wininet from IE 5.0.1.
-    # (Good enough for Active Worlds browser.  Also helps "Avatar - Legends of the Arena" get to login screen.)
-    # See http://www.microsoft.com/downloads/details.aspx?familyid=6DEE32AB-B618-4FB3-9A45-CDD08162E167
-    w_download http://download.microsoft.com/download/ie5/Update/1/WIN98/EN-US/3725.exe b048e0b4e303298de3317b16f7008c43ca71ddfe
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE/wininet/3725.exe"
-    w_try cp -f "$W_TMP"/Wininet.dll "$W_SYSTEM32_DLLS"/wininet.dll
+    # This is the debug version of wininet.
+    # See http://www.microsoft.com/en-us/download/details.aspx?id=11434
+    w_download http://download.microsoft.com/download/6/f/c/6fcc07f8-62e1-459e-aab3-06faa3adacff/IE-KB884931-v2-x86-enu.exe 02e865922a436dce8a7b2da6785d6f4256aae1e4
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE/wininet/$file1"
+    # FIXME: install 64 bit version, too
+    # FIXME: there's a urlmon there, too, is that of interest?
+    w_try cp -f "$W_TMP"/wininet.x86.5.0.3700.6713.dll "$W_SYSTEM32_DLLS"/wininet.dll
     w_override_dlls native,builtin wininet
 }
 
