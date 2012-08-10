@@ -17,6 +17,8 @@ BLACKLIST="$BLACKLIST|borderlands|supermeatboy|trine"
 BLACKLIST="$BLACKLIST|mfsxde|mfsx_demo"
 # only support older versions of wine
 BLACKLIST="$BLACKLIST|gecko110"
+# hang lately, probably ui changes in install process
+BLACKLIST="$BLACKLIST|bioshock2|audibledm"
 
 # Verbs known to update frequently
 QUICKCHECK="flash spotify utorrent utorrent3 hegemonygold_demo"
@@ -190,6 +192,21 @@ test_app()
     test_app_checksums
 }
 
+test_dlls()
+{
+    sh winetricks dlls list | awk '{print $1}' > dlls.log
+    if grep .------------------- dlls.log
+    then
+        fail "output of dlls list contained garbage"
+        exit 1
+    fi
+    sort -u < dlls.log | egrep -v "$BLACKLIST" > dlls.verbs
+    for a in `cat dlls.verbs`
+    do
+        test_app $a
+    done
+}
+
 test_install_cached_or_download()
 {
     sh winetricks list-cached list-download > ticd.log
@@ -200,13 +217,13 @@ test_install_cached_or_download()
     fi
     sort -u < ticd.log | egrep -v "$BLACKLIST" > ticd.verbs
 
-    if false
+    if true
     then
         # Split into two, only do half
         nverbs=`cat ticd.verbs | wc -l`
-        firsthalf=`expr $nverbs / 2`
-        sed '$firsthalf+1,$d' < ticd.verbs > ticd-1.verbs 
-        sed '1,$firsthalfd'   < ticd.verbs > ticd-2.verbs 
+        firsthalf=`expr $nverbs / 2 + 1`
+        sed ${firsthalf}',$d' < ticd.verbs > ticd-1.verbs 
+        sed '1,'${firsthalf}d   < ticd.verbs > ticd-2.verbs 
         VERBS=`cat ticd-1.verbs`
     else
         VERBS=`cat ticd.verbs`
@@ -216,7 +233,7 @@ test_install_cached_or_download()
     do
         test_app $a
     done
-    sh winetricks list-cached > cached.txt
+    sh winetricks list-cached | sort > cached.txt
     # Verbs that are just wrappers around others don't detect cache/install
     # state yet.  
     # Verbs that are just informative placeholders don't ever download (gecko).
@@ -238,7 +255,7 @@ test_install_cached_or_download()
 }
 
 # Test the frequent download-changes-checksum offenders first
-(
+true || (
 cache="$HOME/winetricks-quickcheck-cache"
 rm -rf "$cache"
 export W_CACHE="$cache" 
@@ -251,7 +268,8 @@ done
 
 test_speed list
 test_speed list-download
-test_install_cached_or_download
+test_dlls
+#test_install_cached_or_download
 test_speed list-cached
 test_speed list-installed
 
