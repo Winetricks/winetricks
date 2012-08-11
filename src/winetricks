@@ -137,6 +137,9 @@ WINETRICKS_VERSION=20120308
 # FIXME: maybe obey XDG_DATA_HOME
 W_PREFIXES_ROOT="${WINE_PREFIXES:-$HOME/.local/share/wineprefixes}"
 
+# ftp.microsoft.com resolves to two different IP addresses, one of which is broken
+ftp_microsoft_com=64.4.17.176
+
 #---- Public Functions ----
 
 # Ask permission to continue
@@ -6283,7 +6286,7 @@ load_vb2run()
 {
     # Not referenced on MS web anymore, but the old Microsoft Software Library FTP still has it.
     # See ftp://ftp.microsoft.com/Softlib/index.txt
-    w_download ftp://ftp.microsoft.com/Softlib/MSLFILES/VBRUN200.EXE ac0568b73ee375408778e9b505df995f79ab907e
+    w_download ftp://$ftp_microsoft_com/Softlib/MSLFILES/VBRUN200.EXE ac0568b73ee375408778e9b505df995f79ab907e
     w_try_unzip -d "$W_TMP" "$W_CACHE"/vb2run/VBRUN200.EXE
     w_try cp -f "$W_TMP/VBRUN200.DLL" "$W_SYSTEM32_DLLS"
 }
@@ -7405,7 +7408,7 @@ w_metadata lucida fonts \
 
 load_lucida()
 {
-    w_download ftp://ftp.microsoft.com/bussys/winnt/winnt-public/fixes/usa/NT40TSE/hotfixes-postSP3/Euro-fix/eurofixi.exe 64c47ad92265f6f10b0fd909a703d4fd1b05b2d5
+    w_download ftp://$ftp_microsoft_com/bussys/winnt/winnt-public/fixes/usa/NT40TSE/hotfixes-postSP3/Euro-fix/eurofixi.exe 64c47ad92265f6f10b0fd909a703d4fd1b05b2d5
     w_try_cabextract -d "$W_FONTSDIR_UNIX" -L -F 'lucon.ttf' "$W_CACHE"/lucida/eurofixi.exe
     w_register_font lucon.ttf "Lucida Console"
 }
@@ -7448,7 +7451,7 @@ load_tahoma()
 {
     # The tahoma and tahomabd fonts are needed by e.g. Steam
 
-    w_download ftp://ftp.microsoft.com/Softlib/MSLFILES/tahoma32.exe 888ce7b7ab5fd41f9802f3a65fd0622eb651a068
+    w_download ftp://$ftp_microsoft_com/Softlib/MSLFILES/tahoma32.exe 888ce7b7ab5fd41f9802f3a65fd0622eb651a068
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/tahoma/tahoma32.exe
     w_try cp -f "$W_TMP"/Tahoma.TTF "$W_FONTSDIR_UNIX"/tahoma.ttf
     w_try cp -f "$W_TMP"/Tahomabd.TTF "$W_FONTSDIR_UNIX"/tahomabd.ttf
