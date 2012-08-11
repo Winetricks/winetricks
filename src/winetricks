@@ -3696,6 +3696,15 @@ helper_d3dx9_xx()
     w_override_dlls native $dllname
 }
 
+helper_xpsp2()
+{
+    filename=$1
+
+    w_download_to xpsp2 http://download.microsoft.com/download/1/6/5/165b076b-aaa9-443d-84f0-73cf11fdcdf8/WindowsXP-KB835935-SP2-ENU.exe 33a8fef60d48ae1f2c4feea27111af5ceca3c4f6
+
+    w_try_cabextract -d "$W_TMP" -L -F $filename "$W_CACHE"/xpsp2/WindowsXP-KB835935-SP2-ENU.exe
+}
+
 #----------------------------------------------------------------
 
 w_metadata  adobeair dlls \
@@ -3806,18 +3815,15 @@ load_cabinet()
 w_metadata cmd dlls \
     title="MS cmd.exe" \
     publisher="Microsoft" \
-    year="2000" \
+    year="2004" \
     media="download" \
-    file1="Q259622_W2K_SP1_x86_en.EXE" \
+    file1="../xpsp2/WindowsXP-KB835935-SP2-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/cmd.exe"
 
 load_cmd()
 {
-    # http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=7541
-    w_download http://download.microsoft.com/download/win2000platform/Patch/Q259622/NT5/EN-US/Q259622_W2K_SP1_x86_en.EXE ab545df50287c26aea7705039cf00471bfeb043c
-
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/cmd/$file1
-    w_try cp "$W_TMP"/cmd.exe "$W_SYSTEM32_DLLS"/cmd.exe
+    helper_xpsp2 i386/cmd.ex_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/cmd.ex_
 
     w_override_dlls native,builtin cmd.exe
 }
