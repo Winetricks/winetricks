@@ -5532,38 +5532,6 @@ load_mfc40()
 
 #----------------------------------------------------------------
 
-w_metadata mono26 dlls \
-    title="Mono 2.6 (.NET compatability)" \
-    publisher="Novell" \
-    year="2009" \
-    media="download" \
-    file1="mono-2.6.7-gtksharp-2.12.10-win32-2.exe" \
-    installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.6.7/bin/mono.dll"
-
-load_mono26()
-{
-    # Load Mono, have it handle all .net requests
-    w_download http://ftp.novell.com/pub/mono/archive/2.6.7/windows-installer/2/mono-2.6.7-gtksharp-2.12.10-win32-2.exe c31c06063aa82006dff2f8df22dcc6ba046afbc2
-    w_try $WINE "$W_CACHE"/mono26/mono-2.6.7-gtksharp-2.12.10-win32-2.exe $W_UNATTENDED_SLASH_SILENT
-}
-
-#----------------------------------------------------------------
-
-w_metadata mono28 dlls \
-    title="Mono 2.8 (.NET compatability)" \
-    publisher="Novell" \
-    year="2010" \
-    media="download" \
-    file1="mono-2.8.2-gtksharp-2.12.10-win32-1.exe" \
-    installed_file1="$W_PROGRAMS_X86_WIN/Mono-2.8.2/bin/mono-2.0.dll"
-
-load_mono28()
-{
-    # Load Mono, have it handle all .net requests
-    w_download http://ftp.novell.com/pub/mono/archive/2.8.2/windows-installer/1/mono-2.8.2-gtksharp-2.12.10-win32-1.exe d0ee2360b6fb7f16c35b54ee67044ff22bb1487e 
-    w_try $WINE "$W_CACHE"/mono28/mono-2.8.2-gtksharp-2.12.10-win32-1.exe $W_UNATTENDED_SLASH_SILENT
-}
-
 #----------------------------------------------------------------
 
 w_metadata mono210 dlls \
@@ -14441,100 +14409,6 @@ load_nfsworld()
 
 #----------------------------------------------------------------
 
-w_metadata nfsworld_mono games \
-    title="Need For Speed World (using Mono)" \
-    publisher="EA" \
-    year="2011" \
-    media="download" \
-    file1="setup_659.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need For Speed World/GameLauncher.exe"
-
-load_nfsworld_mono()
-{
-    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.40.659/akamai/setup_659.exe b1f10af09350e2b3f5ccbc679dbea628e9f432d0
-
-    if w_workaround_wine_bug 25658 "Installing Mono 2.6"
-    then
-        # newer mono fails?
-        w_call mono26
-        # Work around bug fixed in later versions of mono (thanks, Vincent)
-        w_download http://madewokherd.nfshost.com/omgsecret/mono-winebug23458.tar.gz \
-             156a7d79e70864b67af22315ae257dc798cb2a2e
-        w_try tar -C "$W_PROGRAMS_X86_UNIX/Mono-2.6.7/lib" -xvf "$W_CACHE/$W_PACKAGE"/mono-winebug23458.tar.gz
-    fi
-
-    if test "$W_OPT_UNATTENDED" && w_workaround_wine_bug 25961
-    then
-        w_call vcrun2008
-    fi
-
-    if w_workaround_wine_bug 26915 "installing corefonts so help works"
-    then
-        w_call corefonts
-    fi
-
-    cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetWinDelay 500
-        SetTitleMatchMode, 2
-        run $file1
-        winwait Setup - Need For Speed
-        if ( w_opt_unattended > 0 ) {
-            ControlClick TNewButton1        ; Next
-            winwait Setup - Need For Speed, License
-            ControlClick TNewRadioButton1   ; Accept
-            sleep 1000
-            ControlClick TNewButton2        ; Next
-            winwait Setup - Need For Speed, be installed
-            ControlClick TNewButton3        ; Next
-            winwait Setup - Need For Speed, be downloaded
-            ControlClick TNewButton4        ; Next
-            winwait Setup - Need For Speed, shortcuts
-            ControlClick TNewButton5        ; Next
-            winwait Setup - Need For Speed, Tasks
-            ControlClick TNewButton5        ; Next
-            winwait Setup - Need For Speed, Ready to Install
-            ControlClick TNewButton5        ; Next
-            ;winwait Setup, do not have Microsoft .NET 2.0   ; only on old wine
-            ;send {Enter}
-        }
-        winwait Setup - Need For Speed, Completing
-        if ( w_opt_unattended > 0 ) {
-            send {Space}                    ; uncheck readme
-            send {Tab}
-            send {Space}                    ; uncheck launch (Vincent says let it launch?)
-            sleep 1000                      ; let launch uncheck take effect?
-            ControlClick TNewButton5        ; Finish
-        }
-        winwaitclose
-    "
-
-    # Work around winebrowser snafu mentioned in http://bugs.winehq.org/show_bug.cgi?id=13891
-    # else you'll quickly get a dialog saying the app is broken
-    # FIXME: file a bug for this
-    if w_workaround_wine_bug 0000 "Kludging registry entry for winebrowser so patcher starts"
-    then
-        $WINE reg add "HKCR\\http\\shell\\open\\command" /ve /d "C:\\windows\\system32\\winebrowser.exe -nohome \"%1\"" /f
-    fi
-
-    # Create custom start batch file
-    # FIXME: Before wine-1.3.22, del /s will crash, see http://bugs.winehq.org/show_bug.cgi?id=26885
-    cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
-c:
-
-rem Work around mono bug mentioned by Vincent
-cd "c:\\users\\%USERNAME%\\Local Settings\\Application Data"
-if exist "Electronic Arts Inc" del /s "Electronic Arts Inc\\user.config"
-
-echo Warning, do not move window, Vincent says it will break keyboard input
-cd "C:\\Program Files\\Electronic Arts\\Need For Speed World"
-GameLauncher.exe
-__EOF__
-
-}
-
-#----------------------------------------------------------------
-
 w_metadata njcwp_trial apps \
     title="NJStar Chinese Word Processor trial" \
     publisher="NJStar" \
@@ -17658,8 +17532,6 @@ for data in \
     mfc42:size_MB=47,time_sec=1 \
     mingw:size_MB=132,time_sec=3 \
     mono210:size_MB=463,time_sec=26 \
-    mono26:size_MB=434,time_sec=26 \
-    mono28:size_MB=550,time_sec=28 \
     mozillabuild:size_MB=891,time_sec=26 \
     mpc:size_MB=87,time_sec=2 \
     msasn1:size_MB=178,time_sec=3 \
