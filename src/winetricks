@@ -3844,7 +3844,8 @@ w_metadata comctl32 dlls \
 load_comctl32()
 {
     # http://www.microsoft.com/downloads/details.aspx?familyid=6f94d31a-d1e0-4658-a566-93af0d8d4a1e
-    w_download http://download.microsoft.com/download/platformsdk/redist/5.80.2614.3600/w9xnt4/en-us/cc32inst.exe 94c3c494258cc54bd65d2f0153815737644bffde
+    #w_download http://download.microsoft.com/download/platformsdk/redist/5.80.2614.3600/w9xnt4/en-us/cc32inst.exe 94c3c494258cc54bd65d2f0153815737644bffde
+    w_download $WINETRICKS_SOURCEFORGE/pocmin/Win%2095_98%20Controls/Win%2095_98%20Controls/CC32inst.exe 94c3c494258cc54bd65d2f0153815737644bffde cc32inst.exe
 
     w_try $WINE "$W_CACHE"/comctl32/cc32inst.exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
     w_try_unzip -d "$W_TMP" "$W_TMP"/comctl32.exe
