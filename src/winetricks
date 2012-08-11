@@ -6094,20 +6094,19 @@ load_remove_mono()
 #----------------------------------------------------------------
 
 w_metadata riched20 dlls \
-    title="MS RichEdit Control version 2.0 (riched20.dll, riched32.dll)" \
+    title="MS RichEdit Control version 2.0 (riched20.dll)" \
     publisher="Microsoft" \
-    year="1999" \
+    year="2004" \
     media="download" \
-    file1="Q249973i.EXE" \
+    file1="../xpsp2/WindowsXP-KB835935-SP2-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/riched20.dll"
 
 load_riched20()
 {
-    # http://support.microsoft.com/?kbid=249973
-    w_download http://download.microsoft.com/download/winntsp/Patch/RTF/NT4/EN-US/Q249973i.EXE f0b7663f15dbd31410435483ba832318c7a70470
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/riched20/Q249973i.EXE
-    w_try cp -f "$W_TMP"/riched??.dll "$W_SYSTEM32_DLLS"
-    w_override_dlls native,builtin riched20 riched32
+    # FIXME: this verb used to also install riched32.  Does anyone need that?
+    helper_xpsp2 i386/riched20.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/riched20.dl_
+    w_override_dlls native,builtin riched20
 }
 
 #----------------------------------------------------------------
