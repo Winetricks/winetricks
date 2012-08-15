@@ -3820,13 +3820,13 @@ w_metadata cmd dlls \
     publisher="Microsoft" \
     year="2004" \
     media="download" \
-    file1="../xpsp2/WindowsXP-KB835935-SP2-ENU.exe" \
+    file1="Q811493_W2K_SP4_X86_EN.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/cmd.exe"
 
 load_cmd()
 {
-    helper_xpsp2 i386/cmd.ex_
-    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/cmd.ex_
+    w_download http://download.microsoft.com/download/8/d/c/8dc79965-dfbc-4b25-9546-e23bc4b791c6/Q811493_W2K_SP4_X86_EN.exe ac6e28cfd12942e74aa08bddf7715705edb85b6b
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_CACHE"/cmd/Q811493_W2K_SP4_X86_EN.exe -F cmd.exe
 
     w_override_dlls native,builtin cmd.exe
 }
