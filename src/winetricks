@@ -4568,7 +4568,7 @@ w_metadata dotnet20 dlls \
     title="MS .NET 2.0" \
     publisher="Microsoft" \
     year="2006" \
-    media="download" \
+    media="manual_download" \
     file1="dotnetfx.exe" \
     installed_file1="c:/windows/Microsoft.NET/Framework/v2.0.50727/mscorlib.dll"
 
@@ -4601,7 +4601,7 @@ load_dotnet20()
     fi
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
-    w_download http://download.microsoft.com/download/5/6/7/567758a3-759e-473e-bf8f-52154438565a/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
+    w_download_manual http://download.cnet.com/Microsoft-NET-Framework-Redistributable-Package-x86/3000-10250_4-10726028.html dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
 
     # A bug that popped up in 1.5.3 was fixed in 1.5.7; until then a
     # crappy workaround helps
