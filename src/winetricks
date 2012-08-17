@@ -4751,7 +4751,7 @@ load_dotnet30()
     then
         case `cat /proc/sys/kernel/yama/ptrace_scope` in
         0) ;;
-        *) echo "=== Warning: /proc/sys/kernel/yama/ptrace_scope is not 0.  If install fails, see http://bugs.winehq.org/show_bug.cgi?id=30410 ===" ;;
+        *) w_warn "If install fails, set /proc/sys/kernel/yama/ptrace_scope to 0.  See http://bugs.winehq.org/show_bug.cgi?id=30410" ;;
         esac
     fi
     
@@ -4791,6 +4791,17 @@ load_dotnet30()
     # Delete FontCache 3.0 service, it's in Wine for Mono, breaks native .NET
     # OK if this fails, that just means you have an older wine.
     $WINE sc delete "FontCache3.0.0.0"
+
+    if w_workaround_wine_bug 30845 "Using native fusion..." ,1.5.6
+    then
+        # Either adding this registry key
+        #$WINE reg add 'HKLM\Software\Microsoft\.NETFramework' /v InstallRoot /d 'C:\Windows\Microsoft.NET\Framework\' /f
+        # or using native mscoree and fusion
+        WINEDLLOVERRIDES=mscoree,fusion=n
+        export WINEDLLOVERRIDES
+        # will let install start
+    fi
+
     cd "$W_CACHE"/dotnet30
     w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
 }
