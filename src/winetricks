@@ -4741,8 +4741,8 @@ w_metadata dotnet30 dlls \
     title="MS .NET 3.0" \
     publisher="Microsoft" \
     year="2006" \
-    media="download" \
-    file1="dotnetfx3.exe" \
+    media="manual_download" \
+    file1="netframework3.exe" \
     installed_file1="c:/windows/Microsoft.NET/Framework/v3.0/Microsoft .NET Framework 3.0/logo.bmp"
 
 load_dotnet30()
@@ -4775,7 +4775,7 @@ load_dotnet30()
 
     w_warn "Installing .net 3.0 runtime takes 3 minutes on a very fast machine, and the Finished dialog may hide in the taskbar."
     # http://msdn.microsoft.com/en-us/netframework/bb264589.aspx
-    w_download http://download.microsoft.com/download/3/F/0/3F0A922C-F239-4B9B-9CB0-DF53621C57D9/dotnetfx3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
+    w_download_manual http://www.oldversion.com/download-.Net-Framework-3.0.html netframework3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
 
     # AF's workaround to avoid long pause
     LANGPACKS_BASE_PATH="${W_WINDIR_UNIX}/SYSMSICache/Framework/v3.0"
@@ -4801,6 +4801,7 @@ load_dotnet30()
         export WINEDLLOVERRIDES
         # will let install start
     fi
+    WINEDLLOVERRIDES="ngen.exe,mscorsvw.exe=b;$WINEDLLOVERRIDES"
 
     cd "$W_CACHE"/dotnet30
     w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
