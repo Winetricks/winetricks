@@ -6645,18 +6645,13 @@ w_metadata wininet dlls \
     publisher="Microsoft" \
     year="2008" \
     media="download" \
-    file1="IE-KB884931-v2-x86-enu.exe" \
+    file1="../win2ksp4/W2KSP4_EN.EXE" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/wininet.dll"
 
 load_wininet()
 {
-    # This is the debug version of wininet.
-    # See http://www.microsoft.com/en-us/download/details.aspx?id=11434
-    w_download http://download.microsoft.com/download/6/f/c/6fcc07f8-62e1-459e-aab3-06faa3adacff/IE-KB884931-v2-x86-enu.exe 02e865922a436dce8a7b2da6785d6f4256aae1e4
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE/wininet/$file1"
-    # FIXME: install 64 bit version, too
-    # FIXME: there's a urlmon there, too, is that of interest?
-    w_try cp -f "$W_TMP"/wininet.x86.5.0.3700.6713.dll "$W_SYSTEM32_DLLS"/wininet.dll
+    helper_win2ksp4 i386/wininet.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/wininet.dl_
     w_override_dlls native,builtin wininet
 }
 
