@@ -6464,13 +6464,13 @@ w_metadata vcrun6sp6 dlls \
     title="Visual C++ 6 sp6 libraries (with fixes in atl and mfc)" \
     publisher="Microsoft" \
     year="2004" \
-    media="download" \
+    media="manual_download" \
     file1="Vs6sp6.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mfc42.dll"
 
 load_vcrun6sp6()
 {
-    w_download http://download.microsoft.com/download/1/9/f/19fe4660-5792-4683-99e0-8d48c22eed74/Vs6sp6.exe 2292437a8967349261c810ae8b456592eeb76620
+    w_download_manual "http://download.cnet.com/Service-Pack-6-for-Visual-Basic-6-0-Visual-C-6-0-with-Visual-Source-Safe-6-0d/3000-2206_4-10726553.html?tag=rb_content;contentBody" Vs6sp6.exe 2292437a8967349261c810ae8b456592eeb76620
 
     # No EULA is presented when passing command-line extraction arguments,
     # so we'll simplify extraction with cabextract.
