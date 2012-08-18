@@ -3699,6 +3699,15 @@ helper_d3dx9_xx()
     w_override_dlls native $dllname
 }
 
+helper_win2ksp4()
+{
+    filename=$1
+
+    # http://www.microsoft.com/downloads/details.aspx?FamilyID=1001AAF1-749F-49F4-8010-297BD6CA33A0&displaylang=en
+    w_download_to win2ksp4 http://download.microsoft.com/download/E/6/A/E6A04295-D2A8-40D0-A0C5-241BFECD095E/W2KSP4_EN.EXE fadea6d94a014b039839fecc6e6a11c20afa4fa8
+    w_try_cabextract -d "$W_TMP" -L -F $filename "$W_CACHE"/win2ksp4/W2KSP4_EN.EXE
+}
+
 helper_xpsp2()
 {
     filename=$1
@@ -3779,18 +3788,13 @@ w_metadata atmlib dlls \
     publisher="Adobe" \
     year="2009" \
     media="download" \
-    file1="W2KSP4_EN.EXE" \
+    file1="../win2ksp4/W2KSP4_EN.EXE" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/atmlib.dll"
 
 load_atmlib()
 {
-    # http://www.microsoft.com/downloads/details.aspx?FamilyID=1001AAF1-749F-49F4-8010-297BD6CA33A0&displaylang=en
-    # FIXME: This is a huge download for a single dll.
-    # FIXME: This download is also used to get msasn1.dll, but we can't download into common cache directory until the file1 metadata download check is extended to handle that.  It'd be better to not need the huge download.
-    w_download http://download.microsoft.com/download/E/6/A/E6A04295-D2A8-40D0-A0C5-241BFECD095E/W2KSP4_EN.EXE fadea6d94a014b039839fecc6e6a11c20afa4fa8
-    cd "$W_TMP"
-    w_try_cabextract "$W_CACHE"/atmlib/W2KSP4_EN.EXE i386/atmlib.dl_
-    w_try cp atmlib.dll "$W_SYSTEM32_DLLS"
+    helper_win2ksp4 i386/atmlib.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/atmlib.dl_
 }
 
 #----------------------------------------------------------------
@@ -5587,19 +5591,13 @@ w_metadata msasn1 dlls \
     publisher="Microsoft" \
     year="2003" \
     media="download" \
-    file1="W2KSP4_EN.EXE" \
+    file1="../win2ksp4/W2KSP4_EN.EXE" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/msasn1.dll"
 
 load_msasn1()
 {
-    # http://www.microsoft.com/downloads/details.aspx?FamilyID=1001AAF1-749F-49F4-8010-297BD6CA33A0&displaylang=en
-    # FIXME: This is a huge download for a single dll.
-    w_download http://download.microsoft.com/download/E/6/A/E6A04295-D2A8-40D0-A0C5-241BFECD095E/W2KSP4_EN.EXE fadea6d94a014b039839fecc6e6a11c20afa4fa8
-    cd "$W_TMP"
-    w_try_cabextract -F i386/msasn1.dl_ "$W_CACHE"/msasn1/W2KSP4_EN.EXE
-    w_try_cabextract i386/msasn1.dl_
-    w_try cp msasn1.dll "$W_SYSTEM32_DLLS"
-    w_try rm -rf i386
+    helper_win2ksp4 i386/msasn1.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/msasn1.dl_
 }
 
 #----------------------------------------------------------------
