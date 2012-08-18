@@ -6666,14 +6666,13 @@ w_metadata winhttp dlls \
     publisher="Microsoft" \
     year="2005" \
     media="download" \
-    file1="Windows2000-KB842773-x86-ENU.EXE" \
+    file1="../win2ksp4/W2KSP4_EN.EXE" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/winhttp.dll"
 
 load_winhttp()
 {
-    # See https://www.microsoft.com/downloads/en/details.aspx?FamilyID=3ee866a0-3a09-4fdf-8bdb-c906850ab9f2
-    w_download http://download.microsoft.com/download/5/d/8/5d802926-6bab-45fa-b96e-bee15413523b/Windows2000-KB842773-x86-ENU.EXE e676d47e065a314bbf1d15b096a67aede6b0539a
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F winhttp.dll "$W_CACHE"/winhttp/Windows2000-KB842773-x86-ENU.EXE
+    helper_win2ksp4 i386/new/winhttp.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/new/winhttp.dl_
     w_override_dlls native,builtin winhttp
 }
 
