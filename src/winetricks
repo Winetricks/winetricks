@@ -5918,18 +5918,18 @@ load_physx()
 #----------------------------------------------------------------
 
 w_metadata pngfilt dlls \
-    title="pngfilt.dll (from ie6)" \
+    title="pngfilt.dll (from ie5)" \
     publisher="Microsoft" \
-    year="2002" \
+    year="2004" \
     media="download" \
-    file1="q328970.exe" \
+    file1="IE5.01sp4-KB871260-Windows2000sp4-x86-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/pngfilt.dll"
 
 load_pngfilt()
 {
-    # http://support.microsoft.com/kb/328970
-    w_download http://download.microsoft.com/download/IE60/30secpac/6/W98NT42KMeXP/EN-US/q328970.exe 5fd84a335c43d194c0138a091dc0ea151ecc331c
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F pngfilt.dll "$W_CACHE"/pngfilt/q328970.exe
+    # http://www.microsoft.com/en-us/download/details.aspx?id=3907
+    w_download http://download.microsoft.com/download/5/0/c/50c42d0e-07a8-4a2b-befb-1a403bd0df96/IE5.01sp4-KB871260-Windows2000sp4-x86-ENU.exe 6f5db296ebf58e81c49bc667049a3f88a3f1ec3d
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F pngfilt.dll "$W_CACHE"/pngfilt/IE5.01sp4-KB871260-Windows2000sp4-x86-ENU.exe
     w_try_regsvr pngfilt.dll
 }
 
