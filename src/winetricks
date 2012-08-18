@@ -9336,7 +9336,8 @@ load_wm9codecs()
 
     # See http://www.microsoft.com/downloads/details.aspx?FamilyID=06fcaab7-dcc9-466b-b0c4-04db144bb601
     # Used by direct calls from load_wmp9, so have to specify cache directory.
-    w_download_to wm9codecs http://download.microsoft.com/download/5/c/2/5c29d825-61eb-4b16-8eb8-58367d0464d5/WM9Codecs9x.exe 8b76bdcbea0057eb12b7966edab4b942ddacc253
+    # http://birds.camden.rutgers.edu/
+    w_download_to wm9codecs http://birds.camden.rutgers.edu/WM9Codecs9x.exe 8b76bdcbea0057eb12b7966edab4b942ddacc253
     cd "$W_CACHE/wm9codecs"
     w_set_winver win2k
     w_try $WINE WM9Codecs9x.exe $W_UNATTENDED_SLASH_Q
@@ -9403,7 +9404,7 @@ w_metadata wmp10 dlls \
     title="Windows Media Player 10" \
     publisher="Microsoft" \
     year="2006" \
-    media="download" \
+    media="manual_download" \
     file1="MP10Setup.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/l3codecp.acm"
 
@@ -9416,7 +9417,7 @@ load_wmp10()
     w_call wsh57
 
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyID=b446ae53-3759-40cf-80d5-cde4bbe07999
-    w_download http://download.microsoft.com/download/1/2/A/12A31F29-2FA9-4F50-B95D-E45EF7013F87/MP10Setup.exe 69862273a5d9d97b4a2e5a3bd93898d259e86657
+    w_download_manual http://www.softpedia.com/progDownload/Windows-Media-Player-Download-4121.html MP10Setup.exe 69862273a5d9d97b4a2e5a3bd93898d259e86657
 
     # Crashes on exit, but otherwise ok; see http://bugs.winehq.org/show_bug.cgi?id=12633
     cd "$W_CACHE"/wmp10
