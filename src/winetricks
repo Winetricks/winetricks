@@ -3708,7 +3708,17 @@ helper_win2ksp4()
     w_try_cabextract -d "$W_TMP" -L -F $filename "$W_CACHE"/win2ksp4/W2KSP4_EN.EXE
 }
 
-#----------------------------------------------------------------
+helper_xpsp2()
+{
+    filename=$1
+
+    # http://www.microsoft.com/en-us/download/details.aspx?id=28
+    w_download_to xpsp2 http://download.microsoft.com/download/1/6/5/165b076b-aaa9-443d-84f0-73cf11fdcdf8/WindowsXP-KB835935-SP2-ENU.exe 33a8fef60d48ae1f2c4feea27111af5ceca3c4f6
+
+    w_try_cabextract -d "$W_TMP" -L -F $filename "$W_CACHE"/xpsp2/WindowsXP-KB835935-SP2-ENU.exe
+}
+
+#---------------------------------------------------------
 
 w_metadata  adobeair dlls \
     title="Adobe AIR 2.7" \
@@ -3903,17 +3913,16 @@ w_metadata crypt32 dlls \
     publisher="Microsoft" \
     year="2003" \
     media="download" \
-    file1="Q823182_XPE_SP2_X86_ENU.EXE" \
+    file1="../xpsp2/WindowsXP-KB835935-SP2-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/crypt32.dll"
 
 load_crypt32()
 {
     w_call msasn1
 
-    # https://www.microsoft.com/downloads/en/details.aspx?FamilyID=3d733ddd-1182-4d46-87c1-3357ca3fed28&DisplayLang=en
-    w_download http://download.microsoft.com/download/1/6/2/1629d13a-dc5e-4dc6-a2a4-a6784942b94e/Q823182_XPE_SP2_X86_ENU.EXE c3e0aa35ab5197ede0d495c0edc242cf0fade54a
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" "$W_CACHE"/crypt32/Q823182_XPE_SP2_X86_ENU.EXE -F rep/329115_crypt32.dll
-    mv "$W_SYSTEM32_DLLS"/rep/329115_crypt32.dll "$W_SYSTEM32_DLLS"/crypt32.dll
+    helper_win2ksp4 i386/crypt32.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/crypt32.dl_
+
     w_override_dlls native crypt32
 }
 
