@@ -5534,17 +5534,16 @@ load_mdac28()
 w_metadata mfc40 dlls \
     title="MS mfc40 (Microsoft Foundation Classes from Visual C++ 4.0)" \
     publisher="Microsoft" \
-    year="2004" \
+    year="1999" \
     media="download" \
-    file1="ole2v.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/MFC40.DLL"
+    file1="mfc40.cab" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc40.dll"
 
 load_mfc40()
 {
-    # See http://support.microsoft.com/kb/122244
-    w_download http://download.microsoft.com/download/ole/ole2v/3.5/w351/en-us/ole2v.exe c6cac71f32405ccb09c6f375e0738e6e13f073e4
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/mfc40/ole2v.exe
-    w_try cp -f "$W_TMP"/MFC40.DLL "$W_SYSTEM32_DLLS"
+    w_download http://activex.microsoft.com/controls/vc/mfc40.cab 53c570e2c811674d6e4fa46cff5a3a04cd0ffc24
+    w_try_cabextract -d "$W_TMP" "$W_CACHE"/mfc40/mfc40.cab
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -F *40.dll "$W_TMP"/mfc40.exe
 }
 
 #----------------------------------------------------------------
