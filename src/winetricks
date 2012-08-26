@@ -17829,6 +17829,12 @@ then
         winetricks_volname ${1#volnameof=}
         ;;
     "")
+        if test x"$DISPLAY" = x""
+        then
+            echo "DISPLAY not set, not defaulting to gui"
+            winetricks_usage
+            exit 0
+        fi
         # GUI case
         # No non-option arguments given, so read them from GUI, and loop until user quits
         winetricks_detect_gui
