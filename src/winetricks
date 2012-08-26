@@ -2029,7 +2029,9 @@ winetricks_detect_gui()
         echo "Zenity not found!  Using kdialog as poor substitute."
         WINETRICKS_GUI=kdialog
     else
-        echo "Please install zenity if you want a graphical interface."
+        echo "No arguments given, so tried to start GUI, but zenity not found."
+        echo "Please install zenity if you want a graphical interface, or "
+        echo "run with --help for more options."
         exit 1
     fi
 }
