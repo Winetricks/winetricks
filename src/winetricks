@@ -4588,9 +4588,7 @@ load_dotnet20()
     # and http://bugs.winehq.org/show_bug.cgi?id=30845#c10
     w_set_winver win2k
 
-    cd "$W_CACHE"/dotnet20
-
-    if test ! -f l_intl.nls && w_workaround_wine_bug 10467 "Install l_intl.nls" 1.1.44,
+    if test ! -f "$W_CACHE"/dotnet20/l_intl.nls && w_workaround_wine_bug 10467 "Install l_intl.nls" 1.1.44,
     then
         # See http://kegel.com/wine/l_intl-sh.txt for how l_intl.nls was generated
         # Use zip rather than naked file to get past strange web proxies
@@ -4617,6 +4615,7 @@ load_dotnet20()
         $WINE reg add 'HKLM\Software\Microsoft\.NETFramework' /v InstallRoot /d 'C:\Windows\Microsoft.NET\Framework\' /f
     fi
 
+    cd "$W_CACHE"/dotnet20
     if w_workaround_wine_bug 30845 "Using native fusion while installing..." ,1.5.6
     then
         w_try env WINEDLLOVERRIDES=mscoree,fusion=n $WINE dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
