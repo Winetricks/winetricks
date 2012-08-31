@@ -16922,6 +16922,52 @@ _EOF_
     w_try_regedit "$W_TMP"/set-gfs.reg
 }
 
+w_metadata windowmanagerdecorated=y settings \
+    title="Allow the window manager to decorate windows (default)"
+w_metadata windowmanagerdecorated=n settings \
+    title="Prevent the window manager from decorating windows"
+
+load_windowmanagerdecorated()
+{
+    case $1 in
+    y|n) arg=$1;;
+    *) w_die "illegal value $1 for Decorated";;
+    esac
+
+    echo "Setting Decorated to $arg"
+    cat > "$W_TMP"/set-wmd.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+"Decorated"="$arg"
+
+_EOF_
+    w_try_regedit "$W_TMP"/set-wmd.reg
+}
+
+w_metadata windowmanagermanaged=y settings \
+    title="Allow the window manager to control windows (default)"
+w_metadata windowmanagermanaged=n settings \
+    title="Prevent the window manager from controling windows"
+
+load_windowmanagermanaged()
+{
+    case $1 in
+    y|n) arg=$1;;
+    *) w_die "illegal value $1 for Managed";;
+    esac
+
+    echo "Setting Managed to $arg"
+    cat > "$W_TMP"/set-wmm.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+"Managed"="$arg"
+
+_EOF_
+    w_try_regedit "$W_TMP"/set-wmm.reg
+}
+
 #----------------------------------------------------------------
 # Other settings
 
