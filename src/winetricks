@@ -8807,14 +8807,14 @@ _EOF_
 w_metadata sketchup apps \
     title="Sketchup 8" \
     publisher="Google" \
-    year="2010" \
+    year="2012" \
     media="download" \
     file1="GoogleSketchUpWEN.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Google/Google SketchUp 8/SketchUp.exe"
 
 load_sketchup()
 {
-    w_download http://dl.google.com/sketchup/GoogleSketchUpWEN.exe 8a7e270c54eb3b6def797547becd02809ef6e439
+    w_download http://dl.google.com/sketchup/GoogleSketchUpWEN.exe f0628e6f05241f91e4f36d6be3b8685a408ad12b
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
