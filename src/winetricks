@@ -5031,8 +5031,8 @@ w_metadata flash dlls \
     media="download" \
     file1="install_flash_player_10_plugin.exe" \
     file2="install_flash_player_10_active_x.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10ze_Plugin.exe" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10ze_ActiveX.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10zf_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10zf_ActiveX.exe" \
     homepage="http://www.adobe.com/products/flashplayer/"
 
 load_flash()
@@ -5056,7 +5056,8 @@ load_flash()
     # 2012-03-08: sha1sum ccbf24ab0dfa3635fb12d895eb55c5e888879c5d
     # 2012-05-02: sha1sum d86ca46afc312b14375aad483d1c7e5f12c707a4
     # 2012-05-11: sha1sum 4020135dfbfe4b49067bb679000e0a6b7c7ed8bc
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_active_x.exe 4020135dfbfe4b49067bb679000e0a6b7c7ed8bc
+    # 2012-08-12: sha1sum 3cd65d71ba26b829255e44a1af708fc060282bc6
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_active_x.exe 3cd65d71ba26b829255e44a1af708fc060282bc6
     cd "$W_CACHE"/flash
 
     w_try $WINE install_flash_player_10_active_x.exe ${W_OPT_UNATTENDED:+ /install}
@@ -5076,7 +5077,8 @@ load_flash()
     # 2012-03-08: sha1sum aeddca4eddb0ad91c1b8bc32f8c543069b519325
     # 2102-05-02: sha1sum 0a7a7b9b8b6b834e452b456205e33210fb3b544c, name change
     # 2102-05-11: sha1sum 060f11d5479863af609272a24dea82e6b04e0641
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_plugin.exe 060f11d5479863af609272a24dea82e6b04e0641
+    # 2012-08-12: sha1sum 3909ee6078bdae2157f595b8d7c4f1484fef710b
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_plugin.exe 3909ee6078bdae2157f595b8d7c4f1484fef710b
 
     w_try $WINE install_flash_player_10_plugin.exe ${W_OPT_UNATTENDED:+ /install}
 }
