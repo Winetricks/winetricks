@@ -5356,6 +5356,24 @@ load_ffdshow()
 
 #----------------------------------------------------------------
 
+w_metadata hid dlls \
+    title="MS hid" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="../win2ksp4/W2KSP4_EN.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/hid.dll"
+
+load_hid()
+{
+    helper_win2ksp4 i386/hid.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/hid.dl_
+
+    w_override_dlls native hid
+}
+
+#----------------------------------------------------------------
+
 w_metadata icodecs dlls \
     title="Indeo codecs" \
     publisher="Intel" \
