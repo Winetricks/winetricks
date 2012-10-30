@@ -6529,7 +6529,7 @@ load_vcrun2005()
     w_download http://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x86.EXE b8fab0bb7f62a24ddfe77b19cd9a1451abd7b847
 
     cd "$W_CACHE"/vcrun2005
-    w_override_dlls native,builtin msvcr80
+    w_override_dlls native,builtin atl80 msvcm80 msvcp90 msvcr80 vcomp
     w_try $WINE $file1 $W_UNATTENDED_SLASH_Q
 }
 
@@ -6549,7 +6549,7 @@ load_vcrun2008()
     # http://www.microsoft.com/technet/security/bulletin/MS11-025.mspx or
     # http://support.microsoft.com/kb/2538242
     w_download http://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 470640aa4bb7db8e69196b5edb0010933569e98d
-    w_override_dlls native,builtin msvcr90
+    w_override_dlls native,builtin msvcm90 msvcp90 msvcr90 vcomp90
     cd "$W_CACHE"/vcrun2008
     w_try $WINE $file1 $W_UNATTENDED_SLASH_Q
 }
@@ -6574,7 +6574,7 @@ load_vcrun2010()
         w_call msxml3
     fi
 
-    w_override_dlls native,builtin msvcr100
+    w_override_dlls native,builtin msvcp100 msvcr100 vcomp100
     cd "$W_CACHE"/vcrun2010
     w_try $WINE vcredist_x86.exe $W_UNATTENDED_SLASH_Q
 
