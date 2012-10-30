@@ -5607,6 +5607,23 @@ load_mozillabuild()
 
 #----------------------------------------------------------------
 
+w_metadata msacm32 dlls \
+    title="MS ACM32" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="../xpsp2/W2KSP4_EN.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msacm32.dll"
+
+load_msacm32()
+{
+    helper_xpsp2 i386/msacm32.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/msacm32.dl_
+    w_override_dlls native,builtin msacm32
+}
+
+#----------------------------------------------------------------
+
 w_metadata msasn1 dlls \
     title="MS ASN1" \
     publisher="Microsoft" \
