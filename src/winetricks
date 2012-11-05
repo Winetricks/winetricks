@@ -6595,7 +6595,7 @@ load_vcrun2010()
     cd "$W_CACHE"/vcrun2010
     w_try $WINE vcredist_x86.exe $W_UNATTENDED_SLASH_Q
 
-    case "$WINEARCH" in
+    case "$W_ARCH" in
     win64)
         # See http://bugs.winehq.org/show_bug.cgi?id=30713
         # Also install the 64 bit version
