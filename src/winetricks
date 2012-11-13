@@ -3721,6 +3721,16 @@ helper_xpsp2()
     w_try_cabextract -d "$W_TMP" -L -F $filename "$W_CACHE"/xpsp2/WindowsXP-KB835935-SP2-ENU.exe
 }
 
+helper_win7sp1()
+{
+    filename=$1
+
+    # https://www.microsoft.com/en-us/download/details.aspx?id=5842
+    w_download_to win7sp1 http://download.microsoft.com/download/0/A/F/0AFB5316-3062-494A-AB78-7FB0D4461357/windows6.1-KB976932-X86.exe c3516bc5c9e69fee6d9ac4f981f5b95977a8a2fa
+
+    w_try_cabextract -d "$W_TMP" -L -F $filename "$W_CACHE"/win7sp1/windows6.1-KB976932-X86.exe
+}
+
 #---------------------------------------------------------
 
 w_metadata  adobeair dlls \
@@ -5125,16 +5135,36 @@ load_flash11()
 w_metadata gdiplus dlls \
     title="MS GDI+" \
     publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/gdiplus.dll"
+
+load_gdiplus()
+{
+    # gdiplus has changed in win7. See http://bugs.winehq.org/show_bug.cgi?id=32163#c3
+    helper_win7sp1 x86_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_72d18a4386696c80/gdiplus.dll
+    w_try cp "$W_TMP/x86_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_72d18a4386696c80/gdiplus.dll" "$W_SYSTEM32_DLLS/gdiplus.dll"
+    
+    # For some reason, native,builtin isn't good enough...?
+    w_override_dlls native gdiplus
+}
+
+#----------------------------------------------------------------
+
+w_metadata gdiplus_winxp dlls \
+    title="MS GDI+" \
+    publisher="Microsoft" \
     year="2004" \
     media="manual_download" \
     file1="NDP1.0sp2-KB830348-X86-Enu.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/gdiplus.dll"
 
-load_gdiplus()
+load_gdiplus_winxp()
 {
     w_download_manual http://download.cnet.com/NET-Framework-1-0-GDIPLUS-DLL-Security-Update/3000-10250_4-10732223.html NDP1.0sp2-KB830348-X86-Enu.exe 6113cd89d77525958295ccbd73b5fb8b89abd0aa
     cd "$W_CACHE"/gdiplus
-    w_try_cabextract -d "$W_TMP" -F FL_gdiplus_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "$W_CACHE"/gdiplus/$file1
+    w_try_cabextract -d "$W_TMP" -F FL_gdiplus_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "$W_CACHE"/gdiplus_winxp/$file1
     w_try cp "$W_TMP/FL_gdiplus_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8" "$W_SYSTEM32_DLLS/gdiplus.dll"
 
     # For some reason, native,builtin isn't good enough...?
