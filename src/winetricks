@@ -6285,6 +6285,27 @@ load_speechsdk()
 
 #----------------------------------------------------------------
 
+w_metadata tabctl32 dlls \
+    title="Microsoft Tabbed Dialog Control 6.0 (tabctl32.ocx)" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="tabctl32.cab" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/tabctl32.ocx"
+
+load_tabctl32()
+{
+    # http://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
+    # Nov 2012: tabctl32
+    w_download http://activex.microsoft.com/controls/vb6/tabctl32.cab beca51d05924a5466ab80eb0f8d0cdf8bc1ac697
+
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/tabctl32/tabctl32.cab
+    w_try cp -f "$W_TMP"/[Tt][Aa][Bb][Cc][Tt][Ll][3][2].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
+    w_try_regsvr tabctl32.ocx
+}
+
+#----------------------------------------------------------------
+
 w_metadata usp10 dlls \
     title="Uniscribe 1.325 " \
     publisher="Microsoft" \
