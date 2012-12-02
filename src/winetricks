@@ -14359,9 +14359,9 @@ load_nfsshift_demo()
 w_metadata nfsworld games \
     title="Need For Speed World" \
     publisher="EA" \
-    year="2011" \
+    year="2012" \
     media="download" \
-    file1="setup_659.exe" \
+    file1="setup_1229.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need For Speed World/GameLauncher.exe"
 
 load_nfsworld()
@@ -14370,13 +14370,15 @@ load_nfsworld()
 
     # This changes frequently, I'm afraid
     # Be careful to update $file1 when you update the url
-    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/Launcher/weblaunch_1.8.40.659/akamai/setup_659.exe b1f10af09350e2b3f5ccbc679dbea628e9f432d0
+    # 1.8.40.65   9b1f10af09350e2b3f5ccbc679dbea628e9f432d0 ?
+    # 1.8.40.1229 f355fcad20dd6267910bec93a318224718ab5de7
+    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/1229/launcher/weblaunch_1.8.40.1229/setup_1229.exe f355fcad20dd6267910bec93a318224718ab5de7
 
-    w_workaround_wine_bug 27048 "The patcher hangs a lot.  When it does, retry the patch (you may need to kill it first).  After five or ten tries, it should work."
-
-    # FIXME: file bugs for these
-    w_call ie7
-    w_call dotnet20
+    if w_workaround_wine_bug 25658 "Installing dotnet20 and ie7 so launcher UI works"
+    then
+        w_call ie7
+        w_call dotnet20
+    fi
 
     if test "$W_OPT_UNATTENDED" && w_workaround_wine_bug 25961
     then
@@ -14422,6 +14424,8 @@ load_nfsworld()
         winwaitclose
     "
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Need For Speed World" GameLauncher.exe
+
+    w_workaround_wine_bug 27048 "The patcher will probably put up an error dialog and then hang.  When this happens, kill it and try again.  It should succeed after the fourth or so try."
 }
 
 #----------------------------------------------------------------
