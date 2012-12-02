@@ -14366,6 +14366,8 @@ w_metadata nfsworld games \
 
 load_nfsworld()
 {
+    w_workaround_wine_bug 27048 "The patcher will probably put up an error dialog and then hang.  When this happens, kill it and try again.  It should succeed after the fourth or so try."
+
     w_workaround_wine_bug 27047 "Game fails with corrupt executable error in wine-1.3.19 and earlier" 1.3.20,
 
     # This changes frequently, I'm afraid
@@ -14424,8 +14426,6 @@ load_nfsworld()
         winwaitclose
     "
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Need For Speed World" GameLauncher.exe
-
-    w_workaround_wine_bug 27048 "The patcher will probably put up an error dialog and then hang.  When this happens, kill it and try again.  It should succeed after the fourth or so try."
 }
 
 #----------------------------------------------------------------
