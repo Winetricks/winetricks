@@ -5041,8 +5041,8 @@ w_metadata flash dlls \
     media="download" \
     file1="install_flash_player_10_plugin.exe" \
     file2="install_flash_player_10_active_x.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10zi_Plugin.exe" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10zi_ActiveX.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10zj_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10zj_ActiveX.exe" \
     homepage="http://www.adobe.com/products/flashplayer/"
 
 load_flash()
@@ -5068,7 +5068,8 @@ load_flash()
     # 2012-05-11: sha1sum 4020135dfbfe4b49067bb679000e0a6b7c7ed8bc
     # 2012-08-12: sha1sum 3cd65d71ba26b829255e44a1af708fc060282bc6
     # 2012-11-06: sha1sum 415a8e3044749fd73967a19d16c535b6b341a148
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_active_x.exe 415a8e3044749fd73967a19d16c535b6b341a148
+    # 2012-12-22: sha1sum 95b84c0768e4b550238c482a696bfd7aaeb7ed8d
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_active_x.exe 95b84c0768e4b550238c482a696bfd7aaeb7ed8d
     cd "$W_CACHE"/flash
 
     w_try $WINE install_flash_player_10_active_x.exe ${W_OPT_UNATTENDED:+ /install}
@@ -5090,7 +5091,8 @@ load_flash()
     # 2102-05-11: sha1sum 060f11d5479863af609272a24dea82e6b04e0641
     # 2012-08-12: sha1sum 3909ee6078bdae2157f595b8d7c4f1484fef710b
     # 2012-11-06: sha1sum 8cecf58c6ca638c123e37c0e9c3b93ab805c1930
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_plugin.exe 8cecf58c6ca638c123e37c0e9c3b93ab805c1930
+    # 2012-12-22: sha1sum 8cd26eeb37cef2307bf179d671ad3707089a02d7
+    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_plugin.exe 8cd26eeb37cef2307bf179d671ad3707089a02d7
 
     w_try $WINE install_flash_player_10_plugin.exe ${W_OPT_UNATTENDED:+ /install}
 }
