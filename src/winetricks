@@ -6648,7 +6648,7 @@ load_vcrun2010()
         w_call msxml3
     fi
 
-    w_override_dlls native,builtin msvcp100 msvcr100 vcomp100
+    w_override_dlls native,builtin msvcp100 msvcr100 vcomp100 atl100
     cd "$W_CACHE"/vcrun2010
     w_try $WINE vcredist_x86.exe $W_UNATTENDED_SLASH_Q
 
@@ -6665,6 +6665,7 @@ load_vcrun2010()
         cp "$W_TMP"/F_CENTRAL_msvcr100_x64 "$W_SYSTEM64_DLLS"/msvcr100.dll
         cp "$W_TMP"/F_CENTRAL_msvcp100_x64 "$W_SYSTEM64_DLLS"/msvcp100.dll
         cp "$W_TMP"/F_CENTRAL_vcomp100_x64 "$W_SYSTEM64_DLLS"/vcomp100.dll
+        cp "$W_TMP"/F_CENTRAL_atl100_x64 "$W_SYSTEM64_DLLS"/atl100.dll
         ;;
     esac
 }
