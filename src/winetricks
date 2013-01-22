@@ -5677,6 +5677,23 @@ load_msasn1()
 
 #----------------------------------------------------------------
 
+w_metadata msctf dlls \
+    title="MS Text Service Module" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="../xpsp2/WindowsXP-KB835935-SP2-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msctf.dll"
+
+load_msctf()
+{
+    helper_xpsp2 i386/msctf.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/msctf.dl_
+    w_override_dlls native,builtin msctf
+}
+
+#----------------------------------------------------------------
+
 w_metadata msflxgrd dlls \
     title="MS FlexGrid Control (msflxgrd.ocx)" \
     publisher="Microsoft" \
