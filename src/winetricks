@@ -4626,7 +4626,7 @@ load_dotnet20()
     fi
 
     cd "$W_CACHE"/dotnet20
-    if w_workaround_wine_bug 30845 "Using native fusion while installing..." ,1.5.6
+    if w_workaround_wine_bug 30845 "Using native fusion while installing..." 1.5.8,
     then
         w_try env WINEDLLOVERRIDES=mscoree,fusion=n $WINE dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
     else
