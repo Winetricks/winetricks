@@ -7489,7 +7489,7 @@ w_metadata opensymbol fonts \
     publisher="OpenOffice.org" \
     year="2010" \
     media="download" \
-    file1="ttf-opensymbol_3.2.1-11+squeeze7_all.deb" \
+    file1="ttf-opensymbol_3.2.1-11+squeeze8_all.deb" \
     installed_file1="$W_FONTSDIR_WIN/opens___.ttf"
 
 load_opensymbol()
@@ -7497,7 +7497,7 @@ load_opensymbol()
     # The OpenSymbol fonts are a replacement for the Windows Wingdings font from OpenOffice.org.
     # Need to w_download Debian since I can't find a standalone download from OpenOffice
     # Note: The source download package on debian is for _all_ of OpenOffice, which is 266 MB.
-    w_download http://ftp.us.debian.org/debian/pool/main/o/openoffice.org/ttf-opensymbol_3.2.1-11+squeeze7_all.deb 2f10609b35284c2b8c62ee86e479a5d491a6e656
+    w_download http://ftp.us.debian.org/debian/pool/main/o/openoffice.org/ttf-opensymbol_3.2.1-11+squeeze8_all.deb c5e0fa518a988a511ea2392f3919f516c0a3c65c
 
     cd "$W_TMP"
     w_try ar x "$W_CACHE/opensymbol/$file1" data.tar.bz2
