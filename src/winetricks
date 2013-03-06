@@ -9429,11 +9429,11 @@ load_wmp9()
     # Have to run twice; see http://bugs.winehq.org/show_bug.cgi?id=1886
     cd "$W_CACHE"/wmp9
     w_try $WINE MPSetup.exe $W_UNATTENDED_SLASH_Q
-    w_try $WINE MPSetup.exe $W_UNATTENDED_SLASH_Q
 
-    # Disable WMP's services, since they depend on unimplemented stuff, they trigger the GUI debugger several times
-    w_try_regedit /D "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Cdr4_2K"
-    w_try_regedit /D "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Cdralw2k"
+    if w_workaround_wine_bug 1886 "Re-installing since it does not work on the first try." 1.5.23,
+    then
+        w_try $WINE MPSetup.exe $W_UNATTENDED_SLASH_Q
+    fi
 
     load_wm9codecs
 
