@@ -4641,6 +4641,11 @@ load_dotnet20()
     # See also http://bugs.winehq.org/show_bug.cgi?id=16577
     # This affects Victoria 2 demo, see http://forum.paradoxplaza.com/forum/showthread.php?p=11523967
     rm -f "$W_SYSTEM32_DLLS"/msvc?80.dll
+
+    if w_workaround_wine_bug 30162 "Dirty hack, killing off mscorsvw.exe"
+    then
+        w_try killall "mscorsvw.exe"
+    fi
 }
 
 #----------------------------------------------------------------
