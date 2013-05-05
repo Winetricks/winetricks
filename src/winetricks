@@ -6747,7 +6747,7 @@ load_windowscodecs()
     # Avoid a file existence check.
     rm -f "$W_SYSTEM32_DLLS"/windowscodecs.dll "$W_SYSTEM32_DLLS"/windowscodecsext.dll "$W_SYSTEM32_DLLS"/photometadatahandler.dll
     # AF says in appdb entry for .net 3.0 that windowscodecs has to be native only
-    w_override_dlls native windowscodecs
+    w_override_dlls native windowscodecs windowscodecsext
 
     # Always run the WIC installer in passive mode.
     # See http://bugs.winehq.org/show_bug.cgi?id=16876 and
