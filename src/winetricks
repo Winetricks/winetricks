@@ -41,8 +41,8 @@ WINETRICKS_VERSION=20130416
 #--------------------------------------------------------------------
 #
 # Copyright
-#   Copyright (C) 2007-2012 Dan Kegel <dank!kegel.com>
-#   Copyright (C) 2008-2012 Austin English <austinenglish!gmail.com>
+#   Copyright (C) 2007-2013 Dan Kegel <dank!kegel.com>
+#   Copyright (C) 2008-2013 Austin English <austinenglish!gmail.com>
 #   Copyright (C) 2010-2011 Phil Blankenship <phillip.e.blankenship!gmail.com>
 #   Copyright (C) 2010-2012 Shannon VanWagner <shannon.vanwagner!gmail.com>
 #   Copyright (C) 2010 Belhorma Bendebiche <amro256!gmail.com>
@@ -4858,7 +4858,7 @@ load_dotnet30sp1()
 
     # Recipe from http://bugs.winehq.org/show_bug.cgi?id=25060#c10
     w_download http://download.microsoft.com/download/2/5/2/2526f55d-32bc-410f-be18-164ba67ae07d/"XPSEP XP and Server 2003 32 bit.msi" 5d332ebd1025e294adafe72030fe33db707b2c82
-    w_try $WINE msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_OPT_UNATTENDED:+/qb}
+    WINEDEBUG=+tid,+seh,+loaddll,+process w_try $WINE msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_OPT_UNATTENDED:+/qb} 2>&1 | tee ~/debug.txt
     $WINE sc delete FontCache3.0.0.0
 
     $WINE $file1 ${W_OPT_UNATTENDED:+/q}
