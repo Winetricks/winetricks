@@ -3522,6 +3522,8 @@ winetricks_init()
     case "$WINETRICKS_WINE_VERSION" in
         wine-1.4-*) WINETRICKS_WINE_VERSION="wine-1.4.40"; export WINETRICKS_WINE_VERSION;;
         wine-1.4) WINETRICKS_WINE_VERSION="wine-1.4.0"; export WINETRICKS_WINE_VERSION;;
+        wine-1.6-*) WINETRICKS_WINE_VERSION="wine-1.6.0"; export WINETRICKS_WINE_VERSION;;
+        wine-1.6) WINETRICKS_WINE_VERSION="wine-1.6.0"; export WINETRICKS_WINE_VERSION;;
     esac
     WINETRICKS_WINE_MINOR=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1\.\([0-9]*\)\..*/\1/'`
     WINETRICKS_WINE_MICRO=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/'`
