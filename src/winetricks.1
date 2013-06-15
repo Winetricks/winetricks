@@ -65,13 +65,7 @@ Display this message and exit
 \-V, \-\-version
 Display version and exit
 
-.SH
-Commands:
-
-.TP
-.B
-list
-list categories
+.SH COMMANDS
 .TP
 .B
 apps list
@@ -90,8 +84,8 @@ games list
 list verbs in category 'games'
 .TP
 .B
-settings list
-list verbs in category 'settings'
+list
+list categories
 .TP
 .B
 list-cached
@@ -112,6 +106,10 @@ list already-installed verbs
 .B
 prefix=foobar
 select WINEPREFIX=$HOME/.local/share/wineprefixes/foobar
+.TP
+.B
+settings list
+list verbs in category 'settings'
 
 .PP
 .SH EXAMPLES
@@ -123,17 +121,16 @@ winetricks list-download
 To install a package:
 winetricks 7zip
 
-.PP
 .SH ENVIRONMENT VARIABLES
 Wine checks several environment variables on startup:
+.TP
+.I WINE
+If set, this specifies which wine binary to use by default
 .TP
 .I WINEPREFIX
 If set, this specifies the location of the default .wine directory ( usually
 .IR $HOME/.wine
 ).
-.TP
-.I WINE
-If set, this specifies which wine binary to use by default
 .TP
 .I XDG_CACHE_HOME
 If set, this is path to system's user data cache (default: $HOME/.cache)
