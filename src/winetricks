@@ -241,6 +241,12 @@ w_die()
     exit 1
 }
 
+# Kill all instances of a process in a safe way (Solaris killall kills _everything_)
+w_killall()
+{
+    kill -9 `pgrep $1`
+}
+
 # Execute with error checking
 # Put this in front of any command that might fail
 w_try()
@@ -4652,7 +4658,7 @@ load_dotnet20()
 
     if w_workaround_wine_bug 30162 "Dirty hack, killing off mscorsvw.exe" 1.5.31,
     then
-        w_try killall "mscorsvw.exe"
+        w_killall "mscorsvw.exe"
     fi
 }
 
@@ -11929,7 +11935,7 @@ load_diablo2()
         Sleep 1000
         ControlClick &Cancel, Diablo II"
     # Dagnabbit, the darn updater starts the game after it updates, no matter what I do?
-    killall "Game.exe"
+    w_killall "Game.exe"
 
     # Runs better in window
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Diablo II" "Diablo II.exe -d3d9 -w"
@@ -12533,8 +12539,8 @@ _EOF_
             SetTitleMatchMode, 2
             WinKill,Fable
         "
-        killall IDriverT.exe
-        killall IDriver.exe
+        w_killall IDriverT.exe
+        w_killall IDriver.exe
     fi
 
     if w_workaround_wine_bug 25352
@@ -14841,7 +14847,7 @@ load_ragnarok()
     "
 
     # Game autoupdates:
-    killall "Ragnarok.exe"
+    w_killall "Ragnarok.exe"
 }
 
 #----------------------------------------------------------------
