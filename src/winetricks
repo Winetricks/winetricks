@@ -16742,7 +16742,7 @@ load_civ5_demo_steam()
         # finds the dialog it's looking for, clicks, and exits.
         w_info "If you already own the full Civ 5 game on steam, the installer won't even appear."
     w_steam_install_game 65900 "Sid Meier's Civilization V - Demo"
-    kill -HUP $_job   # just in case
+    kill -s HUP $_job   # just in case
 }
 
 #----------------------------------------------------------------
