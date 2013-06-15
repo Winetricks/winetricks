@@ -244,7 +244,7 @@ w_die()
 # Kill all instances of a process in a safe way (Solaris killall kills _everything_)
 w_killall()
 {
-    kill -9 `pgrep $1`
+    kill -s KILL `pgrep $1`
 }
 
 # Execute with error checking
