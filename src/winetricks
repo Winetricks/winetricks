@@ -4681,17 +4681,15 @@ load_dotnet20sp1()
     w_call dotnet20
 
     WINEDLLOVERRIDES=
-    if w_workaround_wine_bug 16956 "Setting windows version so installer works"
-    then
-        # Stop services
-        # Recipe from http://bugs.winehq.org/show_bug.cgi?id=16956
-        $WINESERVER -k
-        # Fight a race condition, see bug 16956 comment 43
-        w_set_winver win2k
-        $WINESERVER -w
-        WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b 
-        export WINEDLLOVERRIDES
-    fi
+    w_warn "Setting windows version so installer works"
+    # Stop services
+    # Recipe from http://bugs.winehq.org/show_bug.cgi?id=16956
+    $WINESERVER -k
+    # Fight a race condition, see bug 16956 comment 43
+    w_set_winver win2k
+    $WINESERVER -w
+    WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b 
+    export WINEDLLOVERRIDES
 
     # Workaround Wine/Mono integration:
     $WINE reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v2.0.50727" /v Version /t REG_SZ /d "2.0.50727" /f
