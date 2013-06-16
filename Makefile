@@ -59,8 +59,11 @@ check:
 	echo 'WINE is currently "$(WINE)".'
 	echo 'On 64 bit systems, you probably want export WINEARCH=win32.'
 	echo 'WINEARCH is currently "$(WINEARCH)".'
+	echo 'Winetricks does not work completely in non-English locales.'
+	echo 'LANG is currently "$(LANG)".  If it's C or en_US.mumble, that is probably ok.'
+	echo ''
 	echo 'If running this as part of debuild, you might need to use'
-	echo 'debuild --preserve-envvar=WINE --preserve-envvar=WINEARCH --preserve-envvar=DISPLAY --preserve-envvar=XAUTHORITY'
-	echo 'FIXME: this should kill stray wine processes before and after.'
+	echo 'debuild --preserve-envvar=LANG --preserve-envvar=WINE --preserve-envvar=WINEARCH --preserve-envvar=DISPLAY --preserve-envvar=XAUTHORITY'
+	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
 	rm -rf ~/winetrickstest-prefixes
 	cd src; sh ../tests/winetricks-test quick
