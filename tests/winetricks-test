@@ -8,7 +8,7 @@ BLACKLIST="cygwin|kde|psdk2003|psdkwin7|dotnet20sp2"
 # verbs that hang in -q because of simple problem we should work around soon
 BLACKLIST="$BLACKLIST|vc2005trial"
 # verbs that are too slow
-BLACKLIST="$BLACKLIST|bfbc2"
+BLACKLIST="$BLACKLIST|bfbc2|dxsdk_nov2006|dxsdk_jun2010"
 # verbs that are too flaky
 BLACKLIST="$BLACKLIST|amnesia_tdd_demo|wowtrial|mfsxde"
 # steam verbs I don't have
@@ -16,12 +16,23 @@ BLACKLIST="$BLACKLIST|borderlands|supermeatboy|trine"
 # broken http://bugs.winehq.org/show_bug.cgi?id=26411:
 BLACKLIST="$BLACKLIST|mfsxde|mfsx_demo"
 # only support older versions of wine
-BLACKLIST="$BLACKLIST|gecko110"
+BLACKLIST="$BLACKLIST|gecko110|gecko"
 # hang lately, probably ui changes in install process
 BLACKLIST="$BLACKLIST|bioshock2|audibledm"
+# We don't have -q support for these
+BLACKLIST="$BLACKLIST|dx8sdk"
+# broken
+BLACKLIST="$BLACKLIST|dotnet11|dotnet11sp1"
+# manual downloads
+BLACKLIST="$BLACKLIST|dotnet30|dotnet30sp1|dotnet35|dotnet35sp1"
+# depend on manual downloads
+BLACKLIST="$BLACKLIST|jet40"
+# redundant metaverbs
+BLACKLIST="$BLACKLIST|allcodecs"
+
 
 # Verbs known to update frequently
-QUICKCHECK="flash spotify utorrent utorrent3 hegemonygold_demo"
+QUICKCHECK="flash spotify"
 
 # Check for programs this script (or winetricks) uses.  
 # Better to find out they're missing now than in the
@@ -156,11 +167,17 @@ test_app()
     seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
     echo "test_app: ${app}: install_time $seconds seconds."
 
-    sh winetricks -q list-installed > list-installed.out
-    if ! grep -w $app list-installed.out
-    then
-        fail "test app $app not installed after install?"
-    fi
+    # Don't check whether metaverbs are installed
+    case "$app" in
+    allcodes) ;;
+    *)
+        sh winetricks -q list-installed > list-installed.out
+        if ! grep -w $app list-installed.out
+        then
+            fail "test app $app not installed after install?"
+        fi
+        ;;
+    esac
 
     # Total max disk usage = max df change plus any initial blocks in cache
     DF_MIN=`cat df-during.log | awk '{ if (min == "" || $1 < min) min=$1; } END {print min}' `
@@ -194,13 +211,14 @@ test_app()
 
 test_dlls()
 {
+    sh winetricks list-manual-download > manual.log
     sh winetricks dlls list | awk '{print $1}' > dlls.log
     if grep .------------------- dlls.log
     then
         fail "output of dlls list contained garbage"
         exit 1
     fi
-    sort -u < dlls.log | egrep -v "$BLACKLIST" > dlls.verbs
+    sort -u < dlls.log | fgrep -w -v -f manual.log | egrep -v "$BLACKLIST" > dlls.verbs
     for a in `cat dlls.verbs`
     do
         test_app $a
@@ -270,32 +288,44 @@ test_install_cached_or_download()
     fi
 }
 
-# Test the frequent download-changes-checksum offenders first
-true || (
-cache="$HOME/winetricks-quickcheck-cache"
-rm -rf "$cache"
-export W_CACHE="$cache" 
-for a in $QUICKCHECK
-do
-   rm -rf $HOME/winetrickstest-prefixes/$a
-   test_app $a
-done
-)
+test_quick()
+{
+    # Test the frequent download-changes-checksum offenders first
+    cache="$HOME/winetricks-quickcheck-cache"
+    rm -rf "$cache"
+    export W_CACHE="$cache" 
+    #for a in $QUICKCHECK
+    #do
+    #   rm -rf $HOME/winetrickstest-prefixes/$a
+    #   test_app $a
+    #done
 
-test_speed list
-test_speed list-download
-# three tries to preload cache
-# FIXME: check cache to see if we need to do this
-for try in `seq 1 3`
-do
-    test_manual_dlls
-    echo press enter
-    read x
-done
-test_dlls
-#test_install_cached_or_download
-test_speed list-cached
-test_speed list-installed
+    # And test all the automatically-downloadable dlls
+    test_dlls
+}
+
+test_full() {
+    test_quick
+    test_speed list
+    test_speed list-download
+    # three tries to preload cache
+    # FIXME: check cache to see if we need to do this
+    for try in `seq 1 3`
+    do
+        test_manual_dlls
+        echo press enter
+        read x
+    done
+    #test_install_cached_or_download
+    test_speed list-cached
+    test_speed list-installed
+}
+
+case "$1" in
+quick) test_quick;;
+full)  test_full;;
+*)     echo "Usage: $0 quick|full"; exit 1;;
+esac
 
 echo "Test over, $errors failures."
 test $errors = 0
