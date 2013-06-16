@@ -301,11 +301,11 @@ test_quick()
     cache="$HOME/winetricks-quickcheck-cache"
     rm -rf "$cache"
     export W_CACHE="$cache"
-    #for a in $QUICKCHECK
-    #do
-    #   rm -rf $HOME/winetrickstest-prefixes/$a
-    #   test_app $a
-    #done
+    for a in $QUICKCHECK
+    do
+       rm -rf $HOME/winetrickstest-prefixes/$a
+       test_app $a
+    done
 
     # And test all the automatically-downloadable dlls
     test_dlls
