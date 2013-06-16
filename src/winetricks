@@ -4508,12 +4508,13 @@ load_dmsynth()
 #----------------------------------------------------------------
 
 w_metadata dotnet11 dlls \
-    title="MS .NET 1.1" \
+    title="MS .NET 1.1 (broken on wine)" \
     publisher="Microsoft" \
     year="2003" \
     media="download" \
     file1="dotnetfx.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/ndpsetup.ico"
+    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/ndpsetup.ico" \
+    wine_showstoppers="25120"
 
 load_dotnet11()
 {
@@ -4547,12 +4548,13 @@ load_dotnet11()
 #----------------------------------------------------------------
 
 w_metadata dotnet11sp1 dlls \
-    title="MS .NET 1.1 SP1" \
+    title="MS .NET 1.1 SP1 (broken in wine)" \
     publisher="Microsoft" \
     year="2004" \
     media="download" \
     file1="NDP1.1sp1-KB867460-X86.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/web_hightrust.config.default"
+    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/web_hightrust.config.default" \
+    wine_showstoppers="25120"
 
 # fixme: sometimes security.config is missing after install, see
 # http://blogs.msdn.com/b/shawnfa/archive/2006/02/09/527688.aspx
