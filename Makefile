@@ -40,7 +40,7 @@ clean:
 
 # Remove trailing whitespaces
 cleanup:
-	echo sed --in-place 's,[ \t]\+$$,,' $$(find $(SOURCES) -type f)
+	sed --in-place 's,[ \t]\+$$,,' $$(find $(SOURCES) -type f)
 
 dist: clean $(SOURCES)
 	tar --exclude='*.patch' --exclude=measurements --exclude=.svn \
@@ -53,7 +53,13 @@ install:
 
 check:
 	echo 'This verifies that most DLL verbs, plus flash, install ok.'
-	echo 'If you want to test a particular version of wine, do e.g. '
-	echo 'export WINE=$HOME/wine-git/wine first.'
+	echo 'It should take about an hour to run with a fast connection.'
+	echo 'If you want to test a particular version of wine, do e.g.'
+	echo 'export WINE=$$HOME/wine-git/wine first.'
+	echo 'WINE is currently "$(WINE)".... hope that is what you expected.'
+	echo 'If running this as part of debuild, you might need to use'
+	echo 'debuild --preserve-envvar=DISPLAY --preserve-envvar=XAUTHORITY'
+	echo 'to let Wine access your X server (hard to pass tests otherwise)'
+	echo 'FIXME: this should kill stray wine processes before and after.'
 	rm -rf ~/winetrickstest-prefixes
 	cd src; sh ../tests/winetricks-test quick

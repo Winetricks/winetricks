@@ -34,7 +34,7 @@ BLACKLIST="$BLACKLIST|allcodecs"
 # Verbs known to update frequently
 QUICKCHECK="flash spotify"
 
-# Check for programs this script (or winetricks) uses.  
+# Check for programs this script (or winetricks) uses.
 # Better to find out they're missing now than in the
 # middle of a two day run.
 for tool in time cabextract unzip 7z
@@ -110,9 +110,9 @@ test_app_checksums()
         # Preferably generated under 32-bit wine, so that we don't need a really complex sed
         # substitution here...
         sed -e "s|/Program\ Files/|/$progdir/|" -e "s|/windows/|/$windir/|" < "$srcdir/winetricksverify.d/$app.sha1sum" > $app.sha1sum.tmp
-        if ! sha1sum -c $app.sha1sum.tmp 
+        if ! sha1sum -c $app.sha1sum.tmp
         then
-            fail "test_app_checksum $app !" 
+            fail "test_app_checksum $app !"
         fi
         rm $app.sha1sum.tmp
         cd $srcdir
@@ -256,8 +256,8 @@ test_install_cached_or_download()
         # Split into two, only do half
         nverbs=`cat ticd.verbs | wc -l`
         firsthalf=`expr $nverbs / 2 + 1`
-        sed ${firsthalf}',$d' < ticd.verbs > ticd-1.verbs 
-        sed '1,'${firsthalf}d   < ticd.verbs > ticd-2.verbs 
+        sed ${firsthalf}',$d' < ticd.verbs > ticd-1.verbs
+        sed '1,'${firsthalf}d   < ticd.verbs > ticd-2.verbs
         VERBS=`cat ticd-1.verbs`
     else
         VERBS=`cat ticd.verbs`
@@ -269,7 +269,7 @@ test_install_cached_or_download()
     done
     sh winetricks list-cached | sort > cached.txt
     # Verbs that are just wrappers around others don't detect cache/install
-    # state yet.  
+    # state yet.
     # Verbs that are just informative placeholders don't ever download (gecko).
     # And some verbs (gecko110) don't usually install for other reasons.
     BLACKLIST_CACHE="allfonts|cjkfonts|allcodecs|gecko|gecko110|fontfix"
@@ -293,7 +293,7 @@ test_quick()
     # Test the frequent download-changes-checksum offenders first
     cache="$HOME/winetricks-quickcheck-cache"
     rm -rf "$cache"
-    export W_CACHE="$cache" 
+    export W_CACHE="$cache"
     #for a in $QUICKCHECK
     #do
     #   rm -rf $HOME/winetrickstest-prefixes/$a

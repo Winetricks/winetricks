@@ -12,7 +12,7 @@ extract_all() {
 
 # Show results for a given url
 # Input: .url file
-# Output: line with OK or BAD followed by URL, 
+# Output: line with OK or BAD followed by URL,
 # optionally followed by lines with more detail
 show_one() {
     urlfile=$1
@@ -45,14 +45,14 @@ crawl_one() {
     base=${urlfile%.url}
     url="`cat $urlfile`"
 
-    curl --connect-timeout 10 --retry 6 -s -S -I "$url" 2>&1 | 
+    curl --connect-timeout 10 --retry 6 -s -S -I "$url" 2>&1 |
        tr -d '\015' |
        grep . |
        sort > "$base.log"
     # more diff-able?
-    #cat "$base.log" | 
+    #cat "$base.log" |
     #  egrep 'HTTP|Last-Modified:|Content-Length:|ETag:' |
-    #  tr '\012' ' ' | 
+    #  tr '\012' ' ' |
     #  sed 's/ Connection:.*//' > "$datadir"/"$urlkey.dat"
     #echo "" >> "$base.dat"
     show_one "$urlfile"
@@ -68,7 +68,7 @@ crawl_all() {
         echo "Crawling $url"
         crawl_one "$urlfile" &
         sleep 1
-    done 
+    done
     # Wait for fetches to finish
     wait
 }
@@ -76,7 +76,7 @@ crawl_all() {
 mkdir -p "$datadir"
 
 case "$1" in
-crawl) 
+crawl)
     extract_all
     crawl_all
     show_all
