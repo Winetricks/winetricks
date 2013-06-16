@@ -6194,6 +6194,9 @@ load_riched20()
     helper_win2ksp4 i386/riched20.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/riched20.dl_
     w_override_dlls native,builtin riched20
+
+    # https://code.google.com/p/winetricks/issues/detail?id=292
+    w_call msls31
 }
 
 #----------------------------------------------------------------
