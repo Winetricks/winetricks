@@ -335,5 +335,11 @@ full)  test_full;;
 esac
 
 echo "Test over, $errors failures, $passes successes."
-test $errors = 0
-test $passes -gt 0
+if test $errors = 0 && test $passes -gt 0
+then
+    echo PASS
+    exit 0
+else
+    echo FAIL
+    exit 1
+fi
