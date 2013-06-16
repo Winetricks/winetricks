@@ -1,0 +1,25 @@
+Source: winetricks
+Maintainer: Dan Kegel <dank@kegel.com>
+Build-Depends: debhelper,
+        devscripts,
+        p7zip-full,
+        quilt
+
+Package: winetricks
+Section: contrib/otherosfs
+Architecture: any
+Homepage: http://winetricks.org
+Depends:
+        cabextract,
+        p7zip,
+        unzip,
+        wget,
+        wine,
+        xdg-utils
+Description: Winetricks is an easy way to work around common problems in Wine.
+ It has a menu of supported games/apps for which it can do all the
+ workarounds automatically. It also lets you install missing DLLs or
+ tweak various Wine settings individually.
+ It can be used via gui or commandline, whichever you prefer; the
+ commandline mode is particularly useful as a building block in fancier
+ wine frontends and in automated regression testing.
