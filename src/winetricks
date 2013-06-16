@@ -6780,7 +6780,14 @@ load_windowscodecs()
     # See http://bugs.winehq.org/show_bug.cgi?id=16876 and
     # http://bugs.winehq.org/show_bug.cgi?id=23232
     cd "$W_CACHE/$W_PACKAGE"
-    w_try $WINE wic_x86_enu.exe /passive
+
+    if test -x /usr/bin/taskset && w_workaround_wine_bug 32859 "Working around possibly broken libX11"
+    then
+        TASKSET="taskset -c 0"
+    else
+        TASKSET=""
+    fi
+    w_try $TASKSET $WINE wic_x86_enu.exe /passive
 }
 
 #----------------------------------------------------------------

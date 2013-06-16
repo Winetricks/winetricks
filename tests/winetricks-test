@@ -46,6 +46,7 @@ do
     fi
 done
 
+passes=0
 errors=0
 fail()
 {
@@ -128,6 +129,7 @@ total_df()
 test_app()
 {
     app=$1
+    _errors_before=$errors
 
     export WINE_PREFIXES=$HOME/winetrickstest-prefixes
     export WINEPREFIX=$WINE_PREFIXES/$app
@@ -207,6 +209,11 @@ test_app()
     echo "Wineserver done."
 
     test_app_checksums
+
+    if test $_errors_before = $errors
+    then
+        passes=`expr $passes + 1`
+    fi
 }
 
 test_dlls()
@@ -327,5 +334,6 @@ full)  test_full;;
 *)     echo "Usage: $0 quick|full"; exit 1;;
 esac
 
-echo "Test over, $errors failures."
+echo "Test over, $errors failures, $passes successes."
 test $errors = 0
+test $passes -gt 0

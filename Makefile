@@ -20,7 +20,7 @@ SOURCES = Makefile src tests
 
 version=$(shell grep '^WINETRICKS_VERSION' < src/winetricks | sed 's/.*=//')
 
-PREFIX = /usr/local
+PREFIX = /usr
 
 all:
 	@ echo "Nothing to compile. Use: check, clean, cleanup, dist, install"
@@ -36,7 +36,7 @@ clean:
 		-o -name "*.out" \
 		-o -name "*.verbs" \
 	| xargs --no-run-if-empty rm
-	rm -f src/df-*
+	rm -rf src/df-* src/measurements
 
 # Remove trailing whitespaces
 cleanup:
@@ -48,18 +48,19 @@ dist: clean $(SOURCES)
 		-czvf winetricks-$(version).tar.gz $(SOURCES)
 
 install:
-	$(INSTALL_PROGRAM) src/winetricks $(DESTDIR)$(PREFIX)/bin
-	$(INSTALL_DATA) src/winetricks.1 $(DESTDIR)$(PREFIX)/man/man1
+	$(INSTALL_PROGRAM) -D src/winetricks $(DESTDIR)$(PREFIX)/bin/winetricks
+	$(INSTALL_DATA) -D src/winetricks.1 $(DESTDIR)$(PREFIX)/man/man1/winetricks.1
 
 check:
 	echo 'This verifies that most DLL verbs, plus flash, install ok.'
 	echo 'It should take about an hour to run with a fast connection.'
 	echo 'If you want to test a particular version of wine, do e.g.'
 	echo 'export WINE=$$HOME/wine-git/wine first.'
-	echo 'WINE is currently "$(WINE)".... hope that is what you expected.'
+	echo 'WINE is currently "$(WINE)".'
+	echo 'On 64 bit systems, you probably want export WINEARCH=win32.'
+	echo 'WINEARCH is currently "$(WINEARCH)".'
 	echo 'If running this as part of debuild, you might need to use'
-	echo 'debuild --preserve-envvar=DISPLAY --preserve-envvar=XAUTHORITY'
-	echo 'to let Wine access your X server (hard to pass tests otherwise)'
+	echo 'debuild --preserve-envvar=WINE --preserve-envvar=WINEARCH --preserve-envvar=DISPLAY --preserve-envvar=XAUTHORITY'
 	echo 'FIXME: this should kill stray wine processes before and after.'
 	rm -rf ~/winetrickstest-prefixes
 	cd src; sh ../tests/winetricks-test quick
