@@ -3942,16 +3942,16 @@ load_comdlg32ocx()
 w_metadata crypt32 dlls \
     title="MS crypt32" \
     publisher="Microsoft" \
-    year="2003" \
+    year="2004" \
     media="download" \
-    file1="../win2ksp4/W2KSP4_EN.EXE" \
+    file1="../xpsp2/WindowsXP-KB835935-SP2-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/crypt32.dll"
 
 load_crypt32()
 {
     w_call msasn1
 
-    helper_win2ksp4 i386/crypt32.dl_
+    helper_xpsp2 i386/crypt32.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/crypt32.dl_
 
     w_override_dlls native crypt32
