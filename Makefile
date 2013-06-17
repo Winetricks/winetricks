@@ -60,7 +60,7 @@ check:
 	echo 'On 64 bit systems, you probably want export WINEARCH=win32.'
 	echo 'WINEARCH is currently "$(WINEARCH)".'
 	echo 'Winetricks does not work completely in non-English locales.'
-	echo 'LANG is currently "$(LANG)".  If it's C or en_US.mumble, that is probably ok.'
+	echo 'LANG is currently "$(LANG)".  en_US.UTF-8 is probably ok.'
 	echo ''
 	echo 'If running this as part of debuild, you might need to use'
 	echo 'debuild --preserve-envvar=LANG --preserve-envvar=WINE --preserve-envvar=WINEARCH --preserve-envvar=DISPLAY --preserve-envvar=XAUTHORITY'
