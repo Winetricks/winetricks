@@ -23,6 +23,8 @@ BLACKLIST="$BLACKLIST|bioshock2|audibledm"
 BLACKLIST="$BLACKLIST|dx8sdk"
 # broken
 BLACKLIST="$BLACKLIST|dotnet11|dotnet11sp1"
+# broken/flaky, http://bugs.winehq.org/show_bug.cgi?id=26016
+BLACKLIST="$BLACKLIST|xmllite"
 # manual downloads
 BLACKLIST="$BLACKLIST|dotnet30|dotnet30sp1|dotnet35|dotnet35sp1"
 # depend on manual downloads
