@@ -49,7 +49,7 @@ dist: clean $(SOURCES)
 
 install:
 	$(INSTALL_PROGRAM) -D src/winetricks $(DESTDIR)$(PREFIX)/bin/winetricks
-	$(INSTALL_DATA) -D src/winetricks.1 $(DESTDIR)$(PREFIX)/man/man1/winetricks.1
+	$(INSTALL_DATA) -D src/winetricks.1 $(DESTDIR)$(PREFIX)/share/man/man1/winetricks.1
 
 check:
 	echo 'This verifies that most DLL verbs, plus flash, install ok.'
@@ -64,6 +64,8 @@ check:
 	echo ''
 	echo 'If running this as part of debuild, you might need to use'
 	echo 'debuild --preserve-envvar=LANG --preserve-envvar=WINE --preserve-envvar=WINEARCH --preserve-envvar=DISPLAY --preserve-envvar=XAUTHORITY'
+	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
+	echo ''
 	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
 	rm -rf ~/winetrickstest-prefixes
 	cd src; sh ../tests/winetricks-test quick
