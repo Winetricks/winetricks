@@ -48,8 +48,10 @@ dist: clean $(SOURCES)
 		-czvf winetricks-$(version).tar.gz $(SOURCES)
 
 install:
-	$(INSTALL_PROGRAM) -D src/winetricks $(DESTDIR)$(PREFIX)/bin/winetricks
-	$(INSTALL_DATA) -D src/winetricks.1 $(DESTDIR)$(PREFIX)/share/man/man1/winetricks.1
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
+	$(INSTALL_PROGRAM) src/winetricks $(DESTDIR)$(PREFIX)/bin/winetricks
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/man/man1
+	$(INSTALL_DATA) src/winetricks.1 $(DESTDIR)$(PREFIX)/share/man/man1/winetricks.1
 
 check:
 	echo 'This verifies that most DLL verbs, plus flash, install ok.'
