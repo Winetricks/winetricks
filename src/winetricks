@@ -17066,6 +17066,27 @@ _EOF_
 }
 
 #----------------------------------------------------------------
+# Mac Driver settings
+
+w_metadata macdriver=mac settings \
+    title="Enable the Mac native Quartz driver (default)"
+w_metadata macdriver=x11 settings \
+    title="Disable the Mac native Quartz driver, use X11 instead"
+
+load_macdriver()
+{
+    echo "Setting MacDriver to $arg"
+    cat > "$W_TMP"/set-mac.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\Drivers]
+"Graphics"="$arg"
+
+_EOF_
+    w_try_regedit "$W_TMP"/set-mac.reg
+}
+
+#----------------------------------------------------------------
 # X11 Driver settings
 
 w_metadata grabfullscreen=y settings \
