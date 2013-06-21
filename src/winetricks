@@ -1308,10 +1308,16 @@ _EOF_
            ;;
         esac
 
-        # Note: if you want to override even DLLs loaded with an absolute path,
-        # you need to add an asterisk:
-        echo "\"*$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
-        #echo "\"$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
+        if [ "$_W_mode" = default ]
+        then
+            # To delete a registry key, give an unquoted dash as value
+            echo "\"*$1\"=-" >> "$W_TMP"/override-dll.reg
+        else
+            # Note: if you want to override even DLLs loaded with an absolute
+            # path, you need to add an asterisk:
+            echo "\"*$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
+            #echo "\"$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
+        fi
 
         shift
     done
@@ -1435,12 +1441,13 @@ w_override_app_dlls()
 
     # Fixme: handle comma-separated list of modes
     case $_W_mode in
-    b*) _W_mode=builtin ;;
-    n*) _W_mode=native ;;
-    d*)
+    b|builtin) _W_mode=builtin ;;
+    n|native) _W_mode=native ;;
+    default) _W_mode=default ;;
+    d|disabled)
         _W_mode="" ;;
     *)
-        w_die "w_override_app_dlls: unknown mode $_W_mode.  (want native, builtin, or disabled)
+        w_die "w_override_app_dlls: unknown mode $_W_mode.  (want native, builtin, default, or disabled)
 Usage: 'w_override_app_dlls app mode dll ...'." ;;
     esac
 
@@ -1458,7 +1465,16 @@ Usage: 'w_override_app_dlls app mode dll ...'." ;;
            rm -rf "$W_WINDIR_UNIX"/winsxs/manifests/x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.2600.2982_none_deadbeef.manifest
            ;;
         esac
-        echo "\"$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
+        if [ "$_W_mode" = default ]
+        then
+            # To delete a registry key, give an unquoted dash as value
+            echo "\"*$1\"=-" >> "$W_TMP"/override-dll.reg
+        else
+            # Note: if you want to override even DLLs loaded with an absolute
+            # path, you need to add an asterisk:
+            echo "\"*$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
+            #echo "\"$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
+        fi
         shift
     done
 
@@ -1869,7 +1885,7 @@ w_do_call()
         elif winetricks_metadata_exists $cmd
         then
             . "$WINETRICKS_METADATA"/*/$cmd.vars
-        elif test $cmd = native || test $cmd = disabled || test $cmd = builtin
+        elif test $cmd = native || test $cmd = disabled || test $cmd = builtin || test $cmd = default
         then
             # ugly special case - can't have metadata for these verbs until we allow arbitrary parameters
             w_override_dlls $cmd $arg
@@ -17994,6 +18010,7 @@ execute_command()
     alldlls=*) w_call $1 ;;
     *=native) w_do_call native $cmd;;
     *=builtin) w_do_call builtin $cmd;;
+    *=default) w_do_call default $cmd;;
     *=disabled) w_do_call disabled $cmd;;
 
     # Hacks for backwards compatibility
