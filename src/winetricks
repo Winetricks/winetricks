@@ -9104,6 +9104,42 @@ load_steam()
 
 #----------------------------------------------------------------
 
+w_metadata uplay apps \
+    title="Uplay" \
+    publisher="Ubisoft" \
+    year="2012" \
+    media="download" \
+    file1="UplayInstaller.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Ubisoft Game Launcher/Uplay.exe"
+
+load_uplay()
+{
+    # 4 June 2013 3.0.1 sha1sum fdb9e736b5b2211fb23b35d30d52deae6f4b32a4
+    w_download http://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe fdb9e736b5b2211fb23b35d30d52deae6f4b32a4
+    cd "$W_CACHE"/uplay
+
+    # NSIS installer
+    w_try $WINE UplayInstaller.exe ${W_OPT_UNATTENDED:+ /S}
+
+    if w_workaround_wine_bug 33742 "Using native crypt32 so uplay's autoupdater doesn't abort"
+    then
+        # Directx9 and game installation often fails with native crypt32,
+        # so set it to native for Uplay.exe only.
+        w_call crypt32
+        w_override_dlls default crypt32
+        w_override_app_dlls Uplay.exe native crypt32
+    fi
+
+    if w_workaround_wine_bug 33673 "Installing gdiplus to work around slow navigation"
+    then
+        w_call gdiplus
+    fi
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Ubisoft Game Launcher" "Uplay.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata utorrent apps \
     title="µTorrent 2.2.1" \
     publisher="BitTorrent" \
