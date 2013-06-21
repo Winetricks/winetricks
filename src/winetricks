@@ -11046,13 +11046,13 @@ w_metadata cod1 games \
     publisher="Activision" \
     year="2003" \
     media="dvd" \
-    file1="COD1.iso" \
+    file1="CoD1.iso" \
     file2="CoD2.iso"
 
 load_cod1()
 {
     # FIXME: port load_harder from winetricks and use it when caching first disc
-    w_mount COD1
+    w_mount CoD1
 
     w_read_key
 
@@ -11093,7 +11093,7 @@ load_cod1()
     "
 
     $WINE eject ${W_ISO_MOUNT_LETTER}:
-    w_mount COD1
+    w_mount CoD1
 
     w_ahk_do "
         SetTitleMatchMode, 2
