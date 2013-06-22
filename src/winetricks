@@ -5074,7 +5074,7 @@ load_dsound()
 #----------------------------------------------------------------
 
 # FIXME: update winetricks_is_installed to look at installed_file2
-w_metadata flash dlls \
+w_metadata flash10 dlls \
     title="Flash Player 10" \
     publisher="Adobe" \
     year="2011" \
@@ -18055,6 +18055,7 @@ execute_command()
     dotnet1) w_call dotnet11 ;;
     dotnet2) w_call dotnet20 ;;
     firefox3) w_call firefox35 ;;  # the one that works
+    flash) w_call flash11 ;;
     fm20) w_call controlpad ;;   # art2kmin also comes with fm20.dll
     fontsmooth-bgr) w_call fontsmooth=bgr ;;
     fontsmooth-disable) w_call fontsmooth=disable ;;
