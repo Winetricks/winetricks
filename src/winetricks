@@ -5074,109 +5074,44 @@ load_dsound()
 #----------------------------------------------------------------
 
 # FIXME: update winetricks_is_installed to look at installed_file2
-w_metadata flash10 dlls \
-    title="Flash Player 10" \
-    publisher="Adobe" \
-    year="2011" \
-    media="download" \
-    file1="install_flash_player_10_plugin.exe" \
-    file2="install_flash_player_10_active_x.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10zr_Plugin.exe" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil10zr_ActiveX.exe" \
-    homepage="http://www.adobe.com/products/flashplayer/"
-
-load_flash10()
-{
-    # See http://www.adobe.com/products/flashplayer/distribution3.html
-
-    # Active X plugin
-    # http://blogs.adobe.com/psirt/2008/03/preparing_for_april_flash_play.html
-    # http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_active_x.exe
-    # 2010-11-04: sha1sum 58412bcc83e349be50cafe0e1c46e19088620866
-    # 2011-02-12: sha1sum 944c1f2055cd85af37ef44629773c2cf1d02a21c
-    # 2011-02-24: sha1sum f2e6a3f486423d6c1be48ad80fb3b7d4cdafd29d
-    # 2011-03-15: sha1sum 07908231028f68098902d5aa52812b7e27f8497a
-    # 2011-04-12: sha1sum 80b547dde20c0e80f739c3ba66be1065a94e4244
-    # 2011-05-13: sha1sum ae401aa3ba54ebe12c2fb3b94cd1bb5881074169
-    # 2011-06-13: sha1sum 2c1ae9cf04f67ca611af7df695d3ea4337fb73fc
-    # 2011-06-23: sha1sum da3f4b28f77a44b25cfb1453278683b888904714
-    # 2011-10-26: sha1sum 964199abcbaa9f42273ed5030d039ead03407b76
-    # 2011-11-12: sha1sum 1b84a14b4325a6ae17c590b7c9de749daeca7b6f
-    # 2012-02-23: sha1sum 3e9a3d8d7e5fef87ad449c93fa72d4799306ff07
-    # 2012-03-08: sha1sum ccbf24ab0dfa3635fb12d895eb55c5e888879c5d
-    # 2012-05-02: sha1sum d86ca46afc312b14375aad483d1c7e5f12c707a4
-    # 2012-05-11: sha1sum 4020135dfbfe4b49067bb679000e0a6b7c7ed8bc
-    # 2012-08-12: sha1sum 3cd65d71ba26b829255e44a1af708fc060282bc6
-    # 2012-11-06: sha1sum 415a8e3044749fd73967a19d16c535b6b341a148
-    # 2012-12-22: sha1sum 95b84c0768e4b550238c482a696bfd7aaeb7ed8d
-    # 2013-02-03: sha1sum 674319bfe1154f5e953334f771a3cf8c92325129
-    # 2013-03-11: sha1sum b0f678048cc5312f96f569295da789220aa95cd7
-    # 2013-03-28: sha1sum b3bce64701eea94d6adb2048d29d7889f71eee6b
-    # 2013-06-09: sha1sum ae93b0ff47cbfb82cc193e48b324e556ebf86840
-    # 2013-06-14: sha1sum c30680ca7515faf2b1e3c8de219f15ab5c90b048
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_active_x.exe c30680ca7515faf2b1e3c8de219f15ab5c90b048
-    cd "$W_CACHE"/flash
-
-    w_try $WINE install_flash_player_10_active_x.exe ${W_OPT_UNATTENDED:+ /install}
-
-    # Mozilla / Firefox plugin
-    # 2010-11-04: sha1sum 09f2491c5bec7286155234f4e6e1af70c7cef78f
-    # 2011-02-12: sha1sum 4a650caf62d8841d14b9d7888ab9b69d5d6f617a
-    # 2011-02-24: sha1sum 009c908cdb73fba18b34e798b1f601ed964102a1
-    # 2011-03-15: sha1sum 487b7003386ba80da00fa56cfd1d33241b8a0e41
-    # 2011-04-12: sha1sum 706523aa1af2e77f9ae7727202ebe0f0f5e71a39
-    # 2011-05-13: sha1sum 4d800cbf339f8d4f2a524da1aa79d10a785da42e
-    # 2011-06-13: sha1sum f6248cdda8c5b3d36bb414d67d2373f205e257c7
-    # 2011-06-23: sha1sum 8c14f60fa625d26698afceb1e234eaae4637389e
-    # 2011-10-26: sha1sum a04d5ecc27dbc439d9ca0c994ac7db39a0d3d081
-    # 2011-11-12: sha1sum 2e834f95880fd0b96a9db93ff48f1e4178ee0913
-    # 2012-02-23: sha1sum 49ee6230f2ba47bcb5f978cf7a97721fb0f3db78
-    # 2012-03-08: sha1sum aeddca4eddb0ad91c1b8bc32f8c543069b519325
-    # 2102-05-02: sha1sum 0a7a7b9b8b6b834e452b456205e33210fb3b544c, name change
-    # 2102-05-11: sha1sum 060f11d5479863af609272a24dea82e6b04e0641
-    # 2012-08-12: sha1sum 3909ee6078bdae2157f595b8d7c4f1484fef710b
-    # 2012-11-06: sha1sum 8cecf58c6ca638c123e37c0e9c3b93ab805c1930
-    # 2012-12-22: sha1sum 8cd26eeb37cef2307bf179d671ad3707089a02d7
-    # 2013-02-03: sha1sum 009bcea6d37e8582277697c42be3c0f63b548a7d
-    # 2013-03-11: sha1sum 5e6149c5184c77289a3541f4da24196a58e2e500
-    # 2013-03-28: sha1sum 1d87421b32ec4094fd9e876da115785d7c7d1d7d
-    # 2013-06-06: sha1sum a4e945721240dd965f7c826e00a8c93386348a19
-    # 2013-06-14: sha1sum 019e704c7d4ef9f0e578ee303895e3e429e2de57
-    w_download http://fpdownload.macromedia.com/get/flashplayer/current/licensing/win/install_flash_player_10_plugin.exe 019e704c7d4ef9f0e578ee303895e3e429e2de57
-
-    w_try $WINE install_flash_player_10_plugin.exe ${W_OPT_UNATTENDED:+ /install}
-}
-
-#----------------------------------------------------------------
-
-# FIXME: update winetricks_is_installed to look at installed_file2
-w_metadata flash11 dlls \
+w_metadata flash dlls \
     title="Flash Player 11" \
     publisher="Adobe" \
     year="2011" \
     media="download" \
     file1="install_flash_player.exe" \
     file2="install_flash_player_ax.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_11_6_602_180_Plugin.exe" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_11_6_602_180_ActiveX.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_11_7_700_224_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_11_7_700_224_ActiveX.exe" \
     homepage="http://www.adobe.com/products/flashplayer/"
 
-load_flash11()
+load_flash()
 {
+    # As of July 9, 2013, Flash 10 is no longer supported.
+    # And as of June 24, 2013, Flash 10.3 won't even install for me,
+    # it tells you to go get a newer version!
+    # See
+    # http://blogs.adobe.com/psirt/
+    # http://get.adobe.com/de/flashplayer/otherversions/
+    # In theory we could install older versions like 10.3 by using zipfiles at
+    # http://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html
+    # They don't have installers, just raw files.  Let's wait until we have
+    # a reason to do that.
+
     # Active X plugin
-    # 2011-11-12: sha1sum 8314061c4d73c9957dfb4da525d77437ee6abf0e
-    # 2012-12-22: sha1sum 2a0571dc3d8b28b62586beb1bffd0c5eca3743cc, name change
-    # 2013-03-28: sha1sum 359f231d7007c17b419f777125e0f28fffc2e6a1
-    w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.6.602.180/install_flash_player_ax.exe 359f231d7007c17b419f777125e0f28fffc2e6a1
-    cd "$W_CACHE"/flash11
+    # 2013-03-28
+    #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.6.602.180/install_flash_player_ax.exe 359f231d7007c17b419f777125e0f28fffc2e6a1
+    # 2003-06-24
+    w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.7.700.224/install_flash_player_ax.exe fdadce901fc7da7a175f71cc8f1f2dd0db78ec8e
+    cd "$W_CACHE"/flash
 
     w_try $WINE install_flash_player_ax.exe ${W_OPT_UNATTENDED:+ /install}
 
     # Mozilla / Firefox plugin
-    # 2011-11-12: sha1sum f1f76c35564c9f842a7e005d97f5008173466d46
-    # 2012-12-22: sha1sum 6c0d910858ba04223da2bfbdd069ef7f6e0f0894, name change
-    # 2013-03-28: sha1sum bf44990ade52aa92078495ec39035d8489ff6e05
-    w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.6.602.180/install_flash_player.exe bf44990ade52aa92078495ec39035d8489ff6e05
+    # 2013-03-28
+    #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.6.602.180/install_flash_player.exe bf44990ade52aa92078495ec39035d8489ff6e05
+    # 2003-06-24
+    w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.7.700.224/install_flash_player.exe 9c519fd5a7202c43b5713f9f6b083d970810112e
 
     w_try $WINE install_flash_player.exe ${W_OPT_UNATTENDED:+ /install}
 
@@ -5184,6 +5119,28 @@ load_flash11()
     then
         w_call vcrun2005
     fi
+
+    # After updating the above, you should carry the following steps out by
+    # hand to verify that plugin works.  (Ideally you'd also do it on
+    # wine-1.5.6 to make sure the new version still uses vcrun2005 and
+    # not something newer.)
+
+    #    rm -rf ~/.cache/winetricks/flash
+    #    cd ~/winetricks/src
+    #    rm -rf ~/.wine
+    #    sh winetricks -q flash ie7
+    #    cd ~/".wine/drive_c/Program Files/Internet Explorer"
+    #    wine iexplore.exe http://www.adobe.com/software/flash/about
+    # Verify that the version of flash shows up and that you're not prompted
+    # to install flash again
+    #
+    #    cd ~/winetricks/src
+    #    rm -rf ~/.wine
+    #    sh winetricks -q flash --no-isolate firefox
+    #    cd ~/.wine/drive_c/Program\ Files/Mozilla\ Firefox
+    #    wine firefox.exe http://www.adobe.com/software/flash/about
+    # Verify that the version of flash shows up and that you're not prompted
+    # to install flash again
 }
 
 #----------------------------------------------------------------
@@ -18055,7 +18012,7 @@ execute_command()
     dotnet1) w_call dotnet11 ;;
     dotnet2) w_call dotnet20 ;;
     firefox3) w_call firefox35 ;;  # the one that works
-    flash) w_call flash11 ;;
+    flash11) w_call flash ;;
     fm20) w_call controlpad ;;   # art2kmin also comes with fm20.dll
     fontsmooth-bgr) w_call fontsmooth=bgr ;;
     fontsmooth-disable) w_call fontsmooth=disable ;;
