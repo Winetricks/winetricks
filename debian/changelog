@@ -1,6 +1,58 @@
-winetricks (20130615) UNRELEASED; urgency=low
+winetricks (20130624) lucid; urgency=low
 
+  [ Dan Kegel ]
+
+  * flash: installs flash11 now; flash10 is end-of-life and refuses to install.
+  * uplay: added.  (Based on a patch by Maxime LOMBARD)
+  * Allow 'default' when overriding individual dlls, as it already was when overriding alldlls
+  * Add sid's idea of where wineserver lives.  Patch by Jun NOGATA.
+    Fixes winetricks.org issue 322.
+  * Makefile: avoid nonportable -D option on install.
+    Fixes winetricks.org issue 320.
+
+  [ Austin English ]
+
+  * cod: fix Call of Duty cd name. Fixes issue 145.
+  * witcher2: fix filename (closes issue 250)
+  * macdriver=(mac,x11): new setting
+
+ -- Dan Kegel <dank@kegel.com>  Mon, 24 Jun 2013 19:32:23 -0700
+
+winetricks (20130615) lucid; urgency=low
+
+  [ Austin English ]
+  * dotnet20sp1: clarify messaging.  Fixes issue 285.
+  * droid: update sha1sum
+  * psdk2003: update to the latest microsoft download, add -q support
+  * shockwave: update (it's now Shockwave 12). Fixes issue 307.
+  * Add a helper killall function to avoid disaster on Solaris
+  * Only try mkdir in w_download if the directory does not exist. Fixes issue 80
+  * Remove stray debug code
+  * Use kill in a slightly more portable way
+  * Use signal name instead of number in w_killall
+  * Use standard FSF text for manpage license
+
+  [Dan Kegel]
   * Sample debian packaging to verify that Makefile suffices.
     Debian maintainers will replace this debian directory with their own.
+  * crypt32: Fix regression from r898; see bug 248.
+  * dotnet11: mark broken
+  * dotnet11sp1: mark broken
+  * dotnet20sp1: fix install check
+  * dotnet20: use better url
+  * riched20: also install msls31.  Should fix bug 292.
+  * windowscodecs: use taskset -c 0 to work around bug 32859 when available
+  * xmllite: blacklist in 'make check', it's too flaky
+  * xna40: blacklist in 'make check', it's too broken
+  * Actually work with wine-1.6-rc1
+  * Add top-level Makefile with working 'make check', and
+    just enough of a debian package to verify that debuild can run the tests.
+
+  [Jactry Zeng]
+  * flash: update
+
+  [Jari Aalto]
+  * manpage: order commands/variables alphabetically, escape hyphens
+  * Makefile: added 'make all', 'make cleanup' targets
 
  -- Dan Kegel <dank@kegel.com>  Sat, 15 Jun 2013 14:26:39 -0700
