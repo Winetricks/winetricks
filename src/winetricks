@@ -507,6 +507,10 @@ w_download_to()
     .) w_die "bug: please do not download packages to top of cache" ;;
     esac
 
+    if echo "$_W_url" | grep ' '
+    then
+        w_die "bug: please use %20 instead of literal spaces in urls, curl rejects spaces, and they make life harder for linkcheck.sh"
+    fi
     if [ "$_W_file"x = ""x ]
     then
         _W_file=`basename "$_W_url"`
@@ -13490,8 +13494,8 @@ load_kotor2()
     "
 
     # download 1.0a and 1.0b patches
-    w_download "ftp://ftp.lucasarts.com/patches/pc/KotOR2 Patch v201420 UK.exe" ab97a0d41ae15782418d0fd1b2ad43ccf35ca070
-    w_download "ftp://ftp.lucasarts.com/patches/pc/sw_pc_uk_from201420_to211427.exe" cf4ed797a0314b3ca047012f732321c6ba9a2388
+    w_download ftp://ftp.lucasarts.com/patches/pc/KotOR2%20Patch%20v201420%20UK.exe ab97a0d41ae15782418d0fd1b2ad43ccf35ca070
+    w_download ftp://ftp.lucasarts.com/patches/pc/sw_pc_uk_from201420_to211427.exe cf4ed797a0314b3ca047012f732321c6ba9a2388
 
     cd "$W_CACHE/$W_PACKAGE"
 
