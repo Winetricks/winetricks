@@ -36,7 +36,7 @@ clean:
 		-o -name "*.out" \
 		-o -name "*.verbs" \
 	| xargs --no-run-if-empty rm
-	rm -rf src/df-* src/measurements
+	rm -rf src/df-* src/measurements src/links.d
 
 # Remove trailing whitespaces
 cleanup:
@@ -73,5 +73,9 @@ check:
 	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
 	echo ''
 	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
+	echo ''
+	echo 'But first, check hardcoded urls in winetricks.  Takes 10 minutes.'
+	rm -rf src/links.d; cd src; sh linkcheck.sh crawl
+	echo 'And now, the one hour run check.'
 	rm -rf ~/winetrickstest-prefixes
 	cd src; sh ../tests/winetricks-test quick
