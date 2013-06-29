@@ -1,3 +1,24 @@
+winetricks (20130629) lucid; urgency=low
+
+  [ Austin English ]
+
+  * avatar_demo, cnc_tiberian_sun: warn if unrar is not found.
+    Check for it in winetrickstest, too. Fixes issue 186.
+  * dotnet30sp1: escape spaces in url to support curl.  Fixes issue 265.
+  * eve: update. Fixes issue 271.
+  * mono210: remove, wine ships its own (and it is outdated)
+  * utorrent: update to 3.3.  Fixes issue 197.
+
+  [ Dan Kegel ]
+
+  * 3dmark06: updated, tested with 1.5.22
+  * autohotkey: update url
+  * dotnet35: work around wine bug 33450
+  * hon: updated
+  * linkcheck.sh: add copyright header, get it to pass, use it in 'make check'
+
+ -- Dan Kegel <dank@kegel.com>  Sat, 29 Jun 2013 12:36:34 -0700
+
 winetricks (20130624) lucid; urgency=low
 
   [ Dan Kegel ]
