@@ -12411,13 +12411,13 @@ w_metadata eve games \
     publisher="CCP Games" \
     year="2011" \
     media="download" \
-    file1="EVE_Premium_Setup_264377_m.exe" \
+    file1="EVE_Online_Installer_561078.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/CCP/EVE/eve.exe"
 
 load_eve()
 {
     # http://www.eveonline.com/download/?fallback=1&
-    w_download http://content.eveonline.com/EVE_Premium_Setup_264377_m.exe 00d930853c68d2a75f29558b344f885f6c2ff6a7
+    w_download http://content.eveonline.com/561078/EVE_Online_Installer_561078.exe 5b5f0cd4fbd42f82b1d1cccb2e22ddeed97d1d3a
 
     if w_workaround_wine_bug 18221
     then
@@ -12427,7 +12427,7 @@ load_eve()
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         run, $file1
-        WinWait, EVE Online Installer
+        WinWait, EVE Online
         if ( w_opt_unattended > 0 ) {
             WinActivate
             send {Enter}         ; Next
@@ -12444,7 +12444,7 @@ load_eve()
             ControlClick Button4  ; untick Launch
             Send {Enter}         ; Finish (Button2)
         }
-        WinWaitClose, EVE Online Installer
+        WinWaitClose, EVE Online
     "
     w_declare_exe "$W_PROGRAMS_X86_WIN\\CCP\\EVE" "eve.exe"
 }
