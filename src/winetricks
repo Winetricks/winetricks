@@ -4933,6 +4933,11 @@ load_dotnet35()
     w_call dotnet30sp1
     $WINESERVER -w
 
+    if w_workaround_wine_bug 33450 "Installing msxml3"  ,1.5.28
+    then
+        w_call msxml3
+    fi
+
     # http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6
     w_download http://download.microsoft.com/download/6/0/f/60fc5854-3cb8-4892-b6db-bd4f42510f28/dotnetfx35.exe 0a271bb44531aadef902829f98dfad66e4a57586
 
