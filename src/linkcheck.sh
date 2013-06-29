@@ -9,6 +9,17 @@
 # GNU Lesser Public License version 2.1, as published by the Free Software
 # Foundation. Please see the file COPYING for details.
 
+set -e
+
+passes=0
+errors=0
+
+if ! test -x "`which curl 2>/dev/null`"
+then
+    echo "Please install curl"
+    exit 1
+fi
+
 datadir="links.d"
 
 WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net
@@ -24,7 +35,7 @@ w_download() {
 
 # Extract list of URLs from winetricks
 extract_all() {
-    grep '^ *w_download ' winetricks | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+    grep '^ *w_download ' winetricks | egrep 'ftp|http|WINETRICKS_SOURCEFORGE'| sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
     . ./url-script-fragment.tmp
 }
 
@@ -36,11 +47,14 @@ show_one() {
     urlfile=$1
     base=${urlfile%.url}
     url="`cat $urlfile`"
-    if grep "HTTP.*404" "$base.log"
+    if egrep "HTTP.*200|HTTP.*30[0-9]|Content-Length" "$base.log" > /dev/null
     then
+        passes=`expr $passes + 1`
+    else
         echo "BAD $url"
         cat "$base.log"
         echo ""
+        errors=`expr $errors + 1`
     fi
 }
 
@@ -102,4 +116,15 @@ crawl)
 report)
     show_all
     ;;
+*) echo "Usage: linkcheck.sh crawl|report"; exit 1;;
 esac
+
+echo "Test over, $errors failures, $passes successes."
+if test $errors = 0 && test $passes -gt 0
+then
+    echo PASS
+    exit 0
+else
+    echo FAIL
+    exit 1
+fi
