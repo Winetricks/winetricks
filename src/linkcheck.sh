@@ -28,7 +28,6 @@ ftp_microsoft_com=64.4.17.176
 
 w_download() {
     url="`echo $1 | sed -e 's,$ftp_microsoft_com,'$ftp_microsoft_com',;s,$WINETRICKS_SOURCEFORGE,'$WINETRICKS_SOURCEFORGE',;s, ,%20,g'`"
-    echo url is "$url"
     urlkey="`echo "$url" | tr / _`"
     echo "$url" > "$datadir"/"$urlkey.url"
 }
