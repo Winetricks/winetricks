@@ -9162,10 +9162,10 @@ load_utorrent3()
 
     # dang installer exits with status 1 on success
     status=$?
-    #case $status in
-    #0|1) ;;
-    #*) w_die "Note: utorrent installer returned status '$status'.  Aborting." ;;
-    #esac
+    case $status in
+    0|1) ;;
+    *) w_die "Note: utorrent installer returned status '$status'.  Aborting." ;;
+    esac
 
     w_declare_exe "$W_DRIVE_C\\users\\$USERNAME\\Application Data\\uTorrent" "uTorrent.exe"
 }
