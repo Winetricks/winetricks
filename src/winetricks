@@ -22,7 +22,7 @@ WINETRICKS_VERSION=20130624
 #
 # Uses the following non-Posix system tools:
 # - wine is used to execute win32 apps except on cygwin.
-# - cabextract, unzip, and 7z are needed by some verbs.
+# - cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - axel, wget, or curl is needed for downloading.
 # - sha1sum or openssl is needed for verifying downloads.
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog.
@@ -33,7 +33,7 @@ WINETRICKS_VERSION=20130624
 # On ubuntu, the following lines can be used to install all the prereqs:
 #    sudo add-apt-repository ppa:ubuntu-wine/ppa
 #    sudo apt-get update
-#    sudo apt-get install wine1.3 cabextract unzip p7zip wget zenity
+#    sudo apt-get install cabextract p7zip unrar unzip wget wine1.3 zenity
 #
 # See http://winetricks.org for documentation and tutorials, including
 # how to contribute changes to winetricks.
@@ -304,6 +304,17 @@ w_try_cabextract()
     fi
 
     w_try cabextract -q "$@"
+}
+
+w_try_unrar()
+{
+    # Not always installed, but shouldn't be fatal unless it's being used
+    if test ! -x "`which unrar 2>/dev/null`"
+    then
+        w_die "Cannot find unrar.  Please install it (e.g. 'sudo apt-get install unrar' or 'sudo yum install unrar')."
+    fi
+
+    w_try unrar x "$@"
 }
 
 w_try_unzip()
@@ -10304,7 +10315,7 @@ load_avatar_demo()
     fi
 
     cd "$W_TMP"
-    w_try unrar x "$W_CACHE/$W_PACKAGE/Avatar_The_Game_Demo.exe"
+    w_try_unrar "$W_CACHE/$W_PACKAGE/Avatar_The_Game_Demo.exe"
     w_ahk_do "
         SetTitleMatchMode, 2
         SetWinDelay 500
@@ -10779,7 +10790,7 @@ load_cnc_tiberian_sun()
     cd "$W_PROGRAMS_X86_UNIX"
     # FIXME: we need a progress indicator when unpacking large archives
     w_info "Unpacking rar file.  This will take a minute."
-    w_try unrar x "$W_CACHE/$W_PACKAGE/$file1"
+    w_try_unrar "$W_CACHE/$W_PACKAGE/$file1"
 
     w_declare_exe \
         "$W_PROGRAMS_X86_WIN\\EA Games\\Command & Conquer The First Decade\\Command & Conquer(tm) Tiberian Sun(tm)\\SUN" \

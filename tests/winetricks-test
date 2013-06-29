@@ -41,7 +41,7 @@ QUICKCHECK="flash spotify"
 # Check for programs this script (or winetricks) uses.
 # Better to find out they're missing now than in the
 # middle of a two day run.
-for tool in time cabextract unzip 7z
+for tool in time cabextract unrar unzip 7z
 do
     if test "`which $tool`" = ""
     then
