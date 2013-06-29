@@ -12682,22 +12682,23 @@ load_fifa11_demo()
 w_metadata hon games \
     title="Heroes of Newerth" \
     publisher="S2 Games" \
-    year="2010" \
+    year="2013" \
     media="download" \
-    file1="HoNClient-2.2.8.exe" \
+    file1="HoNClient-3.1.2.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Heroes of Newerth/hon.exe"
 
 load_hon()
 {
-    w_download http://dl.heroesofnewerth.com/HoNClient-2.2.8.exe 15eb6fc4b5da5b2316e52d955dbfb0797496789c
+    w_download http://dl.heroesofnewerth.com/HoNClient-3.1.2.exe 49123d092f1fa75b8dddc20c817ab8addd5aee5f
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         run, $file1
-        winwait, Heroes of Newerth
-        u = $W_OPT_UNATTENDED
-        if ( u > 0 ) {
+        winwait, Installer Language
+        if ( w_opt_unattended > 0 ) {
+            send {Enter}
+            winwait, Heroes of Newerth
             controlclick, Button2, Heroes of Newerth
             winwait, Heroes of Newerth, License
             controlclick, Button2, Heroes of Newerth, License
@@ -12712,6 +12713,10 @@ load_hon()
         }
         winwaitclose, Heroes of Newerth, Finish
     "
+    if w_workaround_wine_bug 25919 "disabling mmdevapi to fix sound and avoid crash"
+    then
+        w_override_dlls disabled mmdevapi
+    fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Heroes of Newerth" "hon.exe"
 }
