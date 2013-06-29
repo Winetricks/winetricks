@@ -9757,22 +9757,17 @@ w_metadata 3dmark06 benchmarks \
     title="3D Mark 06" \
     publisher="Futuremark" \
     year="2006" \
-    media="download" \
-    file1="3dmark06_v120_1901.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Futuremark/3DMark06/3DMark06.exe" \
-    wine_showstoppers="9210"
+    media="manual_download" \
+    file1="3DMark06_v121_installer.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Futuremark/3DMark06/3DMark06.exe"
 
 load_3dmark06()
 {
-    # http://www.futuremark.com/benchmarks/3dmark06/download/
-    if ! test -f "$W_CACHE/$W_PACKAGE/3DMark06_v120_1901.exe"
-    then
-        w_download http://www.ocinside.de/download/3dmark06_v120_1901.exe 2e4a52d5b0f7caebd7b4407dfa9e258ac623b5dd
-    fi
+    w_download_manual http://www.futuremark.com/support/downloads 3DMark06_v121_installer.exe a125a4b0a5649f848292f38cf424c672d8142058
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
-        run 3DMark06_v120_1901.exe
+        run $file1
         WinWait ahk_class #32770, Welcome
         if ( w_opt_unattended > 0 ) {
             Send {Enter}
@@ -9787,8 +9782,6 @@ load_3dmark06()
             ControlClick Button2 ; OK
             WinWait ahk_class #32770
             ControlClick Button1 ; OK
-            WinWait, ahk_class #32770, Purchase
-            ControlClick Button4 ; Later
         }
         WinWait, ahk_class #32770, Complete
         if ( w_opt_unattended > 0 ) {
@@ -9800,12 +9793,12 @@ load_3dmark06()
 
     if w_workaround_wine_bug 9210
     then
-        w_warn "You may need to apply the patch in http://bugs.winehq.org/show_bug.cgi?id=9210 to fix pCaps->MaxPointSize, or the benchmark will w_warn that shader model 2.0 is not present, and refuse to run."
+        w_warn "The benchmark may warn that shader model 2.0 is not present.  You can ignore this, but if you want to work around it, see http://bugs.winehq.org/show_bug.cgi?id=9210 for a patch."
     fi
 
-    if w_workaround_wine_bug 22393
+    if w_workaround_wine_bug 0 "Installing shader compiler..."
     then
-        # "Demo" button doesn't work without this
+        # "Demo" button doesn't work without this.  d3dcompiler_43 related.
         w_call d3dx9_28
         w_call d3dx9_36
     fi
