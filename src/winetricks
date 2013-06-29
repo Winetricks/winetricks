@@ -7803,7 +7803,7 @@ w_metadata autohotkey apps \
 load_autohotkey()
 {
     W_BROWSERAGENT=1 \
-    w_download http://www.autohotkey.net/programs/AutoHotkey104805_Install.exe 13e5a9ca6d5b7705f1cd02560c3af4d38b1904fc
+    w_download http://www.autohotkey.com/download/AutoHotkey104805_Install.exe 13e5a9ca6d5b7705f1cd02560c3af4d38b1904fc
     cd "$W_CACHE"/autohotkey
     w_try $WINE AutoHotkey104805_Install.exe $W_UNATTENDED_SLASH_S
 }
