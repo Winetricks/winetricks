@@ -1,13 +1,31 @@
 #!/bin/sh
+# Link checker for winetricks.
+#
+# Copyright (C) 2011,2012,2013 Dan Kegel.
+#
+# This software comes with ABSOLUTELY NO WARRANTY.
+#
+# This is free software, placed under the terms of the
+# GNU Lesser Public License version 2.1, as published by the Free Software
+# Foundation. Please see the file COPYING for details.
+
 datadir="links.d"
+
+WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net
+# ftp.microsoft.com resolves to two different IP addresses, one of which is broken
+ftp_microsoft_com=64.4.17.176
+
+w_download() {
+    url="`echo $1 | sed -e 's,$ftp_microsoft_com,'$ftp_microsoft_com',;s,$WINETRICKS_SOURCEFORGE,'$WINETRICKS_SOURCEFORGE',;s, ,%20,g'`"
+    echo url is "$url"
+    urlkey="`echo "$url" | tr / _`"
+    echo "$url" > "$datadir"/"$urlkey.url"
+}
 
 # Extract list of URLs from winetricks
 extract_all() {
-    for url in ` grep '^ *w_download ' winetricks | sort | grep http | sed 's/^ *//' | awk '{print $2}' | tr -d '"'"'" `
-    do
-        urlkey=`echo $url | tr / _`
-        echo "$url" > "$datadir"/"$urlkey.url"
-    done
+    grep '^ *w_download ' winetricks | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+    . ./url-script-fragment.tmp
 }
 
 # Show results for a given url
