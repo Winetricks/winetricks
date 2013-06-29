@@ -9143,7 +9143,7 @@ w_metadata utorrent3 apps \
     year="2011" \
     media="download" \
     file1="uTorrent.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/uTorrent/uTorrent.exe"
+    installed_exe1="c:/users/$USERNAME/Application Data/uTorrent/uTorrent.exe"
 
 load_utorrent3()
 {
@@ -9152,27 +9152,22 @@ load_utorrent3()
     # 7 May 2011: sha1sum 1793a7b15d905a9fa82f9a969a96fa53abaac04c
     # 14 May: removed checksum, changes too often to track
     # 7 Mar 2012: sha1sum 73ba69b5d0004239a709af5db57c88c9d9c8f7b2
-    w_download http://download.utorrent.com/3.1.2/uTorrent.exe 73ba69b5d0004239a709af5db57c88c9d9c8f7b2
+    # 28 Jun 2013: sha1sum d2408c8a09a2bd9704af39f818ec7ac9e9cca46e
+    w_download http://download-new.utorrent.com/endpoint/utorrent/os/windows/track/stable/ d2408c8a09a2bd9704af39f818ec7ac9e9cca46e uTorrent.exe
 
-    case "$W_OPT_UNATTENDED" in
-    0) _W_opt="" ;;
-    *) _W_opt="/PERFORMINSTALL /NORUN" ;;
-    esac
     cd "$W_CACHE/$W_PACKAGE"
-    $WINE $file1 $_W_opt
+    # If you don't use /PERFORMINSTALL, it just runs uTorrent
+    # FIXME: That's no longer a quiet option, though..
+    $WINE $file1 /PERFORMINSTALL /NORUN
 
     # dang installer exits with status 1 on success
     status=$?
-    case $status in
-    0|1) ;;
-    *) w_die "Note: utorrent installer returned status '$status'.  Aborting." ;;
-    esac
+    #case $status in
+    #0|1) ;;
+    #*) w_die "Note: utorrent installer returned status '$status'.  Aborting." ;;
+    #esac
 
-    # for backwards compatibility
-    rm -f "$W_WINDIR_UNIX"/utorrent.exe
-    w_try cp -f "$W_PROGRAMS_X86_UNIX/uTorrent/uTorrent.exe" "$W_WINDIR_UNIX"/uTorrent.exe
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\uTorrent" "uTorrent.exe"
+    w_declare_exe "$W_DRIVE_C\\users\\$USERNAME\\Application Data\\uTorrent" "uTorrent.exe"
 }
 
 #----------------------------------------------------------------
