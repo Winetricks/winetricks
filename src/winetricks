@@ -9503,7 +9503,7 @@ w_metadata wmp10 dlls \
     title="Windows Media Player 10" \
     publisher="Microsoft" \
     year="2006" \
-    media="manual_download" \
+    media="download" \
     file1="MP10Setup.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/l3codecp.acm"
 
@@ -9516,7 +9516,7 @@ load_wmp10()
     w_call wsh57
 
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyID=b446ae53-3759-40cf-80d5-cde4bbe07999
-    w_download_manual http://www.softpedia.com/get/Multimedia/Audio/Audio-Players/Windows-Media-Player.shtml MP10Setup.exe 69862273a5d9d97b4a2e5a3bd93898d259e86657
+    w_download http://download.microsoft.com/download/1/2/a/12a31f29-2fa9-4f50-b95d-e45ef7013f87/MP10Setup.exe 69862273a5d9d97b4a2e5a3bd93898d259e86657
 
     # Crashes on exit, but otherwise ok; see http://bugs.winehq.org/show_bug.cgi?id=12633
     cd "$W_CACHE"/wmp10
