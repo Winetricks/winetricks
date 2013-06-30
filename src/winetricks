@@ -2006,19 +2006,19 @@ _EOF_
     cp "$W_TMP"/*.reg /tmp/_reg$$-2.reg
 }
 
-w_register_font_substitution()
+w_register_font_replacement()
 {
     _W_alias=$1
     shift
     _W_font=$1
     # Kludge: use _r to avoid \r expansion in w_try
-    cat > "$W_TMP"/_register-font-sub.reg <<_EOF_
+    cat > "$W_TMP"/_register-font-replacements.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes]
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Replacements]
 "$_W_alias"="$_W_font"
 _EOF_
-    w_try_regedit "$W_TMP_WIN"\\_register-font-sub.reg
+    w_try_regedit "$W_TMP_WIN"\\_register-font-replacements.reg
     unset _W_alias _W_font
 }
 
@@ -7340,9 +7340,9 @@ load_fakechinese()
     # Microsoft YaHei --> WenQuanYi Micro Hei
     # SimHei --> WenQuanYi Micro Hei
 
-    w_register_font_substitution "Microsoft JhengHei" "WenQuanYi Micro Hei"
-    w_register_font_substitution "Microsoft YaHei" "WenQuanYi Micro Hei"
-    w_register_font_substitution "SimHei" "WenQuanYi Micro Hei"
+    w_register_font_replacement "Microsoft JhengHei" "WenQuanYi Micro Hei"
+    w_register_font_replacement "Microsoft YaHei" "WenQuanYi Micro Hei"
+    w_register_font_replacement "SimHei" "WenQuanYi Micro Hei"
 }
 
 #----------------------------------------------------------------
@@ -7363,10 +7363,10 @@ load_fakejapanese()
     # MS PMincho --> TakaoPMincho
     # These aliases were taken from what was listed in Ubuntu's fontconfig definitions.
 
-    w_register_font_substitution "MS Gothic" "TakaoGothic"
-    w_register_font_substitution "MS PGothic" "TakaoPGothic"
-    w_register_font_substitution "MS Mincho" "TakaoMincho"
-    w_register_font_substitution "MS PMincho" "TakaoPMincho"
+    w_register_font_replacement "MS Gothic" "TakaoGothic"
+    w_register_font_replacement "MS PGothic" "TakaoPGothic"
+    w_register_font_replacement "MS Mincho" "TakaoMincho"
+    w_register_font_replacement "MS PMincho" "TakaoPMincho"
 }
 
 #----------------------------------------------------------------
@@ -7388,12 +7388,12 @@ load_fakekorean()
     # Dotum --> Baekmuk Dotum
     # DotumChe --> Baekmuk Dotum
 
-    w_register_font_substitution "Gulim" "Baekmuk Gulim"
-    w_register_font_substitution "GulimChe" "Baekmuk Gulim"
-    w_register_font_substitution "Batang" "Baekmuk Batang"
-    w_register_font_substitution "BatangChe" "Baekmuk Batang"
-    w_register_font_substitution "Dotum" "Baekmuk Dotum"
-    w_register_font_substitution "DotumChe" "Baekmuk Dotum"
+    w_register_font_replacement "Gulim" "Baekmuk Gulim"
+    w_register_font_replacement "GulimChe" "Baekmuk Gulim"
+    w_register_font_replacement "Batang" "Baekmuk Batang"
+    w_register_font_replacement "BatangChe" "Baekmuk Batang"
+    w_register_font_replacement "Dotum" "Baekmuk Dotum"
+    w_register_font_replacement "DotumChe" "Baekmuk Dotum"
 }
 
 #----------------------------------------------------------------
@@ -7645,7 +7645,7 @@ load_unifont()
     w_try cp -f "$W_TMP"/unifont-5.1.20080907.ttf "$W_FONTSDIR_UNIX/unifont.ttf"
 
     w_register_font unifont.ttf "Unifont"
-    w_register_font_substitution "Arial Unicode MS" "Unifont"
+    w_register_font_replacement "Arial Unicode MS" "Unifont"
 }
 
 #----------------------------------------------------------------
