@@ -3148,7 +3148,7 @@ winetricks_is_mounted()
 
     # If that fails, read volume name the hard way for each volume
     # Have to use file to return results from implicit subshell
-    rm -f "/tmp/_W_tmp.$USERNAME"
+    rm -f "/tmp/_W_tmp.$LOGNAME"
     winetricks_list_mounts . | while true
     do
         IFS= read _W_tmp
@@ -3160,17 +3160,17 @@ winetricks_is_mounted()
         if test "$1" = "$_W_volname"
         then
             # Volume found!  Want to return from function here, but can't
-            echo "$_W_tmp" > "/tmp/_W_tmp.$USERNAME"
+            echo "$_W_tmp" > "/tmp/_W_tmp.$LOGNAME"
             break
         fi
     done
 
-    if test -f "/tmp/_W_tmp.$USERNAME"
+    if test -f "/tmp/_W_tmp.$LOGNAME"
     then
         # Volume found!  Return from function.
-        _W_dev=`cat "/tmp/_W_tmp.$USERNAME" | sed 's/ .*//'`
-        _W_mountpoint="`cat "/tmp/_W_tmp.$USERNAME" | sed 's/^[^ ]* //'`"
-        rm -f "/tmp/_W_tmp.$USERNAME"
+        _W_dev=`cat "/tmp/_W_tmp.$LOGNAME" | sed 's/ .*//'`
+        _W_mountpoint="`cat "/tmp/_W_tmp.$LOGNAME" | sed 's/^[^ ]* //'`"
+        rm -f "/tmp/_W_tmp.$LOGNAME"
         return 0
     fi
 
@@ -3408,14 +3408,15 @@ winetricks_init()
     if ! test "$USERNAME"
     then
         # Posix only requires LOGNAME to be defined, and sure enough, when
-        # logging in via console and startx in ubuntu, USERNAME is not set!
+        # logging in via console and startx in ubuntu 11.04, USERNAME isn't set!
+        # And even normal logins in Ubuntu 13.04 doesn't set it.
         # I tried using only LOGNAME in this script, but it's so easy to slip
         # and use USERNAME, so define it here if needed.
         USERNAME="$LOGNAME"
     fi
 
     # Ephemeral files for this run
-    WINETRICKS_WORKDIR="/tmp/w.$USERNAME.$$"
+    WINETRICKS_WORKDIR="/tmp/w.$LOGNAME.$$"
     test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
 
     # Registering a verb creates a file in WINETRICKS_METADATA
@@ -8856,7 +8857,7 @@ w_metadata spotify apps \
     year="2011" \
     media="download" \
     file1="SpotifyInstaller.exe" \
-    installed_exe1="c:/users/$USERNAME/Application Data/Spotify/spotify.exe"
+    installed_exe1="c:/users/$LOGNAME/Application Data/Spotify/spotify.exe"
 
 load_spotify()
 {
@@ -8894,9 +8895,10 @@ load_spotify()
     # Kill the background task started if "Allow Spotify to be started from the Web" is specified
     # or should we just do $WINESERVER -k, like fable_tlc does?
     PID=`ps augxw | grep SpotifyWebHelper.exe | grep -v grep | awk '{print $2}'`
+
     kill $PID
 
-    w_declare_exe "c:\\users\\$USERNAME\\Application Data\\Spotify" spotify.exe
+    w_declare_exe "c:\\users\\$LOGNAME\\Application Data\\Spotify" spotify.exe
 }
 
 #----------------------------------------------------------------
@@ -9133,7 +9135,7 @@ w_metadata utorrent3 apps \
     year="2011" \
     media="download" \
     file1="uTorrent.exe" \
-    installed_exe1="c:/users/$USERNAME/Application Data/uTorrent/uTorrent.exe"
+    installed_exe1="c:/users/$LOGNAME/Application Data/uTorrent/uTorrent.exe"
 
 load_utorrent3()
 {
@@ -9157,7 +9159,7 @@ load_utorrent3()
     *) w_die "Note: utorrent installer returned status '$status'.  Aborting." ;;
     esac
 
-    w_declare_exe "$W_DRIVE_C\\users\\$USERNAME\\Application Data\\uTorrent" "uTorrent.exe"
+    w_declare_exe "$W_DRIVE_C\\users\\$LOGNAME\\Application Data\\uTorrent" "uTorrent.exe"
 }
 
 #----------------------------------------------------------------
@@ -10148,7 +10150,7 @@ load_acreedbro()
 
         # And turn off after-effects to fix depth of field problem caused
         # by disabling glsl...
-        cd "$W_DRIVE_C/users/$USERNAME/My Documents"
+        cd "$W_DRIVE_C/users/$LOGNAME/My Documents"
         dir="Ubisoft/Assassin's Creed Brotherhood"
         file="$dir/ACBrotherhood.ini"
         if test -f "$file"
@@ -10554,7 +10556,7 @@ load_bfbc2()
     if w_workaround_wine_bug 22762
     then
         # FIXME: does this directory name change in win7?
-        cd "$W_DRIVE_C/users/$USERNAME/My Documents"
+        cd "$W_DRIVE_C/users/$LOGNAME/My Documents"
         if test -f BFBC2/settings.ini
         then
             mv BFBC2/settings.ini BFBC2/oldsettings.ini
@@ -11906,7 +11908,7 @@ load_diablo2()
         winwait, Choose Installation Size
         send {u}
         send {Enter}
-        send {Raw}$USERNAME
+        send {Raw}$LOGNAME
         send {Tab}{Raw}$W_KEY
         send {Enter}
         winwait, Diablo II - choose install directory
@@ -12229,7 +12231,7 @@ load_dragonage()
     done
 
     # FIXME: does this directory name change in win7?
-    ini="$W_DRIVE_C/users/$USERNAME/My Documents/BioWare/Dragon Age/Settings/DragonAge.ini"
+    ini="$W_DRIVE_C/users/$LOGNAME/My Documents/BioWare/Dragon Age/Settings/DragonAge.ini"
     if ! test -f "$ini"
     then
         w_warn "$ini not found?"
@@ -13015,7 +13017,7 @@ load_gta_vc()
             send {enter}
             winwait, Grand Theft Auto Vice City, Customer Information
             controlclick, edit1
-            send $USERNAME
+            send $LOGNAME
             send {tab}
             send company ; installer won't proceed without something here
             send {enter}
@@ -13280,7 +13282,7 @@ w_metadata imvu games \
     year="2004" \
     media="download" \
     file1="InstallIMVU_465.0_st_c.exe" \
-    installed_exe1="c:/users/$USERNAME/Application Data/IMVUClient/IMVUClient.exe"
+    installed_exe1="c:/users/$LOGNAME/Application Data/IMVUClient/IMVUClient.exe"
 
 load_imvu()
 {
@@ -13313,7 +13315,7 @@ load_imvu()
         winwaitclose
     "
 
-    w_declare_exe "c:\\users\\$USERNAME\\Application Data\\IMVUClient" "IMVUClient.exe"
+    w_declare_exe "c:\\users\\$LOGNAME\\Application Data\\IMVUClient" "IMVUClient.exe"
 }
 
 #----------------------------------------------------------------
