@@ -9084,7 +9084,7 @@ load_steam()
 w_metadata uplay apps \
     title="Uplay" \
     publisher="Ubisoft" \
-    year="2012" \
+    year="2013" \
     media="download" \
     file1="UplayInstaller.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Ubisoft Game Launcher/Uplay.exe"
@@ -9092,7 +9092,8 @@ w_metadata uplay apps \
 load_uplay()
 {
     # 4 June 2013 3.0.1 sha1sum fdb9e736b5b2211fb23b35d30d52deae6f4b32a4
-    w_download http://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe fdb9e736b5b2211fb23b35d30d52deae6f4b32a4
+    # 1 July 2013 3.1.0 sha1sum 21a7f469534dd1463eaaab6b2be2fa9084bceea2
+    w_download http://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe 21a7f469534dd1463eaaab6b2be2fa9084bceea2
     cd "$W_CACHE"/uplay
 
     # NSIS installer
