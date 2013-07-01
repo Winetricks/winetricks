@@ -2644,16 +2644,26 @@ winetricks_is_installed()
         esac
         if test -d "$_W_prefix/dosdevices"
         then
-            _W_file_unix="`WINEPREFIX="$_W_prefix" w_pathconv -u "$_W_file"`"
+          # 'win7 vcrun2005' creates diffrent file than 'winxp vcrun2005'
+          # so let it specify multiple, separated by |
+          _W_IFS="$IFS"
+          IFS='|'
+          for _W_file_ in $_W_file
+          do
+            _W_file_unix="`WINEPREFIX="$_W_prefix" w_pathconv -u "$_W_file_"`"
             if test -f "$_W_file_unix" && ! grep -q "Wine placeholder DLL" "$_W_file_unix"
             then
-                unset _W_file _W_file_unix _W_prefix
+                IFS="$_W_IFS"
+                unset _W_file _W_file_ _W_file_unix _W_prefix _W_IFS
                 return 0  # installed
             fi
+          done
+         IFS="$_W_IFS"
         fi
         ;;
     esac
     unset _W_file _W_prefix  # leak _W_file_unix for caller.  Is this wise?
+    unset _W_IFS _W_file_
     return 1  # not installed
 }
 
@@ -6619,13 +6629,20 @@ load_vcrun2003()
 
 #----------------------------------------------------------------
 
+# Temporary fix for bug 169
+# The | symbol in installed_file1 means "or".
+# (Adding an installed_file2 would mean 'and'.)
+# Perhaps we should test for one if winxp mode, and the other if win7 mode;
+# if that becomes important to get right, we'll do something like
+# "if installed_file1 is just the single char @, call test_installed_$verb"
+# and then define that function here.
 w_metadata vcrun2005 dlls \
     title="Visual C++ 2005 libraries (mfc80,msvcp80,msvcr80)" \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
     file1="vcredist_x86.EXE" \
-    installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.6195_x-ww_150c9e8b/mfc80.dll"
+    installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.6195_x-ww_150c9e8b/mfc80.dll|c:/windows/winsxs/x86_microsoft.vc80.mfc_1fc8b3b9a1e18e3b_8.0.50727.6195_none_deadbeef/mfc80.dll"
 
 load_vcrun2005()
 {
