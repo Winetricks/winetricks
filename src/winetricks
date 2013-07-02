@@ -2015,7 +2015,7 @@ w_register_font_replacement()
     cat > "$W_TMP"/_register-font-replacements.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Replacements]
+[HKEY_CURRENT_USER\Software\Wine\Fonts\Replacements]
 "$_W_alias"="$_W_font"
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\_register-font-replacements.reg
