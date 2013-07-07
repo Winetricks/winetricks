@@ -14372,7 +14372,7 @@ load_myth2_demo()
         }
         winwait, Setup, Complete
         if ( w_opt_unattended > 0 ) {
-            controlclick, Button4   ; Don't run
+            controlclick, Button4   ; Do not run
             controlclick, Button2   ; Finish
         }
         winwaitclose
@@ -14455,9 +14455,9 @@ load_nfsshift_demo()
 w_metadata nfsworld games \
     title="Need For Speed World" \
     publisher="EA" \
-    year="2012" \
+    year="2013" \
     media="download" \
-    file1="setup_1229.exe" \
+    file1="setup_nfsw" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Need For Speed World/GameLauncher.exe"
 
 load_nfsworld()
@@ -14466,19 +14466,25 @@ load_nfsworld()
 
     w_workaround_wine_bug 27047 "Game fails with corrupt executable error in wine-1.3.19 and earlier" 1.3.20,
 
-    # This changes frequently, I'm afraid
+    # This changes frequently, I fear
     # Be careful to update $file1 when you update the url
     # 1.8.40.65   9b1f10af09350e2b3f5ccbc679dbea628e9f432d0 ?
     # 1.8.40.1229 f355fcad20dd6267910bec93a318224718ab5de7
-    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/1229/launcher/weblaunch_1.8.40.1229/setup_1229.exe f355fcad20dd6267910bec93a318224718ab5de7
+    # 4 July 2013 1.8.40.1509 6f76c74ae07d36470931bac74b44548d1a319ce0
+    w_download http://static.cdn.ea.com/blackbox/u/f/NFSWO/1509/launcher/weblaunch_1.8.40.1509/setup_nfsw.exe 6f76c74ae07d36470931bac74b44548d1a319ce0
 
-    if w_workaround_wine_bug 25658 "Installing dotnet20 and ie7 so launcher UI works"
+    # pre-1.6 versions of wine also needed ie7?
+    if w_workaround_wine_bug 25658 "Installing dotnet20 so launcher does not just exit"
     then
-        w_call ie7
         w_call dotnet20
     fi
 
-    if test "$W_OPT_UNATTENDED" && w_workaround_wine_bug 25961
+    if w_workaround_wine_bug 28652 "Installing gdiplus so launcher does not look horrible (and to work around crash bug 33880, too)"
+    then
+        w_call gdiplus
+    fi
+
+    if test "$W_OPT_UNATTENDED" && w_workaround_wine_bug 25961 "Installing vcrun2008 just to make unattended install easier"
     then
         w_call vcrun2008
     fi
@@ -14493,8 +14499,10 @@ load_nfsworld()
         SetWinDelay 500
         SetTitleMatchMode, 2
         run $file1
-        winwait Setup - Need For Speed
+        winwait, Language
         if ( w_opt_unattended > 0 ) {
+            ControlClick TNewButton1        ; Next
+            winwait Setup - Need For Speed
             ControlClick TNewButton1        ; Next
             winwait Setup - Need For Speed, License
             ControlClick TNewRadioButton1   ; Accept
