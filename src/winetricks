@@ -7353,14 +7353,19 @@ load_fakechinese()
 {
     w_call wenquanyi
     # Loads Wenquanyi fonts and sets aliases for Microsoft Chinese fonts
-    # Aliases to set:
-    # Microsoft JhengHei --> WenQuanYi Micro Hei
-    # Microsoft YaHei --> WenQuanYi Micro Hei
-    # SimHei --> WenQuanYi Micro Hei
+    # Reference : http://en.wikipedia.org/wiki/List_of_Microsoft_Windows_fonts
 
     w_register_font_replacement "Microsoft JhengHei" "WenQuanYi Micro Hei"
     w_register_font_replacement "Microsoft YaHei" "WenQuanYi Micro Hei"
     w_register_font_replacement "SimHei" "WenQuanYi Micro Hei"
+    w_register_font_replacement "DFKai-SB" "WenQuanYi Micro Hei"
+    w_register_font_replacement "FangSong" "WenQuanYi Micro Hei"
+    w_register_font_replacement "KaiTi" "WenQuanYi Micro Hei"
+    w_register_font_replacement "PMingLiU" "WenQuanYi Micro Hei"
+    w_register_font_replacement "MingLiU" "WenQuanYi Micro Hei"
+    w_register_font_replacement "NSimSun" "WenQuanYi Micro Hei"
+    w_register_font_replacement "SimKai" "WenQuanYi Micro Hei"
+    w_register_font_replacement "SimSun" "WenQuanYi Micro Hei"
 }
 
 #----------------------------------------------------------------
