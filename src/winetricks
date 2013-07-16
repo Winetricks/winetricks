@@ -1606,6 +1606,7 @@ _EOF_
         currentbuildnumber="6002"
         currentversion="6.0"
         csdversion_hex=dword:00000200
+        $WINE reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
         ;;
     win7)
         csdversion="Service Pack 1"
