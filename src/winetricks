@@ -8298,6 +8298,8 @@ w_metadata ie7 dlls \
 
 load_ie7()
 {
+    echo "This fails in about 1 of 30 runs (see bug 26016), just retry if that happens"
+
     # Unregister Wine IE
     if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"
     then
@@ -8335,21 +8337,27 @@ load_ie7()
     fi
     cd "$W_CACHE"/ie7
 
-    # KLUDGE: if / is writable, having a z: mapping to it causes ie7 to put temporary directories on Z:\
+    # KLUDGE: if / is writable (as on MacOSX?), having a z: mapping to it
+    # causes ie7 to put temporary directories on Z:\
     # so hide it temporarily.  This is not very robust!
-    rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
-    mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
+    if test -w /
+    then
+        rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
+        mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
+    fi
 
-    # FIXME: can't check status, as it always reports failure on wine?
-    if w_workaround_wine_bug 21947
+    if w_workaround_wine_bug 21947 "Working around heap corruption (see also bug 26016)"
     then
         WINEDEBUG=warn+heap $WINE IE7-WindowsXP-x86-enu.exe $quiet
     else
         $WINE IE7-WindowsXP-x86-enu.exe $quiet
     fi
 
-    # END KLUDGE: restore z:, assuming user didn't kill us
-    mv "$WINEPREFIX/dosdevices/z:.bak_wt" "$WINEPREFIX/dosdevices/z:"
+    if test -w /
+    then
+        # END KLUDGE: restore z:, assuming user didn't kill us
+        mv "$WINEPREFIX/dosdevices/z:.bak_wt" "$WINEPREFIX/dosdevices/z:"
+    fi
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
     # FIXME: whittle down this list
