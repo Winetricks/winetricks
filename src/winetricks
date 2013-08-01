@@ -26,8 +26,8 @@ WINETRICKS_VERSION=20130707
 # - axel, wget, or curl is needed for downloading.
 # - sha1sum or openssl is needed for verifying downloads.
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog.
-# - xdg-open (if present) is used to open download pages for the
-#   user when downloads cannot be fully automated.
+# - xdg-open (if present) or open (for Mac OSX) is used to open download pages 
+#   for the user when downloads cannot be fully automated.
 # - sudo is used to mount .iso images if the user cached them with -k option.
 # - perl is used to munge steam config files
 # On ubuntu, the following lines can be used to install all the prereqs:
@@ -642,6 +642,22 @@ w_download_to()
     fi
 }
 
+# Open a folder for the user in the specified directory
+# Usage: w_open_folder directory
+w_open_folder()
+{
+    for _W_cmd in xdg-open open cygstart true
+    do
+        _W_cmdpath=`which $_W_cmd`
+        if test -n "$_W_cmdpath"
+        then
+            break
+        fi
+    done
+    $_W_cmd "$1" &
+    unset _W_cmd _W_cmdpath
+}
+
 # Open a web browser for the user to the give page
 # Usage: w_open_webpage url
 w_open_webpage()
@@ -756,12 +772,7 @@ w_download_manual_to()
     if ! test -f "$W_CACHE/$_W_packagename/$_W_file"
     then
         mkdir -p "$W_CACHE/$_W_packagename"
-        case "$OS" in
-        "Windows_NT")
-            cygstart "$W_CACHE/$_W_packagename" ;;
-        *)
-            xdg-open "$W_CACHE/$_W_packagename" ;;
-        esac
+        w_open_folder "$W_CACHE/$_W_packagename"
         w_open_webpage "$_W_url"
         sleep 3   # give some time for browser to open
         w_die "$_W_dlmsg"
@@ -18015,7 +18026,7 @@ execute_command()
     hidebroken) W_OPT_SHOWBROKEN=0 ;;
     prefix=*) winetricks_set_wineprefix "$arg" ;;
     annihilate) winetricks_annihilate_wineprefix ;;
-    folder) xdg-open "$WINEPREFIX" ;;
+    folder) w_open_folder "$WINEPREFIX" ;;
     winecfg) $WINE winecfg ;;
     regedit) $WINE regedit ;;
     taskmgr) $WINE taskmgr & ;;
