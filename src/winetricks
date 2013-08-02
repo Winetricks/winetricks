@@ -23,7 +23,7 @@ WINETRICKS_VERSION=20130707
 # Uses the following non-Posix system tools:
 # - wine is used to execute win32 apps except on cygwin.
 # - cabextract, unrar, unzip, and 7z are needed by some verbs.
-# - axel, wget, or curl is needed for downloading.
+# - aria2c, wget, or curl is needed for downloading.
 # - sha1sum or openssl is needed for verifying downloads.
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog.
 # - xdg-open (if present) or open (for Mac OSX) is used to open download pages 
@@ -581,10 +581,10 @@ w_download_to()
         *) _W_agent= ;;
         esac
 
-        if [ -x "`which axel 2>/dev/null`" ]
+        if [ -x "`which aria2c 2>/dev/null`" ]
         then
-            # Basic axel support.
-            axel -o "$_W_file" "$_W_url"
+            # Basic aria2c support.
+            aria2c -c -o "$_W_file" "$_W_url"
         elif [ -x "`which wget 2>/dev/null`" ]
         then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
@@ -610,7 +610,7 @@ w_download_to()
                ${_W_agent:+--user-agent "$_W_agent"} \
                "$_W_url"
         else
-            w_die "Please install wget (or, if that's not available, curl)"
+            w_die "Please install wget or aria2c (or, if those aren't available, curl)"
         fi
         if test $? != 0
         then
