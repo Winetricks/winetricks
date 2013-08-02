@@ -6715,18 +6715,22 @@ load_vcrun2010()
 
     case "$W_ARCH" in
     win64)
-        # See http://bugs.winehq.org/show_bug.cgi?id=30713
         # Also install the 64 bit version
         # http://www.microsoft.com/en-us/download/details.aspx?id=13523
         w_download http://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe 027d0c2749ec5eb21b031f46aee14c905206f482
-        w_try_cabextract --directory="$W_TMP" vcredist_x64.exe -F '*.cab'
-        w_try_cabextract --directory="$W_TMP" "$W_TMP"/vc_red.cab
-        cp "$W_TMP"/F_CENTRAL_mfc100_x64 "$W_SYSTEM64_DLLS"/mfc100.dll
-        cp "$W_TMP"/F_CENTRAL_mfc100u_x64 "$W_SYSTEM64_DLLS"/mfc100u.dll
-        cp "$W_TMP"/F_CENTRAL_msvcr100_x64 "$W_SYSTEM64_DLLS"/msvcr100.dll
-        cp "$W_TMP"/F_CENTRAL_msvcp100_x64 "$W_SYSTEM64_DLLS"/msvcp100.dll
-        cp "$W_TMP"/F_CENTRAL_vcomp100_x64 "$W_SYSTEM64_DLLS"/vcomp100.dll
-        cp "$W_TMP"/F_CENTRAL_atl100_x64 "$W_SYSTEM64_DLLS"/atl100.dll
+        if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"
+        then
+            w_try_cabextract --directory="$W_TMP" vcredist_x64.exe -F '*.cab'
+            w_try_cabextract --directory="$W_TMP" "$W_TMP"/vc_red.cab
+            cp "$W_TMP"/F_CENTRAL_mfc100_x64 "$W_SYSTEM64_DLLS"/mfc100.dll
+            cp "$W_TMP"/F_CENTRAL_mfc100u_x64 "$W_SYSTEM64_DLLS"/mfc100u.dll
+            cp "$W_TMP"/F_CENTRAL_msvcr100_x64 "$W_SYSTEM64_DLLS"/msvcr100.dll
+            cp "$W_TMP"/F_CENTRAL_msvcp100_x64 "$W_SYSTEM64_DLLS"/msvcp100.dll
+            cp "$W_TMP"/F_CENTRAL_vcomp100_x64 "$W_SYSTEM64_DLLS"/vcomp100.dll
+            cp "$W_TMP"/F_CENTRAL_atl100_x64 "$W_SYSTEM64_DLLS"/atl100.dll
+        else
+            w_try $WINE vcredist_x64.exe $W_UNATTENDED_SLASH_Q
+        fi
         ;;
     esac
 }
