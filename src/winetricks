@@ -8322,7 +8322,7 @@ load_ie7()
     fi
 
     # Change the override to the native so we are sure we use and register them
-    w_override_dlls native,builtin iexplore.exe itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon xmllite
+    w_override_dlls native,builtin iexplore.exe itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon wininet xmllite
 
     # Bundled updspapi cannot work on wine
     w_override_dlls builtin updspapi
@@ -8425,13 +8425,13 @@ load_ie8()
     w_call msls31
 
     # Change the override to the native so we are sure we use and register them
-    w_override_dlls native,builtin iexplore.exe itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon xmllite
+    w_override_dlls native,builtin iexplore.exe itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
 
     # Bundled updspapi cannot work on wine
     w_override_dlls builtin updspapi
 
     # Remove the fake dlls from the existing WINEPREFIX
-    for dll in browseui.dll inseng.dll itircl itss jscript msctf mshtml  shdoclc shdocvw shlwapi urlmon
+    for dll in browseui.dll inseng.dll itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon
     do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
         mv "$W_SYSTEM32_DLLS"/$dll.dll "$W_SYSTEM32_DLLS"/$dll.dll.bak
