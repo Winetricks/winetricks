@@ -17461,6 +17461,13 @@ load_sandbox()
             rm -f "$WINEPREFIX/drive_c/users/$USER/$dir" > /dev/null 2>&1
             mkdir -p "$WINEPREFIX/drive_c/users/$USER/$dir"
         done
+    elif test -d "$WINEPREFIX/drive_c/users/$USER/Meine Dokumente"
+    then
+        for dir in Desktop "Meine Dokumente" "Eigene Musik" "Eigene Bilder" "Eigene Videos"
+        do
+            rm -f "$WINEPREFIX/drive_c/users/$USER/$dir" > /dev/null 2>&1
+            mkdir -p "$WINEPREFIX/drive_c/users/$USER/$dir"
+        done
     else
         w_die "don't know name of My Documents folder, can't sandbox"
     fi
