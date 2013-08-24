@@ -3954,6 +3954,24 @@ load_atmlib()
 
 #----------------------------------------------------------------
 
+w_metadata avifil32 dlls \
+    title="MS avifil32" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="../xpsp2/WindowsXP-KB835935-SP2-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/avifil32.dll"
+
+load_avifil32()
+{
+    helper_xpsp2 i386/avifil32.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/avifil32.dl_
+
+    w_override_dlls native avifil32
+}
+
+#----------------------------------------------------------------
+
 w_metadata cabinet dlls \
     title="Microsoft cabinet.dll" \
     publisher="Microsoft" \
