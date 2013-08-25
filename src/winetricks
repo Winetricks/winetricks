@@ -6003,6 +6003,25 @@ load_msxml6()
 
 #----------------------------------------------------------------
 
+w_metadata nuget dlls \
+    title="Package manager" \
+    publisher="outercurve.com" \
+    year="2013" \
+    media="download" \
+    file1="nget.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/nuget.exe" \
+    homepage="http://nuget.org"
+
+load_nuget()
+{
+    w_call dotnet40
+    w_download http://nuget.org/nuget.exe 0d63fb2afec46d9963aec4aab90ba1951203c3ff
+    w_try cp "$W_CACHE/$W_PACKAGE"/nuget.exe "$W_SYSTEM32_DLLS"
+    w_warn "To run nuget, use the commandline '$WINE nuget'."
+}
+
+#----------------------------------------------------------------
+
 w_metadata ogg dlls \
     title="OpenCodecs 0.85: flac, speex, theora, vorbis, WebM" \
     publisher="xiph.org" \
