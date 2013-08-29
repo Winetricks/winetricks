@@ -8955,6 +8955,12 @@ load_python26()
 {
     w_download http://www.python.org/ftp/python/2.6.2/python-2.6.2.msi 2d1503b0e8b7e4c72a276d4d9027cf4856b208b8
     w_download $WINETRICKS_SOURCEFORGE/project/pywin32/pywin32/Build%20214/pywin32-214.win32-py2.6.exe eca58f29b810d8e3e7951277ebb3e35ac35794a3
+
+    if [ "$WINETRICKS_WINE_VERSION" = "wine-1.4.1" ]
+    then
+        w_die "This installer is broken under $WINETRICKS_WINE_VERSION. Please upgrade Wine. See https://code.google.com/p/winetricks/issues/detail?id=347 for more info."
+    fi
+
     cd "$W_CACHE"/python26
     w_try $WINE msiexec /i python-2.6.2.msi ALLUSERS=1 $W_UNATTENDED_SLASH_Q
 
