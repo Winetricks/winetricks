@@ -136,8 +136,10 @@ WINETRICKS_VERSION=20130707
 #
 #--------------------------------------------------------------------
 
-# FIXME: maybe obey XDG_DATA_HOME
-W_PREFIXES_ROOT="${WINE_PREFIXES:-$HOME/.local/share/wineprefixes}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.config}"
+
+W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
 
 # ftp.microsoft.com resolves to two different IP addresses, one of which is broken
 ftp_microsoft_com=64.4.17.176
@@ -1061,7 +1063,7 @@ fi
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam" "steam.exe -login $W_STEAM_ID $W_STEAM_PASSWORD -applaunch $_W_steamid"
 
     myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine cmd /c 'C:\\\\\\\\Run-$W_PACKAGE.bat'"
-    mymenu="$HOME/.local/share/applications/wine/Programs/Steam/$_W_steamtitle.desktop"
+    mymenu="$XDG_DATA_HOME/applications/wine/Programs/Steam/$_W_steamtitle.desktop"
     if test -f "$mymenu" && w_workaround_wine_bug 26487 "Fixing system menu"
     then
         sed -i "s,Exec=.*,$myexec," "$mymenu"
@@ -3473,15 +3475,15 @@ winetricks_annihilate_wineprefix()
     rm -rf "$WINEPREFIX"
 
     # Also remove menu items.
-    find ~/.local/share/applications/wine -type f -name '*.desktop' -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
+    find $XDG_DATA_HOME/applications/wine -type f -name '*.desktop' -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
 
     # Also remove desktop items.
     # Desktop might be synonym for home directory, so only go one level
     # deep to avoid extreme slowdown if user has lots of files
     (
-    if ! test "$XDG_DESKTOP_DIR" && test -f ~/.config/user-dirs.dirs
+    if ! test "$XDG_DESKTOP_DIR" && test -f $XDG_CONFIG_HOME/user-dirs.dirs
     then
-        . ~/.config/user-dirs.dirs
+        . $XDG_CONFIG_HOME/user-dirs.dirs
     fi
     find "$XDG_DESKTOP_DIR" -maxdepth 1 -type f -name '*.desktop' -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
     )
@@ -3571,11 +3573,10 @@ winetricks_init()
         WINETRICKS_POST="${WINETRICKS_POST:-$WINETRICKS_DIR/postinstall}"
     else
         W_CACHE="${W_CACHE:-$XDG_CACHE_HOME/winetricks}"
-        # FIXME: maybe obey XDG_DATA_HOME
-        WINETRICKS_POST="${WINETRICKS_POST:-$HOME/.local/share/winetricks/postinstall}"
+        WINETRICKS_POST="${WINETRICKS_POST:-$XDG_DATA_HOME/winetricks/postinstall}"
     fi
     test -d "$W_CACHE" || mkdir -p "$W_CACHE"
-    WINETRICKS_AUTH="${WINETRICKS_AUTH:-$HOME/.local/share/winetricks/auth}"
+    WINETRICKS_AUTH="${WINETRICKS_AUTH:-$XDG_DATA_HOME/winetricks/auth}"
 
     # System-specific variables
     case "$OS" in
@@ -10370,7 +10371,7 @@ load_acreedbro()
             then
                 sed -i "s,Exec=.*,$myexec," "$mymenu"
             fi
-            mymenu="$HOME/.local/share/applications/wine/Programs/Ubisoft/Assassin's Creed Brotherhood/Assassin's Creed Brotherhood.desktop"
+            mymenu="$XDG_DATA_HOME/applications/wine/Programs/Ubisoft/Assassin's Creed Brotherhood/Assassin's Creed Brotherhood.desktop"
             if test -f "$mymenu"
             then
                 sed -i "s,Exec=.*,$myexec," "$mymenu"
@@ -13209,7 +13210,7 @@ load_gta_vc()
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Rockstar Games\\Grand Theft Auto Vice City" gta-vc.exe
 
     myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine cmd /c 'C:\\\\\\\\Run-gta_vc.bat'"
-    mymenu="$HOME/.local/share/applications/wine/Programs/Rockstar Games/Grand Theft Auto Vice City/Play GTA Vice City.desktop"
+    mymenu="$XDG_DATA_HOME/applications/wine/Programs/Rockstar Games/Grand Theft Auto Vice City/Play GTA Vice City.desktop"
     if test -f "$mymenu" && w_workaround_wine_bug 26304 "Fixing system menu"
     then
         # this is a hack, hopefully the wine bug will be fixed soon
@@ -14175,7 +14176,7 @@ load_masseffect2_demo()
         if w_workaround_wine_bug 6971 "Pointing menu and icon at wine-hotfix-6971 so mouse will work, assuming your X supports XInput2"
         then
             w_declare_exe "$W_PROGRAMS_X86_WIN\\Mass Effect 2 Demo\\Binaries" "MassEffect2.EXE"
-            myexec="Exec=env WINEPREFIX=\"$HOME/.local/share/wineprefixes/masseffect2_demo\" wine-hotfix-6971 cmd /c 'C:\\\\\\Run-masseffect2_demo.bat'"
+            myexec="Exec=env WINEPREFIX=\"$XDG_DATA_HOME/wineprefixes/masseffect2_demo\" wine-hotfix-6971 cmd /c 'C:\\\\\\Run-masseffect2_demo.bat'"
 
             mymenu="$HOME/Desktop/Mass Effect 2 Demo.desktop"
             me2tries=0
@@ -14195,7 +14196,7 @@ load_masseffect2_demo()
                 # this is a hack, hopefully the wine bug will be fixed soon
                 sed -i "s,Exec=.*,$myexec," "$mymenu"
             fi
-            mymenu="$HOME/.local/share/applications/wine/Programs/Mass Effect 2 Demo/Mass Effect 2 Demo.desktop"
+            mymenu="$XDG_DATA_HOME/applications/wine/Programs/Mass Effect 2 Demo/Mass Effect 2 Demo.desktop"
             if test -f "$mymenu"
             then
                 # this is a hack, hopefully the wine bug will be fixed soon
@@ -15156,7 +15157,7 @@ load_rayman2_demo()
         # this is a hack, hopefully the wine bug will be fixed soon
         sed -i "s,Exec=.*,$myexec," "$mymenu"
     fi
-    mymenu="$HOME/.local/share/applications/wine/Programs/Ubi Soft Games/Rayman 2 Demo/1 To Play Rayman 2 Demo.desktop"
+    mymenu="$XDG_DATA_HOME/applications/wine/Programs/Ubi Soft Games/Rayman 2 Demo/1 To Play Rayman 2 Demo.desktop"
     if test -f "$mymenu" && w_workaround_wine_bug 26304 "Fixing system menu"
     then
         # this is a hack, hopefully the wine bug will be fixed soon
@@ -15423,7 +15424,7 @@ load_simsmed()
     if w_workaround_wine_bug 25535 ".net 4 doesn't install on Wine, fixing menu to run game directly"
     then
         myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine cmd /c 'C:\\\\\\\\Run-$W_PACKAGE.bat'"
-        mymenu="$HOME/.local/share/applications/wine/Programs/Electronic Arts/The Sims Medieval/The Sims™ Medieval.desktop"
+        mymenu="$XDG_DATA_HOME/applications/wine/Programs/Electronic Arts/The Sims Medieval/The Sims™ Medieval.desktop"
         if test -f "$mymenu"
         then
             sed -i "s,Exec=.*,$myexec," "$mymenu"
