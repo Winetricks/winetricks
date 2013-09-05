@@ -17481,48 +17481,32 @@ load_nt40()
 #----------------------------------------------------------------
 
 w_metadata sandbox settings \
-    title="Sandbox the wineprefix - remove links to HOME"
+    title="Sandbox the wineprefix - remove links to \$HOME"
 
 load_sandbox()
 {
     w_skip_windows sandbox && return
 
     # Unmap drive Z
-    # Might want to unpack gecko first, since Wine won't be able to get to /usr/lib/wine after this
     rm -f "$WINEPREFIX/dosdevices/z:"
 
-    if test -d "$WINEPREFIX/drive_c/users/$USER/Documents"
-    then
-        for dir in Desktop Documents Music Pictures Videos
-        do
-            rm -f "$WINEPREFIX/drive_c/users/$USER/$dir" > /dev/null 2>&1
-            mkdir -p "$WINEPREFIX/drive_c/users/$USER/$dir"
-        done
-    elif test -d "$WINEPREFIX/drive_c/users/$USER/My Documents"
-    then
-        for dir in Desktop "My Documents" "My Music" "My Pictures" "My Videos"
-        do
-            rm -f "$WINEPREFIX/drive_c/users/$USER/$dir" > /dev/null 2>&1
-            mkdir -p "$WINEPREFIX/drive_c/users/$USER/$dir"
-        done
-    elif test -d "$WINEPREFIX/drive_c/users/$USER/Meine Dokumente"
-    then
-        for dir in Desktop "Meine Dokumente" "Eigene Musik" "Eigene Bilder" "Eigene Videos"
-        do
-            rm -f "$WINEPREFIX/drive_c/users/$USER/$dir" > /dev/null 2>&1
-            mkdir -p "$WINEPREFIX/drive_c/users/$USER/$dir"
-        done
-    else
-        w_die "don't know name of My Documents folder, can't sandbox"
-    fi
-
+    pushd "$WINEPREFIX/drive_c/users/$USER"
+    for x in *
+    do
+        if test -h "$x" && test -d "$x"
+        then
+            rm -f "$x"
+            mkdir -p "$x"
+        fi
+    done
+    popd
 
     # Disable unixfs
-    # Unfortunately, when you run with a different version of wine, wine will recreate this key.
+    # Unfortunately, when you run with a different version of Wine, Wine will recreate this key.
     # See http://bugs.winehq.org/show_bug.cgi?id=22450
     $WINE regedit /d 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\Namespace\{9D20AAE8-0625-44B0-9CA7-71889C2254D9}'
 
-    # Disable recreation of the above key - or any updating of the regisry - when running with new version of wine.
+    # Disable recreation of the above key - or any updating of the registry - when running with a newer version of Wine.
     echo disable > "$WINEPREFIX/.update-timestamp"
 }
 
