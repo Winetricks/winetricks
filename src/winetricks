@@ -17649,34 +17649,6 @@ load_vista()
 
 #----------------------------------------------------------------
 
-w_metadata volnum settings \
-    title="Rename drive_c to harddiskvolume0 (needed by some installers)"
-
-load_volnum() {
-    w_skip_windows "volnum" && return
-
-    # Recent Microsoft installers are often based on "windows package manager", see
-    # http://support.microsoft.com/kb/262841 and
-    # http://www.microsoft.com/technet/prodtechnol/windowsserver2003/deployment/winupdte.mspx
-    # These installers check the drive name, and if it doesn't start with 'harddisk',
-    # they complain "Unable to find a volume for file extraction", see
-    # http://bugs.winehq.org/show_bug.cgi?id=5351
-    # You may be able to work around this by using the installer's /x or /extract switch,
-    # but renaming drive_c to "harddiskvolume0" lets you just run the installer as normal.
-
-    if test ! -d "$WINEPREFIX"/harddiskvolume0/
-    then
-        ln -s drive_c "$WINEPREFIX"/harddiskvolume0
-        rm "$WINEPREFIX"/dosdevices/c:
-        ln -s ../harddiskvolume0 "$WINEPREFIX"/dosdevices/c:
-        echo "Renamed drive_c to harddiskvolume0"
-    else
-        echo "drive_c already named harddiskvolume0"
-    fi
-}
-
-#----------------------------------------------------------------
-
 w_metadata vsm=hardware settings \
     title="Set VertexShaderMode to hardware"
 
