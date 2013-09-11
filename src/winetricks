@@ -5109,6 +5109,11 @@ w_metadata dotnet40 dlls \
 
 load_dotnet40()
 {
+    if [ $W_ARCH = win64 ]
+    then
+        w_die "This package does not work on a 64-bit installation"
+    fi
+
     case "$OS" in
         "Windows_NT") ;;
         *) w_warn "dotnet40 does not yet fully work or install on wine.  Caveat emptor." ;;
