@@ -1619,6 +1619,13 @@ _EOF_
         currentversion="5.1"
         csdversion_hex=dword:00000300
         ;;
+    win2k3)
+        csdversion="Service Pack 2"
+        currentbuildnumber="3790"
+        currentversion="5.2"
+        csdversion_hex=dword:00000200
+        $WINE reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
+        ;;
     vista)
         csdversion="Service Pack 2"
         currentbuildnumber="6002"
@@ -17654,6 +17661,16 @@ w_metadata win2k settings \
 load_win2k()
 {
     w_set_winver win2k
+}
+
+#----------------------------------------------------------------
+
+w_metadata win2k3 settings \
+    title="Set windows version to Windows 2003"
+
+load_win2k3()
+{
+    w_set_winver win2k3
 }
 
 #----------------------------------------------------------------
