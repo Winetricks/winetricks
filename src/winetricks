@@ -5171,6 +5171,55 @@ load_dotnet40()
     fi
 }
 
+#----------------------------------------------------------------
+
+w_metadata dotnet45 dlls \
+    title="MS .NET 4.5" \
+    publisher="Microsoft" \
+    year="2012" \
+    media="download" \
+    file1="dotnetfx45_full_x86_x64.exe" #\
+    #installed_file1="c:/windows/Microsoft.NET/Framework/v4.0.30319/ngen.exe"
+
+load_dotnet45()
+{
+    if [ $W_ARCH = win64 ]
+    then
+        w_warn "This package may not work on a 64-bit installation"
+    fi
+
+    # http://www.microsoft.com/download/en/details.aspx?id=17718
+    w_download http://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe b2ff712ca0947040ca0b8e9bd7436a3c3524bb5d
+
+    w_call remove_mono
+
+    # Remove Mono registry entry:
+    $WINE reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
+
+    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
+
+    # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
+    w_call dotnet35
+    w_call dotnet40
+    w_set_winver win7
+
+    cd "$W_CACHE/$W_PACKAGE"
+
+    WINEDLLOVERRIDES=fusion=b $WINE dotnetfx45_full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+    status=$?
+
+    case $status in
+        0) ;;
+        105) echo "exit status $status - normal, user selected 'restart now'" ;;
+        194) echo "exit status $status - normal, user selected 'restart later'" ;;
+        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
+
+    w_override_dlls native mscoree
+
+    w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
+    w_set_winver win2k3
+}
 
 #----------------------------------------------------------------
 
