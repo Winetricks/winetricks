@@ -61,6 +61,7 @@ WINETRICKS_VERSION=20130919
 #   Copyright (C) 2011 Łukasz Wojniłowicz
 #   Copyright (C) 2011 Matthew Bozarth
 #   Copyright (C) 2013 Andrey Gusev <andrey.goosev!gmail.com>
+#   Copyright (C) 2013 Hillwood Yang
 #
 # License
 #   This program is free software; you can redistribute it and/or
@@ -15022,6 +15023,64 @@ load_puzzleagent_demo()
     fi
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Telltale Games\\Puzzle Agent\\Puzzle Agent" "Grickle101.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata qq2012 apps \
+ title="QQ 2012 (Chinese chat app)" \
+ publisher="Tencent" \
+ year="2012" \
+ media="download" \
+ file1="QQ2012.exe" \
+ installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQ.exe" \
+ homepage="http://www.qq.com" \
+ unattended="no"
+
+load_qq2012()
+{
+    w_download http://dl_dir.qq.com/qqfile/qq/QQ2012/QQ2012.exe ea20cd09390588ea0943e0d0f9af56544a4cac4f
+    cd "$W_CACHE/$W_PACKAGE"
+    if w_workaround_wine_bug 29636 "Installing native riched20 to work around crash bug"
+    then
+        w_call riched20
+    fi
+    if w_workaround_wine_bug 34567 "Installing vcrun2005 to avoid installer crash"
+    then
+        w_call vcrun2005
+    fi
+    # Make sure chinese fonts are available
+    w_call cjkfonts
+    w_try "$WINE" "$file1"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQ\\Bin" QQ.exe
+}
+
+#----------------------------------------------------------------
+
+w_metadata qqintl apps \
+    title="QQ International Instant Messenger 2.0" \
+    publisher="Tencent" \
+    year="2013" \
+    media="download" \
+    file1="QQIntl2.0.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQIntl/Bin/QQ.exe" \
+    homepage="http://www.imqq.com" \
+    unattended="no"
+
+load_qqintl()
+{
+    w_download http://proxy.imqq.com/QQIntl2.0.exe e9a335b265544a77ae470d6f3a3fca0de25a6cb5
+    cd "$W_CACHE/$W_PACKAGE"
+    if w_workaround_wine_bug 33086 "Installing native riched20 to allow typing in username"
+    then
+        w_call riched20
+    fi
+    if w_workaround_wine_bug 34566 "Installing native ctf to work around crash"
+    then
+        w_call msctf
+    fi
+    w_try "$WINE" "$file1"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQIntl\\Bin" QQ.exe
 }
 
 #----------------------------------------------------------------
