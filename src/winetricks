@@ -15079,6 +15079,10 @@ load_qqintl()
     then
         w_call msctf
     fi
+    if w_workaround_wine_bug 30083 "Installing native ie7 to avoid crash in settings and other dialogs"
+    then
+        w_call ie7
+    fi
     w_try "$WINE" "$file1"
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQIntl\\Bin" QQ.exe
 }
