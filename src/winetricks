@@ -9508,6 +9508,46 @@ load_vc2008express()
 
 #----------------------------------------------------------------
 
+w_metadata vc2010express apps \
+    title="MS Visual C++ 2010 Express" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="VS2010Express1.iso" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Visual Studio 10.0/Common7/IDE/VCExpress.exe"
+
+load_vc2010express()
+{
+    if w_workaround_wine_bug 32654 "Installing windows codecs to work around startup crash"
+    then
+        w_call windowscodecs
+    fi
+    if w_workaround_wine_bug 32280 "Installing dotnet40 to avoid fatal 'Unknown Error' dialog"
+    then
+        # Do this before installing to also work around an install problem before wine1.7.3
+        w_call dotnet40
+    fi
+
+    w_download http://download.microsoft.com/download/1/E/5/1E5F1C0A-0D5B-426A-A603-1798B951DDAE/VS2010Express1.iso adef5e361a1f64374f520b9a2d03c54ee43721c6
+
+    # Unpack ISO
+    cd "$W_TMP"
+    w_try_7z x "$W_CACHE"/vc2010express/VS2010Express1.iso
+    cd VCExpress
+
+    # dotnet40 leaves winver at win2k, which causes vc2010 to abort on
+    # start because it looks for c:\users\$LOGNAME\Application Data
+    w_set_winver winxp
+
+    w_warn "Be sure to uncheck all optional components, or install may fail."
+    # And that's why we don't do $W_UNATTENDED_SLASH_Q.
+    w_try $WINE setup.exe
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Visual Studio 10.0\\Common7\\IDE" "VCExpress.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata vlc apps \
     title="VLC media player" \
     publisher="videolan.org" \
