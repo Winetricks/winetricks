@@ -8017,16 +8017,16 @@ load_kobo()
 w_metadata cmake apps \
     title="CMake 2.8" \
     publisher="Kitware" \
-    year="2011" \
+    year="2013" \
     media="download" \
-    file1="cmake-2.8.6-win32-x86.exe" \
+    file1="cmake-2.8.11.2-win32-x86.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/CMake 2.8/bin/cmake-gui.exe"
 
 load_cmake()
 {
-    w_download http://www.cmake.org/files/v2.8/cmake-2.8.6-win32-x86.exe 47172b78e5d5f99cf5dc623db309781234153d56
+    w_download http://www.cmake.org/files/v2.8/cmake-2.8.11.2-win32-x86.exe d79af5715c0ad48d78bb731cce93b5ad89b16512
     cd "$W_CACHE"/cmake
-    w_try "$WINE" cmake-2.8.6-win32-x86.exe $W_UNATTENDED_SLASH_S
+    w_try "$WINE" cmake-2.8.11.2-win32-x86.exe $W_UNATTENDED_SLASH_S
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\CMake 2.8\\bin" "cmake-gui.exe"
 }
