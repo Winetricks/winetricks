@@ -9522,9 +9522,9 @@ load_vc2010express()
     then
         w_call windowscodecs
     fi
-    if w_workaround_wine_bug 32280 "Installing dotnet40 to avoid fatal 'Unknown Error' dialog"
+    if w_workaround_wine_bug 32280 "Replacing mono with dotnet40 to avoid fatal 'Unknown Error'"
     then
-        # Do this before installing to also work around an install problem before wine1.7.3
+        # "w_call remove_mono" might suffice
         w_call dotnet40
     fi
 
@@ -9539,9 +9539,17 @@ load_vc2010express()
     # start because it looks for c:\users\$LOGNAME\Application Data
     w_set_winver winxp
 
-    w_warn "Be sure to uncheck all optional components, or install may fail."
-    # And that's why we don't do $W_UNATTENDED_SLASH_Q.
-    w_try $WINE setup.exe
+    if w_workaround_wine_bug 12501 "Installing mspatcha to work around bug in SQL Server install"
+    then
+        w_call mspatcha
+    fi
+
+    if w_workaround_wine_bug 34627 "Installing Visual C++ 2005 managed runtime to work around bug in SQL Server install"
+    then
+        w_call vcrun2005
+    fi
+
+    w_try $WINE setup.exe $W_UNATTENDED_SLASH_Q
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Visual Studio 10.0\\Common7\\IDE" "VCExpress.exe"
 }
