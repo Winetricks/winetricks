@@ -5971,6 +5971,24 @@ load_msmask()
     w_try_regsvr msmask32.ocx
 }
 
+ #----------------------------------------------------------------
+
+w_metadata msftedit dlls \
+    title="Microsoft RichEdit Control" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msftedit.dll"
+
+load_msftedit()
+{
+    helper_win7sp1 x86_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_d7d862f19573a5ff/msftedit.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_d7d862f19573a5ff/msftedit.dll" "$W_SYSTEM32_DLLS/msftedit.dll"
+
+    w_override_dlls native,builtin mstfedit
+}
+
 #----------------------------------------------------------------
 
 w_metadata msxml3 dlls \
