@@ -8219,6 +8219,25 @@ load_dxdiag()
 
 #----------------------------------------------------------------
 
+w_metadata emu8086 apps \
+    title="emu8086" \
+    publisher="emu8086.com" \
+    year="2013" \
+    media="download" \
+    file1="emu8086.zip" \
+    installed_exe1="c:/emu8086/emu8086.exe"
+
+load_emu8086()
+{
+    w_download http://emu8086.com/emu8086.zip fa3b2451cbc46fd2e3aa2670fa4d81ae8e75c7db
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try_unzip $file1 -d "$W_TMP"
+    w_try "$WINE" "$W_TMP/Setup.exe" $W_UNATTENDED_SLASH_SILENT
+    w_declare_exe "c:\\emu8086" "emu8086.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata firefox35 apps \
     title="Firefox 3.5" \
     publisher="Mozilla" \
