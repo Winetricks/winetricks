@@ -6844,7 +6844,7 @@ load_vcrun2008()
     # http://www.microsoft.com/technet/security/bulletin/MS11-025.mspx or
     # http://support.microsoft.com/kb/2538242
     w_download http://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 470640aa4bb7db8e69196b5edb0010933569e98d
-    w_override_dlls native,builtin msvcm90 msvcp90 msvcr90 vcomp90
+    w_override_dlls native,builtin atl90 msvcm90 msvcp90 msvcr90 vcomp90
     cd "$W_CACHE"/vcrun2008
     w_try "$WINE" $file1 $W_UNATTENDED_SLASH_Q
 }
