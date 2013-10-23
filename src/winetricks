@@ -8238,99 +8238,22 @@ load_emu8086()
 
 #----------------------------------------------------------------
 
-w_metadata firefox35 apps \
-    title="Firefox 3.5" \
-    publisher="Mozilla" \
-    year="2011" \
-    media="download" \
-    file1="Firefox Setup 3.5.19.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
-
-load_firefox35()
-{
-    w_download "ftp://archive.mozilla.org/pub/mozilla.org/firefox/releases/3.5.19/win32/en-US/Firefox%20Setup%203.5.19.exe" 14c3852e9693b5f17982fa01a0d29f9d1422be79 "$file1"
-    cd "$W_CACHE"/firefox35
-    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
-}
-
-#----------------------------------------------------------------
-
-w_metadata firefox36 apps \
-    title="Firefox 3.6" \
-    publisher="Mozilla" \
-    year="2012" \
-    media="download" \
-    file1="Firefox Setup 3.6.28.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
-
-load_firefox36()
-{
-    w_download "ftp://ftp.mozilla.org/pub/firefox/releases/3.6.28/win32/en-US/Firefox%20Setup%203.6.28.exe" 3657287c2cff34f5edc237de954a9cc6f2ca465a "$file1"
-    cd "$W_CACHE"/firefox36
-    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
-
-    if w_workaround_wine_bug 29077
-    then
-        w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
-}
-
-#----------------------------------------------------------------
-
-w_metadata firefox5 apps \
-    title="Firefox 5" \
-    publisher="Mozilla" \
-    year="2011" \
-    media="download" \
-    file1="Firefox Setup 5.0.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
-
-load_firefox5()
-{
-    if w_workaround_wine_bug 22972 "" 1.3.0,
-    then
-        w_die  "Requires wine-1.3.0 or later to install"
-    fi
-
-    if w_workaround_wine_bug 29077
-    then
-        w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
-    fi
-
-    w_download "ftp://ftp.mozilla.org/pub/firefox/releases/5.0/win32/en-US/Firefox%20Setup%205.0.exe" 288895db0a58b91801c5c1dfc0017131300dba00 "$file1"
-    cd "$W_CACHE"/firefox5
-    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
-}
-
-#----------------------------------------------------------------
-
 w_metadata firefox apps \
-    title="Firefox 11" \
+    title="Firefox 24" \
     publisher="Mozilla" \
-    year="2012" \
+    year="2013" \
     media="download" \
-    file1="Firefox Setup 11.0.exe" \
+    file1="Firefox Setup 24.0.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox()
 {
-    if w_workaround_wine_bug 22972 "" 1.3.0,
-    then
-        w_die  "Requires wine-1.3.0 or later to install"
-    fi
-
     if w_workaround_wine_bug 29077
     then
         w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
     fi
 
-    w_download "http://download.mozilla.org/?product=firefox-11.0&os=win&lang=en-US" f6b5d4dfa6f9f16758c6aee0dcb0a20ba0bb27e9 "$file1"
+    w_download "http://download.mozilla.org/?product=firefox-24.0&os=win&lang=en-US" d6213601b69a606f4537c394dfa0dd7968b17b93 "$file1"
     cd "$W_CACHE"/firefox
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
@@ -18031,8 +17954,6 @@ for data in \
     farmsim2011_demo:size_MB=48,time_sec=4 \
     ffdshow:size_MB=53,time_sec=4 \
     fifa11_demo:size_MB=4932,time_sec=845 \
-    firefox:size_MB=113,time_sec=7 \
-    firefox4:size_MB=147,time_sec=36 \
     flash:size_MB=57,time_sec=3 \
     fontfix:size_MB=47,time_sec=0 \
     fontxplorer:size_MB=51,time_sec=5 \
@@ -18371,7 +18292,6 @@ execute_command()
     comdlg32.ocx) w_call comdlg32ocx ;;
     dotnet1) w_call dotnet11 ;;
     dotnet2) w_call dotnet20 ;;
-    firefox3) w_call firefox35 ;;  # the one that works
     flash11) w_call flash ;;
     fm20) w_call controlpad ;;   # art2kmin also comes with fm20.dll
     fontsmooth-bgr) w_call fontsmooth=bgr ;;
