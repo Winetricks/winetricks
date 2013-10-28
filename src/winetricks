@@ -7919,18 +7919,17 @@ load_allfonts()
 w_metadata 7zip apps \
     title="7-Zip" \
     publisher="Igor Pavlov" \
-    year="1999" \
+    year="2010" \
     media="download" \
-    file1="7z465.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/7-Zip/7z.exe"
+    file1="7z920.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/7-Zip/7zFM.exe"
 
 load_7zip()
 {
-    # FIXME: use more up to date version
-    w_download http://downloads.sourceforge.net/project/sevenzip/7-Zip/4.65/7z465.exe c36012e960fa3932cd23f30ac5b0fe722740243a
-    cd "$W_CACHE"/7zip
-    w_try "$WINE" 7z465.exe $W_UNATTENDED_SLASH_S
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\7-Zip" "7z.exe"
+    w_download http://downloads.sourceforge.net/project/sevenzip/7-Zip/9.20/7z920.exe 55283ad59439134673fc32fc097bdd9ae920fbc6
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" 7z920.exe $W_UNATTENDED_SLASH_S
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\7-Zip" "7zFM.exe"
 }
 
 #----------------------------------------------------------------
