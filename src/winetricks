@@ -1708,6 +1708,7 @@ w_wine_version()
     1.5.*) _W_minor=5; _W_micro=`echo $2 | sed 's/.*\.//'`;;
     1.6|1.6-rc*) _W_minor=6; _W_micro=0;;
     1.6.*) _W_minor=6; _W_micro=`echo $2 | sed 's/.*\.//'`;;
+    1.7.*) _W_minor=7; _W_micro=`echo $2 | sed 's/.*\.//'`;;
     *) w_die "bug: unrecognized version $2";;
     esac
 
