@@ -9759,6 +9759,11 @@ w_metadata wmp10 dlls \
 
 load_wmp10()
 {
+    if [ $W_ARCH = win64 ]
+    then
+        w_die "Installer doesn't support 64-bit architecture. Use a 32-bit WINEPREFIX instead."
+    fi
+
     # FIXME: what versions of windows are really bundled with wmp10?
     w_skip_windows wmp10 && return
 
