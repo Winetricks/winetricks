@@ -1906,6 +1906,15 @@ __EOF__
 w_do_call()
 {
     (
+        # Hack..
+        if test $cmd = vd
+        then
+            load_vd $arg
+            _W_status=$?
+            test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
+            return $_W_status
+        fi
+
         case $1 in
         *=*) arg=`echo $1 | sed 's/.*=//'`; cmd=`echo $1 | sed 's/=.*//'`;;
         *) cmd=$1; arg=$2 ;;
@@ -18296,6 +18305,7 @@ execute_command()
     *=builtin) w_do_call builtin $cmd;;
     *=default) w_do_call default $cmd;;
     *=disabled) w_do_call disabled $cmd;;
+    vd=*) w_do_call $cmd;;
 
     # Hacks for backwards compatibility
     cc580) w_call comctl32 ;;
