@@ -6004,9 +6004,9 @@ load_msftedit()
 w_metadata msxml3 dlls \
     title="MS XML Core Services 3.0" \
     publisher="Microsoft" \
-    year="2007" \
-    media="download" \
-    file1="Windows2000-KB936021-x86-ENU.EXE" \
+    year="2005" \
+    media="manual_download" \
+    file1="msxml3.msi" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/msxml3.dll"
 
 load_msxml3()
@@ -6015,17 +6015,14 @@ load_msxml3()
     #w_download http://download.microsoft.com/download/a/5/e/a5e03798-2454-4d4b-89a3-4a47579891d8/msxml3.msi
     # Service Pack 7
     #w_download http://download.microsoft.com/download/8/8/8/888f34b7-4f54-4f06-8dac-fa29b19f33dd/msxml3.msi d4c2178dfb807e1a0267fce0fd06b8d51106d913
-    #w_download_manual http://download.cnet.com/Microsoft-XML-Parser-MSXML-3-0-Service-Pack-7-SP7/3000-7241_4-10731613.html msxml3.msi d4c2178dfb807e1a0267fce0fd06b8d51106d913
-    # Note: http://www.microsoft.com/en-us/download/details.aspx?id=5793, has msxml3.dll from sp7 as well. sha1sum (9c00064d0d1688be32dc06611c3ee76e91ac5762)
-    # matches the other redistributables. However, there's now SP9 available, so we use that.
-    # Service Pack 9
-    w_download http://download.microsoft.com/download/8/8/5/885d7f8b-0355-45d9-a589-7c884ffea28b/Windows2000-KB936021-x86-ENU.EXE 
+    # Hmm.  Anyone know of a better source?  At least it has the right checksum.
+    w_download_manual http://download.cnet.com/Microsoft-XML-Parser-MSXML-3-0-Service-Pack-7-SP7/3000-7241_4-10731613.html msxml3.msi d4c2178dfb807e1a0267fce0fd06b8d51106d913
 
     # it won't install on top of wine's msxml3, which has a pretty high version number, so delete wine's fake dll
     rm "$W_SYSTEM32_DLLS"/msxml3.dll
     w_override_dlls native msxml3
     cd "$W_CACHE"/msxml3
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'msxml3.dll' "$file1"
+    w_try "$WINE" msiexec /i msxml3.msi $W_UNATTENDED_SLASH_Q
 }
 
 #----------------------------------------------------------------
