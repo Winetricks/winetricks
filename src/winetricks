@@ -4525,11 +4525,11 @@ load_directplay()
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dpnhpast.dll' "$W_TMP/dxnt.cab"
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dpwsockx.dll' "$W_TMP/dxnt.cab"
 
+    w_override_dlls native dplayx dpnet dpnhpast dpwsockx
+
     w_try_regsvr dplayx.dll
     w_try_regsvr dpnet.dll
     w_try_regsvr dpnhpast.dll
-
-    w_override_dlls native dplayx dpnet dpnhpast dpwsockx
 }
 
 #----------------------------------------------------------------
