@@ -8698,7 +8698,7 @@ load_mingw()
     w_download $WINETRICKS_SOURCEFORGE/mingw/files/libpthread-2.8.0-3-mingw32-dll-2.tar.lzma
     w_download $WINETRICKS_SOURCEFORGE/mingw/files/w32api-3.15-1-mingw32-dev.tar.lzma
 
-    mkdir "$W_DRIVE_C"/MinGW
+    mkdir -p "$W_DRIVE_C"/MinGW
     cd "$W_DRIVE_C"/MinGW
     lzma -d -c "$W_CACHE"/mingw/binutils-2.21-2-mingw32-bin.tar.lzma | tar xf -
     gzip -d -c "$W_CACHE"/mingw/mingwrt-3.18-mingw32-dev.tar.gz | tar xf -
