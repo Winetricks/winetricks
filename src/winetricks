@@ -8691,6 +8691,8 @@ load_mingw()
 {
     w_download $WINETRICKS_SOURCEFORGE/mingw/files/mingw-get-setup.exe
     cd "$W_CACHE/mingw"
+    # Upstream feature request for a silent install:
+    # https://sourceforge.net/p/mingw/bugs/2176/
     w_try $WINE mingw-get-setup.exe
     w_append_path 'C:\MinGW\bin'
 }
