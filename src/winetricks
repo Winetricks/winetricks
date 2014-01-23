@@ -8681,42 +8681,17 @@ _EOF_
 w_metadata mingw apps \
     title="Minimalist GNU for Windows, including GCC for Windows" \
     publisher="GNU" \
-    year="2010-2011" \
+    year="2013" \
     media="download" \
-    file1="binutils-2.21-2-mingw32-bin.tar.lzma" \
+    file1="mingw-get-setup.exe" \
     installed_exe1="c:/MinGW/bin/gcc.exe" \
     homepage="http://mingw.org/wiki/Getting_Started"
 
 load_mingw()
 {
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/binutils-2.21-2-mingw32-bin.tar.lzma
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/gcc-core-4.5.2-1-mingw32-bin.tar.lzma
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/libgcc-4.5.2-1-mingw32-dll-1.tar.lzma
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/libgmpxx-5.0.1-1-mingw32-dll-4.tar.lzma
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/libgmp-5.0.1-1-mingw32-dll-10.tar.lzma
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/libmpc-0.8.1-1-mingw32-dll-2.tar.lzma
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/libiconv-1.13.1-1-mingw32-dll-2.tar.lzma
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/mingwrt-3.18-mingw32-dev.tar.gz
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/mingwrt-3.18-mingw32-dll.tar.gz
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/libmpfr-2.4.1-1-mingw32-dll-1.tar.lzma
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/libpthread-2.8.0-3-mingw32-dll-2.tar.lzma
-    w_download $WINETRICKS_SOURCEFORGE/mingw/files/w32api-3.15-1-mingw32-dev.tar.lzma
-
-    mkdir -p "$W_DRIVE_C"/MinGW
-    cd "$W_DRIVE_C"/MinGW
-    lzma -d -c "$W_CACHE"/mingw/binutils-2.21-2-mingw32-bin.tar.lzma | tar xf -
-    gzip -d -c "$W_CACHE"/mingw/mingwrt-3.18-mingw32-dev.tar.gz | tar xf -
-    gzip -d -c "$W_CACHE"/mingw/mingwrt-3.18-mingw32-dll.tar.gz | tar xf -
-    lzma -d -c "$W_CACHE"/mingw/w32api-3.15-1-mingw32-dev.tar.lzma | tar xf -
-    lzma -d -c "$W_CACHE"/mingw/libgmp-5.0.1-1-mingw32-dll-10.tar.lzma | tar xf -
-    lzma -d -c "$W_CACHE"/mingw/libmpc-0.8.1-1-mingw32-dll-2.tar.lzma | tar xf -
-    lzma -d -c "$W_CACHE"/mingw/libgmpxx-5.0.1-1-mingw32-dll-4.tar.lzma | tar xf -
-    lzma -d -c "$W_CACHE"/mingw/libiconv-1.13.1-1-mingw32-dll-2.tar.lzma | tar xf -
-    lzma -d -c "$W_CACHE"/mingw/libmpfr-2.4.1-1-mingw32-dll-1.tar.lzma | tar xf -
-    lzma -d -c "$W_CACHE"/mingw/libpthread-2.8.0-3-mingw32-dll-2.tar.lzma | tar xf -
-    lzma -d -c "$W_CACHE"/mingw/libgcc-4.5.2-1-mingw32-dll-1.tar.lzma | tar xf -
-    lzma -d -c "$W_CACHE"/mingw/gcc-core-4.5.2-1-mingw32-bin.tar.lzma | tar xf -
-
+    w_download $WINETRICKS_SOURCEFORGE/mingw/files/mingw-get-setup.exe
+    cd "$W_CACHE/mingw"
+    w_try $WINE mingw-get-setup.exe
     w_append_path 'C:\MinGW\bin'
 }
 
