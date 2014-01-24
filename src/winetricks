@@ -8195,40 +8195,6 @@ load_controlpad()
 
 #----------------------------------------------------------------
 
-w_metadata cygwin apps \
-    title="cygwin" \
-    publisher="Red Hat" \
-    year="2009" \
-    media="download" \
-    file1="setup.exe" \
-    installed_exe1="C:/cygwin/bin/sh.exe"
-
-load_cygwin()
-{
-    if w_workaround_wine_bug 24018
-    then
-        # Wine can't handle current cygwin, so use some random verison of cygwin's setup from mid-2009
-        w_download http://kegel.com/cygwin/1.5/setup.exe 5cfb8ebe4f385b0fcffa04d22d607ec75ea05180
-        w_warn "Paste in ftp://www.fruitbat.org/pub/cygwin/circa/2009/09/08/111037 as the repo url for now, until bug 21206 is fixed"
-        # -X option is insecure, but we have to use it because fruitbat.org didn't archive .sig files :-(
-        _W_cygopts="-X"
-    else
-        w_download http://cygwin.com/setup.exe 9a24bcbcf58d8ab25d9e915399c9be51ac1837c3
-        _W_cygopts=
-    fi
-
-    mkdir -p "$W_DRIVE_C"/cygpkgs
-    # If you happen to have saved your cygpkgs directory, unpack it now
-    test -f "$W_CACHE/cygwin/cygpkgs.tgz" && (cd "$W_DRIVE_C"; gunzip -dc "$W_CACHE/cygwin/cygpkgs.tgz" | tar -xf -)
-    # FIXME: automate the base installation
-    cp "$W_CACHE/cygwin/setup.exe" "$W_DRIVE_C"/cygpkgs
-    cd "$W_DRIVE_C"/cygpkgs
-    w_try "$WINE" setup.exe $_W_cygopts
-    unset _W_cygopts
-}
-
-#----------------------------------------------------------------
-
 # dxdiag is a system component that one usually adds to an existing wineprefix,
 # so it belongs in 'dlls', not apps.
 w_metadata dxdiag dlls \
