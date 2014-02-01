@@ -4583,6 +4583,28 @@ load_directx9()
 
 #----------------------------------------------------------------
 
+w_metadata dsdmo dlls \
+    title="MS dsdmo.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dsdmo.dll"
+
+load_dsdmo()
+{
+    helper_directx_dl
+    mkdir "$W_CACHE"/dsdmo   # kludge so test -f $file1 works
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dsdmo.dll' "$W_TMP/dxnt.cab"
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dsdmoprp.dll' "$W_TMP/dxnt.cab"
+    w_try_regsvr dsdmo.dll
+    w_try_regsvr dsdmoprp.dll
+}
+
+#----------------------------------------------------------------
+
 w_metadata dx8sdk dlls \
     title="MS DirectX 8 SDK (developers only)" \
     publisher="Microsoft" \
