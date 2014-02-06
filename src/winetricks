@@ -4068,18 +4068,25 @@ w_metadata comctl32ocx dlls \
     year="2009" \
     media="download" \
     file1="VisualBasic6-KB896559-v1-ENU.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/comctl32.ocx"
+    file2="mscomct2.cab" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mscomctl.ocx"
 
 load_comctl32ocx()
 {
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=25437D98-51D0-41C1-BB14-64662F5F62FE
     w_download http://download.microsoft.com/download/3/a/5/3a5925ac-e779-4b1c-bb01-af67dc2f96fc/VisualBasic6-KB896559-v1-ENU.exe f52cf2034488235b37a1da837d1c40eb2a1bad84
+    # More ActiveX controls. See https://support.microsoft.com/kb/297381
+    w_download http://activex.microsoft.com/controls/vb6/mscomct2.cab 766f9ccf8849a04d757faee379da54d635c8ac71
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comctl32ocx/VisualBasic6-KB896559-v1-ENU.exe
     w_try cp "$W_TMP"/mscomctl.ocx "$W_SYSTEM32_DLLS"/mscomctl.ocx
     w_try cp "$W_TMP"/comctl32.ocx "$W_SYSTEM32_DLLS"/comctl32.ocx
     w_try_regsvr comctl32.ocx
     w_try_regsvr mscomctl.ocx
+
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comctl32ocx/mscomct2.cab
+    w_try cp "$W_TMP"/mscomct2.ocx "$W_SYSTEM32_DLLS"/mscomct2.ocx
+    w_try_regsvr mscomct2.ocx
 }
 
 #----------------------------------------------------------------
