@@ -6689,7 +6689,7 @@ w_metadata vb6run dlls \
     title="MS Visual Basic 6 runtime sp6" \
     publisher="Microsoft" \
     year="2004" \
-    media="manual_download" \
+    media="download" \
     file1="vbrun60sp6.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/MSVBVM60.DLL"
 
@@ -6698,7 +6698,7 @@ load_vb6run()
     # http://support.microsoft.com/kb/290887
     if test ! -f "$W_CACHE"/vb6run/vbrun60sp6.exe
     then
-        w_download_manual "http://download.cnet.com/Service-Pack-6-for-Visual-Basic-6-0-Run-Time-Redistribution-Pack-vbrun60sp6-exe/3000-2206_4-10726557.html?tag=downloadRatingModule;summaryRatings" VB6.0-KB290887-X86.exe 73ef177008005675134d2f02c6f580515ab0d842
+        w_download http://download.microsoft.com/download/5/a/d/5ad868a0-8ecd-4bb0-a882-fe53eb7ef348/VB6.0-KB290887-X86.exe 73ef177008005675134d2f02c6f580515ab0d842
 
         w_try "$WINE" "$W_CACHE"/vb6run/VB6.0-KB290887-X86.exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
         if test ! -f "$W_TMP"/vbrun60sp6.exe
