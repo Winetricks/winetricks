@@ -8425,11 +8425,11 @@ load_ie6()
     fi
 
     # Change the override to the native so we are sure we use and register them
-    w_override_dlls native,builtin iexplore.exe inetcpl.cpl itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi urlmon
+    w_override_dlls native,builtin iexplore.exe inetcpl.cpl itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi
 
     # Remove the fake dlls, if any
     mv "$W_PROGRAMS_UNIX"/"Internet Explorer"/iexplore.exe "$W_PROGRAMS_UNIX"/"Internet Explorer"/iexplore.exe.bak
-    for dll in itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi urlmon
+    for dll in itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi
     do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
         mv "$W_SYSTEM32_DLLS"/$dll.dll "$W_SYSTEM32_DLLS"/$dll.dll.bak
@@ -8475,7 +8475,7 @@ load_ie6()
       msoeacct.dll msrating.dll mstime.dll msxml3.dll occache.dll \
       ole32.dll oleaut32.dll olepro32.dll pngfilt.dll quartz.dll \
       rpcrt4.dll rsabase.dll rsaenh.dll scrobj.dll scrrun.dll \
-      shdocvw.dll shell32.dll urlmon.dll vbscript.dll webcheck.dll \
+      shdocvw.dll shell32.dll vbscript.dll webcheck.dll \
       wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
       plugin.ocx proctexe.ocx tdc.ocx webcheck.dll wshom.ocx
     do
