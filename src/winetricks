@@ -4729,12 +4729,32 @@ load_dotnet11()
     # need corefonts, else installer crashes
     w_call corefonts
 
+    w_try cd "$W_CACHE/dotnet11"
     # Use builtin regsvcs.exe to work around http://bugs.winehq.org/show_bug.cgi?id=25120
     if test $W_OPT_UNATTENDED
     then
-        WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" "$W_CACHE"/dotnet11/dotnetfx.exe /q /C:"install /q"
+        WINEDLLOVERRIDES="regsvcs.exe=b" w_ahk_do "
+            SetTitleMatchMode, 2
+            run, dotnetfx.exe /q /C:\"install /q\"
+
+            Loop
+            {
+                sleep 1000
+                ifwinexist, Fatal error, Failed to delay load library
+                {
+                    WinClose, Fatal error, Failed to delay load library
+                    continue
+                }
+                Process, exist, dotnetfx.exe
+                dotnet_pid = %ErrorLevel%  ; Save the value immediately since ErrorLevel is often changed.
+                if dotnet_pid = 0
+                {
+                    break
+                }
+            }
+        "
     else
-        WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" "$W_CACHE"/dotnet11/dotnetfx.exe
+        WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" dotnetfx.exe
     fi
 }
 
