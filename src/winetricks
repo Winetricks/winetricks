@@ -4947,11 +4947,6 @@ w_metadata dotnet20sp2 dlls \
 
 load_dotnet20sp2()
 {
-    if w_workaround_wine_bug 22521 "wine version too old" 1.3.18,
-    then
-        w_die "wine-1.3.18 or later required to install dotnet20sp2"
-    fi
-
     w_call dotnet20
 
     WINEDLLOVERRIDES=
@@ -4972,7 +4967,26 @@ load_dotnet20sp2()
     # http://www.microsoft.com/downloads/details.aspx?familyid=5B2C0358-915B-4EB5-9B1D-10E506DA9D0F
     w_download http://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 22d776d4d204863105a5db99e8b8888be23c61a7
     cd "$W_CACHE"/dotnet20sp2
-    "$WINE" NetFx20SP2_x86.exe ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, NetFx20SP2_x86.exe ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
+
+        Loop
+        {
+            sleep 1000
+            ifwinexist, Error, cannot be uninstalled
+            {
+                WinClose, Error, cannot be uninstalled
+                continue
+            }
+            Process, exist, NetFx20SP2_x86.exe
+            dotnet_pid = %ErrorLevel%
+            if dotnet_pid = 0
+            {
+                break
+            }
+        }
+    "
     status=$?
 
     case $status in
