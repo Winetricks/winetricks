@@ -5178,7 +5178,26 @@ load_dotnet35sp1()
     export WINEDLLOVERRIDES
 
     cd "$W_CACHE"/dotnet35sp1
-    "$WINE" dotnetfx35.exe /lang:ENU $W_UNATTENDED_SLASH_Q
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, dotnetfx35.exe /lang:ENU $W_UNATTENDED_SLASH_Q
+
+        Loop
+        {
+            sleep 1000
+            ifwinexist, Error, cannot be uninstalled
+            {
+                WinClose, Error, cannot be uninstalled
+                continue
+            }
+            Process, exist, dotnetfx35.exe
+            dotnet_pid = %ErrorLevel%
+            if dotnet_pid = 0
+            {
+                break
+            }
+        }
+    "
 }
 
 #----------------------------------------------------------------
