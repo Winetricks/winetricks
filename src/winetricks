@@ -9349,7 +9349,9 @@ load_uplay()
     # 1 July 2013 3.1.0 sha1sum 21a7f469534dd1463eaaab6b2be2fa9084bceea2
     # 11 Nov 2013 4.0   sha1sum 52e287f9f78313e4713d2f070b15734410da0c5a
     # 26 Dec 2013 4.2   sha1sum ada2c11ee62eee19f8b1661bd974862e336623c6
-    w_download http://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe ada2c11ee62eee19f8b1661bd974862e336623c6
+    # 16 Feb 2014 ?     sha1sum 19f98632ad1ff330c647f8ff1a3a15b44238c709
+    # Changes too frequently, don't check anymore
+    w_download http://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe
     cd "$W_CACHE"/uplay
 
     # NSIS installer
