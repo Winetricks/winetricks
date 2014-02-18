@@ -4877,7 +4877,52 @@ load_dotnet20sdk()
     w_download http://download.microsoft.com/download/c/4/b/c4b15d7d-6f37-4d5a-b9c6-8f07e7d46635/setup.exe 4e4b1072b5e65e855358e2028403f2dc52a62ab4
 
     cd "$W_CACHE"/dotnet20sdk
-    w_try "$WINE" setup.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run, setup.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+
+        Loop
+        {
+            sleep 1000
+            ifwinexist, Microsoft Document Explorer, Application Data folder
+            {
+                WinClose, Microsoft Document Explorer, Application Data folder
+                continue
+            }
+            ifwinexist, Microsoft CLR Debugger, Application Data folder
+            {
+                WinClose, Microsoft CLR Debugger, Application Data folder
+                continue
+            }
+            ; FIXME: only appears if dotnet30sp1 is run first?
+            ifwinexist, Microsoft .NET Framework 2.0 SDK Setup, This wizard will guide
+            {
+                ControlClick, Button22, Microsoft .NET Framework 2.0 SDK Setup
+                Winwait, Microsoft .NET Framework 2.0 SDK Setup, By clicking
+                sleep 100
+                ControlClick, Button21
+                sleep 100
+                ControlClick, Button18
+                WinWait, Microsoft .NET Framework 2.0 SDK Setup, Select from
+                sleep 100
+                ControlClick, Button12
+                WinWait, Microsoft .NET Framework 2.0 SDK Setup, Type the path
+                sleep 100
+                ControlClick, Button8
+                WinWait, Microsoft .NET Framework 2.0 SDK Setup, successfully installed
+                sleep 100
+                ControlClick, Button2
+                sleep 100
+            }
+            Process, exist, setup.exe
+            dotnet_pid = %ErrorLevel%
+            if dotnet_pid = 0
+            {
+                break
+            }
+        }
+    "
+
 }
 
 #----------------------------------------------------------------
