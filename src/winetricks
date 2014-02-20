@@ -3477,6 +3477,8 @@ winetricks_set_wineprefix()
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
         W_SYSTEM64_DLLS="$W_WINDIR_UNIX/system32"
+        # 64-bit prefixes still have plenty of issues:
+        w_warn "You are using a 64-bit WINEPREFIX. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug."
     else
         W_ARCH=win32
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
