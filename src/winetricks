@@ -11015,20 +11015,20 @@ w_metadata braid_demo games \
     publisher="Number None" \
     year="2009" \
     media="download" \
-    file1="braid_windows_r3.exe" \
+    file1="Braid_PC_Demo.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Braid/braid.exe"
 
 load_braid_demo()
 {
     if ! test -f "$W_CACHE/$W_PACKAGE/braid_windows_r3.exe"
     then
-        w_download http://mirror.3fl.net.au/games/arcade/braid/client/braid_windows_r3.exe 7ea08ddbf5f2fb2f38057d930389b5af7d737e2c
+        w_download http://media1.gamefront.com/worthplaying/braid/Braid_PC_Demo.exe 27f78feb37c856fa901d7802a6889d262e44c827
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
-        run, braid_windows_r3.exe
+        run, $file1
         if ( w_opt_unattended > 0 ) {
             winwait, Braid, install
             controlclick, TButton1
