@@ -12427,19 +12427,19 @@ w_metadata divinity2_demo games \
     title="Divinity II Demo" \
     publisher="DTP Entertainment" \
     year="2010" \
-    media="download" \
-    file1="Divinity2_DEMO_EN.exe" \
+    media="manual_download" \
+    file1="Divinity2_DEMO_EN_US.zip" \
     installed_file1="$W_PROGRAMS_X86_WIN/Divinity II - Ego Draconis - Demo/Bin/Divinity2_Demo.exe"
 
 load_divinity2_demo()
 {
-    w_download "http://demos.dtp-entertainment.ag/Divinity2_DEMO_EN.exe" \
-        01161a1375f5ee3bb215753e40dd1dcdceffd3a7
+    w_download_manual "http://www.gamershell.com/download_54304.shtml" $file1 2a33670b705d4da89e1119d808cda64977bb6096
 
-    cd "$W_CACHE/$W_PACKAGE"
+    w_try unzip -d "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
+    cd "$W_TMP"
 
     w_ahk_do "
-        Run, Divinity2_DEMO_EN.exe
+        Run, Divinity2_DEMO_EN_US.exe
         SetTitleMatchMode, 2
         WinWait,Setup - Divinity II - Ego Draconis - Demo
         if ( w_opt_unattended > 0 ) {
