@@ -6247,7 +6247,9 @@ w_metadata nuget dlls \
 load_nuget()
 {
     w_call dotnet40
-    w_download https://nuget.org/nuget.exe d4082afc4f89df195fa1e83ee1cf02bce3dd2f13
+    # 2014-01-22: d4082afc4f89df195fa1e83ee1cf02bce3dd2f13
+    # 2014-02-26: 9bc98ced9c2d2b51ab687f86b5580913c025b8b0
+    w_download https://nuget.org/nuget.exe 9bc98ced9c2d2b51ab687f86b5580913c025b8b0
     w_try cp "$W_CACHE/$W_PACKAGE"/nuget.exe "$W_SYSTEM32_DLLS"
     w_warn "To run nuget, use the commandline \"$WINE nuget\"."
 }
