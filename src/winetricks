@@ -5023,9 +5023,9 @@ load_dotnet20sp2()
         Loop
         {
             sleep 1000
-            ifwinexist, Error, cannot be uninstalled
+            ifwinexist,, cannot be uninstalled
             {
-                WinClose, Error, cannot be uninstalled
+                WinClose,, cannot be uninstalled
                 continue
             }
             Process, exist, NetFx20SP2_x86.exe
@@ -5234,9 +5234,9 @@ load_dotnet35sp1()
         Loop
         {
             sleep 1000
-            ifwinexist, Error, cannot be uninstalled
+            ifwinexist,, cannot be uninstalled
             {
-                WinClose, Error, cannot be uninstalled
+                WinClose,, cannot be uninstalled
                 continue
             }
             Process, exist, dotnetfx35.exe
