@@ -17775,7 +17775,8 @@ load_sandbox()
     # Unmap drive Z
     rm -f "$WINEPREFIX/dosdevices/z:"
 
-    pushd "$WINEPREFIX/drive_c/users/$USER"
+    _olddir="`pwd`"
+    cd "$WINEPREFIX/drive_c/users/$USER"
     for x in *
     do
         if test -h "$x" && test -d "$x"
@@ -17784,7 +17785,8 @@ load_sandbox()
             mkdir -p "$x"
         fi
     done
-    popd
+    cd "$_olddir"
+    unset _olddir
 
     # Disable unixfs
     # Unfortunately, when you run with a different version of Wine, Wine will recreate this key.
