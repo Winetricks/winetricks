@@ -3900,9 +3900,9 @@ helper_win7sp1()
 #---------------------------------------------------------
 
 w_metadata  adobeair dlls \
-    title="Adobe AIR 2.7" \
+    title="Adobe AIR 4.0" \
     publisher="Adobe" \
-    year="2011" \
+    year="2014" \
     media="download" \
     file1="AdobeAIRInstaller.exe" \
     installed_file1="$W_COMMONFILES_X86_WIN/Adobe AIR/Versions/1.0/Adobe AIR.dll" \
@@ -3916,7 +3916,9 @@ load_adobeair()
     # 2010-12-08: 2.5.1 sha1sum 2664207ca8e836f5070ee356064829a39785a92e
     # 2011-04-13: 2.6   sha1sum 3d9c2f9d8f3533424cfea84d61fcb9464278d9fc
     # 2011-10-26: 2.7   sha1sum dfa337d4b53e9d924356febc116450190fa183dd
-    w_download http://airdownload.adobe.com/air/win/download/2.7/AdobeAIRInstaller.exe dfa337d4b53e9d924356febc116450190fa183dd
+    # 2014-03-01: 4.0   sha1sum 0034bdd4e0b2ce0fa6198b0b715fba85754d9a57
+    # http://helpx.adobe.com/en/flash-player/release-note/fp_12_air_4_release_notes.html
+    w_download http://airdownload.adobe.com/air/win/download/4.0/AdobeAIRInstaller.exe 0034bdd4e0b2ce0fa6198b0b715fba85754d9a57
     cd "$W_CACHE"/adobeair
     w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
 }
