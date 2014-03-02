@@ -1,6 +1,11 @@
 #!/bin/sh
 # Regression test for winetricks
 
+# Override this if you want to put the work area on a different disk
+WINE_PREFIXES=${WINE_PREFIXES:-$HOME/winetrickstest-prefixes}
+preloadcache="$HOME/winetricks-preload-cache"
+cache="$HOME/winetricks-cache"
+
 set -x
 
 # verbs known to not work in -q mode yet
@@ -27,10 +32,6 @@ BLACKLIST="$BLACKLIST|dotnet11|dotnet11sp1"
 BLACKLIST="$BLACKLIST|xna40"
 # broken/flaky, http://bugs.winehq.org/show_bug.cgi?id=26016
 BLACKLIST="$BLACKLIST|xmllite"
-# manual downloads
-BLACKLIST="$BLACKLIST|dotnet30|dotnet30sp1|dotnet35|dotnet35sp1"
-# depend on manual downloads
-BLACKLIST="$BLACKLIST|jet40"
 # redundant metaverbs
 BLACKLIST="$BLACKLIST|allcodecs"
 
@@ -135,12 +136,11 @@ test_app()
     app=$1
     _errors_before=$errors
 
-    export WINE_PREFIXES=$HOME/winetrickstest-prefixes
     export WINEPREFIX=$WINE_PREFIXES/$app
     DRIVE_C="$WINEPREFIX/dosdevices/c:"
 
     # change if you don't want to skip ones already installed
-    if test -d $HOME/winetrickstest-prefixes/$app
+    if test -d $WINEPREFIX
     then
         echo "Skipping $app, already installed"
         return 0
@@ -150,9 +150,9 @@ test_app()
 
     # Watch transient disk space
     DF_START=`total_df`
-    if test -d ~/.cache/winetricks/$app
+    if test -d "$W_CACHE"/$app
     then
-        DU_CACHE_START=`du -s ~/.cache/winetricks/$app | awk '{print $1}'`
+        DU_CACHE_START=`du -s "$W_CACHE"/$app | awk '{print $1}'`
     else
         DU_CACHE_START=0
     fi
@@ -299,15 +299,30 @@ test_install_cached_or_download()
     fi
 }
 
+# The very few manual downloads required by $QUICKCHECK
+# Run this if you don't want to re-download them.
+test_preload()
+{
+    export W_CACHE="$preloadcache"
+    for a in msxml3 mdac27 dotnet30
+    do
+       rm -rf $WINE_PREFIXES/$a
+       test_app $a
+    done
+}
+
 test_quick()
 {
     # Test the frequent download-changes-checksum offenders first
-    cache="$HOME/winetricks-quickcheck-cache"
-    rm -rf "$cache"
     export W_CACHE="$cache"
+    rm -rf "$W_CACHE"
+    if test -d "$preloadcache"
+    then
+        cp -a "$preloadcache" "$W_CACHE"
+    fi
     for a in $QUICKCHECK
     do
-       rm -rf $HOME/winetrickstest-prefixes/$a
+       rm -rf "$WINE_PREFIXES"/$a
        test_app $a
     done
 
@@ -333,6 +348,7 @@ test_full() {
 }
 
 case "$1" in
+preload) test_preload;;
 quick) test_quick;;
 full)  test_full;;
 *)     echo "Usage: $0 quick|full"; exit 1;;
