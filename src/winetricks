@@ -1906,9 +1906,7 @@ w_conflicts()
     do
         if test $(grep -w "$x" "$WINEPREFIX/winetricks.log")
         then
-            #w_die "error: $1 conflicts with $x, which is already installed."
-            w_warn "error: $1 conflicts with $x, which is already installed."
-            exit 0
+            w_die "error: $1 conflicts with $x, which is already installed."
         fi
     done
 }
