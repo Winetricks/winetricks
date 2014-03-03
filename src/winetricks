@@ -1898,6 +1898,21 @@ __EOF__
     unset _W_dir _W_exe _W_name
 }
 
+# Checks that a conflicting verb is not already installed in the prefix
+# Usage: w_conflicts verb_to_install conflicts
+w_conflicts()
+{
+    for x in $2
+    do
+        if test $(grep -w "$x" "$WINEPREFIX/winetricks.log")
+        then
+            #w_die "error: $1 conflicts with $x, which is already installed."
+            w_warn "error: $1 conflicts with $x, which is already installed."
+            exit 0
+        fi
+    done
+}
+
 # Call a verb, don't let it affect environment
 # Hope that subshell passes through exit status
 # Usage: w_do_call foo [bar]       (calls load_foo bar)
@@ -1976,11 +1991,20 @@ w_do_call()
             echo "$1 already installed, skipping"
             return 0
         fi
+        
+        # Don't install if a conflicting verb is already installed:
+        if test "$WINETRICKS_FORCE" != 1 && test "$conflicts" && test -f "$WINEPREFIX/winetricks.log"
+        then
+            for x in $conflicts
+            do
+                w_conflicts $1 $x
+            done
+        fi
 
         # We'd like to get rid of W_PACKAGE, but for now, just set it as late as possible.
         W_PACKAGE=$1
-        winetricks_stats_log_command $*
         w_try load_$cmd $arg
+        winetricks_stats_log_command $*
 
         # User-specific postinstall hook.
         # Source it so the script can call w_download() if needed.
