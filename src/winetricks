@@ -2312,7 +2312,7 @@ winetricks_mainmenu()
          _W_msg_annihilate="Usuń WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO WINEPREFIXA"
          ;;
     uk*) _W_msg_title="Winetricks - поточний prefix \"$WINEPREFIX\""
-         _W_msg_body='Щоб Ви хочете зробити для цього wineprefix?'
+         _W_msg_body='Що Ви хочете зробити для цього wineprefix?'
          _W_msg_dlls="Встановити Windows DLL чи компонент(и)"
          _W_msg_fonts='Встановити шрифт'
          _W_msg_settings='Змінити налаштування'
@@ -2467,6 +2467,14 @@ winetricks_settings_menu()
             title='?'
             author='?'
             . "$metadatafile"
+          # Begin 'title' strings localization code
+            case $LANG in
+            uk*) case "$title_uk" in
+                 "") ;;
+                 *) title="$title_uk";;
+                 esac
+            esac
+          # End of code
             printf "%s %s %s %s" " " FALSE \
                     $code \
                     "\"$title\""
@@ -6503,6 +6511,7 @@ load_quicktime76()
 #----------------------------------------------------------------
 
 w_metadata remove_mono settings \
+    title_uk="Видалити вбудоване wine-mono" \
     title="Remove builtin wine-mono"
 
 load_remove_mono()
@@ -17375,8 +17384,10 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata glsl=enabled settings \
+    title_uk="Включити glsl шейдери (за замовчуванням)" \
     title="Enable glsl shaders (default)"
 w_metadata glsl=disabled settings \
+    title_uk="Вимкнути glsl шейдери та використовувати arb шейдери (швидше, але іноді з перервами)" \
     title="Disable glsl shaders, use arb shaders (faster, but sometimes breaks)"
 
 load_glsl()
@@ -17387,8 +17398,10 @@ load_glsl()
 #----------------------------------------------------------------
 
 w_metadata multisampling=enabled settings \
+    title_uk="Включити Direct3D мультисемплінг" \
     title="Enable Direct3D multisampling"
 w_metadata multisampling=disabled settings \
+    title_uk="Вимкнути Direct3D мультисемплінг" \
     title="Disable Direct3D multisampling"
 
 load_multisampling()
@@ -17399,6 +17412,7 @@ load_multisampling()
 #----------------------------------------------------------------
 
 w_metadata npm=repack settings \
+    title_uk="Поставити NonPower2Mode на repack" \
     title="Set NonPower2Mode to repack"
 
 load_npm()
@@ -17409,8 +17423,10 @@ load_npm()
 #----------------------------------------------------------------
 
 w_metadata orm=fbo settings \
+    title_uk="Поставити OffscreenRenderingMode=fbo (за замовчуванням)" \
     title="Set OffscreenRenderingMode=fbo (default)"
 w_metadata orm=backbuffer settings \
+    title_uk="Поставити OffscreenRenderingMode=backbuffer" \
     title="Set OffscreenRenderingMode=backbuffer"
 
 load_orm()
@@ -17421,8 +17437,10 @@ load_orm()
 #----------------------------------------------------------------
 
 w_metadata psm=enabled settings \
+    title_uk="Включити PixelShaderMode" \
     title="Set PixelShaderMode to enabled"
 w_metadata psm=disabled settings \
+    title_uk="Вимкнути PixelShaderMode" \
     title="Set PixelShaderMode to disabled"
 
 load_psm()
@@ -17433,8 +17451,10 @@ load_psm()
 #----------------------------------------------------------------
 
 w_metadata strictdrawordering=enabled settings \
+    title_uk="Включити StrictDrawOrdering" \
     title="Enable StrictDrawOrdering"
 w_metadata strictdrawordering=disabled settings \
+    title_uk="Вимкнути StrictDrawOrdering (за замовчуванням)" \
     title="Disable StrictDrawOrdering (default)"
 
 load_strictdrawordering()
@@ -17445,16 +17465,22 @@ load_strictdrawordering()
 #----------------------------------------------------------------
 
 w_metadata rtlm=auto settings \
+    title_uk="Поставити RenderTargetLockMode на авто (за замовчуванням)" \
     title="Set RenderTargetLockMode to auto (default)"
 w_metadata rtlm=disabled settings \
+    title_uk="Вимкнути RenderTargetLockMode" \
     title="Set RenderTargetLockMode to disabled"
 w_metadata rtlm=readdraw settings \
+    title_uk="Поставити RenderTargetLockMode на readdraw" \
     title="Set RenderTargetLockMode to readdraw"
 w_metadata rtlm=readtex settings \
+    title_uk="Поставити RenderTargetLockMode на readtex" \
     title="Set RenderTargetLockMode to readtex"
 w_metadata rtlm=texdraw settings \
+    title_uk="Поставити RenderTargetLockMode на texdraw" \
     title="Set RenderTargetLockMode to texdraw"
 w_metadata rtlm=textex settings \
+    title_uk="Поставити RenderTargetLockMode на textex" \
     title="Set RenderTargetLockMode to textex"
 
 load_rtlm()
@@ -17466,8 +17492,10 @@ load_rtlm()
 # AlwaysOffscreen settings
 
 w_metadata ao=enabled settings \
+    title_uk="Включити AlwaysOffscreen" \
     title="Enable AlwaysOffscreen"
 w_metadata ao=disabled settings \
+    title_uk="Вимкнути AlwaysOffscreen (за замовчуванням)" \
     title="Disable AlwaysOffscreen (default)"
 
 load_ao()
@@ -17479,8 +17507,10 @@ load_ao()
 # DirectDraw settings
 
 w_metadata ddr=gdi settings \
+    title_uk="Поставити DirectDrawRenderer на gdi" \
     title="Set DirectDrawRenderer to gdi"
 w_metadata ddr=opengl settings \
+    title_uk="Поставити DirectDrawRenderer на opengl" \
     title="Set DirectDrawRenderer to opengl"
 
 load_ddr()
@@ -17492,10 +17522,13 @@ load_ddr()
 # DirectInput settings
 
 w_metadata mwo=force settings \
+    title_uk="Поставити примусове DirectInput MouseWarpOverride (необхідно для деяких ігор)" \
     title="Set DirectInput MouseWarpOverride to force (needed by some games)"
 w_metadata mwo=enabled settings \
+    title_uk="Включити DirectInput MouseWarpOverride (за замовчуванням)" \
     title="Set DirectInput MouseWarpOverride to enabled (default)"
 w_metadata mwo=disable settings \
+    title_uk="Вимкнути DirectInput MouseWarpOverride" \
     title="Set DirectInput MouseWarpOverride to disable"
 
 load_mwo()
@@ -17525,8 +17558,10 @@ _EOF_
 # Mac Driver settings
 
 w_metadata macdriver=mac settings \
+    title_uk="Включити рідний Mac Quartz драйвер (за замовчуванням)" \
     title="Enable the Mac native Quartz driver (default)"
 w_metadata macdriver=x11 settings \
+    title_uk="Вимкнути рідний Mac Quartz драйвер та використовувати замість нього X11" \
     title="Disable the Mac native Quartz driver, use X11 instead"
 
 load_macdriver()
@@ -17546,8 +17581,10 @@ _EOF_
 # X11 Driver settings
 
 w_metadata grabfullscreen=y settings \
+    title_uk="Примусове захоплення курсору для повноекранних вікон (необхідно для деяких ігор)" \
     title="Force cursor clipping for full-screen windows (needed by some games)"
 w_metadata grabfullscreen=n settings \
+    title_uk="Вимкнути примусове захоплення курсору для повноекранних вікон (за замовчуванням)" \
     title="Disable cursor clipping for full-screen windows (default)"
 
 load_grabfullscreen()
@@ -17569,8 +17606,10 @@ _EOF_
 }
 
 w_metadata windowmanagerdecorated=y settings \
+    title_uk="Дозволити менеджеру вікон декорувати вікна (за замовчуванням)" \
     title="Allow the window manager to decorate windows (default)"
 w_metadata windowmanagerdecorated=n settings \
+    title_uk="Не дозволяти менеджеру вікон декорувати вікна" \
     title="Prevent the window manager from decorating windows"
 
 load_windowmanagerdecorated()
@@ -17592,8 +17631,10 @@ _EOF_
 }
 
 w_metadata windowmanagermanaged=y settings \
+    title_uk="Дозволити менеджеру вікон керування вікнами (за замовчуванням)" \
     title="Allow the window manager to control windows (default)"
 w_metadata windowmanagermanaged=n settings \
+    title_uk="Не дозволяти менеджеру вікон керування вікнами" \
     title="Prevent the window manager from controling windows"
 
 load_windowmanagermanaged()
@@ -17620,8 +17661,10 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata alldlls=default settings \
+    title_uk="Видалити всі перевизначення DLL" \
     title="Remove all DLL overrides"
 w_metadata alldlls=builtin settings \
+    title_uk="Перевизначити найбільш поширені DLL на вбудовані" \
     title="Override most common DLLs to builtin"
 
 load_alldlls()
@@ -17633,12 +17676,16 @@ load_alldlls()
 }
 
 w_metadata fontsmooth=disable settings \
+    title_uk="Вимкнути згладжування шрифту" \
     title="Disable font smoothing"
 w_metadata fontsmooth=bgr settings \
+    title_uk="Включити субпіксельне згладжування шрифту для BGR LCD моніторів" \
     title="Enable subpixel font smoothing for BGR LCDs"
 w_metadata fontsmooth=rgb settings \
+    title_uk="Включити субпіксельне згладжування шрифту для RGB LCD моніторів" \
     title="Enable subpixel font smoothing for RGB LCDs"
 w_metadata fontsmooth=gray settings \
+    title_uk="Включити субпіксельне згладжування шрифту" \
     title="Enable subpixel font smoothing"
 
 load_fontsmooth()
@@ -17669,6 +17716,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata forcemono settings \
+    title_uk="Примусове використання mono замість .Net (для налогодження)" \
     title="Force using mono instead of .Net (for debugging)"
 
 load_forcemono()
@@ -17680,6 +17728,7 @@ load_forcemono()
 #----------------------------------------------------------------
 
 w_metadata heapcheck settings \
+    title_uk="Включити накопичувальну перевірку GlobalFlag" \
     title="Enable heap checking with GlobalFlag"
 
 load_heapcheck()
@@ -17697,6 +17746,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata hosts settings \
+    title_uk="Додати порожні файли у C:\windows\system32\drivers\etc\{hosts,services}" \
     title="Add empty C:\windows\system32\drivers\etc\{hosts,services} files"
 
 load_hosts()
@@ -17717,6 +17767,7 @@ load_hosts()
 #----------------------------------------------------------------
 
 w_metadata native_mdac settings \
+    title_uk="Перевизначити odbc32, odbccp32 та oledb32" \
     title="Override odbc32, odbccp32 and oledb32"
 
 load_native_mdac()
@@ -17729,6 +17780,7 @@ load_native_mdac()
 #----------------------------------------------------------------
 
 w_metadata native_oleaut32 settings \
+    title_uk="Перевизначити oleaut32" \
     title="Override oleaut32"
 
 load_native_oleaut32()
@@ -17739,6 +17791,7 @@ load_native_oleaut32()
 #----------------------------------------------------------------
 
 w_metadata nocrashdialog settings \
+    title_uk="Вимкнути діалог про помилку" \
     title="Disable crash dialog"
 
 load_nocrashdialog()
@@ -17758,6 +17811,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata nt40 settings \
+    title_uk="Поставити версію Windows NT 4.0" \
     title="Set windows version to Windows NT 4.0"
 
 load_nt40()
@@ -17768,6 +17822,7 @@ load_nt40()
 #----------------------------------------------------------------
 
 w_metadata sandbox settings \
+    title_uk="Пісочниця wineprefix - видалити посилання до HOME" \
     title="Sandbox the wineprefix - remove links to \$HOME"
 
 load_sandbox()
@@ -17802,12 +17857,16 @@ load_sandbox()
 #----------------------------------------------------------------
 
 w_metadata sound=alsa settings \
+    title_uk="Поставити звуковий драйвер ALSA" \
     title="Set sound driver to ALSA"
 w_metadata sound=coreaudio settings \
+    title_uk="Поставити звуковий драйвер Mac CoreAudio" \
     title="Set sound driver to Mac CoreAudio"
 w_metadata sound=disabled settings \
+    title_uk="Вимкнути звуковий драйвер" \
     title="Set sound driver to disabled"
 w_metadata sound=oss settings \
+    title_uk="Поставити звуковий драйвер OSS" \
     title="Set sound driver to OSS"
 
 load_sound()
@@ -17826,16 +17885,22 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata vd=off settings \
+    title_uk="Вимкнути віртуальний робочий стіл" \
     title="Disable virtual desktop"
 w_metadata vd=640x480 settings \
+    title_uk="Включити віртуальний робочий стіл та поставити розмір 640x480" \
     title="Enable virtual desktop, set size to 640x480"
 w_metadata vd=800x600 settings \
+    title_uk="Включити віртуальний робочий стіл та поставити розмір 800x600" \
     title="Enable virtual desktop, set size to 800x600"
 w_metadata vd=1024x768 settings \
+    title_uk="Включити віртуальний робочий стіл та поставити розмір 1024x768" \
     title="Enable virtual desktop, set size to 1024x768"
 w_metadata vd=1280x1024 settings \
+    title_uk="Включити віртуальний робочий стіл та поставити розмір 1280x1024" \
     title="Enable virtual desktop, set size to 1280x1024"
 w_metadata vd=1440x900 settings \
+    title_uk="Включити віртуальний робочий стіл та поставити розмір 1440x900" \
     title="Enable virtual desktop, set size to 1440x900"
 
 load_vd()
@@ -17874,12 +17939,16 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata videomemorysize=default settings \
+    title_uk="Дати можливість Wine визначити розмір відеопам'яті" \
     title="Let Wine detect amount of video card memory"
 w_metadata videomemorysize=512 settings \
+    title_uk="Повідомити Wine про 512МБ відеопам'яті" \
     title="Tell Wine your video card has 512MB RAM"
 w_metadata videomemorysize=1024 settings \
+    title_uk="Повідомити Wine про 1024МБ відеопам'яті" \
     title="Tell Wine your video card has 1024MB RAM"
 w_metadata videomemorysize=2048 settings \
+    title_uk="Повідомити Wine про 2048МБ відеопам'яті" \
     title="Tell Wine your video card has 2048MB RAM"
 
 load_videomemorysize()
@@ -17913,6 +17982,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata vista settings \
+    title_uk="Поставити версію Windows Vista" \
     title="Set windows version to Windows Vista"
 
 load_vista()
@@ -17923,6 +17993,7 @@ load_vista()
 #----------------------------------------------------------------
 
 w_metadata vsm=hardware settings \
+    title_uk="Поставити VertexShaderMode на hardware" \
     title="Set VertexShaderMode to hardware"
 
 load_vsm()
@@ -17933,6 +18004,7 @@ load_vsm()
 #----------------------------------------------------------------
 
 w_metadata win2k settings \
+    title_uk="Поставити версію Windows 2000" \
     title="Set windows version to Windows 2000"
 
 load_win2k()
@@ -17943,6 +18015,7 @@ load_win2k()
 #----------------------------------------------------------------
 
 w_metadata win2k3 settings \
+    title_uk="Поставити версію Windows 2003" \
     title="Set windows version to Windows 2003"
 
 load_win2k3()
@@ -17953,6 +18026,7 @@ load_win2k3()
 #----------------------------------------------------------------
 
 w_metadata win31 settings \
+    title_uk="Поставити версію Windows 3.1" \
     title="Set windows version to Windows 3.1"
 
 load_win31()
@@ -17963,6 +18037,7 @@ load_win31()
 #----------------------------------------------------------------
 
 w_metadata win7 settings \
+    title_uk="Поставити версію Windows 7" \
     title="Set windows version to Windows 7"
 
 load_win7()
@@ -17973,6 +18048,7 @@ load_win7()
 #----------------------------------------------------------------
 
 w_metadata win95 settings \
+    title_uk="Поставити версію Windows 95" \
     title="Set windows version to Windows 95"
 
 load_win95()
@@ -17983,6 +18059,7 @@ load_win95()
 #----------------------------------------------------------------
 
 w_metadata win98 settings \
+    title_uk="Поставити версію Windows 98" \
     title="Set windows version to Windows 98"
 
 load_win98()
@@ -17994,6 +18071,7 @@ load_win98()
 
 # Really, we should support other values, since winetricks did
 w_metadata winver= settings \
+    title_uk="Поставити версію Windows за замовчуванням (winxp)" \
     title="Set windows version to default (winxp)"
 
 load_winver()
@@ -18004,6 +18082,7 @@ load_winver()
 #----------------------------------------------------------------
 
 w_metadata winxp settings \
+    title_uk="Поставити версію Windows XP" \
     title="Set windows version to Windows XP"
 
 load_winxp()
