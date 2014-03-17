@@ -3686,6 +3686,7 @@ winetricks_init()
         case "$WINETRICKS_OPT_VERBOSE" in
         "1") echo -n "Wine is '$WINE'; Wine version is "
              "$WINE" --version || w_die "Can't get wine version"
+             echo "winetricks is $0 ; winetricks version is $WINETRICKS_VERSION"
              ;;
         esac
         unset _abswine
