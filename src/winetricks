@@ -9886,11 +9886,6 @@ load_wmp9()
         w_die "Installer doesn't support 64-bit architecture."
     fi
 
-    if w_workaround_wine_bug 28994 "virtualprotect problem" ,1.3.31 1.3.35,
-    then
-        w_die "Please upgrade to wine-1.3.35 to install wmp9."
-    fi
-
     w_call wsh57
 
     w_set_winver win2k
@@ -9898,8 +9893,11 @@ load_wmp9()
     # See also http://www.microsoft.com/windows/windowsmedia/player/9series/default.aspx
     w_download http://download.microsoft.com/download/1/b/c/1bc0b1a3-c839-4b36-8f3c-19847ba09299/MPSetup.exe 580536d10657fa3868de2869a3902d31a0de791b
 
-    # Wine's wmvcore crashes when the installer asks it to register itself?
-    w_override_dlls native wmvcore
+    # remove builtin placeholders to allow update
+    rm -f "$W_SYSTEM32_DLLS"/wmvcore.dll "$W_SYSTEM32_DLLS"/wmp.dll
+    # need native wmp override to allow update and later checks to succeed
+    w_override_dlls native wmp
+
     # FIXME: should we override quartz?  Builtin crashes when you play
     # anything, but maybe that's bug 30557 and only affects new systems?
     # Wine's pidgen is too stubby, crashes, see wine bug 31111
