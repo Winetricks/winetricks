@@ -44,7 +44,7 @@ QUICKCHECK="flash spotify"
 # middle of a two day run.
 for tool in time cabextract unrar unzip 7z
 do
-    if test "`which $tool`" = ""
+    if test "`type $tool`" = ""
     then
         echo "Please install $tool."
         exit 1
