@@ -8852,16 +8852,17 @@ w_metadata mingw apps \
     publisher="GNU" \
     year="2013" \
     media="download" \
-    file1="mingw-get-0.6.2-mingw32-beta-20131004-1-bin.tar.xz" \
+    file1="mingw-get-setup.exe" \
     installed_exe1="c:/MinGW/bin/gcc.exe" \
     homepage="http://mingw.org/wiki/Getting_Started"
 
 load_mingw()
 {
-    w_download "$WINETRICKS_SOURCEFORGE/mingw/files/$file1"
+    w_download "$WINETRICKS_SOURCEFORGE/mingw/files/$file1" 66f1355f16ac1e328243e877880eb6e45e8b30e2
+
+    cd "$W_CACHE/mingw"
+    w_try "$WINE" "$file1"
     
-    w_try mkdir -p "$W_DRIVE_C/MinGW"
-    w_try tar -C "$W_DRIVE_C/MinGW" -Jxvf "$W_CACHE/mingw/$file1"
     w_append_path 'C:\MinGW\bin'
     w_try "$WINE" mingw-get update
     w_try "$WINE" mingw-get install gcc msys-base
