@@ -1943,7 +1943,7 @@ w_do_call()
         mkdir -p "$W_TMP"
 
         # Unset all known used metadata values, in case this is a nested call
-        unset installed_file1 installed_exe1
+        unset conflicts installed_file1 installed_exe1
 
         if winetricks_metadata_exists $1
         then
