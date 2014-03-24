@@ -241,19 +241,19 @@ test_dlls()
 test_dotnet()
 {
     # verify that each individual installer works:
-    for version in ""
+    for version in "dotnet11 dotnet20"
     do
-        echo $version
+        echo "$version"
     done
 
     # combinations that should work:
-    for combo in ""
+    for combo in "dotnet20 dotnet20sp2"
     do
         echo "$combo"
     done
 
     # combinations that should break:
-    for fail_combo ""
+    for fail_combo "dotnet11 dotnet20"
     do
         echo "$fail_combo"
     done
