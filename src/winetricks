@@ -4875,7 +4875,6 @@ load_dotnet20()
     then
         "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled'
     fi
-    $WINE regedit
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
     w_download http://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
