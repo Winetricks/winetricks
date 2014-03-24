@@ -4852,7 +4852,6 @@ load_dotnet_verifier()
 
 #----------------------------------------------------------------
 
-# FIXME: should conflict with dotnet20sp1, but that breaks dotnet35sp1
 w_metadata dotnet20 dlls \
     title="MS .NET 2.0" \
     publisher="Microsoft" \
@@ -4870,6 +4869,13 @@ load_dotnet20()
     # Recipe from http://bugs.winehq.org/show_bug.cgi?id=10467#c57
     # and http://bugs.winehq.org/show_bug.cgi?id=30845#c10
     w_set_winver win2k
+
+    # FIXME: verify on pristine windows XP:
+    if w_workaround_wine_bug 34803
+    then
+        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled'
+    fi
+    $WINE regedit
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
     w_download http://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
@@ -5023,7 +5029,6 @@ load_dotnet20sp1()
 
 #----------------------------------------------------------------
 
-# FIXME: should conflict with dotnet20sp1, but that breaks dotnet35sp1
 w_metadata dotnet20sp2 dlls \
     title="MS .NET 2.0 SP2 (experimental)" \
     publisher="Microsoft" \
@@ -5049,6 +5054,12 @@ load_dotnet20sp2()
         $WINESERVER -w
         WINEDLLOVERRIDES=regsvcs.exe,mscorsvw.exe=b
         export WINEDLLOVERRIDES
+    fi
+
+    # FIXME: verify on pristine windows XP:
+    if w_workaround_wine_bug 34803
+    then
+        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled'
     fi
 
     # http://www.microsoft.com/downloads/details.aspx?familyid=5B2C0358-915B-4EB5-9B1D-10E506DA9D0F
