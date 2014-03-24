@@ -238,6 +238,27 @@ test_dlls()
     done
 }
 
+test_dotnet()
+{
+    # verify that each individual installer works:
+    for version in ""
+    do
+        echo $version
+    done
+
+    # combinations that should work:
+    for combo in ""
+    do
+        echo "$combo"
+    done
+
+    # combinations that should break:
+    for fail_combo ""
+    do
+        echo "$fail_combo"
+    done
+}
+
 test_manual_dlls()
 {
     sh winetricks list-manual-download > manual.log
@@ -334,6 +355,7 @@ test_quick()
 
 test_full() {
     test_quick
+    test_dotnet
     test_speed list
     test_speed list-download
     # three tries to preload cache
@@ -352,6 +374,7 @@ test_full() {
 case "$1" in
 preload) test_preload;;
 quick) test_quick;;
+dotnet) test_dotnet;;
 full)  test_full;;
 *)     echo "Usage: $0 quick|full"; exit 1;;
 esac
