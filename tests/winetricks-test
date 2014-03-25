@@ -55,10 +55,17 @@ done
 
 passes=0
 errors=0
+
 fail()
 {
     echo FAIL: $@
     errors=`expr $errors + 1`
+}
+
+pass()
+{
+    echo PASS: $@       
+    passes=`expr $passes + 1`
 }
 
 case "$LANG" in
@@ -133,22 +140,11 @@ total_df()
     df | grep -v /dev/loop | awk '/^\// { sum += $4 } END { print sum }'
 }
 
+# for single apps, wrapper around test_command:
 test_app()
 {
     app=$1
     _errors_before=$errors
-
-    export WINEPREFIX=$WINE_PREFIXES/$app
-    DRIVE_C="$WINEPREFIX/dosdevices/c:"
-
-    # change if you don't want to skip ones already installed
-    if test -d $WINEPREFIX
-    then
-        echo "Skipping $app, already installed"
-        return 0
-        #rm -rf $WINEPREFIX
-    fi
-    mkdir -p $WINEPREFIX
 
     # Watch transient disk space
     DF_START=`total_df`
@@ -161,20 +157,10 @@ test_app()
     touch df-daemon
     (set +x; while test -f df-daemon; do total_df; sleep 1; done ) > df-during.log &
 
-    # Isolate us from the user's home directory
-    sh -x winetricks sandbox
+    test_command $app
+    test_app_checksums
 
-    echo "Installing $app"
-    if ! /usr/bin/time -p --output=time.log sh winetricks --no-isolate -q $app
-    then
-        rm df-daemon
-        fail "test_app $app failed!"
-        return
-    fi
-    rm df-daemon
-    seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
-    echo "test_app: ${app}: install_time $seconds seconds."
-
+    # Post install:
     # Don't check whether metaverbs are installed
     case "$app" in
     allcodes) ;;
@@ -187,6 +173,8 @@ test_app()
         ;;
     esac
 
+    # Cleanup..
+    rm df-daemon
     # Total max disk usage = max df change plus any initial blocks in cache
     DF_MIN=`cat df-during.log | awk '{ if (min == "" || $1 < min) min=$1; } END {print min}' `
     DF_DIFF=`expr $DF_START - $DF_MIN`
@@ -196,30 +184,66 @@ test_app()
     TOTAL_MB=`expr $TOTAL / 1024`
     mkdir -p measurements
     echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> measurements/$app.dat
+}
 
-    # Work around dangling processes (whether normal or the fault of wine or the verb script)
-    case $app in
-    dotnet*)
-        killall wineconsole ;;   # bug in wine?  the wineconsoles are for the langpacks, and seem empty.
-    wmi)
-        killall WinMgmt.exe ;;   # wmi starts a service
-    fontxplorer)
-        killall winefile.exe ;;  # a number of apps open a folder on the desktop
-    hegemony*)
-        killall Launcher.exe ;;  # or should this be in the verb?
-    esac
+test_command()
+{
+    command=$@
+    _errors_before=$errors
+
+    export WINEPREFIX=$WINE_PREFIXES/$(echo $@ | tr " " "-")
+    DRIVE_C="$WINEPREFIX/dosdevices/c:"
+
+    # change if you don't want to skip ones already installed
+    if test -d $WINEPREFIX
+    then
+        echo "Skipping $command, already installed"
+        return 0
+        #rm -rf $WINEPREFIX
+    fi
+    mkdir -p $WINEPREFIX
+
+    # Isolate us from the user's home directory
+    sh -x winetricks sandbox
+
+    echo "Installing $command"
+    if [ "$EXPECT_FAIL" = "yes" ]
+    then
+        # A success is failure:
+        sh winetricks --no-isolate -q $command && fail "$@ succeeded, should have failed"
+    elif ! /usr/bin/time -p --output=time.log sh winetricks --no-isolate -q $command
+    then
+        rm df-daemon
+        fail "test_command $command failed!"
+        return
+    else
+        echo "winetricks $@ completed"
+    fi
+    seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
+    echo "test_app: ${app}: install_time $seconds seconds."
+
+    # Cleanup:
+    for x in $command
+    do
+        case $x in
+        dotnet*)
+            killall wineconsole ;;   # bug in wine?  the wineconsoles are for the langpacks, and seem empty.
+        wmi)
+            killall WinMgmt.exe ;;   # wmi starts a service
+        fontxplorer)
+            killall winefile.exe ;;  # a number of apps open a folder on the desktop
+        hegemony*)
+            killall Launcher.exe ;;  # or should this be in the verb?
+        esac
+    done
     killall notepad.exe          # Arcania-Gothic4 and others
 
+    echo "Checking for dangling processes!"
     ps augxw | grep exe
     $WINESERVER -w
     echo "Wineserver done."
 
-    test_app_checksums
-
-    if test $_errors_before = $errors
-    then
-        passes=`expr $passes + 1`
-    fi
+    pass $@
 }
 
 test_dlls()
