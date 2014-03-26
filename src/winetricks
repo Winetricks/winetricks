@@ -4791,8 +4791,7 @@ w_metadata dotnet11 dlls \
     media="download" \
     conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet30 dotnet30sp1 dotnet35 dotnet35sp1 vjrun20" \
     file1="dotnetfx.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/ndpsetup.ico" \
-    wine_showstoppers="25120"
+    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/ndpsetup.ico"
 
 load_dotnet11()
 {
@@ -4851,35 +4850,45 @@ verify_dotnet11()
 #----------------------------------------------------------------
 
 w_metadata dotnet11sp1 dlls \
-    title="MS .NET 1.1 SP1 (broken in wine)" \
+    title="MS .NET 1.1 SP1" \
     publisher="Microsoft" \
     year="2004" \
     media="download" \
     file1="NDP1.1sp1-KB867460-X86.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/web_hightrust.config.default" \
-    wine_showstoppers="25120"
+    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/web_hightrust.config.default"
 
-# fixme: sometimes security.config is missing after install, see
-# http://blogs.msdn.com/b/shawnfa/archive/2006/02/09/527688.aspx
-# If this happens often, we may need to change the install check.
 load_dotnet11sp1()
 {
     w_call dotnet11
     w_download http://download.microsoft.com/download/8/b/4/8b4addd8-e957-4dea-bdb8-c4e00af5b94b/NDP1.1sp1-KB867460-X86.exe 74a5b25d65a70b8ecd6a9c301a0aea10d8483a23
 
+    w_try cd "$W_CACHE/dotnet11sp1"
+    # Use builtin regsvcs.exe to work around http://bugs.winehq.org/show_bug.cgi?id=25120
     if test $W_OPT_UNATTENDED
     then
-        WINEDLLOVERRIDES="regsvcs.exe=b" "$WINE" "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe /q /C:"install /q"
-    else
-        WINEDLLOVERRIDES="regsvcs.exe=b" "$WINE" "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe
-    fi
-    status=$?
+        WINEDLLOVERRIDES="regsvcs.exe=b" w_ahk_do "
+            SetTitleMatchMode, 2
+            run, NDP1.1sp1-KB867460-X86.exe /q /C:"install /q"
 
-    case $status in
-    0) ;;
-    105|194) echo "exit status $status - normal, system needs simulated reboot" ;;
-    *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
-    esac
+            Loop
+            {
+                sleep 1000
+                ifwinexist, Fatal error, Failed to delay load library
+                {
+                    WinClose, Fatal error, Failed to delay load library
+                    continue
+                }
+                Process, exist, dotnetfx.exe
+                dotnet_pid = %ErrorLevel%  ; Save the value immediately since ErrorLevel is often changed.
+                if dotnet_pid = 0
+                {
+                    break
+                }
+            }
+        "
+    else
+        WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe
+    fi
 }
 
 #----------------------------------------------------------------
