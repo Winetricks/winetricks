@@ -503,6 +503,16 @@ w_dotnet_verify()
 {
     case $1 in
         dotnet11) version="1.1" ;;
+        dotnet11sp1) version="1.1 SP1" ;;
+        dotnet20) version="2.0" ;;
+        dotnet20sp1) version="2.0 SP1" ;;
+        dotnet20sp2) version="2.0 SP2" ;;
+        dotnet30) version="3.0" ;;
+        dotnet30sp1) version="3.0 SP1" ;;
+        dotnet35) version="3.5" ;;
+        dotnet35sp1) version="3.5 SP1" ;;
+        dotnet40) version="4 Client" ;;
+        dotnet45) version="4.5" ;;
         *) echo error ; exit 1 ;;
     esac
             w_call dotnet_verifier
@@ -4891,6 +4901,11 @@ load_dotnet11sp1()
     fi
 }
 
+verify_dotnet11sp1()
+{
+    w_dotnet_verify dotnet11sp1
+}
+
 #----------------------------------------------------------------
 
 w_metadata dotnet_verifier dlls \
@@ -4963,6 +4978,12 @@ load_dotnet20()
     then
         w_killall "mscorsvw.exe"
     fi
+
+}
+
+verify_dotnet20()
+{
+    w_dotnet_verify dotnet20
 }
 
 #----------------------------------------------------------------
@@ -5089,6 +5110,11 @@ load_dotnet20sp1()
     w_unset_winver
 }
 
+verify_dotnet20sp1()
+{
+    w_dotnet_verify dotnet20sp1
+}
+
 #----------------------------------------------------------------
 
 w_metadata dotnet20sp2 dlls \
@@ -5157,6 +5183,11 @@ load_dotnet20sp2()
     esac
 
     w_unset_winver
+}
+
+verify_dotnet20sp2()
+{
+    w_dotnet_verify dotnet20sp2
 }
 
 #----------------------------------------------------------------
@@ -5232,6 +5263,11 @@ load_dotnet30()
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
 }
 
+verify_dotnet30()
+{
+    w_dotnet_verify dotnet30
+}
+
 #----------------------------------------------------------------
 
 w_metadata dotnet30sp1 dlls \
@@ -5273,6 +5309,11 @@ load_dotnet30sp1()
     w_info $file1 exited with status $status
 }
 
+verify_dotnet30sp1()
+{
+    w_dotnet_verify dotnet30sp1
+}
+
 #----------------------------------------------------------------
 
 w_metadata dotnet35 dlls \
@@ -5309,6 +5350,11 @@ load_dotnet35()
     w_try_cabextract $W_UNATTENDED_DASH_Q "$W_CACHE"/dotnet35/dotnetfx35.exe
     cd wcu/dotNetFramework
     "$WINE" dotNetFx35setup.exe /lang:ENU $W_UNATTENDED_SLASH_Q
+}
+
+verify_dotnet35()
+{
+    w_dotnet_verify dotnet35
 }
 
 #----------------------------------------------------------------
@@ -5362,6 +5408,11 @@ load_dotnet35sp1()
             }
         }
     "
+}
+
+verify_dotnet35sp1()
+{
+    w_dotnet_verify dotnet35sp1
 }
 
 #----------------------------------------------------------------
@@ -5432,6 +5483,11 @@ load_dotnet40()
     fi
 }
 
+verify_dotnet40()
+{
+    w_dotnet_verify dotnet40
+}
+
 #----------------------------------------------------------------
 
 w_metadata dotnet45 dlls \
@@ -5481,6 +5537,11 @@ load_dotnet45()
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
     w_set_winver win2k3
+}
+
+verify_dotnet45()
+{
+    w_dotnet_verify dotnet45
 }
 
 #----------------------------------------------------------------

@@ -26,8 +26,6 @@ BLACKLIST="$BLACKLIST|gecko110|gecko"
 BLACKLIST="$BLACKLIST|bioshock2|audibledm"
 # We don't have -q support for these
 BLACKLIST="$BLACKLIST|dx8sdk"
-# broken
-BLACKLIST="$BLACKLIST|dotnet11|dotnet11sp1"
 # broken, see https://code.google.com/p/winetricks/issues/detail?id=318
 BLACKLIST="$BLACKLIST|xna40"
 # broken/flaky, http://bugs.winehq.org/show_bug.cgi?id=26016
@@ -265,9 +263,9 @@ test_dlls()
 test_dotnet()
 {
     # verify that each individual installer works:
-    for version in "dotnet11 dotnet20"
+    for x in dotnet11 dotnet11sp1 dotnet20 dotnet20sp1 dotnet20sp2 dotnet30 dotnet30sp1 dotnet35 dotnet35sp1 dotnet40 dotnet45
     do
-        echo "$version"
+        test_command --verify $x
     done
 
     # combinations that should work:
@@ -398,7 +396,7 @@ test_full() {
 case "$1" in
 preload) test_preload;;
 quick) test_quick;;
-dotnet) test_dotnet;;
+dotnet) test_preload ; test_dotnet;;
 full)  test_full;;
 *)     echo "Usage: $0 quick|full"; exit 1;;
 esac
