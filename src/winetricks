@@ -10500,45 +10500,30 @@ load_amnesia_tdd_demo()
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
-        SetWinDelay 1000
         SetTitleMatchMode, 2
-        run amnesia_tdd_demo_1.0.1.exe
-        WinWait,Select Setup Language,language
+        Run, amnesia_tdd_demo_1.0.1.exe
         if ( w_opt_unattended > 0 ) {
-            WinActivate
-            ;ControlClick, TNewButton1; OK
-            send {Enter}              ; OK
-            WinWait,Setup - Amnesia - The Dark Descent Demo,Welcome
-            ;ControlClick TNewButton1 ; Next
-            send {Enter}              ; Next
-            WinWait,Setup - Amnesia - The Dark Descent Demo,License
-            ControlClick TNewRadioButton1 ; agree
-            Sleep 1000
-            send !n                   ; Next
-            ;send {Enter}             ; Next
-            ;ControlClick TNewButton2 ; Next
-            WinWait,Setup - Amnesia - The Dark Descent Demo,Destination
-            ;ControlClick TNewButton3 ; Next
-            send {Enter}              ; Next
-            WinWait,Folder Does Not Exist,created
-            ;ControlClick Button1     ; OK
-            send {Enter}              ; OK
-            WinWait,Setup - Amnesia - The Dark Descent Demo,shortcuts
-            ;ControlClick TNewButton4 ; Next
-            send {Enter}              ; Next
-            WinWait,Setup - Amnesia - The Dark Descent Demo,additional tasks
-            ;ControlClick TNewButton4 ; Next
-            send {Enter}              ; Next
-            WinWait,Setup - Amnesia - The Dark Descent Demo,installing
-            ;ControlClick TNewButton4 ; Install
-            send {Enter}              ; Install
-        }
-        WinWait,Setup - Amnesia - The Dark Descent Demo,finished
-        if ( w_opt_unattended > 0 ) {
-            ;ControlClick TNewButton4 ; Finish
-            send {Enter}              ; Finish
-        }
-        WinWaitClose,Setup - Amnesia - The Dark Descent Demo,finished
+            WinWait,Select Setup Language, language
+            ControlClick, TNewButton1
+            WinWait, Amnesia - The Dark Descent Demo, Welcome
+            ControlClick, TNewButton1
+            WinWait, Amnesia - The Dark Descent Demo, License
+            ControlClick, TNewRadioButton1
+            ControlClick, TNewButton2
+            WinWait, Amnesia - The Dark Descent Demo, installed?
+            ControlClick, TNewButton3
+            WinWait, Folder Does Not Exist, created
+            ControlClick, Button1
+            WinWait, Amnesia - The Dark Descent Demo, shortcuts
+            ControlClick, TNewButton4
+            WinWait, Amnesia - The Dark Descent Demo, additional tasks
+            ControlClick, TNewButton4
+            WinWait, Amnesia - The Dark Descent Demo, ready to begin installing
+            ControlClick, TNewButton4
+            WinWait, Amnesia - The Dark Descent Demo, finished
+            ControlClick, TNewButton4
+            WinWaitClose, Amnesia - The Dark Descent Demo, finished
+        }       
     "
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Amnesia - The Dark Descent Demo\\redist" "Amnesia.exe"
