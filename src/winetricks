@@ -9386,13 +9386,9 @@ load_spotify()
             WinClose
         }
         WinWaitClose
+        sleep 1000
+        Process, Close, SpotifyWebHelper.exe
         "
-
-    # Kill the background task started if "Allow Spotify to be started from the Web" is specified
-    # or should we just do $WINESERVER -k, like fable_tlc does?
-    PID=`ps augxw | grep SpotifyWebHelper.exe | grep -v grep | awk '{print $2}'`
-
-    kill $PID
 
     w_declare_exe "c:\\users\\$LOGNAME\\Application Data\\Spotify" spotify.exe
 }
