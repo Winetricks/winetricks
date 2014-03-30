@@ -8833,6 +8833,16 @@ load_ie7()
         "$WINE" IE7-WindowsXP-x86-enu.exe $quiet
     fi
 
+    # IE7 exits with 194 to signal a reboot
+    status=$?
+    case $status in
+    0) ;;
+    105) echo "exit status $status - normal, user selected 'restart now'" ;;
+    194) echo "exit status $status - normal, user selected 'restart later'" ;;
+    *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
+
+
     if test -w /
     then
         # END KLUDGE: restore z:, assuming user didn't kill us
