@@ -6821,6 +6821,24 @@ load_tabctl32()
 
 #----------------------------------------------------------------
 
+w_metadata updspapi dlls \
+    title="Windows Update Service API" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/updspapi.dll"
+
+load_updspapi()
+{
+    helper_xpsp3 i386/update/updspapi.dll
+    w_try cp -f "$W_TMP"/i386/update/updspapi.dll "$W_SYSTEM32_DLLS"
+
+    w_override_dlls native,builtin updspapi
+}
+
+#----------------------------------------------------------------
+
 w_metadata usp10 dlls \
     title="Uniscribe 1.325 " \
     publisher="Microsoft" \
