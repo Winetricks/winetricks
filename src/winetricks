@@ -6720,6 +6720,24 @@ load_secur32()
 
 #----------------------------------------------------------------
 
+w_metadata setupapi dlls \
+    title="MS Setup API" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/setupapi.dll"
+
+load_setupapi()
+{
+    helper_xpsp3 i386/setupapi.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/setupapi.dl_
+
+    w_override_dlls native,builtin setupapi
+}
+
+#----------------------------------------------------------------
+
 w_metadata shockwave dlls \
     title="Shockwave" \
     publisher="Adobe" \
