@@ -16632,13 +16632,13 @@ w_metadata typingofthedead_demo games \
     title="Typing of the Dead Demo" \
     publisher="Sega" \
     year="1999" \
-    media="download" \
+    media="manual_download" \
     file1="Tod_e_demo.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/SEGA/TOD-Demo/Tod_e_demo.exe"
 
 load_typingofthedead_demo()
 {
-    w_download "http://downloads.pcworld.com/pub/new/fun_and_games/other/tod-demo.zip" 96fe3edb2431210932af840e29c59bce6b7fc80f
+    w_download "http://www.fileplanet.com/54947/50000/fileinfo/The-Typing-of-the-Dead-Demo" 96fe3edb2431210932af840e29c59bce6b7fc80f
 
     cd "$W_CACHE/$W_PACKAGE"
     mkdir "$W_TMP"
