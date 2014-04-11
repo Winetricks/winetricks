@@ -5869,7 +5869,9 @@ load_icodecs()
     # Note: this codec is insecure, see
     # http://support.microsoft.com/kb/954157
     # Original source, ftp://download.intel.com/support/createshare/camerapack/codinstl.exe, had same checksum
-    w_download "http://codec.alshow.co.kr/Down/codinstl.exe" 2c5d64f472abe3f601ce352dcca75b4f02996f8a
+    # 2010-11-14: http://codec.alshow.co.kr/Down/codinstl.exe
+    # 2014-04-11: http://www.cucusoft.com/codecdownload/codinstl.exe (linked from http://www.cucusoft.com/codec.asp)
+    w_download "http://www.cucusoft.com/codecdownload/codinstl.exe" 2c5d64f472abe3f601ce352dcca75b4f02996f8a
 
     cd "$W_CACHE"/icodecs
 
