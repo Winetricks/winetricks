@@ -356,6 +356,7 @@ test_preload()
 
 test_quick()
 {
+    echo "warning: quick test takes up around 20GB"
     # Test the frequent download-changes-checksum offenders first
     export W_CACHE="$cache"
     rm -rf "$W_CACHE"
