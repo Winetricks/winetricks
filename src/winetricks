@@ -2177,7 +2177,7 @@ winetricks_early_wine()
     # gecko (winezeug bug 223).
     # The tr removes carriage returns so expanded variables don't have crud on the end
     # The grep works around using new wineprefixes with old wine
-    WINEDEBUG=-all "$WINE" "$@" 2>/dev/null | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v "Module not found" || true)
+    WINEDEBUG=-all "$WINE" "$@" 2> /tmp/early_wine.err.txt | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v "Module not found" || true)
 }
 
 winetricks_detect_gui()
@@ -3474,7 +3474,7 @@ winetricks_set_wineprefix()
     # The folder-name is localized!
     W_PROGRAMS_WIN="`w_expand_env ProgramFiles`"
     case "$W_PROGRAMS_WIN" in
-    "") w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string" ;;
+    "")  w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string, error message '`cat /tmp/early_wine.err.txt`'";;
     %*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string '$W_PROGRAMS_WIN' ... can be caused a corrupt wineprefix, an old wine, or by not owning $WINEPREFIX" ;;
     *unknown*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
     esac
@@ -5123,7 +5123,8 @@ w_metadata dotnet20sp2 dlls \
     year="2009" \
     media="download" \
     conflicts="dotnet11" \
-    file1="NetFx20SP2_x86.exe"
+    file1="NetFx20SP2_x86.exe" \
+    installed_file1="c:/windows/assembly/NativeImages_v2.0.50727_32/mscorlib/fbb56b651d41914fad1c998a3602fb7b/mscorlib.ni.dll"
 
 load_dotnet20sp2()
 {
@@ -6350,7 +6351,9 @@ load_nuget()
     w_call dotnet40
     # 2014-01-22: d4082afc4f89df195fa1e83ee1cf02bce3dd2f13
     # 2014-02-26: 9bc98ced9c2d2b51ab687f86b5580913c025b8b0
-    w_download https://nuget.org/nuget.exe 9bc98ced9c2d2b51ab687f86b5580913c025b8b0
+    # 2014-04-17: 3210cc9a2e575384d59b0604c892bccce760e9b6
+    # probably changes too rapidly to check
+    w_download https://nuget.org/nuget.exe
     w_try cp "$W_CACHE/$W_PACKAGE"/nuget.exe "$W_SYSTEM32_DLLS"
     w_warn "To run nuget, use the commandline \"$WINE nuget\"."
 }
