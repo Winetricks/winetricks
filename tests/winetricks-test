@@ -197,7 +197,6 @@ test_command()
         return 0
         #rm -rf $WINEPREFIX
     fi
-    mkdir -p $WINEPREFIX
 
     # Isolate us from the user's home directory
     sh -x winetricks sandbox
