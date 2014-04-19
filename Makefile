@@ -53,7 +53,16 @@ install:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/man/man1
 	$(INSTALL_DATA) src/winetricks.1 $(DESTDIR)$(PREFIX)/share/man/man1/winetricks.1
 
-check:
+
+$(HOME)/winetricks-preload-cache:
+	echo 'This is a manual step that only has to be done once.'
+	echo 'You will be asked to download a few things and drag them into folders,'
+	echo 'and then make will fail.  Do the downloads/drags, then rerun Make.'
+	echo 'You will not be prompted for this step again, so get it right first time,'
+	echo 'or remove the directory ~/winetricks-preload-cache to retry.'
+	cd src; sh ../tests/winetricks-test preload
+
+check: $(HOME)/winetricks-preload-cache
 	echo 'This verifies that most DLL verbs, plus flash, install ok.'
 	echo 'It should take about an hour to run with a fast connection.'
 	echo 'If you want to test a particular version of wine, do e.g.'
