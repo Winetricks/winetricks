@@ -4810,21 +4810,15 @@ load_dotnet11()
         w_die "This package does not work on a 64-bit installation"
     fi
 
-    w_call fontfix
-
     # http://www.microsoft.com/downloads/details.aspx?FamilyId=262D25E3-F589-4842-8157-034D1E7CF3A3
     w_download http://download.microsoft.com/download/a/a/c/aac39226-8825-44ce-90e3-bf8203e74006/dotnetfx.exe 16a354a2207c4c8846b617cbc78f7b7c1856340e
 
-    # Remove bits of Wine that conflict with native .net 11
-    rm -rf "$W_WINDIR_UNIX/Microsoft.NET/Framework/v1.1.4322"
-    "$WINE" reg delete "HKLM\Software\Microsoft\.NETFramework\policy\v2.0" /f || true
-    "$WINE" reg delete "HKLM\Software\Microsoft\.NETFramework" /v InstallRoot /f || true
-
-    # need corefonts, else installer crashes
+    w_call remove_mono
     w_call corefonts
+    w_call fontfix
 
     w_try cd "$W_CACHE/dotnet11"
-    # Use builtin regsvcs.exe to work around http://bugs.winehq.org/show_bug.cgi?id=25120
+    # Use builtin regsvcs.exe to work around https://bugs.winehq.org/show_bug.cgi?id=25120
     if test $W_OPT_UNATTENDED
     then
         WINEDLLOVERRIDES="regsvcs.exe=b" w_ahk_do "
@@ -4869,8 +4863,10 @@ w_metadata dotnet11sp1 dlls \
 
 load_dotnet11sp1()
 {
-    w_call dotnet11
     w_download http://download.microsoft.com/download/8/b/4/8b4addd8-e957-4dea-bdb8-c4e00af5b94b/NDP1.1sp1-KB867460-X86.exe 74a5b25d65a70b8ecd6a9c301a0aea10d8483a23
+
+    w_call remove_mono
+    w_call dotnet11
 
     w_try cd "$W_CACHE/dotnet11sp1"
     # Use builtin regsvcs.exe to work around http://bugs.winehq.org/show_bug.cgi?id=25120
@@ -4941,6 +4937,9 @@ w_metadata dotnet20 dlls \
 
 load_dotnet20()
 {
+    # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
+    w_download http://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
+
     w_call remove_mono
     w_call fontfix
 
@@ -4953,9 +4952,6 @@ load_dotnet20()
     then
         "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled'
     fi
-
-    # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
-    w_download http://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
 
     cd "$W_CACHE"/dotnet20
     if w_workaround_wine_bug 30845 "Using native fusion while installing..." 1.5.8,
@@ -4999,10 +4995,12 @@ w_metadata dotnet20sdk dlls \
 
 load_dotnet20sdk()
 {
-    w_call dotnet20
-
     # http://www.microsoft.com/en-us/download/details.aspx?id=19988
     w_download http://download.microsoft.com/download/c/4/b/c4b15d7d-6f37-4d5a-b9c6-8f07e7d46635/setup.exe 4e4b1072b5e65e855358e2028403f2dc52a62ab4
+
+    w_call remove_mono
+
+    w_call dotnet20
 
     cd "$W_CACHE"/dotnet20sdk
     w_ahk_do "
@@ -5066,10 +5064,10 @@ w_metadata dotnet20sp1 dlls \
 
 load_dotnet20sp1()
 {
-    if w_workaround_wine_bug 16956 "wine version too old" 1.3.22,
-    then
-        w_die "wine-1.3.22 or later required to install dotnet20sp1 properly"
-    fi
+    # FIXME: URL?
+    w_download http://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe eef5a36924cdf0c02598ccf96aa4f60887a49840
+
+    w_call remove_mono
 
     w_call dotnet20
 
@@ -5084,10 +5082,10 @@ load_dotnet20sp1()
     WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b
     export WINEDLLOVERRIDES
 
+    # FIXME: still needed?
     # Workaround Wine/Mono integration:
     "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v2.0.50727" /v Version /t REG_SZ /d "2.0.50727" /f
 
-    w_download http://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe eef5a36924cdf0c02598ccf96aa4f60887a49840
     cd "$W_CACHE"/dotnet20sp1
     "$WINE" NetFx20SP1_x86.exe ${W_OPT_UNATTENDED:+/q}
     status=$?
@@ -5128,6 +5126,11 @@ w_metadata dotnet20sp2 dlls \
 
 load_dotnet20sp2()
 {
+    # http://www.microsoft.com/downloads/details.aspx?familyid=5B2C0358-915B-4EB5-9B1D-10E506DA9D0F
+    w_download http://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 22d776d4d204863105a5db99e8b8888be23c61a7
+
+    w_call remove_mono
+
     w_call dotnet20
 
     WINEDLLOVERRIDES=
@@ -5151,8 +5154,6 @@ load_dotnet20sp2()
         "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled'
     fi
 
-    # http://www.microsoft.com/downloads/details.aspx?familyid=5B2C0358-915B-4EB5-9B1D-10E506DA9D0F
-    w_download http://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 22d776d4d204863105a5db99e8b8888be23c61a7
     cd "$W_CACHE"/dotnet20sp2
     w_ahk_do "
         SetTitleMatchMode, 2
@@ -5204,6 +5205,11 @@ w_metadata dotnet30 dlls \
 
 load_dotnet30()
 {
+    # http://msdn.microsoft.com/en-us/netframework/bb264589.aspx
+    w_download_manual http://www.oldversion.com/download-.Net-Framework-3.0.html netframework3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
+
+    w_call remove_mono
+    
     if test -f /proc/sys/kernel/yama/ptrace_scope
     then
         case `cat /proc/sys/kernel/yama/ptrace_scope` in
@@ -5221,18 +5227,9 @@ load_dotnet30()
         ;;
     esac
 
-    # dotnet20 does this:
-    # w_call remove_mono
     w_call dotnet20
 
-    # Delete files and registry keys related to .net 3.x
-    # Breaks .net 3.5 installation, so don't do this yet
-    #rm -rf "$W_WINDIR_UNIX"/Microsoft.NET/Framework/v3.0
-    #$WINE reg delete "HKLM\\Software\Microsoft\NET Framework Setup\NDP\v3.0"
-
     w_warn "Installing .net 3.0 runtime takes 3 minutes on a very fast machine, and the Finished dialog may hide in the taskbar."
-    # http://msdn.microsoft.com/en-us/netframework/bb264589.aspx
-    w_download_manual http://www.oldversion.com/download-.Net-Framework-3.0.html netframework3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
 
     # AF's workaround to avoid long pause
     LANGPACKS_BASE_PATH="${W_WINDIR_UNIX}/SYSMSICache/Framework/v3.0"
@@ -5282,26 +5279,22 @@ w_metadata dotnet30sp1 dlls \
 
 load_dotnet30sp1()
 {
-    case "$OS" in
-    "Windows_NT") ;;
-    *) w_warn "dotnet30sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
-    esac
+    # FIXME: URL?    
+    w_download http://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 8d779e337920b097aa0c01859912950606e9fc12
+    # Recipe from http://bugs.winehq.org/show_bug.cgi?id=25060#c10
+    w_download http://download.microsoft.com/download/2/5/2/2526f55d-32bc-410f-be18-164ba67ae07d/XPSEP%20XP%20and%20Server%202003%2032%20bit.msi 5d332ebd1025e294adafe72030fe33db707b2c82 "XPSEP XP and Server 2003 32 bit.msi"
 
-    # dotnet20 does this, which is called by dotnet30:
-    # w_call remove_mono
+    w_call remove_mono
     w_call dotnet30
     $WINESERVER -w
     w_call dotnet20sp1
     $WINESERVER -w
 
-    w_download http://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 8d779e337920b097aa0c01859912950606e9fc12
     cd "$W_CACHE/$W_PACKAGE"
 
     "$WINE" reg add "HKLM\\Software\\Microsoft\\Net Framework Setup\\NDP\\v3.0" /v Version /t REG_SZ /d "3.0" /f
     "$WINE" reg add "HKLM\\Software\\Microsoft-\\Net Framework Setup\\NDP\\v3.0" /v SP /t REG_DWORD /d 0001 /f
 
-    # Recipe from http://bugs.winehq.org/show_bug.cgi?id=25060#c10
-    w_download http://download.microsoft.com/download/2/5/2/2526f55d-32bc-410f-be18-164ba67ae07d/XPSEP%20XP%20and%20Server%202003%2032%20bit.msi 5d332ebd1025e294adafe72030fe33db707b2c82 "XPSEP XP and Server 2003 32 bit.msi"
     w_try "$WINE" msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_OPT_UNATTENDED:+/qb}
     "$WINE" sc delete FontCache3.0.0.0
 
@@ -5333,6 +5326,11 @@ load_dotnet35()
     *) w_warn "dotnet35 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
+    # http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6
+    w_download http://download.microsoft.com/download/6/0/f/60fc5854-3cb8-4892-b6db-bd4f42510f28/dotnetfx35.exe 0a271bb44531aadef902829f98dfad66e4a57586
+
+    w_call remove_mono
+
     w_call dotnet30sp1
     $WINESERVER -w
 
@@ -5340,9 +5338,6 @@ load_dotnet35()
     then
         w_call msxml3
     fi
-
-    # http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6
-    w_download http://download.microsoft.com/download/6/0/f/60fc5854-3cb8-4892-b6db-bd4f42510f28/dotnetfx35.exe 0a271bb44531aadef902829f98dfad66e4a57586
 
     "$WINE" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5"
 
@@ -5376,13 +5371,15 @@ load_dotnet35sp1()
     *) w_warn "dotnet35sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
+    # http://www.microsoft.com/download/en/details.aspx?id=25150
+    w_download http://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 3dce66bae0dd71284ac7a971baed07030a186918
+
+    w_call remove_mono
+
     w_call dotnet35
     $WINESERVER -w
     w_call dotnet20sp2
     $WINESERVER -w
-
-    # http://www.microsoft.com/download/en/details.aspx?id=25150
-    w_download http://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 3dce66bae0dd71284ac7a971baed07030a186918
 
     # Work around hang in http://bugs.winehq.org/show_bug.cgi?id=25060#c19
     WINEDLLOVERRIDES=ngen.exe,mscorsvw.exe=b
