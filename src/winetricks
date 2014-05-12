@@ -8736,7 +8736,10 @@ w_metadata ie7 dlls \
 
 load_ie7()
 {
-    echo "This fails in about 1 of 30 runs (see bug 26016), just retry if that happens"
+    if w_workaround_wine_bug 21947 "Working around heap corruption (see also bug 26016)" 1.7.19,
+    then
+        echo "This fails in about 1 of 30 runs (see bug 26016), just retry if that happens"
+    fi
 
     # Unregister Wine IE
     if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"
@@ -8784,7 +8787,7 @@ load_ie7()
         mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
     fi
 
-    if w_workaround_wine_bug 21947 "Working around heap corruption (see also bug 26016)"
+    if w_workaround_wine_bug 21947 "Working around heap corruption (see also bug 26016)" 1.7.19,
     then
         WINEDEBUG=warn+heap "$WINE" IE7-WindowsXP-x86-enu.exe $quiet
     else
