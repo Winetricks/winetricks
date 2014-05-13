@@ -1873,6 +1873,13 @@ w_workaround_wine_bug()
 
 w_metadata()
 {
+    if test $WINETRICKS_OPT_VERBOSE -eq 2
+    then
+        set -x
+    else
+        set +x
+    fi
+
     if test "$installed_exe1" || test "$installed_file1" || test "$publisher" || test "$year"
     then
         w_die "bug: stray metadata tags set: somebody forgot a backslash in a w_metadata somewhere.  Run with sh -x to see where."
@@ -1924,6 +1931,12 @@ w_metadata()
         ;;
     esac
     unset _W_md_cmd
+
+    # Restore verbosity:
+    case $WINETRICKS_OPT_VERBOSE in
+        1|2) set -x ;;
+        *) set +x ;;
+    esac
 }
 
 # Function for verbs to register their main executable [or, if name is given,
@@ -3741,7 +3754,7 @@ winetricks_init()
             w_die "WINE is $WINE, which is neither on the path nor an executable file"
         fi
         case "$WINETRICKS_OPT_VERBOSE" in
-        "1") echo -n "Wine is '$WINE'; Wine version is "
+        1|2) echo -n "Wine is '$WINE'; Wine version is "
              "$WINE" --version || w_die "Can't get wine version"
              echo "winetricks is $0 ; winetricks version is $WINETRICKS_VERSION"
              ;;
@@ -3861,7 +3874,8 @@ winetricks_handle_option()
     -r|--ddrescue) WINETRICKS_OPT_DD=ddrescue ;;
     -k|--keep_isos) WINETRICKS_OPT_KEEPISOS=1 ;;
     -q|--unattended) winetricks_set_unattended 1 ;;
-    -v|--verbose) WINETRICKS_OPT_VERBOSE=1; set -x ;;
+    -v|--verbose) WINETRICKS_OPT_VERBOSE=1 ; set -x;;
+    -vv|--really-verbose) WINETRICKS_OPT_VERBOSE=2 ; set -x ;;
     -V|--version) winetricks_print_version ; exit 0;;
     --verify) WINETRICKS_VERIFY=1 ;;
     -h|--help) winetricks_usage ; exit 0 ;;
@@ -17963,6 +17977,13 @@ load_winxp()
 # Generated automatically by measuring time and space requirements of all verbs
 # size_MB includes size of virgin wineprefix, but not the cached installer
 
+if test $WINETRICKS_OPT_VERBOSE -eq 2
+then
+    set -x
+else
+    set +x
+fi
+
 for data in \
     3dmark03:size_MB=895,time_sec=149 \
     3dmark05:size_MB=1255,time_sec=208 \
@@ -18170,6 +18191,12 @@ do
     fi
     unset size_MB time_sec
 done
+
+# Restore verbosity:
+case $WINETRICKS_OPT_VERBOSE in
+    1|2) set -x ;;
+    *) set +x ;;
+esac
 
 #---- Main Program ----
 
