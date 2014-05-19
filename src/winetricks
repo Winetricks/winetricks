@@ -7229,6 +7229,40 @@ load_vcrun2010()
 
 #----------------------------------------------------------------
 
+w_metadata vcrun2012 dlls \
+    title="Visual C++ 2012 libraries (atl110,mfc110,mfc110u,msvcp110,msvcr110,vcomp110)" \
+    publisher="Microsoft" \
+    year="2012" \
+    media="download" \
+    file1="vcredist_x86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc110.dll"
+
+load_vcrun2012()
+{
+    # http://www.microsoft.com/download/details.aspx?id=30679
+    w_download http://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x86.exe 96b377a27ac5445328cbaae210fc4f0aaa750d3f
+
+    w_override_dlls native,builtin atl110 msvcp110 msvcr110 vcomp110
+    cd "$W_CACHE"/vcrun2012
+    if w_workaround_wine_bug 17273 "Manually extracting dlls"
+    then
+        w_try_cabextract --directory="$W_TMP" vcredist_x86.exe
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a2"
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a3"
+        cp "$W_TMP"/F_CENTRAL_atl110_x86 "$W_SYSTEM32_DLLS"/atl110.dll
+        cp "$W_TMP"/F_CENTRAL_mfc110_x86 "$W_SYSTEM32_DLLS"/mfc110.dll
+        cp "$W_TMP"/F_CENTRAL_mfc110u_x86 "$W_SYSTEM32_DLLS"/mfc110u.dll
+        cp "$W_TMP"/F_CENTRAL_msvcp110_x86 "$W_SYSTEM32_DLLS"/msvcp110.dll
+        cp "$W_TMP"/F_CENTRAL_msvcr110_x86 "$W_SYSTEM32_DLLS"/msvcr110.dll
+        cp "$W_TMP"/F_CENTRAL_vcomp110_x86 "$W_SYSTEM32_DLLS"/vcomp110.dll
+    else
+        w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
+    fi
+
+}
+
+#----------------------------------------------------------------
+
 w_metadata vjrun20 dlls \
     title="MS Visual J# 2.0 SE libraries (requires dotnet20)" \
     publisher="Microsoft" \
