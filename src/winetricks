@@ -1873,12 +1873,10 @@ w_workaround_wine_bug()
 
 w_metadata()
 {
-    if test $WINETRICKS_OPT_VERBOSE -eq 2
-    then
-        set -x
-    else
-        set +x
-    fi
+    case $WINETRICKS_OPT_VERBOSE in
+        2) set -x ;;
+        *) set +x ;;
+    esac
 
     if test "$installed_exe1" || test "$installed_file1" || test "$publisher" || test "$year"
     then
@@ -18010,13 +18008,10 @@ load_winxp()
 #---- Derived Metadata ----
 # Generated automatically by measuring time and space requirements of all verbs
 # size_MB includes size of virgin wineprefix, but not the cached installer
-
-if test $WINETRICKS_OPT_VERBOSE -eq 2
-then
-    set -x
-else
-    set +x
-fi
+case $WINETRICKS_OPT_VERBOSE in
+    2) set -x ;;
+    *) set +x ;;
+esac
 
 for data in \
     3dmark03:size_MB=895,time_sec=149 \
