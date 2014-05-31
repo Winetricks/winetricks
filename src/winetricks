@@ -8142,7 +8142,7 @@ load_tahoma()
 {
     # The tahoma and tahomabd fonts are needed by e.g. Steam
 
-    w_download ftp://$ftp_microsoft_com/Softlib/MSLFILES/tahoma32.exe 888ce7b7ab5fd41f9802f3a65fd0622eb651a068
+    w_download http://download.microsoft.com/download/office97pro/fonts/1/w95/en-us/tahoma32.exe 888ce7b7ab5fd41f9802f3a65fd0622eb651a068
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/tahoma/tahoma32.exe
     w_try cp -f "$W_TMP"/Tahoma.TTF "$W_FONTSDIR_UNIX"/tahoma.ttf
     w_try cp -f "$W_TMP"/Tahomabd.TTF "$W_FONTSDIR_UNIX"/tahomabd.ttf
