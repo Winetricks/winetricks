@@ -8101,7 +8101,7 @@ w_metadata lucida fonts \
 
 load_lucida()
 {
-    w_download ftp://$ftp_microsoft_com/bussys/winnt/winnt-public/fixes/usa/NT40TSE/hotfixes-postSP3/Euro-fix/eurofixi.exe 64c47ad92265f6f10b0fd909a703d4fd1b05b2d5
+    w_download ftp://ftp.fu-berlin.de/pc/security/ms-patches/winnt/usa/NT40TSE/hotfixes-postSP3/Euro-fix/eurofixi.exe 64c47ad92265f6f10b0fd909a703d4fd1b05b2d5
     w_try_cabextract -d "$W_FONTSDIR_UNIX" -L -F 'lucon.ttf' "$W_CACHE"/lucida/eurofixi.exe
     w_register_font lucon.ttf "Lucida Console"
 }
