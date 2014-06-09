@@ -8417,25 +8417,6 @@ load_autohotkey()
 
 #----------------------------------------------------------------
 
-w_metadata kobo apps \
-    title="Kobo e-book reader" \
-    publisher="Kobo" \
-    year="2011" \
-    media="download" \
-    file1="KoboSetup.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Kobo/Kobo.exe" \
-    homepage="http://www.borders.com/online/store/MediaView_ereaderapps"
-
-load_kobo()
-{
-    w_download http://download.kobobooks.com/desktop/1/KoboSetup.exe 31a5f5583edf4b716b9feacb857d2170104cabd9
-    cd "$W_CACHE"/kobo
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Kobo" "Kobo.exe"
-}
-
-#----------------------------------------------------------------
-
 w_metadata cmake apps \
     title="CMake 2.8" \
     publisher="Kitware" \
@@ -8990,6 +8971,25 @@ _EOF_
         "$WINE" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore" http://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
         ;;
     esac
+}
+
+#----------------------------------------------------------------
+
+w_metadata kobo apps \
+    title="Kobo e-book reader" \
+    publisher="Kobo" \
+    year="2011" \
+    media="download" \
+    file1="KoboSetup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Kobo/Kobo.exe" \
+    homepage="http://www.borders.com/online/store/MediaView_ereaderapps"
+
+load_kobo()
+{
+    w_download http://download.kobobooks.com/desktop/1/KoboSetup.exe 31a5f5583edf4b716b9feacb857d2170104cabd9
+    cd "$W_CACHE"/kobo
+    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Kobo" "Kobo.exe"
 }
 
 #----------------------------------------------------------------
