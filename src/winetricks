@@ -8490,6 +8490,23 @@ load_controlpad()
 
 #----------------------------------------------------------------
 
+w_metadata controlspy apps \
+    title="Control Spy 2.0 " \
+    publisher="Microsoft" \
+    year="2005" \
+    media="download" \
+    file1="ControlSpy.msi" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft/ControlSpy/ControlSpyV6.exe"
+
+load_controlspy()
+{
+    w_download http://download.microsoft.com/download/a/3/1/a315b133-03a8-4845-b428-ec585369b285/ControlSpy.msi efe33701f78b5853ba73353f028b777b4c849e77
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" msiexec /i ControlSpy.msi ${W_OPT_UNATTENDED:+/qb}
+}
+
+#----------------------------------------------------------------
+
 # dxdiag is a system component that one usually adds to an existing wineprefix,
 # so it belongs in 'dlls', not apps.
 w_metadata dxdiag dlls \
