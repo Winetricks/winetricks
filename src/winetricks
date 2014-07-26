@@ -2,7 +2,7 @@
 
 # Name of this version of winetricks (YYYYMMDD)
 # (This doesn't change often, use the sha1sum of the file when reporting problems)
-WINETRICKS_VERSION=20140609
+WINETRICKS_VERSION=20140726
 
 # This is a utf-8 file
 # You should see an o with two dots over it here [ö]
@@ -7259,7 +7259,38 @@ load_vcrun2012()
     else
         w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
     fi
+}
 
+#----------------------------------------------------------------
+
+w_metadata vcrun2013 dlls \
+    title="Visual C++ 2013 libraries (mfc120,mfc120u,msvcp120,msvcr120,vcomp120)" \
+    publisher="Microsoft" \
+    year="2013" \
+    media="download" \
+    file1="vcredist_x86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc120.dll"
+
+load_vcrun2013()
+{
+    # http://www.microsoft.com/en-us/download/details.aspx?id=40784
+    w_download http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe 18f81495bc5e6b293c69c28b0ac088a96debbab2
+
+    w_override_dlls native,builtin atl120 msvcp120 msvcr120 vcomp120
+    cd "$W_CACHE"/vcrun2013
+    if w_workaround_wine_bug 17273 "Manually extracting dlls"
+    then
+        w_try_cabextract --directory="$W_TMP" vcredist_x86.exe
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a2"
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a3"
+        cp "$W_TMP"/F_CENTRAL_mfc120_x86 "$W_SYSTEM32_DLLS"/mfc120.dll
+        cp "$W_TMP"/F_CENTRAL_mfc120u_x86 "$W_SYSTEM32_DLLS"/mfc120u.dll
+        cp "$W_TMP"/F_CENTRAL_msvcp120_x86 "$W_SYSTEM32_DLLS"/msvcp120.dll
+        cp "$W_TMP"/F_CENTRAL_msvcr120_x86 "$W_SYSTEM32_DLLS"/msvcr120.dll
+        cp "$W_TMP"/F_CENTRAL_vcomp120_x86 "$W_SYSTEM32_DLLS"/vcomp120.dll
+    else
+        w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
+    fi
 }
 
 #----------------------------------------------------------------
