@@ -2,7 +2,7 @@
 
 # Name of this version of winetricks (YYYYMMDD)
 # (This doesn't change often, use the sha1sum of the file when reporting problems)
-WINETRICKS_VERSION=20140726
+WINETRICKS_VERSION=20140817
 
 # This is a utf-8 file
 # You should see an o with two dots over it here [ö]
@@ -5599,14 +5599,14 @@ load_dsound()
 
 # FIXME: update winetricks_is_installed to look at installed_file2
 w_metadata flash dlls \
-    title="Flash Player 12" \
+    title="Flash Player 14" \
     publisher="Adobe" \
     year="2014" \
     media="download" \
     file1="install_flash_player.exe" \
     file2="install_flash_player_ax.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_12_0_0_43_Plugin.exe" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_12_0_0_38_ActiveX.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_14_0_0_179_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_14_0_0_176_ActiveX.exe" \
     homepage="http://www.adobe.com/products/flashplayer/"
 
 load_flash()
@@ -5628,7 +5628,9 @@ load_flash()
     # 2013-06-24
     # w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.7.700.224/install_flash_player_ax.exe fdadce901fc7da7a175f71cc8f1f2dd0db78ec8e
     # 2014-01-21
-    w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/12.0.0.38/install_flash_player_ax.exe 8deb33bcbbbbecfcbcbeb0f861d2c7492599da2b
+    #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/12.0.0.38/install_flash_player_ax.exe 8deb33bcbbbbecfcbcbeb0f861d2c7492599da2b
+    # 2014-08-17
+    w_download https://fpdownload.macromedia.com/get/flashplayer/pdc/14.0.0.176/install_flash_player_ax.exe 16231b509d8e689dc34ae36597d41c4fb1b3a67e
     cd "$W_CACHE"/flash
 
     w_try "$WINE" install_flash_player_ax.exe ${W_OPT_UNATTENDED:+ /install}
@@ -5639,8 +5641,9 @@ load_flash()
     # 2013-06-24
     #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.7.700.224/install_flash_player.exe 9c519fd5a7202c43b5713f9f6b083d970810112e
     # 2014-01-21
-    w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/12.0.0.43/install_flash_player.exe 5a68f7aa21c4217cf801a46616fe724d601f773a
-
+    #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/12.0.0.43/install_flash_player.exe 5a68f7aa21c4217cf801a46616fe724d601f773a
+    # 2014-08-17
+    w_download https://fpdownload.macromedia.com/get/flashplayer/pdc/14.0.0.179/install_flash_player.exe 1d5725fd0d50eb1361213179ffae9ee24944755a
     w_try "$WINE" install_flash_player.exe ${W_OPT_UNATTENDED:+ /install}
 
     if w_workaround_wine_bug 25966 "Flash11 still needs native visual c++ 2005 runtimes" 1.5.7,
