@@ -2479,9 +2479,22 @@ winetricks_mainmenu()
 
 winetricks_settings_menu()
 {
+    # FIXME: these translations should really be centralized/reused:
     case $LANG in
-    *)   _W_msg_title="Winetricks - поточний prefix \"$WINEPREFIX\""
+    da*) _W_msg_title='Vælg en pakke'
+         _W_msg_body='Which settings would you like to change?'
+         ;;
+    de*) _W_msg_title='Pakete auswählen'
+         _W_msg_body='Which settings would you like to change?'
+         ;;
+    pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
+         _W_msg_body='Which settings would you like to change?'
+         ;;
+    uk*) _W_msg_title="Winetricks - поточний prefix \"$WINEPREFIX\""
          _W_msg_body='Які налаштування Ви хочете змінити?'
+         ;;
+    *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
+         _W_msg_body='Which settings would you like to change?'
          ;;
     esac
 
