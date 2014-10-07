@@ -5640,10 +5640,8 @@ load_flash()
     # See
     # http://blogs.adobe.com/psirt/
     # http://get.adobe.com/de/flashplayer/otherversions/
-    # In theory we could install older versions like 10.3 by using zipfiles at
+    # Now, we install older versions by using zipfiles at
     # http://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html
-    # They don't have installers, just raw files.  Let's wait until we have
-    # a reason to do that.
 
     # Active X plugin
     # 2013-03-28
@@ -5653,10 +5651,13 @@ load_flash()
     # 2014-01-21
     #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/12.0.0.38/install_flash_player_ax.exe 8deb33bcbbbbecfcbcbeb0f861d2c7492599da2b
     # 2014-08-17
-    w_download https://fpdownload.macromedia.com/get/flashplayer/pdc/14.0.0.176/install_flash_player_ax.exe 16231b509d8e689dc34ae36597d41c4fb1b3a67e
-    cd "$W_CACHE"/flash
-
-    w_try "$WINE" install_flash_player_ax.exe ${W_OPT_UNATTENDED:+ /install}
+    #w_download https://fpdownload.macromedia.com/get/flashplayer/pdc/14.0.0.176/install_flash_player_ax.exe 16231b509d8e689dc34ae36597d41c4fb1b3a67e
+    # 2014-10-02
+    w_download http://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.176_archive.zip 40df72ab2c22bcd4442aa35eb586000776129982
+    
+    w_try_unzip -d "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.176_archive.zip fp_14.0.0.176_archive/14_0_r0_176/flashplayer14_0r0_176_winax.exe
+    cd "$W_TMP"/fp_14.0.0.176_archive/14_0_r0_176
+    w_try "$WINE" flashplayer14_0r0_176_winax.exe ${W_OPT_UNATTENDED:+ /install}
 
     # Mozilla / Firefox plugin
     # 2013-03-28
@@ -5666,8 +5667,13 @@ load_flash()
     # 2014-01-21
     #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/12.0.0.43/install_flash_player.exe 5a68f7aa21c4217cf801a46616fe724d601f773a
     # 2014-08-17
-    w_download https://fpdownload.macromedia.com/get/flashplayer/pdc/14.0.0.179/install_flash_player.exe 1d5725fd0d50eb1361213179ffae9ee24944755a
-    w_try "$WINE" install_flash_player.exe ${W_OPT_UNATTENDED:+ /install}
+    #w_download https://fpdownload.macromedia.com/get/flashplayer/pdc/14.0.0.179/install_flash_player.exe 1d5725fd0d50eb1361213179ffae9ee24944755a
+    # 2014-10-02
+    w_download http://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.179_archive.zip b94860ca0eff3e1420c24f9647a5f9f5e610ce34
+
+    w_try_unzip -d "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.179_archive.zip fp_14.0.0.179_archive/14_0_r0_179/flashplayer14_0r0_179_win.exe
+    cd "$W_TMP"/fp_14.0.0.179_archive/14_0_r0_179
+    w_try "$WINE" flashplayer14_0r0_179_win.exe ${W_OPT_UNATTENDED:+ /install}
 
     if w_workaround_wine_bug 25966 "Flash11 still needs native visual c++ 2005 runtimes" 1.5.7,
     then
