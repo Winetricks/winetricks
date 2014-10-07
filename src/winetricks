@@ -2172,7 +2172,17 @@ _EOF_
 #---- Private Functions ----
 
 winetricks_print_version() {
-    echo "$WINETRICKS_VERSION"
+    # Also print sha1, since WINETRICKS_VERSION isn't incremented often
+    if [ -x "`which sha1sum 2>/dev/null`" ]
+    then
+        winetricks_sha1=`sha1sum < $0 | sed 's/ .*//'`
+    elif [ -x "`which openssl 2>/dev/null`" ]
+    then
+        winetricks_sha1=`openssl dgst -sha1 < $0 | sed 's/ .*//'`
+    else
+        w_warn "No sha1sum utility available."
+    fi
+    echo "$WINETRICKS_VERSION - sha1sum: $winetricks_sha1"
 }
 
 # Run a small wine command for internal use
