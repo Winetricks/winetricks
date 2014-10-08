@@ -3730,25 +3730,29 @@ winetricks_init()
         WINE="${WINE:-wine}"
         # Find wineserver.  Some distros (Debian) don't have it on the path,
         # on the mistaken understanding that user scripts never need it :-(
+        # If wineserver is from wine-development set WINE to wine-development.
         # FIXME: get packagers to put wineserver on the path.
         for x in \
             "$WINESERVER" \
             "${WINE}server" \
             "`which wineserver 2> /dev/null`" \
-            /usr/lib*/wine-unstable/wineserver \
-            /usr/lib*/wine/wineserver \
-            /usr/lib*/wine/bin/wineserver \
-            /usr/lib/*/wine-unstable/wineserver \
-            /usr/lib/*/wine-unstable/bin/wineserver \
-            /usr/lib/*/wine-unstable/wine/wineserver \
-            /usr/lib/*/wine-unstable/wine/bin/wineserver \
-            /usr/lib/*/wine/wineserver \
-            /usr/lib/*/wine/bin/wineserver \
             "`dirname $WINE`/server/wineserver" \
+            /usr/lib/i386-kfreebsd-gnu/wine-development/wineserver \
+            /usr/lib/i386-linux-gnu/wine-development/wineserver \
+            /usr/lib/powerpc-linux-gnu/wine-development/wineserver \
+            /usr/lib/x86_64-linux-gnu/wine-development/wineserver \
             file-not-found
         do
             if test -x "$x"
             then
+                case "$x" in
+                 /usr/lib/*/wine-development/wineserver)
+                    if test -x /usr/bin/wine-development
+                    then
+                        WINE="/usr/bin/wine-development"
+                    fi
+                    ;;
+                esac
                 break
             fi
         done
