@@ -3737,6 +3737,14 @@ winetricks_init()
             "${WINE}server" \
             "`which wineserver 2> /dev/null`" \
             "`dirname $WINE`/server/wineserver" \
+            /usr/lib/wine/wineserver \
+            /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
+            /usr/lib/i386-linux-gnu/wine/wineserver \
+            /usr/lib/powerpc-linux-gnu/wine/wineserver \
+            /usr/lib/i386-kfreebsd-gnu/wine/bin/wineserver \
+            /usr/lib/i386-linux-gnu/wine/bin/wineserver \
+            /usr/lib/powerpc-linux-gnu/wine/bin/wineserver \
+            /usr/lib/x86_64-linux-gnu/wine/bin/wineserver \
             /usr/lib/i386-kfreebsd-gnu/wine-development/wineserver \
             /usr/lib/i386-linux-gnu/wine-development/wineserver \
             /usr/lib/powerpc-linux-gnu/wine-development/wineserver \
