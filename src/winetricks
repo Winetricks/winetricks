@@ -4037,7 +4037,7 @@ helper_win7sp1()
 #---------------------------------------------------------
 
 w_metadata  adobeair dlls \
-    title="Adobe AIR 4.0" \
+    title="Adobe AIR 15.0" \
     publisher="Adobe" \
     year="2014" \
     media="download" \
@@ -4055,7 +4055,8 @@ load_adobeair()
     # 2011-10-26: 2.7   sha1sum dfa337d4b53e9d924356febc116450190fa183dd
     # 2014-03-01: 4.0   sha1sum 0034bdd4e0b2ce0fa6198b0b715fba85754d9a57
     # http://helpx.adobe.com/en/flash-player/release-note/fp_12_air_4_release_notes.html
-    w_download http://airdownload.adobe.com/air/win/download/4.0/AdobeAIRInstaller.exe 0034bdd4e0b2ce0fa6198b0b715fba85754d9a57
+    # 2014-09-30: 15.0  sha1sum 46341f1358bc6e0b9ddeae3591662a2ac68dc360
+    w_download http://airdownload.adobe.com/air/win/download/15.0/AdobeAIRInstaller.exe 46341f1358bc6e0b9ddeae3591662a2ac68dc360 
     cd "$W_CACHE"/adobeair
     w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
 }
