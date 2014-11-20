@@ -7961,7 +7961,9 @@ load_droid()
 {
     # See http://en.wikipedia.org/wiki/Droid_(font)
     # Old url was http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob_plain;f=data/fonts/'
-    DROID_URL='https://github.com/android/platform_frameworks_base/blob/master/data/fonts/'
+    # Then it was https://github.com/android/platform_frameworks_base/blob/master/data/fonts/
+    # but the fonts are no longer in master. Using an older commit instead:
+    DROID_URL='https://github.com/android/platform_frameworks_base/blob/feef9887e8f8eb6f64fc1b4552c02efb5755cdc1/data/fonts/'
 
     do_droid DroidSans-Bold.ttf        "Droid Sans Bold"         560e4bcafdebaf29645fbf92633a2ae0d2f9801f
     do_droid DroidSansFallback.ttf     "Droid Sans Fallback"     c5e4f11e2f1d0b84e5f268a7ebfd28b54dc6bcdc
