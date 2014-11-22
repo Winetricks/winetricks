@@ -1986,6 +1986,7 @@ w_do_call()
             load_vd $arg
             _W_status=$?
             test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
+            mkdir -p "$W_TMP"
             return $_W_status
         fi
 
@@ -2018,6 +2019,7 @@ w_do_call()
             w_override_dlls $cmd $arg
             _W_status=$?
             test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
+            mkdir -p "$W_TMP"
             return $_W_status
         else
             w_die "No such verb $1"
@@ -2091,6 +2093,7 @@ w_do_call()
 
         # Clean up after this verb
         test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
+        mkdir -p "$W_TMP"
 
         # Calling subshell must explicitly propagate error code with exit $?
     ) || exit $?
