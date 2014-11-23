@@ -8644,21 +8644,21 @@ load_emu8086()
 #----------------------------------------------------------------
 
 w_metadata firefox apps \
-    title="Firefox 24" \
+    title="Firefox 33.1" \
     publisher="Mozilla" \
-    year="2013" \
+    year="2014" \
     media="download" \
-    file1="Firefox Setup 24.0.exe" \
+    file1="Firefox Setup 33.1.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox()
 {
-    if w_workaround_wine_bug 29077
+    if w_workaround_wine_bug 29077 "" 1.7.25,
     then
         w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
     fi
 
-    w_download "http://download.mozilla.org/?product=firefox-24.0&os=win&lang=en-US" d6213601b69a606f4537c394dfa0dd7968b17b93 "$file1"
+    w_download "http://download.mozilla.org/?product=firefox-33.1&os=win&lang=en-US" c721219fda2915c570e3de0954c8033ed7b1e7fa "$file1"
     cd "$W_CACHE"/firefox
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
