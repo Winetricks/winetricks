@@ -3691,13 +3691,7 @@ winetricks_init()
         w_die "No sha1sum utility available."
     fi
 
-    # Which sourceforge mirror to use.  Rotate based on time, since
-    # their mirror picker sometimes persistantly sends you to a broken
-    # mirror.
-    case `date +%S` in
-    *[3])  WINETRICKS_SOURCEFORGE=http://surfnet.dl.sourceforge.net/sourceforge ;;
-    *)     WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net;;
-    esac
+    WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net
 
     #---- Public Variables ----
 
