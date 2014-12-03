@@ -30,10 +30,11 @@ BLACKLIST="$BLACKLIST|xna40"
 BLACKLIST="$BLACKLIST|xmllite"
 # redundant metaverbs
 BLACKLIST="$BLACKLIST|allcodecs"
-
+# doesn't always quit properly:
+BLACKLIST="$BLACKLIST|spotify"
 
 # Verbs known to update frequently
-QUICKCHECK="flash spotify"
+QUICKCHECK="flash"
 
 # Check for programs this script (or winetricks) uses.
 # Better to find out they're missing now than in the
