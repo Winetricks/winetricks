@@ -142,6 +142,18 @@ XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
 
+# For temp files before $WINEPREFIX is available:
+if [ -x "`which mktemp 2>/dev/null`" ]
+then
+    W_TMP_EARLY="`mktemp -d`"
+    W_TMP_EARLY_CLEAN=1
+elif [ -w "$TMPDIR" ]
+then
+    W_TMP_EARLY="$TMPDIR"
+else
+    W_TMP_EARLY="/tmp"
+fi
+
 # ftp.microsoft.com resolves to two different IP addresses, one of which is broken
 ftp_microsoft_com=64.4.17.176
 
@@ -2124,7 +2136,7 @@ REGEDIT4
 _EOF_
     # too verbose
     w_try_regedit "$W_TMP_WIN"\\_register-font.reg
-    cp "$W_TMP"/*.reg /tmp/_reg$$.reg
+    cp "$W_TMP"/*.reg "$W_TMP_EARLY"/_reg$$.reg
 
     # Wine also updates the win9x fonts key, so let's do that, too
     cat > "$W_TMP"/_register-font.reg <<_EOF_
@@ -2134,7 +2146,7 @@ REGEDIT4
 "$font"="$file"
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\_register-font.reg
-    cp "$W_TMP"/*.reg /tmp/_reg$$-2.reg
+    cp "$W_TMP"/*.reg "$W_TMP_EARLY"/_reg$$-2.reg
 }
 
 w_register_font_replacement()
@@ -2201,7 +2213,7 @@ winetricks_early_wine()
     # gecko (winezeug bug 223).
     # The tr removes carriage returns so expanded variables don't have crud on the end
     # The grep works around using new wineprefixes with old wine
-    WINEDEBUG=-all "$WINE" "$@" 2> /tmp/early_wine.err.txt | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v "Module not found" || true)
+    WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v "Module not found" || true)
 }
 
 winetricks_detect_gui()
@@ -3380,7 +3392,7 @@ winetricks_is_mounted()
 
     # If that fails, read volume name the hard way for each volume
     # Have to use file to return results from implicit subshell
-    rm -f "/tmp/_W_tmp.$LOGNAME"
+    rm -f "$W_TMP_EARLY/_W_tmp.$LOGNAME"
     winetricks_list_mounts . | while true
     do
         IFS= read _W_tmp
@@ -3392,17 +3404,17 @@ winetricks_is_mounted()
         if test "$1" = "$_W_volname"
         then
             # Volume found!  Want to return from function here, but can't
-            echo "$_W_tmp" > "/tmp/_W_tmp.$LOGNAME"
+            echo "$_W_tmp" > "$W_TMP_EARLY/_W_tmp.$LOGNAME"
             break
         fi
     done
 
-    if test -f "/tmp/_W_tmp.$LOGNAME"
+    if test -f "$W_TMP_EARLY/_W_tmp.$LOGNAME"
     then
         # Volume found!  Return from function.
-        _W_dev=`cat "/tmp/_W_tmp.$LOGNAME" | sed 's/ .*//'`
-        _W_mountpoint="`cat "/tmp/_W_tmp.$LOGNAME" | sed 's/^[^ ]* //'`"
-        rm -f "/tmp/_W_tmp.$LOGNAME"
+        _W_dev=`cat "$W_TMP_EARLY/_W_tmp.$LOGNAME" | sed 's/ .*//'`
+        _W_mountpoint="`cat "$W_TMP_EARLY/_W_tmp.$LOGNAME" | sed 's/^[^ ]* //'`"
+        rm -f "$W_TMP_EARLY/_W_tmp.$LOGNAME"
         return 0
     fi
 
@@ -3461,6 +3473,8 @@ winetricks_cleanup()
     fi
     test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
     test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
+    # if $W_TMP_EARLY was created by mktemp, remove it:
+    test "$W_OPT_NOCLEAN" = 1 || test "$W_TMP_EARLY_CLEAN" = 1 && rm -rf "$W_TMP_EARLY"
 }
 
 winetricks_set_unattended()
@@ -3511,7 +3525,7 @@ winetricks_set_wineprefix()
     # The folder-name is localized!
     W_PROGRAMS_WIN="`w_expand_env ProgramFiles`"
     case "$W_PROGRAMS_WIN" in
-    "")  w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string, error message '`cat /tmp/early_wine.err.txt`'";;
+    "")  w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string, error message \"`cat $W_TMP_EARLY/early_wine.err.txt`\" ";;
     %*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string '$W_PROGRAMS_WIN' ... this can be caused a corrupt wineprefix, an old wine, or by not owning $WINEPREFIX" ;;
     *unknown*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
     esac
@@ -3651,7 +3665,7 @@ winetricks_init()
     fi
 
     # Ephemeral files for this run
-    WINETRICKS_WORKDIR="/tmp/w.$LOGNAME.$$"
+    WINETRICKS_WORKDIR="$W_TMP_EARLY/w.$LOGNAME.$$"
     test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
 
     # Registering a verb creates a file in WINETRICKS_METADATA
