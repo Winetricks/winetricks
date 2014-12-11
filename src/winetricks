@@ -9691,7 +9691,30 @@ load_steam()
         w_call corefonts
     fi
 
-    w_try "$WINE" SteamSetup.exe $W_UNATTENDED_SLASH_Q
+    if test $W_OPT_UNATTENDED
+    then
+            w_ahk_do "
+            run, SteamSetup.exe
+            SetTitleMatchMode, 2
+            WinWait, Steam, Using Steam
+            ControlClick, Button2
+            WinWait, Steam, Please review
+            ControlClick, Button4
+            sleep 1000
+            ControlClick, Button2
+            WinWait, Steam, Select the language
+            ControlClick, Button2
+            WinWait, Steam, Choose the folder
+            ControlClick, Button2
+            WinWait, Steam, Steam has been installed
+            ControlClick, Button4
+            sleep 1000
+            ControlClick, Button2
+            WinWaitClose
+            "
+    else
+            w_try "$WINE" SteamSetup.exe
+    fi
 
     # Not all users need this disabled, but let's play it safe for now
     if w_workaround_wine_bug 22053 "Disabling gameoverlayrenderer to prevent game crashes on some machines."
