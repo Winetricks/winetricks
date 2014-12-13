@@ -10081,18 +10081,19 @@ load_vlc()
 
 w_metadata winamp apps \
     title="Winamp" \
-    publisher="AOL (Nullsoft)" \
-    year="2011" \
+    publisher="Radionomy (AOL (Nullsoft))" \
+    year="2013" \
     media="download" \
-    file1="winamp5621_full_emusic-7plus_en-us.exe" \
+    file1="winamp5666_full_all_redux.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Winamp/winamp.exe" \
     homepage="http://www.winamp.com"
 
 load_winamp()
 {
     w_info "may send information while installing, see http://www.microsoft.com/security/portal/Threat/Encyclopedia/Entry.aspx?threatid=159633"
-    w_download \
-        http://download.nullsoft.com/winamp/client/winamp5621_full_emusic-7plus_en-us.exe afc172039db52fdc202114bec7bcf8b5bf2468bb
+    # 2014 winamp5621_full_emusic-7plus_en-us.exe afc172039db52fdc202114bec7bcf8b5bf2468bb
+
+    w_download http://winampplugins.co.uk/Winamp/winamp5666_full_all_redux.exe 136314be0da42ed399b88a106cb1f43093e2c0c2
     cd "$W_CACHE/$W_PACKAGE"
     if test $W_OPT_UNATTENDED
     then
@@ -10100,48 +10101,35 @@ load_winamp()
             SetWinDelay 500
             SetTitleMatchMode, 2
             Run $file1
-            WinWait, Winamp Installer, Welcome to the Winamp installer
-            ControlClick, Button2
-            WinWait, Winamp Installer, License Agreement
-            ControlClick, Button2
-            WinWait, Winamp Installer, Choose Install Location
-            ControlClick, Button2
-            WinWait, Winamp Installer, Choose Components
-            ControlClick, Button2
-            WinWait, Winamp Installer, Choose Start Options
-            ControlClick, Button2
-            WinWait, Winamp Installer, Get the Most Out of Winamp
-            ControlClick, Button4 ; decline Winamp toolbar
-            Sleep 200
-            ControlClick, Button5 ; decline AOL Search
-            Sleep 200
-            ControlClick, Button6 ; decline eMusic
-            Sleep 200
-            ControlClick, Button2
-            Loop
-            {
-                ifWinExist, Winamp Installer, Installation Complete
-                {
-                    break
-                }
-                ifWinExist, Winamp Installer, Recommended
-                {
-                    WinActivate, Winamp Installer, Recommended
-                    WinWaitActive, Winamp Installer, Recommended
-                    MouseClick, left, 32, 279 ; decline OpenCandy offers
-                    Sleep 200
-                    ControlClick, Button2
-                    WinWaitClose, Winamp Installer, Recommended
-                    continue
-                }
-                Sleep 200
-            }
-            WinWait, Winamp Installer, Installation Complete
-            WinActivate, Winamp Installer, Installation Complete
-            WinWaitActive, Winamp Installer, Installation Complete
-            send {Tab}{Tab}{Tab}{Space}   ; don't launch
+            WinWait, Installer Language, Please select
             Sleep 500
-            send {Enter}                  ; Finish
+            ControlClick, Button1 ; OK
+            WinWait, Winamp Installer, Welcome to the Winamp installer 
+            Sleep 500
+            ControlClick, Button2 ; Next
+            WinWait, Winamp Installer, License Agreement 
+            Sleep 500
+            ControlClick, Button2 ; I Agree
+            WinWait, Winamp Installer, Choose Install Location 
+            Sleep 500
+            ControlClick, Button2 ; Next
+            WinWait, Winamp Installer, Choose Components 
+            Sleep 500
+            ControlClick, Button2 ; Next for Full install
+            WinWait, Winamp Installer, Choose Start Options 
+            Sleep 500
+            ControlClick, Button4 ; uncheck start menu entry 
+            Sleep 500
+            ControlClick, Button5 ; uncheck ql icon 
+            Sleep 500
+            ControlClick, Button6 ; uncheck deskto icon 
+            Sleep 500
+            ControlClick, Button2 ; Install
+            WinWait, Winamp Installer, Installation Complete
+            Sleep 500
+            ControlClick, Button4 ; uncheck launch when complete
+            Sleep 500
+            ControlClick, Button2 ; Finish
             WinWaitClose
         "
     else
