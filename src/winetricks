@@ -44,7 +44,7 @@ WINETRICKS_VERSION=20141125
 #   Copyright (C) 2007-2014 Dan Kegel <dank!kegel.com>
 #   Copyright (C) 2008-2014 Austin English <austinenglish!gmail.com>
 #   Copyright (C) 2010-2011 Phil Blankenship <phillip.e.blankenship!gmail.com>
-#   Copyright (C) 2010-2012 Shannon VanWagner <shannon.vanwagner!gmail.com>
+#   Copyright (C) 2010-2014 Shannon VanWagner <shannon.vanwagner!gmail.com>
 #   Copyright (C) 2010 Belhorma Bendebiche <amro256!gmail.com>
 #   Copyright (C) 2010 Eleazar Galano <eg.galano!gmail.com>
 #   Copyright (C) 2010 Travis Athougies <iammisc!gmail.com>
@@ -8394,16 +8394,16 @@ load_allfonts()
 w_metadata 7zip apps \
     title="7-Zip" \
     publisher="Igor Pavlov" \
-    year="2010" \
+    year="2014" \
     media="download" \
-    file1="7z920.exe" \
+    file1="7z935.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/7-Zip/7zFM.exe"
 
 load_7zip()
 {
-    w_download http://downloads.sourceforge.net/project/sevenzip/7-Zip/9.20/7z920.exe 55283ad59439134673fc32fc097bdd9ae920fbc6
+    w_download http://downloads.sourceforge.net/project/sevenzip/7-Zip/9.35/7z935.exe f0f975755480ce7519a865aa750b7f52f0f8d7d5
     cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" 7z920.exe $W_UNATTENDED_SLASH_S
+    w_try "$WINE" 7z935.exe $W_UNATTENDED_SLASH_S
     w_declare_exe "$W_PROGRAMS_X86_WIN\\7-Zip" "7zFM.exe"
 }
 
