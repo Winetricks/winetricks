@@ -8723,16 +8723,15 @@ load_fontxplorer()
 w_metadata irfanview apps \
     title="Irfanview" \
     publisher="Irfan Skiljan" \
-    year="2012" \
-    media="manual_download" \
-    file1="iview433_setup.exe" \
+    year="2014" \
+    media="download" \
+    file1="iview438_setup.exe" \
     installed_file1="$W_PROGRAMS_X86_WIN/IrfanView/i_view32.exe" \
     homepage="http://www.irfanview.com/"
 
 load_irfanview()
 {
-    w_download_manual http://download.cnet.com/IrfanView/3000-2192_4-10021962.html iview433_setup.exe 79a7ebe2325ad204712761aa3c3a072025b07784
-
+    w_download http://download.betanews.com/download/967963863-1/iview438_setup.exe c55c2fd91ac1af03e8063442b110ba771357d42e
     if w_workaround_wine_bug 657 "Installing mfc42"
     then
         w_call mfc42
@@ -8747,38 +8746,43 @@ load_irfanview()
             run $file1
             winwait, Setup, This program will install
             winactivate, Setup, This program will install
-            winwaitactive, Setup, This program will install
-            send !a ; set up for all users
-            send n  ; next
-            winwait, Setup, new in this version
-            winactivate, Setup, new in this version
-            winwaitactive, Setup, new in this version
-            send n  ; skip release notes
-            winwait, Setup, Do you want to associate extensions
-            winactivate, Setup, Do you want to associate extensions
-            winwaitactive, Setup, Do you want to associate extensions
-            send n  ; don't associate any extensions (default)
-            Loop
-            {
-                ifWinExist, Setup, Ready to install
-                {
-                    break
-                }
-                ifWinExist, Setup, Google Chrome
-                {
-                    winactivate, Setup, Google Chrome
-                    winwaitactive, Setup, Google Chrome
-                    send !c ; decline Chrome
-                    send !n
-                    continue
-                }
-                sleep 500
-            }
-            winwait, Setup, Ready to install
-            send n  ; default .ini folder
-            WinWait, IrfanView Setup, successfull ; sic
-            send !s ; do not launch
-            send d  ; done
+            Sleep 900
+            ControlClick, Button7 ; Uncheck All
+            Sleep 900
+            ControlClick, Button11 ; Next
+            Sleep 900
+            winwait, Setup, version
+            Sleep 900
+            ControlClick, Button11 ; Next
+            Sleep 900
+            winwait, Setup, associate extensions
+            Sleep 900
+            ControlClick, Button1 ; Images Only associations
+            Sleep 900
+            ControlClick, Button16 ; Next
+            Sleep 900
+            winwait, Setup, Search
+            Sleep 900
+            ControlClick, Button1 ; deselect chrome googsrch
+            Sleep 900
+            ControlClick, Button18 ; Next
+            Sleep 1000 
+            winwait, Setup, INI
+            Sleep 1000
+            ControlClick, Button23 ; Next
+            Sleep 1000 
+            winwait, Setup, You want to change
+            winactivate, Setup, really
+            Sleep 900
+            ControlClick, Button1 ; Yes
+            Sleep 900
+            winwait, Setup, successful
+            winactivate, Setup, successful
+            Sleep 900
+            ControlClick, Button2 ; no start irfanview
+            Sleep 900
+            ControlClick, Button27 ; done
+            Sleep 900
             winwaitclose
         "
     else
