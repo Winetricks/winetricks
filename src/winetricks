@@ -8720,6 +8720,24 @@ load_fontxplorer()
 
 #----------------------------------------------------------------
 
+w_metadata foobar2000 apps \
+    title="foobar2000 v1.3.6" \
+    publisher="Peter Pawlowski" \
+    year="2014" \
+    media="manual_download" \
+    file1="foobar2000_v1.3.6.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/foobar2000/foobar2000.exe"
+
+load_foobar2000()
+{
+    w_download_manual http://www.foobar2000.org/download foobar2000_v1.3.6.exe 77d1c3aa766853701d29e46b3018aaf1e1b5dd39
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" $file1 $W_UNATTENDED_SLASH_S
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\foobar2000" "foobar2000.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata irfanview apps \
     title="Irfanview" \
     publisher="Irfan Skiljan" \
