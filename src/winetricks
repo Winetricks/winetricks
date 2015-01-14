@@ -6788,7 +6788,7 @@ load_riched30()
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/riched30/InstMsiA.exe
     w_try cp -f "$W_TMP"/riched20.dll "$W_SYSTEM32_DLLS"
     w_try cp -f "$W_TMP"/msls31.dll "$W_SYSTEM32_DLLS"
-    w_override_dlls native,builtin riched30
+    w_override_dlls native,builtin riched20
 }
 
 #----------------------------------------------------------------
