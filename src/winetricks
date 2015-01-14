@@ -7355,7 +7355,9 @@ w_metadata vcrun2013 dlls \
 load_vcrun2013()
 {
     # http://www.microsoft.com/en-us/download/details.aspx?id=40784
-    w_download http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe 18f81495bc5e6b293c69c28b0ac088a96debbab2
+    # 2014/07/26: 18f81495bc5e6b293c69c28b0ac088a96debbab2
+    # 2015/01/14: df7f0a73bfa077e483e51bfb97f5e2eceedfb6a3
+    w_download http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe df7f0a73bfa077e483e51bfb97f5e2eceedfb6a3
 
     w_override_dlls native,builtin atl120 msvcp120 msvcr120 vcomp120
     cd "$W_CACHE"/vcrun2013
