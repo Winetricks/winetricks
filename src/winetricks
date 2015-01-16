@@ -9703,19 +9703,36 @@ _EOF_
 w_metadata songbird apps \
     title="Songbird" \
     publisher="POTI" \
-    year="2010" \
-    media="manual_download" \
-    file1="Songbird_1.10.1-2160_windows-i686-msvc8.exe" \
+    year="2013" \
+    media="download" \
+    file1="Songbird_2.2.0-2453_windows-i686-msvc8.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Songbird/songbird.exe" \
-    homepage="http://getsongbird.com"
+    homepage="http://sourceforge.net/projects/songbird.mirror/"
 
 load_songbird()
 {
-    w_download_manual \
-        http://getsongbird.com/system-requirements.php Songbird_1.10.1-2160_windows-i686-msvc8.exe \
-        3939988180e1bfba3f28ff5720942cbbc20b7fbf
+    w_download http://sourceforge.net/projects/songbird.mirror/files/Songbird%202.2.0/Songbird_2.2.0-2453_windows-i686-msvc8.exe 5f9e95ea9015c485602add7b759c956088cae7f1
     cd "$W_CACHE/songbird"
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+    if test $W_OPT_UNATTENDED
+    then
+        w_ahk_do "
+        run, $file1 /S
+        SetTitleMatchMode, 2
+        ;1033 error alert during silent install
+        WinWait, Songbird Setup, 1033
+        Sleep 1000
+        ControlClick, Button1
+        WinWaitClose
+        "
+    else
+        w_try "$WINE" $file1
+    fi
+
+    if w_workaround_wine_bug 35041
+    then
+        w_warn "Run songbird with taskset -c 0 to avoid a doublefree/crash in libX11"
+    fi
+
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Songbird" songbird.exe
 }
 
