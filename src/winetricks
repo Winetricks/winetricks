@@ -449,18 +449,25 @@ w_expand_env()
     winetricks_early_wine cmd.exe /c echo "%$1%"
 }
 
+# get sha1sum string and set $_W_gotsum to it
+w_get_sha1sum()
+{
+    _W_file=$1
+    _W_gotsum=`$WINETRICKS_SHA1SUM < "$_W_file" | sed 's/(stdin)= //;s/ .*//'`
+}
+
 # verify an sha1sum
 w_verify_sha1sum()
 {
     _W_vs_wantsum=$1
     _W_vs_file=$2
 
-    _W_vs_gotsum=`$WINETRICKS_SHA1SUM < $_W_vs_file | sed 's/ .*//'`
-    if [ "$_W_vs_gotsum"x != "$_W_vs_wantsum"x ]
+    w_get_sha1sum "$_W_vs_file"
+    if [ "$_W_gotsum"x != "$_W_vs_wantsum"x ]
     then
         w_die "sha1sum mismatch!  Rename $_W_vs_file and try again."
     fi
-    unset _W_vs_wantsum _W_vs_file _W_vs_gotsum
+    unset _W_vs_wantsum _W_vs_file _W_gotsum
 }
 
 # wget outputs progress messages that look like this:
@@ -613,8 +620,8 @@ w_download_to()
                     fi
                 fi
                 # If checksum matches, declare success and exit loop
-                gotsum=`$WINETRICKS_SHA1SUM < "$_W_cache/$_W_file" | sed 's/(stdin)= //;s/ .*//'`
-                if [ "$gotsum"x = "$3"x ]
+                w_get_sha1sum "$_W_file"
+                if [ "$_W_gotsum"x = "$3"x ]
                 then
                     checksum_ok=1
                     break
@@ -8168,8 +8175,8 @@ load_fontfix()
     # Very unlikely to still be around, so downgrade to fatal warning
     if test -f /usr/share/fonts/truetype/arphic/ukai.ttf
     then
-        gotsum=`$SHA1SUM < /usr/share/fonts/truetype/arphic/ukai.ttf | sed 's/ .*//'`
-        if [ "$gotsum"x = "96e1121f89953e5169d3e2e7811569148f573985"x ]
+        w_get_sha1sum /usr/share/fonts/truetype/arphic/ukai.ttf
+        if [ "$_W_gotsum"x = "96e1121f89953e5169d3e2e7811569148f573985"x ]
         then
             w_die "Your installed ukai.ttf is known to be broken. Upgrade your ttf-arphic font package!"
         fi
@@ -8177,8 +8184,8 @@ load_fontfix()
 
     if test -f /usr/share/fonts/truetype/arphic/uming.ttf
     then
-        gotsum=`$SHA1SUM < /usr/share/fonts/truetype/arphic/uming.ttf | sed 's/ .*//'`
-        if [ "$gotsum"x = "2a4f4a69e343c21c24d044b2cb19fd4f0decc82c"x ]
+        w_get_sha1sum /usr/share/fonts/truetype/arphic/uming.ttf
+        if [ "$_W_gotsum"x = "2a4f4a69e343c21c24d044b2cb19fd4f0decc82c"x ]
         then
             w_die "Your installed uming.ttf is known to be broken. Upgrade your ttf-uming font package!"
         fi
