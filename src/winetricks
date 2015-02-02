@@ -2193,18 +2193,26 @@ _EOF_
 
 #---- Private Functions ----
 
-winetricks_print_version() {
-    # Also print sha1, since WINETRICKS_VERSION isn't incremented often
+winetricks_get_sha1sum_prog() {
+    # Mac folks tend to not have sha1sum, but we can make do with openssl
     if [ -x "`which sha1sum 2>/dev/null`" ]
     then
-        winetricks_sha1=`sha1sum < $0 | sed 's/ .*//'`
+        WINETRICKS_SHA1SUM="sha1sum"
     elif [ -x "`which openssl 2>/dev/null`" ]
     then
-        winetricks_sha1=`openssl dgst -sha1 < $0 | sed 's/ .*//'`
+        WINETRICKS_SHA1SUM="openssl dgst -sha1"
     else
-        w_warn "No sha1sum utility available."
+        w_die "No sha1sum utility available."
     fi
-    echo "$WINETRICKS_VERSION - sha1sum: $winetricks_sha1"
+}
+
+winetricks_print_version() {
+    # normally done by winetricks_init, but we don't want to set up the WINEPREFIX
+    # just to get the winetricks version:
+    winetricks_get_sha1sum_prog
+
+    w_get_sha1sum $0
+    echo "$WINETRICKS_VERSION - sha1sum: $_W_gotsum"
 }
 
 # Run a small wine command for internal use
@@ -3701,18 +3709,9 @@ winetricks_init()
     # whether to use shared wineprefix (1) or unique wineprefix for each app (0)
     WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-0}
 
-    # Mac folks tend to not have sha1sum, but we can make do with openssl
-    if [ -x "`which sha1sum 2>/dev/null`" ]
-    then
-        WINETRICKS_SHA1SUM="sha1sum"
-    elif [ -x "`which openssl 2>/dev/null`" ]
-    then
-        WINETRICKS_SHA1SUM="openssl dgst -sha1"
-    else
-        w_die "No sha1sum utility available."
-    fi
-
     WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net
+
+    winetricks_get_sha1sum_prog
 
     #---- Public Variables ----
 
