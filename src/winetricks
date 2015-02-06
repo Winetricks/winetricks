@@ -620,7 +620,7 @@ w_download_to()
                     fi
                 fi
                 # If checksum matches, declare success and exit loop
-                w_get_sha1sum "$_W_file"
+                w_get_sha1sum "$_W_cache/$_W_file"
                 if [ "$_W_gotsum"x = "$3"x ]
                 then
                     checksum_ok=1
