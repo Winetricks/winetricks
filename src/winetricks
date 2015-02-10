@@ -61,7 +61,7 @@ WINETRICKS_VERSION=20150206
 #   Copyright (C) 2011 Łukasz Wojniłowicz
 #   Copyright (C) 2011 Matthew Bozarth
 #   Copyright (C) 2013-2014 Andrey Gusev <andrey.goosev!gmail.com>
-#   Copyright (C) 2013 Hillwood Yang
+#   Copyright (C) 2013-2015 Hillwood Yang <hillwood!opensuse.org>
 #
 # License
 #   This program is free software; you can redistribute it and/or
@@ -15435,18 +15435,18 @@ load_puzzleagent_demo()
 #----------------------------------------------------------------
 
 w_metadata qq apps \
- title="QQ 5.4 (Chinese chat app)" \
+ title="QQ 6.3 (Chinese chat app)" \
  publisher="Tencent" \
- year="2013" \
+ year="2014" \
  media="download" \
- file1="QQ5.4.exe" \
+ file1="QQ6.3.exe" \
  installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQ.exe" \
  homepage="http://www.qq.com" \
  unattended="no"
 
 load_qq()
 {
-    w_download http://dldir1.qq.com/qqfile/qq/QQ5.4/11066/QQ5.4.exe a446412a7cf4d9efce4ae44de84c96d2258581c8
+    w_download http://dldir1.qq.com/qqfile/qq/QQ6.3/12369/QQ6.3.exe cebe73a2f8b7299ba0f01aba779e0e4a7dbd173b
 
     if w_workaround_wine_bug 29636 "Installing native riched20 to work around crash bug"
     then
