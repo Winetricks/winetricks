@@ -3947,7 +3947,7 @@ winetricks_handle_option()
 if ! test "$WINETRICKS_LIB"
 then
     WINETRICKS_SRCDIR=`dirname "$0"`
-    WINETRICKS_SRCDIR=`cd "$WINETRICKS_SRCDIR"; /bin/pwd`
+    WINETRICKS_SRCDIR=`cd "$WINETRICKS_SRCDIR"; pwd`
 
     # Which GUI helper to use (none/zenity/kdialog).  See winetricks_detect_gui.
     WINETRICKS_GUI=none
