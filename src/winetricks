@@ -869,7 +869,7 @@ w_download_manual()
 w_steam_safemode()
 {
     cat > "$W_TMP/steamconfig.pl" <<"_EOF_"
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # Parse steam's localconfig.vcf, add settings to it, and write it out again
 # The file is a recursive dictionary
 #
