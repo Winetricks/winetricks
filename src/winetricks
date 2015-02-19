@@ -9234,16 +9234,20 @@ load_mpc()
 w_metadata mspaint apps \
     title="MS Paint" \
     publisher="Microsoft" \
-    year="2001" \
+    year="2010" \
     media="download" \
-    file1="paintnt.exe" \
-    installed_exe1="c:/windows/MSPAINT.EXE"
+    file1="WindowsXP-KB978706-x86-ENU.exe" \
+    installed_file1="c:/windows/mspaint.exe"
 
 load_mspaint()
 {
-    # http://helpforlinux.blogspot.com/2008/12/run-ms-paint-in-linux.html
-    w_download http://download.microsoft.com/download/winntwks40/paint/1/nt4/en-us/paintnt.exe a22c4e367ef9d2cd23f0a8ae8d9ebff5bc1e8a0b
-    w_try_unzip "$W_CACHE"/mspaint/paintnt.exe -d "$W_WINDIR_UNIX"
+    if w_workaround_wine_bug 657 "Native mspaint.exe from XP requires mfc42.dll"
+    then
+        w_call mfc42
+    fi
+    w_download http://download.microsoft.com/download/0/A/4/0A40DF5C-2BAE-4C63-802A-84C33B34AC98/WindowsXP-KB978706-x86-ENU.exe f4e076b3867c2f08b6d258316aa0e11d6822b8d7
+    w_try $WINE "$W_CACHE"/mspaint/WindowsXP-KB978706-x86-ENU.exe /q /x:"$W_TMP"/WindowsXP-KB978706-x86-ENU
+    w_try cp -f "$W_TMP"/WindowsXP-KB978706-x86-ENU/SP3GDR/mspaint.exe "$W_WINDIR_UNIX"/mspaint.exe
 
     w_declare_exe "$W_WINDIR_UNIX" "mspaint.exe"
 }
