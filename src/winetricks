@@ -355,6 +355,16 @@ w_try_7z()
     w_try 7z "$@"
 }
 
+w_try_msiexec64()
+{
+    if test "$W_ARCH" != "win64"
+    then
+        w_die "bug: 64-bit msiexec called from a $W_ARCH prefix."
+    fi
+
+    w_try "$WINE" start /wait "$W_SYSTEM64_DLLS_WIN32/msiexec.exe" $W_UNATTENDED_SLASH_Q "$@"
+}
+
 w_read_key()
 {
     if test ! "$W_OPT_UNATTENDED"
@@ -3630,6 +3640,8 @@ winetricks_set_wineprefix()
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
         W_SYSTEM64_DLLS="$W_WINDIR_UNIX/system32"
+        W_SYSTEM64_DLLS_WIN32="C:\\windows\\sysnative" # path to access 64-bit dlls from 32-bit apps
+        W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
         # 64-bit prefixes still have plenty of issues:
         w_warn "You are using a 64-bit WINEPREFIX. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug."
     else
@@ -6444,7 +6456,7 @@ load_msxml6()
     if [ $W_ARCH = win64 ]
     then
         rm -f "$W_SYSTEM64_DLLS/msxml6.dll"
-        w_try "wine64" msiexec /i "$W_CACHE"/msxml6/msxml6_x64.msi $W_UNATTENDED_SLASH_Q
+        w_try_msiexec64 /i "$W_CACHE"/msxml6/msxml6_x64.msi
     else
         w_try "$WINE" msiexec /i "$W_CACHE"/msxml6/msxml6_x86.msi $W_UNATTENDED_SLASH_Q
     fi
