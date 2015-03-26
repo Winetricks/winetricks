@@ -4328,6 +4328,26 @@ load_d3dcompiler_43()
 
 #----------------------------------------------------------------
 
+w_metadata d3drm dlls \
+    title="MS d3drm.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3drm.dll"
+
+load_d3drm()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F "dxnt.cab" "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "d3drm.dll" "$W_TMP/dxnt.cab"
+
+    w_override_dlls native d3drm
+}
+
+#----------------------------------------------------------------
+
 w_metadata d3dx9 dlls \
     title="MS d3dx9_??.dll from DirectX 9 redistributable" \
     publisher="Microsoft" \
