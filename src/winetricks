@@ -707,9 +707,9 @@ w_download_to()
         # Also affects ttf files on github
         _W_filetype=`which file 2>/dev/null`
         case $_W_filetype-$_W_file in
-        /*-*.exe|/*-*.ttf)
+        /*-*.exe|/*-*.ttf|/*-*.zip)
             case `file "$_W_file"` in
-            *gzip*) mv "$_W_file" "$_W_file.gz"; gunzip < "$_W_file.gz" > "$_W_file";;
+            *:*gzip*) mv "$_W_file" "$_W_file.gz"; gunzip < "$_W_file.gz" > "$_W_file";;
             esac
         esac
 
@@ -4298,6 +4298,28 @@ load_crypt32()
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/crypt32.dl_
 
     w_override_dlls native crypt32
+}
+
+#----------------------------------------------------------------
+
+w_metadata binkw32 dlls \
+    title="RAD Game Tools binkw32.dll" \
+    publisher="RAD Game Tools, Inc." \
+    year="2000" \
+    media="download" \
+    file1="__32-binkw32.dll3.0.0.0.zip" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/binkw32.dll"
+
+load_binkw32()
+{
+    # Mirror: http://www.dlldump.com/download-dll-files_new.php/dllfiles/B/binkw32.dll/1.0q/download.html
+    # Checksum of the decompressed file: 613f81f82e12131e86ae60dd318941f40db2200f
+    w_download http://www.down-dll.com/dll/b/__32-binkw32.dll3.0.0.0.zip 991f77e8df513ccb8663dc4a2753fbf90338ef5c
+
+    w_try_unzip -d "$W_TMP" "$W_CACHE"/binkw32/__32-binkw32.dll3.0.0.0.zip
+    w_try cp "$W_TMP"/binkw32.dll "$W_SYSTEM32_DLLS"/binkw32.dll
+
+    w_override_dlls native binkw32
 }
 
 #----------------------------------------------------------------
