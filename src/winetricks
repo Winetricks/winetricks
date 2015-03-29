@@ -60,7 +60,7 @@ WINETRICKS_VERSION=20150316
 #   Copyright (C) 2011 Giuseppe Dia
 #   Copyright (C) 2011 Łukasz Wojniłowicz
 #   Copyright (C) 2011 Matthew Bozarth
-#   Copyright (C) 2013-2014 Andrey Gusev <andrey.goosev!gmail.com>
+#   Copyright (C) 2013-2015 Andrey Gusev <andrey.goosev!gmail.com>
 #   Copyright (C) 2013-2015 Hillwood Yang <hillwood!opensuse.org>
 #
 # License
@@ -6585,17 +6585,17 @@ load_pdh()
 w_metadata physx dlls \
     title="PhysX" \
     publisher="NVidia" \
-    year="2013" \
+    year="2014" \
     media="download" \
-    file1="PhysX-9.13.0604-SystemSoftware.msi" \
+    file1="PhysX-9.14.0702-SystemSoftware.msi" \
     installed_file1="$W_PROGRAMS_WIN/NVIDIA Corporation/PhysX/Engine/v2.8.3/PhysXCore.dll"
 
 load_physx()
 {
     # Has a minor issue, see bug report http://bugs.winehq.org/show_bug.cgi?id=34167 
-    w_download http://uk.download.nvidia.com/Windows/9.13.0604/PhysX-9.13.0604-SystemSoftware.msi c2aac1635bfc474de82b5aad6571d15b4ccb84b5
+    w_download http://uk.download.nvidia.com/Windows/9.14.0702/PhysX-9.14.0702-SystemSoftware.msi 81e2d38e2356e807ad80cdf150ed5acfff839c8b
     cd "$W_CACHE"/physx
-    w_try "$WINE" msiexec /i PhysX-9.13.0604-SystemSoftware.msi $W_UNATTENDED_SLASH_Q
+    w_try "$WINE" msiexec /i PhysX-9.14.0702-SystemSoftware.msi $W_UNATTENDED_SLASH_Q
 }
 
 #----------------------------------------------------------------
