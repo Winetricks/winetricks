@@ -33,6 +33,9 @@ BLACKLIST="$BLACKLIST|allcodecs"
 # doesn't always quit properly:
 BLACKLIST="$BLACKLIST|spotify"
 
+# mfplat.dll.MFTRegister https://bugs.winehq.org/show_bug.cgi?id=37811
+BLACKLIST="xvid"
+
 # Verbs known to update frequently
 QUICKCHECK="flash"
 
