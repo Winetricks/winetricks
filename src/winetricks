@@ -7152,9 +7152,10 @@ load_shockwave() {
     # 2014-02-26 sha1sum: ae2855b729bfaedc766f3addd8c2b74eac576909
     # 2014-04-15 sha1sum: c2ea56450fb4a5bac66cb7d70e3b522431521787
     # 2014-05-21 sha1sum: d95d1a14ee264235b29e093105bd2baa8b06eb12
-    # 2014-11-22 sha1sum: 644d3228654ded798eabe40e7044b96b90e742f6x
-    
-    w_download http://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi 644d3228654ded798eabe40e7044b96b90e742f6
+    # 2014-11-22 sha1sum: 644d3228654ded798eabe40e7044b96b90e742f6
+    # 2015-03-30 sha1sum: 9f2d4d929e7210ae9fb633881127b21586ffd8ce
+
+    w_download http://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi 9f2d4d929e7210ae9fb633881127b21586ffd8ce
     cd "$W_CACHE"/shockwave
     w_try "$WINE" msiexec /i sw_lic_full_installer.msi $W_UNATTENDED_SLASH_Q
 }
