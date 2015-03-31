@@ -4811,6 +4811,25 @@ load_d3dxof()
 
 #----------------------------------------------------------------
 
+w_metadata dbghelp dlls \
+    title="MS dbghelp" \
+    publisher="Microsoft" \
+    year="2008" \
+    media="download" \
+    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dbghelp.dll"
+
+load_dbghelp()
+{
+    helper_xpsp3 i386/dbghelp.dll
+
+    w_try cp -f "$W_TMP"/i386/dbghelp.dll "$W_SYSTEM32_DLLS"
+
+    w_override_dlls native dbghelp
+}
+
+#----------------------------------------------------------------
+
 w_metadata devenum dlls \
     title="MS devenum.dll from DirectX user redistributable" \
     publisher="Microsoft" \
