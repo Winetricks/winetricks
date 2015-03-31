@@ -6754,6 +6754,71 @@ load_ogg()
 
 #----------------------------------------------------------------
 
+w_metadata ollydbg110 apps \
+    title="OllyDbg" \
+    publisher="ollydbg.de" \
+    year="2004" \
+    media="download" \
+    file1="odbg110.zip" \
+    installed_file1="c:/ollydbg110/OLLYDBG.EXE" \
+    homepage="http://ollydbg.de"
+
+load_ollydbg110()
+{
+    # the graphical user interface is unreadable without having corefonts installed
+    w_call corefonts
+
+    w_download http://www.ollydbg.de/odbg110.zip 8403d8049a0841887c16cf64889596ad52b84da8
+    w_try_unzip -d "$W_DRIVE_C/ollydbg110" "$W_CACHE/$W_PACKAGE"/odbg110.zip
+}
+
+#----------------------------------------------------------------
+
+w_metadata ollydbg200 apps \
+    title="OllyDbg" \
+    publisher="ollydbg.de" \
+    year="2010" \
+    media="download" \
+    file1="odbg200.zip" \
+    installed_file1="c:/ollydbg200/ollydbg.exe" \
+    homepage="http://ollydbg.de"
+
+load_ollydbg200()
+{
+    # the graphical user interface is unreadable without having corefonts installed
+    w_call corefonts
+
+    w_download http://www.ollydbg.de/odbg200.zip 68e572d94a0555e8f14516b55b6b96b879900fe9
+    w_try_unzip -d "$W_DRIVE_C/ollydbg200" "$W_CACHE/$W_PACKAGE"/odbg200.zip
+}
+
+#----------------------------------------------------------------
+
+w_metadata ollydbg201 apps \
+    title="OllyDbg" \
+    publisher="ollydbg.de" \
+    year="2013" \
+    media="download" \
+    file1="odbg201.zip" \
+    installed_file1="c:/ollydbg201/ollydbg.exe" \
+    homepage="http://ollydbg.de"
+
+load_ollydbg201()
+{
+    # the graphical user interface is unreadable without having corefonts installed
+    w_call corefonts
+
+    w_download http://www.ollydbg.de/odbg201.zip d41fe77a2801d38476f20468ab61ddce14c3abb8
+    w_try_unzip -d "$W_DRIVE_C/ollydbg201" "$W_CACHE/$W_PACKAGE"/odbg201.zip
+
+    # ollydbg201 is affected by wine bug 36012 if debug symbols are available.
+    # As a workaround native 'dbghelp' can be installed. We don't do this automatically
+    # because for some people it might work even without additional workarounds.
+    # Older versions of OllyDbg were not affected by this bug.
+}
+
+#----------------------------------------------------------------
+
 w_metadata openwatcom apps \
     title="Open Watcom C/C++ compiler (can compile win16 code!)" \
     publisher="Watcom" \
