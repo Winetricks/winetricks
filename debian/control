@@ -3,20 +3,13 @@ Priority: optional
 Maintainer: Dan Kegel <dank@kegel.com>
 Standards-Version: 3.8.1
 Build-Depends: debhelper,
-        cabextract,
-        curl,
-        devscripts,
-        p7zip-full,
-        quilt,
-        unrar,
-        unzip
+        devscripts
 
 Package: winetricks
 Section: contrib/otherosfs
 Architecture: any
 Homepage: http://winetricks.org
-Depends:
-        cabextract,
+Depends: cabextract,
         p7zip,
         unzip,
         wget,
