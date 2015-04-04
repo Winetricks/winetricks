@@ -69,6 +69,17 @@ pass()
     passes=`expr $passes + 1`
 }
 
+w_time()
+{
+    # OSX time doesn't support -o, so try it first:
+    if ! /usr/bin/time -o test.log echo test > /dev/null 2>&1
+    then
+        /usr/bin/time -p "$@"
+    else
+        /usr/bin/time -p -o time.log "$@"
+    fi
+}
+
 case "$LANG" in
 ""|"C") echo "Some games won't install in the Posix locale; doing 'export LANG=en_US.UTF-8'" ; export LANG=en_US.UTF-8;;
 esac
@@ -135,7 +146,7 @@ srcdir=`cd $srcdir; pwd`
 
 test_speed()
 {
-    if ! /usr/bin/time -p -o time.log sh winetricks $1 > foo.log
+    if ! w_time sh winetricks $1 > foo.log
     then
         fail "winetricks $1 returned status $?"
     fi
@@ -143,7 +154,13 @@ test_speed()
     then
         fail "winetricks $1 returned too few lines"
     fi
-    seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
+    if ! test -f time.log
+    then
+        # OSX, fake it:
+        seconds=0
+    else
+        seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
+    fi
     echo test_speed: winetricks $1 took $seconds seconds
     # Longest runtime as of 11 Dec 2010 is 5 seconds on an e8400 with cygwin
     if test $seconds -gt 7
@@ -251,7 +268,7 @@ test_command()
     then
         # A success is failure:
         sh winetricks --no-isolate -q $command && fail "$@ succeeded, should have failed"
-    elif ! /usr/bin/time -p -o time.log sh winetricks --no-isolate -q $command
+    elif ! w_time sh winetricks --no-isolate -q $command
     then
         rm df-daemon
         fail "test_command $command failed!"
@@ -259,7 +276,12 @@ test_command()
     else
         echo "winetricks $@ completed"
     fi
-    seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
+    if ! test -f time.log
+    then
+        seconds=0
+    else
+        seconds=`awk '/real/ {print $2}' < time.log | sed 's/\..*//'`
+    fi
     echo "test_app: ${app}: install_time $seconds seconds."
 
     # Cleanup:
