@@ -146,7 +146,7 @@ srcdir=`cd $srcdir; pwd`
 
 test_speed()
 {
-    if ! w_time sh winetricks $1 > foo.log
+    if ! w_time sh winetricks nocrashdialog $1 > foo.log
     then
         fail "winetricks $1 returned status $?"
     fi
@@ -267,8 +267,8 @@ test_command()
     if [ "$EXPECT_FAIL" = "yes" ]
     then
         # A success is failure:
-        sh winetricks --no-isolate -q $command && fail "$@ succeeded, should have failed"
-    elif ! w_time sh winetricks --no-isolate -q $command
+        sh winetricks --no-isolate -q nocrahdialog $command && fail "$@ succeeded, should have failed"
+    elif ! w_time sh winetricks --no-isolate -q nocrashdialog $command
     then
         rm df-daemon
         fail "test_command $command failed!"
