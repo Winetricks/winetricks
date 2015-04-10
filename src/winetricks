@@ -3161,7 +3161,7 @@ winetricks_list_installed()
     # Jump through a couple hoops to evaluate the verbs in alphabetical order
     # Assume that no filename contains '|'
     cd "$WINETRICKS_METADATA"
-    for _W_metadatafile in `ls */*.vars | sed 's,^\(.*\)/,\1|,' | sort -t\| -k +2 | tr '|' /`
+    for _W_metadatafile in `ls */*.vars | sed 's,^\(.*\)/,\1|,' | sort -t\| -k 2 | tr '|' /`
     do
         # Use a subshell to avoid putting metadata in global space
         # If this is too slow, we can unset known metadata by hand
