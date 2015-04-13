@@ -267,7 +267,7 @@ test_command()
     if [ "$EXPECT_FAIL" = "yes" ]
     then
         # A success is failure:
-        sh winetricks --no-isolate -q nocrahdialog $command && fail "$@ succeeded, should have failed"
+        sh winetricks --no-isolate -q nocrashdialog $command && fail "$@ succeeded, should have failed"
     elif ! w_time sh winetricks --no-isolate -q nocrashdialog $command
     then
         rm df-daemon
