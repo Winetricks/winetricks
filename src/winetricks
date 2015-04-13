@@ -295,6 +295,38 @@ w_try()
     fi
 }
 
+w_try_7z()
+{
+    # Not always installed, but shouldn't be fatal unless it's being used
+    if test ! -x "`which 7z 2>/dev/null`"
+    then
+        w_die "Cannot find 7z.  Please install it (e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip p7zip-plugins')."
+    fi
+
+    w_try 7z "$@"
+}
+
+w_try_cabextract()
+{
+    # Not always installed, but shouldn't be fatal unless it's being used
+    if test ! -x "`which cabextract 2>/dev/null`"
+    then
+        w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt-get install cabextract' or 'sudo yum install cabextract')."
+    fi
+
+    w_try cabextract -q "$@"
+}
+
+w_try_msiexec64()
+{
+    if test "$W_ARCH" != "win64"
+    then
+        w_die "bug: 64-bit msiexec called from a $W_ARCH prefix."
+    fi
+
+    w_try "$WINE" start /wait "$W_SYSTEM64_DLLS_WIN32/msiexec.exe" $W_UNATTENDED_SLASH_Q "$@"
+}
+
 w_try_regedit()
 {
     # on windows, doesn't work without cmd /c
@@ -309,17 +341,6 @@ w_try_regedit()
 w_try_regsvr()
 {
     w_try "$WINE" regsvr32 $W_UNATTENDED_SLASH_S $@
-}
-
-w_try_cabextract()
-{
-    # Not always installed, but shouldn't be fatal unless it's being used
-    if test ! -x "`which cabextract 2>/dev/null`"
-    then
-        w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt-get install cabextract' or 'sudo yum install cabextract')."
-    fi
-
-    w_try cabextract -q "$@"
 }
 
 w_try_unrar()
@@ -342,27 +363,6 @@ w_try_unzip()
     fi
 
     w_try unzip -o -q "$@"
-}
-
-w_try_7z()
-{
-    # Not always installed, but shouldn't be fatal unless it's being used
-    if test ! -x "`which 7z 2>/dev/null`"
-    then
-        w_die "Cannot find 7z.  Please install it (e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip p7zip-plugins')."
-    fi
-
-    w_try 7z "$@"
-}
-
-w_try_msiexec64()
-{
-    if test "$W_ARCH" != "win64"
-    then
-        w_die "bug: 64-bit msiexec called from a $W_ARCH prefix."
-    fi
-
-    w_try "$WINE" start /wait "$W_SYSTEM64_DLLS_WIN32/msiexec.exe" $W_UNATTENDED_SLASH_Q "$@"
 }
 
 w_read_key()
