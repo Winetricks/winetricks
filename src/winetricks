@@ -297,13 +297,18 @@ w_try()
 
 w_try_7z()
 {
-    # Not always installed, but shouldn't be fatal unless it's being used
-    if test ! -x "`which 7z 2>/dev/null`"
+    # $1 - directory to extract to
+    # $2 - file to extract
+    # Not always installed, use Windows 7-zip as a fallback:
+    if test -x "`which 7z 2>/dev/null`"
     then
-        w_die "Cannot find 7z.  Please install it (e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip p7zip-plugins')."
+        w_try 7z x "$2" -o"$1"
+    else
+        w_warn "Cannot find 7z.  Using Windows 7-zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip p7zip-plugins')."
+        WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
+        # errors out if there is a space between -o and path
+        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "`w_pathconv -w $2`" -o"`w_pathconv -w $1`"
     fi
-
-    w_try 7z "$@"
 }
 
 w_try_cabextract()
@@ -10349,9 +10354,9 @@ load_vc2005express()
     w_download http://download.microsoft.com/download/A/9/1/A91D6B2B-A798-47DF-9C7E-A97854B7DD18/VC.iso 1ae44e4eaf8c61c3a39e573fd6efd9889e940529
 
     # Unpack ISO (how handy that 7z can do this!)
-    cd "$W_TMP"
-    w_try_7z x "$W_CACHE"/vc2005express/VC.iso
+    w_try_7z "$W_TMP" "$W_CACHE"/vc2005express/VC.iso
 
+    cd "$W_TMP"
     if [ $W_UNATTENDED_SLASH_Q ]
     then
         chmod +x Ixpvc.exe
@@ -10486,11 +10491,10 @@ load_vc2008express()
     w_download http://download.microsoft.com/download/8/B/5/8B5804AD-4990-40D0-A6AA-CE894CBBB3DC/VS2008ExpressENUX1397868.iso 76c6d28274a67741da720744026ea991a70867d1
 
     # Unpack ISO
-    cd "$W_TMP"
-    w_try_7z x "$W_CACHE"/vc2008express/VS2008ExpressENUX1397868.iso
-    cd VCExpress
+    w_try_7z "$W_TMP" "$W_CACHE"/vc2008express/VS2008ExpressENUX1397868.iso
 
     # See also http://blogs.msdn.com/b/astebner/archive/2008/04/25/8425198.aspx
+    cd "$W_TMP"/VCExpress
     w_try "$WINE" setup.exe $W_UNATTENDED_SLASH_Q
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Visual Studio 9.0\\Common7\\IDE" "VCExpress.exe"
@@ -10521,9 +10525,8 @@ load_vc2010express()
     w_download http://download.microsoft.com/download/1/E/5/1E5F1C0A-0D5B-426A-A603-1798B951DDAE/VS2010Express1.iso adef5e361a1f64374f520b9a2d03c54ee43721c6
 
     # Unpack ISO
-    cd "$W_TMP"
-    w_try_7z x "$W_CACHE"/vc2010express/VS2010Express1.iso
-    cd VCExpress
+    w_try_7z "$W_TMP" "$W_CACHE"/vc2010express/VS2010Express1.iso
+    cd "$W_TMP"/VCExpress
 
     # dotnet40 leaves winver at win2k, which causes vc2010 to abort on
     # start because it looks for c:\users\$LOGNAME\Application Data
