@@ -9550,21 +9550,17 @@ load_mingw()
 w_metadata mpc apps \
     title="Media Player Classic - Home Cinema" \
     publisher="doom9 folks" \
-    year="2010" \
+    year="2014" \
     media="download" \
-    file1="MPC-HomeCinema.1.4.2499.0.x86.zip" \
-    installed_file1="$W_PROGRAMS_X86_WIN/Media Player Classic/mpc-hc.exe" \
+    file1="MPC-HC.1.7.5.x86.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/MPC-HC/mpc-hc.exe" \
     homepage="http://mpc-hc.sourceforge.net"
 
 load_mpc()
 {
-    w_download $WINETRICKS_SOURCEFORGE/project/mpc-hc/MPC%20HomeCinema%20-%20Win32/MPC-HC%20v1.4.2499.0_32%20bits/MPC-HomeCinema.1.4.2499.0.x86.zip 9f8c4a8e70fa36ffa68f878d13adc8b09b915ece
-
-    mkdir -p "$W_PROGRAMS_X86_UNIX/Media Player Classic"
-    cd "$W_PROGRAMS_X86_UNIX/Media Player Classic"
-    w_try_unzip -j "$W_CACHE/mpc/MPC-HomeCinema.1.4.2499.0.x86.zip"
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\Media Player Classic" mpc-hc.exe
+    w_download $WINETRICKS_SOURCEFORGE/project/mpc-hc/MPC%20HomeCinema%20-%20Win32/MPC-HC_v1.7.5_x86/MPC-HC.1.7.5.x86.exe 39f90869929007ae0576ae30dca6cd22ed5a59c2
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" MPC-HC.1.7.5.x86.exe ${W_OPT_UNATTENDED:+ /VERYSILENT}
 }
 
 #----------------------------------------------------------------
