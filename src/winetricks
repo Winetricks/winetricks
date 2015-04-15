@@ -6163,7 +6163,9 @@ w_metadata glut dlls \
 load_glut()
 {
     w_download http://press.liacs.nl/researchdownloads/glut.win32/glut-3.7.6-bin.zip fb4731885c05b3cf2c79e85aabe8fc9949616ef4
-    w_try_unzip "$W_DRIVE_C" "$W_CACHE"/glut/glut-3.7.6-bin.zip
+    # FreeBSD unzip rm -rf's inside the target dir before extracting:
+    w_try_unzip "$W_TMP" "$W_CACHE"/glut/glut-3.7.6-bin.zip
+    w_try mv "$W_TMP/glut-3.7.6-bin" "$W_DRIVE_C"
     w_try cp "$W_DRIVE_C"/glut-3.7.6-bin/glut32.dll "$W_SYSTEM32_DLLS"
     w_warn "If you want to compile glut programs, add c:/glut-3.7.6-bin to LIB and INCLUDE"
 }
