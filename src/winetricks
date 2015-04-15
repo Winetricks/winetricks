@@ -361,13 +361,24 @@ w_try_unrar()
 
 w_try_unzip()
 {
-    # Not always installed, but shouldn't be fatal unless it's being used
-    if test ! -x "`which unzip 2>/dev/null`"
-    then
-        w_die "Cannot find unzip.  Please install it (e.g. 'sudo apt-get install unzip' or 'sudo yum install unzip')."
-    fi
+    # $1 - directory to extract to
+    # $2 - zipfile to extract
+    # $3 .. $n - files to extract from the archive
 
-    w_try unzip -o -q "$@"
+    destdir="$1"
+    zipfile="$2"
+    shift 2
+
+    # Not always installed, use Windows 7-zip as a fallback:
+    if test -x "`which unzip 2>/dev/null`"
+    then
+        w_try unzip -o -q -d"$destdir" "$zipfile" "$@"
+    else
+        w_warn "Cannot find unzip.  Using Windows 7-zip instead. (You can avoid this by installing unzip, e.g. 'sudo apt-get install unzip' or 'sudo yum install unzip')."
+        WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
+        # errors out if there is a space between -o and path
+        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "`w_pathconv -w $zipfile`" -o"`w_pathconv -w $destdir`" "$@"
+    fi
 }
 
 w_read_key()
@@ -1378,7 +1389,7 @@ w_ahk_do()
     then
         W_BROWSERAGENT=1 \
         w_download_to ahk http://www.autohotkey.com/download/AutoHotkey104805.zip b3981b13fbc45823131f69d125992d6330212f27
-        w_try_unzip -d "$W_CACHE/ahk"  "$W_CACHE/ahk/AutoHotkey104805.zip" AutoHotkey.exe AU3_Spy.exe
+        w_try_unzip "$W_CACHE/ahk" "$W_CACHE/ahk/AutoHotkey104805.zip" AutoHotkey.exe AU3_Spy.exe
         chmod +x "$W_CACHE/ahk/AutoHotkey.exe"
     fi
 
@@ -4435,7 +4446,7 @@ load_comctl32()
     w_download $WINETRICKS_SOURCEFORGE/pocmin/Win%2095_98%20Controls/Win%2095_98%20Controls/CC32inst.exe 94c3c494258cc54bd65d2f0153815737644bffde cc32inst.exe
 
     w_try "$WINE" "$W_CACHE"/comctl32/cc32inst.exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
-    w_try_unzip -d "$W_TMP" "$W_TMP"/comctl32.exe
+    w_try_unzip "$W_TMP" "$W_TMP"/comctl32.exe
     w_try "$WINE" "$W_TMP"/x86/50ComUpd.Exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
     w_try cp "$W_TMP"/comcnt.dll "$W_SYSTEM32_DLLS"/comctl32.dll
 
@@ -4531,7 +4542,7 @@ load_binkw32()
     # Checksum of the decompressed file: 613f81f82e12131e86ae60dd318941f40db2200f
     w_download http://www.down-dll.com/dll/b/__32-binkw32.dll3.0.0.0.zip 991f77e8df513ccb8663dc4a2753fbf90338ef5c
 
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/binkw32/__32-binkw32.dll3.0.0.0.zip
+    w_try_unzip "$W_TMP" "$W_CACHE"/binkw32/__32-binkw32.dll3.0.0.0.zip
     w_try cp "$W_TMP"/binkw32.dll "$W_SYSTEM32_DLLS"/binkw32.dll
 
     w_override_dlls native binkw32
@@ -5105,9 +5116,8 @@ load_dx8sdk()
     # http://download.microsoft.com/download/whistler/dx/8.1/w982kmexp/en-us/DX81SDK_FULL.exe
     w_download http://www.darwinbots.com/numsgil/dx81sdk_full.exe 61b5733209205e942f37431ee40da712e1f50e6a
 
-    cd "$W_TMP"
-    w_try_unzip "$W_CACHE"/dx8sdk/dx81sdk_full.exe
-    cd DXF
+    w_try_unzip "$W_TMP" "$W_CACHE"/dx8sdk/dx81sdk_full.exe
+    cd "$W_TMP"/DXF
     w_try "$WINE" setup.exe   # /S/v/qn  for silent mode, but it's broken?
 }
 
@@ -5128,9 +5138,9 @@ load_dxsdk_nov2006()
     # dxview.dll uses mfc42u while registering
     w_call mfc42
 
-    cd "$W_TMP"
     w_try_cabextract "$W_CACHE"/dxsdk_nov2006/dxsdk_aug2006.exe
-    w_try_unzip dxsdk.exe
+    w_try_unzip "$W_TMP" dxsdk.exe
+    cd "$W_TMP"
     w_try "$WINE" msiexec /i Microsoft_DirectX_SDK.msi $W_UNATTENDED_SLASH_Q
 }
 
@@ -5307,7 +5317,7 @@ load_dotnet_verifier()
 
     cd "$W_CACHE"/dotnet_verifier
 
-    w_try_unzip -d "$W_SYSTEM32_DLLS" netfx_5F00_setupverifier_5F00_new.zip netfx_setupverifier.exe
+    w_try_unzip "$W_SYSTEM32_DLLS" netfx_5F00_setupverifier_5F00_new.zip netfx_setupverifier.exe
 }
 
 #----------------------------------------------------------------
@@ -6006,7 +6016,7 @@ load_flash()
     # 2014-10-02
     w_download http://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.176_archive.zip 40df72ab2c22bcd4442aa35eb586000776129982
     
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.176_archive.zip fp_14.0.0.176_archive/14_0_r0_176/flashplayer14_0r0_176_winax.exe
+    w_try_unzip "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.176_archive.zip fp_14.0.0.176_archive/14_0_r0_176/flashplayer14_0r0_176_winax.exe
     cd "$W_TMP"/fp_14.0.0.176_archive/14_0_r0_176
     w_try "$WINE" flashplayer14_0r0_176_winax.exe ${W_OPT_UNATTENDED:+ /install}
 
@@ -6022,7 +6032,7 @@ load_flash()
     # 2014-10-02
     w_download http://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.179_archive.zip b94860ca0eff3e1420c24f9647a5f9f5e610ce34
 
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.179_archive.zip fp_14.0.0.179_archive/14_0_r0_179/flashplayer14_0r0_179_win.exe
+    w_try_unzip "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.179_archive.zip fp_14.0.0.179_archive/14_0_r0_179/flashplayer14_0r0_179_win.exe
     cd "$W_TMP"/fp_14.0.0.179_archive/14_0_r0_179
     w_try "$WINE" flashplayer14_0r0_179_win.exe ${W_OPT_UNATTENDED:+ /install}
 
@@ -6149,7 +6159,7 @@ w_metadata glut dlls \
 load_glut()
 {
     w_download http://press.liacs.nl/researchdownloads/glut.win32/glut-3.7.6-bin.zip fb4731885c05b3cf2c79e85aabe8fc9949616ef4
-    w_try_unzip -d "$W_DRIVE_C" "$W_CACHE"/glut/glut-3.7.6-bin.zip
+    w_try_unzip "$W_DRIVE_C" "$W_CACHE"/glut/glut-3.7.6-bin.zip
     w_try cp "$W_DRIVE_C"/glut-3.7.6-bin/glut32.dll "$W_SYSTEM32_DLLS"
     w_warn "If you want to compile glut programs, add c:/glut-3.7.6-bin to LIB and INCLUDE"
 }
@@ -6796,7 +6806,7 @@ load_ollydbg110()
     w_call corefonts
 
     w_download http://www.ollydbg.de/odbg110.zip 8403d8049a0841887c16cf64889596ad52b84da8
-    w_try_unzip -d "$W_DRIVE_C/ollydbg110" "$W_CACHE/$W_PACKAGE"/odbg110.zip
+    w_try_unzip "$W_DRIVE_C/ollydbg110" "$W_CACHE/$W_PACKAGE"/odbg110.zip
 }
 
 #----------------------------------------------------------------
@@ -6816,7 +6826,7 @@ load_ollydbg200()
     w_call corefonts
 
     w_download http://www.ollydbg.de/odbg200.zip 68e572d94a0555e8f14516b55b6b96b879900fe9
-    w_try_unzip -d "$W_DRIVE_C/ollydbg200" "$W_CACHE/$W_PACKAGE"/odbg200.zip
+    w_try_unzip "$W_DRIVE_C/ollydbg200" "$W_CACHE/$W_PACKAGE"/odbg200.zip
 }
 
 #----------------------------------------------------------------
@@ -6836,7 +6846,7 @@ load_ollydbg201()
     w_call corefonts
 
     w_download http://www.ollydbg.de/odbg201.zip d41fe77a2801d38476f20468ab61ddce14c3abb8
-    w_try_unzip -d "$W_DRIVE_C/ollydbg201" "$W_CACHE/$W_PACKAGE"/odbg201.zip
+    w_try_unzip "$W_DRIVE_C/ollydbg201" "$W_CACHE/$W_PACKAGE"/odbg201.zip
 
     # ollydbg201 is affected by wine bug 36012 if debug symbols are available.
     # As a workaround native 'dbghelp' can be installed. We don't do this automatically
@@ -6866,7 +6876,7 @@ load_openwatcom()
         # Pick smallest installation that supports 16 bit C and C++
         cd "$W_TMP"
         cp "$W_CACHE"/openwatcom/open-watcom-c-win32-1.9.exe .
-        w_try_unzip open-watcom-c-win32-1.9.exe setup.inf
+        w_try_unzip . open-watcom-c-win32-1.9.exe setup.inf
         sed -i 's/tools16=.*/tools16=true/' setup.inf
         w_try zip -f open-watcom-c-win32-1.9.exe
         w_try "$WINE" open-watcom-c-win32-1.9.exe -s
@@ -6897,7 +6907,7 @@ load_pdh()
     w_download http://download.microsoft.com/download/platformsdk/Redist/5.0.2195.2668/NT4/EN-US/pdhinst.exe f42448660def8cd7f42b34aa7bc7264745f4425e
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/pdh/pdhinst.exe
-    w_try_unzip -d "$W_TMP" "$W_TMP"/pdh.exe
+    w_try_unzip "$W_TMP" "$W_TMP"/pdh.exe
     w_try cp -f "$W_TMP"/x86/Pdh.Dll "$W_SYSTEM32_DLLS"/pdh.dll
 }
 
@@ -7192,7 +7202,7 @@ load_sdl()
 {
     # http://www.libsdl.org/download-1.2.php
     w_download http://www.libsdl.org/release/SDL-1.2.14-win32.zip d22c71d1c2bdf283548187c4b0bd7ef9d0c1fb23
-    w_try_unzip "$W_CACHE"/sdl/SDL-1.2.14-win32.zip -d "$W_SYSTEM32_DLLS" SDL.dll
+    w_try_unzip "$W_SYSTEM32_DLLS" "$W_CACHE"/sdl/SDL-1.2.14-win32.zip SDL.dll
 }
 
 #----------------------------------------------------------------
@@ -7286,7 +7296,7 @@ load_speechsdk()
     # http://www.microsoft.com/download/en/details.aspx?id=10121
     w_download http://download.microsoft.com/download/B/4/3/B4314928-7B71-4336-9DE7-6FA4CF00B7B3/SpeechSDK51.exe f69efaee8eb47f8c7863693e8b8265a3c12c4f51
 
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/speechsdk/SpeechSDK51.exe
+    w_try_unzip "$W_TMP" "$W_CACHE"/speechsdk/SpeechSDK51.exe
 
     # Otherwise it only installs the SDK and not the redistributable:
     w_set_winver win2k
@@ -7373,7 +7383,7 @@ load_vb2run()
     # 2014/05/31: Microosfot FTP is down ftp://$ftp_microsoft_com/Softlib/MSLFILES/VBRUN200.EXE 
     # Mirror list: http://www.filewatcher.com/m/VBRUN200.EXE.220504-0.html
     w_download ftp://ftp.chatnfiles.com/Winfilesdotcom/winfilesdotcom-june-98-4-of-4/required/VBRUN200.EXE ac0568b73ee375408778e9b505df995f79ab907e
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/vb2run/VBRUN200.EXE
+    w_try_unzip "$W_TMP" "$W_CACHE"/vb2run/VBRUN200.EXE
     w_try cp -f "$W_TMP/VBRUN200.DLL" "$W_SYSTEM32_DLLS"
 }
 
@@ -7391,7 +7401,7 @@ load_vb3run()
 {
     # See http://support.microsoft.com/kb/196285
     w_download http://download.microsoft.com/download/vb30/utility/1/w9xnt4/en-us/vb3run.exe 518fcfefde9bf680695cadd06512efadc5ac2aa7
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/vb3run/vb3run.exe
+    w_try_unzip "$W_TMP" "$W_CACHE"/vb3run/vb3run.exe
     w_try cp -f "$W_TMP/Vbrun300.dll" "$W_SYSTEM32_DLLS"
 }
 
@@ -7409,7 +7419,7 @@ load_vb4run()
 {
     # See http://support.microsoft.com/kb/196286
     w_download http://download.microsoft.com/download/vb40ent/sample27/1/w9xnt4/en-us/vb4run.exe 83e968063272e97bfffd628a73bf0ff5f8e1023b
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/vb4run/vb4run.exe
+    w_try_unzip "$W_TMP" "$W_CACHE"/vb4run/vb4run.exe
     w_try cp -f "$W_TMP/Vb40032.dll" "$W_SYSTEM32_DLLS"
     w_try cp -f "$W_TMP/Vb40016.dll" "$W_SYSTEM32_DLLS"
 }
@@ -8691,7 +8701,7 @@ load_takao()
     # See http://launchpad.net/takao-fonts for project page
     w_download http://launchpad.net/takao-fonts/trunk/003.02.01/+download/takao-fonts-ttf-003.02.01.zip 4f636d5c7c1bc16b96ea723adb16838cfb6df059
     cp -f "$W_CACHE"/takao/takao-fonts-ttf-003.02.01.zip "$W_TMP"
-    w_try_unzip -d "$W_TMP" "$W_TMP"/takao-fonts-ttf-003.02.01.zip
+    w_try_unzip "$W_TMP" "$W_TMP"/takao-fonts-ttf-003.02.01.zip
     w_try cp -f "$W_TMP"/takao-fonts-ttf-003.02.01/*.ttf "$W_FONTSDIR_UNIX"
 
     w_register_font TakaoGothic.ttf "TakaoGothic"
@@ -8717,7 +8727,7 @@ load_uff()
 {
     w_download http://font.ubuntu.com/download/ubuntu-font-family-0.70.1.zip efbab0d5d8cb5cff091307d2360dcb1bfe1ae6e1
     cd "$W_TMP"
-    w_try_unzip "$W_CACHE"/uff/ubuntu-font-family-0.70.1.zip
+    w_try_unzip . "$W_CACHE"/uff/ubuntu-font-family-0.70.1.zip
     mv ubuntu-font-family-0.70.1/*.ttf "$W_FONTSDIR_UNIX"
 
     w_register_font Ubuntu-R.ttf "Ubuntu"
@@ -8763,7 +8773,7 @@ load_unifont()
     # See http://unifoundry.com/unifont.html for project page
     w_download http://unifoundry.com/unifont-5.1.20080907.zip bb8a3960dc0a96aa305de28312ea8a0ab64123d2
     cp -f "$W_CACHE"/unifont/unifont-5.1.20080907.zip "$W_TMP"
-    w_try_unzip -d "$W_TMP" "$W_TMP"/unifont-5.1.20080907.zip
+    w_try_unzip "$W_TMP" "$W_TMP"/unifont-5.1.20080907.zip
     w_try cp -f "$W_TMP"/unifont-5.1.20080907.ttf "$W_FONTSDIR_UNIX/unifont.ttf"
 
     w_register_font unifont.ttf "Unifont"
@@ -8965,7 +8975,7 @@ w_metadata colorprofile apps \
 load_colorprofile()
 {
     w_download http://download.microsoft.com/download/whistler/hwdev1/1.0/wxp/en-us/ColorProfile.exe 6b72836b32b343c82d0760dff5cb51c2f47170eb
-    w_try_unzip -d "$W_TMP" "$W_CACHE"/colorprofile/ColorProfile.exe
+    w_try_unzip "$W_TMP" "$W_CACHE"/colorprofile/ColorProfile.exe
 
     # It's in system32 for both win32/win64
     mkdir -p "$W_WINDIR_UNIX"/system32/spool/drivers/color
@@ -9072,8 +9082,7 @@ w_metadata emu8086 apps \
 load_emu8086()
 {
     w_download http://emu8086.com/emu8086.zip fa3b2451cbc46fd2e3aa2670fa4d81ae8e75c7db
-    cd "$W_CACHE/$W_PACKAGE"
-    w_try_unzip $file1 -d "$W_TMP"
+    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/$file1
     w_try "$WINE" "$W_TMP/Setup.exe" $W_UNATTENDED_SLASH_SILENT
     w_declare_exe "c:\\emu8086" "emu8086.exe"
 }
@@ -9967,9 +9976,8 @@ load_python26_comtypes()
 
     w_download $WINETRICKS_SOURCEFORGE/comtypes/0.6.2/comtypes-0.6.2.zip b84f4e3050652d494e8c8d9d6d6f221c124ffba9
 
-    cd "$W_TMP"
-    w_try_unzip "$W_CACHE/$W_PACKAGE"/comtypes-0.6.2.zip
-    cd comtypes-0.6.2
+    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/comtypes-0.6.2.zip
+    cd "$W_TMP"/comtypes-0.6.2
     w_try "$WINE" "C:\Python26\python.exe" setup.py install
 }
 
@@ -10782,10 +10790,8 @@ load_3dmark2000()
         w_download http://www.ocinside.de/download/3dmark2000_v11_100308.exe b0400d59cfd45d8c8893d3d4edc58b6285ee1502
     fi
 
-    cd "$W_TMP"
-    mkdir $W_PACKAGE
-    cd $W_PACKAGE
-    w_try_unzip "$W_CACHE/$W_PACKAGE"/3dmark2000_v11_100308.exe
+    w_try_unzip "$W_TMP/$W_PACKAGE" "$W_CACHE/$W_PACKAGE"/3dmark2000_v11_100308.exe
+    cd "$W_TMP/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         run Setup.exe
@@ -11976,16 +11982,7 @@ w_metadata blobby_volley games \
 load_blobby_volley()
 {
     w_download_manual http://www.chip.de/downloads/Blobby-Volley_12990993.html blobby.zip c7057c77a5009a88d9d877e17a63b5536ebeb177
-
-    mkdir -p "$W_DRIVE_C/BlobbyVolley"
-    cd "$W_CACHE/$W_PACKAGE"
-    w_try_unzip blobby.zip -d "$W_DRIVE_C/BlobbyVolley"
-    w_declare_exe "c:\\BlobbyVolley" "volley.exe"
-
-    if w_workaround_wine_bug 4432
-    then
-        w_warn "You may need to apply a patch, see http://bugs.winehq.org/show_bug.cgi?id=4432#c15"
-    fi
+    w_try_unzip "$W_DRIVE_C/BlobbyVolley" "$W_CACHE/$W_PACKAGE"/blobby.zip
 }
 
 #----------------------------------------------------------------
@@ -12353,8 +12350,7 @@ load_civ4_demo()
 {
     w_download_manual http://download.cnet.com/Civilization-IV-demo/3000-7489_4-10465206.html Civilization4_Demo.zip b54f1e5d0a1c2d1ef456d0c20098c23bbb6a0ea7
 
-    cd "$W_CACHE/$W_PACKAGE"
-    w_try_unzip Civilization4_Demo.zip -d "$W_TMP"
+    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/Civilization4_Demo.zip
     cd "$W_TMP/$W_PACKAGE"
     chmod +x setup.exe
     w_ahk_do "
@@ -13080,8 +13076,7 @@ load_dirt2_demo()
 {
     w_download_manual http://www.joystiq.com/game/dirt-2/download/dirt-2-demo/ Dirt2Demo.zip 13af1beb8c4f6300e4655045b66aea1f8a29f2b3
 
-    mkdir "$W_TMP/$W_PACKAGE"
-    w_try_unzip -d "$W_TMP/$W_PACKAGE" "$W_CACHE/$W_PACKAGE/Dirt2Demo.zip"
+    w_try_unzip "$W_TMP/$W_PACKAGE" "$W_CACHE/$W_PACKAGE/Dirt2Demo.zip"
 
     if w_workaround_wine_bug 23532
     then
@@ -14572,7 +14567,7 @@ load_lego_potc_demo()
     w_download_manual http://www.gamershell.com/download_73976.shtml LPOTC_PC_Demo.zip 3025dcbbee9ff2d74d7837a78ef5b7aceae15d8f
     cd "$W_TMP"
     w_info "Unpacking $file1"
-    w_try_unzip "$W_CACHE/$W_PACKAGE/$file1" LPOTC_PC_Demo.exe
+    w_try_unzip . "$W_CACHE/$W_PACKAGE/$file1" LPOTC_PC_Demo.exe
     w_ahk_do "
         SetWinDelay, 500
         SetTitleMatchMode, 2
@@ -15031,10 +15026,9 @@ load_maxmagicmarker_demo()
 {
     w_download http://www.maxandthemagicmarker.com/maxdemo/max_demo_pc.zip 1a79c583ff40e7b2cf05d18a89a806fd6b88a5d1
 
-    w_try mkdir "$W_PROGRAMS_X86_UNIX"/$W_PACKAGE
-    cd "$W_PROGRAMS_X86_UNIX"/$W_PACKAGE
-    w_try_unzip "$W_CACHE/$W_PACKAGE"/max_demo_pc.zip
+    w_try_unzip "$W_PROGRAMS_X86_UNIX"/$W_PACKAGE "$W_CACHE/$W_PACKAGE"/max_demo_pc.zip
     # Work around bug in game?!
+    cd "$W_PROGRAMS_X86_UNIX/$W_PACKAGE"
     mv "max and the magic markerdemo pc" "max and the magic markerdemo pc"_Data
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\$W_PACKAGE" "max and the magic markerdemo pc.exe"
@@ -15099,7 +15093,7 @@ load_mdk()
         WinWaitClose
     "
     cd "$W_DRIVE_C/SHINY/MDK"
-    w_try_unzip "$W_CACHE/$W_PACKAGE"/patch-mdk3dfx.zip
+    w_try_unzip . "$W_CACHE/$W_PACKAGE"/patch-mdk3dfx.zip
 
     w_declare_exe "C:\\SHINY\\MDK" "MDK3DFX.EXE"
     # TODO: wine fails to install menu items, add a workaround for that
@@ -16631,7 +16625,7 @@ load_starcraft2_demo()
     w_download_manual http://www.fileplanet.com/217982/210000/fileinfo/Starcraft-2-Demo SC2-WingsOfLiberty-enUS-Demo-Installer.zip 4c06ad755fbde73f135a7359bf6bfdbd2c6eb00e
 
     cd "$W_TMP"
-    w_try_unzip "$W_CACHE/$W_PACKAGE"/SC2-WingsOfLiberty-enUS-Demo-Installer.zip
+    w_try_unzip . "$W_CACHE/$W_PACKAGE"/SC2-WingsOfLiberty-enUS-Demo-Installer.zip
 
     w_ahk_do "
         SetTitleMatchMode, 2
@@ -17342,12 +17336,8 @@ w_metadata typingofthedead_demo games \
 load_typingofthedead_demo()
 {
     w_download "http://www.fileplanet.com/54947/50000/fileinfo/The-Typing-of-the-Dead-Demo" 96fe3edb2431210932af840e29c59bce6b7fc80f
-
-    cd "$W_CACHE/$W_PACKAGE"
-    mkdir "$W_TMP"
     cd "$W_TMP"
-    w_try_unzip "$W_CACHE/$W_PACKAGE/tod-demo.zip"
-
+    w_try_unzip . "$W_CACHE/$W_PACKAGE/tod-demo.zip"
     w_ahk_do "
         SetTitleMatchMode, 2
         run SETUP.EXE
