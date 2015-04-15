@@ -350,13 +350,17 @@ w_try_regsvr()
 
 w_try_unrar()
 {
-    # Not always installed, but shouldn't be fatal unless it's being used
-    if test ! -x "`which unrar 2>/dev/null`"
-    then
-        w_die "Cannot find unrar.  Please install it (e.g. 'sudo apt-get install unrar' or 'sudo yum install unrar')."
-    fi
+    # $1 - zipfile to extract (keeping internal paths, in cwd)
 
-    w_try unrar x "$@"
+    # Not always installed, use Windows 7-zip as a fallback:
+    if test -x "`which unrar 2>/dev/null`"
+    then
+        w_try unrar x "$@"
+    else
+        w_warn "Cannot find unrar.  Using Windows 7-zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt-get install unrar' or 'sudo yum install unrar')."
+        WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
+        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "`w_pathconv -w $1`"
+    fi
 }
 
 w_try_unzip()
