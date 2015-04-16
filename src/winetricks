@@ -376,13 +376,21 @@ w_try_unzip()
     # Not always installed, use Windows 7-zip as a fallback:
     if test -x "`which unzip 2>/dev/null`"
     then
-        w_try unzip -o -q -d"$destdir" "$zipfile" "$@"
+        # FreeBSD ships unzip, but it doesn't support self compressed exectuables
+        # If it fails ,fall back to 7-zip:
+        unzip -o -q -d"$destdir" "$zipfile" "$@"
+        ret=$?
+        case $ret in
+            0) return ;;
+            1|*) w_warn "Unzip failed, trying Windows 7-zip instead." ;;
+        esac
     else
         w_warn "Cannot find unzip.  Using Windows 7-zip instead. (You can avoid this by installing unzip, e.g. 'sudo apt-get install unzip' or 'sudo yum install unzip')."
-        WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
-        # errors out if there is a space between -o and path
-        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "`w_pathconv -w $zipfile`" -o"`w_pathconv -w $destdir`" "$@"
     fi
+
+    WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
+    # errors out if there is a space between -o and path
+    w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "`w_pathconv -w $zipfile`" -o"`w_pathconv -w $destdir`" "$@"
 }
 
 w_read_key()
