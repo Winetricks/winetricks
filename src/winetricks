@@ -2037,7 +2037,7 @@ w_conflicts()
 {
     for x in $2
     do
-        if test $(grep -w "$x" "$WINEPREFIX/winetricks.log")
+        if grep -qw "$x" "$WINEPREFIX/winetricks.log"
         then
             w_die "error: $1 conflicts with $x, which is already installed."
         fi
