@@ -10556,17 +10556,17 @@ load_vc2010express()
 #----------------------------------------------------------------
 
 w_metadata vlc apps \
-    title="VLC media player" \
+    title="VLC media player 2.2.1" \
     publisher="videolan.org" \
-    year="2014" \
+    year="2015" \
     media="download" \
-    file1="vlc-2.1.5-win32.exe" \
+    file1="vlc-2.2.1-win32.exe" \
     installed_file1="$W_PROGRAMS_X86_WIN/VideoLAN/VLC/vlc.exe" \
     homepage="http://www.videolan.org/vlc/"
 
 load_vlc()
 {
-    w_download http://get.videolan.org/vlc/2.1.5/win32/vlc-2.1.5-win32.exe bc5e2b879c110c7702973fa3c380550ea2856689
+    w_download http://get.videolan.org/vlc/2.2.1/win32/vlc-2.2.1-win32.exe 4cbcea9764b6b657d2147645eeb5b973b642530e
     cd "$W_CACHE"/vlc
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
     w_declare_exe "$W_PROGRAMS_X86_WIN\\VideoLAN\\VLC" vlc.exe
