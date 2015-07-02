@@ -9929,19 +9929,19 @@ w_metadata psdkwin71 apps \
 
 load_psdkwin71()
 {
-    # http://www.microsoft.com/downloads/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en
     w_call dotnet20
     w_call dotnet40
     w_call mfc42   # need mfc42u, or setup will abort
-    # don't have a working unattended recipe.  Maybe we'll have to
-    # do an autohotkey script until msft gets its act together:
-    # http://social.msdn.microsoft.com/Forums/en-US/windowssdk/thread/c053b616-7d5b-405d-9841-ec465a8e21d5
+    # http://www.microsoft.com/downloads/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en
     w_download http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe a8717ebb20a69c7efa85232bcb9899b8b07f98cf
     cd "$W_CACHE"/psdkwin71
     if w_workaround_wine_bug 21596
     then
         w_warn "When given a choice, select only C++ compilers and headers, the other options don't work yet.  See http://bugs.winehq.org/show_bug.cgi?id=21596"
     fi
+    # don't have a working unattended recipe.  Maybe we'll have to
+    # do an autohotkey script until msft gets its act together:
+    # http://social.msdn.microsoft.com/Forums/en-US/windowssdk/thread/c053b616-7d5b-405d-9841-ec465a8e21d5
     w_try "$WINE" winsdk_web.exe
 
     if w_workaround_wine_bug 21362
