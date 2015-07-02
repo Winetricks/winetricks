@@ -9932,10 +9932,6 @@ load_psdkwin71()
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en
     w_call dotnet20
     w_call dotnet40
-    if w_workaround_wine_bug 21509 "" 1.2,
-    then
-        w_call gdiplus     # work around http://bugs.winehq.org/show_bug.cgi?id=21509
-    fi
     w_call mfc42   # need mfc42u, or setup will abort
     # don't have a working unattended recipe.  Maybe we'll have to
     # do an autohotkey script until msft gets its act together:
