@@ -6327,23 +6327,22 @@ load_jet40()
 w_metadata kde apps \
     title="KDE on Windows" \
     publisher="various" \
-    year="2011" \
+    year="2013" \
     media="download" \
-    file1="kdewin-installer-gui-0.9.8-1.exe" \
+    file1="kdewin-installer-gui-1.0.0.exe" \
     installed_exe1="$W_PROGRAMS_WIN/kde/etc/installer.ini" \
     homepage="http://windows.kde.org" \
     unattended="no"
 
 load_kde()
 {
-    w_download http://www.winkde.org/pub/kde/ports/win32/installer/kdewin-installer-gui-0.9.8-1.exe b31aaf24d23b9f289bf56aa21e1571efc6bea58a
-
+    w_download http://mirrors.mit.edu/kde/stable/kdewin/installer/kdewin-installer-gui-1.0.0.exe 0d798facb7fbf11529e7ecd067e875d76adb9d78
     mkdir -p "$W_PROGRAMS_UNIX/kde"
-    w_try cp "$W_CACHE"/kde/kdewin-installer-gui-0.9.8-1.exe "$W_PROGRAMS_UNIX/kde"
+    w_try cp "$W_CACHE/kde/${file1}" "$W_PROGRAMS_UNIX/kde"
     cd "$W_PROGRAMS_UNIX/kde"
     # There's no unattended option, probably because there are so many choices,
     # it's like cygwin
-    w_try "$WINE" kdewin-installer-gui-0.9.8-1.exe
+    w_try "$WINE" "${file1}"
 }
 
 #----------------------------------------------------------------
