@@ -5345,12 +5345,22 @@ load_dotnet20()
     fi
 
     cd "$W_CACHE"/dotnet20
+    # dotnet20 hates 64bit systems
+    tmp_path=`pwd | sed 's/^/Z:/;s/$/\/tmp/'`
+    wine dotnetfx.exe /T:$tmp_path /C
+    pushd tmp >/dev/null
+    sed 's/^BlockOn64Platform=1/BlockOn64Platform=0/' install.ini > install64.ini
+    mv install64.ini install.ini
+    # dotnet's attitude problem has been fixed
     if w_workaround_wine_bug 30845 "Using native fusion while installing..." 1.5.8,
     then
-        w_try env WINEDLLOVERRIDES=mscoree,fusion=n "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+#       w_try env WINEDLLOVERRIDES=mscoree,fusion=n "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+        w_try env WINEDLLOVERRIDES=mscoree,fusion=n "$WINE" install.exe
     else
-        w_try "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+#       w_try "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+        w_try "$WINE" install.exe
     fi
+    popd >/dev/null
     w_unset_winver
 
     # We can't stop installing dotnet20 in win2K mode until wine supports
@@ -5365,7 +5375,6 @@ load_dotnet20()
     then
         w_killall "mscorsvw.exe"
     fi
-
 }
 
 verify_dotnet20()
