@@ -8098,7 +8098,7 @@ load_xmllite()
     if w_workaround_wine_bug 16013
     then
         # Find instructions to create this file in dlls/wintrust/tests/crypt.c
-        w_download http://winezeug.googlecode.com/svn/trunk/winetricks_files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
+        w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
         # Put a dummy catalog file in place
         mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
         w_try cp -f "$W_CACHE"/xmllite/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
@@ -9355,7 +9355,7 @@ load_ie7()
 
     # See http://bugs.winehq.org/show_bug.cgi?id=16013
     # Find instructions to create this file in dlls/wintrust/tests/crypt.c
-    w_download http://winezeug.googlecode.com/svn/trunk/winetricks_files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
+    w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
 
     # Put a dummy catalog file in place
     mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
@@ -9468,7 +9468,7 @@ load_ie8()
 
     # See http://bugs.winehq.org/show_bug.cgi?id=16013
     # Find instructions to create this file in dlls/wintrust/tests/crypt.c
-    w_download http://winezeug.googlecode.com/svn/trunk/winetricks_files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
+    w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
 
     # Put a dummy catalog file in place
     mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
