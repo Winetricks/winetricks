@@ -8801,18 +8801,18 @@ load_allfonts()
 #----------------------------------------------------------------
 
 w_metadata 7zip apps \
-    title="7-Zip" \
+    title="7-Zip 15.05 beta" \
     publisher="Igor Pavlov" \
-    year="2014" \
+    year="2015" \
     media="download" \
-    file1="7z935.exe" \
+    file1="7z1505.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/7-Zip/7zFM.exe"
 
 load_7zip()
 {
-    w_download http://downloads.sourceforge.net/project/sevenzip/7-Zip/9.35/7z935.exe f0f975755480ce7519a865aa750b7f52f0f8d7d5
+    w_download http://www.7-zip.org/a/7z1505.exe ece8bbd4c8903095d44e99196219c953a1d47bfd
     cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" 7z935.exe $W_UNATTENDED_SLASH_S
+    w_try "$WINE" 7z1505.exe $W_UNATTENDED_SLASH_S
     w_declare_exe "$W_PROGRAMS_X86_WIN\\7-Zip" "7zFM.exe"
 }
 
