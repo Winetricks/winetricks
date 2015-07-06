@@ -252,12 +252,10 @@ test_command()
     export WINEPREFIX=$WINE_PREFIXES/$(echo $@ | tr " " "-")
     DRIVE_C="$WINEPREFIX/dosdevices/c:"
 
-    # change if you don't want to skip ones already installed
+    # always use a clean $WINEPREFIX
     if test -d $WINEPREFIX
     then
-        echo "Skipping $command, already installed"
-        return 0
-        #rm -rf $WINEPREFIX
+        rm -rf $WINEPREFIX
     fi
 
     # Isolate us from the user's home directory
