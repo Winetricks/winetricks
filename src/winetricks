@@ -4040,10 +4040,6 @@ winetricks_init()
         if test "$WINEPREFIX"
         then
             WINETRICKS_ORIGINAL_WINEPREFIX="$WINEPREFIX"
-            #if test WINETRICKS_OPT_SHAREDPREFIX=0
-            #then
-            #    w_info "To install apps into $WINEPREFIX, give the --no-isolate option"
-            #fi
         else
             WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
         fi
@@ -4138,9 +4134,9 @@ Executes given verbs.  Each verb installs an application or changes a setting.
 Options:
     --force           Don't check whether packages were already installed
     --gui             Show gui diagnostics even when driven by commandline
+    --isolate         Install each app or game in its own bottle (WINEPREFIX)
 -k, --keep_isos       Cache isos (allows later installation without disc)
     --no-clean        Don't delete temp directories (useful during debugging)
-    --no-isolate      Don't install each app or game in its own bottle
 -q, --unattended      Don't ask any questions, just install automatically
 -r, --ddrescue        Retry hard when caching scratched discs
     --showbroken      Even show verbs that are currently broken in wine
@@ -4200,6 +4196,8 @@ then
 
     # Which GUI helper to use (none/zenity/kdialog).  See winetricks_detect_gui.
     WINETRICKS_GUI=none
+    # Default to a shared prefix:
+    WINETRICKS_OPT_SHAREDPREFIX=1
 
     # Handle options before init, to avoid starting wine for --help or --version
     while winetricks_handle_option $1
@@ -6052,7 +6050,7 @@ load_flash()
     #
     #    cd ~/winetricks/src
     #    rm -rf ~/.wine
-    #    sh winetricks -q flash --no-isolate firefox
+    #    sh winetricks -q flash firefox
     #    cd ~/.wine/drive_c/Program\ Files/Mozilla\ Firefox
     #    wine firefox.exe http://www.adobe.com/software/flash/about
     # Verify that the version of flash shows up and that you're not prompted
@@ -19152,12 +19150,7 @@ then
             main) verbs=`winetricks_mainmenu` ;;
             prefix)
                 verbs=`winetricks_prefixmenu`;
-                # Cheezy hack: choosing type of package in prefix menu == whether to isolate.
-                case "$verbs" in
-                apps|benchmarks|games) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
-                *)     WINETRICKS_OPT_SHAREDPREFIX=1 ;;
-                esac
-                # Cheezy hack #2: choosing 'attended' or 'unattended' leaves you in same menu
+                # Cheezy hack: choosing 'attended' or 'unattended' leaves you in same menu
                 case "$verbs" in
                 attended) winetricks_set_unattended 0 ; continue;;
                 unattended) winetricks_set_unattended 1 ; continue;;
