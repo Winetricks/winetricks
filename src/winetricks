@@ -501,7 +501,7 @@ w_expand_env()
 # get sha1sum string and set $_W_gotsum to it
 w_get_sha1sum()
 {
-    _W_file=$1
+    local _W_file=$1
     _W_gotsum=`$WINETRICKS_SHA1SUM < "$_W_file" | sed 's/(stdin)= //;s/ .*//'`
 }
 
@@ -890,7 +890,7 @@ w_download_manual_to()
     case $LANG in
     da*) _W_dlmsg="Hent venligst filen $_W_file fra $_W_url og placér den i $W_CACHE/$_W_packagename, kør derefter dette skript.";;
     de*) _W_dlmsg="Bitte laden Sie $_W_file von $_W_url runter, stellen Sie's in $W_CACHE/$_W_packagename, dann wiederholen Sie diesen Kommando.";;
-    pl*) _W_dlmsg="Proszę pobrać plik $_W_file z $_W_url, następnie umieścić go w $W_CACHE/$_W_packagename, a na końcu uruchomić ponownie ten skrytp.";;
+    pl*) _W_dlmsg="Proszę pobrać plik $_W_file z $_W_url, następnie umieścić go w $W_CACHE/$_W_packagename, a na końcu uruchomić ponownie ten skrypt.";;
     uk*) _W_dlmsg="Будь ласка, звантажте $_W_file з $_W_url, розташуйте в $W_CACHE/$_W_packagename, потім запустіть скрипт знову.";;
     zh_CN*) _W_dlmsg="请从 $_W_url 下载 $_W_file，并置放于 $W_CACHE/$_W_packagename, 然后重新运行 winetricks.";;
     zh_TW*) _W_dlmsg="請從 $_W_url 下載 $_W_file，并置放於 $W_CACHE/$_W_packagename, 然后重新執行 winetricks.";;
@@ -2039,7 +2039,7 @@ w_conflicts()
 {
     for x in $2
     do
-        if test $(grep -w "$x" "$WINEPREFIX/winetricks.log")
+        if grep -qw "$x" "$WINEPREFIX/winetricks.log"
         then
             w_die "error: $1 conflicts with $x, which is already installed."
         fi
@@ -4040,10 +4040,6 @@ winetricks_init()
         if test "$WINEPREFIX"
         then
             WINETRICKS_ORIGINAL_WINEPREFIX="$WINEPREFIX"
-            #if test WINETRICKS_OPT_SHAREDPREFIX=0
-            #then
-            #    w_info "To install apps into $WINEPREFIX, give the --no-isolate option"
-            #fi
         else
             WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
         fi
@@ -4138,9 +4134,9 @@ Executes given verbs.  Each verb installs an application or changes a setting.
 Options:
     --force           Don't check whether packages were already installed
     --gui             Show gui diagnostics even when driven by commandline
+    --isolate         Install each app or game in its own bottle (WINEPREFIX)
 -k, --keep_isos       Cache isos (allows later installation without disc)
     --no-clean        Don't delete temp directories (useful during debugging)
-    --no-isolate      Don't install each app or game in its own bottle
 -q, --unattended      Don't ask any questions, just install automatically
 -r, --ddrescue        Retry hard when caching scratched discs
     --showbroken      Even show verbs that are currently broken in wine
@@ -4200,6 +4196,8 @@ then
 
     # Which GUI helper to use (none/zenity/kdialog).  See winetricks_detect_gui.
     WINETRICKS_GUI=none
+    # Default to a shared prefix:
+    WINETRICKS_OPT_SHAREDPREFIX=1
 
     # Handle options before init, to avoid starting wine for --help or --version
     while winetricks_handle_option $1
@@ -6052,7 +6050,7 @@ load_flash()
     #
     #    cd ~/winetricks/src
     #    rm -rf ~/.wine
-    #    sh winetricks -q flash --no-isolate firefox
+    #    sh winetricks -q flash firefox
     #    cd ~/.wine/drive_c/Program\ Files/Mozilla\ Firefox
     #    wine firefox.exe http://www.adobe.com/software/flash/about
     # Verify that the version of flash shows up and that you're not prompted
@@ -6327,23 +6325,22 @@ load_jet40()
 w_metadata kde apps \
     title="KDE on Windows" \
     publisher="various" \
-    year="2011" \
+    year="2013" \
     media="download" \
-    file1="kdewin-installer-gui-0.9.8-1.exe" \
+    file1="kdewin-installer-gui-1.0.0.exe" \
     installed_exe1="$W_PROGRAMS_WIN/kde/etc/installer.ini" \
     homepage="http://windows.kde.org" \
     unattended="no"
 
 load_kde()
 {
-    w_download http://www.winkde.org/pub/kde/ports/win32/installer/kdewin-installer-gui-0.9.8-1.exe b31aaf24d23b9f289bf56aa21e1571efc6bea58a
-
+    w_download http://mirrors.mit.edu/kde/stable/kdewin/installer/kdewin-installer-gui-1.0.0.exe 0d798facb7fbf11529e7ecd067e875d76adb9d78
     mkdir -p "$W_PROGRAMS_UNIX/kde"
-    w_try cp "$W_CACHE"/kde/kdewin-installer-gui-0.9.8-1.exe "$W_PROGRAMS_UNIX/kde"
+    w_try cp "$W_CACHE/kde/${file1}" "$W_PROGRAMS_UNIX/kde"
     cd "$W_PROGRAMS_UNIX/kde"
     # There's no unattended option, probably because there are so many choices,
     # it's like cygwin
-    w_try "$WINE" kdewin-installer-gui-0.9.8-1.exe
+    w_try "$WINE" "${file1}"
 }
 
 #----------------------------------------------------------------
@@ -6351,7 +6348,7 @@ load_kde()
 w_metadata kindle apps \
     title="Amazon Kindle" \
     publisher="Amazon" \
-    year="2011" \
+    year="2015" \
     media="download" \
     file1="KindleForPC-installer.exe" \
     installed_exe1="$W_PROGRAMS_WIN/Amazon/Kindle/Kindle.exe" \
@@ -6359,7 +6356,7 @@ w_metadata kindle apps \
 
 load_kindle()
 {
-    w_download http://kindleforpc.amazon.com/36154/KindleForPC-installer.exe aca576086de7abd1d82c211dbeeb810387e046f5
+    w_download http://kindleforpc.amazon.com/40666/KindleForPC-installer.exe 10e8c82587f8c08b77e5ed55dd94d9851a2a899c
     cd "$W_CACHE"/kindle
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
     w_declare_exe "$W_PROGRAMS_WIN\\Amazon\\Kindle" Kindle.exe
@@ -8099,7 +8096,7 @@ load_xmllite()
     if w_workaround_wine_bug 16013
     then
         # Find instructions to create this file in dlls/wintrust/tests/crypt.c
-        w_download http://winezeug.googlecode.com/svn/trunk/winetricks_files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
+        w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
         # Put a dummy catalog file in place
         mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
         w_try cp -f "$W_CACHE"/xmllite/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
@@ -9356,7 +9353,7 @@ load_ie7()
 
     # See http://bugs.winehq.org/show_bug.cgi?id=16013
     # Find instructions to create this file in dlls/wintrust/tests/crypt.c
-    w_download http://winezeug.googlecode.com/svn/trunk/winetricks_files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
+    w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
 
     # Put a dummy catalog file in place
     mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
@@ -9469,7 +9466,7 @@ load_ie8()
 
     # See http://bugs.winehq.org/show_bug.cgi?id=16013
     # Find instructions to create this file in dlls/wintrust/tests/crypt.c
-    w_download http://winezeug.googlecode.com/svn/trunk/winetricks_files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
+    w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
 
     # Put a dummy catalog file in place
     mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
@@ -10181,7 +10178,8 @@ load_steam()
     # 17 Mar 2014 b2a3fdbe4a662f3bf751f5b8bfc61f8d35e050fe
     # 11 Dec 2014 7ad8fbeffa6c963b821f80129c15c9d8e85f9a4a
     #  6 Jan 2015 e04aefe8bc894f11f211edec8e8a008abe0147d2
-    w_download http://media.steampowered.com/client/installer/SteamSetup.exe e04aefe8bc894f11f211edec8e8a008abe0147d2
+    # 21 Jun 2015 0e8046d40c38d817338135ec73a5b217cc340cf5
+    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 0e8046d40c38d817338135ec73a5b217cc340cf5
     cd "$W_CACHE"/steam
 
     # Install corefonts first, so if the user doesn't have cabextract/Wine with cab support, we abort before installing Steam.
@@ -17476,132 +17474,6 @@ load_wog()
 
 #----------------------------------------------------------------
 
-w_metadata wot games \
-    title="World of Tanks" \
-    publisher="Wargaming" \
-    year="2011" \
-    media="download" \
-    file1="WoT_0.6.7_us_setup.exe" \
-    installed_exe1="c:/Games/World_of_Tanks/WorldOfTanks.exe" \
-    wine_showstoppers="20395"   # list a showstopper to hide this from average users for now
-
-load_wot()
-{
-    if w_workaround_wine_bug 20395 "game requires raw input hack"
-    then
-        w_open_webpage https://gist.github.com/895204#gistcomment-41069
-        w_warn "You need to apply rawinput-hack.patch from vincas for this game to work"
-    fi
-    if w_workaround_wine_bug 25730 "installing msxml3 to avoid startup crash" 1.3.33,
-    then
-        w_call msxml3
-    fi
-    if w_workaround_wine_bug 11675 "need d3dx9_36 for effects framework"
-    then
-        w_call d3dx9_36
-    fi
-    if w_workaround_wine_bug 25779 "installing ie7 for launcher"
-    then
-        w_call ie7
-    fi
-
-    # http://cdn1.worldoftanks.com/patches/auto/WoT_0.6.7_us_setup.exe.torrent
-    w_download http://cdn1.worldoftanks.com/patches/auto/WoT_0.6.7_us_setup.exe 440c4b3f8269d3746c912db94d697eccb139d3a6
-
-    cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetWinDelay 500
-        run $file1
-        winwait, Setup - World of Tanks
-        if ( w_opt_unattended > 0 ) {
-            ControlClick, TNewButton1   ; Next
-            winwait, Setup - World of Tanks, Select Destination
-            ControlClick, TNewButton3   ; Next
-            winwait, Setup - World of Tanks, Select Start
-            ControlClick, TNewButton4   ; Next
-            winwait, Setup - World of Tanks, Select Additional
-            ControlClick, TNewButton4   ; Next
-            winwait, Setup - World of Tanks, Ready
-            ControlClick, TNewButton4   ; Next
-        }
-        winwait, Setup - World of Tanks, Completing
-        if ( w_opt_unattended > 0 ) {
-            ControlFocus, TNewCheckListBox1
-            send {space}                      ; uncheck Wiki
-            sleep 500
-            ControlClick, TNewButton4   ; Finish
-            winwaitclose
-        }
-        "
-    w_declare_exe "c:\\Games\\World_of_Tanks" WorldOfTanks.exe
-}
-
-#----------------------------------------------------------------
-
-w_metadata wowtrial games \
-    title="World of Warcraft trial" \
-    publisher="Blizzard" \
-    year="2010" \
-    media="download" \
-    file1="WOW-4.0.0.12911-enUS-Trial.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/World of Warcraft/WoW.exe"
-
-load_wowtrial()
-{
-    w_download http://us.media.battle.net.edgesuite.net/downloads/wow-installers/WOW-4.0.0.12911-enUS-Trial.exe 1efb32d10afc4c200a8f34d44980077668085c95
-
-    cd "$W_CACHE/$W_PACKAGE"
-
-    w_ahk_do "
-        SetTitleMatchMode, slow
-        SetTitleMatchMode, 2
-        run WOW-4.0.0.12911-enUS-Trial.exe
-        winwait, World of Warcraft Installer
-        if ( w_opt_unattended > 0 ) {
-            ; Wait for it to find servers
-            sleep 6000
-            controlclick, x400 y440 ; Install
-            winwait, End User License Agreement
-            sleep 1000
-            controlclick, Button2 ; Accept
-            winwait, World of Warcraft Installer
-            sleep 1000
-            controlclick, x680 y560 ; OK
-        }
-        winwait, World of Warcraft v4, Play
-        if ( w_opt_unattended > 0 ) {
-            ; Wait until left side of progress bar is green; that means the game is playable.
-            ;Loop
-            ;{
-            ;    PixelGetColor, color, 33, 592
-            ;    FileAppend, loop1 color is %color%, log.txt
-            ;    ifEqual, color, 0x017425
-            ;    {
-            ;        break
-            ;    }
-            ;    sleep 5000
-            ;}
-            ; Wait until left side of progress bar goes blackish, that means game is fully loaded
-            Loop
-            {
-                PixelGetColor, color, 33, 592
-                ;FileAppend, loop2 color is %color%, log.txt
-                ifEqual, color, 0x003C10
-                {
-                    break
-                }
-                sleep 5000
-            }
-            ; All done downloading, so quit
-            winclose
-        }
-        winwaitclose
-    "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\World of Warcraft" WoW.exe
-}
-
-#----------------------------------------------------------------
-
 w_metadata zootycoon2_demo games \
     title="Zoo Tycoon 2 demo" \
     publisher="Microsoft" \
@@ -19152,12 +19024,7 @@ then
             main) verbs=`winetricks_mainmenu` ;;
             prefix)
                 verbs=`winetricks_prefixmenu`;
-                # Cheezy hack: choosing type of package in prefix menu == whether to isolate.
-                case "$verbs" in
-                apps|benchmarks|games) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
-                *)     WINETRICKS_OPT_SHAREDPREFIX=1 ;;
-                esac
-                # Cheezy hack #2: choosing 'attended' or 'unattended' leaves you in same menu
+                # Cheezy hack: choosing 'attended' or 'unattended' leaves you in same menu
                 case "$verbs" in
                 attended) winetricks_set_unattended 0 ; continue;;
                 unattended) winetricks_set_unattended 1 ; continue;;
