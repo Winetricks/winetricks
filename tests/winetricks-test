@@ -215,7 +215,7 @@ test_app()
     touch df-daemon
     (set +x; while test -f df-daemon; do total_df; sleep 1; done ) > df-during.log &
 
-    test_command $app
+    test_command --verify $app
     test_app_checksums
 
     # Post install:
