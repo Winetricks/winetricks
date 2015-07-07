@@ -9114,11 +9114,11 @@ load_emu8086()
 #----------------------------------------------------------------
 
 w_metadata firefox apps \
-    title="Firefox 33.1" \
+    title="Firefox 39.0" \
     publisher="Mozilla" \
-    year="2014" \
+    year="2015" \
     media="download" \
-    file1="Firefox Setup 33.1.exe" \
+    file1="FirefoxSetup39.0.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Mozilla Firefox/firefox.exe"
 
 load_firefox()
@@ -9128,7 +9128,7 @@ load_firefox()
         w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
     fi
 
-    w_download "http://download.mozilla.org/?product=firefox-33.1&os=win&lang=en-US" c721219fda2915c570e3de0954c8033ed7b1e7fa "$file1"
+    w_download "https://download.mozilla.org/?product=firefox-39.0-SSL&os=win&lang=en-US" 75eccbd9b2d44210b551c9a5045f03f01e899528 "$file1"
     cd "$W_CACHE"/firefox
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
