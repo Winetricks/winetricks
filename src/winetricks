@@ -17910,20 +17910,6 @@ load_orm()
 
 #----------------------------------------------------------------
 
-w_metadata psm=enabled settings \
-    title_uk="Включити PixelShaderMode" \
-    title="Set PixelShaderMode to enabled"
-w_metadata psm=disabled settings \
-    title_uk="Вимкнути PixelShaderMode" \
-    title="Set PixelShaderMode to disabled"
-
-load_psm()
-{
-    winetricks_set_wined3d_var PixelShaderMode $1
-}
-
-#----------------------------------------------------------------
-
 w_metadata strictdrawordering=enabled settings \
     title_uk="Включити StrictDrawOrdering" \
     title="Enable StrictDrawOrdering"
@@ -18201,6 +18187,22 @@ load_forcemono()
 
 #----------------------------------------------------------------
 
+w_metadata gsm=0 settings \
+    title="Set MaxShaderModelGS to 0"
+w_metadata gsm=1 settings \
+    title="Set MaxShaderModelGS to 1"
+w_metadata gsm=2 settings \
+    title="Set MaxShaderModelGS to 2"
+w_metadata gsm=3 settings \
+    title="Set MaxShaderModelGS to 3"
+
+load_gsm()
+{
+    winetricks_set_wined3d_var MaxShaderModelGS $1
+}
+
+#----------------------------------------------------------------
+
 w_metadata heapcheck settings \
     title_uk="Включити накопичувальну перевірку GlobalFlag" \
     title="Enable heap checking with GlobalFlag"
@@ -18291,6 +18293,22 @@ w_metadata nt40 settings \
 load_nt40()
 {
     w_set_winver nt40
+}
+
+#----------------------------------------------------------------
+
+w_metadata psm=0 settings \
+    title="Set MaxShaderModelPS to 0"
+w_metadata psm=1 settings \
+    title="Set MaxShaderModelPS to 1"
+w_metadata psm=2 settings \
+    title="Set MaxShaderModelPS to 2"
+w_metadata psm=3 settings \
+    title="Set MaxShaderModelPS to 3"
+
+load_psm()
+{
+    winetricks_set_wined3d_var MaxShaderModelPS $1
 }
 
 #----------------------------------------------------------------
@@ -18466,13 +18484,18 @@ load_vista()
 
 #----------------------------------------------------------------
 
-w_metadata vsm=hardware settings \
-    title_uk="Поставити VertexShaderMode на hardware" \
-    title="Set VertexShaderMode to hardware"
+w_metadata vsm=0 settings \
+    title="Set MaxShaderModelVS to 0"
+w_metadata vsm=1 settings \
+    title="Set MaxShaderModelVS to 1"
+w_metadata vsm=2 settings \
+    title="Set MaxShaderModelVS to 2"
+w_metadata vsm=3 settings \
+    title="Set MaxShaderModelVS to 3"
 
 load_vsm()
 {
-    winetricks_set_wined3d_var VertexShaders $1
+    winetricks_set_wined3d_var MaxShaderModelVS $1
 }
 
 #----------------------------------------------------------------
@@ -18973,7 +18996,6 @@ execute_command()
     glsl=disable*) w_call glsl=disabled ;;
     multisampling=disable*) w_call multisampling=disabled ;;
     mwo=disable*) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
-    psm=disable*) w_call psm=disabled ;;
     rtlm=disable*) w_call rtlm=disabled ;;
     sound=disable*) w_call sound=disabled ;;
     ao=disable*) w_call ao=disabled ;;
@@ -19004,14 +19026,11 @@ execute_command()
     jscript) w_call wsh56js ;;            # FIXME: use wsh57 instead?
     npm-repack) w_call npm=repack ;;
     oss) w_call sound=oss ;;
-    psm=off) w_call psm=disabled ;;
-    psm=on) w_call psm=enabled ;;
     python) w_call python26 ;;
     python-comtypes) w_call python26_comtypes ;;
     vbrun60) w_call vb6run ;;
     vcrun2005sp1) w_call vcrun2005 ;;
     vcrun2008sp1) w_call vcrun2008 ;;
-    vsm-hard) w_call vsm=hardware ;;
     wsh56) w_call wsh57 ;;
     xlive) w_call gfw ;;
 
