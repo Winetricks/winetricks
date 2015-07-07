@@ -501,7 +501,7 @@ w_expand_env()
 # get sha1sum string and set $_W_gotsum to it
 w_get_sha1sum()
 {
-    local _W_file=$1
+    local _W_file="$1"
     _W_gotsum=`$WINETRICKS_SHA1SUM < "$_W_file" | sed 's/(stdin)= //;s/ .*//'`
 }
 
