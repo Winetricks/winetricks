@@ -9672,6 +9672,23 @@ load_nook()
 
 #----------------------------------------------------------------
 
+w_metadata npp apps \
+    title="Notepad++" \
+    publisher="Don Ho" \
+    year="2015" \
+    media="download" \
+    file1="npp.6.7.9.2.Installer.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Notepad++/notepad++.exe"
+
+load_npp()
+{
+    w_download https://notepad-plus-plus.org/repository/6.x/6.7.9.2/npp.6.7.9.2.Installer.exe 34574fb2e4e06ff941061bf444b57ce926ce23d7
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "${file1}" $W_UNATTENDED_SLASH_S
+}
+
+#----------------------------------------------------------------
+
 w_metadata office2003pro apps \
     title="Microsoft Office 2003 Professional" \
     publisher="Microsoft" \
