@@ -3729,9 +3729,9 @@ winetricks_mount_real_volume()
 winetricks_cleanup()
 {
     # We don't want to run this multiple times, so unfortunately we have to run it here:
-    if test "$W_NGEN_EXEC" = 1
+    if test "$W_NGEN_CMD"
     then
-        "$WINE_NGEN_CMD"
+        "$W_NGEN_CMD"
     fi
 
     set +e
@@ -5239,7 +5239,7 @@ load_dotnet11()
         WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" dotnetfx.exe
     fi
 
-    WINE_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
 }
 
 verify_dotnet11()
@@ -5292,7 +5292,7 @@ load_dotnet11sp1()
         WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe
     fi
 
-    WINE_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
 }
 
 verify_dotnet11sp1()
@@ -5351,7 +5351,7 @@ load_dotnet20()
         w_killall "mscorsvw.exe"
     fi
 
-    WINE_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
 
 verify_dotnet20()
@@ -5484,7 +5484,7 @@ load_dotnet20sp1()
 
     w_unset_winver
 
-    WINE_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
 
 verify_dotnet20sp1()
@@ -5565,7 +5565,7 @@ load_dotnet20sp2()
 
     w_unset_winver
 
-    WINE_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
 
 verify_dotnet20sp2()
@@ -5873,7 +5873,7 @@ load_dotnet40()
         cp "$W_WINDIR_UNIX/Microsoft.NET/Framework/v4.0.30319/System.EnterpriseServices.dll" "$W_WINDIR_UNIX/Microsoft.NET/assembly/GAC_32/System.EnterpriseServices/v4.0_4.0.0.0__b03f5f7f11d50a3a"
     fi
 
-    WINE_NGEN_CMD="$WINE $WINEPREFIX/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/ngen.exe executequeueditems"
+    W_NGEN_CMD="$WINE $WINEPREFIX/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/ngen.exe executequeueditems"
 }
 
 verify_dotnet40()
