@@ -5302,29 +5302,6 @@ verify_dotnet11sp1()
 
 #----------------------------------------------------------------
 
-w_metadata dotnet_verifier dlls \
-    title="MS .NET Verifier" \
-    publisher="Microsoft" \
-    year="2012" \
-    media="download" \
-    file1="netfx_5F00_setupverifier_5F00_new.zip" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/netfx_setupverifier.exe"
-
-load_dotnet_verifier()
-{
-    # http://blogs.msdn.com/b/astebner/archive/2008/10/13/8999004.aspx
-    # 2013/03/28: sha1sum 0eba832a0733cd47b7639463dd5a22a41e95ee6e
-    # 2014/01/23: sha1sum 8818f3460826145e2a66bb91727afa7cd531037b
-    # 2014/11/22: sha1sum 47de0b849c4c3d354df23588c709108e7816d788
-    w_download http://blogs.msdn.com/cfs-file.ashx/__key/CommunityServer-Components-PostAttachments/00-08-99-90-04/netfx_5F00_setupverifier_5F00_new.zip 47de0b849c4c3d354df23588c709108e7816d788
-
-    cd "$W_CACHE"/dotnet_verifier
-
-    w_try_unzip "$W_SYSTEM32_DLLS" netfx_5F00_setupverifier_5F00_new.zip netfx_setupverifier.exe
-}
-
-#----------------------------------------------------------------
-
 w_metadata dotnet20 dlls \
     title="MS .NET 2.0" \
     publisher="Microsoft" \
@@ -5958,6 +5935,29 @@ load_dotnet45()
 verify_dotnet45()
 {
     w_dotnet_verify dotnet45
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet_verifier dlls \
+    title="MS .NET Verifier" \
+    publisher="Microsoft" \
+    year="2012" \
+    media="download" \
+    file1="netfx_5F00_setupverifier_5F00_new.zip" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/netfx_setupverifier.exe"
+
+load_dotnet_verifier()
+{
+    # http://blogs.msdn.com/b/astebner/archive/2008/10/13/8999004.aspx
+    # 2013/03/28: sha1sum 0eba832a0733cd47b7639463dd5a22a41e95ee6e
+    # 2014/01/23: sha1sum 8818f3460826145e2a66bb91727afa7cd531037b
+    # 2014/11/22: sha1sum 47de0b849c4c3d354df23588c709108e7816d788
+    w_download http://blogs.msdn.com/cfs-file.ashx/__key/CommunityServer-Components-PostAttachments/00-08-99-90-04/netfx_5F00_setupverifier_5F00_new.zip 47de0b849c4c3d354df23588c709108e7816d788
+
+    cd "$W_CACHE"/dotnet_verifier
+
+    w_try_unzip "$W_SYSTEM32_DLLS" netfx_5F00_setupverifier_5F00_new.zip netfx_setupverifier.exe
 }
 
 #----------------------------------------------------------------
