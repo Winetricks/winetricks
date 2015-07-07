@@ -6003,7 +6003,7 @@ load_dsound()
 
 #----------------------------------------------------------------
 
-# FIXME: update winetricks_is_installed to look at installed_file2
+# FIXME: update winetricks_is_installed to look at installed_file2..n
 w_metadata flash dlls \
     title="Flash Player 14" \
     publisher="Adobe" \
@@ -6011,8 +6011,10 @@ w_metadata flash dlls \
     media="download" \
     file1="install_flash_player.exe" \
     file2="install_flash_player_ax.exe" \
+    file3="flashplayer_14_sa.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_14_0_0_179_Plugin.exe" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_14_0_0_176_ActiveX.exe" \
+    installed_file3="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/flashplayer_14_sa.exe" \
     homepage="http://www.adobe.com/products/flashplayer/"
 
 load_flash()
@@ -6058,10 +6060,10 @@ load_flash()
     cd "$W_TMP"/fp_14.0.0.179_archive/14_0_r0_179
     w_try "$WINE" flashplayer14_0r0_179_win.exe ${W_OPT_UNATTENDED:+ /install}
 
-    if w_workaround_wine_bug 25966 "Flash11 still needs native visual c++ 2005 runtimes" 1.5.7,
-    then
-        w_call vcrun2005
-    fi
+    # Projector (standalone player)
+    # 2015-07-06
+    w_download http://download.macromedia.com/pub/flashplayer/updaters/14/flashplayer_14_sa.exe 62e5bc2e88b50091847408b9d473ee4a6c185167
+    w_try cp "${W_CACHE}/${W_PACKAGE}/${file3}" "$W_SYSTEM32_DLLS/Macromed/Flash"
 
     # After updating the above, you should carry the following steps out by
     # hand to verify that plugin works.  (Ideally you'd also do it on
