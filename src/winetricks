@@ -6699,7 +6699,7 @@ w_metadata msxml3 dlls \
     title="MS XML Core Services 3.0" \
     publisher="Microsoft" \
     year="2005" \
-    media="manual_download" \
+    media="download" \
     file1="msxml3.msi" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/msxml3.dll"
 
@@ -6708,9 +6708,7 @@ load_msxml3()
     # Service Pack 5
     #w_download http://download.microsoft.com/download/a/5/e/a5e03798-2454-4d4b-89a3-4a47579891d8/msxml3.msi
     # Service Pack 7
-    #w_download http://download.microsoft.com/download/8/8/8/888f34b7-4f54-4f06-8dac-fa29b19f33dd/msxml3.msi d4c2178dfb807e1a0267fce0fd06b8d51106d913
-    # Hmm.  Anyone know of a better source?  At least it has the right checksum.
-    w_download_manual http://download.cnet.com/Microsoft-XML-Parser-MSXML-3-0-Service-Pack-7-SP7/3000-7241_4-10731613.html msxml3.msi d4c2178dfb807e1a0267fce0fd06b8d51106d913
+    w_download http://web.archive.org/web/20070314193356/http://download.microsoft.com/download/8/8/8/888f34b7-4f54-4f06-8dac-fa29b19f33dd/msxml3.msi d4c2178dfb807e1a0267fce0fd06b8d51106d913
 
     # it won't install on top of wine's msxml3, which has a pretty high version number, so delete wine's fake dll
     rm "$W_SYSTEM32_DLLS"/msxml3.dll
