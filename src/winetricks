@@ -9175,6 +9175,28 @@ load_foobar2000()
 
 #----------------------------------------------------------------
 
+w_metadata iceweasel apps \
+    title="GNU Icecat 31.7.0" \
+    publisher="GNU Foundation" \
+    year="2015" \
+    media="download" \
+    file1="icecat-31.7.0.en-US.win32.zip" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/icecat/icecat.exe"
+
+load_iceweasel()
+{
+    if w_workaround_wine_bug 29077 "" 1.7.25,
+    then
+        w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
+    fi
+
+    w_download https://ftp.gnu.org/gnu/gnuzilla/31.7.0/icecat-31.7.0.en-US.win32.zip cf52a728c1af29065b7dc7bdddc9265a79eb5328
+    w_try_unzip "${W_PROGRAMS_X86_UNIX}" "${W_CACHE}/${W_PACKAGE}/${file1}"
+}
+
+
+#----------------------------------------------------------------
+
 w_metadata irfanview apps \
     title="Irfanview" \
     publisher="Irfan Skiljan" \
