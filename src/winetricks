@@ -4415,14 +4415,14 @@ w_metadata cabinet dlls \
     title="Microsoft cabinet.dll" \
     publisher="Microsoft" \
     year="2002" \
-    media="manual_download" \
+    media="download" \
     file1="mdac_typ.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/cabinet.dll"
 
 load_cabinet()
 {
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
-    w_download_manual http://download.cnet.com/Microsoft-Data-Access-Components-MDAC-2-7-Service-Pack-1-Refresh/3000-10250_4-10729498.html mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
+    w_download http://web.archive.org/web/20080731135848/http://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/cabinet/$file1
     w_try cp "$W_TMP"/cabinet.dll "$W_SYSTEM32_DLLS"/cabinet.dll
 
@@ -5579,15 +5579,15 @@ w_metadata dotnet30 dlls \
     title="MS .NET 3.0" \
     publisher="Microsoft" \
     year="2006" \
-    media="manual_download" \
+    media="download" \
     conflicts="dotnet11 dotnet20sp1 dotnet20sp2 dotnet30sp1 dotnet35 dotnet35sp1 dotnet45" \
-    file1="netframework3.exe" \
+    file1="dotnetfx3.exe" \
     installed_file1="c:/windows/Microsoft.NET/Framework/v3.0/Microsoft .NET Framework 3.0/logo.bmp"
 
 load_dotnet30()
 {
     # http://msdn.microsoft.com/en-us/netframework/bb264589.aspx
-    w_download_manual http://www.oldversion.com/download-.Net-Framework-3.0.html netframework3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
+    w_download http://web.archive.org/web/20120509084326/http://download.microsoft.com/download/3/F/0/3F0A922C-F239-4B9B-9CB0-DF53621C57D9/dotnetfx3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
 
     w_call remove_mono
     
