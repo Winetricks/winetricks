@@ -378,7 +378,7 @@ w_try_unzip()
     # Not always installed, use Windows 7-zip as a fallback:
     if test -x "`which unzip 2>/dev/null`"
     then
-        # FreeBSD ships unzip, but it doesn't support self compressed exectuables
+        # FreeBSD ships unzip, but it doesn't support self compressed executables
         # If it fails ,fall back to 7-zip:
         unzip -o -q -d"$destdir" "$zipfile" "$@"
         ret=$?
