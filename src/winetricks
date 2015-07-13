@@ -6423,7 +6423,7 @@ w_metadata mdac27 dlls \
     title="Microsoft Data Access Components 2.7 sp1" \
     publisher="Microsoft" \
     year="2006" \
-    media="manual_download" \
+    media="download" \
     file1="mdac_typ.exe" \
     installed_file1="$W_COMMONFILES_X86_WIN/System/ADO/msado26.tlb"
 
@@ -6435,7 +6435,7 @@ load_mdac27()
     fi
 
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
-    w_download_manual http://download.cnet.com/Microsoft-Data-Access-Components-MDAC-2-7-Service-Pack-1-Refresh/3000-10250_4-10729498.html mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
+    w_download http://web.archive.org/web/20060202021126/http://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
     load_native_mdac
     w_set_winver nt40
     w_try "$WINE" "$W_CACHE"/mdac27/mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup /QNT"}
