@@ -10104,6 +10104,27 @@ load_python26_comtypes()
 
 #----------------------------------------------------------------
 
+w_metadata python26_setuptools dlls \
+    title="Setuptools 18.0.1 for Python 2.6" \
+    publisher="Python Packaging Authority" \
+    year="2010" \
+    media="download" \
+    file1="ez_setup.py" \
+    installed_file1="c:/Python26/Lib/site-packages/setuptools.pth" \
+    homepage="https://pypi.python.org/pypi/setuptools"
+
+load_python26_setuptools()
+{
+    w_call python26
+
+    w_download https://bootstrap.pypa.io/ez_setup.py 50e215cb8efd8a9c982ca6894a057c2bea22d86f
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "C:\Python26\python.exe" ${file1}
+}
+
+#----------------------------------------------------------------
+
 w_metadata spotify apps \
     title="Spotify - All the music, all the time" \
     publisher="Spotify" \
