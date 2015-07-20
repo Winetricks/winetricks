@@ -8326,14 +8326,7 @@ w_metadata corefonts fonts \
 
 load_corefonts()
 {
-    # See http://corefonts.sf.net
-    # TODO: let user pick mirror,
-    # see http://corefonts.sourceforge.net/msttcorefonts-2.0-1.spec for how
-    # TODO: add more fonts
-
-    # Added More Fonts (see msttcorefonts)
-    # [*] Pointed w_download to sites that actually contained the
-    # fonts to w_download of 04-03-2008)
+    # FIXME: why is this commented out? Should be removed or enabled.
     #w_download ftp://ftp.netbsd.org/pub/pkgsrc/distfiles/ms-ttf/andale32.exe c4db8cbe42c566d12468f5fdad38c43721844c69
     w_download ftp://ftp.netbsd.org/pub/pkgsrc/distfiles/ms-ttf/arial32.exe 6d75f8436f39ab2da5c31ce651b7443b4ad2916e
     w_download ftp://ftp.netbsd.org/pub/pkgsrc/distfiles/ms-ttf/arialb32.exe d45cdab84b7f4c1efd6d1b369f50ed0390e3d344
