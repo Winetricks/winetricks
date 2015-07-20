@@ -9986,6 +9986,69 @@ _EOF_
 
 #----------------------------------------------------------------
 
+w_metadata psdkwin71 apps \
+    title="MS Windows 7.1 SDK" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="winsdk_web.exe" \
+    installed_exe1="C:/Program Files/Microsoft SDKs/Windows/v7.1/Bin/SetEnv.Cmd"
+
+load_psdkwin71()
+{
+    w_call dotnet20
+    w_call dotnet40
+    w_call mfc42   # need mfc42u, or setup will abort
+    # http://www.microsoft.com/downloads/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en
+    w_download http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe a8717ebb20a69c7efa85232bcb9899b8b07f98cf
+    cd "$W_CACHE"/psdkwin71
+    if w_workaround_wine_bug 21596
+    then
+        w_warn "When given a choice, select only C++ compilers and headers, the other options don't work yet.  See http://bugs.winehq.org/show_bug.cgi?id=21596"
+    fi
+    # don't have a working unattended recipe.  Maybe we'll have to
+    # do an autohotkey script until msft gets its act together:
+    # http://social.msdn.microsoft.com/Forums/en-US/windowssdk/thread/c053b616-7d5b-405d-9841-ec465a8e21d5
+    w_try "$WINE" winsdk_web.exe
+
+    if w_workaround_wine_bug 21362
+    then
+        # Assume user installed in default location
+        cat > "$W_TMP"/set-psdk71.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows]
+"CurrentVersion"="v7.1"
+"CurrentInstallFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1]
+"InstallationFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\"
+"ProductVersion"="7.0.7600.0.30514"
+"ProductName"="Microsoft Windows SDK for Windows 7 (7.0.7600.0.30514)"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1\WinSDKBuild]
+"ComponentName"="Microsoft Windows SDK Headers and Libraries"
+"InstallationFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\"
+"ProductVersion"="7.0.7600.0.30514"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1\WinSDKTools]
+"ComponentName"="Microsoft Windows SDK Headers and Libraries"
+"InstallationFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\bin\\\"
+"ProductVersion"="7.0.7600.0.30514"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1\WinSDKWin32Tools]
+"ComponentName"="Microsoft Windows SDK Utilities for Win32 Development"
+"InstallationFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\bin\\\"
+"ProductVersion"="7.0.7600.0.30514"
+_EOF_
+        w_try_regedit "$W_TMP_WIN"\\set-psdk71.reg
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata python26 dlls \
     title="Python Interpreter, version 2.6.2" \
     publisher="Python Software Foundaton" \
