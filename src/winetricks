@@ -6490,17 +6490,17 @@ load_mfc40()
 w_metadata mozillabuild apps \
     title="Mozilla build environment" \
     publisher="The Mozilla Foundation" \
-    year="2010" \
+    year="2015" \
     media="download" \
-    file1="MozillaBuildSetup-1.5.1.exe" \
-    installed_file1="c:/mozilla-build/start-l10n.bat" \
+    file1="MozillaBuildSetup-2.0.0.exe" \
+    installed_file1="c:/mozilla-build/moztools/bin/nsinstall.exe" \
     homepage="https://wiki.mozilla.org/MozillaBuild"
 
 load_mozillabuild()
 {
-    w_download http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-1.5.1.exe 216c52eafe42df7559e8451f4e40a28e9c0f8133
+    w_download http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-2.0.0.exe daba4bc03ae9014c68611fd36b05dcc4083c6fdb
     cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" MozillaBuildSetup-1.5.1.exe $W_UNATTENDED_SLASH_S
+    w_try "$WINE" MozillaBuildSetup-2.0.0.exe $W_UNATTENDED_SLASH_S
 }
 
 #----------------------------------------------------------------
