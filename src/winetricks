@@ -10083,22 +10083,23 @@ load_python26()
 #----------------------------------------------------------------
 
 w_metadata python26_comtypes dlls \
-    title="Comtypes 0.6.2 for Python 2.6" \
+    title="Comtypes for Python 2.6" \
     publisher="theller" \
-    year="2010" \
+    year="2014" \
     media="download" \
-    file1="comtypes-0.6.2.zip" \
-    installed_file1="c:/Python26/Lib/site-packages/comtypes-0.6.2-py2.6.egg-info" \
-    homepage="http://sourceforge.net/projects/comtypes"
+    file1="1.1.1.zip" \
+    installed_file1="c:/Python26/Lib/site-packages/comtypes-1.1.1-py2.6.egg/EGG-INFO/PKG-INFO" \
+    homepage="https://github.com/enthought/comtypes/releases"
 
 load_python26_comtypes()
 {
     w_call python26
+    w_call python26_setuptools
 
-    w_download $WINETRICKS_SOURCEFORGE/comtypes/0.6.2/comtypes-0.6.2.zip b84f4e3050652d494e8c8d9d6d6f221c124ffba9
+    w_download https://github.com/enthought/comtypes/archive/${file1} 080921ede048063a3be273f5dca3acc469dfe361
 
-    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/comtypes-0.6.2.zip
-    cd "$W_TMP"/comtypes-0.6.2
+    w_try_unzip "$W_TMP" "${W_CACHE}/${W_PACKAGE}/${file1}"
+    cd "$W_TMP/comtypes-$(basename ${file1} .zip)"
     w_try "$WINE" "C:\Python26\python.exe" setup.py install
 }
 
