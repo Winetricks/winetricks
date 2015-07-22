@@ -6191,6 +6191,30 @@ load_glut()
 }
 
 #----------------------------------------------------------------
+
+w_metadata gmdls dlls \
+    title="General MIDI DLS Collection" \
+    publisher="Microsoft / Roland" \
+    year="1999" \
+    media="download" \
+    file1="../directx8/DX81Redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/drivers/gm.dls"
+
+load_gmdls()
+{
+    w_download_to directx8 http://web.archive.org/web/20070403193305/http://download.microsoft.com/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe ea2345f602741343e97a5ece5d1d2c3cc44296c3
+
+    w_try_unzip "$W_TMP" "$W_CACHE"/directx8/DX81Redist.exe "*/*/DirectX.cab"
+    w_try_cabextract -d "$W_TMP" -F gm16.dls "$W_TMP"/*/*/DirectX.cab
+    w_try mv "$W_TMP"/gm16.dls "$W_SYSTEM32_DLLS"/drivers/gm.dls
+    if test "$W_ARCH" = "win64"
+    then
+        w_try cd "$W_SYSTEM64_DLLS"/drivers
+        w_try ln -s ../../`basename "$W_SYSTEM32_DLLS"`/drivers/gm.dls
+    fi
+}
+
+#----------------------------------------------------------------
 # um, codecs are kind of clustered here.  They probably deserve their own real category.
 
 w_metadata allcodecs dlls \
