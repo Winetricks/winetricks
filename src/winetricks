@@ -6210,7 +6210,7 @@ load_gmdls()
     if test "$W_ARCH" = "win64"
     then
         w_try cd "$W_SYSTEM64_DLLS"/drivers
-        w_try ln -s ../../`basename "$W_SYSTEM32_DLLS"`/drivers/gm.dls
+        w_try ln -s ../../syswow64/drivers/gm.dls
     fi
 }
 
