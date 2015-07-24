@@ -709,7 +709,7 @@ w_download_to()
         if [ -x "`which aria2c 2>/dev/null`" ]
         then
             # Basic aria2c support.
-            aria2c -c -o "$_W_file" "$_W_url"
+            aria2c -c -d "$_W_cache" -o "$_W_file" "$_W_url"
         elif [ -x "`which wget 2>/dev/null`" ]
         then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
