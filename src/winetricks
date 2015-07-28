@@ -8515,15 +8515,17 @@ w_metadata fakejapanese fonts \
 load_fakejapanese()
 {
     w_call takao
-    # Loads Takao fonts and sets aliases for MS Gothic and MS PGothic, mainly for Japanese language support
+    # Loads Takao fonts and sets aliases for MS Gothic, MS UI Gothic, and MS PGothic, mainly for Japanese language support
     # Aliases to set:
     # MS Gothic --> TakaoGothic
+    # MS UI Gothic --> TakaoGothic
     # MS PGothic --> TakaoPGothic
     # MS Mincho --> TakaoMincho
     # MS PMincho --> TakaoPMincho
     # These aliases were taken from what was listed in Ubuntu's fontconfig definitions.
 
     w_register_font_replacement "MS Gothic" "TakaoGothic"
+    w_register_font_replacement "MS UI Gothic" "TakaoGothic"
     w_register_font_replacement "MS PGothic" "TakaoPGothic"
     w_register_font_replacement "MS Mincho" "TakaoMincho"
     w_register_font_replacement "MS PMincho" "TakaoPMincho"
