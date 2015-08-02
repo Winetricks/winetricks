@@ -45,7 +45,7 @@ QUICKCHECK="flash"
 # middle of a two day run.
 for tool in time cabextract
 do
-    type $tool
+    which $tool
     ret=$?
     if [ ! $ret -eq 0 ]
     then
