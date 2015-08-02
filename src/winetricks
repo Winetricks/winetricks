@@ -9104,11 +9104,11 @@ load_dxdiag()
     then
         w_call dxdiagn
     fi
-    if w_workaround_wine_bug 25715
+    if w_workaround_wine_bug 25715 "" 1.7.28,
     then
         w_call quartz
     fi
-    if w_workaround_wine_bug 25716
+    if w_workaround_wine_bug 25716 "" 1.7.29,
     then
         w_call devenum
     fi
