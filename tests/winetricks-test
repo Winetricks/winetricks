@@ -3,8 +3,8 @@
 
 # Override this if you want to put the work area on a different disk
 WINE_PREFIXES=${WINE_PREFIXES:-$HOME/winetrickstest-prefixes}
-preloadcache="$HOME/winetricks-preload-cache"
-cache="$HOME/winetricks-cache"
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+cache="$XDG_CACHE_HOME/winetricks"
 
 set -x
 
@@ -412,7 +412,7 @@ test_install_cached_or_download()
 # Run this if you don't want to re-download them.
 test_preload()
 {
-    export W_CACHE="$preloadcache"
+    export W_CACHE="$cache"
     for a in msxml3 mdac27 dotnet30
     do
        rm -rf $WINE_PREFIXES/$a
@@ -425,11 +425,6 @@ test_quick()
     echo "warning: quick test takes up around 20GB"
     # Test the frequent download-changes-checksum offenders first
     export W_CACHE="$cache"
-    rm -rf "$W_CACHE"
-    if test -d "$preloadcache"
-    then
-        cp -a "$preloadcache" "$W_CACHE"
-    fi
     for a in $QUICKCHECK
     do
        rm -rf "$WINE_PREFIXES"/$a
