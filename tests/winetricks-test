@@ -453,12 +453,191 @@ test_full() {
     test_speed list-installed
 }
 
+# get sha1sum string and set $_W_gotsum to it
+w_get_sha1sum()
+{
+    local _W_file="$1"
+    _W_gotsum=`sha1sum < "$_W_file" | sed 's/(stdin)= //;s/ .*//'`
+}
+
+# verify an sha1sum
+w_verify_sha1sum()
+{
+    _W_vs_wantsum=$1
+    _W_vs_file=$2
+
+    w_get_sha1sum "$_W_vs_file"
+    if [ "$_W_gotsum"x != "$_W_vs_wantsum"x ]
+    then
+        echo "sha1sum mismatch! Wanted $_W_vs_wantsum but got $_W_gotsum"
+        return 1
+    fi
+    unset _W_vs_wantsum _W_vs_file _W_gotsum
+    return 0
+}
+
+# Open a folder for the user in the specified directory
+# Usage: w_open_folder directory
+w_open_folder()
+{
+    for _W_cmd in xdg-open open cygstart true
+    do
+        _W_cmdpath=`which $_W_cmd`
+        if test -n "$_W_cmdpath"
+        then
+            break
+        fi
+    done
+    $_W_cmd "$1" &
+    unset _W_cmd _W_cmdpath
+}
+
+# Open a web browser for the user to the given page
+# Usage: w_open_webpage url
+w_open_webpage()
+{
+    # See http://www.dwheeler.com/essays/open-files-urls.html
+    for _W_cmd in xdg-open sdtwebclient cygstart open firefox true
+    do
+        _W_cmdpath=`which $_W_cmd`
+        if test -n "$_W_cmdpath"
+        then
+            break
+        fi
+    done
+    $_W_cmd "$1" &
+    unset _W_cmd _W_cmdpath
+}
+
+wt_get_cache_folder() {
+    echo -n "$W_CACHE/`echo -n $1 | tr '[:upper:]' '[:lower:]' | sha1sum | cut -d ' ' -f 1`"
+}
+
+wt_check_file() {
+    _W_file="$1"
+    _W_sha1sum="$2"
+    _W_text="$3"
+
+    if test -s "$_W_file"
+    then
+        w_verify_sha1sum "$_W_sha1sum" "$_W_file"
+        if test $? -eq 0
+        then
+            pass $_W_text
+        else
+            fail $_W_text
+        fi
+    else
+        echo "File $_W_file not found or is empty!"
+        fail $_W_text
+    fi
+}
+
+test_download_manual() {
+    _W_url="$1"
+    _W_file="$2"
+    _W_sha1sum="$3"
+    _W_cache=`wt_get_cache_folder "$_W_url"`
+
+    echo "Testing manual download for '$_W_file'"
+
+    if ! test -f "$_W_cache/$_W_file"
+    then
+        mkdir -p "$_W_cache"
+        printf "Please download '$_W_file' from '$_W_url'\nplace it in $_W_cache\nthen press enter to continue script."
+        w_open_folder "$_W_cache"
+        w_open_webpage "$_W_url"
+        sleep 3   # give some time for browser to open
+        read
+    fi
+
+    wt_check_file "$_W_cache/$_W_file" "$_W_sha1sum" "$_W_url ($_W_file)"
+}
+
+test_download_to() {
+    _W_url="$2"
+    _W_sha1sum="$3"
+    _W_file="$4"
+    _W_cookiejar="$5"
+
+    if [ "$_W_file"x = ""x ]
+    then
+        _W_file=`basename "$_W_url"`
+    fi
+
+    echo "Testing download for '$_W_file'"
+
+    _W_cache=`wt_get_cache_folder "$_W_url"`
+    if test ! -d "$_W_cache"
+    then
+        mkdir -p "$_W_cache"
+    fi
+
+    _W_dl_olddir=`pwd`
+    cd "$_W_cache"
+
+    # Use -nd to insulate ourselves from people who set -x in WGETRC
+    # [*] --retry-connrefused works around the broken sf.net mirroring
+    # system when downloading corefonts
+    # [*] --read-timeout is useful on the adobe server that doesn't
+    # close the connection unless you tell it to (control-C or closing
+    # the socket)
+    wget -O "$_W_file" -nd \
+         -c --read-timeout=300 --retry-connrefused \
+         --header "Accept-Encoding: gzip,deflate" \
+         ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
+         ${_W_agent:+--user-agent="$_W_agent"} \
+         "$_W_url"
+
+    cd "$_W_dl_olddir"
+    unset _W_dl_olddir
+
+    wt_check_file "$_W_cache/$_W_file" "$_W_sha1sum" "$_W_url ($_W_file)"
+}
+
+test_download() {
+   test_download_to "" "$@"
+}
+
+wt_gather_links() {
+   grep -E $1 ./winetricks | sed 's/^ *//' | sed -e 's,$WINETRICKS_SOURCEFORGE,'$WINETRICKS_SOURCEFORGE',g' | \
+        sed 's/^w_download/test_download/' | sort -f -u > $WT_LINK_LIST
+   # remove links which contains variables
+   sed -i '/[^\\]\$/d' $WT_LINK_LIST
+}
+
+wt_init_downloads() {
+   export W_CACHE="/tmp/winetricks-cache"
+   rm -rf "$W_CACHE"
+   mkdir -p $W_CACHE
+   WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net
+   WT_LINK_LIST="/tmp/winetricks_links.tmp"
+}
+
+test_downloads() {
+   wt_init_downloads
+   wt_gather_links '^\s*w_download(_to)?\s'
+   echo "`wc -l $WT_LINK_LIST | cut -d ' ' -f 1` downloads to check"
+   . $WT_LINK_LIST
+   rm -f $WT_LINK_LIST
+}
+
+test_manual_downloads() {
+   wt_init_downloads
+   wt_gather_links '^\s*w_download_manual\s'
+   echo "`wc -l $WT_LINK_LIST | cut -d ' ' -f 1` manual downloads to check"
+   . $WT_LINK_LIST
+   rm -f $WT_LINK_LIST
+}
+
 case "$1" in
 preload) test_preload;;
 quick) test_quick;;
 dotnet) test_preload ; test_dotnet;;
 full)  test_full;;
-*)     echo "Usage: $0 quick|full"; exit 1;;
+downloads)  test_downloads;;
+manual_downloads)  test_manual_downloads;;
+*)     echo "Usage: $0 quick|full|downloads|manual_downloads"; exit 1;;
 esac
 
 echo "Test over, $errors failures, $passes successes."
