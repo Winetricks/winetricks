@@ -11263,7 +11263,7 @@ w_metadata algodoo_demo games \
 
 load_algodoo_demo()
 {
-    w_download  http://www.algodoo.com/download/Algodoo_1_7_1-Win32.exe caa73e73669a8787652a6bed123bbe2682152f12
+    w_download http://www.algodoo.com/download/Algodoo_1_7_1-Win32.exe caa73e73669a8787652a6bed123bbe2682152f12
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -11366,8 +11366,7 @@ w_metadata aoe3_demo games \
 load_aoe3_demo()
 {
 
-    w_download "http://download.microsoft.com/download/a/5/2/a525997e-8423-435b-b694-08118d235064/aoe3trial.exe" \
-        2b0a123243092d79f910db5691d99d469f7c17c3
+    w_download "http://download.microsoft.com/download/a/5/2/a525997e-8423-435b-b694-08118d235064/aoe3trial.exe" 2b0a123243092d79f910db5691d99d469f7c17c3
 
     if w_workaround_wine_bug 24897 "Installing msxml4 to avoid font problem" 1.3.9,
     then
@@ -12540,9 +12539,7 @@ w_metadata crayonphysics_demo games \
 
 load_crayonphysics_demo()
 {
-    w_download \
-        http://crayonphysicsdeluxe.s3.amazonaws.com/$file1 \
-        4ffd64c630f69e7cf024ef946c2c64c8c4ce4eac
+    w_download http://crayonphysicsdeluxe.s3.amazonaws.com/crayon_release52demo.exe 4ffd64c630f69e7cf024ef946c2c64c8c4ce4eac
     # Inno Setup installer
     w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Crayon Physics Deluxe Demo" crayon.exe
@@ -15434,8 +15431,7 @@ load_myth2_demo()
     # source code to Project Magma for further development.
 
     # 1 May 2011 1.7.2 sha1sum e0a8f707377e71314a471a09ad2a55179ea44588
-    w_download http://tain.totalcodex.net/items/download/myth-ii-demo-windows \
-        e0a8f707377e71314a471a09ad2a55179ea44588 $file1
+    w_download http://tain.totalcodex.net/items/download/myth-ii-demo-windows e0a8f707377e71314a471a09ad2a55179ea44588 Myth2_Demo_172.exe
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
