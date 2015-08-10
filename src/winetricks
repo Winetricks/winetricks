@@ -9096,6 +9096,8 @@ load_dxdiag()
 {
     helper_directx_dl
 
+    w_call gmdls
+
     w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "dxdiag.exe" "$W_TMP/dxnt.cab"
     mkdir -p "$W_WINDIR_UNIX/help"
@@ -9105,6 +9107,10 @@ load_dxdiag()
     if w_workaround_wine_bug 1429
     then
         w_call dxdiagn
+    fi
+    if w_workaround_wine_bug 9027
+    then
+        w_call directmusic
     fi
     if w_workaround_wine_bug 25715 "" 1.7.28,
     then
