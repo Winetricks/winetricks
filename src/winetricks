@@ -7430,9 +7430,9 @@ load_vb2run()
 {
     # Not referenced on MS web anymore, but the old Microsoft Software Library FTP still has it.
     # See ftp://ftp.microsoft.com/Softlib/index.txt
-    # 2014/05/31: Microosfot FTP is down ftp://$ftp_microsoft_com/Softlib/MSLFILES/VBRUN200.EXE 
-    # Mirror list: http://www.filewatcher.com/m/VBRUN200.EXE.220504-0.html
-    w_download ftp://ftp.chatnfiles.com/Winfilesdotcom/winfilesdotcom-june-98-4-of-4/required/VBRUN200.EXE ac0568b73ee375408778e9b505df995f79ab907e
+    # 2014/05/31: Microsoft FTP is down ftp://$ftp_microsoft_com/Softlib/MSLFILES/VBRUN200.EXE
+    # 2015/08/10: chatnfiles is down, conradshome.com is up (and has a LOT of old MS installers archived!)
+    w_download http://www.conradshome.com/win31/archive/softlib/vbrun200.exe ac0568b73ee375408778e9b505df995f79ab907e
     w_try_unzip "$W_TMP" "$W_CACHE"/vb2run/VBRUN200.EXE
     w_try cp -f "$W_TMP/VBRUN200.DLL" "$W_SYSTEM32_DLLS"
 }
