@@ -53,16 +53,7 @@ install:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/man/man1
 	$(INSTALL_DATA) src/winetricks.1 $(DESTDIR)$(PREFIX)/share/man/man1/winetricks.1
 
-
-$(HOME)/winetricks-preload-cache:
-	echo 'This is a manual step that only has to be done once.'
-	echo 'You will be asked to download a few things and drag them into folders,'
-	echo 'and then make will fail.  Do the downloads/drags, then rerun Make.'
-	echo 'You will not be prompted for this step again, so get it right first time,'
-	echo 'or remove the directory ~/winetricks-preload-cache to retry.'
-	cd src; sh ../tests/winetricks-test preload
-
-check: $(HOME)/winetricks-preload-cache
+check:
 	echo 'This verifies that most DLL verbs, plus flash, install ok.'
 	echo 'It should take about an hour to run with a fast connection.'
 	echo 'If you want to test a particular version of wine, do e.g.'
@@ -82,9 +73,30 @@ check: $(HOME)/winetricks-preload-cache
 	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
 	echo ''
 	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
+	cd src; sh ../tests/winetricks-test quick
+
+test:
+	echo 'This verifies that most DLL verbs, plus flash and dotnet, install ok.'
+	echo 'It also makes sure that all URLs in winetricks work, so a fast uncapped internet connection is needed.'
+	echo 'It should take about an hour to run with a fast connection.'
+	echo 'If you want to test a particular version of wine, do e.g.'
+	echo 'export WINE=$$HOME/wine-git/wine first.'
+	echo 'On 64 bit systems, you probably want export WINEARCH=win32.'
+	echo 'Winetricks does not work completely in non-English locales.'
 	echo ''
-	echo 'But first, check hardcoded urls in winetricks.  Takes 10 minutes.'
+	echo 'Current Environment:'
+	echo 'DISPLAY is currently "$(DISPLAY)".'
+	echo 'LANG is currently "$(LANG)".'
+	echo 'WINEARCH is currently "$(WINEARCH)".'
+	echo 'WINE is currently "$(WINE)".'
+	echo 'XAUTHORITY is currently "$(XAUTHORITY)".'
+	echo ''
+	echo 'If running this as part of debuild, you might need to use'
+	echo 'debuild --preserve-envvar=LANG --preserve-envvar=WINE --preserve-envvar=WINEARCH --preserve-envvar=DISPLAY --preserve-envvar=XAUTHORITY'
+	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
+	echo ''
+	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
 	rm -rf src/links.d; cd src; sh linkcheck.sh crawl
 	echo 'And now, the one hour run check.'
-	rm -rf ~/winetrickstest-prefixes
-	cd src; sh ../tests/winetricks-test quick
+	if test ! -z "$(XDG_CACHE_HOME)" ; then rm -rf $(XDG_CACHE_HOME)/winetricks ; else rm -rf $(HOME)/.cache/winetricks ; fi
+	cd src; sh ../tests/winetricks-test full
