@@ -6490,6 +6490,86 @@ load_mdac28()
 
 #----------------------------------------------------------------
 
+w_metadata mdx dlls \
+    title="Managed DirectX" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="C:/windows/assembly/GAC/microsoft.directx/1.0.2902.0__31bf3856ad364e35/microsoft.directx.dll"
+
+load_mdx()
+{
+    helper_directx_dl
+
+    cd "$W_TMP"
+
+    w_try_cabextract -F "*MDX*" "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -F "*.cab" *Archive.cab
+
+    # Install assemblies
+    w_try_cabextract -d "$W_WINDIR_UNIX/Microsoft.NET/DirectX for Managed Code/1.0.2902.0" -F "microsoft.directx*" *MDX1_x86.cab
+    for file in mdx_*.cab
+    do
+        ver="${file%%_x86.cab}"
+        ver="${ver##mdx_}"
+        w_try_cabextract -d "$W_WINDIR_UNIX/Microsoft.NET/DirectX for Managed Code/$ver" -F "microsoft.directx*" "$file"
+    done
+    w_try_cabextract -d "$W_WINDIR_UNIX/Microsoft.NET/DirectX for Managed Code/1.0.2911.0" -F "microsoft.directx.direct3dx*" *MDX1_x86.cab
+
+    # Add them to GAC
+    cd "$W_WINDIR_UNIX/Microsoft.NET/DirectX for Managed Code"
+    for ver in *
+    do
+        cd "$ver"
+        for asm in *.dll
+        do
+            name="${asm%%.dll}"
+            w_try mkdir -p "$W_WINDIR_UNIX/assembly/GAC/$name/${ver}__31bf3856ad364e35"
+            w_try cp "$asm" "$W_WINDIR_UNIX/assembly/GAC/$name/${ver}__31bf3856ad364e35"
+        done
+        cd -
+    done
+
+    # AssemblyFolders
+    cat > "$W_TMP"/asmfolders.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2902.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2902.0\\\\"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2903.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2903.0\\\\"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2904.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2904.0\\\\"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2905.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2905.0\\\\"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2906.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2906.0\\\\"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2907.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2907.0\\\\"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2908.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2908.0\\\\"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2909.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2909.0\\\\"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2910.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2910.0\\\\"
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2911.0]
+@="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2911.0\\\\"
+_EOF_
+    w_try_regedit "$W_TMP_WIN"\\asmfolders.reg
+}
+
+#----------------------------------------------------------------
+
 w_metadata mfc40 dlls \
     title="MS mfc40 (Microsoft Foundation Classes from Visual C++ 4.0)" \
     publisher="Microsoft" \
