@@ -4270,7 +4270,7 @@ helper_d3dx9_xx()
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
 
-    w_override_dlls native $dllname
+    w_override_dlls native,builtin $dllname
 }
 
 helper_win2ksp4()
@@ -4349,7 +4349,7 @@ load_amstream()
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'amstream.dll' "$W_TMP/dxnt.cab"
     w_try_regsvr amstream.dll
 
-    w_override_dlls native amstream
+    w_override_dlls native,builtin amstream
 }
 
 #----------------------------------------------------------------
@@ -4401,7 +4401,7 @@ load_avifil32()
     helper_xpsp3 i386/avifil32.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/avifil32.dl_
 
-    w_override_dlls native avifil32
+    w_override_dlls native,builtin avifil32
 }
 
 #----------------------------------------------------------------
@@ -4536,7 +4536,7 @@ load_crypt32()
     helper_xpsp3 i386/crypt32.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/crypt32.dl_
 
-    w_override_dlls native crypt32
+    w_override_dlls native,builtin crypt32
 }
 
 #----------------------------------------------------------------
@@ -4558,7 +4558,7 @@ load_binkw32()
     w_try_unzip "$W_TMP" "$W_CACHE"/binkw32/__32-binkw32.dll3.0.0.0.zip
     w_try cp "$W_TMP"/binkw32.dll "$W_SYSTEM32_DLLS"/binkw32.dll
 
-    w_override_dlls native binkw32
+    w_override_dlls native,builtin binkw32
 }
 
 #----------------------------------------------------------------
@@ -4584,7 +4584,7 @@ load_d3dcompiler_43()
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
 
-    w_override_dlls native $dllname
+    w_override_dlls native,builtin $dllname
 }
 
 #----------------------------------------------------------------
@@ -4604,7 +4604,7 @@ load_d3drm()
     w_try_cabextract -d "$W_TMP" -L -F "dxnt.cab" "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "d3drm.dll" "$W_TMP/dxnt.cab"
 
-    w_override_dlls native d3drm
+    w_override_dlls native,builtin d3drm
 }
 
 #----------------------------------------------------------------
@@ -4629,9 +4629,9 @@ load_d3dx9()
     done
 
     # For now, not needed, but when Wine starts preferring our builtin dll over native it will be.
-    w_override_dlls native d3dx9_24 d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 d3dx9_29 d3dx9_30
-    w_override_dlls native d3dx9_31 d3dx9_32 d3dx9_33 d3dx9_34 d3dx9_35 d3dx9_36 d3dx9_37
-    w_override_dlls native d3dx9_38 d3dx9_39 d3dx9_40 d3dx9_41 d3dx9_42 d3dx9_43
+    w_override_dlls native,builtin d3dx9_24 d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 d3dx9_29 d3dx9_30
+    w_override_dlls native,builtin d3dx9_31 d3dx9_32 d3dx9_33 d3dx9_34 d3dx9_35 d3dx9_36 d3dx9_37
+    w_override_dlls native,builtin d3dx9_38 d3dx9_39 d3dx9_40 d3dx9_41 d3dx9_42 d3dx9_43
 }
 
 #----------------------------------------------------------------
@@ -4761,7 +4761,7 @@ load_d3dx9_43()
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
 
-    w_override_dlls native $dllname
+    w_override_dlls native,builtin $dllname
 }
 
 #----------------------------------------------------------------
@@ -4786,7 +4786,7 @@ load_d3dx11_42()
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
 
-    w_override_dlls native $dllname
+    w_override_dlls native,builtin $dllname
 }
 
 #----------------------------------------------------------------
@@ -4811,7 +4811,7 @@ load_d3dx11_43()
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
 
-    w_override_dlls native $dllname
+    w_override_dlls native,builtin $dllname
 }
 
 #----------------------------------------------------------------
@@ -4836,8 +4836,8 @@ load_d3dx10()
     done
 
     # For now, not needed, but when Wine starts preferring our builtin dll over native it will be.
-    w_override_dlls native d3dx10_33 d3dx10_34 d3dx10_35 d3dx10_36 d3dx10_37
-    w_override_dlls native d3dx10_38 d3dx10_39 d3dx10_40 d3dx10_41 d3dx10_42 d3dx10_43
+    w_override_dlls native,builtin d3dx10_33 d3dx10_34 d3dx10_35 d3dx10_36 d3dx10_37
+    w_override_dlls native,builtin d3dx10_38 d3dx10_39 d3dx10_40 d3dx10_41 d3dx10_42 d3dx10_43
 }
 
 #----------------------------------------------------------------
@@ -4857,7 +4857,7 @@ load_d3dxof()
     w_try_cabextract -d "$W_TMP" -L -F 'dxnt.cab' "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'd3dxof.dll' "$W_TMP/dxnt.cab"
 
-    w_override_dlls native d3dxof
+    w_override_dlls native,builtin d3dxof
 }
 
 #----------------------------------------------------------------
@@ -4876,7 +4876,7 @@ load_dbghelp()
 
     w_try cp -f "$W_TMP"/i386/dbghelp.dll "$W_SYSTEM32_DLLS"
 
-    w_override_dlls native dbghelp
+    w_override_dlls native,builtin dbghelp
 }
 
 #----------------------------------------------------------------
@@ -4896,7 +4896,7 @@ load_devenum()
     w_try_cabextract -d "$W_TMP" -L -F 'dxnt.cab' "$W_CACHE/directx9/$DIRECTX_NAME"
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'devenum.dll' "$W_TMP/dxnt.cab"
     w_try_regsvr devenum.dll
-    w_override_dlls native devenum
+    w_override_dlls native,builtin devenum
 }
 
 #----------------------------------------------------------------
@@ -4916,7 +4916,7 @@ load_dinput()
     w_try_cabextract -d "$W_TMP" -L -F 'dxnt.cab' "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dinput.dll' "$W_TMP/dxnt.cab"
     w_try_regsvr dinput
-    w_override_dlls native dinput
+    w_override_dlls native,builtin dinput
 }
 
 #----------------------------------------------------------------
@@ -4936,7 +4936,7 @@ load_dinput8()
     w_try_cabextract -d "$W_TMP" -L -F 'dxnt.cab' "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dinput8.dll' "$W_TMP/dxnt.cab"
     w_try_regsvr dinput8
-    w_override_dlls native dinput8
+    w_override_dlls native,builtin dinput8
 }
 
 #----------------------------------------------------------------
@@ -4984,7 +4984,7 @@ load_directmusic()
     w_try_regsvr dswave.dll
     w_try_regsvr quartz.dll
 
-    w_override_dlls native devenum dmband dmcompos dmime dmloader dmscript dmstyle dmsynth dmusic dmusic32 dswave streamci quartz
+    w_override_dlls native,builtin devenum dmband dmcompos dmime dmloader dmscript dmstyle dmsynth dmusic dmusic32 dswave streamci quartz
 }
 
 #----------------------------------------------------------------
@@ -5009,7 +5009,7 @@ load_directplay()
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dpnsvr.exe' "$W_TMP/dxnt.cab"
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dpwsockx.dll' "$W_TMP/dxnt.cab"
 
-    w_override_dlls native dplayx dpnet dpnhpast dpnsvr.exe dpwsockx
+    w_override_dlls native,builtin dplayx dpnet dpnhpast dpnsvr.exe dpwsockx
 
     w_try_regsvr dplayx.dll
     w_try_regsvr dpnet.dll
@@ -5050,13 +5050,13 @@ load_directx9()
 
     # How many of these do we really need?
     # We should probably remove most of these...?
-    w_override_dlls native d3dim d3drm d3dx8 d3dx9_24 d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 d3dx9_29
-    w_override_dlls native d3dx9_30 d3dx9_31 d3dx9_32 d3dx9_33 d3dx9_34 d3dx9_35 d3dx9_36 d3dx9_37
-    w_override_dlls native d3dx9_38 d3dx9_39 d3dx9_40 d3dx9_41 d3dx9_42 d3dx9_43 d3dxof
-    w_override_dlls native dciman32 ddrawex devenum dmband dmcompos dmime dmloader dmscript dmstyle
-    w_override_dlls native dmsynth dmusic dmusic32 dnsapi dplay dplayx dpnaddr dpnet dpnhpast dpnlobby
-    w_override_dlls native dswave dxdiagn msdmo qcap quartz streamci
-    w_override_dlls native dxdiag.exe
+    w_override_dlls native,builtin d3dim d3drm d3dx8 d3dx9_24 d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 d3dx9_29
+    w_override_dlls native,builtin d3dx9_30 d3dx9_31 d3dx9_32 d3dx9_33 d3dx9_34 d3dx9_35 d3dx9_36 d3dx9_37
+    w_override_dlls native,builtin d3dx9_38 d3dx9_39 d3dx9_40 d3dx9_41 d3dx9_42 d3dx9_43 d3dxof
+    w_override_dlls native,builtin dciman32 ddrawex devenum dmband dmcompos dmime dmloader dmscript dmstyle
+    w_override_dlls native,builtin dmsynth dmusic dmusic32 dnsapi dplay dplayx dpnaddr dpnet dpnhpast dpnlobby
+    w_override_dlls native,builtin dswave dxdiagn msdmo qcap quartz streamci
+    w_override_dlls native,builtin dxdiag.exe
     w_override_dlls builtin d3d8 d3d9 dinput dinput8 dsound
 
     w_try "$WINE" "$W_TMP_WIN"\\DXSETUP.exe $W_UNATTENDED_SLASH_SILENT
@@ -5088,9 +5088,9 @@ load_dpvoice()
     w_try_regsvr dpvoice.dll
     w_try_regsvr dpvvox.dll
     w_try_regsvr dpvacm.dll
-    w_override_dlls native dpvoice
-    w_override_dlls native dpvvox
-    w_override_dlls native dpvacm
+    w_override_dlls native,builtin dpvoice
+    w_override_dlls native,builtin dpvvox
+    w_override_dlls native,builtin dpvacm
 }
 
 #----------------------------------------------------------------
@@ -5178,7 +5178,7 @@ load_dmsynth()
 
     w_try_regsvr dmsynth.dll
 
-    w_override_dlls native dmsynth
+    w_override_dlls native,builtin dmsynth
 }
 
 #----------------------------------------------------------------
@@ -5843,7 +5843,7 @@ load_dotnet40()
 
     WINEDLLOVERRIDES=fusion=b "$WINE" dotNetFx40_Full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"} || true
 
-    w_override_dlls native mscoree
+    w_override_dlls native,builtin mscoree
 
     "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Install /t REG_DWORD /d 0001 /f
     "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Version /t REG_SZ /d "4.0.30319" /f
@@ -5921,7 +5921,7 @@ load_dotnet45()
         *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
     esac
 
-    w_override_dlls native mscoree
+    w_override_dlls native,builtin mscoree
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
     w_set_winver win2k3
@@ -5972,7 +5972,7 @@ load_dxdiagn()
 
     w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F dxdiagn.dll "$W_TMP/dxnt.cab"
-    w_override_dlls native dxdiagn
+    w_override_dlls native,builtin dxdiagn
 }
 
 #----------------------------------------------------------------
@@ -5994,7 +5994,7 @@ load_dsound()
 
     w_try_regsvr dsound.dll
 
-    w_override_dlls native dsound
+    w_override_dlls native,builtin dsound
 }
 
 #----------------------------------------------------------------
@@ -6300,7 +6300,7 @@ load_hid()
     helper_win2ksp4 i386/hid.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/hid.dl_
 
-    w_override_dlls native hid
+    w_override_dlls native,builtin hid
 }
 
 #----------------------------------------------------------------
@@ -6732,7 +6732,7 @@ load_msxml3()
 
     # it won't install on top of wine's msxml3, which has a pretty high version number, so delete wine's fake dll
     rm "$W_SYSTEM32_DLLS"/msxml3.dll
-    w_override_dlls native msxml3
+    w_override_dlls native,builtin msxml3
     cd "$W_CACHE"/msxml3
     w_try "$WINE" msiexec /i msxml3.msi $W_UNATTENDED_SLASH_Q
 }
@@ -7009,7 +7009,7 @@ load_qdvd()
 
     w_try_regsvr qdvd.dll
 
-    w_override_dlls native qdvd
+    w_override_dlls native,builtin qdvd
 }
 
 #----------------------------------------------------------------
@@ -7031,7 +7031,7 @@ load_quartz()
 
     w_try_regsvr quartz.dll
 
-    w_override_dlls native quartz
+    w_override_dlls native,builtin quartz
 }
 
 #----------------------------------------------------------------
@@ -7882,7 +7882,7 @@ load_windowscodecs()
     # Avoid a file existence check.
     rm -f "$W_SYSTEM32_DLLS"/windowscodecs.dll "$W_SYSTEM32_DLLS"/windowscodecsext.dll "$W_SYSTEM32_DLLS"/photometadatahandler.dll
     # AF says in appdb entry for .net 3.0 that windowscodecs has to be native only
-    w_override_dlls native windowscodecs windowscodecsext
+    w_override_dlls native,builtin windowscodecs windowscodecsext
 
     # Always run the WIC installer in passive mode.
     # See http://bugs.winehq.org/show_bug.cgi?id=16876 and
@@ -8118,10 +8118,10 @@ load_xinput()
     w_try_regsvr xinput1_2.dll
     w_try_regsvr xinput1_3.dll
     w_try_regsvr xinput9_1_0.dll
-    w_override_dlls native xinput1_1
-    w_override_dlls native xinput1_2
-    w_override_dlls native xinput1_3
-    w_override_dlls native xinput9_1_0
+    w_override_dlls native,builtin xinput1_1
+    w_override_dlls native,builtin xinput1_2
+    w_override_dlls native,builtin xinput1_3
+    w_override_dlls native,builtin xinput9_1_0
 }
 
 #----------------------------------------------------------------
@@ -8158,7 +8158,7 @@ load_xmllite()
     fi
 
     cd "$W_CACHE"/xmllite
-    w_override_dlls native xmllite
+    w_override_dlls native,builtin xmllite
     case $LANG in
     en*) w_try "$WINE" WindowsXP-KB915865-v11-x86-ENU.exe $W_UNATTENDED_SLASH_Q ;;
     fr*) w_try "$WINE" WindowsXP-KB915865-v11-x86-FRA.exe $W_UNATTENDED_SLASH_Q ;;
@@ -9097,7 +9097,7 @@ load_dxdiag()
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "dxdiag.exe" "$W_TMP/dxnt.cab"
     mkdir -p "$W_WINDIR_UNIX/help"
     w_try_cabextract -d "$W_WINDIR_UNIX/help" -L -F "dxdiag.chm" "$W_TMP/dxnt.cab"
-    w_override_dlls native dxdiag.exe
+    w_override_dlls native,builtin dxdiag.exe
 
     if w_workaround_wine_bug 1429
     then
@@ -9349,7 +9349,7 @@ load_ie6()
     # Work around http://bugs.winehq.org/show_bug.cgi?id=25432
     w_try_cabextract -F inseng.dll "$W_TMP/IE 6.0 Full/ACTSETUP.CAB"
     mv inseng.dll "$W_SYSTEM32_DLLS"
-    w_override_dlls native inseng
+    w_override_dlls native,builtin inseng
 
     cd "$W_TMP/IE 6.0 Full"
     if [ $W_UNATTENDED_SLASH_Q ]
@@ -10841,7 +10841,7 @@ load_wmp9()
     # remove builtin placeholders to allow update
     rm -f "$W_SYSTEM32_DLLS"/wmvcore.dll "$W_SYSTEM32_DLLS"/wmp.dll
     # need native wmp override to allow update and later checks to succeed
-    w_override_dlls native wmp
+    w_override_dlls native,builtin wmp
 
     # FIXME: should we override quartz?  Builtin crashes when you play
     # anything, but maybe that's bug 30557 and only affects new systems?
