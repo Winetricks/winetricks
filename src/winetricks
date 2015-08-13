@@ -5999,6 +5999,24 @@ load_dsound()
 
 #----------------------------------------------------------------
 
+w_metadata esent dlls \
+    title="MS Extensible Storage Engine" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/esent.dll"
+
+load_esent()
+{
+    helper_win7sp1 x86_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_f3ebb0cc8a4dd814/esent.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_f3ebb0cc8a4dd814/esent.dll" "$W_SYSTEM32_DLLS/esent.dll"
+
+    w_override_dlls native,builtin esent
+}
+
+#----------------------------------------------------------------
+
 # FIXME: update winetricks_is_installed to look at installed_file2..n
 w_metadata flash dlls \
     title="Flash Player 14" \
