@@ -4821,12 +4821,12 @@ w_metadata d3dx10 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx10_33.dll"
 
 load_d3dx10()
 {
-    helper_directx_dl
+    helper_directx_Jun2010
 
     # Kinder, less invasive directx10 - only extract and override d3dx10_??.dll
     w_try_cabextract -d "$W_TMP" -L -F '*d3dx10*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
