@@ -4269,6 +4269,14 @@ helper_d3dx9_xx()
     do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
+    if test "$W_ARCH" = "win64"
+    then
+        w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
+        for x in "$W_TMP"/*x64.cab
+        do
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
+        done
+    fi
 
     w_override_dlls native $dllname
 }
@@ -4627,6 +4635,14 @@ load_d3dx9()
     do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'd3dx9*.dll' "$x"
     done
+    if test "$W_ARCH" = "win64"
+    then
+        w_try_cabextract -d "$W_TMP" -L -F '*d3dx9*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
+        for x in "$W_TMP"/*x64.cab
+        do
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'd3dx9*.dll' "$x"
+        done
+    fi
 
     # For now, not needed, but when Wine starts preferring our builtin dll over native it will be.
     w_override_dlls native d3dx9_24 d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 d3dx9_29 d3dx9_30
@@ -4760,6 +4776,14 @@ load_d3dx9_43()
     do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
+    if test "$W_ARCH" = "win64"
+    then
+        w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
+        for x in "$W_TMP"/*x64.cab
+        do
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
+        done
+    fi
 
     w_override_dlls native $dllname
 }
