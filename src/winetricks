@@ -26,7 +26,7 @@ WINETRICKS_VERSION=20150826
 # - aria2c, wget, or curl is needed for downloading.
 # - sha1sum or openssl is needed for verifying downloads.
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog.
-# - xdg-open (if present) or open (for Mac OSX) is used to open download pages 
+# - xdg-open (if present) or open (for Mac OSX) is used to open download pages
 #   for the user when downloads cannot be fully automated.
 # - sudo is used to mount .iso images if the user cached them with -k option.
 # - perl is used to munge steam config files
@@ -606,7 +606,7 @@ w_dotnet_verify()
                     {
                         process, close, setupverifier2.exe
                         break
-                    }                    
+                    }
                 }
             "
             dn_status=$?
@@ -2121,7 +2121,7 @@ w_do_call()
             echo "$1 already installed, skipping"
             return 0
         fi
-        
+
         # Don't install if a conflicting verb is already installed:
         if test "$WINETRICKS_FORCE" != 1 && test "$conflicts" && test -f "$WINEPREFIX/winetricks.log"
         then
@@ -5585,7 +5585,7 @@ load_dotnet30()
     w_download http://web.archive.org/web/20120509084326/http://download.microsoft.com/download/3/F/0/3F0A922C-F239-4B9B-9CB0-DF53621C57D9/dotnetfx3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
 
     w_call remove_mono
-    
+
     if test -f /proc/sys/kernel/yama/ptrace_scope
     then
         case `cat /proc/sys/kernel/yama/ptrace_scope` in
@@ -5658,7 +5658,7 @@ w_metadata dotnet30sp1 dlls \
 
 load_dotnet30sp1()
 {
-    # FIXME: URL?    
+    # FIXME: URL?
     w_download http://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 8d779e337920b097aa0c01859912950606e9fc12
     # Recipe from http://bugs.winehq.org/show_bug.cgi?id=25060#c10
     w_download http://download.microsoft.com/download/2/5/2/2526f55d-32bc-410f-be18-164ba67ae07d/XPSEP%20XP%20and%20Server%202003%2032%20bit.msi 5d332ebd1025e294adafe72030fe33db707b2c82 "XPSEP XP and Server 2003 32 bit.msi"
@@ -6053,7 +6053,7 @@ load_flash()
     #w_download https://fpdownload.macromedia.com/get/flashplayer/pdc/14.0.0.176/install_flash_player_ax.exe 16231b509d8e689dc34ae36597d41c4fb1b3a67e
     # 2014-10-02
     w_download http://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.176_archive.zip 40df72ab2c22bcd4442aa35eb586000776129982
-    
+
     w_try_unzip "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.176_archive.zip fp_14.0.0.176_archive/14_0_r0_176/flashplayer14_0r0_176_winax.exe
     cd "$W_TMP"/fp_14.0.0.176_archive/14_0_r0_176
     w_try "$WINE" flashplayer14_0r0_176_winax.exe ${W_OPT_UNATTENDED:+ /install}
@@ -7082,7 +7082,7 @@ w_metadata physx dlls \
 
 load_physx()
 {
-    # Has a minor issue, see bug report http://bugs.winehq.org/show_bug.cgi?id=34167 
+    # Has a minor issue, see bug report http://bugs.winehq.org/show_bug.cgi?id=34167
     w_download http://uk.download.nvidia.com/Windows/9.14.0702/PhysX-9.14.0702-SystemSoftware.msi 81e2d38e2356e807ad80cdf150ed5acfff839c8b
     cd "$W_CACHE"/physx
     w_try "$WINE" msiexec /i PhysX-9.14.0702-SystemSoftware.msi $W_UNATTENDED_SLASH_Q
@@ -9383,11 +9383,11 @@ load_irfanview()
             ControlClick, Button1 ; deselect chrome googsrch
             Sleep 900
             ControlClick, Button18 ; Next
-            Sleep 1000 
+            Sleep 1000
             winwait, Setup, INI
             Sleep 1000
             ControlClick, Button23 ; Next
-            Sleep 1000 
+            Sleep 1000
             winwait, Setup, You want to change
             winactivate, Setup, really
             Sleep 900
@@ -9761,7 +9761,7 @@ load_mingw()
 
     cd "$W_CACHE/mingw"
     w_try "$WINE" "$file1"
-    
+
     w_append_path 'C:\MinGW\bin'
     w_try "$WINE" mingw-get update
     w_try "$WINE" mingw-get install gcc msys-base
@@ -10656,7 +10656,7 @@ load_vc2005expresssp1()
     if w_workaround_wine_bug 37375
         then
             w_warn "Installer currently fails"
-    fi 
+    fi
     w_download http://download.microsoft.com/download/7/7/3/7737290f-98e8-45bf-9075-85cc6ae34bf1/VS80sp1-KB926748-X86-INTL.exe 8b9a0172efad64774aa122f29e093ad2043b308d
     w_try $WINE "$W_CACHE"/vc2005expresssp1/VS80sp1-KB926748-X86-INTL.exe
 }
@@ -10852,25 +10852,25 @@ load_winamp()
             WinWait, Installer Language, Please select
             Sleep 500
             ControlClick, Button1 ; OK
-            WinWait, Winamp Installer, Welcome to the Winamp installer 
+            WinWait, Winamp Installer, Welcome to the Winamp installer
             Sleep 500
             ControlClick, Button2 ; Next
-            WinWait, Winamp Installer, License Agreement 
+            WinWait, Winamp Installer, License Agreement
             Sleep 500
             ControlClick, Button2 ; I Agree
-            WinWait, Winamp Installer, Choose Install Location 
+            WinWait, Winamp Installer, Choose Install Location
             Sleep 500
             ControlClick, Button2 ; Next
-            WinWait, Winamp Installer, Choose Components 
+            WinWait, Winamp Installer, Choose Components
             Sleep 500
             ControlClick, Button2 ; Next for Full install
-            WinWait, Winamp Installer, Choose Start Options 
+            WinWait, Winamp Installer, Choose Start Options
             Sleep 500
-            ControlClick, Button4 ; uncheck start menu entry 
+            ControlClick, Button4 ; uncheck start menu entry
             Sleep 500
-            ControlClick, Button5 ; uncheck ql icon 
+            ControlClick, Button5 ; uncheck ql icon
             Sleep 500
-            ControlClick, Button6 ; uncheck deskto icon 
+            ControlClick, Button6 ; uncheck deskto icon
             Sleep 500
             ControlClick, Button2 ; Install
             WinWait, Winamp Installer, Installation Complete
@@ -11458,7 +11458,7 @@ load_amnesia_tdd_demo()
             WinWait, Amnesia - The Dark Descent Demo, finished
             ControlClick, TNewButton4
             WinWaitClose, Amnesia - The Dark Descent Demo, finished
-        }       
+        }
     "
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Amnesia - The Dark Descent Demo\\redist" "Amnesia.exe"
