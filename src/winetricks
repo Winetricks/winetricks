@@ -8226,6 +8226,19 @@ load_xact()
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'x3daudio*.dll' "$x"
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xapofx*.dll' "$x"
     done
+    if test "$W_ARCH" = "win64"
+    then
+        w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
+        w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
+        w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
+        for x in "$W_TMP"/*x64.cab
+        do
+          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xactengine*.dll' "$x"
+          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xaudio*.dll' "$x"
+          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'x3daudio*.dll' "$x"
+          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xapofx*.dll' "$x"
+        done
+    fi
 
     # Register xactengine?_?.dll, xaudio?_?.dll
     for x in "$W_SYSTEM32_DLLS"/xactengine* "$W_SYSTEM32_DLLS"/xaudio*
@@ -8259,6 +8272,19 @@ load_xact_jun2010()
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'x3daudio*.dll' "$x"
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xapofx*.dll' "$x"
     done
+    if test "$W_ARCH" = "win64"
+    then
+        w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
+        w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
+        w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
+        for x in "$W_TMP"/*x64.cab
+        do
+          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xactengine*.dll' "$x"
+          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xaudio*.dll' "$x"
+          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'x3daudio*.dll' "$x"
+          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xapofx*.dll' "$x"
+        done
+    fi
 
     # Register xactengine?_?.dll, xaudio?_?.dll
     for x in "$W_SYSTEM32_DLLS"/xactengine* "$W_SYSTEM32_DLLS"/xaudio*
