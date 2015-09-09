@@ -4591,6 +4591,14 @@ load_d3dcompiler_43()
     do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
+    if test "$W_ARCH" = "win64"
+    then
+        w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
+        for x in "$W_TMP"/*x64.cab
+        do
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
+        done
+    fi
 
     w_override_dlls native $dllname
 }
@@ -8278,6 +8286,14 @@ load_xinput()
     do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xinput*.dll' "$x"
     done
+    if test "$W_ARCH" = "win64"
+    then
+        w_try_cabextract -d "$W_TMP" -L -F '*_xinput_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
+        for x in "$W_TMP"/*x64.cab
+        do
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xinput*.dll' "$x"
+        done
+    fi
     w_try_regsvr xinput1_1.dll
     w_try_regsvr xinput1_2.dll
     w_try_regsvr xinput1_3.dll
