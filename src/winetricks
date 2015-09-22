@@ -2444,7 +2444,12 @@ winetricks_prefixmenu()
                 else
                     _W_msg_name="$p"
                 fi
-                printf %s " FALSE prefix='$p' 'Select $_W_msg_name' "
+            case $LANG in 
+            zh_CN*) printf %s " FALSE prefix='$p' '选择管理 $_W_msg_name' " ;;
+            zh_TW*) printf %s " FALSE prefix='$p' '選擇管理 $_W_msg_name' " ;;
+            zh_HK*) printf %s " FALSE prefix='$p' '選擇管理 $_W_msg_name' " ;;
+            *) printf %s " FALSE prefix='$p' 'Select $_W_msg_name' " ;;
+            esac
             done >> "$WINETRICKS_WORKDIR"/zenity.sh
         fi
         printf %s " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> "$WINETRICKS_WORKDIR"/zenity.sh
@@ -16125,18 +16130,20 @@ load_puzzleagent_demo()
 #----------------------------------------------------------------
 
 w_metadata qq apps \
- title="QQ 6.3 (Chinese chat app)" \
+ title="QQ 7.1 (Chinese chat app)" \
  publisher="Tencent" \
- year="2014" \
+ year="2015" \
  media="download" \
- file1="QQ6.3.exe" \
+ file1="QQ7.1.exe" \
+ file2="QQ.tar.gz"\
  installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQ.exe" \
  homepage="http://www.qq.com" \
  unattended="no"
 
 load_qq()
 {
-    w_download http://dldir1.qq.com/qqfile/qq/QQ6.3/12369/QQ6.3.exe cebe73a2f8b7299ba0f01aba779e0e4a7dbd173b
+    w_download http://dldir1.qq.com/qqfile/qq/QQ7.1/14522/QQ7.1.exe 700b469560b1bd8521ede61a0e169ff8c38b1d29
+    w_download http://hillwoodhome.net/wine/QQ.tar.gz 08de45d3e5bb34b22e7c33e1163daec69742db58
 
     if w_workaround_wine_bug 29636 "Installing native riched20 to work around crash bug"
     then
@@ -16154,8 +16161,22 @@ load_qq()
     # uses mfc42u.dll
     w_call mfc42
 
+    if w_workaround_wine_bug 38171 "Installing desktop file to work around bug"
+    then
+        cd "$W_TMP/"
+        tar -zxf "$W_CACHE/qq/QQ.tar.gz"
+        mkdir -p $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ
+        mkdir -p $HOME/.local/share/icons/hicolor/48x48/apps
+        mkdir -p $HOME/.local/share/icons/hicolor/256x256/apps
+        w_try mv QQ/腾讯QQ.desktop ~/.local/share/applications/wine/Programs/腾讯软件/QQ
+        w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
+        w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
+        echo Exec=env WINEPREFIX=$HOME/.local/share/wineprefixes/qq wine C:\/Program\\ Files\/Tencent\/QQ\/Bin\/QQ.exe >> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop
+    fi
+
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1"
+
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQ\\Bin" QQ.exe
 }
 
