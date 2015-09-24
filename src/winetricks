@@ -426,10 +426,7 @@ w_read_key()
         zh_CN*)  _W_keymsg="按任意键为 '$W_PACKAGE'"
             _W_nokeymsg="No key given"
             ;;
-        zh_TW*)  _W_keymsg="按任意鍵為 '$W_PACKAGE'"
-            _W_nokeymsg="No key given"
-            ;;
-        zh_HK*)  _W_keymsg="按任意鍵為 '$W_PACKAGE'"
+        zh_TW*|zh_HK*)  _W_keymsg="按任意鍵為 '$W_PACKAGE'"
             _W_nokeymsg="No key given"
             ;;
         *)  _W_keymsg="Please enter the key for app '$W_PACKAGE'"
@@ -888,8 +885,7 @@ w_download_manual_to()
     pl*) _W_dlmsg="Proszę pobrać plik $_W_file z $_W_url, następnie umieścić go w $W_CACHE/$_W_packagename, a na końcu uruchomić ponownie ten skrypt.";;
     uk*) _W_dlmsg="Будь ласка, звантажте $_W_file з $_W_url, розташуйте в $W_CACHE/$_W_packagename, потім запустіть скрипт знову.";;
     zh_CN*) _W_dlmsg="请从 $_W_url 下载 $_W_file，并置放于 $W_CACHE/$_W_packagename, 然后重新运行 winetricks.";;
-    zh_TW*) _W_dlmsg="請從 $_W_url 下載 $_W_file，并置放於 $W_CACHE/$_W_packagename, 然后重新執行 winetricks.";;
-    zh_HK*) _W_dlmsg="請從 $_W_url 下載 $_W_file，并置放於 $W_CACHE/$_W_packagename, 然后重新執行 winetricks.";;
+    zh_TW*|zh_HK*) _W_dlmsg="請從 $_W_url 下載 $_W_file，并置放於 $W_CACHE/$_W_packagename, 然后重新執行 winetricks.";;
     *) _W_dlmsg="Please download $_W_file from $_W_url, place it in $W_CACHE/$_W_packagename, then re-run this script.";;
     esac
 
@@ -1923,8 +1919,7 @@ w_workaround_wine_bug()
     pl*) w_warn "Obchodzenie błędu w wine ${1} $_W_msg" ;;
     uk*) w_warn "Обхід помилки ${1} $_W_msg" ;;
     zh_CN*)   w_warn "绕过 wine bug ${1} $_W_msg" ;;
-    zh_TW*)   w_warn "繞過 wine bug ${1} $_W_msg" ;;
-    zh_HK*)   w_warn "繞過 wine bug ${1} $_W_msg" ;;
+    zh_TW*|zh_HK*)   w_warn "繞過 wine bug ${1} $_W_msg" ;;
     *)   w_warn "Working around wine bug ${1} $_W_msg" ;;
     esac
     winetricks_stats_log_command w_workaround_wine_bug-$1
@@ -2365,19 +2360,7 @@ winetricks_prefixmenu()
          _W_msg_showbroken1="有问题的程序 (例如那些有数字版权问题)"
          _W_msg_help="查看帮助"
          ;;
-    zh_TW*)   _W_msg_title="Windows 應用裝載向導 - 選取一個 wine 容器"
-         _W_msg_body='君欲何為？'
-         _W_msg_apps='裝載一個 windows 應用'
-         _W_msg_games='裝載一個游戲'
-         _W_msg_benchmarks='裝載一個基准測試軟體'
-         _W_msg_default="選取預設的 wine 容器"
-         _W_msg_unattended0="禁用靜默裝載"
-         _W_msg_unattended1="啟用靜默裝載"
-         _W_msg_showbroken0="隱藏有問題的程式 (例如那些有數字版權問題)"
-         _W_msg_showbroken1="有問題的程式 (例如那些有數字版權問題)"
-         _W_msg_help="檢視輔助說明"
-         ;;
-    zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 選取一個 wine 容器"
+    zh_TW*|zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 選取一個 wine 容器"
          _W_msg_body='君欲何為？'
          _W_msg_apps='裝載一個 windows 應用'
          _W_msg_games='裝載一個游戲'
@@ -2446,8 +2429,7 @@ winetricks_prefixmenu()
                 fi
             case $LANG in 
             zh_CN*) printf %s " FALSE prefix='$p' '选择管理 $_W_msg_name' " ;;
-            zh_TW*) printf %s " FALSE prefix='$p' '選擇管理 $_W_msg_name' " ;;
-            zh_HK*) printf %s " FALSE prefix='$p' '選擇管理 $_W_msg_name' " ;;
+            zh_TW*|zh_HK*) printf %s " FALSE prefix='$p' '選擇管理 $_W_msg_name' " ;;
             *) printf %s " FALSE prefix='$p' 'Select $_W_msg_name' " ;;
             esac
             done >> "$WINETRICKS_WORKDIR"/zenity.sh
@@ -2556,19 +2538,7 @@ winetricks_mainmenu()
          _W_msg_folder='浏览容器中的文件'
          _W_msg_annihilate="删除当前容器所有相关文件，包括启动器，完全卸载"
          ;;
-    zh_TW*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
-         _W_msg_body='管理目前容器'
-         _W_msg_dlls="裝載 Windows DLL 或套件"
-         _W_msg_fonts='裝載字型'
-         _W_msg_settings='修改設定'
-         _W_msg_winecfg='執行 winecfg'
-         _W_msg_regedit='執行註冊表'
-         _W_msg_taskmgr='執行工作管理者'
-         _W_msg_shell='執行指令輔助說明視窗 (作為除錯)'
-         _W_msg_folder='瀏覽容器中的檔案'
-         _W_msg_annihilate="移除目前容器所有相依檔案，包括啟動器，完全卸載"
-         ;;
-    zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
+    zh_TW*|zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
          _W_msg_body='管理目前容器'
          _W_msg_dlls="裝載 Windows DLL 或套件"
          _W_msg_fonts='裝載字型'
@@ -2663,10 +2633,7 @@ winetricks_settings_menu()
     zh_CN*)   _W_msg_title="Windows 应用安装向导 - 当前容器路径是 \"$WINEPREFIX\""
          _W_msg_body='君欲更改哪项设置？'
          ;;
-    zh_TW*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
-         _W_msg_body='君欲變更哪項設定？'
-         ;;
-    zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
+    zh_TW*|zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
          _W_msg_body='君欲變更哪項設定？'
          ;;
     *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
@@ -2737,19 +2704,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
-        zh_TW*) printf %s "zenity \
-                --title '$_W_msg_title' \
-                --text '$_W_msg_body' \
-                --list \
-                --checklist \
-                --column '' \
-                --column 設定 \
-                --column 標題 \
-                --height $WINETRICKS_MENU_HEIGHT \
-                --width $WINETRICKS_MENU_WIDTH \
-                "
-            ;;
-        zh_HK*) printf %s "zenity \
+        zh_TW*|zh_HK*) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2835,11 +2790,7 @@ winetricks_showmenu()
          _W_msg_body='君欲安装何种应用？'
          _W_cached="已缓存"
          ;;
-    zh_TW*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
-         _W_msg_body='君欲裝載何種應用？'
-         _W_cached="已緩存"
-         ;;
-    zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
+    zh_TW*|zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
          _W_msg_body='君欲裝載何種應用？'
          _W_cached="已緩存"
          ;;
@@ -2943,25 +2894,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-        zh_TW*) printf %s "zenity \
-                --title '$_W_msg_title' \
-                --text '$_W_msg_body' \
-                --list \
-                --checklist \
-                --column '' \
-                --column 包名 \
-                --column 軟體名 \
-                --column 發行商 \
-                --column 發行年 \
-                --column 媒介 \
-                --column 狀態 \
-                --column '檔案大小 (MB)' \
-                --column '時間 (秒)' \
-                --height $WINETRICKS_MENU_HEIGHT \
-                --width $WINETRICKS_MENU_WIDTH \
-                "
-             ;;
-        zh_HK*) printf %s "zenity \
+        zh_TW*|zh_HK*) printf %s "zenity \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3233,8 +3166,7 @@ winetricks_list_all()
     pl*) _W_cached="zarchiwizowane"   ; _W_download="do pobrania"  ;;
     uk*) _W_cached="кешовано"   ; _W_download="завантажуване"  ;;
     zh_CN*)   _W_cached="已缓存"   ; _W_download="可下载"  ;;
-    zh_TW*)   _W_cached="已緩存"   ; _W_download="可下載"  ;;
-    zh_HK*)   _W_cached="已緩存"   ; _W_download="可下載"  ;;
+    zh_TW*|zh_HK*)   _W_cached="已緩存"   ; _W_download="可下載"  ;;
     *)   _W_cached="cached"   ; _W_download="downloadable"  ;;
     esac
 
@@ -3473,8 +3405,7 @@ winetricks_cache_iso()
         pl*)  w_warn "Włożono zły dysk [$_W_volname].  Proszę włożyć dysk [$_W_expected_volname]" ;;
             uk*)  w_warn "Неправильний диск [$_W_volname].  Будь ласка, вставте диск [$_W_expected_volname]" ;;
             zh_CN*)    w_warn " [$_W_volname] 光盘插入错误，请插入光盘 [$_W_expected_volname]" ;;
-            zh_TW*)    w_warn " [$_W_volname] 光槃插入錯誤，請插入光槃 [$_W_expected_volname]" ;;
-            zh_HK*)    w_warn " [$_W_volname] 光槃插入錯誤，請插入光槃 [$_W_expected_volname]" ;;
+            zh_TW*|zh_HK*)    w_warn " [$_W_volname] 光碟插入錯誤，請插入光槃 [$_W_expected_volname]" ;;
             *)    w_warn "Wrong disc [$_W_volname] inserted.  Please insert disc [$_W_expected_volname]" ;;
             esac
 
@@ -3694,8 +3625,7 @@ winetricks_mount_real_volume()
     pl*)  _W_mountmsg="Proszę włożyć dysk '$_W_expected_volname' (potrzebny paczce '$W_PACKAGE')" ;;
     uk*)  _W_mountmsg="Будь ласка, вставте том '$_W_expected_volname' (потрібний для пакунка '$W_PACKAGE')" ;;
     zh_CN*)  _W_mountmsg="请插入卷 '$_W_expected_volname' (为包 '$W_PACKAGE 所需')" ;;
-    zh_TW*)  _W_mountmsg="請插入卷 '$_W_expected_volname' (為包 '$W_PACKAGE 所需')" ;;
-    zh_HK*)  _W_mountmsg="請插入卷 '$_W_expected_volname' (為包 '$W_PACKAGE 所需')" ;;
+    zh_TW*|zh_HK*)  _W_mountmsg="請插入卷 '$_W_expected_volname' (為包 '$W_PACKAGE 所需')" ;;
     *)  _W_mountmsg="Please insert volume '$_W_expected_volname' (needed for package '$W_PACKAGE')" ;;
     esac
 
@@ -4222,8 +4152,7 @@ winetricks_install_app()
     pl*) fail_msg="Niepowodzenie przy instalacji paczki $1" ;;
     uk*) fail_msg="Помилка встановлення пакунка $1" ;;
     zh_CN*)   fail_msg="$1 安装失败" ;;
-    zh_TW*)   fail_msg="$1 裝載失敗" ;;
-    zh_HK*)   fail_msg="$1 裝載失敗" ;;
+    zh_TW*|zh_HK*)   fail_msg="$1 安裝失敗" ;;
     *)   fail_msg="Failed to install package $1" ;;
     esac
 
@@ -16171,12 +16100,11 @@ load_qq()
         w_try mv QQ/腾讯QQ.desktop ~/.local/share/applications/wine/Programs/腾讯软件/QQ
         w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
         w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
-        echo Exec=env WINEPREFIX=$HOME/.local/share/wineprefixes/qq wine C:\/Program\\ Files\/Tencent\/QQ\/Bin\/QQ.exe >> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop
+        echo Exec=env WINEPREFIX=$WINEPREFIX wine C:\/Program\\ Files\/Tencent\/QQ\/Bin\/QQ.exe >> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1"
-
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQ\\Bin" QQ.exe
 }
 
