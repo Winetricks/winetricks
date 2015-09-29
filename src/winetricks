@@ -8282,10 +8282,16 @@ load_xact()
         done
     fi
 
-    # Register xactengine?_?.dll, xaudio?_?.dll
-    for x in "$W_SYSTEM32_DLLS"/xactengine* "$W_SYSTEM32_DLLS"/xaudio*
+    # Register xactengine?_?.dll
+    for x in "$W_SYSTEM32_DLLS"/xactengine*
     do
       w_try_regsvr `basename "$x"`
+    done
+
+    # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
+    for x in 0 1 2 3 4 5 6 7
+    do
+      w_try_regsvr `basename "$W_SYSTEM32_DLLS/xaudio2_${x}"`
     done
 }
 
@@ -8328,10 +8334,16 @@ load_xact_jun2010()
         done
     fi
 
-    # Register xactengine?_?.dll, xaudio?_?.dll
-    for x in "$W_SYSTEM32_DLLS"/xactengine* "$W_SYSTEM32_DLLS"/xaudio*
+    # Register xactengine?_?.dll
+    for x in "$W_SYSTEM32_DLLS"/xactengine*
     do
       w_try_regsvr `basename "$x"`
+    done
+
+    # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
+    for x in 0 1 2 3 4 5 6 7
+    do
+      w_try_regsvr `basename "$W_SYSTEM32_DLLS/xaudio2_${x}"`
     done
 }
 
