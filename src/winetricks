@@ -2594,6 +2594,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='Run winecfg'
          _W_msg_regedit='Run regedit'
          _W_msg_taskmgr='Run taskmgr'
+         _W_msg_uninstaller='Run uninstaller'
          _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_folder='Browse files'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
@@ -2606,6 +2607,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='Run winecfg'
          _W_msg_regedit='Run regedit'
          _W_msg_taskmgr='Run taskmgr'
+         _W_msg_uninstaller='Run uninstaller'
          _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_folder='Browse files'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
@@ -2618,6 +2620,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='Uruchom winecfg'
          _W_msg_regedit='Uruchom regedit'
          _W_msg_taskmgr='Uruchom taskmgr'
+         _W_msg_uninstaller='Run uninstaller'
          _W_msg_shell='Uruchom powłokę wiersza poleceń (dla debugowania)'
          _W_msg_folder='Przeglądaj pliki'
          _W_msg_annihilate="Usuń WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO WINEPREFIXA"
@@ -2630,6 +2633,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='Запустити winecfg'
          _W_msg_regedit='Запустити regedit'
          _W_msg_taskmgr='Запустити taskmgr'
+         _W_msg_uninstaller='Run uninstaller'
          _W_msg_shell='Запуск командної оболонки (для налагодження)'
          _W_msg_folder='Перегляд файлів'
          _W_msg_annihilate="Видалити УСІ ДАНІ ТА ПРОГРАМИ З ЦЬОГО WINEPREFIX"
@@ -2642,6 +2646,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='运行 winecfg'
          _W_msg_regedit='运行注册表'
          _W_msg_taskmgr='运行任务管理器'
+         _W_msg_uninstaller='Run uninstaller'
          _W_msg_shell='运行命令提示窗口 (作为调试)'
          _W_msg_folder='浏览容器中的文件'
          _W_msg_annihilate="删除当前容器所有相关文件，包括启动器，完全卸载"
@@ -2654,6 +2659,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='執行 winecfg'
          _W_msg_regedit='執行註冊表'
          _W_msg_taskmgr='執行工作管理者'
+         _W_msg_uninstaller='Run uninstaller'
          _W_msg_shell='執行指令輔助說明視窗 (作為除錯)'
          _W_msg_folder='瀏覽容器中的檔案'
          _W_msg_annihilate="移除目前容器所有相依檔案，包括啟動器，完全卸載"
@@ -2666,6 +2672,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='Run winecfg'
          _W_msg_regedit='Run regedit'
          _W_msg_taskmgr='Run taskmgr'
+         _W_msg_uninstaller='Run uninstaller'
          _W_msg_shell='Run a commandline shell (for debugging)'
          _W_msg_folder='Browse files'
          _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
@@ -2686,15 +2693,16 @@ winetricks_mainmenu()
             --height $WINETRICKS_MENU_HEIGHT \
             --width $WINETRICKS_MENU_WIDTH \
             --hide-column 2 \
-            FALSE dlls       '$_W_msg_dlls' \
-            FALSE fonts      '$_W_msg_fonts' \
-            FALSE settings   '$_W_msg_settings' \
-            FALSE winecfg    '$_W_msg_winecfg' \
-            FALSE regedit    '$_W_msg_regedit' \
-            FALSE taskmgr    '$_W_msg_taskmgr' \
-            FALSE shell      '$_W_msg_shell' \
-            FALSE folder     '$_W_msg_folder' \
-            FALSE annihilate '$_W_msg_annihilate' \
+            FALSE dlls        '$_W_msg_dlls' \
+            FALSE fonts       '$_W_msg_fonts' \
+            FALSE settings    '$_W_msg_settings' \
+            FALSE winecfg     '$_W_msg_winecfg' \
+            FALSE regedit     '$_W_msg_regedit' \
+            FALSE taskmgr     '$_W_msg_taskmgr' \
+            FALSE uninstaller '$_W_msg_uninstaller' \
+            FALSE shell       '$_W_msg_shell' \
+            FALSE folder      '$_W_msg_folder' \
+            FALSE annihilate  '$_W_msg_annihilate' \
          "
          ) > "$WINETRICKS_WORKDIR"/zenity.sh
         sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
@@ -2706,15 +2714,16 @@ winetricks_mainmenu()
                 --separate-output \
                 --radiolist \
                 "$_W_msg_body"\
-                dlls       "$_W_msg_dlls" off \
-                fonts      "$_W_msg_fonts" off \
-                settings   "$_W_msg_settings" off \
-                winecfg    "$_W_msg_winecfg" off \
-                regedit    "$_W_msg_regedit" off \
-                taskmgr    "$_W_msg_taskmgr" off \
-                shell      "$_W_msg_shell" off \
-                folder     "$_W_msg_folder" off \
-                annihilate "$_W_msg_annihilate" off \
+                dlls        "$_W_msg_dlls" off \
+                fonts       "$_W_msg_fonts" off \
+                settings    "$_W_msg_settings" off \
+                winecfg     "$_W_msg_winecfg" off \
+                regedit     "$_W_msg_regedit" off \
+                taskmgr     "$_W_msg_taskmgr" off \
+                uninstaller "$_W_msg_uninstaller" off \
+                shell       "$_W_msg_shell" off \
+                folder      "$_W_msg_folder" off \
+                annihilate  "$_W_msg_annihilate" off \
                 $_W_cmd_unattended "$_W_msg_unattended" off \
 
         ;;
@@ -19372,6 +19381,7 @@ execute_command()
     winecfg) "$WINE" winecfg ;;
     regedit) "$WINE" regedit ;;
     taskmgr) "$WINE" taskmgr & ;;
+    uninstaller) "$WINE" uninstaller ;;
     shell) winetricks_shell ;;
 
     # These have to come before *=disabled to avoid looking like dlls
