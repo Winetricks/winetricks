@@ -16481,7 +16481,7 @@ w_metadata qqlight apps \
  media="download" \
  file1="QQ7.5Light.exe" \
  file2="QQLight.tar.gz"\
- installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQScLauncher.exe" \
+ installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/QQLite/QQScLauncher.exe" \
  homepage="http://www.qq.com" \
  unattended="no"
 
@@ -16490,21 +16490,10 @@ load_qqlight()
     w_download http://dldir1.qq.com/qqfile/qq/QQ7.5Light/15462/QQ7.5Light.exe e75a0a7ee9ae00283ca5cf18221409c3acf60695
     w_download http://hillwoodhome.net/wine/QQLight.tar.gz db04deb656c0cce7b223cc3358a8af98b0deed52
 
-    if w_workaround_wine_bug 29636 "Installing native riched20 to work around crash bug"
+    if w_workaround_wine_bug 39383 "Installing native riched20 to work around can't input username bug"
     then
         w_call riched20
     fi
-
-    if w_workaround_wine_bug 34566 "Installing native ctf to work around crash"
-    then
-        w_call msctf
-    fi
-
-    # Make sure chinese fonts are available
-    w_call fakechinese
-
-    # uses mfc42u.dll
-    w_call mfc42
 
     if w_workaround_wine_bug 38171 "Installing desktop file to work around bug"
     then
@@ -16526,9 +16515,12 @@ load_qqlight()
         chmod 000 QQFrmMgr.sys
     fi
 
+    # Make sure chinese fonts are available
+    w_call fakechinese
+
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1"
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQ\\Bin" QQScLauncher.exe
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQLite\\Bin" QQScLauncher.exe
 }
 
 #----------------------------------------------------------------
