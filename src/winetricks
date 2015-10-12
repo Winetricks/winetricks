@@ -8058,6 +8058,70 @@ load_vcrun2013()
 
 #----------------------------------------------------------------
 
+w_metadata vcrun2015 dlls \
+    title="Visual C++ 2015 libraries (concrt140.dll,mfc140.dll,mfc140u.dll,mfcm140.dll,mfcm140u.dll,msvcp140.dll,vcamp140.dll,vccorlib140.dll,vcomp140.dll,vcruntime140.dll)" \
+    publisher="Microsoft" \
+    year="2015" \
+    media="download" \
+    file1="vc_redist.x86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc140.dll"
+
+load_vcrun2015()
+{
+    # https://www.microsoft.com/en-us/download/details.aspx?id=48145
+    # 2015/10/12: bfb74e498c44d3a103ca3aa2831763fb417134d1
+    w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe bfb74e498c44d3a103ca3aa2831763fb417134d1
+
+    w_override_dlls native,builtin atl140 msvcp140 msvcr140 vcomp140
+    cd "$W_CACHE"/vcrun2015
+    if w_workaround_wine_bug 17273 "Manually extracting dlls"
+    then
+        w_try_cabextract --directory="$W_TMP" vc_redist.x86.exe
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a10"
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a11"
+        cp "$W_TMP"/concrt140.dll "$W_SYSTEM32_DLLS"/concrt140.dll
+        cp "$W_TMP"/mfc140.dll "$W_SYSTEM32_DLLS"/mfc140.dll
+        cp "$W_TMP"/mfc140u.dll "$W_SYSTEM32_DLLS"/mfc140u.dll
+        cp "$W_TMP"/mfcm140.dll "$W_SYSTEM32_DLLS"/mfcm140.dll
+        cp "$W_TMP"/mfcm140u.dll "$W_SYSTEM32_DLLS"/mfcm140u.dll
+        cp "$W_TMP"/msvcp140.dll "$W_SYSTEM32_DLLS"/msvcp140.dll
+        cp "$W_TMP"/vcamp140.dll "$W_SYSTEM32_DLLS"/vcamp140.dll
+        cp "$W_TMP"/vccorlib140.dll "$W_SYSTEM32_DLLS"/vccorlib140.dll
+        cp "$W_TMP"/vcomp140.dll "$W_SYSTEM32_DLLS"/vcomp140.dll
+        cp "$W_TMP"/vcruntime140.dll "$W_SYSTEM32_DLLS"/vcruntime140.dll
+    else
+        w_try "$WINE" vc_redist.x86.exe $W_UNATTENDED_SLASH_Q
+    fi
+
+    case "$W_ARCH" in
+    win64)
+        # Also install the 64 bit version
+        # 2015/10/12: 3155cb0f146b927fcc30647c1a904cd162548c8c
+        w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 3155cb0f146b927fcc30647c1a904cd162548c8c
+        if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"
+        then
+            w_try_cabextract --directory="$W_TMP" vc_redist.x64.exe
+            w_try_cabextract --directory="$W_TMP" "$W_TMP/a10"
+            w_try_cabextract --directory="$W_TMP" "$W_TMP/a11"
+            cp "$W_TMP"/concrt140.dll "$W_SYSTEM64_DLLS"/concrt140.dll
+            cp "$W_TMP"/mfc140.dll "$W_SYSTEM64_DLLS"/mfc140.dll
+            cp "$W_TMP"/mfc140u.dll "$W_SYSTEM64_DLLS"/mfc140u.dll
+            cp "$W_TMP"/mfcm140.dll "$W_SYSTEM64_DLLS"/mfcm140.dll
+            cp "$W_TMP"/mfcm140u.dll "$W_SYSTEM64_DLLS"/mfcm140u.dll
+            cp "$W_TMP"/msvcp140.dll "$W_SYSTEM64_DLLS"/msvcp140.dll
+            cp "$W_TMP"/vcamp140.dll "$W_SYSTEM64_DLLS"/vcamp140.dll
+            cp "$W_TMP"/vccorlib140.dll "$W_SYSTEM64_DLLS"/vccorlib140.dll
+            cp "$W_TMP"/vcomp140.dll "$W_SYSTEM64_DLLS"/vcomp140.dll
+            cp "$W_TMP"/vcruntime140.dll "$W_SYSTEM64_DLLS"/vcruntime140.dll
+        else
+            w_try "$WINE" vc_redist.x64.exe $W_UNATTENDED_SLASH_Q
+        fi
+        ;;
+    esac
+}
+
+#----------------------------------------------------------------
+
 w_metadata vjrun20 dlls \
     title="MS Visual J# 2.0 SE libraries (requires dotnet20)" \
     publisher="Microsoft" \
