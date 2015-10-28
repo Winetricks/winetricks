@@ -8991,7 +8991,7 @@ load_fontfix()
     # SDKSetup encountered an error: The type initializer for 'Microsoft.WizardFramework.WizardSettings' threw an exception
     # and WINEDEBUG=+relay,+seh shows an exception very quickly after
     # Call KERNEL32.CreateFileW(0c83b36c L"Z:\\USR\\SHARE\\FONTS\\TRUETYPE\\TTF-ORIYA-FONTS\\SAMYAK-ORIYA.TTF",80000000,00000001,00000000,00000003,00000080,00000000) ret=70d44091
-    if xlsfonts 2>/dev/null | egrep -i "samyak|oriya"
+    if xlsfonts 2>/dev/null | egrep -i "samyak.*oriya"
     then
         w_die "Please uninstall the Samyak/Oriya font, e.g. 'sudo dpkg -r ttf-oriya-fonts', then log out and log in again.  That font causes strange crashes in .net programs."
     fi
