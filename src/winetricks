@@ -16244,59 +16244,6 @@ load_popfs()
 
 #----------------------------------------------------------------
 
-w_metadata puzzleagent_demo games \
-    title="Puzzle Agent Demo" \
-    publisher="Telltale Games" \
-    year="2010" \
-    media="download" \
-    file1="PuzzleAgent_PC_Setup.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Telltale Games/Puzzle Agent/Puzzle Agent/Grickle101.exe"
-
-load_puzzleagent_demo()
-{
-    w_download http://telltale.vo.llnwd.net/o15/games/puzzleagent/100/PuzzleAgent_PC_Setup.exe ac0012889fd80237928207c9d19b02f5968761a4
-
-    cd "$W_CACHE/$W_PACKAGE"
-
-    w_ahk_do "
-        Run, PuzzleAgent_PC_Setup.exe
-        SetTitleMatchMode, 2
-        WinWait,Puzzle Agent Setup, Welcome
-        if ( w_opt_unattended > 0 ) {
-            Sleep 500
-            ControlClick Button2 ; Next
-            WinWait,Puzzle Agent Setup, properly
-            Sleep 500
-            ControlClick Button5 ;DirectX
-            Sleep 500
-            ControlClick Button2 ; Next
-            WinWait,Puzzle Agent Setup, before
-            Sleep 500
-            ControlClick Button2 ; Agree
-            WinWait,Puzzle Agent Setup, different
-            Sleep 500
-            ControlClick Button2 ; Install
-            WinWait,Puzzle Agent Setup, your
-            Sleep 500
-            ControlClick Button4 ; Play
-            Sleep 500
-            ControlClick Button5 ; will
-            Sleep 500
-            ControlClick Button2 ; Finish
-        }
-        WinWaitClose, Puzzle Agent
-    "
-
-    if w_workaround_wine_bug 25210 ""  1.3.8,
-    then
-        w_call vcrun2008
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Telltale Games\\Puzzle Agent\\Puzzle Agent" "Grickle101.exe"
-}
-
-#----------------------------------------------------------------
-
 w_metadata qq apps \
  title="QQ 7.1 (Chinese chat app)" \
  publisher="Tencent" \
