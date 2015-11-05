@@ -9318,6 +9318,10 @@ load_adobe_diged4()
     then
         w_call corefonts
     fi
+    if [ ! -x "`which winbindd 2>/dev/null`" ]
+    then
+        w_warn "Adobe Digital Editions 4.5 requires winbind (part of samba) to be installed, but winbind was not detected."
+    fi
 
     w_call dotnet40
 
