@@ -9282,6 +9282,26 @@ load_abiword()
 #----------------------------------------------------------------
 
 w_metadata adobe_diged apps \
+    title="Adobe Digital Editionsi 1.7" \
+    publisher="Adobe" \
+    year="2011" \
+    media="download" \
+    file1="setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Adobe/Adobe Digital Editions/digitaleditions.exe" \
+    homepage="http://www.adobe.com/products/digitaleditions/"
+
+load_adobe_diged()
+{
+    w_download http://kb2.adobe.com/cps/403/kb403051/attachments/setup.exe 4c79685408fa6ca12ef8bb0e0eaa4a846e21f915
+    # NSIS installer
+    w_try "$WINE" "$W_CACHE"/$W_PACKAGE/setup.exe ${W_OPT_UNATTENDED:+ /S}
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Adobe\\Adobe Digital Editions" \
+        digitaleditions.exe
+}
+
+#----------------------------------------------------------------
+
+w_metadata adobe_diged4 apps \
     title="Adobe Digital Editions" \
     publisher="Adobe" \
     year="2015" \
@@ -9290,13 +9310,17 @@ w_metadata adobe_diged apps \
     installed_exe1="$W_PROGRAMS_X86_WIN/Adobe/Adobe Digital Editions 4.5/DigitalEditions.exe" \
     homepage="http://www.adobe.com/products/digitaleditions/"
 
-load_adobe_diged()
+load_adobe_diged4()
 {
     w_download http://download.adobe.com/pub/adobe/digitaleditions/ADE_4.5_Installer.exe
 
     if w_workaround_wine_bug 32323
     then
         w_call corefonts
+    fi
+    if [ ! -x "`which winbindd 2>/dev/null`" ]
+    then
+        w_warn "Adobe Digital Editions 4.5 requires winbind (part of samba) to be installed, but winbind was not detected."
     fi
 
     w_call dotnet40
