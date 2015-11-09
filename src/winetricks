@@ -8496,10 +8496,6 @@ load_xinput()
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xinput*.dll' "$x"
         done
     fi
-    w_try_regsvr xinput1_1.dll
-    w_try_regsvr xinput1_2.dll
-    w_try_regsvr xinput1_3.dll
-    w_try_regsvr xinput9_1_0.dll
     w_override_dlls native xinput1_1
     w_override_dlls native xinput1_2
     w_override_dlls native xinput1_3
