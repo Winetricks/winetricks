@@ -10590,7 +10590,8 @@ load_python26_setuptools()
 {
     w_call python26
 
-    w_download https://bootstrap.pypa.io/ez_setup.py 90b05e9298b7963eaec6de050c8fc751ce6a2a29
+    # Not checking sha1sum, script frequently updates and there aren't stable versions
+    w_download https://bootstrap.pypa.io/ez_setup.py
 
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "C:\Python26\python.exe" ${file1}
