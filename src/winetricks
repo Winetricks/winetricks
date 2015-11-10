@@ -6851,7 +6851,7 @@ w_metadata mshflxgd dlls \
     year="2009" \
     media="download" \
     file1="MSHFLXGD.CAB" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/mshflxgd.ocx"
+    installed_file1="$W_SYSTEM32_DLLS_WIN/MSHFLXGD.OCX"
 
 load_mshflxgd()
 {
@@ -6859,13 +6859,13 @@ load_mshflxgd()
     # orig: 5f9c7a81022949bfe39b50f2bbd799c448bb7377
     # Jan 2009: 7ad74e589d5eefcee67fa14e65417281d237a6b6
     # May 2009: bd8aa796e16e5f213414af78931e0379d9cbe292
-    # 2015/11/09: Removed from Microsoft.com, archive.org has an older copy:
+    # 2015/11/09: Removed from Microsoft.com, archive.org has the original copy:
     # 2015/11/09: 5f9c7a81022949bfe39b50f2bbd799c448bb7377
     w_download https://web.archive.org/web/20061011041549/http://activex.microsoft.com/controls/vb6/MSHFLXGD.CAB 5f9c7a81022949bfe39b50f2bbd799c448bb7377
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/mshflxgd/MSHFLXGD.CAB
     w_try cp -f "$W_TMP"/[Mm][Ss][Hh][Ff][Ll][Xx][Gg][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
-    w_try_regsvr mshflxgd.ocx
+    w_try_regsvr MSHFLXGD.OCX
 }
 
 #----------------------------------------------------------------
