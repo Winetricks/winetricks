@@ -4549,7 +4549,7 @@ load_comctl32ocx()
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=25437D98-51D0-41C1-BB14-64662F5F62FE
     w_download http://download.microsoft.com/download/3/a/5/3a5925ac-e779-4b1c-bb01-af67dc2f96fc/VisualBasic6-KB896559-v1-ENU.exe f52cf2034488235b37a1da837d1c40eb2a1bad84
     # More ActiveX controls. See https://support.microsoft.com/kb/297381
-    w_download http://activex.microsoft.com/controls/vb6/mscomct2.cab 766f9ccf8849a04d757faee379da54d635c8ac71
+    w_download https://web.archive.org/web/20141012205821/http://activex.microsoft.com/controls/vb6/mscomct2.cab 766f9ccf8849a04d757faee379da54d635c8ac71
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comctl32ocx/VisualBasic6-KB896559-v1-ENU.exe
     w_try cp "$W_TMP"/mscomctl.ocx "$W_SYSTEM32_DLLS"/mscomctl.ocx
@@ -4569,14 +4569,14 @@ w_metadata comdlg32ocx dlls \
     publisher="Microsoft" \
     year="2009" \
     media="download" \
-    file1="comdlg32.cab" \
+    file1="ComDlg32.cab" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/comdlg32.ocx"
 
 load_comdlg32ocx()
 {
     # By analogy with vb5 version in http://support.microsoft.com/kb/168917
-    w_download http://activex.microsoft.com/controls/vb6/comdlg32.cab d4f3e193c6180eccd73bad53a8500beb5b279cbf
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comdlg32ocx/comdlg32.cab
+    w_download https://web.archive.org/web/20141227220748/http://activex.microsoft.com/controls/vb6/ComDlg32.cab d4f3e193c6180eccd73bad53a8500beb5b279cbf
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comdlg32ocx/${file1}
     w_try cp "$W_TMP"/comdlg32.ocx "$W_SYSTEM32_DLLS"/comdlg32.ocx
     w_try_regsvr comdlg32.ocx
 }
@@ -6726,7 +6726,7 @@ w_metadata mfc40 dlls \
 
 load_mfc40()
 {
-    w_download http://activex.microsoft.com/controls/vc/mfc40.cab 53c570e2c811674d6e4fa46cff5a3a04cd0ffc24
+    w_download https://web.archive.org/web/20070316220826/http://activex.microsoft.com/controls/vc/mfc40.cab 53c570e2c811674d6e4fa46cff5a3a04cd0ffc24
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/mfc40/mfc40.cab
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -F *40.dll "$W_TMP"/mfc40.exe
 }
@@ -6806,16 +6806,19 @@ w_metadata msflxgrd dlls \
     publisher="Microsoft" \
     year="2009" \
     media="download" \
-    file1="msflxgrd.cab" \
+    file1="MsFlxgrd.cab" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/MSFlxGrd.Ocx"
 
 load_msflxgrd()
 {
     # http://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
     # may 2011: f497c3b390cd80d5bcd1f13d5c0c68b206369aa7
-    w_download http://activex.microsoft.com/controls/vb6/msflxgrd.cab f497c3b390cd80d5bcd1f13d5c0c68b206369aa7
+    3d6c04e923781d4ce0d3ab62189b8de352ab25d5
+    # 2015/11/09: Removed from Microsoft.com, archive.org has an older copy:
+    # 2015/11/09: 3d6c04e923781d4ce0d3ab62189b8de352ab25d5
+    w_download https://web.archive.org/web/20070127040448/http://activex.microsoft.com/controls/vb6/MsFlxGrd.cab 3d6c04e923781d4ce0d3ab62189b8de352ab25d5
 
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msflxgrd/msflxgrd.cab
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msflxgrd/${file1}
     w_try cp -f "$W_TMP"/[Mm][Ss][Ff][Ll][Xx][Gg][Rr][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
     w_try_regsvr MSFlxGrd.Ocx
 }
@@ -6836,7 +6839,9 @@ load_mshflxgd()
     # orig: 5f9c7a81022949bfe39b50f2bbd799c448bb7377
     # Jan 2009: 7ad74e589d5eefcee67fa14e65417281d237a6b6
     # May 2009: bd8aa796e16e5f213414af78931e0379d9cbe292
-    w_download http://activex.microsoft.com/controls/vb6/MSHFLXGD.CAB bd8aa796e16e5f213414af78931e0379d9cbe292
+    # 2015/11/09: Removed from Microsoft.com, archive.org has an older copy:
+    # 2015/11/09: 5f9c7a81022949bfe39b50f2bbd799c448bb7377
+    w_download https://web.archive.org/web/20061011041549/http://activex.microsoft.com/controls/vb6/MSHFLXGD.CAB 5f9c7a81022949bfe39b50f2bbd799c448bb7377
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/mshflxgd/MSHFLXGD.CAB
     w_try cp -f "$W_TMP"/[Mm][Ss][Hh][Ff][Ll][Xx][Gg][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
@@ -6915,7 +6920,9 @@ load_msmask()
     # http://bugs.winehq.org/show_bug.cgi?id=2934
     # old: 3c6b26f68053364ea2e09414b615dbebafb9d5c3
     # May 2009: 30e55679e4a13fe4d9620404476f215f93239292
-    w_download http://activex.microsoft.com/controls/vb6/MSMASK32.CAB 30e55679e4a13fe4d9620404476f215f93239292
+    # 2015/11/09: Removed from Microsoft.com, archive.org has an older copy:
+    # 2015/11/09: bdd2bb3a32d18926a048f302aff18b1e6d250d9d
+    w_download https://web.archive.org/web/20061011040848/http://activex.microsoft.com/controls/vb6/MSMASK32.CAB bdd2bb3a32d18926a048f302aff18b1e6d250d9d
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msmask/MSMASK32.CAB
     w_try cp -f "$W_TMP"/[Mm][Ss][Mm][Aa][Ss][Kk]32.[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"/msmask32.ocx
     w_try_regsvr msmask32.ocx
@@ -7452,7 +7459,7 @@ w_metadata richtx32 dlls \
 
 load_richtx32()
 {
-    w_download http://activex.microsoft.com/controls/vb6/richtx32.cab da404b566df3ad74fe687c39404a36c3e7cadc07
+    w_download https://web.archive.org/web/20150815181727/http://activex.microsoft.com/controls/vb6/richtx32.cab da404b566df3ad74fe687c39404a36c3e7cadc07
     w_try_cabextract "$W_CACHE"/richtx32/richtx32.cab -d "$W_SYSTEM32_DLLS" -F RichTx32.ocx
     w_try_regsvr RichTx32.ocx
 }
@@ -7585,16 +7592,16 @@ w_metadata tabctl32 dlls \
     publisher="Microsoft" \
     year="2009" \
     media="download" \
-    file1="tabctl32.cab" \
+    file1="TABCTL32.CAB" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/tabctl32.ocx"
 
 load_tabctl32()
 {
     # http://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
     # Nov 2012: tabctl32
-    w_download http://activex.microsoft.com/controls/vb6/tabctl32.cab beca51d05924a5466ab80eb0f8d0cdf8bc1ac697
+    w_download https://web.archive.org/web/20110818064708/http://activex.microsoft.com/controls/vb6/TABCTL32.CAB beca51d05924a5466ab80eb0f8d0cdf8bc1ac697
 
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/tabctl32/tabctl32.cab
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/tabctl32/${file1}
     w_try cp -f "$W_TMP"/[Tt][Aa][Bb][Cc][Tt][Ll][3][2].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
     w_try_regsvr tabctl32.ocx
 }
