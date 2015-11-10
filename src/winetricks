@@ -6267,8 +6267,29 @@ load_glidewrapper()
 {
     w_download http://www.zeckensack.de/glide/archive/GlideWrapper084c.exe 7a9d60a18b660473742b476465e9aea7bd5ab6f8
     cd "$W_CACHE/$W_PACKAGE"
+
+    # The installer opens its README in a web-browser, really annoying when doing make check/test:
+    # FIXME: maybe we should back up this key first?
+    if test ${W_OPT_UNATTENDED}
+    then
+        cat > "$W_TMP"/disable-browser.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\WineBrowser]
+"Browsers"=""
+
+_EOF_
+        w_try_regedit "$W_TMP_WIN"\\disable-browser.reg
+
+    fi
+
     # NSIS installer
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+
+    if test ${W_OPT_UNATTENDED}
+    then
+        "$WINE" reg delete "HKEY_CURRENT_USER\Software\Wine\WineBrowser" /v Browsers /f || true
+    fi
 }
 
 #----------------------------------------------------------------
