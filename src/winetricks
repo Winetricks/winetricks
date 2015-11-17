@@ -18735,6 +18735,42 @@ _EOF_
 
 #----------------------------------------------------------------
 
+w_metadata hidewineexports=enable settings \
+    title="Enable hiding wine exports from applications (wine-staging)"
+w_metadata hidewineexports=disable settings \
+    title="Disable hiding wine exports from applications (wine-staging)"
+
+load_hidewineexports()
+{
+    # Wine exports some functions allowing apps to query the wine version and
+    # information about the host environment. Using these functions, some apps
+    # will intentionally terminate if they can detect that they are running in
+    # a wine environment.
+    #
+    # Hiding these wine exports is only available in wine-staging.
+    # See https://bugs.winehq.org/show_bug.cgi?id=38656
+    case $arg in
+        enable)
+            local registry_value="\"Y\""
+            ;;
+        disable)
+            local registry_value="-"
+            ;;
+        *) w_die "Unexpected argument, $arg";;
+    esac
+
+    cat > "$W_TMP"/set-wineexports.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine]
+"HideWineExports"=$registry_value
+
+_EOF_
+    w_try_regedit "$W_TMP"/set-wineexports.reg
+}
+
+#----------------------------------------------------------------
+
 w_metadata hosts settings \
     title_uk="Додати порожні файли у C:\windows\system32\drivers\etc\{hosts,services}" \
     title="Add empty C:\windows\system32\drivers\etc\{hosts,services} files"
