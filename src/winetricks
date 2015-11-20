@@ -1399,7 +1399,7 @@ w_ahk_do()
     fi
 
     _W_CR=`printf \\\\r`
-    cat <<_EOF_ | sed "s/\$/$CR/" > "$W_TMP"/tmp.ahk
+    cat <<_EOF_ | sed "s/\$/$_W_CR/" > "$W_TMP"/tmp.ahk
 w_opt_unattended = ${W_OPT_UNATTENDED:-0}
 $@
 _EOF_
