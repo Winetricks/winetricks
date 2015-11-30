@@ -10404,6 +10404,25 @@ load_picasa39()
 
 #----------------------------------------------------------------
 
+w_metadata protectionid apps \
+    title="Protection ID" \
+    publisher="CDKiLLER & TippeX" \
+    year="2015" \
+    media="download" \
+    file1="ProtectionId.670.halloween.2015.rar" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/protection_id.exe"
+
+load_protectionid()
+{
+    w_download http://pid.gamecopyworld.com/dl.php?f=ProtectionId.670.halloween.2015.rar a307e15f28d00959cffddd8fda073aac6df943c8 "$file1"
+    cd "$W_SYSTEM32_DLLS"
+    w_try_unrar "${W_CACHE}/${W_PACKAGE}/${file1}"
+    # ProtectionId.670.halloween.2015 has a different executable name than usual, this may need to be disabled on next update:
+    mv Protection_ID.eXe protection_id.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata psdk2003 apps \
     title="MS Platform SDK 2003" \
     publisher="Microsoft" \
