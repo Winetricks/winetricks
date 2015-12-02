@@ -6822,6 +6822,26 @@ load_msctf()
 
 #----------------------------------------------------------------
 
+w_metadata msdxmocx dlls \
+    title="MS Windows Media Player 2 ActiveX control for VB6" \
+    publisher="Microsoft" \
+    year="1999" \
+    media="download" \
+    file1="mpfull.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msdxm.ocx"
+
+load_msdxmocx()
+{
+    # http://www.oldapps.com/windows_media_player.php?old_windows_media_player=3?download
+    # Iceweasel gives a security warning (!), but clamscan and virustotal.com report it as clean:
+    w_download http://download.oldapps.com/Windows_Media/mpfull.exe 44aef252a660612a01ee13271d84d2da3885e58d
+
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_CACHE/$W_PACKAGE/${file1}"
+    w_try_regsvr msdxm.ocx
+}
+
+#----------------------------------------------------------------
+
 w_metadata msflxgrd dlls \
     title="MS FlexGrid Control (msflxgrd.ocx)" \
     publisher="Microsoft" \
