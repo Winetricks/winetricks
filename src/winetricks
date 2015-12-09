@@ -8994,6 +8994,40 @@ load_fakejapanese()
 
 #----------------------------------------------------------------
 
+w_metadata fakejapanese_ipamona fonts \
+    title="Creates aliases for Japanese fonts using IPAMona fonts" \
+    publisher="Jun Kobayashi" \
+    year="2008"
+
+load_fakejapanese_ipamona()
+{
+    w_call ipamona
+
+    # Aliases to set:
+    # MS UI Gothic --> IPAMonaUIGothic
+    # MS Gothic (ＭＳ ゴシック) --> IPAMonaGothic
+    # MS PGothic (ＭＳ Ｐゴシック) --> IPAMonaPGothic
+    # MS Mincho (ＭＳ 明朝) --> IPAMonaMincho
+    # MS PMincho (ＭＳ Ｐ明朝) --> IPAMonaPMincho
+
+    jpname_msgothic="$(echo "ＭＳ ゴシック" | iconv -f utf8 -t cp932)"
+    jpname_mspgothic="$(echo "ＭＳ Ｐゴシック" | iconv -f utf8 -t cp932)"
+    jpname_msmincho="$(echo "ＭＳ 明朝" | iconv -f utf8 -t cp932)"
+    jpname_mspmincho="$(echo "ＭＳ Ｐ明朝" | iconv -f utf8 -t cp932)"
+
+    w_register_font_replacement "MS UI Gothic" "IPAMonaUIGothic"
+    w_register_font_replacement "MS Gothic" "IPAMonaGothic"
+    w_register_font_replacement "MS PGothic" "IPAMonaPGothic"
+    w_register_font_replacement "MS Mincho" "IPAMonaMincho"
+    w_register_font_replacement "MS PMincho" "IPAMonaPMincho"
+    w_register_font_replacement "$jpname_msgothic" "IPAMonaGothic"
+    w_register_font_replacement "$jpname_mspgothic" "IPAMonaPGothic"
+    w_register_font_replacement "$jpname_msmincho" "IPAMonaMincho"
+    w_register_font_replacement "$jpname_mspmincho" "IPAMonaPMincho"
+}
+
+#----------------------------------------------------------------
+
 w_metadata fakekorean fonts \
     title="Creates aliases for Korean fonts using Baekmuk fonts" \
     publisher="Wooderart Inc. / kldp.net" \
