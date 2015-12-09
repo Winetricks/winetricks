@@ -9060,6 +9060,33 @@ load_fontfix()
 
 #----------------------------------------------------------------
 
+w_metadata ipamona fonts \
+    title="IPAMona Japanese fonts" \
+    publisher="Jun Kobayashi" \
+    year="2008" \
+    media="download" \
+    file1="opfc-ModuleHP-1.1.1_withIPAMonaFonts-1.0.8.tar.gz" \
+    installed_file1="$W_FONTSDIR_WIN/ipag-mona.ttf" \
+    homepage="http://www.geocities.jp/ipa_mona/"
+
+load_ipamona()
+{
+    w_download http://www.geocities.jp/ipa_mona/$file1 57dd13ab58c0005d3ee2932539e4987ab0242bc7
+
+    cd "$W_TMP"
+
+    gunzip -dc "$W_CACHE/$W_PACKAGE/$file1" | tar -xf -
+    w_try mv *IPAMonaFonts*/fonts/*.ttf "$W_FONTSDIR_UNIX"
+
+    w_register_font ipagui-mona.ttf "IPAMonaUIGothic"
+    w_register_font ipag-mona.ttf "IPAMonaGothic"
+    w_register_font ipagp-mona.ttf "IPAMonaPGothic"
+    w_register_font ipam-mona.ttf "IPAMonaMincho"
+    w_register_font ipamp-mona.ttf "IPAMonaPMincho"
+}
+
+#----------------------------------------------------------------
+
 w_metadata liberation fonts \
     title="Red Hat Liberation fonts (Sans, Serif, Mono)" \
     publisher="Red Hat" \
