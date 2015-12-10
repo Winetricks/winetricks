@@ -8994,6 +8994,40 @@ load_fakejapanese()
 
 #----------------------------------------------------------------
 
+w_metadata fakejapanese_ipamona fonts \
+    title="Creates aliases for Japanese fonts using IPAMona fonts" \
+    publisher="Jun Kobayashi" \
+    year="2008"
+
+load_fakejapanese_ipamona()
+{
+    w_call ipamona
+
+    # Aliases to set:
+    # MS UI Gothic --> IPAMonaUIGothic
+    # MS Gothic (ＭＳ ゴシック) --> IPAMonaGothic
+    # MS PGothic (ＭＳ Ｐゴシック) --> IPAMonaPGothic
+    # MS Mincho (ＭＳ 明朝) --> IPAMonaMincho
+    # MS PMincho (ＭＳ Ｐ明朝) --> IPAMonaPMincho
+
+    jpname_msgothic="$(echo "ＭＳ ゴシック" | iconv -f utf8 -t cp932)"
+    jpname_mspgothic="$(echo "ＭＳ Ｐゴシック" | iconv -f utf8 -t cp932)"
+    jpname_msmincho="$(echo "ＭＳ 明朝" | iconv -f utf8 -t cp932)"
+    jpname_mspmincho="$(echo "ＭＳ Ｐ明朝" | iconv -f utf8 -t cp932)"
+
+    w_register_font_replacement "MS UI Gothic" "IPAMonaUIGothic"
+    w_register_font_replacement "MS Gothic" "IPAMonaGothic"
+    w_register_font_replacement "MS PGothic" "IPAMonaPGothic"
+    w_register_font_replacement "MS Mincho" "IPAMonaMincho"
+    w_register_font_replacement "MS PMincho" "IPAMonaPMincho"
+    w_register_font_replacement "$jpname_msgothic" "IPAMonaGothic"
+    w_register_font_replacement "$jpname_mspgothic" "IPAMonaPGothic"
+    w_register_font_replacement "$jpname_msmincho" "IPAMonaMincho"
+    w_register_font_replacement "$jpname_mspmincho" "IPAMonaPMincho"
+}
+
+#----------------------------------------------------------------
+
 w_metadata fakekorean fonts \
     title="Creates aliases for Korean fonts using Baekmuk fonts" \
     publisher="Wooderart Inc. / kldp.net" \
@@ -9056,6 +9090,33 @@ load_fontfix()
     then
         w_die "Please uninstall the Samyak/Oriya font, e.g. 'sudo dpkg -r ttf-oriya-fonts', then log out and log in again.  That font causes strange crashes in .net programs."
     fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata ipamona fonts \
+    title="IPAMona Japanese fonts" \
+    publisher="Jun Kobayashi" \
+    year="2008" \
+    media="download" \
+    file1="opfc-ModuleHP-1.1.1_withIPAMonaFonts-1.0.8.tar.gz" \
+    installed_file1="$W_FONTSDIR_WIN/ipag-mona.ttf" \
+    homepage="http://www.geocities.jp/ipa_mona/"
+
+load_ipamona()
+{
+    w_download http://www.geocities.jp/ipa_mona/$file1 57dd13ab58c0005d3ee2932539e4987ab0242bc7
+
+    cd "$W_TMP"
+
+    gunzip -dc "$W_CACHE/$W_PACKAGE/$file1" | tar -xf -
+    w_try mv *IPAMonaFonts*/fonts/*.ttf "$W_FONTSDIR_UNIX"
+
+    w_register_font ipagui-mona.ttf "IPAMonaUIGothic"
+    w_register_font ipag-mona.ttf "IPAMonaGothic"
+    w_register_font ipagp-mona.ttf "IPAMonaPGothic"
+    w_register_font ipam-mona.ttf "IPAMonaMincho"
+    w_register_font ipamp-mona.ttf "IPAMonaPMincho"
 }
 
 #----------------------------------------------------------------
