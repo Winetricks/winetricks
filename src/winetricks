@@ -8584,6 +8584,9 @@ load_xmllite()
     *) w_die "sorry, xmllite install not yet implemented for language $LANG" ;;
     esac
 
+    # Doesn't install in newer versions:
+    w_set_winver winxp
+
     if w_workaround_wine_bug 16013
     then
         # Find instructions to create this file in dlls/wintrust/tests/crypt.c
@@ -8605,6 +8608,8 @@ load_xmllite()
     de*) w_try "$WINE" WindowsXP-KB915865-v11-x86-DEU.exe $W_UNATTENDED_SLASH_Q ;;
     ja*) w_try "$WINE" WindowsXP-KB915865-v11-x86-JPN.exe $W_UNATTENDED_SLASH_Q ;;
     esac
+
+    w_unset_winver
 }
 
 #----------------------------------------------------------------
