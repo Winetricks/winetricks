@@ -9972,9 +9972,9 @@ w_metadata ie7 dlls \
 
 load_ie7()
 {
-    if w_workaround_wine_bug 21947 "Working around heap corruption (see also bug 26016)" 1.7.19,
+    if w_workaround_wine_bug XX "ie7 install fails in wine-1.8.1+" 1.8.1,
     then
-        echo "This fails in about 1 of 30 runs (see bug 26016), just retry if that happens"
+        w_warn "ie7 install fails in wine-1.8.1+, see https://github.com/Winetricks/winetricks/issues/582"
     fi
 
     # Unregister Wine IE
@@ -10004,6 +10004,15 @@ load_ie7()
     mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
     w_try cp -f "$W_CACHE"/ie7/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
+    # KLUDGE: if / is writable (as on MacOSX?), having a z: mapping to it
+    # causes ie7 to put temporary directories on Z:\
+    # so hide it temporarily.  This is not very robust!
+    if test -w /
+    then
+        rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
+        mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
+    fi
+
     # Install
     w_download http://download.microsoft.com/download/3/8/8/38889DC1-848C-4BF2-8335-86C573AD86D9/IE7-WindowsXP-x86-enu.exe d39b89c360fbaa9706b5181ae4718100687a5326
     if test "$W_UNATTENDED_SLASH_Q" = ""
@@ -10014,21 +10023,7 @@ load_ie7()
     fi
     cd "$W_CACHE"/ie7
 
-    # KLUDGE: if / is writable (as on MacOSX?), having a z: mapping to it
-    # causes ie7 to put temporary directories on Z:\
-    # so hide it temporarily.  This is not very robust!
-    if test -w /
-    then
-        rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
-        mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
-    fi
-
-    if w_workaround_wine_bug 21947 "Working around heap corruption (see also bug 26016)" 1.7.19,
-    then
-        WINEDEBUG=warn+heap "$WINE" IE7-WindowsXP-x86-enu.exe $quiet
-    else
-        "$WINE" IE7-WindowsXP-x86-enu.exe $quiet
-    fi
+    "$WINE" IE7-WindowsXP-x86-enu.exe $quiet
 
     # IE7 exits with 194 to signal a reboot
     status=$?
@@ -10038,7 +10033,6 @@ load_ie7()
     194) echo "exit status $status - normal, user selected 'restart later'" ;;
     *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
     esac
-
 
     if test -w /
     then
