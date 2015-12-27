@@ -4387,7 +4387,8 @@ load_adobeair()
     # 2014-09-30: 15.0  sha1sum 46341f1358bc6e0b9ddeae3591662a2ac68dc360
     # 2014-11-24: i15.0.0.356 sha1sum c0e6b8b1ed5ffa282945d21b21f8a5e03febc904
     # 2015-11-06: 19.x sha1sum 3bc2a568204a3a9b59ca347ab49585f0c5fab279
-    w_download http://airdownload.adobe.com/air/win/download/19.0/AdobeAIRInstaller.exe 3bc2a568204a3a9b59ca347ab49585f0c5fab279
+    # 2015-12-27: 20.0 sha1sum 9c10b7be43771869c381c73197c9a0fcd1b727cf
+    w_download http://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 9c10b7be43771869c381c73197c9a0fcd1b727cf
     cd "$W_CACHE"/adobeair
     w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
 }
