@@ -301,7 +301,7 @@ test_command()
     killall notepad.exe          # Arcania-Gothic4 and others
 
     echo "Checking for dangling processes!"
-    ps augxw | grep exe
+    ps augxw | grep \\.exe
     $WINESERVER -w
     echo "Wineserver done."
 
