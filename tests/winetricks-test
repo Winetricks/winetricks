@@ -302,7 +302,7 @@ test_command()
 
     echo "Checking for dangling processes!"
     ps augxw | grep \\.exe
-    $WINESERVER -w
+    "$WINESERVER" -w
     echo "Wineserver done."
 
     pass $@
