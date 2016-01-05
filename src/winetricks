@@ -9893,6 +9893,7 @@ load_ie6()
     # Unregister Wine IE
     if [ ! -f "$W_SYSTEM32_DLLS"/plugin.ocx ]
     then
+        w_override_dlls builtin iexplore.exe
         w_try "$WINE" iexplore -unregserver
     fi
 
@@ -9981,16 +9982,23 @@ load_ie7()
     # Unregister Wine IE
     if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"
     then
+        w_override_dlls builtin iexplore.exe
         w_try "$WINE" iexplore -unregserver
     fi
 
     # Change the override to the native so we are sure we use and register them
-    w_override_dlls native,builtin iexplore.exe itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon wininet xmllite
+    w_override_dlls native,builtin itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon wininet xmllite
+    # IE7 installer will check version number of iexplore.exe which case IE7 installer fails on newer WINE
+    w_override_dlls native iexplore.exe
 
     # Bundled updspapi cannot work on wine
     w_override_dlls builtin updspapi
 
     # Remove the fake dlls from the existing WINEPREFIX
+    if [ -f "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" ]
+    then
+        mv "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe.bak"
+    fi
     for dll in itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon
     do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
@@ -10086,18 +10094,25 @@ load_ie8()
     if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"
     #if [ ! -f "$W_SYSTEM32_DLLS"/plugin.ocx ]
     then
+        w_override_dlls builtin iexplore.exe
         w_try "$WINE" iexplore -unregserver
     fi
 
     w_call msls31
 
     # Change the override to the native so we are sure we use and register them
-    w_override_dlls native,builtin iexplore.exe itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
+    w_override_dlls native,builtin itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
+    # IE8 installer will check version number of iexplore.exe which case IE8 installer fails on newer WINE
+    w_override_dlls native iexplore.exe
 
     # Bundled updspapi cannot work on wine
     w_override_dlls builtin updspapi
 
     # Remove the fake dlls from the existing WINEPREFIX
+    if [ -f "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" ]
+    then
+        mv "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe.bak"
+    fi
     for dll in browseui.dll inseng.dll itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon
     do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
