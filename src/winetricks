@@ -9973,11 +9973,6 @@ w_metadata ie7 dlls \
 
 load_ie7()
 {
-    if w_workaround_wine_bug XX "ie7 install fails in wine-1.8.1+" 1.8.1,
-    then
-        w_warn "ie7 install fails in wine-1.8.1+, see https://github.com/Winetricks/winetricks/issues/582"
-    fi
-
     # Unregister Wine IE
     if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"
     then
@@ -9985,12 +9980,19 @@ load_ie7()
     fi
 
     # Change the override to the native so we are sure we use and register them
-    w_override_dlls native,builtin iexplore.exe itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon wininet xmllite
+    w_override_dlls native,builtin itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon wininet xmllite
+
+    # IE7 installer will check version the number of iexplore.exe which causes IE7 installer to fail on wine-1.9.0+
+    w_override_dlls native iexplore.exe
 
     # Bundled updspapi cannot work on wine
     w_override_dlls builtin updspapi
 
     # Remove the fake dlls from the existing WINEPREFIX
+    if [ -f "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" ]
+    then
+        mv "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe.bak"
+    fi
     for dll in itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon
     do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
