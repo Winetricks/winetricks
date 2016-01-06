@@ -573,6 +573,7 @@ w_dotnet_verify()
         dotnet35sp1) version="3.5 SP1" ;;
         dotnet40) version="4 Client" ;;
         dotnet45) version="4.5" ;;
+        dotnet452) version="4.5.2" ;;
         *) echo error ; exit 1 ;;
     esac
             w_call dotnet_verifier
@@ -5692,7 +5693,7 @@ w_metadata dotnet30 dlls \
     publisher="Microsoft" \
     year="2006" \
     media="download" \
-    conflicts="dotnet11 dotnet20sp1 dotnet20sp2 dotnet30sp1 dotnet35 dotnet35sp1 dotnet45" \
+    conflicts="dotnet11 dotnet20sp1 dotnet20sp2 dotnet30sp1 dotnet35 dotnet35sp1 dotnet45 dotnet452" \
     file1="dotnetfx3.exe" \
     installed_file1="c:/windows/Microsoft.NET/Framework/v3.0/Microsoft .NET Framework 3.0/logo.bmp"
 
@@ -6048,6 +6049,63 @@ verify_dotnet45()
 {
     w_dotnet_verify dotnet45
 }
+
+#----------------------------------------------------------------
+
+w_metadata dotnet452 dlls \
+    title="MS .NET 4.5.2" \
+    publisher="Microsoft" \
+    year="2012" \
+    media="download" \
+    conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet35sp1 dotnet40 dotnet45 vjrun20" \
+    file1="dotnetfx45_full_x86_x64.exe" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/v4.0.30319/Microsoft.Windows.ApplicationServer.Applications.45.man"
+
+load_dotnet452()
+{
+    if [ $W_ARCH = win64 ]
+    then
+        w_warn "This package may not work on a 64-bit installation"
+    fi
+
+    # http://www.microsoft.com/download/en/details.aspx?id=17718
+    w_download http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe 89f86f9522dc7a8a965facce839abb790a285a63
+
+    w_call remove_mono
+
+    # Remove Mono registry entry:
+    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
+
+    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
+
+    # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
+    w_call dotnet35
+    w_call dotnet40
+    w_set_winver win7
+
+    cd "$W_CACHE/$W_PACKAGE"
+
+    WINEDLLOVERRIDES=fusion=b "$WINE" NDP452-KB2901907-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+    status=$?
+
+    case $status in
+        0) ;;
+        105) echo "exit status $status - normal, user selected 'restart now'" ;;
+        194) echo "exit status $status - normal, user selected 'restart later'" ;;
+        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
+
+    w_override_dlls native mscoree
+
+    w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
+    w_set_winver win2k3
+}
+
+verify_dotnet452()
+{
+    w_dotnet_verify dotnet452
+}
+
 
 #----------------------------------------------------------------
 
