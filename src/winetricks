@@ -2648,7 +2648,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='运行 winecfg'
          _W_msg_regedit='运行注册表'
          _W_msg_taskmgr='运行任务管理器'
-         _W_msg_uninstaller='Run uninstaller'
+         _W_msg_uninstaller='运行卸载程序'
          _W_msg_shell='运行命令提示窗口 (作为调试)'
          _W_msg_folder='浏览容器中的文件'
          _W_msg_annihilate="删除当前容器所有相关文件，包括启动器，完全卸载"
@@ -2661,7 +2661,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='執行 winecfg'
          _W_msg_regedit='執行註冊表'
          _W_msg_taskmgr='執行工作管理者'
-         _W_msg_uninstaller='Run uninstaller'
+         _W_msg_uninstaller='執行反安裝程式'
          _W_msg_shell='執行指令輔助說明視窗 (作為除錯)'
          _W_msg_folder='瀏覽容器中的檔案'
          _W_msg_annihilate="移除目前容器所有相依檔案，包括啟動器，完全卸載"
@@ -10523,7 +10523,9 @@ load_picasa39()
 {
     # 2015/01/17: 39b2df46dbc423e250371e826026a2827f55b956
     # 2015/09/21: 55907fc84b1d9d6a450463869b16927f07737298
-    w_download http://dl.google.com/picasa/picasa39-setup.exe 55907fc84b1d9d6a450463869b16927f07737298
+    # 2016/01/02: b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
+    
+    w_download http://dl.google.com/picasa/picasa39-setup.exe b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
     if w_workaround_wine_bug 29434 "Picasa 3.9 fails to authenticate with Google"
     then
         w_warn "Picasa 3.9 authentication to the Google account is currently broken under wine. See http://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
@@ -16505,29 +16507,24 @@ load_popfs()
 #----------------------------------------------------------------
 
 w_metadata qq apps \
- title="QQ 7.1 (Chinese chat app)" \
+ title="QQ 8.0(Chinese chat app)" \
  publisher="Tencent" \
  year="2015" \
  media="download" \
- file1="QQ7.1.exe" \
+ file1="QQ8.0.exe" \
  file2="QQ.tar.gz"\
- installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQ.exe" \
+ installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQScLauncher.exe" \
  homepage="http://www.qq.com" \
  unattended="no"
 
 load_qq()
 {
-    w_download http://dldir1.qq.com/qqfile/qq/QQ7.1/14522/QQ7.1.exe 700b469560b1bd8521ede61a0e169ff8c38b1d29
+    w_download http://dldir1.qq.com/qqfile/qq/QQ8.0/16968/QQ8.0.exe ef92f3863113971c95a79aa75e601893d803826c
     w_download http://hillwoodhome.net/wine/QQ.tar.gz 08de45d3e5bb34b22e7c33e1163daec69742db58
 
-    if w_workaround_wine_bug 29636 "Installing native riched20 to work around crash bug"
+    if w_workaround_wine_bug 5162 "Installing native riched20 to work around crash bug"
     then
         w_call riched20
-    fi
-
-    if w_workaround_wine_bug 34566 "Installing native ctf to work around crash"
-    then
-        w_call msctf
     fi
 
     # Make sure chinese fonts are available
@@ -16535,6 +16532,7 @@ load_qq()
 
     # uses mfc42u.dll
     w_call mfc42
+
 
     if w_workaround_wine_bug 38171 "Installing desktop file to work around bug"
     then
@@ -16546,12 +16544,23 @@ load_qq()
         w_try mv QQ/腾讯QQ.desktop ~/.local/share/applications/wine/Programs/腾讯软件/QQ
         w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
         w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
-        echo Exec=env WINEPREFIX=$WINEPREFIX $WINE C:\/Program\\ Files\/Tencent\/QQ\/Bin\/QQ.exe >> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop
+        echo Exec=env WINEPREFIX=$WINEPREFIX $WINE \"$W_PROGRAMS_X86_WIN\\Tencent\\QQ\\bin\\QQScLauncher.exe\">> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop
     fi
+
+    if w_workaround_wine_bug 39657 "Disable ntoskrnl.exe to work around can't be started bug"
+    then
+        w_override_dlls disabled ntoskrnl.exe
+    fi
+    
+    if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"
+    then
+        w_override_dlls disabled txplatform.exe
+    fi    
 
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1"
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQ\\Bin" QQ.exe
+
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQ\\Bin" QQScLauncher.exe
 }
 
 #----------------------------------------------------------------
@@ -16584,6 +16593,11 @@ load_qqintl()
     then
         w_call wininet
     fi
+    
+    if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"
+    then
+        w_override_dlls disabled txplatform.exe
+    fi    
 
     # Make sure chinese fonts are available
     w_call fakechinese
