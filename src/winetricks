@@ -2618,14 +2618,14 @@ winetricks_mainmenu()
          _W_msg_body='Was möchten Sie tun?'
          _W_msg_dlls="Windows-DLL installieren"
          _W_msg_fonts='Schriftart installieren'
-         _W_msg_settings='Change Wine settings'
-         _W_msg_winecfg='Run winecfg'
-         _W_msg_regedit='Run regedit'
-         _W_msg_taskmgr='Run taskmgr'
-         _W_msg_uninstaller='Run uninstaller'
-         _W_msg_shell='Run a commandline shell (for debugging)'
-         _W_msg_folder='Browse files'
-         _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
+         _W_msg_settings='Wine Einstellungen ändern'
+         _W_msg_winecfg='winecfg starten'
+         _W_msg_regedit='regedit starten'
+         _W_msg_taskmgr='taskmgr starten'
+         _W_msg_uninstaller='uninstaller starten'
+         _W_msg_shell='Eine Kommandozeile zum debuggen starten'
+         _W_msg_folder='Ordner durchsuchen'
+         _W_msg_annihilate="ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen"
          ;;
     pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
          _W_msg_body='What would you like to do to this wineprefix?'
@@ -2753,8 +2753,8 @@ winetricks_settings_menu()
     da*) _W_msg_title='Vælg en pakke'
          _W_msg_body='Which settings would you like to change?'
          ;;
-    de*) _W_msg_title='Pakete auswählen'
-         _W_msg_body='Which settings would you like to change?'
+    de*) _W_msg_title="Winetricks - Aktueller Prefix ist \"$WINEPREFIX\""
+         _W_msg_body='Welche Einstellungen möchten Sie ändern?'
          ;;
     pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
          _W_msg_body='Which settings would you like to change?'
@@ -2794,7 +2794,7 @@ winetricks_settings_menu()
                 --list \
                 --checklist \
                 --column '' \
-                --column Paket \
+                --column Einstellung \
                 --column Name \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
@@ -2906,8 +2906,8 @@ winetricks_showmenu()
          _W_msg_body='Vilken pakke vil du installere?'
          _W_cached="cached"
          ;;
-    de*) _W_msg_title='Pakete auswählen'
-         _W_msg_body='Welche Pakete möchten Sie installieren?'
+    de*) _W_msg_title="Winetricks - Aktueller Prefix ist \"$WINEPREFIX\""
+         _W_msg_body='Welche Paket(e) möchten Sie installieren?'
          _W_cached="gecached"
          ;;
     pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
@@ -4176,25 +4176,37 @@ _EOF_
         ;;
     de*)
         cat <<_EOF_
-Usage: $0 [options] [verb|path-to-verb] ...
+Benutzung: $0 [options] [Kommando|Verb|Pfad-zu-Verb] ...
 Angegebene Verben ausführen.
 Jedes Verb installiert eine Anwendung oder ändert eine Einstellung.
 
 Optionen:
--k|--keep_isos: isos local speichern (erlaubt spätere Installation ohne Disk)
--q|--unattended: keine Fragen stellen, alles automatisch installieren
--r|--ddrescue: alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
--v|--verbose: alle ausgeführten Kommandos anzeigen
--V|--version: Programmversion anzeigen
--h|--help: diese Hilfemeldung anzeigen
-Verben:
-apps: Typ 'Anwendungen' auswählen
-games: Typ 'Spiele' auswählen
-list: Verben von ausgewählten Typ auflisten
-list-cached: Verben für bereits gecachte Installers auflisten
-list-download: Verben für herunterladbare Anwendungen auflisten
-list-manual-download: list applications which can be downloaded with some help from the user
-list-installed: Verben für schon installlierte Programme auflisten
+    --force           Nicht prüfen ob Pakete bereits installiert wurden
+    --gui             GUI Diagnosen anzeigen, auch wenn von der Kommandozeile gestartet
+    --isolate         Jedes Programm oder Spiel in eigener Bottle (WINEPREFIX) installieren
+-k, --keep_isos       ISOs local speichern (erlaubt spätere Installation ohne Disk)
+    --no-clean        Temp Verzeichnisse nicht löschen (nützlich beim debuggen)
+-q, --unattended      Keine Fragen stellen, alles automatisch installieren
+-r, --ddrescue        Alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
+    --showbroken      Auch Verben anzeigen die momentan in Wine nicht funktionieren
+    --verify          Wenn Möglisch automatische GUI Tests für Verben starten
+-v, --verbose         Alle ausgeführten Kommandos anzeigen
+-h, --help            Diese Hilfemeldung anzeigen
+-V, --version         Programmversion anzeigen und Beenden
+
+Kommandos:
+list                  Kategorien auflisten
+list-all              Alle Kategorien und deren Verben auflisten
+apps list             Verben der Kategorie 'Anwendungen' auflisten
+benchmarks list       Verben der Kategorie 'Benchmarks' auflisten
+dlls list             Verben der Kategorie 'DLLs' auflisten
+games list            Verben der Kategorie 'Spiele' auflisten
+settings list         Verben der Kategorie 'Einstellungen' auflisten
+list-cached           Verben für bereits gecachte Installers auflisten
+list-download         Verben für automatisch herunterladbare Anwendungen auflisten
+list-manual-download  Verben für vom Benutzer herunterladbare Anwendungen auflisten
+list-installed        Bereits installierte Verben auflisten
+prefix=foobar         WINEPREFIX=$W_PREFIXES_ROOT/foobar auswählen
 _EOF_
         ;;
     *)
