@@ -62,6 +62,7 @@ WINETRICKS_VERSION=20160109
 #   Copyright (C) 2011 Matthew Bozarth
 #   Copyright (C) 2013-2014 Andrey Gusev <andrey.goosev!gmail.com>
 #   Copyright (C) 2013-2015 Hillwood Yang <hillwood!opensuse.org>
+#   Copyright (C) 2013,2016 André Hentschel <nerv!dawncrow.de>
 #
 # License
 #   This program is free software; you can redistribute it and/or
@@ -400,7 +401,7 @@ w_read_key()
 
     mkdir -p "$W_CACHE/$W_PACKAGE"
 
-    # backwards compatibile location
+    # backwards compatible location
     # Auth doesn't belong in cache, since restoring it requires user input
     _W_keyfile="$W_CACHE/$W_PACKAGE/key.txt"
     if ! test -f "$_W_keyfile"
@@ -414,7 +415,7 @@ w_read_key()
         da*) _W_keymsg="Angiv venligst registrerings-nøglen for pakken '$_PACKAGE'"
             _W_nokeymsg="Ingen nøgle angivet"
             ;;
-        de*) _W_keymsg="Bitte einen Key für Pakete '$W_PACKAGE' eingeben"
+        de*) _W_keymsg="Bitte einen Key für Paket '$W_PACKAGE' eingeben"
             _W_nokeymsg="Keinen Key eingegeben?"
             ;;
         pl*) _W_keymsg="Proszę podać klucz dla programu '$W_PACKAGE'"
@@ -882,7 +883,7 @@ w_download_manual_to()
 
     case $LANG in
     da*) _W_dlmsg="Hent venligst filen $_W_file fra $_W_url og placér den i $W_CACHE/$_W_packagename, kør derefter dette skript.";;
-    de*) _W_dlmsg="Bitte laden Sie $_W_file von $_W_url runter, stellen Sie's in $W_CACHE/$_W_packagename, dann wiederholen Sie diesen Kommando.";;
+    de*) _W_dlmsg="Bitte laden Sie $_W_file von $_W_url runter, stellen Sie's in $W_CACHE/$_W_packagename, dann wiederholen Sie dieses Kommando.";;
     pl*) _W_dlmsg="Proszę pobrać plik $_W_file z $_W_url, następnie umieścić go w $W_CACHE/$_W_packagename, a na końcu uruchomić ponownie ten skrypt.";;
     uk*) _W_dlmsg="Будь ласка, звантажте $_W_file з $_W_url, розташуйте в $W_CACHE/$_W_packagename, потім запустіть скрипт знову.";;
     zh_CN*) _W_dlmsg="请从 $_W_url 下载 $_W_file，并置放于 $W_CACHE/$_W_packagename, 然后重新运行 winetricks.";;
@@ -1199,7 +1200,7 @@ fi
 # other_files
 #     Extra installer files, in one string, space-separated.
 # reader_control
-#     If set, the control id of the configuration pannel checkbox controling
+#     If set, the control id of the configuration panel checkbox controling
 #     Adobe Reader installation.
 #     Some games don't have it, some games do with different ids.
 # run_command
@@ -2482,6 +2483,18 @@ winetricks_prefixmenu()
          _W_msg_showbroken1="有問題的程式 (例如那些有數字版權問題)"
          _W_msg_help="檢視輔助說明"
          ;;
+    de*) _W_msg_title="Winetricks - wineprefix auswählen"
+         _W_msg_body='Was möchten Sie tun?'
+         _W_msg_apps='Eine Programm installieren'
+         _W_msg_games='Ein Spiel installieren'
+         _W_msg_benchmarks='Ein Benchmark installieren'
+         _W_msg_default="Standard wineprefix auswählen"
+         _W_msg_unattended0="Automatische Installation deaktivieren"
+         _W_msg_unattended1="Automatische Installation aktivieren"
+         _W_msg_showbroken0="Defekte Programme nicht anzeigen (z.B. solche mit DRM Problemen)"
+         _W_msg_showbroken1="Defekte Programme anzeigen (z.B. solche mit DRM Problemen)"
+         _W_msg_help="Hilfe anzeigen"
+         ;;
     *)   _W_msg_title="Winetricks - choose a wineprefix"
          _W_msg_body='What do you want to do?'
          _W_msg_apps='Install an app'
@@ -2540,6 +2553,7 @@ winetricks_prefixmenu()
             case $LANG in 
             zh_CN*) printf %s " FALSE prefix='$p' '选择管理 $_W_msg_name' " ;;
             zh_TW*|zh_HK*) printf %s " FALSE prefix='$p' '選擇管理 $_W_msg_name' " ;;
+            de*) printf %s " FALSE prefix='$p' '$_W_msg_name auswählen' " ;;
             *) printf %s " FALSE prefix='$p' 'Select $_W_msg_name' " ;;
             esac
             done >> "$WINETRICKS_WORKDIR"/zenity.sh
@@ -2605,14 +2619,14 @@ winetricks_mainmenu()
          _W_msg_body='Was möchten Sie tun?'
          _W_msg_dlls="Windows-DLL installieren"
          _W_msg_fonts='Schriftart installieren'
-         _W_msg_settings='Change Wine settings'
-         _W_msg_winecfg='Run winecfg'
-         _W_msg_regedit='Run regedit'
-         _W_msg_taskmgr='Run taskmgr'
-         _W_msg_uninstaller='Run uninstaller'
-         _W_msg_shell='Run a commandline shell (for debugging)'
-         _W_msg_folder='Browse files'
-         _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
+         _W_msg_settings='Wine Einstellungen ändern'
+         _W_msg_winecfg='winecfg starten'
+         _W_msg_regedit='regedit starten'
+         _W_msg_taskmgr='taskmgr starten'
+         _W_msg_uninstaller='uninstaller starten'
+         _W_msg_shell='Eine Kommandozeile zum debuggen starten'
+         _W_msg_folder='Ordner durchsuchen'
+         _W_msg_annihilate="ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen"
          ;;
     pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
          _W_msg_body='What would you like to do to this wineprefix?'
@@ -2740,8 +2754,8 @@ winetricks_settings_menu()
     da*) _W_msg_title='Vælg en pakke'
          _W_msg_body='Which settings would you like to change?'
          ;;
-    de*) _W_msg_title='Pakete auswählen'
-         _W_msg_body='Which settings would you like to change?'
+    de*) _W_msg_title="Winetricks - Aktueller Prefix ist \"$WINEPREFIX\""
+         _W_msg_body='Welche Einstellungen möchten Sie ändern?'
          ;;
     pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
          _W_msg_body='Which settings would you like to change?'
@@ -2781,7 +2795,7 @@ winetricks_settings_menu()
                 --list \
                 --checklist \
                 --column '' \
-                --column Paket \
+                --column Einstellung \
                 --column Name \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
@@ -2893,8 +2907,8 @@ winetricks_showmenu()
          _W_msg_body='Vilken pakke vil du installere?'
          _W_cached="cached"
          ;;
-    de*) _W_msg_title='Pakete auswählen'
-         _W_msg_body='Welche Pakete möchten Sie installieren?'
+    de*) _W_msg_title="Winetricks - Aktueller Prefix ist \"$WINEPREFIX\""
+         _W_msg_body='Welche Paket(e) möchten Sie installieren?'
          _W_cached="gecached"
          ;;
     pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
@@ -3181,7 +3195,7 @@ winetricks_is_installed()
         esac
         if test -d "$_W_prefix/dosdevices"
         then
-          # 'win7 vcrun2005' creates diffrent file than 'winxp vcrun2005'
+          # 'win7 vcrun2005' creates different file than 'winxp vcrun2005'
           # so let it specify multiple, separated by |
           _W_IFS="$IFS"
           IFS='|'
@@ -3740,7 +3754,7 @@ winetricks_mount_real_volume()
 
     case $LANG in
     da*)_W_mountmsg="Indsæt venligst disken '$_W_expected_volname' (krævet af pakken '$_PACKAGE')" ;;
-    de*)_W_mountmsg="Disc '$_W_expected_volname' bitte einlegen (für Pakete '$W_PACKAGE')" ;;
+    de*)_W_mountmsg="Bitte Disk '$_W_expected_volname' einlegen (für Paket '$W_PACKAGE')" ;;
     pl*)  _W_mountmsg="Proszę włożyć dysk '$_W_expected_volname' (potrzebny paczce '$W_PACKAGE')" ;;
     uk*)  _W_mountmsg="Будь ласка, вставте том '$_W_expected_volname' (потрібний для пакунка '$W_PACKAGE')" ;;
     zh_CN*)  _W_mountmsg="请插入卷 '$_W_expected_volname' (为包 '$W_PACKAGE 所需')" ;;
@@ -3824,7 +3838,7 @@ winetricks_set_unattended()
 }
 
 # Usage: winetricks_set_wineprefix [bottlename]
-# Bottlename must not contain spaces, slashes, or other special charaters
+# Bottlename must not contain spaces, slashes, or other special characters
 # If bottlename is omitted, the default bottle (~/.wine) is used.
 winetricks_set_wineprefix()
 {
@@ -4163,24 +4177,37 @@ _EOF_
         ;;
     de*)
         cat <<_EOF_
-Usage: $0 [options] [verb|path-to-verb] ...
+Benutzung: $0 [options] [Kommando|Verb|Pfad-zu-Verb] ...
 Angegebene Verben ausführen.
-Jeder Verb installiert z.B. eine Anwendung oder ändert eine Einstellung.
+Jedes Verb installiert eine Anwendung oder ändert eine Einstellung.
+
 Optionen:
--k|--keep_isos: isos local speichern (erlaubt spätere Installierung ohne Disk)
--q|--unattended: keine Fragen stellen, alles automatisch installieren
--r|--ddrescue: alternative Zugriffsmodus (hilft bei gekratzten Disks)
--v|--verbose: alle ausgeführten Kommandos anzeigen
--V|--version: Programmversion anzeigen
--h|--help: diese Hilfemeldung anzeigen
-Verben:
-apps: Typ 'Andwendungen' auswählen
-games: Typ 'Spiele' auswählen
-list: Verben von ausgewählte Typ auflisten
-list-cached: Verben für schon gecachte Installers auflisten
-list-download: Verben für herunterladbare Anwendungen auflisten
-list-manual-download: list applications which can be downloaded with some help from the user
-list-installed: Verben für schon installlierte Programme auflisten
+    --force           Nicht prüfen ob Pakete bereits installiert wurden
+    --gui             GUI Diagnosen anzeigen, auch wenn von der Kommandozeile gestartet
+    --isolate         Jedes Programm oder Spiel in eigener Bottle (WINEPREFIX) installieren
+-k, --keep_isos       ISOs local speichern (erlaubt spätere Installation ohne Disk)
+    --no-clean        Temp Verzeichnisse nicht löschen (nützlich beim debuggen)
+-q, --unattended      Keine Fragen stellen, alles automatisch installieren
+-r, --ddrescue        Alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
+    --showbroken      Auch Verben anzeigen die momentan in Wine nicht funktionieren
+    --verify          Wenn Möglisch automatische GUI Tests für Verben starten
+-v, --verbose         Alle ausgeführten Kommandos anzeigen
+-h, --help            Diese Hilfemeldung anzeigen
+-V, --version         Programmversion anzeigen und Beenden
+
+Kommandos:
+list                  Kategorien auflisten
+list-all              Alle Kategorien und deren Verben auflisten
+apps list             Verben der Kategorie 'Anwendungen' auflisten
+benchmarks list       Verben der Kategorie 'Benchmarks' auflisten
+dlls list             Verben der Kategorie 'DLLs' auflisten
+games list            Verben der Kategorie 'Spiele' auflisten
+settings list         Verben der Kategorie 'Einstellungen' auflisten
+list-cached           Verben für bereits gecachte Installers auflisten
+list-download         Verben für automatisch herunterladbare Anwendungen auflisten
+list-manual-download  Verben für vom Benutzer herunterladbare Anwendungen auflisten
+list-installed        Bereits installierte Verben auflisten
+prefix=foobar         WINEPREFIX=$W_PREFIXES_ROOT/foobar auswählen
 _EOF_
         ;;
     *)
@@ -4269,7 +4296,7 @@ winetricks_install_app()
 {
     case $LANG in
     da*) fail_msg="Installationen af pakken $1 fejlede" ;;
-    de*) fail_msg="Installieren von Pakete $1 gescheitert" ;;
+    de*) fail_msg="Installieren von Paket $1 gescheitert" ;;
     pl*) fail_msg="Niepowodzenie przy instalacji paczki $1" ;;
     uk*) fail_msg="Помилка встановлення пакунка $1" ;;
     zh_CN*)   fail_msg="$1 安装失败" ;;
@@ -10044,7 +10071,7 @@ load_ie7()
     # Change the override to the native so we are sure we use and register them
     w_override_dlls native,builtin itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon wininet xmllite
 
-    # IE7 installer will check version the number of iexplore.exe which causes IE7 installer to fail on wine-1.9.0+
+    # IE7 installer will check the version number of iexplore.exe which causes IE7 installer to fail on wine-1.9.0+
     w_override_dlls native iexplore.exe
 
     # Bundled updspapi cannot work on wine
@@ -10159,7 +10186,7 @@ load_ie8()
     # Change the override to the native so we are sure we use and register them
     w_override_dlls native,builtin itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
 
-    # IE8 installer will check version the number of iexplore.exe which causes IE8 installer to fail on wine-1.9.0+
+    # IE8 installer will check the version number of iexplore.exe which causes IE8 installer to fail on wine-1.9.0+
     w_override_dlls native iexplore.exe
 
     # Bundled updspapi cannot work on wine
@@ -11234,7 +11261,7 @@ load_vc2005trial()
     then
         w_call msxml6
     fi
-    # Without mfc42.dll, pidgen.dll won't load, and the app claims "A trial edition is alread installed..."
+    # Without mfc42.dll, pidgen.dll won't load, and the app claims "A trial edition is already installed..."
     w_call mfc42
 
     w_download http://download.microsoft.com/download/6/f/5/6f5f7a01-50bb-422d-8742-c099c8896969/En_vs_2005_vsts_180_Trial.img f66ae07618d67e693ca0524d3582208c20e07823
@@ -14155,7 +14182,7 @@ load_dragonage_ue()
 
     w_mount DRAGONAGE Setup.exe 1
 
-    # Annoyingly, it runs a webrowser so you can activate the extra stuff. Disable that, and w_warn the user after install:
+    # Annoyingly, it runs a webbrowser so you can activate the extra stuff. Disable that, and w_warn the user after install:
     WINEDLLOVERRIDES="winebrowser.exe="
     export WINEDLLOVERRIDES
 
@@ -16530,7 +16557,7 @@ load_qq()
         w_call msctf
     fi
 
-    # Make sure chinese fonts are available
+    # Make sure Chinese fonts are available
     w_call fakechinese
 
     # uses mfc42u.dll
@@ -16585,7 +16612,7 @@ load_qqintl()
         w_call wininet
     fi
 
-    # Make sure chinese fonts are available
+    # Make sure Chinese fonts are available
     w_call fakechinese
 
     # wants mfc80u.dll
@@ -19584,6 +19611,12 @@ winetricks_stats_init()
         case $WINETRICKS_GUI in
         zenity)
             case $LANG in
+            de*)
+                title="Einmalige Frage zur Hilfe an der Winetricks Entwicklung"
+                question="Möchten Sie die Winetricks Entwicklung unterstützen indem Sie Winetricks Statistiken übermitteln lassen?  Sie können die Übermittlung jederzeit mit 'winetricks --optout' ausschalten"
+                thanks="Danke! Sie bekommen diese Frage nicht mehr gestellt.  Sie können die Übermittlung jederzeit mit 'winetricks --optout' wieder ausschalten"
+                declined="OK, Winetricks wird *keine* Statistiken übermitteln.  Sie bekommen diese Frage nicht mehr gestellt."
+                ;;
             *)
                 title="One-time question about helping Winetricks development"
                 question="Would you like to help winetricks development by letting winetricks report statistics?  You can turn reporting off at any time with the command 'winetricks --optout'"
