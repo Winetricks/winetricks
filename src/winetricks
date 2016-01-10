@@ -10044,7 +10044,7 @@ load_ie7()
     # Change the override to the native so we are sure we use and register them
     w_override_dlls native,builtin itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon wininet xmllite
 
-    # IE7 installer will check version the number of iexplore.exe which causes IE7 installer to fail on wine-1.9.0+
+    # IE7 installer will check the version number of iexplore.exe which causes IE7 installer to fail on wine-1.9.0+
     w_override_dlls native iexplore.exe
 
     # Bundled updspapi cannot work on wine
@@ -10159,7 +10159,7 @@ load_ie8()
     # Change the override to the native so we are sure we use and register them
     w_override_dlls native,builtin itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
 
-    # IE8 installer will check version the number of iexplore.exe which causes IE8 installer to fail on wine-1.9.0+
+    # IE8 installer will check the version number of iexplore.exe which causes IE8 installer to fail on wine-1.9.0+
     w_override_dlls native iexplore.exe
 
     # Bundled updspapi cannot work on wine
