@@ -2482,6 +2482,18 @@ winetricks_prefixmenu()
          _W_msg_showbroken1="有問題的程式 (例如那些有數字版權問題)"
          _W_msg_help="檢視輔助說明"
          ;;
+    de*) _W_msg_title="Winetricks - wineprefix auswählen"
+         _W_msg_body='Was möchten Sie tun?'
+         _W_msg_apps='Eine Programm installieren'
+         _W_msg_games='Ein Spiel installieren'
+         _W_msg_benchmarks='Ein Benchmark installieren'
+         _W_msg_default="Standard wineprefix auswählen"
+         _W_msg_unattended0="Automatische Installation deaktivieren"
+         _W_msg_unattended1="Automatische Installation aktivieren"
+         _W_msg_showbroken0="Defekte Programme nicht anzeigen (z.B. solche mit DRM Problemen)"
+         _W_msg_showbroken1="Defekte Programme anzeigen (z.B. solche mit DRM Problemen)"
+         _W_msg_help="Hilfe anzeigen"
+         ;;
     *)   _W_msg_title="Winetricks - choose a wineprefix"
          _W_msg_body='What do you want to do?'
          _W_msg_apps='Install an app'
@@ -2540,6 +2552,7 @@ winetricks_prefixmenu()
             case $LANG in 
             zh_CN*) printf %s " FALSE prefix='$p' '选择管理 $_W_msg_name' " ;;
             zh_TW*|zh_HK*) printf %s " FALSE prefix='$p' '選擇管理 $_W_msg_name' " ;;
+            de*) printf %s " FALSE prefix='$p' '$_W_msg_name auswählen' " ;;
             *) printf %s " FALSE prefix='$p' 'Select $_W_msg_name' " ;;
             esac
             done >> "$WINETRICKS_WORKDIR"/zenity.sh
@@ -19585,6 +19598,12 @@ winetricks_stats_init()
         case $WINETRICKS_GUI in
         zenity)
             case $LANG in
+            de*)
+                title="Einmalige Frage zur Hilfe an der Winetricks Entwicklung"
+                question="Möchten Sie die Winetricks Entwicklung unterstützen indem Sie Winetricks Statistiken übermitteln lassen?  Sie können die Übermittlung jederzeit mit 'winetricks --optout' ausschalten"
+                thanks="Danke! Sie bekommen diese Frage nicht mehr gestellt.  Sie können die Übermittlung jederzeit mit 'winetricks --optout' wieder ausschalten"
+                declined="OK, Winetricks wird *keine* Statistiken übermitteln.  Sie bekommen diese Frage nicht mehr gestellt."
+                ;;
             *)
                 title="One-time question about helping Winetricks development"
                 question="Would you like to help winetricks development by letting winetricks report statistics?  You can turn reporting off at any time with the command 'winetricks --optout'"
