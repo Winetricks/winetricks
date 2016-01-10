@@ -400,7 +400,7 @@ w_read_key()
 
     mkdir -p "$W_CACHE/$W_PACKAGE"
 
-    # backwards compatibile location
+    # backwards compatible location
     # Auth doesn't belong in cache, since restoring it requires user input
     _W_keyfile="$W_CACHE/$W_PACKAGE/key.txt"
     if ! test -f "$_W_keyfile"
@@ -1199,7 +1199,7 @@ fi
 # other_files
 #     Extra installer files, in one string, space-separated.
 # reader_control
-#     If set, the control id of the configuration pannel checkbox controling
+#     If set, the control id of the configuration panel checkbox controling
 #     Adobe Reader installation.
 #     Some games don't have it, some games do with different ids.
 # run_command
@@ -3181,7 +3181,7 @@ winetricks_is_installed()
         esac
         if test -d "$_W_prefix/dosdevices"
         then
-          # 'win7 vcrun2005' creates diffrent file than 'winxp vcrun2005'
+          # 'win7 vcrun2005' creates different file than 'winxp vcrun2005'
           # so let it specify multiple, separated by |
           _W_IFS="$IFS"
           IFS='|'
@@ -3824,7 +3824,7 @@ winetricks_set_unattended()
 }
 
 # Usage: winetricks_set_wineprefix [bottlename]
-# Bottlename must not contain spaces, slashes, or other special charaters
+# Bottlename must not contain spaces, slashes, or other special characters
 # If bottlename is omitted, the default bottle (~/.wine) is used.
 winetricks_set_wineprefix()
 {
@@ -11235,7 +11235,7 @@ load_vc2005trial()
     then
         w_call msxml6
     fi
-    # Without mfc42.dll, pidgen.dll won't load, and the app claims "A trial edition is alread installed..."
+    # Without mfc42.dll, pidgen.dll won't load, and the app claims "A trial edition is already installed..."
     w_call mfc42
 
     w_download http://download.microsoft.com/download/6/f/5/6f5f7a01-50bb-422d-8742-c099c8896969/En_vs_2005_vsts_180_Trial.img f66ae07618d67e693ca0524d3582208c20e07823
@@ -14156,7 +14156,7 @@ load_dragonage_ue()
 
     w_mount DRAGONAGE Setup.exe 1
 
-    # Annoyingly, it runs a webrowser so you can activate the extra stuff. Disable that, and w_warn the user after install:
+    # Annoyingly, it runs a webbrowser so you can activate the extra stuff. Disable that, and w_warn the user after install:
     WINEDLLOVERRIDES="winebrowser.exe="
     export WINEDLLOVERRIDES
 
@@ -16531,7 +16531,7 @@ load_qq()
         w_call msctf
     fi
 
-    # Make sure chinese fonts are available
+    # Make sure Chinese fonts are available
     w_call fakechinese
 
     # uses mfc42u.dll
@@ -16586,7 +16586,7 @@ load_qqintl()
         w_call wininet
     fi
 
-    # Make sure chinese fonts are available
+    # Make sure Chinese fonts are available
     w_call fakechinese
 
     # wants mfc80u.dll
