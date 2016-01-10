@@ -414,7 +414,7 @@ w_read_key()
         da*) _W_keymsg="Angiv venligst registrerings-nøglen for pakken '$_PACKAGE'"
             _W_nokeymsg="Ingen nøgle angivet"
             ;;
-        de*) _W_keymsg="Bitte einen Key für Pakete '$W_PACKAGE' eingeben"
+        de*) _W_keymsg="Bitte einen Key für Paket '$W_PACKAGE' eingeben"
             _W_nokeymsg="Keinen Key eingegeben?"
             ;;
         pl*) _W_keymsg="Proszę podać klucz dla programu '$W_PACKAGE'"
@@ -882,7 +882,7 @@ w_download_manual_to()
 
     case $LANG in
     da*) _W_dlmsg="Hent venligst filen $_W_file fra $_W_url og placér den i $W_CACHE/$_W_packagename, kør derefter dette skript.";;
-    de*) _W_dlmsg="Bitte laden Sie $_W_file von $_W_url runter, stellen Sie's in $W_CACHE/$_W_packagename, dann wiederholen Sie diesen Kommando.";;
+    de*) _W_dlmsg="Bitte laden Sie $_W_file von $_W_url runter, stellen Sie's in $W_CACHE/$_W_packagename, dann wiederholen Sie dieses Kommando.";;
     pl*) _W_dlmsg="Proszę pobrać plik $_W_file z $_W_url, następnie umieścić go w $W_CACHE/$_W_packagename, a na końcu uruchomić ponownie ten skrypt.";;
     uk*) _W_dlmsg="Будь ласка, звантажте $_W_file з $_W_url, розташуйте в $W_CACHE/$_W_packagename, потім запустіть скрипт знову.";;
     zh_CN*) _W_dlmsg="请从 $_W_url 下载 $_W_file，并置放于 $W_CACHE/$_W_packagename, 然后重新运行 winetricks.";;
@@ -3740,7 +3740,7 @@ winetricks_mount_real_volume()
 
     case $LANG in
     da*)_W_mountmsg="Indsæt venligst disken '$_W_expected_volname' (krævet af pakken '$_PACKAGE')" ;;
-    de*)_W_mountmsg="Disc '$_W_expected_volname' bitte einlegen (für Pakete '$W_PACKAGE')" ;;
+    de*)_W_mountmsg="Bitte Disk '$_W_expected_volname' einlegen (für Paket '$W_PACKAGE')" ;;
     pl*)  _W_mountmsg="Proszę włożyć dysk '$_W_expected_volname' (potrzebny paczce '$W_PACKAGE')" ;;
     uk*)  _W_mountmsg="Будь ласка, вставте том '$_W_expected_volname' (потрібний для пакунка '$W_PACKAGE')" ;;
     zh_CN*)  _W_mountmsg="请插入卷 '$_W_expected_volname' (为包 '$W_PACKAGE 所需')" ;;
@@ -4165,19 +4165,20 @@ _EOF_
         cat <<_EOF_
 Usage: $0 [options] [verb|path-to-verb] ...
 Angegebene Verben ausführen.
-Jeder Verb installiert z.B. eine Anwendung oder ändert eine Einstellung.
+Jedes Verb installiert eine Anwendung oder ändert eine Einstellung.
+
 Optionen:
--k|--keep_isos: isos local speichern (erlaubt spätere Installierung ohne Disk)
+-k|--keep_isos: isos local speichern (erlaubt spätere Installation ohne Disk)
 -q|--unattended: keine Fragen stellen, alles automatisch installieren
--r|--ddrescue: alternative Zugriffsmodus (hilft bei gekratzten Disks)
+-r|--ddrescue: alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
 -v|--verbose: alle ausgeführten Kommandos anzeigen
 -V|--version: Programmversion anzeigen
 -h|--help: diese Hilfemeldung anzeigen
 Verben:
-apps: Typ 'Andwendungen' auswählen
+apps: Typ 'Anwendungen' auswählen
 games: Typ 'Spiele' auswählen
-list: Verben von ausgewählte Typ auflisten
-list-cached: Verben für schon gecachte Installers auflisten
+list: Verben von ausgewählten Typ auflisten
+list-cached: Verben für bereits gecachte Installers auflisten
 list-download: Verben für herunterladbare Anwendungen auflisten
 list-manual-download: list applications which can be downloaded with some help from the user
 list-installed: Verben für schon installlierte Programme auflisten
@@ -4269,7 +4270,7 @@ winetricks_install_app()
 {
     case $LANG in
     da*) fail_msg="Installationen af pakken $1 fejlede" ;;
-    de*) fail_msg="Installieren von Pakete $1 gescheitert" ;;
+    de*) fail_msg="Installieren von Paket $1 gescheitert" ;;
     pl*) fail_msg="Niepowodzenie przy instalacji paczki $1" ;;
     uk*) fail_msg="Помилка встановлення пакунка $1" ;;
     zh_CN*)   fail_msg="$1 安装失败" ;;
