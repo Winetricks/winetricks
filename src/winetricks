@@ -6653,7 +6653,11 @@ load_kindle()
     w_download http://kindleforpc.amazon.com/42039/KindleForPC-installer-1.13.42039.exe 2316102823d295fb346062e03a8bb594b93cb536
     cd "$W_CACHE"/kindle
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
-    w_declare_exe "$W_PROGRAMS_WIN\\Amazon\\Kindle" Kindle.exe
+
+    if w_workaround_wine_bug 39980 "Installing native vcrun2008"
+    then
+        w_call vcrun2008
+    fi
 }
 
 #----------------------------------------------------------------
