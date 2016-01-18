@@ -10554,7 +10554,7 @@ load_picasa39()
     # 2015/01/17: 39b2df46dbc423e250371e826026a2827f55b956
     # 2015/09/21: 55907fc84b1d9d6a450463869b16927f07737298
     # 2016/01/02: b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
-    
+
     w_download http://dl.google.com/picasa/picasa39-setup.exe b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
     if w_workaround_wine_bug 29434 "Picasa 3.9 fails to authenticate with Google"
     then
@@ -16573,18 +16573,18 @@ load_qq()
         w_try mv QQ/腾讯QQ.desktop ~/.local/share/applications/wine/Programs/腾讯软件/QQ
         w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
         w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
-        echo Exec=env WINEPREFIX=$WINEPREFIX $WINE $W_PROGRAMS_X86_WIN\/Tencent\/QQ\/bin\/QQScLauncher.exe >> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop
+        echo Exec=env WINEPREFIX="$WINEPREFIX" "$WINE" $W_PROGRAMS_X86_WIN\/Tencent\/QQ\/bin\/QQScLauncher.exe >> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop
     fi
 
     if w_workaround_wine_bug 39657 "Disable ntoskrnl.exe to work around can't be started bug"
     then
         w_override_dlls disabled ntoskrnl.exe
     fi
-    
+
     if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"
     then
         w_override_dlls disabled txplatform.exe
-    fi    
+    fi
 
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1"
@@ -16622,11 +16622,11 @@ load_qqintl()
     then
         w_call wininet
     fi
-    
+
     if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"
     then
         w_override_dlls disabled txplatform.exe
-    fi    
+    fi
 
     # Make sure chinese fonts are available
     w_call fakechinese
