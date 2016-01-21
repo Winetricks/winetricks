@@ -8285,9 +8285,10 @@ load_vcrun2015()
         cp "$W_TMP"/vcomp140.dll "$W_SYSTEM32_DLLS"/vcomp140.dll
         cp "$W_TMP"/vcruntime140.dll "$W_SYSTEM32_DLLS"/vcruntime140.dll
 
-        w_override_dlls native,builtin api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 ucrtbase vcruntime140
+        w_override_dlls native,builtin api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0.dll api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 ucrtbase vcruntime140
         cp "$W_TMP"/api_ms_win_crt_heap_l1_1_0.dll "$W_SYSTEM32_DLLS"/api-ms-win-crt-heap-l1-1-0.dll
         cp "$W_TMP"/api_ms_win_crt_locale_l1_1_0.dll "$W_SYSTEM32_DLLS"/api-ms-win-crt-locale-l1-1-0.dll
+        cp "$W_TMP"/api_ms_win_crt_math_l1_1_0.dll  "$W_SYSTEM32_DLLS"/api-ms-win-crt-math-l1-1-0.dll
         cp "$W_TMP"/api_ms_win_crt_runtime_l1_1_0.dll "$W_SYSTEM32_DLLS"/api-ms-win-crt-runtime-l1-1-0.dll
         cp "$W_TMP"/api_ms_win_crt_stdio_l1_1_0.dll "$W_SYSTEM32_DLLS"/api-ms-win-crt-stdio-l1-1-0.dll
         cp "$W_TMP"/ucrtbase.dll "$W_SYSTEM32_DLLS"/ucrtbase.dll
@@ -8317,9 +8318,10 @@ load_vcrun2015()
             cp "$W_TMP"/vcomp140.dll "$W_SYSTEM64_DLLS"/vcomp140.dll
             cp "$W_TMP"/vcruntime140.dll "$W_SYSTEM64_DLLS"/vcruntime140.dll
 
-            w_override_dlls native,builtin api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 ucrtbase vcruntime140
+            w_override_dlls native,builtin api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0.dll api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 ucrtbase vcruntime140
             cp "$W_TMP"/api_ms_win_crt_heap_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-heap-l1-1-0.dll
             cp "$W_TMP"/api_ms_win_crt_locale_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-locale-l1-1-0.dll
+            cp "$W_TMP"/api_ms_win_crt_math_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-math-l1-1-0.dll
             cp "$W_TMP"/api_ms_win_crt_runtime_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-runtime-l1-1-0.dll
             cp "$W_TMP"/api_ms_win_crt_stdio_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-stdio-l1-1-0.dll
             cp "$W_TMP"/ucrtbase.dll "$W_SYSTEM64_DLLS"/ucrtbase.dll
