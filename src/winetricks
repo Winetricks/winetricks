@@ -731,28 +731,32 @@ w_download_to()
         else
             w_die "Please install wget or aria2c (or, if those aren't available, curl)"
         fi
-        if test $? != 0
+        if test $? = 0
+        then
+            # Need to decompress .exe's that are compressed, else cygwin fails
+            # Also affects ttf files on github
+            _W_filetype=`which file 2>/dev/null`
+            case $_W_filetype-$_W_file in
+            /*-*.exe|/*-*.ttf|/*-*.zip)
+                case `file "$_W_file"` in
+                *:*gzip*) mv "$_W_file" "$_W_file.gz"; gunzip < "$_W_file.gz" > "$_W_file";;
+                esac
+            esac
+
+            # On cygwin, .exe's must be marked +x
+            case "$_W_file" in
+            *.exe) chmod +x "$_W_file" ;;
+            esac
+
+            cd "$_W_dl_olddir"
+            unset _W_dl_olddir
+        elif test $tries = 2
         then
             test -f "$_W_file" && rm "$_W_file"
             w_die "Downloading $_W_url failed"
         fi
-        # Need to decompress .exe's that are compressed, else cygwin fails
-        # Also affects ttf files on github
-        _W_filetype=`which file 2>/dev/null`
-        case $_W_filetype-$_W_file in
-        /*-*.exe|/*-*.ttf|/*-*.zip)
-            case `file "$_W_file"` in
-            *:*gzip*) mv "$_W_file" "$_W_file.gz"; gunzip < "$_W_file.gz" > "$_W_file";;
-            esac
-        esac
-
-        # On cygwin, .exe's must be marked +x
-        case "$_W_file" in
-        *.exe) chmod +x "$_W_file" ;;
-        esac
-
-        cd "$_W_dl_olddir"
-        unset _W_dl_olddir
+        # Download from the Wayback Machine on second try
+        _W_url="https://web.archive.org/web/$_W_url"
     done
 
     if test "$3" && test ! "$checksum_ok"
@@ -4509,7 +4513,7 @@ w_metadata cabinet dlls \
 load_cabinet()
 {
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
-    w_download http://web.archive.org/web/20080731135848/http://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
+    w_download http://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/cabinet/$file1
     w_try cp "$W_TMP"/cabinet.dll "$W_SYSTEM32_DLLS"/cabinet.dll
 
@@ -4581,7 +4585,7 @@ load_comctl32ocx()
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=25437D98-51D0-41C1-BB14-64662F5F62FE
     w_download http://download.microsoft.com/download/3/a/5/3a5925ac-e779-4b1c-bb01-af67dc2f96fc/VisualBasic6-KB896559-v1-ENU.exe f52cf2034488235b37a1da837d1c40eb2a1bad84
     # More ActiveX controls. See https://support.microsoft.com/kb/297381
-    w_download https://web.archive.org/web/20141012205821/http://activex.microsoft.com/controls/vb6/mscomct2.cab 766f9ccf8849a04d757faee379da54d635c8ac71
+    w_download http://activex.microsoft.com/controls/vb6/mscomct2.cab 766f9ccf8849a04d757faee379da54d635c8ac71
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comctl32ocx/VisualBasic6-KB896559-v1-ENU.exe
     w_try cp "$W_TMP"/mscomctl.ocx "$W_SYSTEM32_DLLS"/mscomctl.ocx
@@ -4607,7 +4611,7 @@ w_metadata comdlg32ocx dlls \
 load_comdlg32ocx()
 {
     # By analogy with vb5 version in http://support.microsoft.com/kb/168917
-    w_download https://web.archive.org/web/20141227220748/http://activex.microsoft.com/controls/vb6/ComDlg32.cab d4f3e193c6180eccd73bad53a8500beb5b279cbf
+    w_download http://activex.microsoft.com/controls/vb6/ComDlg32.cab d4f3e193c6180eccd73bad53a8500beb5b279cbf
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comdlg32ocx/${file1}
     w_try cp "$W_TMP"/comdlg32.ocx "$W_SYSTEM32_DLLS"/comdlg32.ocx
     w_try_regsvr comdlg32.ocx
@@ -5728,7 +5732,7 @@ w_metadata dotnet30 dlls \
 load_dotnet30()
 {
     # http://msdn.microsoft.com/en-us/netframework/bb264589.aspx
-    w_download http://web.archive.org/web/20120509084326/http://download.microsoft.com/download/3/F/0/3F0A922C-F239-4B9B-9CB0-DF53621C57D9/dotnetfx3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
+    w_download http://download.microsoft.com/download/3/F/0/3F0A922C-F239-4B9B-9CB0-DF53621C57D9/dotnetfx3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
 
     w_call remove_mono
 
@@ -6441,7 +6445,7 @@ w_metadata gmdls dlls \
 
 load_gmdls()
 {
-    w_download_to directx8 http://web.archive.org/web/20070403193305/http://download.microsoft.com/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe ea2345f602741343e97a5ece5d1d2c3cc44296c3
+    w_download_to directx8 http://download.microsoft.com/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe ea2345f602741343e97a5ece5d1d2c3cc44296c3
 
     w_try_unzip "$W_TMP" "$W_CACHE"/directx8/DX81Redist.exe "*/*/DirectX.cab"
     w_try_cabextract -d "$W_TMP" -F gm16.dls "$W_TMP"/*/*/DirectX.cab
@@ -6702,7 +6706,7 @@ load_mdac27()
     fi
 
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
-    w_download http://web.archive.org/web/20060202021126/http://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
+    w_download http://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
     load_native_mdac
     w_set_winver nt40
     w_try "$WINE" "$W_CACHE"/mdac27/mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup /QNT"}
@@ -6845,7 +6849,7 @@ w_metadata mfc40 dlls \
 
 load_mfc40()
 {
-    w_download https://web.archive.org/web/20070316220826/http://activex.microsoft.com/controls/vc/mfc40.cab 53c570e2c811674d6e4fa46cff5a3a04cd0ffc24
+    w_download http://activex.microsoft.com/controls/vc/mfc40.cab 53c570e2c811674d6e4fa46cff5a3a04cd0ffc24
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/mfc40/mfc40.cab
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -F *40.dll "$W_TMP"/mfc40.exe
 }
@@ -6954,7 +6958,7 @@ load_msflxgrd()
     # may 2011: f497c3b390cd80d5bcd1f13d5c0c68b206369aa7
     # 2015/11/09: Removed from Microsoft.com, archive.org has an older copy:
     # 2015/11/09: 3d6c04e923781d4ce0d3ab62189b8de352ab25d5
-    w_download https://web.archive.org/web/20070127040448/http://activex.microsoft.com/controls/vb6/MsFlxGrd.cab 3d6c04e923781d4ce0d3ab62189b8de352ab25d5
+    w_download http://activex.microsoft.com/controls/vb6/MsFlxGrd.cab 3d6c04e923781d4ce0d3ab62189b8de352ab25d5
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msflxgrd/${file1}
     w_try cp -f "$W_TMP"/[Mm][Ss][Ff][Ll][Xx][Gg][Rr][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
@@ -6979,7 +6983,7 @@ load_mshflxgd()
     # May 2009: bd8aa796e16e5f213414af78931e0379d9cbe292
     # 2015/11/09: Removed from Microsoft.com, archive.org has the original copy:
     # 2015/11/09: 5f9c7a81022949bfe39b50f2bbd799c448bb7377
-    w_download https://web.archive.org/web/20061011041549/http://activex.microsoft.com/controls/vb6/MSHFLXGD.CAB 5f9c7a81022949bfe39b50f2bbd799c448bb7377
+    w_download http://activex.microsoft.com/controls/vb6/MSHFLXGD.CAB 5f9c7a81022949bfe39b50f2bbd799c448bb7377
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/mshflxgd/MSHFLXGD.CAB
     w_try cp -f "$W_TMP"/[Mm][Ss][Hh][Ff][Ll][Xx][Gg][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
@@ -7060,7 +7064,7 @@ load_msmask()
     # May 2009: 30e55679e4a13fe4d9620404476f215f93239292
     # 2015/11/09: Removed from Microsoft.com, archive.org has an older copy:
     # 2015/11/09: bdd2bb3a32d18926a048f302aff18b1e6d250d9d
-    w_download https://web.archive.org/web/20061011040848/http://activex.microsoft.com/controls/vb6/MSMASK32.CAB bdd2bb3a32d18926a048f302aff18b1e6d250d9d
+    w_download http://activex.microsoft.com/controls/vb6/MSMASK32.CAB bdd2bb3a32d18926a048f302aff18b1e6d250d9d
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msmask/MSMASK32.CAB
     w_try cp -f "$W_TMP"/[Mm][Ss][Mm][Aa][Ss][Kk]32.[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"/msmask32.ocx
     w_try_regsvr msmask32.ocx
@@ -7099,7 +7103,7 @@ load_msxml3()
     # Service Pack 5
     #w_download http://download.microsoft.com/download/a/5/e/a5e03798-2454-4d4b-89a3-4a47579891d8/msxml3.msi
     # Service Pack 7
-    w_download http://web.archive.org/web/20070314193356/http://download.microsoft.com/download/8/8/8/888f34b7-4f54-4f06-8dac-fa29b19f33dd/msxml3.msi d4c2178dfb807e1a0267fce0fd06b8d51106d913
+    w_download http://download.microsoft.com/download/8/8/8/888f34b7-4f54-4f06-8dac-fa29b19f33dd/msxml3.msi d4c2178dfb807e1a0267fce0fd06b8d51106d913
 
     # it won't install on top of wine's msxml3, which has a pretty high version number, so delete wine's fake dll
     rm "$W_SYSTEM32_DLLS"/msxml3.dll
@@ -7597,7 +7601,7 @@ w_metadata richtx32 dlls \
 
 load_richtx32()
 {
-    w_download https://web.archive.org/web/20150815181727/http://activex.microsoft.com/controls/vb6/richtx32.cab da404b566df3ad74fe687c39404a36c3e7cadc07
+    w_download http://activex.microsoft.com/controls/vb6/richtx32.cab da404b566df3ad74fe687c39404a36c3e7cadc07
     w_try_cabextract "$W_CACHE"/richtx32/richtx32.cab -d "$W_SYSTEM32_DLLS" -F RichTx32.ocx
     w_try_regsvr RichTx32.ocx
 }
@@ -7739,7 +7743,7 @@ load_tabctl32()
 {
     # http://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
     # Nov 2012: tabctl32
-    w_download https://web.archive.org/web/20110818064708/http://activex.microsoft.com/controls/vb6/TABCTL32.CAB beca51d05924a5466ab80eb0f8d0cdf8bc1ac697
+    w_download http://activex.microsoft.com/controls/vb6/TABCTL32.CAB beca51d05924a5466ab80eb0f8d0cdf8bc1ac697
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/tabctl32/${file1}
     w_try cp -f "$W_TMP"/[Tt][Aa][Bb][Cc][Tt][Ll][3][2].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
@@ -9792,7 +9796,7 @@ w_metadata emu8086 apps \
 
 load_emu8086()
 {
-    w_download https://web.archive.org/web/20140209022335/http://emu8086.com/emu8086.zip fa3b2451cbc46fd2e3aa2670fa4d81ae8e75c7db
+    w_download http://emu8086.com/emu8086.zip fa3b2451cbc46fd2e3aa2670fa4d81ae8e75c7db
     w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/$file1
     w_try "$WINE" "$W_TMP/Setup.exe" $W_UNATTENDED_SLASH_SILENT
     w_declare_exe "c:\\emu8086" "emu8086.exe"
