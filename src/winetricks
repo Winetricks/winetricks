@@ -614,6 +614,68 @@ w_dotnet_verify()
             dn_status=$?
 }
 
+# Checks if the user can run the self-update/rollback commands
+winetricks_check_update_availability()
+{
+    # Prevents the development file overwrite:
+    if test -d "../.git"
+    then
+        w_warn "You're running in a dev environment. Please make a copy of the file before running this command."
+        exit;
+    fi
+
+    # Checks read/write permissions on update directories
+    if ! (test -r $0 && test -w $0 && test -w ${0%/*} && test -x ${0%/*})
+    then
+        w_warn "You don't have the proper permissions to run this command. Try again with sudo or as root."
+        exit;
+    fi
+}
+
+winetricks_selfupdate()
+{
+    winetricks_check_update_availability
+
+    _W_filename="${0##*/}"
+    _W_rollback_file="${0}.bak"
+    _W_update_file="${0}.update"
+
+    _W_tmpdir=${TMPDIR:-/tmp}
+    _W_tmpdir="`mktemp -d "$_W_tmpdir/$_W_filename.XXXXXXXX"`"
+
+    w_download_to $_W_tmpdir https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+    w_try mv $_W_tmpdir/$_W_filename $_W_update_file.gz
+    w_try gunzip $_W_update_file.gz
+    w_try rmdir $_W_tmpdir
+
+    w_try cp $0 $_W_rollback_file
+    w_try chmod -x $_W_rollback_file
+
+    w_try mv $_W_update_file $0
+    w_try chmod +x $0
+
+    w_warn "Update finished! The current version is '`$0 -V`'. Use 'winetricks --update-rollback' to return to the previous version."
+
+    exit;
+}
+
+winetricks_selfupdate_rollback()
+{
+    winetricks_check_update_availability
+
+    _W_rollback_file="${0}.bak"
+
+    if test -f $_W_rollback_file
+    then
+        w_try mv $_W_rollback_file $0
+        w_try chmod +x $0
+        w_warn "Rollback finished! The current version is '`$0 -V`'."
+    else
+        w_warn "Nothing to rollback."
+    fi
+    exit;
+}
+
 # Download a file
 # Usage: w_download_to packagename url [sha1sum [filename [cookie jar]]]
 # Caches downloads in winetrickscache/$packagename
@@ -4274,6 +4336,8 @@ Options:
     --force           Don't check whether packages were already installed
     --gui             Show gui diagnostics even when driven by commandline
     --isolate         Install each app or game in its own bottle (WINEPREFIX)
+    --self-update     Update this application to the last version
+    --update-rollback Rollback the last self update
 -k, --keep_isos       Cache isos (allows later installation without disc)
     --no-clean        Don't delete temp directories (useful during debugging)
 -q, --unattended      Don't ask any questions, just install automatically
@@ -4313,6 +4377,8 @@ winetricks_handle_option()
     -V|--version) winetricks_print_version ; exit 0;;
     --verify) WINETRICKS_VERIFY=1 ;;
     -h|--help) winetricks_usage ; exit 0 ;;
+    --self-update) winetricks_selfupdate;;
+    --update-rollback) winetricks_selfupdate_rollback;;
     --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
     --no-isolate) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
     --no-clean) W_OPT_NOCLEAN=1 ;;
