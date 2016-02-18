@@ -4394,7 +4394,7 @@ helper_win7sp1()
 #---------------------------------------------------------
 
 w_metadata  adobeair dlls \
-    title="Adobe AIR 19.0" \
+    title="Adobe AIR 20.x" \
     publisher="Adobe" \
     year="2015" \
     media="download" \
@@ -4417,7 +4417,9 @@ load_adobeair()
     # 2015-11-06: 19.x sha1sum 3bc2a568204a3a9b59ca347ab49585f0c5fab279
     # 2015-12-27: 20.0 sha1sum 9c10b7be43771869c381c73197c9a0fcd1b727cf
     # 2015-12-29: 20.0.0.233 (had to check with strings on Adobe AIR.dll) sha1sum 7161fb8b47721485882f52720f8b41dbfe3b69d0
-    w_download http://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 7161fb8b47721485882f52720f8b41dbfe3b69d0
+    # 2016-02-17: 20.0.0.260 (strings 'Adobe AIR.dll' | grep 20\\. ) sha1sum 2fdd561556fe881c4e5538d4ee37f523871befd3
+
+    w_download http://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 2fdd561556fe881c4e5538d4ee37f523871befd3
     cd "$W_CACHE"/adobeair
     w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
 }
