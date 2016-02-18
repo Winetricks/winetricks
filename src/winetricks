@@ -6932,9 +6932,14 @@ w_metadata msdxmocx dlls \
 
 load_msdxmocx()
 {
-    # http://www.oldapps.com/windows_media_player.php?old_windows_media_player=3?download
-    # Iceweasel gives a security warning (!), but clamscan and virustotal.com report it as clean:
-    w_download http://download.oldapps.com/Windows_Media/mpfull.exe 44aef252a660612a01ee13271d84d2da3885e58d
+    # Previously at http://www.oldapps.com/windows_media_player.php?old_windows_media_player=3?download
+    # (2015/12/01) Iceweasel gave a security warning (!), but clamscan and virustotal.com report it as clean
+    #
+    # (2016/02/18) Since then, oldapps.com removed it. It's on a Finnish mirror, where it's been since 2001/10/20
+    # Found using http://www.filewatcher.com/m/mpfull.exe.3593680-0.html
+    # The sha1sum is different. Perhaps Iceweasel was right. This one is also clean according to clamscan/virustotal.com
+
+    w_download ftp://www.define.fi/Pub/Fixes/Microsoft/Windows%2095/mpfull.exe 99691df6ac455233230faac7514bdea781ba0ce3
 
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_CACHE/$W_PACKAGE/${file1}"
     w_try_regsvr msdxm.ocx
