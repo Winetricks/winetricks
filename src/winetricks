@@ -7414,25 +7414,18 @@ w_metadata quicktime72 dlls \
     publisher="Apple" \
     year="2010" \
     media="download" \
-    file1="quicktimeplayer72.exe" \
+    file1="QuickTimeInstaller.exe" \
     installed_file1="c:/windows/Installer/{95A890AA-B3B1-44B6-9C18-A8F7AB3EE7FC}/QTPlayer.ico"
 
 load_quicktime72()
 {
-    # http://www.apple.com/support/downloads/quicktime72forwindows.html
-    # http://www.oldapps.com/quicktime_player.php?old_quicktime=6
-    w_download http://download.oldapps.com/Quicktime/quicktimeplayer72.exe bb89981f10cf21de57b9453e53cf81b9194271a9
+    # https://support.apple.com/downloads/quicktime
+    w_download http://appldnld.apple.com.edgesuite.net/content.info.apple.com/QuickTime/061-2915.20070710.pO94c/QuickTimeInstaller.exe bb89981f10cf21de57b9453e53cf81b9194271a9
 
     unset QUICKTIME_QUIET
     if test "$W_UNATTENDED_SLASH_Q" != ""
     then
         QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
-    fi
-
-    if w_workaround_wine_bug 9366 ""  1.1.22,
-    then
-        w_call gdiplus
-        w_call vcrun2005      # no bug number, but same era
     fi
 
     if w_workaround_wine_bug 1347
@@ -7441,8 +7434,8 @@ load_quicktime72()
         w_set_winver vista
     fi
 
-    cd "$W_CACHE"/quicktime72
-    w_try "$WINE" quicktimeplayer72.exe ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $QUICKTIME_QUIET > /dev/null 2>&1
+    cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" ${file1} ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $QUICKTIME_QUIET > /dev/null 2>&1
 
     if w_workaround_wine_bug 11681
     then
