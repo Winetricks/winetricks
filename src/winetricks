@@ -3822,6 +3822,8 @@ winetricks_set_unattended()
         # Might want to trim our stable of variables here a bit...
         W_UNATTENDED_DASH_Q="-q"
         W_UNATTENDED_SLASH_Q="/q"
+        W_UNATTENDED_SLASH_QN="/qn"
+        W_UNATTENDED_SLASH_QNT="/qnt"
         W_UNATTENDED_SLASH_S="/S"
         W_UNATTENDED_DASH_SILENT="-silent"
         W_UNATTENDED_SLASH_SILENT="/silent"
@@ -3830,6 +3832,8 @@ winetricks_set_unattended()
         W_OPT_UNATTENDED=""
         W_UNATTENDED_DASH_Q=""
         W_UNATTENDED_SLASH_Q=""
+        W_UNATTENDED_SLASH_QN=""
+        W_UNATTENDED_SLASH_QNT=""
         W_UNATTENDED_SLASH_S=""
         W_UNATTENDED_DASH_SILENT=""
         W_UNATTENDED_SLASH_SILENT=""
@@ -6707,7 +6711,8 @@ load_mdac27()
     w_download http://web.archive.org/web/20060202021126/http://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
     load_native_mdac
     w_set_winver nt40
-    w_try "$WINE" "$W_CACHE"/mdac27/mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup /QNT"}
+    cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup $W_UNATTENDED_SLASH_QNT"}
     w_unset_winver
 }
 
@@ -6727,13 +6732,8 @@ load_mdac28()
     w_download http://download.microsoft.com/download/4/a/a/4aafff19-9d21-4d35-ae81-02c48dcbbbff/MDAC_TYP.EXE 4fbc272c79da59e38818924d8575accb0af776fb
     load_native_mdac
     w_set_winver nt40
-    cd "$W_CACHE"/mdac28
-    if [ $W_UNATTENDED_SLASH_Q ]
-    then
-        w_try "$WINE" mdac_typ.exe /q /C:"setup /QNT"
-    else
-        w_try "$WINE" mdac_typ.exe
-    fi
+    cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup $W_UNATTENDED_SLASH_QNT"}
     w_unset_winver
 }
 
@@ -7427,12 +7427,6 @@ load_quicktime72()
     # https://support.apple.com/downloads/quicktime
     w_download http://appldnld.apple.com.edgesuite.net/content.info.apple.com/QuickTime/061-2915.20070710.pO94c/QuickTimeInstaller.exe bb89981f10cf21de57b9453e53cf81b9194271a9
 
-    unset QUICKTIME_QUIET
-    if test "$W_UNATTENDED_SLASH_Q" != ""
-    then
-        QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
-    fi
-
     if w_workaround_wine_bug 1347
     then
         w_warn "Setting vista mode to avoid blacking the whole screen in quicktime"
@@ -7440,7 +7434,7 @@ load_quicktime72()
     fi
 
     cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" ${file1} ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $QUICKTIME_QUIET > /dev/null 2>&1
+    w_try "$WINE" ${file1} ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $W_UNATTENDED_SLASH_QN > /dev/null 2>&1
 
     if w_workaround_wine_bug 11681
     then
@@ -7476,12 +7470,6 @@ load_quicktime76()
     # http://www.apple.com/quicktime/download/
     w_download http://appldnld.apple.com/QuickTime/041-0025.20101207.Ptrqt/QuickTimeInstaller.exe 1eec8904f041d9e0ad3459788bdb690e45dbc38e
 
-    unset QUICKTIME_QUIET
-    if test "$W_UNATTENDED_SLASH_Q"
-    then
-        QUICKTIME_QUIET="/qn"  # ISSETUPDRIVEN=0
-    fi
-
     if w_workaround_wine_bug 9366 ""  1.1.22,
     then
         w_call gdiplus
@@ -7495,7 +7483,7 @@ load_quicktime76()
     fi
 
     cd "$W_CACHE"/quicktime76
-    w_try "$WINE" QuickTimeInstaller.exe ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $QUICKTIME_QUIET > /dev/null 2>&1
+    w_try "$WINE" QuickTimeInstaller.exe ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $W_UNATTENDED_SLASH_QN > /dev/null 2>&1
 
     if w_workaround_wine_bug 11681
     then
@@ -8356,13 +8344,8 @@ load_vjrun20()
 
     # See http://www.microsoft.com/downloads/details.aspx?FamilyId=E9D87F37-2ADC-4C32-95B3-B5E3A21BAB2C
     w_download http://download.microsoft.com/download/9/2/3/92338cd0-759f-4815-8981-24b437be74ef/vjredist.exe 80a098e36b90d159da915aebfbfbacf35f302bd8
-
-    if [ $W_UNATTENDED_SLASH_Q ]
-    then
-        w_try "$WINE" "$W_CACHE"/vjrun20/vjredist.exe /q /C:"install /QNT"
-    else
-        w_try "$WINE" "$W_CACHE"/vjrun20/vjredist.exe
-    fi
+    cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" vjredist.exe ${W_OPT_UNATTENDED:+ /q /C:"install $W_UNATTENDED_SLASH_QNT"}
 }
 
 #----------------------------------------------------------------
@@ -10929,10 +10912,9 @@ _EOF_
     if test $W_OPT_UNATTENDED
     then
         w_warn "Safari's silent install is broken under wine. See http://bugs.winehq.org/show_bug.cgi?id=23493. You should do a regular install if you want to use Safari."
-        w_try "$WINE" SafariSetup.exe /qn
-    else
-        w_try "$WINE" SafariSetup.exe
     fi
+
+    w_try "$WINE" SafariSetup.exe $W_UNATTENDED_SLASH_QN
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Safari" "Safari.exe"
 }
