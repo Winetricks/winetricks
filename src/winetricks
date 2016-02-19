@@ -4424,7 +4424,7 @@ load_adobeair()
     # 2016-02-17: 20.0.0.260 (strings 'Adobe AIR.dll' | grep 20\\. ) sha1sum 2fdd561556fe881c4e5538d4ee37f523871befd3
 
     w_download http://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 2fdd561556fe881c4e5538d4ee37f523871befd3
-    cd "$W_CACHE"/adobeair
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
 }
 
@@ -4464,7 +4464,7 @@ load_art2kmin()
 {
     # See http://www.microsoft.com/downloads/details.aspx?familyid=d9ae78d9-9dc6-4b38-9fa6-2c745a175aed&displaylang=en
     w_download http://download.microsoft.com/download/D/2/A/D2A2FC8B-0447-491C-A5EF-E8AA3A74FB98/AccessRuntime.exe 571811b7536e97cf4e4e53bbf8260cddd69f9b2d
-    cd "$W_CACHE"/art2kmin
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" AccessRuntime.exe $W_UNATTENDED_SLASH_Q
 }
 
@@ -5196,7 +5196,7 @@ load_directx9()
     # See http://code.google.com/p/winezeug/issues/detail?id=71
     w_set_winver winxp
 
-    cd "$W_CACHE"/directx9
+    cd "$W_CACHE/$W_PACKAGE"
     WINEDLLOVERRIDES="wintrust=b,mscoree=,ddraw,d3d8,d3d9,dsound,dinput=n" \
         w_try "$WINE" $DIRECTX_NAME /t:"$W_TMP_WIN" $W_UNATTENDED_SLASH_Q
 
@@ -5516,7 +5516,7 @@ load_dotnet20sdk()
 
     w_call dotnet20
 
-    cd "$W_CACHE"/dotnet20sdk
+    cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         run, setup.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
@@ -5600,7 +5600,7 @@ load_dotnet20sp1()
     # Workaround Wine/Mono integration:
     "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v2.0.50727" /v Version /t REG_SZ /d "2.0.50727" /f
 
-    cd "$W_CACHE"/dotnet20sp1
+    cd "$W_CACHE/$W_PACKAGE"
     "$WINE" NetFx20SP1_x86.exe ${W_OPT_UNATTENDED:+/q}
     status=$?
 
@@ -5655,7 +5655,7 @@ load_dotnet20sp2()
         "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled'
     fi
 
-    cd "$W_CACHE"/dotnet20sp2
+    cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         run, NetFx20SP2_x86.exe ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
@@ -5751,7 +5751,7 @@ load_dotnet30()
 
     WINEDLLOVERRIDES="ngen.exe,mscorsvw.exe=b;$WINEDLLOVERRIDES"
 
-    cd "$W_CACHE"/dotnet30
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
 
     # Doesn't install any ngen.exe
@@ -5888,7 +5888,7 @@ load_dotnet35sp1()
     WINEDLLOVERRIDES=ngen.exe,mscorsvw.exe=b
     export WINEDLLOVERRIDES
 
-    cd "$W_CACHE"/dotnet35sp1
+    cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         run, dotnetfx35.exe /lang:ENU $W_UNATTENDED_SLASH_Q
@@ -6102,8 +6102,7 @@ load_dotnet_verifier()
     # 2015/12/27: sha1sum b9712da2943e057668f21f68c473657a205c5cb8
     w_download http://blogs.msdn.com/cfs-file.ashx/__key/CommunityServer-Components-PostAttachments/00-08-99-90-04/netfx_5F00_setupverifier_5F00_new.zip b9712da2943e057668f21f68c473657a205c5cb8
 
-    cd "$W_CACHE"/dotnet_verifier
-
+    cd "$W_CACHE/$W_PACKAGE"
     w_try_unzip "$W_SYSTEM32_DLLS" netfx_5F00_setupverifier_5F00_new.zip netfx_setupverifier.exe
 }
 
@@ -6286,8 +6285,8 @@ w_metadata gdiplus_winxp dlls \
 load_gdiplus_winxp()
 {
     w_download_manual http://download.cnet.com/NET-Framework-1-0-GDIPLUS-DLL-Security-Update/3000-10250_4-10732223.html NDP1.0sp2-KB830348-X86-Enu.exe 6113cd89d77525958295ccbd73b5fb8b89abd0aa
-    cd "$W_CACHE"/gdiplus
-    w_try_cabextract -d "$W_TMP" -F FL_gdiplus_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "$W_CACHE"/gdiplus_winxp/$file1
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try_cabextract -d "$W_TMP" -F FL_gdiplus_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "$W_CACHE/${W_PACKAGE}/$file1"
     w_try cp "$W_TMP/FL_gdiplus_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8" "$W_SYSTEM32_DLLS/gdiplus.dll"
 
     # For some reason, native,builtin isn't good enough...?
@@ -6350,7 +6349,7 @@ load_gfw()
     w_download http://download.microsoft.com/download/5/5/8/55846E20-4A46-4EF8-B272-7F988BC9090A/gfwlivesetupmin.exe 6f9e0ba052c68c8b51bb0e3ce6024d0e1c7b20b2
 
     # FIXME: Depends on .Net 20, but is it really needed? For now, skip it.
-    cd "$W_CACHE"/gfw
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" gfwlivesetupmin.exe /nodotnet $W_UNATTENDED_SLASH_Q
 
     w_call msasn1
@@ -6435,7 +6434,7 @@ load_dirac()
     # Avoid mfc90 not found error.  (DiracSplitter-libschroedinger.ax needs mfc90 to register itself, I think.)
     w_call vcrun2008
 
-    cd "$W_CACHE"/dirac
+    cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         run DiracDirectShowFilter-1.0.2.exe
@@ -6471,7 +6470,7 @@ w_metadata ffdshow dlls \
 load_ffdshow()
 {
     w_download $WINETRICKS_SOURCEFORGE/ffdshow-tryout/ffdshow_beta7_rev3154_20091209.exe 8534c31489e51df70ee9583438d6211e6f0696d0
-    cd "$W_CACHE"/ffdshow
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" ffdshow_beta7_rev3154_20091209.exe $W_UNATTENDED_SLASH_SILENT
 }
 
@@ -6512,7 +6511,7 @@ load_icodecs()
     # 2014-04-11: http://www.cucusoft.com/codecdownload/codinstl.exe (linked from http://www.cucusoft.com/codec.asp)
     w_download "http://www.cucusoft.com/codecdownload/codinstl.exe" 2c5d64f472abe3f601ce352dcca75b4f02996f8a
 
-    cd "$W_CACHE"/icodecs
+    cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
         SetTitleMatchMode, 2
@@ -6557,7 +6556,7 @@ load_jet40()
     # See also http://bugs.winehq.org/show_bug.cgi?id=6085
     # FIXME: "failed with error 2"
     w_download http://www.autoxplorer.com/exe/Jet40SP8_9xNT.exe 8cd25342030857969ede2d8fcc34f3f7bcc2d6d4
-    cd "$W_CACHE"/jet40
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" jet40sp8_9xnt.exe $W_UNATTENDED_SLASH_Q
 }
 
@@ -6598,7 +6597,7 @@ w_metadata kindle apps \
 load_kindle()
 {
     w_download http://kindleforpc.amazon.com/42039/KindleForPC-installer-1.13.42039.exe 2316102823d295fb346062e03a8bb594b93cb536
-    cd "$W_CACHE"/kindle
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
 
     if w_workaround_wine_bug 39980 "Installing native vcrun2008"
@@ -7052,7 +7051,7 @@ load_msxml3()
     # it won't install on top of wine's msxml3, which has a pretty high version number, so delete wine's fake dll
     rm "$W_SYSTEM32_DLLS"/msxml3.dll
     w_override_dlls native msxml3
-    cd "$W_CACHE"/msxml3
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i msxml3.msi $W_UNATTENDED_SLASH_Q
 }
 
@@ -7075,7 +7074,7 @@ load_msxml4()
     # SP3 (2009): http://www.microsoft.com/downloads/details.aspx?familyid=7F6C0CB4-7A5E-4790-A7CF-9E139E6819C0
     w_download http://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi aa70c5c1a7a069af824947bcda1d9893a895318b
     w_override_dlls native,builtin msxml4
-    cd "$W_CACHE"/msxml4
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i msxml.msi $W_UNATTENDED_SLASH_Q
 }
 
@@ -7147,7 +7146,7 @@ w_metadata ogg dlls \
 load_ogg()
 {
     w_download http://downloads.xiph.org/releases/oggdsf/opencodecs_0.85.17777.exe 386cf7cd29ffcbf8705eff8c8233de448ecf33ab
-    cd "$W_CACHE"/ogg
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 $W_UNATTENDED_SLASH_S
 }
 
@@ -7287,7 +7286,7 @@ load_physx()
 {
     # Has a minor issue, see bug report http://bugs.winehq.org/show_bug.cgi?id=34167
     w_download http://uk.download.nvidia.com/Windows/9.14.0702/PhysX-9.14.0702-SystemSoftware.msi 81e2d38e2356e807ad80cdf150ed5acfff839c8b
-    cd "$W_CACHE"/physx
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i PhysX-9.14.0702-SystemSoftware.msi $W_UNATTENDED_SLASH_Q
 }
 
@@ -7606,7 +7605,7 @@ load_shockwave() {
     # 2015-12-27 sha1sum: 3ac6d85e54dffb2940c89fc10e63363a47ec96d0
 
     w_download http://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi 3ac6d85e54dffb2940c89fc10e63363a47ec96d0
-    cd "$W_CACHE"/shockwave
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i sw_lic_full_installer.msi $W_UNATTENDED_SLASH_Q
 }
 
@@ -7766,7 +7765,7 @@ w_metadata vb5run dlls \
 load_vb5run()
 {
     w_download http://download.microsoft.com/download/vb50pro/utility/1/win98/en-us/msvbvm50.exe 28bfaf09b8ac32cf5ffa81252f3e2fadcb3a8f27
-    cd "$W_CACHE"/vb5run
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msvbvm50.exe $W_UNATTENDED_SLASH_Q
 }
 
@@ -7801,7 +7800,7 @@ load_vb6run()
     rm -f "$W_SYSTEM32_DLLS"/olepro32.dll
     rm -f "$W_SYSTEM32_DLLS"/stdole2.tlb
 
-    cd "$W_CACHE"/vb6run
+    cd "$W_CACHE/$W_PACKAGE"
     # Exits with status 43 for some reason?
     "$WINE" vbrun60sp6.exe $W_UNATTENDED_SLASH_Q
 
@@ -7979,7 +7978,7 @@ load_vcrun2005()
     # http://support.microsoft.com/kb/2538242
     w_download http://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x86.EXE b8fab0bb7f62a24ddfe77b19cd9a1451abd7b847
 
-    cd "$W_CACHE"/vcrun2005
+    cd "$W_CACHE/$W_PACKAGE"
     w_override_dlls native,builtin atl80 msvcm80 msvcp80 msvcr80 vcomp
     w_try "$WINE" $file1 $W_UNATTENDED_SLASH_Q
 }
@@ -8001,7 +8000,7 @@ load_vcrun2008()
     # http://support.microsoft.com/kb/2538242
     w_download http://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 470640aa4bb7db8e69196b5edb0010933569e98d
     w_override_dlls native,builtin atl90 msvcm90 msvcp90 msvcr90 vcomp90
-    cd "$W_CACHE"/vcrun2008
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 $W_UNATTENDED_SLASH_Q
 }
 
@@ -8021,7 +8020,7 @@ load_vcrun2010()
     w_download http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 372d9c1670343d3fb252209ba210d4dc4d67d358
 
     w_override_dlls native,builtin msvcp100 msvcr100 vcomp100 atl100
-    cd "$W_CACHE"/vcrun2010
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
 
     case "$W_ARCH" in
@@ -8307,7 +8306,7 @@ load_wmi()
     w_set_winver win98
     w_override_dlls native,builtin wbemprox wmiutils
     # Note: there is a crash in the background towards the end, doesn't seem to hurt; see http://bugs.winehq.org/show_bug.cgi?id=7920
-    cd "$W_CACHE"/wmi
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" wmi9x.exe $W_UNATTENDED_SLASH_S
     w_unset_winver
 }
@@ -8351,7 +8350,7 @@ load_wsh56vb()
     # See also http://www.microsoft.com/downloads/details.aspx?familyid=4F728263-83A3-464B-BCC0-54E63714BC75
     w_download http://download.microsoft.com/download/IE60/Patch/Q318089/W9XNT4Me/EN-US/vbs56men.exe 48f14a93db33caff271da0c93f334971f9d7cb22
 
-    cd "$W_CACHE"/wsh56vb
+    cd "$W_CACHE/$W_PACKAGE"
     w_override_dlls native,builtin vbscript
     # setupapi looks at the versions in new and original vbscript.dll, and wine's original is newer than wsh56vb's, so have to nuke the original
     w_try rm "$W_SYSTEM32_DLLS/vbscript.dll"
@@ -8540,7 +8539,7 @@ load_xmllite()
     # Doesn't install in newer versions:
     w_set_winver winxp
 
-    cd "$W_CACHE"/xmllite
+    cd "$W_CACHE/$W_PACKAGE"
     w_override_dlls native xmllite
     case $LANG in
     en*) w_try "$WINE" WindowsXP-KB915865-v11-x86-ENU.exe $W_UNATTENDED_SLASH_Q ;;
@@ -8566,7 +8565,7 @@ load_xna31()
 {
     w_call dotnet20sp2
     w_download http://download.microsoft.com/download/5/9/1/5912526C-B950-4662-99B6-119A83E60E5C/xnafx31_redist.msi bdd33b677c9576a63ff2a6f65e12c0563cc116e6
-    cd "$W_CACHE"/xna31
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec ${W_OPT_UNATTENDED:+/quiet} /i $file1
 }
 
@@ -8586,7 +8585,7 @@ load_xna40()
     w_call dotnet40
     # http://www.microsoft.com/en-us/download/details.aspx?id=20914
     w_download http://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi 49efdc29f65fc8263c196338552c7009fc96c5de
-    cd "$W_CACHE"/xna40
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec ${W_OPT_UNATTENDED:+/quiet} /i $file1
 }
 
@@ -9337,7 +9336,7 @@ w_metadata abiword apps \
 load_abiword()
 {
     w_download http://www.abisource.com/downloads/abiword/2.8.6/Windows/abiword-setup-2.8.6.exe a91acd3f60e842d23556032d34f1600602768318
-    cd "$W_CACHE"/abiword
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" abiword-setup-2.8.6.exe $W_UNATTENDED_SLASH_S
     w_declare_exe "$W_PROGRAMS_X86_WIN\\AbiWord\\bin" AbiWord.exe
 }
@@ -9479,7 +9478,7 @@ load_autohotkey()
 {
     W_BROWSERAGENT=1 \
     w_download http://www.autohotkey.com/download/AutoHotkey104805_Install.exe 13e5a9ca6d5b7705f1cd02560c3af4d38b1904fc
-    cd "$W_CACHE"/autohotkey
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" AutoHotkey104805_Install.exe $W_UNATTENDED_SLASH_S
 }
 
@@ -9496,7 +9495,7 @@ w_metadata cmake apps \
 load_cmake()
 {
     w_download http://www.cmake.org/files/v2.8/cmake-2.8.11.2-win32-x86.exe d79af5715c0ad48d78bb731cce93b5ad89b16512
-    cd "$W_CACHE"/cmake
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" cmake-2.8.11.2-win32-x86.exe $W_UNATTENDED_SLASH_S
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\CMake 2.8\\bin" "cmake-gui.exe"
@@ -9638,7 +9637,7 @@ w_metadata firefox apps \
 load_firefox()
 {
     w_download "https://download.mozilla.org/?product=firefox-39.0-SSL&os=win&lang=en-US" 75eccbd9b2d44210b551c9a5045f03f01e899528 "$file1"
-    cd "$W_CACHE"/firefox
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
@@ -9935,7 +9934,7 @@ load_ie7()
     else
         quiet="/quiet"
     fi
-    cd "$W_CACHE"/ie7
+    cd "$W_CACHE/$W_PACKAGE"
 
     "$WINE" IE7-WindowsXP-x86-enu.exe $quiet
 
@@ -10040,7 +10039,7 @@ load_ie8()
     else
         quiet=""
     fi
-    cd "$W_CACHE"/ie8
+    cd "$W_CACHE/$W_PACKAGE"
 
     # KLUDGE: if / is writable, having a z: mapping to it causes ie8 to put temporary directories on Z:\
     # so hide it temporarily.  This is not very robust!
@@ -10109,7 +10108,7 @@ w_metadata kobo apps \
 load_kobo()
 {
     w_download http://download.kobobooks.com/desktop/1/KoboSetup.exe 31a5f5583edf4b716b9feacb857d2170104cabd9
-    cd "$W_CACHE"/kobo
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Kobo" "Kobo.exe"
 }
@@ -10196,7 +10195,7 @@ load_nook()
     # 7 Oct 2011 sha1sum 3b0301bd55471cc47cced44501547411fac9fcea
     # 7 Mar 2012 sha1sum e7060a63b9b303ddd820de762d9df254e1c931bc
     w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe e7060a63b9b303ddd820de762d9df254e1c931bc
-    cd "$W_CACHE"/nook
+    cd "$W_CACHE/$W_PACKAGE"
     "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
     # normally has exit status 199?
     w_declare_exe "$W_PROGRAMS_WIN\\Barnes & Noble\\BNDesktopReader" "BNDReader.exe"
@@ -10479,7 +10478,7 @@ load_psdkwin7()
     # do an autohotkey script until msft gets its act together:
     # http://social.msdn.microsoft.com/Forums/en-US/windowssdk/thread/c053b616-7d5b-405d-9841-ec465a8e21d5
     w_download http://download.microsoft.com/download/7/A/B/7ABD2203-C472-4036-8BA0-E505528CCCB7/winsdk_web.exe a01dcc67a38f461e80ea649edf1353f306582507
-    cd "$W_CACHE"/psdkwin7
+    cd "$W_CACHE/$W_PACKAGE"
     if w_workaround_wine_bug 21596
     then
         w_warn "When given a choice, select only C++ compilers and headers, the other options don't work yet.  See http://bugs.winehq.org/show_bug.cgi?id=21596"
@@ -10524,14 +10523,16 @@ load_psdkwin71()
     w_call mfc42   # need mfc42u, or setup will abort
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en
     w_download http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe a8717ebb20a69c7efa85232bcb9899b8b07f98cf
-    cd "$W_CACHE"/psdkwin71
+
     if w_workaround_wine_bug 21596
     then
         w_warn "When given a choice, select only C++ compilers and headers, the other options don't work yet.  See http://bugs.winehq.org/show_bug.cgi?id=21596"
     fi
+
     # don't have a working unattended recipe.  Maybe we'll have to
     # do an autohotkey script until msft gets its act together:
     # http://social.msdn.microsoft.com/Forums/en-US/windowssdk/thread/c053b616-7d5b-405d-9841-ec465a8e21d5
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" winsdk_web.exe
 
     if w_workaround_wine_bug 21362
@@ -10590,7 +10591,7 @@ load_python26()
         w_die "This installer is broken under $WINETRICKS_WINE_VERSION. Please upgrade Wine. See https://code.google.com/p/winetricks/issues/detail?id=347 for more info."
     fi
 
-    cd "$W_CACHE"/python26
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i python-2.6.2.msi ALLUSERS=1 $W_UNATTENDED_SLASH_Q
 
     w_ahk_do "
@@ -10673,7 +10674,7 @@ load_spotify()
     # updates too frequently to check checksum :-(
     w_download http://www.spotify.com/download/Spotify%20Installer.exe
 
-    cd "$W_CACHE"/spotify
+    cd "$W_CACHE/$W_PACKAGE"
     # w_download doesn't handle renaming for us without a checksum, tsk.
     # And autohotkey thinks % is a variable reference.
     if test ! -f SpotifyInstaller.exe
@@ -10784,7 +10785,7 @@ load_steam()
     # 21 Jun 2015 0e8046d40c38d817338135ec73a5b217cc340cf5
     # 29 Dec 2015 728e3c82fd57c68cbbdb64965719081ffee6272c
     w_download http://media.steampowered.com/client/installer/SteamSetup.exe 728e3c82fd57c68cbbdb64965719081ffee6272c
-    cd "$W_CACHE"/steam
+    cd "$W_CACHE/$W_PACKAGE"
 
     # Should be fixed in newer steam versions, since 2012. Commenting out for a while before removing in case users need to revert locally
     #
@@ -10847,7 +10848,7 @@ load_uplay()
     # 16 Feb 2014 ?     sha1sum 19f98632ad1ff330c647f8ff1a3a15b44238c709
     # Changes too frequently, don't check anymore
     w_download http://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe
-    cd "$W_CACHE"/uplay
+    cd "$W_CACHE/$W_PACKAGE"
 
     # NSIS installer
     w_try "$WINE" UplayInstaller.exe ${W_OPT_UNATTENDED:+ /S}
@@ -11118,7 +11119,7 @@ w_metadata vlc apps \
 load_vlc()
 {
     w_download http://get.videolan.org/vlc/2.2.1/win32/vlc-2.2.1-win32.exe 4cbcea9764b6b657d2147645eeb5b973b642530e
-    cd "$W_CACHE"/vlc
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
     w_declare_exe "$W_PROGRAMS_X86_WIN\\VideoLAN\\VLC" vlc.exe
 }
@@ -11203,7 +11204,7 @@ load_wme9()
     # See also http://www.microsoft.com/downloads/details.aspx?FamilyID=5691ba02-e496-465a-bba9-b2f1182cdf24
     w_download http://download.microsoft.com/download/8/1/f/81f9402f-efdd-439d-b2a4-089563199d47/WMEncoder.exe 7a3f8781f3e5705651992ef0150ee30bc1295116
 
-    cd "$W_CACHE"/wme9
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" WMEncoder.exe $W_UNATTENDED_SLASH_Q
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Windows Media Components\\Encoder" "wmenc.exe"
@@ -11299,7 +11300,7 @@ load_wmp10()
     w_download http://download.microsoft.com/download/1/2/a/12a31f29-2fa9-4f50-b95d-e45ef7013f87/MP10Setup.exe 69862273a5d9d97b4a2e5a3bd93898d259e86657
 
     # Crashes on exit, but otherwise ok; see http://bugs.winehq.org/show_bug.cgi?id=12633
-    cd "$W_CACHE"/wmp10
+    cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" MP10Setup.exe $W_UNATTENDED_SLASH_Q
 
     # Disable WMP's services, since they depend on unimplemented stuff, they trigger the GUI debugger several times
