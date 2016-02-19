@@ -1175,17 +1175,6 @@ fi
         w_steam_safemode
     fi
 
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam" "steam.exe -login $W_STEAM_ID $W_STEAM_PASSWORD -applaunch $_W_steamid"
-
-    myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine cmd /c 'C:\\\\\\\\Run-$W_PACKAGE.bat'"
-    mymenu="$XDG_DATA_HOME/applications/wine/Programs/Steam/$_W_steamtitle.desktop"
-    if test -f "$mymenu" && w_workaround_wine_bug 26487 "Fixing system menu"
-    then
-        sed -i "s,Exec=.*,$myexec," "$mymenu"
-    else
-        w_warn "bug: could not find system menu entry $_W_steamtitle"
-    fi
-
     unset _W_steamid _W_steamtitle
 }
 
@@ -1311,11 +1300,6 @@ winetricks_load_gog()
         WinWait, Setup - $game_title, Exit Installer
         ControlClick, TMCoPShadowButton1 ; Exit Installer
         "
-
-    if test "$run_command"x != ""x
-    then
-        w_declare_exe "$W_PROGRAMS_X86_WIN\\GOG.com\\$install_dir" "$run_command"
-    fi
 }
 
 #----------------------------------------------------------------
@@ -2112,26 +2096,11 @@ w_metadata()
     esac
 }
 
-# Function for verbs to register their main executable [or, if name is given,
-# other executables]
-# Example:
-#   w_declare_exe "$W_PROGRAMS_X86_WIN\\WorldOfGooDemo" WorldOfGoo.exe [name]
+# Function for verbs to register their main executable [or, if name is given, other executables]
+# Deprecated. No-op for backwards compatibility
 w_declare_exe()
 {
-    _W_dir="$1"
-    _W_exe="$2"
-    if test "$3"
-    then
-        _W_name="$3"
-    else
-        _W_name="$W_PACKAGE"
-    fi
-    cat > "$W_DRIVE_C/run-$_W_name.bat" <<__EOF__
-${W_PROGRAMS_DRIVE}:
-cd "$_W_dir"
-$_W_exe %*
-__EOF__
-    unset _W_dir _W_exe _W_name
+    w_warn "w_declare_exe is deprecated, now a noop"
 }
 
 # Checks that a conflicting verb is not already installed in the prefix
@@ -9302,7 +9271,6 @@ load_3m_library()
     w_download http://www.3m.com/us/library/eBook/docs/3M-TM-Cloud-Library-PC-App-LIVE-Installer-1.51.735677.exe 810dc5f6b74ab7b34893288ee44ef7dc563a4ee7
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" 3M-TM-Cloud-Library-PC-App-LIVE-Installer-1.51.735677.exe $W_UNATTENDED_SLASH_S
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\3M(TM) Cloud Library PC App" "3MCloudLibrary.exe"
 }
 
 #----------------------------------------------------------------
@@ -9320,7 +9288,6 @@ load_7zip()
     w_download http://www.7-zip.org/a/7z1505.exe ece8bbd4c8903095d44e99196219c953a1d47bfd
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" 7z1505.exe $W_UNATTENDED_SLASH_S
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\7-Zip" "7zFM.exe"
 }
 
 #----------------------------------------------------------------
@@ -9338,7 +9305,6 @@ load_abiword()
     w_download http://www.abisource.com/downloads/abiword/2.8.6/Windows/abiword-setup-2.8.6.exe a91acd3f60e842d23556032d34f1600602768318
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" abiword-setup-2.8.6.exe $W_UNATTENDED_SLASH_S
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\AbiWord\\bin" AbiWord.exe
 }
 
 #----------------------------------------------------------------
@@ -9357,8 +9323,6 @@ load_adobe_diged()
     w_download http://kb2.adobe.com/cps/403/kb403051/attachments/setup.exe 4c79685408fa6ca12ef8bb0e0eaa4a846e21f915
     # NSIS installer
     w_try "$WINE" "$W_CACHE"/$W_PACKAGE/setup.exe ${W_OPT_UNATTENDED:+ /S}
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Adobe\\Adobe Digital Editions" \
-        digitaleditions.exe
 }
 
 #----------------------------------------------------------------
@@ -9427,7 +9391,6 @@ load_audible()
         WinWait, AudibleManager  ; the dang thing starts up
         WinKill
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Audible\\Bin" Manager.exe
 }
 
 #----------------------------------------------------------------
@@ -9461,7 +9424,6 @@ load_audibledm()
         WinWait, Audible Download Manager  ; the dang thing starts up
         WinKill
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Audible\\Bin" AudibleDownloadHelper.exe
 }
 
 #----------------------------------------------------------------
@@ -9497,8 +9459,6 @@ load_cmake()
     w_download http://www.cmake.org/files/v2.8/cmake-2.8.11.2-win32-x86.exe d79af5715c0ad48d78bb731cce93b5ad89b16512
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" cmake-2.8.11.2-win32-x86.exe $W_UNATTENDED_SLASH_S
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\CMake 2.8\\bin" "cmake-gui.exe"
 }
 
 #----------------------------------------------------------------
@@ -9551,8 +9511,6 @@ load_controlpad()
     then
         w_die "Install failed.  Please report,  If you just wanted fm20.dll, try installing art2min instead."
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\ActiveX Control Pad" "PED.EXE"
 }
 
 #----------------------------------------------------------------
@@ -9621,7 +9579,6 @@ load_emu8086()
     w_download https://web.archive.org/web/20140209022335/http://emu8086.com/emu8086.zip fa3b2451cbc46fd2e3aa2670fa4d81ae8e75c7db
     w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/$file1
     w_try "$WINE" "$W_TMP/Setup.exe" $W_UNATTENDED_SLASH_SILENT
-    w_declare_exe "c:\\emu8086" "emu8086.exe"
 }
 
 #----------------------------------------------------------------
@@ -9639,8 +9596,6 @@ load_firefox()
     w_download "https://download.mozilla.org/?product=firefox-39.0-SSL&os=win&lang=en-US" 75eccbd9b2d44210b551c9a5045f03f01e899528 "$file1"
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mozilla Firefox" firefox.exe
 }
 
 #----------------------------------------------------------------
@@ -9660,7 +9615,6 @@ load_fontxplorer()
 
     cd "$W_CACHE/fontxplorer"
     w_try "$WINE" Font_Xplorer_122_Free.exe $W_UNATTENDED_SLASH_S
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Font Xplorer" "FXplorer.exe"
 }
 
 #----------------------------------------------------------------
@@ -9678,7 +9632,6 @@ load_foobar2000()
     w_download_manual http://www.foobar2000.org/download foobar2000_v1.3.6.exe 77d1c3aa766853701d29e46b3018aaf1e1b5dd39
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 $W_UNATTENDED_SLASH_S
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\foobar2000" "foobar2000.exe"
 }
 
 #----------------------------------------------------------------
@@ -9768,7 +9721,6 @@ load_irfanview()
     else
         w_try "$WINE" $file1
     fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\IrfanView" "i_view32.exe"
 }
 
 #----------------------------------------------------------------
@@ -10110,7 +10062,6 @@ load_kobo()
     w_download http://download.kobobooks.com/desktop/1/KoboSetup.exe 31a5f5583edf4b716b9feacb857d2170104cabd9
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Kobo" "Kobo.exe"
 }
 
 #----------------------------------------------------------------
@@ -10173,8 +10124,6 @@ load_mspaint()
     w_download http://download.microsoft.com/download/0/A/4/0A40DF5C-2BAE-4C63-802A-84C33B34AC98/WindowsXP-KB978706-x86-ENU.exe f4e076b3867c2f08b6d258316aa0e11d6822b8d7
     w_try $WINE "$W_CACHE"/mspaint/WindowsXP-KB978706-x86-ENU.exe /q /x:"$W_TMP"/WindowsXP-KB978706-x86-ENU
     w_try cp -f "$W_TMP"/WindowsXP-KB978706-x86-ENU/SP3GDR/mspaint.exe "$W_WINDIR_UNIX"/mspaint.exe
-
-    w_declare_exe "$W_WINDIR_UNIX" "mspaint.exe"
 }
 
 #----------------------------------------------------------------
@@ -10198,7 +10147,6 @@ load_nook()
     cd "$W_CACHE/$W_PACKAGE"
     "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
     # normally has exit status 199?
-    w_declare_exe "$W_PROGRAMS_WIN\\Barnes & Noble\\BNDesktopReader" "BNDReader.exe"
 }
 
 #----------------------------------------------------------------
@@ -10267,12 +10215,6 @@ load_office2003pro()
         }
         WinWaitClose
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" WINWORD.EXE  word2003
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" EXCEL.EXE    excel2003
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" POWERPNT.EXE powerpoint2003
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" MSACCESS.EXE access2003
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office11" OUTLOOK.EXE  outlook2003
 }
 
 #----------------------------------------------------------------
@@ -10330,14 +10272,6 @@ $W_CACHE/$W_PACKAGE/key.txt and rerun."
     else
         w_try "$WINE" ${W_ISO_MOUNT_LETTER}:setup.exe
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" WINWORD.EXE  word2007
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" EXCEL.EXE    excel2007
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" POWERPNT.EXE powerpoint2007
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" MSACCESS.EXE access2007
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" OUTLOOK.EXE  outlook2007
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" MSPUB.EXE  publisher2007
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Office\\Office12" INFOPATH.EXE  infopath2007
 }
 
 #----------------------------------------------------------------
@@ -10355,7 +10289,6 @@ load_opera()
     w_download ftp://ftp.opera.com/pub/opera/win/1150/en/Opera_1150_en_Setup.exe df50c7aed50e92af858e8834f833dd0543014b46
     cd "$W_CACHE"/$W_PACKAGE
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /silent /launchopera 0 /allusers}
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Opera" opera.exe
 }
 
 #----------------------------------------------------------------
@@ -10406,7 +10339,6 @@ load_picasa39()
         }
         WinWaitClose
         "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Google\\Picasa3" "Picasa3.exe"
 }
 
 #----------------------------------------------------------------
@@ -10718,8 +10650,6 @@ load_safari()
 
     cd "$W_CACHE"/$W_PACKAGE
     w_try "$WINE" SafariSetup.exe $W_UNATTENDED_SLASH_QN
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Safari" "Safari.exe"
 }
 
 #----------------------------------------------------------------
@@ -10857,8 +10787,6 @@ load_uplay()
     then
         w_call gdiplus
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Ubisoft Game Launcher" "Uplay.exe"
 }
 
 #----------------------------------------------------------------
@@ -10886,8 +10814,6 @@ load_utorrent()
     w_download_manual "http://www.oldapps.com/utorrent.php?old_utorrent=38" utorrent_2.2.1.exe c6d9a80c02898139b17194d10293f17ecef054cb
 
     w_try cp -f "$W_CACHE/utorrent/$file1" "$W_WINDIR_UNIX"/utorrent.exe
-
-    w_declare_exe "c:\\windows" "utorrent.exe"
 }
 
 #----------------------------------------------------------------
@@ -10921,8 +10847,6 @@ load_utorrent3()
     0|1) ;;
     *) w_die "Note: utorrent installer returned status '$status'.  Aborting." ;;
     esac
-
-    w_declare_exe "$W_DRIVE_C\\users\\$LOGNAME\\Application Data\\uTorrent" "uTorrent.exe"
 }
 
 #----------------------------------------------------------------
@@ -11039,8 +10963,6 @@ load_vc2005trial()
             controlclick, button2
         winwaitclose, Finish Page
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Visual Studio 8\\Common7\\IDE" "devenv.exe"
 }
 
 #----------------------------------------------------------------
@@ -11066,8 +10988,6 @@ load_vc2008express()
     # See also http://blogs.msdn.com/b/astebner/archive/2008/04/25/8425198.aspx
     cd "$W_TMP"/VCExpress
     w_try "$WINE" setup.exe $W_UNATTENDED_SLASH_Q
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Visual Studio 9.0\\Common7\\IDE" "VCExpress.exe"
 }
 
 #----------------------------------------------------------------
@@ -11121,7 +11041,6 @@ load_vlc()
     w_download http://get.videolan.org/vlc/2.2.1/win32/vlc-2.2.1-win32.exe 4cbcea9764b6b657d2147645eeb5b973b642530e
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\VideoLAN\\VLC" vlc.exe
 }
 
 #----------------------------------------------------------------
@@ -11182,7 +11101,6 @@ load_winamp()
     else
         w_try "$WINE" "$file1"
     fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Winamp" "winamp.exe"
 }
 
 #----------------------------------------------------------------
@@ -11206,8 +11124,6 @@ load_wme9()
 
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" WMEncoder.exe $W_UNATTENDED_SLASH_Q
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Windows Media Components\\Encoder" "wmenc.exe"
 }
 
 #----------------------------------------------------------------
@@ -11269,8 +11185,6 @@ load_wmp9()
     load_wm9codecs
 
     w_unset_winver
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Windows Media Player" "wmplayer.exe"
 }
 
 #----------------------------------------------------------------
@@ -11310,8 +11224,6 @@ load_wmp10()
     load_wm9codecs
 
     w_unset_winver
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Windows Media Player" "wmplayer.exe"
 }
 
 #----------------------------------------------------------------
@@ -11366,14 +11278,6 @@ load_3dmark2000()
         Send {Enter}           ; Finish
         WinWaitClose
     "
-
-    cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
-c:
-cd "$W_PROGRAMS_X86_WIN\MadOnion.com\3DMark2000"
-REM possible wine cmd bug: "3dmark2000" aborts, but ".\3dmark2000" works
-.\3DMark2000 %*
-__EOF__
-
 }
 
 #----------------------------------------------------------------
@@ -11419,8 +11323,6 @@ load_3dmark2001()
         }
         WinWaitClose
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\MadOnion.com\\3DMark2001 SE" "3DMark2001SE.exe"
 }
 
 #----------------------------------------------------------------
@@ -11480,7 +11382,6 @@ load_3dmark03()
         }
         WinWaitClose, 3DMark03 - InstallShield Wizard, Complete
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Futuremark\\3DMark03" "3DMark03.exe"
 }
 
 #----------------------------------------------------------------
@@ -11530,8 +11431,6 @@ load_3dmark05()
         w_warn "You must run the app with the -nosysteminfo option to avoid a crash on startup"
         ARGS="-nosysteminfo"
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Futuremark\\3DMark05" "3DMark05 $ARGS"
 }
 
 #----------------------------------------------------------------
@@ -11587,8 +11486,6 @@ load_3dmark06()
         w_warn "You must run the app with the -nosysteminfo option to avoid a crash on startup"
         ARGS="-nosysteminfo"
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Futuremark\\3DMark06" "3DMark06 $ARGS"
 }
 
 #----------------------------------------------------------------
@@ -11729,8 +11626,6 @@ load_amnesia_tdd_demo()
             WinWaitClose, Amnesia - The Dark Descent Demo, finished
         }
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Amnesia - The Dark Descent Demo\\redist" "Amnesia.exe"
 }
 
 #----------------------------------------------------------------
@@ -11816,8 +11711,6 @@ load_aoe_demo()
         }
         WinWaitClose, Microsoft Age of Empires Trial Version
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Age of Empires Trial" "empires"
 }
 
 #----------------------------------------------------------------
@@ -11861,7 +11754,6 @@ load_acreedbro()
         }
         WinWaitClose
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Assassin's Creed Brotherhood" AssassinsCreedBrotherhood.exe
 
     w_download http://static3.cdn.ubi.com/ac_brotherhood/ac_brotherhood_1.01_ww.exe a2b76f16616709cc16537b0e98faa4181ca904ce
 
@@ -11947,7 +11839,6 @@ load_atmosphir()
         }
         winwaitclose
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN/Minor Studios/Atmosphir" Atmosphir.exe
 }
 
 #----------------------------------------------------------------
@@ -12227,8 +12118,6 @@ load_bfbc2()
     then
         w_warn 'If the game says "No CD/DVD error", try "sudo mount -o remount,unhide,uid=`uid -u`".  See http://bugs.winehq.org/show_bug.cgi?id=22961 for more info.'
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Battlefield Bad Company 2" "BFBC2Game.exe"
 }
 
 #----------------------------------------------------------------
@@ -12293,10 +12182,6 @@ load_cnc_tiberian_sun()
     # FIXME: we need a progress indicator when unpacking large archives
     w_info "Unpacking rar file.  This will take a minute."
     w_try_unrar "$W_CACHE/$W_PACKAGE/$file1"
-
-    w_declare_exe \
-        "$W_PROGRAMS_X86_WIN\\EA Games\\Command & Conquer The First Decade\\Command & Conquer(tm) Tiberian Sun(tm)\\SUN" \
-        Game.exe
 }
 
 #----------------------------------------------------------------
@@ -12386,8 +12271,6 @@ load_cnc_redalert3_demo()
             WinWaitClose
         "
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Red Alert 3 Demo" RA3Demo.exe
 }
 
 #----------------------------------------------------------------
@@ -12424,7 +12307,6 @@ load_cim_demo()
     w_download_manual http://www.fileplanet.com/218762/210000/fileinfo/Cities-in-Motion-Demo cim-demo-1-0-8.exe d40408b59bc0e6e33b564e9bbb55dbab6c44c630
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" cim-demo-1-0-8.exe ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Cities In Motion Demo" "Cities In Motion.exe"
 }
 
 #----------------------------------------------------------------
@@ -12484,13 +12366,6 @@ load_cod_demo()
     else
         setvar=
     fi
-    cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
-$setvar
-c:
-cd "$W_PROGRAMS_X86_WIN\\Call of Duty Single Player Demo"
-CoDSP.exe %*
-__EOF__
-
 }
 
 #----------------------------------------------------------------
@@ -12577,13 +12452,6 @@ load_cod1()
     else
         setvar=
     fi
-    cat > "$W_DRIVE_C/run-$W_PACKAGE.bat" <<__EOF__
-$setvar
-c:
-cd "$W_PROGRAMS_X86_WIN\\Call of Duty"
-CoDSP.exe %*
-__EOF__
-
     w_warn "This game is copy-protected, and requires the real disc in a real drive to run."
 }
 
@@ -12636,8 +12504,6 @@ load_cod4mw_demo()
         }
         WinWaitClose,WinZip Self-Extractor - CoD4MWDemoSetup_v2
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Activision\\Call of Duty 4 - Modern Warfare Demo" "iw3sp.exe"
 }
 
 #----------------------------------------------------------------
@@ -12741,8 +12607,6 @@ load_cojbib_demo()
 
         winwaitclose Call of Juarez
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Demo\\Techland\\Call of Juarez - Bound in Blood SP Demo" "CoJBiBDemo_x86.exe"
 }
 
 #----------------------------------------------------------------
@@ -12801,7 +12665,6 @@ load_crayonphysics_demo()
     w_download http://crayonphysicsdeluxe.s3.amazonaws.com/crayon_release52demo.exe 4ffd64c630f69e7cf024ef946c2c64c8c4ce4eac
     # Inno Setup installer
     w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Crayon Physics Deluxe Demo" crayon.exe
 }
 
 #----------------------------------------------------------------
@@ -12904,8 +12767,6 @@ load_csi6_demo()
             WinWaitClose
         }
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Telltale Games\\CSI - Fatal Conspiracy Demo" "CSI6Demo.exe"
 }
 
 #----------------------------------------------------------------
@@ -12958,9 +12819,6 @@ load_darknesswithin2_demo()
     then
         w_call d3dx9_36
     fi
-
-    # you have to cd to the directory containing DarkLineage.exe before running it
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Iceberg Interactive\\Darkness Within 2 Demo" "DarkLineage.exe"
 }
 
 #----------------------------------------------------------------
@@ -13011,7 +12869,6 @@ load_darkspore()
         }
         WinWaitClose, InstallShield Wizard
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Darkspore\\DarksporeBin" "Darkspore.exe"
 }
 
 #----------------------------------------------------------------
@@ -13102,7 +12959,6 @@ load_dcuo()
         winwaitclose
     "
     w_warn "Now let the wookie install itself, and then quit."
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Sony Online Entertainment\\Installed Games\\DC Universe Online Live" LaunchPad.exe
 }
 
 #----------------------------------------------------------------
@@ -13322,8 +13178,6 @@ load_deusex2_demo()
             controlclick button4
         winwaitclose Deus Ex, Complete
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Deus Ex - Invisible War Demo\\System" "DX2.exe"
 }
 
 #----------------------------------------------------------------
@@ -13396,9 +13250,6 @@ load_diablo2()
         ControlClick &Cancel, Diablo II"
     # Dagnabbit, the darn updater starts the game after it updates, no matter what I do?
     w_killall "Game.exe"
-
-    # Runs better in window
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Diablo II" "Diablo II.exe -d3d9 -w"
 }
 
 w_metadata digitanks_demo games \
@@ -13421,7 +13272,6 @@ load_digitanks_demo()
     then
         w_call corefonts
     fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Digitanks" digitanksdemo.exe
 }
 
 w_metadata dirt2_demo games \
@@ -13481,8 +13331,6 @@ load_dirt2_demo()
         }
         WinWaitClose, DiRT2 Demo - InstallShield Wizard, Complete
         "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Codemasters\\DiRT2 Demo" "dirt2.exe"
 }
 
 #----------------------------------------------------------------
@@ -13561,8 +13409,6 @@ load_divinity2_demo()
     then
         w_call wmp9
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Divinity II - Ego Draconis - Demo\\Bin" "Divinity2_Demo.exe"
 }
 
 #----------------------------------------------------------------
@@ -13604,7 +13450,6 @@ load_demolition_company_demo()
         }
         winwaitclose, Setup - Demolition
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Demolition Company Demo\\" "DemolitionCompany.exe"
 }
 
 #----------------------------------------------------------------
@@ -13955,8 +13800,6 @@ _EOF_
     then
         w_call d3dx9_36
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Fable - The Lost Chapters" "Fable.exe"
 }
 
 #----------------------------------------------------------------
@@ -13995,7 +13838,6 @@ load_farmsim2011_demo()
             ControlClick TNewButton2   ; Finish
         WinWaitClose
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Farming Simulator 2011 Demo" game.exe
 }
 
 #----------------------------------------------------------------
@@ -14141,8 +13983,6 @@ load_hordesoforcs2_demo()
         }
         winwaitclose Orcs
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Hordes of Orcs 2 Demo" "HoO2.exe"
 }
 
 #----------------------------------------------------------------
@@ -14220,8 +14060,6 @@ load_mfsxde()
         ; Setup doesn't close on its own, because this process doesn't exit cleanly
         process, close, IDriver.exe
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Microsoft Flight Simulator X" "fsx.exe"
 }
 
 #----------------------------------------------------------------
@@ -14268,8 +14106,6 @@ load_mfsx_demo()
         ; Setup doesn't close on its own, because this process doesn't exit cleanly
         process, close, IDriver.exe
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Microsoft Flight Simulator X" "fsx.exe"
 }
 
 #----------------------------------------------------------------
@@ -14402,8 +14238,6 @@ load_gta_vc()
         w_call vd=800x600
     fi
 
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Rockstar Games\\Grand Theft Auto Vice City" gta-vc.exe
-
     myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine cmd /c 'C:\\\\\\\\Run-gta_vc.bat'"
     mymenu="$XDG_DATA_HOME/applications/wine/Programs/Rockstar Games/Grand Theft Auto Vice City/Play GTA Vice City.desktop"
     if test -f "$mymenu" && w_workaround_wine_bug 26304 "Fixing system menu"
@@ -14444,8 +14278,6 @@ load_guildwars()
         Sleep 4000
         WinClose, ahk_class ArenaNet_Dx_Window_Class
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Guild Wars" "Gw.exe"
 }
 
 #----------------------------------------------------------------
@@ -14498,8 +14330,6 @@ load_hegemonygold_demo()
         }
         WinWaitClose,Hegemony
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Longbow Digital Arts\\Hegemony Gold" "Hegemony Gold.exe"
 }
 
 #----------------------------------------------------------------
@@ -14562,8 +14392,6 @@ load_hegemony_demo()
         }
         WinWaitClose,Hegemony
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Longbow Digital Arts\\Hegemony Philip of Macedon" "Hegemony Philip of Macedon.exe"
 }
 
 #----------------------------------------------------------------
@@ -14612,8 +14440,6 @@ load_hphbp_demo()
     # Won't really work on cygwin, but that's ok.
     cd "$W_PROGRAMS_X86_UNIX/Electronic Arts"
     ln -s "Harry Potter and the Half-Blood Prince"* "Harry Potter and the Half-Blood Prince Demo"
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Harry Potter and the Half-Blood Prince Demo\\pc" hp6_demo.exe
 }
 
 #----------------------------------------------------------------
@@ -14732,8 +14558,6 @@ load_kotor1()
         }
         winwaitclose Star Wars, Complete
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\LucasArts\\SWKotOR" "swkotor.exe"
 }
 
 #----------------------------------------------------------------
@@ -14792,8 +14616,6 @@ load_losthorizon_demo()
         }
         WinWaitClose
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Deep Silver\\Lost Horizon Demo" "fsasgame.exe"
 }
 
 #----------------------------------------------------------------
@@ -14852,8 +14674,6 @@ load_lego_potc_demo()
         }
         winwaitclose, LEGO
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Disney Interactive Studios\\LEGO Pirates DEMO" LEGOPiratesDEMO.exe
 }
 
 #----------------------------------------------------------------
@@ -14934,12 +14754,6 @@ load_lswcs()
         }
         winwaitclose, LEGO
     "
-    # Installer crashes at end (http://bugs.winehq.org/show_bug.cgi?id=22529) but this doesn't seem to hurt.
-    # Wait for all processes to exit, else unmount will fail
-    #$W_WINESERVER -w
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\LucasArts\\LEGO Star Wars - The Complete Saga" "LEGOStarWarsSaga.exe"
-
     w_warn "This game is copy-protected, and requires the real disc in a real drive to run."
 }
 
@@ -14998,8 +14812,6 @@ load_lemonysnicket()
         }
         WinWaitClose, Lemony
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Activision\\Lemony Snicket's A Series of Unfortunate Events" System\\game.exe
 }
 
 #----------------------------------------------------------------
@@ -15035,7 +14847,6 @@ load_luxor_ar()
         }
         winwaitclose
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\MumboJumbo\\Luxor Amun Rising" "Luxor AR.exe"
 }
 
 #----------------------------------------------------------------
@@ -15195,8 +15006,6 @@ load_maxmagicmarker_demo()
     # Work around bug in game?!
     cd "$W_PROGRAMS_X86_UNIX/$W_PACKAGE"
     mv "max and the magic markerdemo pc" "max and the magic markerdemo pc"_Data
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\$W_PACKAGE" "max and the magic markerdemo pc.exe"
 }
 
 #----------------------------------------------------------------
@@ -15260,7 +15069,6 @@ load_mdk()
     cd "$W_DRIVE_C/SHINY/MDK"
     w_try_unzip . "$W_CACHE/$W_PACKAGE"/patch-mdk3dfx.zip
 
-    w_declare_exe "C:\\SHINY\\MDK" "MDK3DFX.EXE"
     # TODO: wine fails to install menu items, add a workaround for that
 }
 
@@ -15303,8 +15111,6 @@ load_menofwar()
             ControlClick, TNewButton1, Setup - Men of War, Setup has finished
         }
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Aspyr\\Men of War" "mow.exe"
 }
 
 #----------------------------------------------------------------
@@ -15337,8 +15143,6 @@ load_mb_warband_demo()
         }
         winwaitclose Warband
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mount&Blade Warband" "mb_warband.exe"
 }
 
 #----------------------------------------------------------------
@@ -15413,8 +15217,6 @@ load_mise()
             Process, Close, MISE.exe
         "
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\LucasArts\\The Secret of Monkey Island Special Edition" "MISE.exe"
 }
 
 #----------------------------------------------------------------
@@ -15457,7 +15259,6 @@ load_myth2_demo()
         }
         winwaitclose
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Myth II Demo" "Myth II Demo.exe"
 }
 
 #----------------------------------------------------------------
@@ -15526,8 +15327,6 @@ load_nfsshift_demo()
         }
         winwaitclose, Setup, Finish
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Need for Speed SHIFT Demo" "shiftdemo.exe"
 }
 
 #----------------------------------------------------------------
@@ -15607,7 +15406,6 @@ load_nfsworld()
         }
         winwaitclose
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Need For Speed World" GameLauncher.exe
 }
 
 #----------------------------------------------------------------
@@ -15644,7 +15442,6 @@ load_njcwp_trial()
     else
         w_try "$WINE" $file1
     fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\NJStar Chinese WP" "njstar.exe"
 }
 
 #----------------------------------------------------------------
@@ -15681,7 +15478,6 @@ load_njjwp_trial()
     else
         w_try "$WINE" $file1
     fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\NJStar Japanese WP" "njstarj.exe"
 }
 
 #----------------------------------------------------------------
@@ -15732,8 +15528,6 @@ load_oblivion()
     then
         w_call d3dx9_36
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Bethesda Softworks\\Oblivion" "Oblivion.exe"
 }
 
 #----------------------------------------------------------------
@@ -15753,7 +15547,6 @@ load_penpenxmas()
 
     cd "$W_CACHE/$W_PACKAGE"
     "$WINE" PenPenXmasOlympics100.exe $W_UNATTENDED_SLASH_S
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\PPO" "PPO.exe"
 }
 
 #----------------------------------------------------------------
@@ -15788,8 +15581,6 @@ load_plantsvszombies()
         }
         WinWaitClose
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\PopCap Games\\Plants vs. Zombies" "PlantsVsZombies.exe"
 }
 
 #----------------------------------------------------------------
@@ -15844,8 +15635,6 @@ load_popfs()
             ControlClick, Button4
         }
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Prince of Persia The Forgotten Sands" "Prince of Persia.exe"
 }
 
 #----------------------------------------------------------------
@@ -15902,8 +15691,6 @@ load_qq()
 
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1"
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQ\\Bin" QQScLauncher.exe
 }
 
 #----------------------------------------------------------------
@@ -15945,7 +15732,6 @@ load_qqintl()
 
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1"
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQIntl\\Bin" QQ.exe
 }
 
 #----------------------------------------------------------------
@@ -16046,8 +15832,6 @@ load_rct3deluxe()
         }
         WinWaitClose Setup - RollerCoaster Tycoon 3, finished
         "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Atari\\RollerCoaster Tycoon 3" RCT3.EXE
 }
 
 #----------------------------------------------------------------
@@ -16105,8 +15889,6 @@ load_rayman2_demo()
         # this is a hack, hopefully the wine bug will be fixed soon
         sed -i "s,Exec=.*,$myexec," "$mymenu"
     fi
-
-    w_declare_exe "c:\\UbiSoft\\Rayman2Demo" "Rayman2Demo.exe"
 }
 
 #----------------------------------------------------------------
@@ -16143,8 +15925,6 @@ load_riseofnations_demo()
     then
         w_call directmusic
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Rise of Nations Trial" "nations.exe"
 }
 
 #----------------------------------------------------------------
@@ -16178,8 +15958,6 @@ load_secondlife()
         }
         winwaitclose
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\SecondLifeViewer" "SecondLife.exe"
 }
 
 #----------------------------------------------------------------
@@ -16246,8 +16024,6 @@ load_sims3()
         }
         winwaitclose
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\The Sims 3\\Game\\Bin" "TS3.exe"
 }
 
 #----------------------------------------------------------------
@@ -16425,8 +16201,6 @@ load_sims3_gen()
         }
         winwaitclose
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\The Sims 3 Generations/Game/Bin" "TS3EP04.exe"
 }
 
 #----------------------------------------------------------------
@@ -16480,8 +16254,6 @@ load_splitsecond()
         sleep 500
         ControlClick, Button4, Split
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Disney Interactive Studios\\Split Second" "SplitSecond.exe"
 }
 
 #----------------------------------------------------------------
@@ -16528,8 +16300,6 @@ load_splitsecond_demo()
         ControlClick, Button1, Split, completed
         ControlClick, Button4, Split, completed
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Disney Interactive Studios\\Split Second Demo" "SplitSecondDEMO.exe"
 }
 
 #----------------------------------------------------------------
@@ -16592,8 +16362,6 @@ load_spore()
         }
         winwaitclose, SPORE, complete
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\SPORE\\Sporebin" "SporeApp.exe"
 }
 
 #----------------------------------------------------------------
@@ -16645,8 +16413,6 @@ load_spore_cc_demo()
     else
         w_try "$WINE" "$file1"
     fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\SPORE\\Sporebin" \
-        "SporeCreatureCreator.exe"
 }
 
 #----------------------------------------------------------------
@@ -16714,8 +16480,6 @@ load_starcraft2_demo()
             process, close, SC2.exe
         }
         "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\StarCraft II Demo" "StarCraft II.exe"
 }
 
 #----------------------------------------------------------------
@@ -16794,8 +16558,6 @@ load_theundergarden_demo()
         }
         WinWaitClose,Setup,launched
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\The UnderGarden" "TheUndergarden.exe"
 }
 
 #----------------------------------------------------------------
@@ -16854,8 +16616,6 @@ load_tmnationsforever()
         }
         WinWaitClose
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\TmNationsForever" "TmForever.exe"
 }
 
 #----------------------------------------------------------------
@@ -16905,8 +16665,6 @@ load_trainztcc_2004()
         winwaitclose
     "
 
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Auran\\TRS2004" "TRS2004.exe"
-
     # And, while we're at it, also install the accompanying paint shed app
     cd ${W_ISO_MOUNT_ROOT}/TRAINZ_PAINTSHED
     w_ahk_do "
@@ -16930,7 +16688,6 @@ load_trainztcc_2004()
         }
         winwaitclose
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Auran\\Trainz Paint Shed" "Trainz Paint Shed.exe" paintshed
 }
 
 #----------------------------------------------------------------
@@ -16969,7 +16726,6 @@ load_sammax301_demo()
         }
         winwaitclose Sam and Max The Penal Zone Setup
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Telltale Games\\Sam and Max - The Devil's Playhouse\\The Penal Zone" "SamMax301.exe"
 }
 
 #----------------------------------------------------------------
@@ -17128,8 +16884,6 @@ load_wglgears()
     mkdir -p "$W_PROGRAMS_X86_UNIX/misc"
     cp "$W_CACHE"/wglgears/wglgears.exe "$W_PROGRAMS_X86_UNIX/misc"
     chmod +x "$W_PROGRAMS_X86_UNIX/misc/wglgears.exe"
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\misc" wglgears.exe
 }
 
 #----------------------------------------------------------------
@@ -17191,8 +16945,6 @@ load_stalker_pripyat_bench()
         w_call d3dx9_31
         w_call d3dx9_42
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Call Of Pripyat Benchmark" "Benchmark.exe"
 }
 
 #----------------------------------------------------------------
@@ -17230,8 +16982,6 @@ load_torchlight()
         }
         WinWaitClose, Torchlight Setup
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Runic Games\\Torchlight" Torchlight.exe
 }
 
 #----------------------------------------------------------------
@@ -17328,8 +17078,6 @@ load_typingofthedead_demo()
         ; installer crashes here?
         Sleep 20000
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\SEGA\\TOD-Demo" "Tod_e_demo.exe"
 }
 
 #----------------------------------------------------------------
@@ -17440,7 +17188,6 @@ load_wog()
         }
         winwaitclose, World of Goo Setup
         "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\WorldOfGooDemo" WorldOfGoo.exe
 }
 
 #----------------------------------------------------------------
@@ -17477,8 +17224,6 @@ load_zootycoon2_demo()
         winwaitactive, Zoo Tycoon 2 Trial, COMPLETE
         winclose, Zoo Tycoon 2 Trial, COMPLETE
         "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Zoo Tycoon 2 Trial Version" "zt2demoretail.exe"
 }
 
 #----------------------------------------------------------------
