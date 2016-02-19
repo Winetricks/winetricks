@@ -13024,7 +13024,7 @@ load_deadspace()
 #----------------------------------------------------------------
 
 w_metadata deadspace2 games \
-    title="Dead Space 2" \ 
+    title="Dead Space 2" \
     publisher="EA" \
     year="2011" \
     media="dvd" \
@@ -14940,7 +14940,6 @@ load_masseffect2_demo()
     if w_workaround_wine_bug 23151 "Disabling glsl"
     then
         w_call glsl=disabled
-    fi
     fi
 
     # Don't let self-extractor write into $W_CACHE
