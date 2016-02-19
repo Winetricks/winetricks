@@ -4106,7 +4106,7 @@ winetricks_init()
         unset _abswine
         ;;
     esac
-    winetricks_set_wineprefix
+    winetricks_set_wineprefix $1
 
     # FIXME: don't hardcode
     W_PROGRAMS_DRIVE=c
@@ -4269,7 +4269,13 @@ then
         shift
     done
 
-    winetricks_init
+    # Workaround for https://github.com/Winetricks/winetricks/issues/599
+    # If --isolate is used, pass verb to winetricks_init, so it can set the wineprefix using winetricks_set_wineprefix()
+    # Otherwise, an arch mismatch between ${WINEPREFIX:-$HOME/.wine} and the prefix to be made for the isolated app would cause it to fail
+    case $WINETRICKS_OPT_SHAREDPREFIX in
+        0) winetricks_init $1 ;;
+        *) winetricks_init ;;
+    esac
 fi
 
 winetricks_install_app()
