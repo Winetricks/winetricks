@@ -3798,6 +3798,7 @@ winetricks_set_unattended()
         W_UNATTENDED_SLASH_QN="/qn"
         W_UNATTENDED_SLASH_QNT="/qnt"
         W_UNATTENDED_SLASH_QT="/qt"
+        W_UNATTENDED_SLASH_QUIET="/quiet"
         W_UNATTENDED_SLASH_S="/S"
         W_UNATTENDED_DASH_SILENT="-silent"
         W_UNATTENDED_SLASH_SILENT="/silent"
@@ -3809,6 +3810,7 @@ winetricks_set_unattended()
         W_UNATTENDED_SLASH_QN=""
         W_UNATTENDED_SLASH_QNT=""
         W_UNATTENDED_SLASH_QT=""
+        W_UNATTENDED_SLASH_QUIET=""
         W_UNATTENDED_SLASH_S=""
         W_UNATTENDED_DASH_SILENT=""
         W_UNATTENDED_SLASH_SILENT=""
@@ -8542,7 +8544,7 @@ load_xna31()
     w_call dotnet20sp2
     w_download http://download.microsoft.com/download/5/9/1/5912526C-B950-4662-99B6-119A83E60E5C/xnafx31_redist.msi bdd33b677c9576a63ff2a6f65e12c0563cc116e6
     cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec ${W_OPT_UNATTENDED:+/quiet} /i $file1
+    w_try "$WINE" msiexec $W_UNATTENDED_SLASH_QUIET /i $file1
 }
 
 #----------------------------------------------------------------
@@ -8562,7 +8564,7 @@ load_xna40()
     # http://www.microsoft.com/en-us/download/details.aspx?id=20914
     w_download http://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi 49efdc29f65fc8263c196338552c7009fc96c5de
     cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec ${W_OPT_UNATTENDED:+/quiet} /i $file1
+    w_try "$WINE" msiexec $W_UNATTENDED_SLASH_QUIET /i $file1
 }
 
 #----------------------------------------------------------------
@@ -9883,15 +9885,9 @@ load_ie7()
 
     # Install
     w_download http://download.microsoft.com/download/3/8/8/38889DC1-848C-4BF2-8335-86C573AD86D9/IE7-WindowsXP-x86-enu.exe d39b89c360fbaa9706b5181ae4718100687a5326
-    if test "$W_UNATTENDED_SLASH_Q" = ""
-    then
-        quiet=""
-    else
-        quiet="/quiet"
-    fi
     cd "$W_CACHE/$W_PACKAGE"
 
-    "$WINE" IE7-WindowsXP-x86-enu.exe $quiet
+    "$WINE" IE7-WindowsXP-x86-enu.exe $W_UNATTENDED_SLASH_QUIET
 
     # IE7 exits with 194 to signal a reboot
     status=$?
@@ -9988,9 +9984,9 @@ load_ie8()
     w_try cp -f "$W_CACHE"/ie8/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
     w_download http://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe e489483e5001f95da04e1ebf3c664173baef3e26
-    if [ $W_UNATTENDED_SLASH_Q ]
+    if [ $W_UNATTENDED_SLASH_QUIET ]
     then
-        quiet="/quiet /forcerestart"
+        quiet="$W_UNATTENDED_SLASH_QUIET /forcerestart"
     else
         quiet=""
     fi
