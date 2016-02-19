@@ -5476,13 +5476,8 @@ load_dotnet20()
         "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled'
     fi
 
-    cd "$W_CACHE"/dotnet20
-    if w_workaround_wine_bug 30845 "Using native fusion while installing..." 1.5.8,
-    then
-        w_try env WINEDLLOVERRIDES=mscoree,fusion=n "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
-    else
-        w_try "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
-    fi
+    cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
     w_unset_winver
 
     # We can't stop installing dotnet20 in win2K mode until wine supports
@@ -5492,11 +5487,6 @@ load_dotnet20()
     # See also http://bugs.winehq.org/show_bug.cgi?id=16577
     # This affects Victoria 2 demo, see http://forum.paradoxplaza.com/forum/showthread.php?p=11523967
     rm -f "$W_SYSTEM32_DLLS"/msvc?80.dll
-
-    if w_workaround_wine_bug 30162 "Dirty hack, killing off mscorsvw.exe" 1.5.31,
-    then
-        w_killall "mscorsvw.exe"
-    fi
 
     W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
@@ -5659,21 +5649,6 @@ load_dotnet20sp2()
 
     w_call dotnet20
 
-    WINEDLLOVERRIDES=
-    if w_workaround_wine_bug 22521 "Adding registry key, setting windows version so installer works"
-    then
-        # Recipe from http://bugs.winehq.org/show_bug.cgi?id=22521
-        "$WINE" reg add "HKLM\Software\Microsoft\Net Framework Setup\NDP\v2.0.50727" /v Version /d "2.0.50727" /f
-        # Stop services
-        # Recipe from http://bugs.winehq.org/show_bug.cgi?id=16956
-        $WINESERVER -k
-        # Fight a race condition, see bug 16956 comment 43
-        w_set_winver win2k
-        $WINESERVER -w
-        WINEDLLOVERRIDES=regsvcs.exe,mscorsvw.exe=b
-        export WINEDLLOVERRIDES
-    fi
-
     # FIXME: verify on pristine windows XP:
     if w_workaround_wine_bug 34803
     then
@@ -5774,15 +5749,6 @@ load_dotnet30()
     # OK if this fails, that just means you have an older wine.
     "$WINE" sc delete "FontCache3.0.0.0"
 
-    if w_workaround_wine_bug 30845 "Using native fusion..." ,1.5.6
-    then
-        # Either adding this registry key
-        #$WINE reg add 'HKLM\Software\Microsoft\.NETFramework' /v InstallRoot /d 'C:\Windows\Microsoft.NET\Framework\' /f
-        # or using native mscoree and fusion
-        WINEDLLOVERRIDES=mscoree,fusion=n
-        export WINEDLLOVERRIDES
-        # will let install start
-    fi
     WINEDLLOVERRIDES="ngen.exe,mscorsvw.exe=b;$WINEDLLOVERRIDES"
 
     cd "$W_CACHE"/dotnet30
@@ -5979,11 +5945,6 @@ load_dotnet40()
     # http://www.microsoft.com/download/en/details.aspx?id=17718
     w_download http://download.microsoft.com/download/9/5/A/95A9616B-7A37-4AF6-BC36-D6EA96C8DAAE/dotNetFx40_Full_x86_x64.exe 58da3d74db353aad03588cbb5cea8234166d8b99
 
-    if w_workaround_wine_bug 30707 "Need to get gacutil.exe"  1.5.5,
-    then
-        w_download_manual http://www.mediafire.com/?v8rw5h1ra7maod4 gacutil-net40.tar.bz2 d40cc1249ea051338c064aff5ba0f1a5f24b59a5
-    fi
-
     w_call remove_mono
 
     # Remove Mono registry entry:
@@ -5999,26 +5960,6 @@ load_dotnet40()
 
     "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Install /t REG_DWORD /d 0001 /f
     "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Version /t REG_SZ /d "4.0.30319" /f
-
-    if w_workaround_wine_bug 30707 "Manually registering assemblies"  1.5.5,
-    then
-        cd "$W_TMP"
-        tar -xvjf "$W_CACHE/$W_PACKAGE/gacutil-net40.tar.bz2"
-
-        for assembly in $W_WINDIR_UNIX/Microsoft.NET/Framework/v4.0.30319/*.[dD]ll
-        do
-            "$WINE" "$W_TMP/gacutil.exe" /i "$(w_pathconv -w $assembly)" /f
-        done
-
-        for assembly in $W_WINDIR_UNIX/Microsoft.NET/Framework/v4.0.30319/WPF/*.[dD]ll
-        do
-            # Some of the dlls aren't assemblies. FIXME: Should filter them based on that..
-            "$WINE" "$W_TMP/gacutil.exe" /i "$(w_pathconv -w $assembly)" /f || true
-        done
-
-        mkdir -p "$W_WINDIR_UNIX/Microsoft.NET/assembly/GAC_32/System.EnterpriseServices/v4.0_4.0.0.0__b03f5f7f11d50a3a"
-        cp "$W_WINDIR_UNIX/Microsoft.NET/Framework/v4.0.30319/System.EnterpriseServices.dll" "$W_WINDIR_UNIX/Microsoft.NET/assembly/GAC_32/System.EnterpriseServices/v4.0_4.0.0.0__b03f5f7f11d50a3a"
-    fi
 
     W_NGEN_CMD="$WINE $WINEPREFIX/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/ngen.exe executequeueditems"
 }
@@ -7427,12 +7368,6 @@ load_quicktime72()
     # https://support.apple.com/downloads/quicktime
     w_download http://appldnld.apple.com.edgesuite.net/content.info.apple.com/QuickTime/061-2915.20070710.pO94c/QuickTimeInstaller.exe bb89981f10cf21de57b9453e53cf81b9194271a9
 
-    if w_workaround_wine_bug 1347
-    then
-        w_warn "Setting vista mode to avoid blacking the whole screen in quicktime"
-        w_set_winver vista
-    fi
-
     cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" ${file1} ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $W_UNATTENDED_SLASH_QN > /dev/null 2>&1
 
@@ -7470,19 +7405,7 @@ load_quicktime76()
     # http://www.apple.com/quicktime/download/
     w_download http://appldnld.apple.com/QuickTime/041-0025.20101207.Ptrqt/QuickTimeInstaller.exe 1eec8904f041d9e0ad3459788bdb690e45dbc38e
 
-    if w_workaround_wine_bug 9366 ""  1.1.22,
-    then
-        w_call gdiplus
-        w_call vcrun2005      # no bug number, but same era
-    fi
-
-    if w_workaround_wine_bug 1347
-    then
-        w_warn "Setting vista mode to avoid blacking the whole screen in quicktime"
-        w_set_winver vista
-    fi
-
-    cd "$W_CACHE"/quicktime76
+    cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" QuickTimeInstaller.exe ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $W_UNATTENDED_SLASH_QN > /dev/null 2>&1
 
     if w_workaround_wine_bug 11681
@@ -8097,11 +8020,6 @@ load_vcrun2010()
     # See http://www.microsoft.com/downloads/details.aspx?FamilyID=a7b7a05e-6de6-4d3a-a423-37bf0912db84
     w_download http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 372d9c1670343d3fb252209ba210d4dc4d67d358
 
-    if w_workaround_wine_bug 23427 ""  1.3.5,
-    then
-        w_call msxml3
-    fi
-
     w_override_dlls native,builtin msvcp100 msvcr100 vcomp100 atl100
     cd "$W_CACHE"/vcrun2010
     w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
@@ -8144,21 +8062,8 @@ load_vcrun2012()
     w_download http://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x86.exe 96b377a27ac5445328cbaae210fc4f0aaa750d3f
 
     w_override_dlls native,builtin atl110 msvcp110 msvcr110 vcomp110
-    cd "$W_CACHE"/vcrun2012
-    if w_workaround_wine_bug 17273 "Manually extracting dlls"
-    then
-        w_try_cabextract --directory="$W_TMP" vcredist_x86.exe
-        w_try_cabextract --directory="$W_TMP" "$W_TMP/a2"
-        w_try_cabextract --directory="$W_TMP" "$W_TMP/a3"
-        cp "$W_TMP"/F_CENTRAL_atl110_x86 "$W_SYSTEM32_DLLS"/atl110.dll
-        cp "$W_TMP"/F_CENTRAL_mfc110_x86 "$W_SYSTEM32_DLLS"/mfc110.dll
-        cp "$W_TMP"/F_CENTRAL_mfc110u_x86 "$W_SYSTEM32_DLLS"/mfc110u.dll
-        cp "$W_TMP"/F_CENTRAL_msvcp110_x86 "$W_SYSTEM32_DLLS"/msvcp110.dll
-        cp "$W_TMP"/F_CENTRAL_msvcr110_x86 "$W_SYSTEM32_DLLS"/msvcr110.dll
-        cp "$W_TMP"/F_CENTRAL_vcomp110_x86 "$W_SYSTEM32_DLLS"/vcomp110.dll
-    else
-        w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
-    fi
+    cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
 
     case "$W_ARCH" in
     win64)
@@ -8202,20 +8107,8 @@ load_vcrun2013()
     w_download http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe df7f0a73bfa077e483e51bfb97f5e2eceedfb6a3
 
     w_override_dlls native,builtin atl120 msvcp120 msvcr120 vcomp120
-    cd "$W_CACHE"/vcrun2013
-    if w_workaround_wine_bug 17273 "Manually extracting dlls"
-    then
-        w_try_cabextract --directory="$W_TMP" vcredist_x86.exe
-        w_try_cabextract --directory="$W_TMP" "$W_TMP/a2"
-        w_try_cabextract --directory="$W_TMP" "$W_TMP/a3"
-        cp "$W_TMP"/F_CENTRAL_mfc120_x86 "$W_SYSTEM32_DLLS"/mfc120.dll
-        cp "$W_TMP"/F_CENTRAL_mfc120u_x86 "$W_SYSTEM32_DLLS"/mfc120u.dll
-        cp "$W_TMP"/F_CENTRAL_msvcp120_x86 "$W_SYSTEM32_DLLS"/msvcp120.dll
-        cp "$W_TMP"/F_CENTRAL_msvcr120_x86 "$W_SYSTEM32_DLLS"/msvcr120.dll
-        cp "$W_TMP"/F_CENTRAL_vcomp120_x86 "$W_SYSTEM32_DLLS"/vcomp120.dll
-    else
-        w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
-    fi
+    cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
 
     case "$W_ARCH" in
     win64)
@@ -8257,33 +8150,8 @@ load_vcrun2015()
     w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe bfb74e498c44d3a103ca3aa2831763fb417134d1
 
     w_override_dlls native,builtin atl140 msvcp140 msvcr140 vcomp140
-    cd "$W_CACHE"/vcrun2015
-    if w_workaround_wine_bug 17273 "Manually extracting dlls"
-    then
-        w_try_cabextract --directory="$W_TMP" vc_redist.x86.exe
-        w_try_cabextract --directory="$W_TMP" "$W_TMP/a10"
-        w_try_cabextract --directory="$W_TMP" "$W_TMP/a11"
-        cp "$W_TMP"/concrt140.dll "$W_SYSTEM32_DLLS"/concrt140.dll
-        cp "$W_TMP"/mfc140.dll "$W_SYSTEM32_DLLS"/mfc140.dll
-        cp "$W_TMP"/mfc140u.dll "$W_SYSTEM32_DLLS"/mfc140u.dll
-        cp "$W_TMP"/mfcm140.dll "$W_SYSTEM32_DLLS"/mfcm140.dll
-        cp "$W_TMP"/mfcm140u.dll "$W_SYSTEM32_DLLS"/mfcm140u.dll
-        cp "$W_TMP"/msvcp140.dll "$W_SYSTEM32_DLLS"/msvcp140.dll
-        cp "$W_TMP"/vcamp140.dll "$W_SYSTEM32_DLLS"/vcamp140.dll
-        cp "$W_TMP"/vccorlib140.dll "$W_SYSTEM32_DLLS"/vccorlib140.dll
-        cp "$W_TMP"/vcomp140.dll "$W_SYSTEM32_DLLS"/vcomp140.dll
-        cp "$W_TMP"/vcruntime140.dll "$W_SYSTEM32_DLLS"/vcruntime140.dll
-
-        w_override_dlls native,builtin api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0.dll api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 ucrtbase vcruntime140
-        cp "$W_TMP"/api_ms_win_crt_heap_l1_1_0.dll "$W_SYSTEM32_DLLS"/api-ms-win-crt-heap-l1-1-0.dll
-        cp "$W_TMP"/api_ms_win_crt_locale_l1_1_0.dll "$W_SYSTEM32_DLLS"/api-ms-win-crt-locale-l1-1-0.dll
-        cp "$W_TMP"/api_ms_win_crt_math_l1_1_0.dll  "$W_SYSTEM32_DLLS"/api-ms-win-crt-math-l1-1-0.dll
-        cp "$W_TMP"/api_ms_win_crt_runtime_l1_1_0.dll "$W_SYSTEM32_DLLS"/api-ms-win-crt-runtime-l1-1-0.dll
-        cp "$W_TMP"/api_ms_win_crt_stdio_l1_1_0.dll "$W_SYSTEM32_DLLS"/api-ms-win-crt-stdio-l1-1-0.dll
-        cp "$W_TMP"/ucrtbase.dll "$W_SYSTEM32_DLLS"/ucrtbase.dll
-    else
-        w_try "$WINE" vc_redist.x86.exe $W_UNATTENDED_SLASH_Q
-    fi
+    cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" vc_redist.x86.exe $W_UNATTENDED_SLASH_Q
 
     case "$W_ARCH" in
     win64)
@@ -8672,19 +8540,6 @@ load_xmllite()
     # Doesn't install in newer versions:
     w_set_winver winxp
 
-    if w_workaround_wine_bug 16013
-    then
-        # Find instructions to create this file in dlls/wintrust/tests/crypt.c
-        w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
-        # Put a dummy catalog file in place
-        mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
-        w_try cp -f "$W_CACHE"/xmllite/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
-        if test ! "$W_OPT_UNATTENDED"
-        then
-            w_warn "xmllite's interactive installer will hang at the end, but otherwise work."
-        fi
-    fi
-
     cd "$W_CACHE"/xmllite
     w_override_dlls native xmllite
     case $LANG in
@@ -8749,11 +8604,7 @@ load_xvid()
 {
     w_call vcrun6
     w_download http://www.koepi.info/Xvid-1.3.2-20110601.exe 0a11498a96f75ad019c4c7d06161504140337dc0
-    cd "$W_CACHE"/xvid
-    if w_workaround_wine_bug 27380 "Installing msvcr80 to avoid crash in setavi32.exe"
-    then
-        w_call vcrun2008
-    fi
+    cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ --mode unattended --decode_divx 1 --decode_3ivx 1 --decode_other 1}
 }
 
@@ -9754,14 +9605,6 @@ load_dxdiag()
     then
         w_call directmusic
     fi
-    if w_workaround_wine_bug 25715 "" 1.7.28,
-    then
-        w_call quartz
-    fi
-    if w_workaround_wine_bug 25716 "" 1.7.29,
-    then
-        w_call devenum
-    fi
 }
 
 #----------------------------------------------------------------
@@ -9794,11 +9637,6 @@ w_metadata firefox apps \
 
 load_firefox()
 {
-    if w_workaround_wine_bug 29077 "" 1.7.25,
-    then
-        w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
-    fi
-
     w_download "https://download.mozilla.org/?product=firefox-39.0-SSL&os=win&lang=en-US" 75eccbd9b2d44210b551c9a5045f03f01e899528 "$file1"
     cd "$W_CACHE"/firefox
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
@@ -9856,11 +9694,6 @@ w_metadata iceweasel apps \
 
 load_iceweasel()
 {
-    if w_workaround_wine_bug 29077 "" 1.7.25,
-    then
-        w_warn "Visit about:config, search for dom.ipc, and set those booleans false if you want to use flash."
-    fi
-
     w_download https://ftp.gnu.org/gnu/gnuzilla/31.7.0/icecat-31.7.0.en-US.win32.zip cf52a728c1af29065b7dc7bdddc9265a79eb5328
     w_try_unzip "${W_PROGRAMS_X86_UNIX}" "${W_CACHE}/${W_PACKAGE}/${file1}"
 }
@@ -10546,10 +10379,6 @@ load_picasa39()
     then
         w_warn "Picasa 3.9 authentication to the Google account is currently broken under wine. See http://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
     fi
-    if w_workaround_wine_bug 37729 "Picasa updater crashes during install unless dotnet20 loaded"
-    then
-        w_call dotnet20
-    fi
     cd "$W_CACHE"/$W_PACKAGE
     w_ahk_do "
         SetTitleMatchMode, 2
@@ -10645,10 +10474,6 @@ load_psdkwin7()
 {
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en
     w_call dotnet20
-    if w_workaround_wine_bug 21509 "" 1.2,
-    then
-        w_call gdiplus     # work around http://bugs.winehq.org/show_bug.cgi?id=21509
-    fi
     w_call mfc42   # need mfc42u, or setup will abort
     # don't have a working unattended recipe.  Maybe we'll have to
     # do an autohotkey script until msft gets its act together:
@@ -10856,11 +10681,6 @@ load_spotify()
         cp Spotify%20Installer.exe SpotifyInstaller.exe
     fi
 
-    if w_workaround_wine_bug 27476 "Installing winhttp to work around a facebook integration crash on login and install"
-    then
-        w_call ie7
-    fi
-
     # Install is silent by default, and always starts app
     # So all we have to do here is close app if we want unattended install
     w_ahk_do "
@@ -10874,8 +10694,6 @@ load_spotify()
         sleep 1000
         Process, Close, SpotifyWebHelper.exe
         "
-
-    w_declare_exe "c:\\users\\$LOGNAME\\Application Data\\Spotify" spotify.exe
 }
 
 #----------------------------------------------------------------
@@ -10892,28 +10710,12 @@ load_safari()
 {
     w_download http://appldnld.apple.com.edgesuite.net/content.info.apple.com/Safari5/061-7138.20100607.Y7U87/SafariSetup.exe e56d5d79d9cfbb85ac46ac78aa497d7f3d8dbc3d
 
-    cd "$W_CACHE"/$W_PACKAGE
-
-    if w_workaround_wine_bug 21146
-    then
-        w_try mkdir -p "$W_APPDATA_UNIX/Apple Computer/Preferences"
-        cat > "$W_APPDATA_UNIX/Apple Computer/Preferences/com.apple.Safari.plist" <<_EOF_
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-        <key>LastDisplayedWelcomePageVersionString</key>
-        <string>4.0</string>
-</dict>
-</plist>
-_EOF_
-    fi
-
     if test $W_OPT_UNATTENDED
     then
         w_warn "Safari's silent install is broken under wine. See http://bugs.winehq.org/show_bug.cgi?id=23493. You should do a regular install if you want to use Safari."
     fi
 
+    cd "$W_CACHE"/$W_PACKAGE
     w_try "$WINE" SafariSetup.exe $W_UNATTENDED_SLASH_QN
 
     w_declare_exe "$W_PROGRAMS_X86_WIN\\Safari" "Safari.exe"
@@ -10960,20 +10762,6 @@ load_sketchup()
         }
         WinWaitClose
     "
-
-    if w_workaround_wine_bug 14045 "Setting GLConfig Display HW_OK to 1" 1.3.18,
-    then
-        cat > "$W_TMP"/glconfigdisplay.reg <<_EOF_
-REGEDIT4
-
-[HKEY_CURRENT_USER\Software\Google\SketchUp8\GLConfig\Display]
-"HW_OK"="1"
-
-_EOF_
-        w_try_regedit "$W_TMP_WIN"\\glconfigdisplay.reg
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Google\\Google SketchUp 8" "SketchUp.exe"
 }
 
 #----------------------------------------------------------------
@@ -10998,13 +10786,15 @@ load_steam()
     w_download http://media.steampowered.com/client/installer/SteamSetup.exe 728e3c82fd57c68cbbdb64965719081ffee6272c
     cd "$W_CACHE"/steam
 
+    # Should be fixed in newer steam versions, since 2012. Commenting out for a while before removing in case users need to revert locally
+    #
     # Install corefonts first, so if the user doesn't have cabextract/Wine with cab support, we abort before installing Steam.
     # FIXME: support using Wine's cab support
-    if ! test -f "$W_FONTSDIR_UNIX/Times.TTF" && \
-        w_workaround_wine_bug 22751 "Installing corefonts to prevent a Steam crash"
-    then
-        w_call corefonts
-    fi
+    #if ! test -f "$W_FONTSDIR_UNIX/Times.TTF" && \
+    #    w_workaround_wine_bug 22751 "Installing corefonts to prevent a Steam crash"
+    #then
+    #    w_call corefonts
+    #fi
 
     if test $W_OPT_UNATTENDED
     then
@@ -11036,13 +10826,6 @@ load_steam()
     then
         w_override_dlls disabled gameoverlayrenderer
     fi
-
-    if w_workaround_wine_bug 31320 "Disabling dwrite.dll to prevent a Steam crash."
-    then
-        w_override_dlls disabled dwrite
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam" "Steam.exe"
 }
 
 #----------------------------------------------------------------
@@ -11068,15 +10851,6 @@ load_uplay()
 
     # NSIS installer
     w_try "$WINE" UplayInstaller.exe ${W_OPT_UNATTENDED:+ /S}
-
-    if w_workaround_wine_bug 33742 "Using native crypt32 so uplay's autoupdater doesn't abort"
-    then
-        # Directx9 and game installation often fails with native crypt32,
-        # so set it to native for Uplay.exe only.
-        w_call crypt32
-        w_override_dlls default crypt32
-        w_override_app_dlls Uplay.exe native crypt32
-    fi
 
     if w_workaround_wine_bug 33673 "Installing gdiplus to work around slow navigation"
     then
@@ -11164,10 +10938,6 @@ load_vc2005express()
 {
     # Thanks to http://blogs.msdn.com/astebner/articles/551674.aspx for the recipe
     w_call dotnet20
-    if w_workaround_wine_bug 20029 ""  1.3.9,
-    then
-        w_call msxml6
-    fi
 
     # http://blogs.msdn.com/b/astebner/archive/2006/03/14/551674.aspx
     # http://go.microsoft.com/fwlink/?linkid=57034
@@ -11185,10 +10955,6 @@ load_vc2005express()
         w_try "$WINE" Ixpvc.exe /t:"$W_TMP_WIN" /q:a /c:"msiexec /i vcsetup.msi VSEXTUI=1 ADDLOCAL=ALL REBOOT=ReallySuppress"
 
     else
-        if w_workaround_wine_bug 25331
-        then
-            w_warn "Install fails with wine older than 1.1.35.  With wine-1.3.5 or higher, interactive install fails, but quiet mode (-q option) may work."
-        fi
         w_try "$WINE" setup.exe
         w_ahk_do "
             SetTitleMatchMode, 2
@@ -11196,8 +10962,6 @@ load_vc2005express()
             WinWaitClose, Visual C++ 2005 Express Edition Setup
         "
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Visual Studio 8\\Common7\\IDE" "VCExpress.exe"
 }
 
 #----------------------------------------------------------------
@@ -11234,23 +10998,8 @@ w_metadata vc2005trial apps \
 
 load_vc2005trial()
 {
-    if w_workaround_wine_bug 26162 "Install fails with spurious error about custom action" ,1.3.4 1.3.15,
-    then
-        w_die "Please upgrade to wine-1.3.15 or later to install this app"
-    fi
-    if w_workaround_wine_bug 25331 "Install fails with error about custom rollback actions" 1.1.35,1.3.4 1.3.13,
-    then
-        w_die "Please upgrade to wine-1.3.15 or later to install this app"
-    fi
-    if w_workaround_wine_bug 27987 "Install fails with error about CA_RollbackHelpTransaction" ,1.3.19 1.3.37,
-    then
-        w_die "Please upgrade to wine-1.3.37 or later to install this app"
-    fi
     w_call dotnet20
-    if w_workaround_wine_bug 20029 "Installing native msxml6"  1.3.9,
-    then
-        w_call msxml6
-    fi
+    
     # Without mfc42.dll, pidgen.dll won't load, and the app claims "A trial edition is already installed..."
     w_call mfc42
 
@@ -11332,16 +11081,6 @@ w_metadata vc2010express apps \
 
 load_vc2010express()
 {
-    if w_workaround_wine_bug 32654 "Installing windows codecs to work around startup crash"
-    then
-        w_call windowscodecs
-    fi
-    if w_workaround_wine_bug 32280 "Replacing mono with dotnet40 to avoid fatal 'Unknown Error'"
-    then
-        # "w_call remove_mono" might suffice
-        w_call dotnet40
-    fi
-
     w_download http://download.microsoft.com/download/1/E/5/1E5F1C0A-0D5B-426A-A603-1798B951DDAE/VS2010Express1.iso adef5e361a1f64374f520b9a2d03c54ee43721c6
 
     # Unpack ISO
@@ -11363,8 +11102,6 @@ load_vc2010express()
     fi
 
     w_try $WINE setup.exe $W_UNATTENDED_SLASH_Q
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Visual Studio 10.0\\Common7\\IDE" "VCExpress.exe"
 }
 
 #----------------------------------------------------------------
@@ -11525,14 +11262,8 @@ load_wmp9()
     # Wine's pidgen is too stubby, crashes, see wine bug 31111
     w_override_app_dlls MPSetup.exe native pidgen
 
-    # Have to run twice; see http://bugs.winehq.org/show_bug.cgi?id=1886
-    cd "$W_CACHE"/wmp9
+    cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" MPSetup.exe $W_UNATTENDED_SLASH_Q
-
-    if w_workaround_wine_bug 1886 "Re-installing since it does not work on the first try." 1.5.23,
-    then
-        w_try "$WINE" MPSetup.exe $W_UNATTENDED_SLASH_Q
-    fi
 
     load_wm9codecs
 
@@ -11842,12 +11573,7 @@ load_3dmark06()
         WinWaitClose, ahk_class #32770, Complete
     "
 
-    if w_workaround_wine_bug 9210
-    then
-        w_warn "The benchmark may warn that shader model 2.0 is not present.  You can ignore this, but if you want to work around it, see http://bugs.winehq.org/show_bug.cgi?id=9210 for a patch."
-    fi
-
-    if w_workaround_wine_bug 0 "Installing shader compiler..."
+    if w_workaround_wine_bug 24417 "Installing shader compiler..."
     then
         # "Demo" button doesn't work without this.  d3dcompiler_43 related.
         w_call d3dx9_28
@@ -11908,17 +11634,6 @@ load_unigine_heaven()
         }
         winwaitclose
     "
-
-    if w_workaround_wine_bug 22614 "setting video memory to 1024M" 1.3.23,
-    then
-        # hope your card actually has 1GB of RAM
-        w_call videomemorysize=1024
-    fi
-
-    # Should start Heaven.exe, but that doesn't run in Wine
-    # Should give option to run Heaven_gl.bat (even works in Wine)
-    # or the dx10 or dx11 versions (doesn't).
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Unigine\\Heaven" "cmd /c Heaven_d3d9.bat"
 }
 
 #----------------------------------------------------------------
@@ -11969,14 +11684,6 @@ load_algodoo_demo()
         }
         WinWaitClose, Algodoo, Completing
     "
-
-    # Since we declined the msvc runtime installer (right?), we have to do it here
-    if w_workaround_wine_bug 23815
-    then
-        w_call vcrun2008
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Algodoo" "Algodoo.exe"
 }
 
 #----------------------------------------------------------------
@@ -12040,11 +11747,6 @@ load_aoe3_demo()
 
     w_download "http://download.microsoft.com/download/a/5/2/a525997e-8423-435b-b694-08118d235064/aoe3trial.exe" 2b0a123243092d79f910db5691d99d469f7c17c3
 
-    if w_workaround_wine_bug 24897 "Installing msxml4 to avoid font problem" 1.3.9,
-    then
-        w_call msxml4
-    fi
-
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
@@ -12066,15 +11768,6 @@ load_aoe3_demo()
         WinWaitClose
     "
 
-    if w_workaround_wine_bug 24911 "Installing devnum, dmsynth, and quartz to get sound working" 1.3.9,
-    then
-        # On some systems, only quartz is needed?
-        # appdb says that l3codecx is also needed?
-        w_call devenum
-        w_call dmsynth
-        w_call quartz
-    fi
-
     if w_workaround_wine_bug 24912
     then
         # kill off lingering installer
@@ -12086,8 +11779,6 @@ load_aoe3_demo()
         PID=`ps augxw | grep IDriver | grep -v grep | awk '{print $2}'`
         kill $PID
     fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Microsoft Games\\Age of Empires III Trial" "age3.exe"
 }
 
 #----------------------------------------------------------------
@@ -12173,31 +11864,6 @@ load_acreedbro()
 
     w_download http://static3.cdn.ubi.com/ac_brotherhood/ac_brotherhood_1.01_ww.exe a2b76f16616709cc16537b0e98faa4181ca904ce
 
-    if w_workaround_wine_bug 26562 "Disabling glsl for smoother rendering"
-    then
-        w_call glsl=disabled
-
-        # And turn off after-effects to fix depth of field problem caused
-        # by disabling glsl...
-        cd "$W_DRIVE_C/users/$LOGNAME/My Documents"
-        dir="Ubisoft/Assassin's Creed Brotherhood"
-        file="$dir/ACBrotherhood.ini"
-        if test -f "$file"
-        then
-            mv "$file" "$file.old"
-            sed 's,PostFX=[0-9]*,PostFX=0,' < "$file.old" > "$file"
-        else
-            mkdir -p "$dir"
-            echo "[Graphics]" > "$file"
-            echo "PostFX=0" >> "$file"
-        fi
-    fi
-
-    if w_workaround_wine_bug 26583 "Installing native d3dx9_36"
-    then
-        w_call d3dx9_36
-    fi
-
     # FIXME: figure out why these executables don't exit, and do a proper workaround or fix
     sleep 10
     if ps augxw | grep -i exe | egrep 'winemenubuilder.exe|setup.exe|PnkBstrA.exe | egrep -v egrep'
@@ -12231,27 +11897,6 @@ load_acreedbro()
         }
         WinWaitClose
     "
-
-    if test `which wine-hotfix-6971` 2> /dev/null
-    then
-        if w_workaround_wine_bug 6971 "Pointing menu and icon at wine-hotfix-6971 to fix mouse problems"
-        then
-            myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine-hotfix-6971 cmd /c 'C:\\\\\\\\Run-$W_PACKAGE.bat'"
-
-            mymenu="$HOME/Desktop/Assassin's Creed Brotherhood.desktop"
-            if test -f "$mymenu"
-            then
-                sed -i "s,Exec=.*,$myexec," "$mymenu"
-            fi
-            mymenu="$XDG_DATA_HOME/applications/wine/Programs/Ubisoft/Assassin's Creed Brotherhood/Assassin's Creed Brotherhood.desktop"
-            if test -f "$mymenu"
-            then
-                sed -i "s,Exec=.*,$myexec," "$mymenu"
-            fi
-        fi
-    else
-        w_workaround_wine_bug 6971 "Please upgrade to wine-1.3.23 or later; see http://wiki.winehq.org/Bug6971" 1.3.23,
-    fi
 }
 
 #----------------------------------------------------------------
@@ -12362,11 +12007,9 @@ load_avatar_demo()
         }
         winwaitclose AVATAR
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Ubisoft\\Demo\\James Cameron's AVATAR - THE GAME (Demo)\\bin" "AvatarDemo.exe"
-
-    w_workaround_wine_bug 26590 "If game seems slow, try winetricks glsl=disabled"
 }
 
+#----------------------------------------------------------------
 
 w_metadata bttf101 games \
     title="Back to the Future Episode 1" \
@@ -12379,11 +12022,6 @@ w_metadata bttf101 games \
 load_bttf101()
 {
     w_download_manual http://www.telltalegames.com/bttf bttf_101_setup.exe 9b15e26d9b4d454f714d6559efe509562df9c10b
-
-    if w_workaround_wine_bug 26371 "Installing d3dx9_36 to work around crash"
-    then
-        w_call d3dx9_36
-    fi
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -12408,8 +12046,6 @@ load_bttf101()
         }
         WinWaitClose
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Telltale Games\\Back to the Future The Game\\Episode 1" BackToTheFuture101.exe
 }
 
 #----------------------------------------------------------------
@@ -12424,11 +12060,6 @@ w_metadata bioshock_demo games \
 
 load_bioshock_demo()
 {
-    if w_workaround_wine_bug 6971 "Setting mwo=force... please upgrade to wine-1.3.23" 1.3.23,
-    then
-        w_call mwo=force
-    fi
-
     w_download http://us.download.nvidia.com/downloads/nZone/demos/nzd_BioShockPC.zip 7a19186602cec5210e4505b58965e8c04945b3cf
 
     w_info "Unzipping demo, installer will start in about 30 seconds."
@@ -12467,8 +12098,6 @@ load_bioshock_demo()
         winwaitclose
         sleep 3000 ; wait for splash screen to close
     "
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\2K Games\\BioShock Demo\\Builds\\Release" "Bioshock.exe"
 }
 
 #----------------------------------------------------------------
@@ -12479,14 +12108,11 @@ w_metadata bioshock2 games \
     year="2010" \
     media="dvd" \
     file1="BIOSHOCK_2.iso" \
-    wine_showstoppers="7065" \
     installed_exe1="$W_PROGRAMS_X86_WIN/2K Games/BioShock 2/SP/Builds/Binaries/Bioshock2Launcher.exe" \
     installed_exe2="$W_PROGRAMS_X86_WIN/2K Games/BioShock 2/MP/Builds/Binaries/Bioshock2Launcher.exe"
 
 load_bioshock2()
 {
-    w_workaround_wine_bug 7065 "This game won't work in Wine because its disc check fails."
-
     w_mount BIOSHOCK_2
     w_ahk_do "
         SetWinDelay 1000
@@ -12511,8 +12137,6 @@ load_bioshock2()
             controlclick Button4 ; Finish
         }
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\2K Games\\BioShock 2\\SP\\Builds\\Binaries" Bioshock2Launcher.exe
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\2K Games\\BioShock 2\\MP\\Builds\\Binaries" Bioshock2Launcher.exe bioshock2_mp
 }
 
 #----------------------------------------------------------------
@@ -12648,13 +12272,6 @@ load_bladekitten_demo()
         }
         WinWaitClose
     "
-
-    if w_workaround_wine_bug 24681
-    then
-        w_set_app_winver BladeKitten_Demo.exe win2k
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Krome Studios\\Blade Kitten Demo" "BladeKitten_Demo.exe"
 }
 
 #----------------------------------------------------------------
@@ -12722,13 +12339,6 @@ load_cnc3_demo()
 
         winwaitclose, Conquer 3, Launch the program
     "
-
-    if w_workaround_wine_bug 19159
-    then
-        w_call vd=800x600
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Command & Conquer 3 Tiberium Wars Demo" "CNC3Demo.exe"
 }
 
 #----------------------------------------------------------------
@@ -13090,20 +12700,7 @@ load_cod5_waw()
     "
 
     # FIXME: Install latest updates
-
-    if w_workaround_wine_bug 16241 "Working around sound bug by setting Win7 mode" 1.3.12,
-    then
-        set_app_winver CodWaW.exe win7
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Activision\\Call of Duty - World at War" "CoDWaW.exe"
-
-    if w_workaround_wine_bug 219
-    then
-        w_warn "This game's copy-protection scheme does not currently work in Wine."
-    else
-        w_warn "This game is copy-protected, and requires the real disc in a real drive to run."
-    fi
+    w_warn "This game is copy-protected, and requires the real disc in a real drive to run."
 }
 
 #----------------------------------------------------------
@@ -13185,17 +12782,6 @@ load_civ4_demo()
         }
         winwaitclose
     "
-
-    if w_workaround_wine_bug 6856
-    then
-        w_call msxml3
-    fi
-    if w_workaround_wine_bug 6856 # part 2, still need to file a bug
-    then
-        w_call d3dx9_26
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Firaxis Games\\Sid Meier's Civilization 4 Demo" "Civilization4.exe"
 }
 
 #----------------------------------------------------------------
@@ -13278,11 +12864,6 @@ load_crysis2()
         }
         winwaitclose
     "
-
-    if w_workaround_wine_bug 26283
-    then
-        w_warn "The game has some nasty flickering, see http://bugs.winehq.org/show_bug.cgi?id=26283"
-    fi
 }
 
 #----------------------------------------------------------------
@@ -13447,18 +13028,6 @@ load_dcuo()
 {
     # The installer would take care of this, but let's do it first
     w_call flash
-    if w_workaround_wine_bug 26298 "Installing microsoft runtime libraries"
-    then
-        w_call vcrun2005
-    fi
-    if w_workaround_wine_bug 27279 "Installing microsoft XAct audio"
-    then
-        w_call xact
-    fi
-    if w_workaround_wine_bug 25906 "Installing ie8"
-    then
-        w_call ie8
-    fi
 
     w_mount "DCUO - Disc 1"
     w_ahk_do "
@@ -13593,37 +13162,27 @@ load_deadspace()
         controlclick, Button5
         controlclick, Button1
     "
-
-    if w_workaround_wine_bug 26079
-    then
-        w_call d3dx9_36
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\Dead Space" "Dead Space.exe"
 }
 
 #----------------------------------------------------------------
 
 w_metadata deadspace2 games \
-    title="Dead Space 2 (drm broken on wine)" \
+    title="Dead Space 2" \ 
     publisher="EA" \
     year="2011" \
     media="dvd" \
     file1="Disc1.iso" \
     file2="Disc2.iso" \
     installed_exe1="$W_PROGRAMS_X86_WIN/EA Games/Dead Space 2/deadspace2.exe" \
-    wine_showstoppers="25853"
 
 load_deadspace2()
 {
-    if w_workaround_wine_bug 25853
-    then
-        w_warn "Non-steam versions of this game do not run on Wine because Wine does not support the version of SecuROM they use.  Proceed only if you want to run into this problem."
-    fi
     w_read_key
 
     w_mount Disc1
 
+    # FIXME: this bug was fixed in 1.3.36, so this is unneccessary
+    #
     # Work around bug 25963 (fails to switch discs)
     w_warn "Copying discs to hard drive.  This will take a few minutes."
     cd "$W_TMP"
@@ -13718,13 +13277,6 @@ load_deadspace2()
         }
         WinWaitClose, Product activation
     "
-
-    if w_workaround_wine_bug 21230
-    then
-        w_call d3dx9_36
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\EA Games\\Dead Space 2" deadspace2.exe
 }
 
 #----------------------------------------------------------------
@@ -13740,8 +13292,6 @@ w_metadata deusex2_demo games \
 load_deusex2_demo()
 {
     w_download_manual "http://www.techpowerup.com/downloads/1730/Deus_Ex:_Invisible_War_Demo.html" dxiw_demo.zip ccae48fb046d912b3714ea1b4be4294e74bb3092
-
-    w_workaround_wine_bug 6971 "Please upgrade to wine-1.3.23 or later; see http://wiki.winehq.org/Bug6971" 1.3.23,
 
     w_try unzip "$W_CACHE/$W_PACKAGE/dxiw_demo.zip" -d "$W_TMP"
     cd "$W_TMP"
@@ -13866,7 +13416,7 @@ load_digitanks_demo()
     w_download "http://static.digitanks.com/files/digitanks.exe" e54ffb07232f434bcfaf7b3d43ddf9affa93ef15
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
-    if w_workaround_wine_bug 26915 "installing corefonts"
+    if w_workaround_wine_bug 8060 "installing corefonts"
     then
         w_call corefonts
     fi
@@ -14070,25 +13620,10 @@ load_dragonage()
 {
     w_read_key
 
-    if w_workaround_wine_bug 22191 "Installer has a non-fatal crash on exit"
-    then
-        w_call nocrashdialog
-    fi
     # game can do this, why do we need to?
     w_call physx
-    if w_workaround_wine_bug 24837 "Installing C++ runtime library"
-    then
-        w_call vcrun2005
-    fi
 
-    if test "$WINETRICKS_OPT_KEEPISOS" != 1 &&  \
-        test ! -f "$W_CACHE/dragonage/DragonAge.iso" &&  \
-        w_workaround_wine_bug 26459 "Making and mounting an .iso to work around 'Failed to authenticate the disk' error.  After each reboot, you'll need to do [sudo mount -o ro,loop '$W_CACHE/dragonage/DragonAge.iso' /mnt/winetricks] to play Dragon Age.  Someday this will be automated."
-    then
-        WINETRICKS_OPT_KEEPISOS=1 w_mount DragonAge
-    else
-        w_mount DragonAge
-    fi
+    w_mount DragonAge
 
     w_ahk_do "
         SetWinDelay 1000
@@ -14131,11 +13666,6 @@ load_dragonage()
     else
         cp -f "$ini" "$ini.old"
     fi
-    if w_workaround_wine_bug 22308 "Setting EnableFrameBufferEffects=0 to work around blurry cut scenes"
-    then
-        sed 's,EnableFrameBufferEffects=1,EnableFrameBufferEffects=0,' < "$ini" > "$ini.new"
-        mv -f "$ini.new" "$ini"
-    fi
     if w_workaround_wine_bug 22383 "use strictdrawordering to avoid video problems"
     then
         w_call strictdrawordering=enabled
@@ -14145,15 +13675,6 @@ load_dragonage()
         sed 's,UseVSync=1,UseVSync=0,' < "$ini" > "$ini.new"
         mv -f "$ini.new" "$ini"
     fi
-    if w_workaround_wine_bug 26435 "Setting SoundDisabled=0 to fix sound"
-    then
-        sed 's,SoundDisabled=1,SoundDisabled=0,' < "$ini" > "$ini.new"
-        mv -f "$ini.new" "$ini"
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Dragon Age" "bin_ship\\daorigins.exe"
-
-    w_workaround_wine_bug 26211 "You may need to kill DAO or its launcher after each run.  The Process view of taskmgr makes this relatively easy."
 }
 
 #----------------------------------------------------------------
@@ -14219,11 +13740,6 @@ load_dragonage_ue()
         winwaitclose
     "
 
-    if w_workaround_wine_bug 22307
-    then
-        w_warn "Turn off frame buffer effects to avoid blurry cut scenes.  See http://bugs.winehq.org/show_bug.cgi?id=22307"
-    fi
-
     if w_workaround_wine_bug 22383
     then
         w_try_winetricks strictdrawordering=enabled
@@ -14240,8 +13756,6 @@ load_dragonage_ue()
     fi
 
     w_warn "To activate the additional content, visit http://social.bioware.com/redeem_code.php?path=/dragonage/pc/dlcactivate/en"
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Dragon Age" "bin_ship\\daorigins.exe"
 }
 
 #----------------------------------------------------------------
@@ -14282,16 +13796,6 @@ load_dragonage2_demo()
         }
         winwaitclose
     "
-    if w_workaround_wine_bug 26205 "installing DirectX runtime libraries"
-    then
-        w_call d3dx9_36
-        w_call d3dx11_43
-    fi
-    if w_workaround_wine_bug 26211 "installing native devenum to get sound in logo movie"
-    then
-        w_call devenum
-    fi
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Dragon Age 2 Demo" "DragonAge2Launcher.exe"
 }
 
 #----------------------------------------------------------------
@@ -14308,11 +13812,6 @@ load_eve()
 {
     # http://www.eveonline.com/download/?fallback=1&
     w_download http://content.eveonline.com/561078/EVE_Online_Installer_561078.exe 5b5f0cd4fbd42f82b1d1cccb2e22ddeed97d1d3a
-
-    if w_workaround_wine_bug 18221
-    then
-        w_call corefonts
-    fi
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -14336,7 +13835,6 @@ load_eve()
         }
         WinWaitClose, EVE Online
     "
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\CCP\\EVE" "eve.exe"
 }
 
 #----------------------------------------------------------------
@@ -14359,12 +13857,6 @@ load_fable_tlc()
     if w_workaround_wine_bug 657
     then
         w_call mfc42
-    fi
-
-    if test ! -f "$W_CACHE/$W_PACKAGE/FABLE_DISC_1.iso" && w_workaround_wine_bug 24940
-    then
-        # FIXME: port load_harder from winetricks and use it when caching first disc?
-        w_warn "If the installer can't read from the CD, try using ddrescue to make image of first disc, and place in $W_CACHE/$W_PACKAGE/FABLE_DISC_1.iso"
     fi
 
     w_mount FABLE_DISK_1
@@ -14565,13 +14057,6 @@ load_fifa11_demo()
         }
         WinWaitClose
     "
-
-    if w_workaround_wine_bug 22161
-    then
-        w_call d3dx9_36
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\EA Sports\\FIFA 11 Demo\\Game" "fifa.exe"
 }
 
 #----------------------------------------------------------------
@@ -14610,12 +14095,6 @@ load_hon()
         }
         winwaitclose, Heroes of Newerth, Finish
     "
-    if w_workaround_wine_bug 25919 "disabling mmdevapi to fix sound and avoid crash"
-    then
-        w_override_dlls disabled mmdevapi
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Heroes of Newerth" "hon.exe"
 }
 
 #----------------------------------------------------------------
@@ -14674,13 +14153,10 @@ w_metadata mfsxde games \
     media="dvd" \
     file1="FSX DISK 1.iso" \
     file2="FSX DISK 2.iso" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Microsoft Flight Simulator X/fsx.exe" \
-    wine_showstoppers="26411"
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Microsoft Flight Simulator X/fsx.exe"
 
 load_mfsxde()
 {
-    w_workaround_wine_bug 26411 "Game hangs on first screen for me"
-
     if w_workaround_wine_bug 25139 "Setting virtual desktop so license screen shows up on first run"
     then
         w_call vd=1024x768
@@ -14803,18 +14279,12 @@ w_metadata gothic4_demo games \
     year="2010" \
     media="manual_download" \
     file1="ArcaniA_Gothic4_Demo_Setup.zip" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/JoWooD Entertainment AG/ArcaniA - Gothic 4 Demo/Arcania.exe" \
-    wine_showstoppers="7065"
+    installed_exe1="$W_PROGRAMS_X86_WIN/JoWooD Entertainment AG/ArcaniA - Gothic 4 Demo/Arcania.exe"
 
 # http://appdb.winehq.org/objectManager.php?sClass=version&iId=21507
 
 load_gothic4_demo()
 {
-    if w_workaround_wine_bug 7065
-    then
-        w_warn "Non-steam versions of this game do not run on Wine because Wine does not support the version of SecuROM they use.  Proceed only if you want to run into this problem."
-    fi
-
     w_download_manual http://www.gamershell.com/download_63874.shtml ArcaniA_Gothic4_Demo_Setup.zip d36024c0235878c4589234a56cc8b6e05da5c593
 
     cd "$W_TMP"
@@ -14868,18 +14338,6 @@ load_gothic4_demo()
         }
         winwaitclose
     "
-
-    if w_workaround_wine_bug 21939
-    then
-        w_call wmp9
-    fi
-
-    if w_workaround_wine_bug 24250
-    then
-        w_call vcrun2008
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\JoWooD Entertainment AG\\ArcaniA - Gothic 4 Demo" "Arcania.exe"
 }
 
 #----------------------------------------------------------------
@@ -15003,11 +14461,6 @@ w_metadata hegemonygold_demo games \
 
 load_hegemonygold_demo()
 {
-    if w_workaround_wine_bug 25767
-    then
-        w_warn "This game works, but has some rendering glitches in Wine."
-    fi
-
     # 6 Mar 2011: 8c4d8aa8f997b106c78b065a4b200e5e1ab846a8
     # 28 Apr 2011: 93677013fc17f014b1640bed070e8bb1b2a17445
     # 25 Jun 2011: 4069656ea3c3760b67d1c5adff37de7472955f72
@@ -15066,11 +14519,6 @@ load_hegemony_demo()
     w_download "http://www.longbowgames.com/downloads/Hegemony%20Philip%20of%20Macedon%20Installer.exe" 38e92e3e4d0f0d10393790bc37350a2094f60c37 Hegemony_Philip_of_Macedon_Installer.exe
 
     cd "$W_CACHE/$W_PACKAGE"
-
-    if w_workaround_wine_bug 24819
-    then
-        w_override_dlls disabled gameux
-    fi
 
     w_ahk_do "
         SetTitleMatchMode, 2
@@ -15181,13 +14629,7 @@ load_imvu()
 {
     w_download http://static-akm.imvu.com/imvufiles/installers/InstallIMVU_465.0_st_c.exe 3a5c6c335227a5709c5772f91d8407edd07d4012
 
-    if w_workaround_wine_bug 28541 "Installing Visual C++ 2008 runtime to avoid crash on startup"
-    then
-        w_call vcrun2008
-    fi
-
     cd "$W_CACHE/$W_PACKAGE"
-
     w_ahk_do "
         SetTitleMatchMode, 2
         SetWinDelay 500
@@ -15207,8 +14649,6 @@ load_imvu()
         }
         winwaitclose
     "
-
-    w_declare_exe "c:\\users\\$LOGNAME\\Application Data\\IMVUClient" "IMVUClient.exe"
 }
 
 #----------------------------------------------------------------
@@ -15226,12 +14666,6 @@ w_metadata kotor1 games \
 
 load_kotor1()
 {
-    # without virtual desktop, some in-game resolutions cause a crash.
-    if w_workaround_wine_bug 16596
-    then
-        w_call vd=800x600
-    fi
-
     w_mount "KOTOR_1"
     w_ahk_do "
         SetTitleMatchMode 2
@@ -15464,17 +14898,10 @@ load_lhp_demo()
         winwaitclose, LEGO, Finish
     "
 
-    if w_workaround_wine_bug 23397
-    then
-        w_warn "If sound stutters, try switching to OSS sound in winecfg (winetricks sound=oss)"
-    fi
-
     # Work around locale issues by symlinking the app's directory to not have a funny char
     # Won't really work on cygwin, but that's ok.
     cd "$W_PROGRAMS_X86_UNIX/WB Games"
     ln -s LEGO*Harry\ Potter*DEMO LEGO_Harry_Potter_DEMO
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\WB Games\\LEGO_Harry_Potter_DEMO" "LEGOHarryPotterDEMO.exe"
 }
 
 #----------------------------------------------------------------
@@ -15627,27 +15054,10 @@ load_masseffect2()
     w_mount MassEffect2
     w_read_key
 
-    if w_workaround_wine_bug 22091 "May hang or crash at end of install, but should install ok."
-    then
-        w_call nocrashdialog
-    fi
-
-    if w_workaround_wine_bug 23126 "Installing C runtime library" 1.3.0,
-    then
-        w_call vcrun2005
-    fi
-    if w_workaround_wine_bug 23125 "Installing d3dx10 libraries" 1.3.0,
-    then
-        w_call d3dx10
-    fi
     # FIXME: only do this for nvidia cards
     if w_workaround_wine_bug 23151 "Disabling glsl"
     then
         w_call glsl=disabled
-    fi
-    if w_workaround_wine_bug 22919 "Installing physx"
-    then
-        w_call physx
     fi
 
     w_ahk_do "
@@ -15698,9 +15108,6 @@ load_masseffect2()
             sleep 1000
         }
     "
-    w_workaround_wine_bug 6971 "Please upgrade to wine-1.3.23 or later; see http://wiki.winehq.org/Bug6971" 1.3.23,
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Mass Effect 2\\Binaries" "MassEffect2.EXE"
 }
 
 #----------------------------------------------------------------
@@ -15717,27 +15124,11 @@ load_masseffect2_demo()
 {
     w_download http://static.cdn.ea.com/bioware/u/f/eagames/bioware/masseffect2/ME2_DEMO/MassEffect2DemoEN.exe cda9a25387a98e29772b3ccdcf609f87188285e2
 
-    if w_workaround_wine_bug 22091 "May hang or crash at end of install, but should install ok."
-    then
-        w_call nocrashdialog
-    fi
-
-    if w_workaround_wine_bug 23126 "Installing C runtime library" 1.3.0,
-    then
-        w_call vcrun2005
-    fi
-    if w_workaround_wine_bug 23125 "Installing d3dx10 libraries" 1.3.0,
-    then
-        w_call d3dx10
-    fi
     # FIXME: only do this for nvidia cards
     if w_workaround_wine_bug 23151 "Disabling glsl"
     then
         w_call glsl=disabled
     fi
-    if w_workaround_wine_bug 22919 "Installing physx"
-    then
-        w_call physx
     fi
 
     # Don't let self-extractor write into $W_CACHE
@@ -15783,42 +15174,6 @@ load_masseffect2_demo()
             sleep 1000
         }
     "
-    if test `which wine-hotfix-6971` 2> /dev/null
-    then
-        if w_workaround_wine_bug 6971 "Pointing menu and icon at wine-hotfix-6971 so mouse will work, assuming your X supports XInput2"
-        then
-            w_declare_exe "$W_PROGRAMS_X86_WIN\\Mass Effect 2 Demo\\Binaries" "MassEffect2.EXE"
-            myexec="Exec=env WINEPREFIX=\"$XDG_DATA_HOME/wineprefixes/masseffect2_demo\" wine-hotfix-6971 cmd /c 'C:\\\\\\Run-masseffect2_demo.bat'"
-
-            mymenu="$HOME/Desktop/Mass Effect 2 Demo.desktop"
-            me2tries=0
-            while test ! -f "$mymenu"
-            do
-                if test $me2tries -gt 120
-                then
-                    w_die "timeout waiting for winemenubuilder to finish :-("
-                fi
-                me2tries=`expr $me2tries + 1`
-                echo "waiting for winemenubuilder to finish..."
-                sleep 1
-            done
-            unset me2tries
-            if test -f "$mymenu"
-            then
-                # this is a hack, hopefully the wine bug will be fixed soon
-                sed -i "s,Exec=.*,$myexec," "$mymenu"
-            fi
-            mymenu="$XDG_DATA_HOME/applications/wine/Programs/Mass Effect 2 Demo/Mass Effect 2 Demo.desktop"
-            if test -f "$mymenu"
-            then
-                # this is a hack, hopefully the wine bug will be fixed soon
-                sed -i "s,Exec=.*,$myexec," "$mymenu"
-            fi
-        fi
-    else
-        w_workaround_wine_bug 6971 "Please upgrade to wine-1.3.23 or later; see http://wiki.winehq.org/Bug6971" 1.3.23, || true
-    fi
-
 }
 
 #----------------------------------------------------------------
@@ -15964,13 +15319,6 @@ w_metadata mb_warband_demo games \
 
 load_mb_warband_demo()
 {
-    if w_workaround_wine_bug 23207 "" 1.3.23,
-    then
-        w_die "Please upgrade to wine-1.3.23 or later, built with gcc-4.4.5 or later, else game crashes on startup."
-    fi
-    w_workaround_wine_bug 6971 "Please upgrade to wine-1.3.23 or later; see http://wiki.winehq.org/Bug6971" 1.3.23,
-    # Mouse still doesn't work quite right after picking menu, see bug 25705.
-
     w_download "http://download.taleworlds.com/mb_warband_setup_1143.exe" 94fb829068678e27bcd67d9e0fde7f08c51a23af
 
     cd "$W_CACHE/$W_PACKAGE"
@@ -16005,24 +15353,6 @@ w_metadata mise games \
 load_mise()
 {
     w_download_manual "http://www.direct2drive.com/8241/product/Buy-The-Secret-of-Monkey-Island(R):-Special-Edition-Download" SecretOfMonkeyIslandSE_ddsetup.zip 2e32458698c9ec7ebce94ae5c57531a3fe1dbb9e
-
-    if w_workaround_wine_bug 22161
-    then
-        # Doesn't crash, but you only get a black screen and a flood of d3dx fixme's without native d3dx9_36
-        w_call d3dx9_36
-    fi
-
-    if w_workaround_wine_bug 24545
-    then
-        # Game wants to install directx, but we delete it. It really only needs xact for x3daudio?_?.dll
-        w_call xact
-    fi
-
-    if w_workaround_wine_bug 24547
-    then
-        # It really does need vcrun2005, for msvp80.dll (and potentially one stub from msvcr80)
-        w_call vcrun2005
-    fi
 
     mkdir -p "$W_TMP/$W_PACKAGE"
     cd "$W_TMP/$W_PACKAGE"
@@ -16213,8 +15543,6 @@ load_nfsworld()
 {
     w_workaround_wine_bug 27048 "The patcher will probably put up an error dialog and then hang.  When this happens, kill it and try again.  It should succeed after the fourth or so try."
 
-    w_workaround_wine_bug 27047 "Game fails with corrupt executable error in wine-1.3.19 and earlier" 1.3.20,
-
     # This changes frequently, I fear
     # Be careful to update $file1 when you update the url
     # 1.8.40.65   9b1f10af09350e2b3f5ccbc679dbea628e9f432d0 ?
@@ -16238,7 +15566,7 @@ load_nfsworld()
         w_call vcrun2008
     fi
 
-    if w_workaround_wine_bug 26915 "installing corefonts so help works"
+    if w_workaround_wine_bug 8060 "installing corefonts so help works"
     then
         w_call corefonts
     fi
@@ -16598,11 +15926,6 @@ load_qqintl()
         w_call riched20
     fi
 
-    if w_workaround_wine_bug 34566 "Installing native ctf to work around crash"
-    then
-        w_call msctf
-    fi
-
     if w_workaround_wine_bug 37617 "Installing native wininet to work around crash"
     then
         w_call wininet
@@ -16639,10 +15962,6 @@ load_ragnarok()
     if w_workaround_wine_bug 657 "Visual C++ 6 runtime"
     then
         w_call vcrun6
-    fi
-    if w_workaround_wine_bug 28228 "Installing Visual C++ 2008 runtime"
-    then
-        w_call vcrun2008
     fi
 
     # publisher puts SHA1 checksums on download page, nice
@@ -16686,11 +16005,6 @@ w_metadata rct3deluxe games \
 load_rct3deluxe()
 {
     w_mount RCT3
-
-    if w_workaround_wine_bug 26396
-    then
-        w_call quartz
-    fi
 
     # FIXME: make videos and music work
     # Game still doesn't show .wmv logo videos nor play .wma background audio in menu
@@ -16751,16 +16065,6 @@ load_rayman2_demo()
 
     cd "$W_TMP"
     w_try unzip "$W_CACHE/$W_PACKAGE/rayman2high.zip"
-
-    if w_workaround_wine_bug 16596
-    then
-        w_call vd=800x600
-    fi
-
-    if w_workaround_wine_bug 21159
-    then
-        w_call dinput
-    fi
 
     w_ahk_do "
         SetWinDelay 500
@@ -16890,16 +16194,6 @@ w_metadata sims3 games \
 
 load_sims3()
 {
-    if w_workaround_wine_bug 22350 "Launcher needs .net"
-    then
-        w_call dotnet20
-    fi
-
-    if w_workaround_wine_bug 21517 "Old wine needs native DirectX for this game" 1.3.8,
-    then
-        w_call d3dx9_36
-    fi
-
     w_read_key
 
     w_mount Sims3
@@ -16968,11 +16262,6 @@ w_metadata simsmed games \
 
 load_simsmed()
 {
-    if w_workaround_wine_bug 21517 "Old wine needs native DirectX for this game" 1.3.8,
-    then
-        w_call d3dx9_36
-    fi
-
     w_read_key
 
     w_mount TSimsM
@@ -17057,23 +16346,6 @@ load_simsmed()
         }
         winwaitclose
     "
-
-    if w_workaround_wine_bug 25535 ".net 4 doesn't install on Wine, fixing menu to run game directly"
-    then
-        myexec="Exec=env WINEPREFIX=\"$WINEPREFIX\" wine cmd /c 'C:\\\\\\\\Run-$W_PACKAGE.bat'"
-        mymenu="$XDG_DATA_HOME/applications/wine/Programs/Electronic Arts/The Sims Medieval/The Sims™ Medieval.desktop"
-        if test -f "$mymenu"
-        then
-            sed -i "s,Exec=.*,$myexec," "$mymenu"
-        fi
-        mymenu="$HOME/Desktop/The Sims™ Medieval.desktop"
-        if test -f "$mymenu"
-        then
-            sed -i "s,Exec=.*,$myexec," "$mymenu"
-        fi
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Electronic Arts\\The Sims Medieval\\Game\\Bin" "TSM.exe"
 }
 
 #----------------------------------------------------------------
@@ -17168,16 +16440,6 @@ w_metadata splitsecond games \
 
 load_splitsecond()
 {
-    if w_workaround_wine_bug 22774 "" 1.3.0
-    then
-        w_warn "On wine, install takes an extra 7 minutes at the end, please be patient."
-    fi
-
-    if w_workaround_wine_bug 22865
-    then
-        w_warn "This game is currently unplayable on wine due to rendering problems; see winehq bug 22865."
-    fi
-
     # Key is used in first run activation, no need to read it here.
     w_mount SplitSecond
 
@@ -17238,11 +16500,6 @@ load_splitsecond_demo()
     if w_workaround_wine_bug 22774 "" 1.3.0
     then
         w_warn "On wine, install takes an extra 7 minutes at the end, please be patient."
-    fi
-
-    if w_workaround_wine_bug 22865
-    then
-        w_warn "This game is currently unplayable on wine due to rendering problems; see winehq bug 22865."
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
@@ -17474,15 +16731,6 @@ load_theundergarden_demo()
 {
     w_download_manual http://www.bigdownload.com/games/the-undergarden/pc/the-undergarden-demo TheUnderGarden_PC_B34_SRTB.30_28OCT10.exe acf90c422ac2f2f242100f39bedfe7df0c95f7a
 
-    if w_workaround_wine_bug 25384
-    then
-        w_call vcrun2008
-    fi
-    if w_workaround_wine_bug 25385
-    then
-        w_call d3dx9_36
-    fi
-
     cd "$W_CACHE/$W_PACKAGE"
 
     w_ahk_do "
@@ -17561,12 +16809,6 @@ w_metadata tmnationsforever games \
 
 load_tmnationsforever()
 {
-    if w_workaround_wine_bug 20915
-    then
-        # FIXME: script this?
-        w_warn "To fix choppy sound/low fps, try setting Settings/Advanced/Audio to portaudio when starting the game."
-    fi
-
     # Before:      cab0cf66db0471bc2674a3b1aebc35de0bca6ed0
     # 29 Mar 2011: 23388798d5c90ad4a233b4cd7e9fcafd69756978
     w_download "http://files.trackmaniaforever.com/tmnationsforever_setup.exe" 23388798d5c90ad4a233b4cd7e9fcafd69756978
@@ -17762,13 +17004,6 @@ load_sammax304_demo()
         }
         WinWaitClose
     "
-
-    if w_workaround_wine_bug 24250 "Installing visual C++ runtimes" 1.3.15,
-    then
-        w_call vcrun2005
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Telltale Games\\Sam and Max - The Devil's Playhouse\\Beyond the Alley of the Dolls" "SamMax304.exe"
 }
 
 #----------------------------------------------------------------
@@ -17784,11 +17019,6 @@ w_metadata tropico3_demo games \
 load_tropico3_demo()
 {
     w_download_manual "http://www.tropico3.com/?p=downloads" Tropico3Demo.exe e031749db346ac3a87a675787c81eb1ca8cb5909
-
-    if w_workaround_wine_bug 24819 "Disabling gameux"
-    then
-        w_override_dlls disabled gameux
-    fi
 
     cd "$W_CACHE/$W_PACKAGE"
 
@@ -17813,15 +17043,6 @@ load_tropico3_demo()
         }
         WinWaitClose
     "
-
-    w_workaround_wine_bug 16328 "seawater is invisible in this wine, please update to 1.3.9 or later" 1.3.9,
-
-    if w_workaround_wine_bug 24845 "disabling mmdevapi to fix sound" 1.3.21,
-    then
-        w_override_dlls disabled mmdevapi
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Kalypso\\Tropico 3 Demo" "Tropico3 Demo.exe"
 }
 
 #----------------------------------------------------------------
@@ -17884,26 +17105,6 @@ load_singularity()
             break
         }
         "
-
-    if w_workaround_wine_bug 6971 "Setting mwo=force... please upgrade to wine-1.3.23" 1.3.23,
-    then
-        w_call mwo=force
-    fi
-
-    if w_workaround_wine_bug 22548
-    then
-        echo "Disabling \'depth of field\'"
-        cat > "$W_TMP"/dof.reg <<_EOF_
-REGEDIT4
-
-[HKEY_CURRENT_USER\Software\Activision\Singularity]
-"DepthOfField"=dword:00000000
-
-_EOF_
-        w_try_regedit "$W_TMP_WIN"\\dof.reg
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Activision\\Singularity(TM)\\Binaries" "Singularity.exe"
 
     # Clean up crap left over in c:\ when the installer runs the vc 2008 redistributable installer
     cd "$W_DRIVE_C"
@@ -18092,13 +17293,6 @@ load_twfc()
         }
     "
 
-    if w_workaround_wine_bug 6971 "Setting mwo=force... please upgrade to wine-1.3.23" 1.3.23,
-    then
-        w_call mwo=force
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Activision\\Transformers - War for Cybertron\\Binaries" "TWFC.exe"
-
     # Clean up crap left over in c:\ when the installer runs the vc 2008 redistributable installer
     cd "$W_DRIVE_C"
     rm -f VC_RED.* eula.*.txt globdata.ini install.exe install.ini install.res.*.dll vcredist.bmp
@@ -18201,15 +17395,6 @@ load_ut3()
         }
         WinWaitClose
     "
-
-    if w_workaround_wine_bug 6971 "Setting mwo=force... please upgrade to wine-1.3.23" 1.3.23,
-    then
-        w_call mwo=force
-        w_warn "Mouse will be disabled in in-game menu. Must use keyboard to navigate.  Alternately, patch wine as described in bug 6971 to use xinput2."
-    fi
-
-    # FIXME: enter user's key if -q
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Unreal Tournament 3\\Binaries" "UT3.exe"
 }
 
 #----------------------------------------------------------------
@@ -18388,7 +17573,6 @@ w_metadata bioshock2_steam games \
     publisher="2k" \
     year="2010" \
     media="download" \
-    wine_showstoppers="7065" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/bioshock2/blort.exe"
 
 load_bioshock2_steam()
@@ -18461,29 +17645,6 @@ w_metadata ruse_demo_steam games \
 load_ruse_demo_steam()
 {
     w_steam_install_game 33310 "R.U.S.E."
-
-    if w_workaround_wine_bug 21939 "Installing Windows Media so game can start"
-    then
-        w_call wmp9
-    fi
-
-    if w_workaround_wine_bug 22016 "Turning off HDR to avoid washed out graphics"
-    then
-        for dir in "$W_PROGRAMS_X86_UNIX/Steam/userdata"/*/config
-        do
-            file=../33310/local/Option.ini
-            if test -f $file
-            then
-                sed -i "s/UseHDR = true/UseHDR = false/" $file
-            else
-                mkdir -p ../33310/local
-                cat > "$file" <<_EOF_
-[advanced_video]
-        UseHDR = false
-_EOF_
-            fi
-        done
-    fi
 }
 
 #----------------------------------------------------------------
@@ -18512,13 +17673,6 @@ w_metadata trine_steam games \
 load_trine_steam()
 {
     w_steam_install_game 35700 "Trine"
-
-    if w_workaround_wine_bug 21939 "Installing Windows Media Player so game can start"
-    then
-        w_call wmp9
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam\\steamapps\\common\\trine" "trine_launcher.exe"
 }
 
 #----------------------------------------------------------------
@@ -18533,13 +17687,6 @@ w_metadata trine_demo_steam games \
 load_trine_demo_steam()
 {
     w_steam_install_game 35710 "Trine Demo"
-
-    if w_workaround_wine_bug 21939 "Installing Windows Media Player so game can start"
-    then
-        w_call wmp9
-    fi
-
-    w_declare_exe "$W_PROGRAMS_X86_WIN\\Steam\\steamapps\\common\\trine demo" "trine_launcher.exe"
 }
 
 #----------------------------------------------------------------
@@ -18553,10 +17700,6 @@ w_metadata wormsreloaded_demo_steam games \
 
 load_wormsreloaded_demo_steam()
 {
-    if w_workaround_wine_bug 26646 "Installing xact to enable sound"
-    then
-        w_call xact
-    fi
     w_steam_install_game 22690 "Worms Reloaded Demo"
 }
 
