@@ -5456,7 +5456,7 @@ load_dotnet20()
     # FIXME: verify on pristine windows XP:
     if w_workaround_wine_bug 34803
     then
-        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled'
+        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled' /f
     fi
 
     cd "$W_CACHE"/"$W_PACKAGE"
@@ -5635,7 +5635,7 @@ load_dotnet20sp2()
     # FIXME: verify on pristine windows XP:
     if w_workaround_wine_bug 34803
     then
-        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled'
+        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled' /f
     fi
 
     cd "$W_CACHE/$W_PACKAGE"
@@ -5822,7 +5822,7 @@ load_dotnet35()
         w_call msxml3
     fi
 
-    "$WINE" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5"
+    "$WINE" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f
 
     # See also http://blogs.msdn.com/astebner/archive/2008/07/17/8745415.aspx
     cd "$W_TMP"
