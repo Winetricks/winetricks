@@ -6545,6 +6545,30 @@ load_jet40()
 
 #----------------------------------------------------------------
 
+w_metadata ie8-kb2936068 dlls \
+    title="Cumulative Security Update for Internet Explorer 8" \
+    publisher="Microsoft" \
+    year="2014" \
+    media="download" \
+    file1="IE8-WindowsXP-KB2936068-x86-ENU.exe" \
+    installed_file1="c:/windows/KB2936068-IE8.log"
+
+load_ie8-kb2936068()
+{
+    w_call ie8
+    w_download https://download.microsoft.com/download/3/8/C/38CE0ABB-01FD-4C0A-A569-BC5E82C34A17/IE8-WindowsXP-KB2936068-x86-ENU.exe 1bdeb741085b8f1ef6efc83f8615121373107347
+    cd "$W_CACHE"/"$W_PACKAGE"
+    if [ $W_UNATTENDED_SLASH_Q ]
+    then
+        quiet="/quiet /forcerestart"
+    else
+        quiet=""
+    fi
+    w_try "$WINE" IE8-WindowsXP-KB2936068-x86-ENU.exe $quiet
+}
+
+#----------------------------------------------------------------
+
 w_metadata kde apps \
     title="KDE on Windows" \
     publisher="various" \
@@ -9590,6 +9614,40 @@ load_emu8086()
     w_download http://emu8086.com/emu8086.zip fa3b2451cbc46fd2e3aa2670fa4d81ae8e75c7db
     w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/$file1
     w_try "$WINE" "$W_TMP/Setup.exe" $W_UNATTENDED_SLASH_SILENT
+}
+
+#----------------------------------------------------------------
+
+w_metadata ev3 apps \
+    title="Lego Mindstorms EV3 Home Edition" \
+    publisher="Lego" \
+    year="2014" \
+    media="download" \
+    file1="LMS-EV3-WIN32-ENUS-01-01-01-full-setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/LEGO Software/LEGO MINDSTORMS EV3 Home Edition/MindstormsEV3.exe"
+
+load_ev3()
+{
+    if w_workaround_wine_bug 40192 "Installing vcrun2005 as Wine does not have MFC80.dll"
+    then
+        w_call vcrun2005
+    fi
+    if w_workaround_wine_bug 40193 "Installing IE8 is built-in Gecko is not sufficient"
+    then
+        w_call ie8
+    fi
+    w_call dotnet40
+    w_download http://esd.lego.com.edgesuite.net/digitaldelivery/mindstorms/6ecda7c2-1189-4816-b2dd-440e22d65814/public/LMS-EV3-WIN32-ENUS-01-01-01-full-setup.exe 855c914d9a3cf0f4793a046872658fd661389671
+    cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" LMS-EV3-WIN32-ENUS-01-01-01-full-setup.exe
+    if w_workaround_wine_bug 40174 "Setting override for urlmon.dll to native to avoid crash"
+    then
+        w_override_dlls native urlmon
+    fi
+    if w_workaround_wine_bug 34897 "Installing update KB2936068 to work around bug 34897"
+    then
+        w_call ie8-kb2936068
+    fi
 }
 
 #----------------------------------------------------------------
