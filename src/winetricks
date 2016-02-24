@@ -6545,6 +6545,30 @@ load_jet40()
 
 #----------------------------------------------------------------
 
+w_metadata ie8-kb2936068 dlls \
+    title="Cumulative Security Update for Internet Explorer 8" \
+    publisher="Microsoft" \
+    year="2014" \
+    media="download" \
+    file1="IE8-WindowsXP-KB2936068-x86-ENU.exe" \
+    installed_file1="c:/windows/KB2936068-IE8.log"
+
+load_ie8-kb2936068()
+{
+    w_call ie8
+    w_download https://download.microsoft.com/download/3/8/C/38CE0ABB-01FD-4C0A-A569-BC5E82C34A17/IE8-WindowsXP-KB2936068-x86-ENU.exe 1bdeb741085b8f1ef6efc83f8615121373107347
+    cd "$W_CACHE"/"$W_PACKAGE"
+    if [ $W_UNATTENDED_SLASH_Q ]
+    then
+        quiet="/quiet /forcerestart"
+    else
+        quiet=""
+    fi
+    w_try "$WINE" IE8-WindowsXP-KB2936068-x86-ENU.exe $quiet
+}
+
+#----------------------------------------------------------------
+
 w_metadata kde apps \
     title="KDE on Windows" \
     publisher="various" \
