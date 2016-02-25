@@ -6545,7 +6545,7 @@ load_jet40()
 
 #----------------------------------------------------------------
 
-w_metadata ie8-kb2936068 dlls \
+w_metadata ie8_kb2936068 dlls \
     title="Cumulative Security Update for Internet Explorer 8" \
     publisher="Microsoft" \
     year="2014" \
@@ -6553,7 +6553,7 @@ w_metadata ie8-kb2936068 dlls \
     file1="IE8-WindowsXP-KB2936068-x86-ENU.exe" \
     installed_file1="c:/windows/KB2936068-IE8.log"
 
-load_ie8-kb2936068()
+load_ie8_kb2936068()
 {
     w_call ie8
 
@@ -9655,7 +9655,7 @@ load_ev3()
 
     if w_workaround_wine_bug 34897 "Installing update KB2936068 to work around bug 34897"
     then
-        w_call ie8-kb2936068
+        w_call ie8_kb2936068
     fi
 }
 
