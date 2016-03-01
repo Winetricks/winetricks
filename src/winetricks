@@ -904,7 +904,12 @@ w_download_manual_to()
         w_die "$_W_dlmsg"
         # FIXME: wait in loop until file is finished?
     fi
-    # FIXME: verify $sha1sum of $file
+
+    if test "$_W_sha1sum"
+    then
+        w_verify_sha1sum $_W_sha1sum "$W_CACHE/$_W_packagename/$_W_file"
+    fi
+
     unset _W_url _W_file _W_sha1sum _W_dlmsg
 }
 
