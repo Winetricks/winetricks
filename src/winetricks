@@ -9814,8 +9814,8 @@ w_metadata ie6 dlls \
     title="Internet Explorer 6" \
     publisher="Microsoft" \
     year="2002" \
-    media="manual_download" \
-    file1="msie60.exe" \
+    media="download" \
+    file1="ie60.exe" \
     installed_file1="c:/Program Files/Internet Explorer/iedetect.dll"
 
 load_ie6()
@@ -9826,7 +9826,7 @@ load_ie6()
         w_die "This package does not work on a 64-bit installation"
     fi
 
-    w_download_manual http://www.oldversion.com/download-Internet-Explorer-6.0.html msie60.exe 8e483db28ff01a7cabd39147ab6c59753ea1f533
+    w_download http://download.oldapps.com/Internet_Explorer/ie60.exe 8e483db28ff01a7cabd39147ab6c59753ea1f533
 
     cd "$W_TMP"
     "$WINE" "$W_CACHE"/"$W_PACKAGE"/$file1
