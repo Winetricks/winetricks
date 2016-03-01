@@ -9824,7 +9824,7 @@ load_ie6()
     w_download_manual http://www.oldversion.com/download-Internet-Explorer-6.0.html msie60.exe 8e483db28ff01a7cabd39147ab6c59753ea1f533
 
     cd "$W_TMP"
-    "$WINE" "$W_CACHE"/ie6/$file1
+    "$WINE" "$W_CACHE"/"$W_PACKAGE"/$file1
 
     w_call msls31
 
