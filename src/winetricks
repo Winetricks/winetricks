@@ -6605,13 +6605,13 @@ w_metadata kindle apps \
     publisher="Amazon" \
     year="2016" \
     media="download" \
-    file1="KindleForPC-installer-1.14.43019.exe" \
+    file1="KindleForPC-installer-1.15.43061.exe" \
     installed_exe1="$W_PROGRAMS_WIN/Amazon/Kindle/Kindle.exe" \
     homepage="http://www.amazon.com/gp/feature.html/?docId=1000426311"
 
 load_kindle()
 {
-    w_download http://kindleforpc.amazon.com/43019/KindleForPC-installer-1.14.43019.exe cba26c38507824ec950f8d1cb5e05dc0453d6cad
+    w_download http://kindleforpc.amazon.com/43061/KindleForPC-installer-1.15.43061.exe 27364a6867aac562426494312c2b3f4b673f13e2
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
 
