@@ -421,6 +421,9 @@ w_read_key()
         pl*) _W_keymsg="Proszę podać klucz dla programu '$W_PACKAGE'"
             _W_nokeymsg="Nie podano klucza"
             ;;
+        ru*) _W_keymsg="Пожалуйста, введите ключ для приложения '$W_PACKAGE'"
+            _W_nokeymsg="Ключ не введён"
+            ;;
         uk*) _W_keymsg="Будь ласка, введіть ключ для додатка '$W_PACKAGE'"
             _W_nokeymsg="Ключ не надано"
             ;;
@@ -889,6 +892,7 @@ w_download_manual_to()
     da*) _W_dlmsg="Hent venligst filen $_W_file fra $_W_url og placér den i $W_CACHE/$_W_packagename, kør derefter dette skript.";;
     de*) _W_dlmsg="Bitte laden Sie $_W_file von $_W_url runter, stellen Sie's in $W_CACHE/$_W_packagename, dann wiederholen Sie dieses Kommando.";;
     pl*) _W_dlmsg="Proszę pobrać plik $_W_file z $_W_url, następnie umieścić go w $W_CACHE/$_W_packagename, a na końcu uruchomić ponownie ten skrypt.";;
+    ru*) _W_dlmsg="Пожалуйста, скачайте файл $_W_file по адресу $_W_url, и поместите его в $W_CACHE/$_W_packagename, а затем запустите winetricks заново.";;
     uk*) _W_dlmsg="Будь ласка, звантажте $_W_file з $_W_url, розташуйте в $W_CACHE/$_W_packagename, потім запустіть скрипт знову.";;
     zh_CN*) _W_dlmsg="请从 $_W_url 下载 $_W_file，并置放于 $W_CACHE/$_W_packagename, 然后重新运行 winetricks.";;
     zh_TW*|zh_HK*) _W_dlmsg="請從 $_W_url 下載 $_W_file，并置放於 $W_CACHE/$_W_packagename, 然后重新執行 winetricks.";;
@@ -2021,6 +2025,7 @@ w_workaround_wine_bug()
     da*) w_warn "Arbejder uden om wine-fejl ${1} $_W_msg" ;;
     de*) w_warn "Wine-Fehler ${1} wird umgegangen $_W_msg" ;;
     pl*) w_warn "Obchodzenie błędu w wine ${1} $_W_msg" ;;
+    ru*) w_warn "Обход ошибки ${1} $_W_msg" ;;
     uk*) w_warn "Обхід помилки ${1} $_W_msg" ;;
     zh_CN*)   w_warn "绕过 wine bug ${1} $_W_msg" ;;
     zh_TW*|zh_HK*)   w_warn "繞過 wine bug ${1} $_W_msg" ;;
@@ -2425,6 +2430,18 @@ winetricks_get_prefix_var()
 winetricks_prefixmenu()
 {
     case $LANG in
+    ru*) _W_msg_title="Winetricks - выберите wineprefix"
+         _W_msg_body='Что вы хотите сделать?'
+         _W_msg_apps='Установить программу или библиотеку'
+         _W_msg_games='Установить игру'
+         _W_msg_benchmarks='Установить приложение для оценки производительности'
+         _W_msg_default="Выберите путь для wine по умолчанию"
+         _W_msg_unattended0="Отключить автоматическую установку"
+         _W_msg_unattended1="Включить автоматическую установку"
+         _W_msg_showbroken0="Спрятать нерабочие программы (например, использующие DRM)"
+         _W_msg_showbroken1="Отобразить нерабочие программы (например, использующие DRM)"
+         _W_msg_help="Просмотр справки (в веб браузере)"
+         ;;
     uk*) _W_msg_title="Winetricks - виберіть wineprefix"
          _W_msg_body='Що Ви хочете зробити?'
          _W_msg_apps='Встановити додаток'
@@ -2619,6 +2636,19 @@ winetricks_mainmenu()
          _W_msg_folder='Przeglądaj pliki'
          _W_msg_annihilate="Usuń WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO WINEPREFIXA"
          ;;
+    ru*) _W_msg_title="Winetricks - текущий путь для wine (wineprefix) \"$WINEPREFIX\""
+         _W_msg_body='Что вы хотите сделать с этим wineprefix?'
+         _W_msg_dlls="Установить DLL библиотеку или компонент Windows"
+         _W_msg_fonts='Установить шрифт'
+         _W_msg_settings='Поменять настройки'
+         _W_msg_winecfg='Запустить winecfg (редактор настроек wine)'
+         _W_msg_regedit='Запустить regedit (редактор рееста)'
+         _W_msg_taskmgr='Запустить taskmgr (менеджер задач)'
+         _W_msg_uninstaller='Запустить uninstaller (деинсталятор)'
+         _W_msg_shell='Запустить графический терминал (для отладки)'
+         _W_msg_folder='Проводник файлов'
+         _W_msg_annihilate="Удалить ВСЕ ДАННЫЕ И ПРИЛОЖЕНИЯ В ЭТОМ WINEPREFIX"
+         ;;
     uk*) _W_msg_title="Winetricks - поточний prefix \"$WINEPREFIX\""
          _W_msg_body='Що Ви хочете зробити для цього wineprefix?'
          _W_msg_dlls="Встановити Windows DLL чи компонент(и)"
@@ -2738,6 +2768,9 @@ winetricks_settings_menu()
     pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
          _W_msg_body='Which settings would you like to change?'
          ;;
+    ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"$WINEPREFIX\""
+         _W_msg_body='Какие настройки вы хотите изменить?'
+         ;;
     uk*) _W_msg_title="Winetricks - поточний prefix \"$WINEPREFIX\""
          _W_msg_body='Які налаштування Ви хочете змінити?'
          ;;
@@ -2787,6 +2820,18 @@ winetricks_settings_menu()
                 --column '' \
                 --column Ustawienie \
                 --column Nazwa \
+                --height $WINETRICKS_MENU_HEIGHT \
+                --width $WINETRICKS_MENU_WIDTH \
+                "
+            ;;
+        ru*) printf %s "zenity \
+                --title '$_W_msg_title' \
+                --text '$_W_msg_body' \
+                --list \
+                --checklist \
+                --column '' \
+                --column Установка \
+                --column Имя \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -2893,6 +2938,10 @@ winetricks_showmenu()
          _W_msg_body='Które paczki chesz zainstalować?'
          _W_cached="zarchiwizowane"
          ;;
+    ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"$WINEPREFIX\""
+         _W_msg_body='Какое приложение(я) вы хотите установить?'
+         _W_cached="в кэше"
+         ;;
     uk*) _W_msg_title="Winetricks - поточний prefix \"$WINEPREFIX\""
          _W_msg_body='Які пакунки Ви хочете встановити?'
          _W_cached="кешовано"
@@ -2965,6 +3014,24 @@ winetricks_showmenu()
                 --column Status \
                 --column 'Rozmiar (MB)' \
                 --column 'Czas (sek)' \
+                --height $WINETRICKS_MENU_HEIGHT \
+                --width $WINETRICKS_MENU_WIDTH \
+                "
+             ;;
+        ru*) printf %s "zenity \
+                --title '$_W_msg_title' \
+                --text '$_W_msg_body' \
+                --list \
+                --checklist \
+                --column '' \
+                --column Пакет \
+                --column Название \
+                --column Издатель \
+                --column Год \
+                --column Источник \
+                --column Статус \
+                --column 'Размер (МБ)' \
+                --column 'Время (сек)' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -3275,6 +3342,7 @@ winetricks_list_all()
     da*) _W_cached="cached"   ; _W_download="kan hentes"    ;;
     de*) _W_cached="gecached" ; _W_download="herunterladbar";;
     pl*) _W_cached="zarchiwizowane"   ; _W_download="do pobrania"  ;;
+    ru*) _W_cached="в кэше"   ; _W_download="доступно для скачивания"  ;;
     uk*) _W_cached="кешовано"   ; _W_download="завантажуване"  ;;
     zh_CN*)   _W_cached="已缓存"   ; _W_download="可下载"  ;;
     zh_TW*|zh_HK*)   _W_cached="已緩存"   ; _W_download="可下載"  ;;
@@ -3512,9 +3580,10 @@ winetricks_cache_iso()
         then
             case $LANG in
             da*)  w_warn "Forkert disk [$_W_volname] indsat. Indsæt venligst disken [$_W_expected_volname]" ;;
-            de*)  w_warn "Falsche Disk [$_W_volname] eingelegt.  Bitte legen Sie Disk [$_W_expected_volname] ein!" ;;
-        pl*)  w_warn "Włożono zły dysk [$_W_volname].  Proszę włożyć dysk [$_W_expected_volname]" ;;
-            uk*)  w_warn "Неправильний диск [$_W_volname].  Будь ласка, вставте диск [$_W_expected_volname]" ;;
+            de*)  w_warn "Falsche Disk [$_W_volname] eingelegt. Bitte legen Sie Disk [$_W_expected_volname] ein!" ;;
+            pl*)  w_warn "Włożono zły dysk [$_W_volname]. Proszę włożyć dysk [$_W_expected_volname]" ;;
+            ru*)  w_warn "Неправильный диск [$_W_volname]. Пожалуйста, вставьте диск [$_W_expected_volname]" ;;
+            uk*)  w_warn "Неправильний диск [$_W_volname]. Будь ласка, вставте диск [$_W_expected_volname]" ;;
             zh_CN*)    w_warn " [$_W_volname] 光盘插入错误，请插入光盘 [$_W_expected_volname]" ;;
             zh_TW*|zh_HK*)    w_warn " [$_W_volname] 光碟插入錯誤，請插入光碟 [$_W_expected_volname]" ;;
             *)    w_warn "Wrong disc [$_W_volname] inserted.  Please insert disc [$_W_expected_volname]" ;;
@@ -3734,6 +3803,7 @@ winetricks_mount_real_volume()
     da*)_W_mountmsg="Indsæt venligst disken '$_W_expected_volname' (krævet af pakken '$_PACKAGE')" ;;
     de*)_W_mountmsg="Bitte Disk '$_W_expected_volname' einlegen (für Paket '$W_PACKAGE')" ;;
     pl*)  _W_mountmsg="Proszę włożyć dysk '$_W_expected_volname' (potrzebny paczce '$W_PACKAGE')" ;;
+    ru*)  _W_mountmsg="Пожалуйста, вставьте том '$_W_expected_volname' (требуется для пакета '$W_PACKAGE')" ;;
     uk*)  _W_mountmsg="Будь ласка, вставте том '$_W_expected_volname' (потрібний для пакунка '$W_PACKAGE')" ;;
     zh_CN*)  _W_mountmsg="请插入卷 '$_W_expected_volname' (为包 '$W_PACKAGE 所需')" ;;
     zh_TW*|zh_HK*)  _W_mountmsg="請插入卷 '$_W_expected_volname' (為包 '$W_PACKAGE 所需')" ;;
@@ -4289,6 +4359,7 @@ winetricks_install_app()
     da*) fail_msg="Installationen af pakken $1 fejlede" ;;
     de*) fail_msg="Installieren von Paket $1 gescheitert" ;;
     pl*) fail_msg="Niepowodzenie przy instalacji paczki $1" ;;
+    ru*) fail_msg="Ошибка установки пакета $1" ;;
     uk*) fail_msg="Помилка встановлення пакунка $1" ;;
     zh_CN*)   fail_msg="$1 安装失败" ;;
     zh_TW*|zh_HK*)   fail_msg="$1 安裝失敗" ;;
