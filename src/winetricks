@@ -2430,9 +2430,9 @@ winetricks_get_prefix_var()
 winetricks_prefixmenu()
 {
     case $LANG in
-    ru*) _W_msg_title="Winetricks - выберите wineprefix"
+    ru*) _W_msg_title="Winetricks - выберите путь wine (wineprefix)"
          _W_msg_body='Что вы хотите сделать?'
-         _W_msg_apps='Установить программу или библиотеку'
+         _W_msg_apps='Установить программу'
          _W_msg_games='Установить игру'
          _W_msg_benchmarks='Установить приложение для оценки производительности'
          _W_msg_default="Выберите путь для wine по умолчанию"
@@ -2492,7 +2492,7 @@ winetricks_prefixmenu()
          ;;
     *)   _W_msg_title="Winetricks - choose a wineprefix"
          _W_msg_body='What do you want to do?'
-         _W_msg_apps='Install an app'
+         _W_msg_apps='Install an application'
          _W_msg_games='Install a game'
          _W_msg_benchmarks='Install a benchmark'
          _W_msg_default="Select the default wineprefix"
@@ -3582,7 +3582,7 @@ winetricks_cache_iso()
             da*)  w_warn "Forkert disk [$_W_volname] indsat. Indsæt venligst disken [$_W_expected_volname]" ;;
             de*)  w_warn "Falsche Disk [$_W_volname] eingelegt. Bitte legen Sie Disk [$_W_expected_volname] ein!" ;;
             pl*)  w_warn "Włożono zły dysk [$_W_volname]. Proszę włożyć dysk [$_W_expected_volname]" ;;
-            ru*)  w_warn "Неправильный диск [$_W_volname]. Пожалуйста, вставьте диск [$_W_expected_volname]" ;;
+            ru*)  w_warn "Неверный диск [$_W_volname]. Пожалуйста, вставьте диск [$_W_expected_volname]" ;;
             uk*)  w_warn "Неправильний диск [$_W_volname]. Будь ласка, вставте диск [$_W_expected_volname]" ;;
             zh_CN*)    w_warn " [$_W_volname] 光盘插入错误，请插入光盘 [$_W_expected_volname]" ;;
             zh_TW*|zh_HK*)    w_warn " [$_W_volname] 光碟插入錯誤，請插入光碟 [$_W_expected_volname]" ;;
