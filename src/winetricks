@@ -6643,7 +6643,12 @@ load_ie8_kb2936068()
     fi
 
     cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" IE8-WindowsXP-KB2936068-x86-ENU.exe $quiet
+    "$WINE" IE8-WindowsXP-KB2936068-x86-ENU.exe $quiet
+    status=$?
+    case $status in
+        0|194) ;;
+        *) w_die "$W_PACKAGE installation failed"
+    esac
 }
 
 #----------------------------------------------------------------
