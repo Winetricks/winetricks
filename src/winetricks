@@ -7319,7 +7319,8 @@ w_metadata openwatcom apps \
 
 load_openwatcom()
 {
-    w_download "http://ftp.openwatcom.org/ftp/open-watcom-c-win32-1.9.exe" 236ac33ebd463006be4ecd83d7ebea1c026eb55a
+    # 2016/03/11: upstream http://www.openwatcom.org appears dead (404)
+    w_download "http://openwatcom.mirror.fr/open-watcom-c-win32-1.9.exe" 236ac33ebd463006be4ecd83d7ebea1c026eb55a
 
     if [ $W_UNATTENDED_SLASH_Q ]
     then
