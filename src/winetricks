@@ -8710,16 +8710,17 @@ w_metadata baekmuk fonts \
     publisher="Wooderart Inc. / kldp.net" \
     year="1999" \
     media="download" \
-    file1="ttf-baekmuk_2.2.orig.tar.gz" \
+    file1="fonts-baekmuk_2.2.orig.tar.gz" \
     installed_file1="$W_FONTSDIR_WIN/batang.ttf"
 
 load_baekmuk()
 {
     # See http://kldp.net/projects/baekmuk for project page
     # Need to download from Debian as the project page has unique captcha tokens per visitor
-    w_download http://ftp.debian.org/debian/pool/main/t/ttf-baekmuk/ttf-baekmuk_2.2.orig.tar.gz afdee34f700007de6ea87b43c92a88b7385ba65b
-    cd "$W_TMP/"
-    gunzip -dc "$W_CACHE/baekmuk/ttf-baekmuk_2.2.orig.tar.gz" | tar -xf -
+    w_download http://http.debian.net/debian/pool/main/f/fonts-baekmuk/fonts-baekmuk_2.2.orig.tar.gz afdee34f700007de6ea87b43c92a88b7385ba65b
+
+    cd "$W_TMP"
+    tar zxvf "$W_CACHE/$W_PACKAGE/$file1" baekmuk-ttf-2.2/ttf
     w_try mv baekmuk-ttf-2.2/ttf/*.ttf "$W_FONTSDIR_UNIX"
     w_register_font batang.ttf "Baekmuk Batang"
     w_register_font gulim.ttf "Baekmuk Gulim"
