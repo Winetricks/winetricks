@@ -6691,9 +6691,9 @@ load_kindle()
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
 
-    if w_workaround_wine_bug 39980 "Installing native vcrun2008"
+    if w_workaround_wine_bug 32859
     then
-        w_call vcrun2008
+        w_warn "You may need to run with taskset -c 0 to avoid a libX11 crash"
     fi
 }
 
