@@ -6812,7 +6812,7 @@ load_kindle()
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
 
-    if w_workaround_wine_bug 32859
+    if w_workaround_wine_bug 35041
     then
         w_warn "You may need to run with taskset -c 0 to avoid a libX11 crash"
     fi
