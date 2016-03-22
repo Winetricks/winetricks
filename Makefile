@@ -73,6 +73,11 @@ check:
 	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
 	echo ''
 	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
+	# Check all script dependencies before starting tests:
+	echo "Checking dependencies.."
+	sh ./src/linkcheck.sh check-deps || exit 1
+	sh ./tests/winetricks-test check-deps || exit 1
+	echo "Running tests"
 	cd src; sh ../tests/winetricks-test quick
 
 test:
@@ -96,6 +101,11 @@ test:
 	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
 	echo ''
 	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
+	# Check all script dependencies before starting tests:
+	echo "Checking dependencies.."
+	sh ./src/linkcheck.sh check-deps || exit 1
+	sh ./tests/winetricks-test check-deps || exit 1
+	echo "Running tests"
 	rm -rf src/links.d; cd src; sh linkcheck.sh crawl
 	echo 'And now, the one hour run check.'
 	if test ! -z "$(XDG_CACHE_HOME)" ; then rm -rf $(XDG_CACHE_HOME)/winetricks ; else rm -rf $(HOME)/.cache/winetricks ; fi

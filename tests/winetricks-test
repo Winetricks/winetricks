@@ -43,16 +43,18 @@ QUICKCHECK="flash steam"
 # Check for programs this script (or winetricks) uses.
 # Better to find out they're missing now than in the
 # middle of a two day run.
-for tool in time cabextract
-do
-    which $tool
-    ret=$?
-    if [ ! $ret -eq 0 ]
-    then
-        echo "Please install $tool."
-        exit 1
-    fi
-done
+check_deps() {
+    for tool in time cabextract
+    do
+        which $tool
+        ret=$?
+        if [ ! $ret -eq 0 ]
+        then
+            echo "Please install $tool."
+            exit 1
+        fi
+     done
+}
 
 passes=0
 errors=0
@@ -434,9 +436,10 @@ test_full() {
 }
 
 case "$1" in
-quick) test_quick;;
-dotnet) test_dotnet;;
-full)  test_full;;
+check-deps) check_deps ; exit $? ;;
+quick) check_deps && test_quick;;
+dotnet) check_deps && test_dotnet;;
+full)  check_deps && test_full;;
 *)     echo "Usage: $0 quick|full"; exit 1;;
 esac
 

@@ -14,11 +14,13 @@ set -e
 passes=0
 errors=0
 
-if ! test -x "`which curl 2>/dev/null`"
-then
-    echo "Please install curl"
-    exit 1
-fi
+check_deps() {
+    if ! test -x "`which curl 2>/dev/null`"
+    then
+        echo "Please install curl"
+        exit 1
+    fi
+}
 
 datadir="links.d"
 
@@ -107,7 +109,12 @@ crawl_all() {
 mkdir -p "$datadir"
 
 case "$1" in
+check-deps)
+    check_deps
+    exit $?
+    ;;
 crawl)
+    check_deps
     extract_all
     crawl_all
     show_all
