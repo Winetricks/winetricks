@@ -8043,7 +8043,7 @@ load_vcrun2003()
     # Sadly, I know of no Microsoft URL for these
     echo "Installing BZFlag (which comes with the Visual C++ 2003 runtimes)"
     # winetricks-test can't handle ${file1} in url since it does a raw parsing :/
-    w_download $WINETRICKS_SOURCEFORGE/bzflag/BZEditW32_1.6.5.exe bdd1b32c4202fd77e6513fd507c8236888b09121
+    w_download https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe bdd1b32c4202fd77e6513fd507c8236888b09121
     w_try "$WINE" "$W_CACHE"/vcrun2003/${file1} $W_UNATTENDED_SLASH_S
     w_try cp "$W_PROGRAMS_X86_UNIX/BZEdit1.6.5"/m*71* "$W_SYSTEM32_DLLS"
 }
