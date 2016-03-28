@@ -78,7 +78,7 @@ check:
 	sh ./src/linkcheck.sh check-deps || exit 1
 	sh ./tests/winetricks-test check-deps || exit 1
 	echo "Running tests"
-	cd src; sh ../tests/winetricks-test quick
+	cd src; if test -z "$(WINEARCH)" ; then export WINEARCH=win32 ; fi ; sh ../tests/winetricks-test quick
 
 test:
 	echo 'This verifies that most DLL verbs, plus flash and dotnet, install ok.'
@@ -109,4 +109,4 @@ test:
 	rm -rf src/links.d; cd src; sh linkcheck.sh crawl
 	echo 'And now, the one hour run check.'
 	if test ! -z "$(XDG_CACHE_HOME)" ; then rm -rf $(XDG_CACHE_HOME)/winetricks ; else rm -rf $(HOME)/.cache/winetricks ; fi
-	cd src; sh ../tests/winetricks-test full
+	cd src; if test -z "$(WINEARCH)" ; then export WINEARCH=win32 ; fi ; sh ../tests/winetricks-test full
