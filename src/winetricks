@@ -8675,8 +8675,13 @@ w_metadata xna40 dlls \
 
 load_xna40()
 {
-    w_warn "xna40 does not install properly in wine yet"
-    w_call dotnet40
+    if w_workaround_bug 30718
+    then
+        w_warn "$W_PACKAGE may not install properly in wine yet"
+    fi
+
+    w_call dotnet45
+
     # http://www.microsoft.com/en-us/download/details.aspx?id=20914
     w_download http://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi 49efdc29f65fc8263c196338552c7009fc96c5de
     cd "$W_CACHE/$W_PACKAGE"
