@@ -3870,6 +3870,7 @@ winetricks_set_unattended()
         # Might want to trim our stable of variables here a bit...
         W_UNATTENDED_DASH_Q="-q"
         W_UNATTENDED_SLASH_Q="/q"
+        W_UNATTENDED_SLASH_QB="/qb"
         W_UNATTENDED_SLASH_QN="/qn"
         W_UNATTENDED_SLASH_QNT="/qnt"
         W_UNATTENDED_SLASH_QT="/qt"
@@ -3882,6 +3883,7 @@ winetricks_set_unattended()
         W_OPT_UNATTENDED=""
         W_UNATTENDED_DASH_Q=""
         W_UNATTENDED_SLASH_Q=""
+        W_UNATTENDED_SLASH_QB=""
         W_UNATTENDED_SLASH_QN=""
         W_UNATTENDED_SLASH_QNT=""
         W_UNATTENDED_SLASH_QT=""
@@ -5851,7 +5853,7 @@ load_dotnet30sp1()
     "$WINE" reg add "HKLM\\Software\\Microsoft\\Net Framework Setup\\NDP\\v3.0" /v Version /t REG_SZ /d "3.0" /f
     "$WINE" reg add "HKLM\\Software\\Microsoft-\\Net Framework Setup\\NDP\\v3.0" /v SP /t REG_DWORD /d 0001 /f
 
-    w_try "$WINE" msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_OPT_UNATTENDED:+/qb}
+    w_try "$WINE" msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_UNATTENDED_SLASH_QB}
     "$WINE" sc delete FontCache3.0.0.0
 
     "$WINE" $file1 ${W_OPT_UNATTENDED:+/q}
@@ -9654,7 +9656,7 @@ load_controlspy()
 {
     w_download http://download.microsoft.com/download/a/3/1/a315b133-03a8-4845-b428-ec585369b285/ControlSpy.msi efe33701f78b5853ba73353f028b777b4c849e77
     cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec /i ControlSpy.msi ${W_OPT_UNATTENDED:+/qb}
+    w_try "$WINE" msiexec /i ControlSpy.msi ${W_UNATTENDED_SLASH_QB}
 }
 
 #----------------------------------------------------------------
@@ -10552,7 +10554,7 @@ load_psdk2003()
     # Sanity check...
     w_verify_sha1sum 6376ab5394226f426366d0646bf244d26156697b  PSDK-x86.msi
 
-    w_try "$WINE" msiexec /i PSDK-x86.msi ${W_OPT_UNATTENDED:+/qb}
+    w_try "$WINE" msiexec /i PSDK-x86.msi ${W_UNATTENDED_SLASH_QB}
 }
 
 #----------------------------------------------------------------
