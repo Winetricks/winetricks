@@ -9715,7 +9715,7 @@ w_metadata ev3 apps \
     publisher="Lego" \
     year="2014" \
     media="download" \
-    file1="LMS-EV3-WIN32-ENUS-01-01-01-full-setup.exe" \
+    file1="LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/LEGO Software/LEGO MINDSTORMS EV3 Home Edition/MindstormsEV3.exe"
 
 load_ev3()
@@ -9732,10 +9732,13 @@ load_ev3()
 
     w_call dotnet40
 
-    w_download http://esd.lego.com.edgesuite.net/digitaldelivery/mindstorms/6ecda7c2-1189-4816-b2dd-440e22d65814/public/LMS-EV3-WIN32-ENUS-01-01-01-full-setup.exe 855c914d9a3cf0f4793a046872658fd661389671
+    # 2016-02-18: LMS-EV3-WIN32-ENUS-01-01-01-full-setup.exe 855c914d9a3cf0f4793a046872658fd661389671
+    # 2016-03-22: LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe f4f077befd837e8f5716dbd134dc6828d6c4cc77
+
+    w_download http://esd.lego.com.edgesuite.net/digitaldelivery/mindstorms/6ecda7c2-1189-4816-b2dd-440e22d65814/public/LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe f4f077befd837e8f5716dbd134dc6828d6c4cc77
 
     cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" LMS-EV3-WIN32-ENUS-01-01-01-full-setup.exe
+    w_try "$WINE" "$file1"
 
     if w_workaround_wine_bug 40174 "Setting override for urlmon.dll to native to avoid crash"
     then
