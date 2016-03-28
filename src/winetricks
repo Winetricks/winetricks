@@ -705,8 +705,17 @@ w_download_to()
 
         if [ -x "`which aria2c 2>/dev/null`" ]
         then
-            # Basic aria2c support.
-            aria2c -c -d "$_W_cache" -o "$_W_file" "$_W_url"
+            # (Slightly fancy) aria2c support
+            # See https://github.com/Winetricks/winetricks/issues/612
+            # --daemon=false --enable-rpc=false to ensure aria2c doesnt go into the background after starting
+            #   and prevent any attempts to rebind on the RPC interface specified in someone's config.
+            # --input-file='' if the user config has a input-file specified then aria2 will read it and
+            #   attempt to download everything in that input file again.
+            # --save-session='' if the user has specified save-session in their config, their session will be
+            #   ovewritten by the new aria2 process
+            # http-accept-gzip=true (still needed) ?
+            aria2c --continue --daemon=false --dir "$_W_cache"  --enable-rpc=false --input-file='' \
+                --max-connection-per-server=5 --out "$_W_file" --save-session='' --stream-piece-selector=geom "$_W_url"
         elif [ -x "`which wget 2>/dev/null`" ]
         then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
