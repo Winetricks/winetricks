@@ -9698,14 +9698,14 @@ load_dxdiag()
 w_metadata emu8086 apps \
     title="emu8086" \
     publisher="emu8086.com" \
-    year="2013" \
+    year="2015" \
     media="download" \
-    file1="emu8086.zip" \
+    file1="emu8086v408r11.zip" \
     installed_exe1="c:/emu8086/emu8086.exe"
 
 load_emu8086()
 {
-    w_download http://emu8086.com/emu8086.zip fa3b2451cbc46fd2e3aa2670fa4d81ae8e75c7db
+    w_download http://www.emu8086.com/files/emu8086v408r11.zip aa71b46ee9259e5b31a300c820277e551969da7b
     w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/$file1
     w_try "$WINE" "$W_TMP/Setup.exe" $W_UNATTENDED_SLASH_SILENT
 }
