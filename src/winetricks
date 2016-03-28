@@ -8253,6 +8253,11 @@ load_vcrun2015()
     # 2015/10/12: bfb74e498c44d3a103ca3aa2831763fb417134d1
     w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe bfb74e498c44d3a103ca3aa2831763fb417134d1
 
+    if w_workaround_wine_bug 37781
+    then
+        w_warn "This may fail in non-XP mode, see https://bugs.winehq.org/show_bug.cgi?id=37781"
+    fi
+
     w_override_dlls native,builtin atl140 msvcp140 msvcr140 vcomp140
     cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" vc_redist.x86.exe $W_UNATTENDED_SLASH_Q
