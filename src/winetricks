@@ -10333,6 +10333,42 @@ load_mspaint()
 
 #----------------------------------------------------------------
 
+w_metadata mt4 apps \
+    title="Meta Trader 4" \
+    year="2005" \
+    media="download" \
+    file1="mt4setup.exe"
+
+load_mt4()
+{
+    w_download https://download.mql5.com/cdn/web/metaquotes.software.corp/mt4/mt4setup.exe 07c094fc95916ba2b8d0282795717db3f4a5a9ba
+
+    if w_workaround_wine_bug 7156 "${title} needs wingdings.ttf, installing opensymbol"
+    then
+        w_call opensymbol
+    fi
+
+    # Opens a webpage
+    WINEDLLOVERRIDES="winebrowser.exe="
+    export WINEDLLOVERRIDES
+
+    # No documented silent install option, unfortunately..
+    cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        Run, ${file1}
+        WinWait, MetaTrader 4 Setup, license agreement
+        ControlClick, Button1
+        Sleep 100
+        ControlClick, Button3
+        WinWait, MetaTrader 4 Setup, Installation successfully completed
+        ControlClick, Button4
+        Process, Wait, terminal.exe
+        Process, Close, terminal.exe
+    "
+}
+
+#----------------------------------------------------------------
+
 w_metadata nook apps \
     title="Nook for PC (e-book reader)" \
     publisher="Barnes & Noble" \
