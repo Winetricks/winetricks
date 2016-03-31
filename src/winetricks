@@ -539,7 +539,7 @@ winetricks_wget_progress()
         # Usa a subshell so if the user clicks 'Cancel',
         # the --auto-kill kills the subshell, not the current shell
         (
-            wget "$@" 2>&1 |
+            ${torify} wget "$@" 2>&1 |
             winetricks_parse_wget_progress | \
             $WINETRICKS_GUI --progress --width 400 --title="$_W_file" --auto-kill --auto-close
         )
@@ -559,7 +559,7 @@ winetricks_wget_progress()
         fi
         return $err
         ;;
-    *) wget "$@" ;;
+    *) ${torify} wget "$@" ;;
     esac
 }
 
@@ -703,7 +703,13 @@ w_download_to()
         *) _W_agent= ;;
         esac
 
-        if [ -x "`which aria2c 2>/dev/null`" ]
+        case "$WINETRICKS_OPT_TORIFY" in
+        1) torify=torify ; if [ ! -x "$(which torify 2>/dev/null)" ] ; then
+           w_die "--torify was used, but torify is not installed, please install it." ; exit 1 ; fi ;;
+        *) torify= ;;
+        esac
+
+        if [ -x "$(which aria2c 2>/dev/null)" ] && [ ! "$WINETRICKS_OPT_TORIFY" ]
         then
             # (Slightly fancy) aria2c support
             # See https://github.com/Winetricks/winetricks/issues/612
@@ -714,6 +720,7 @@ w_download_to()
             # --save-session='' if the user has specified save-session in their config, their session will be
             #   ovewritten by the new aria2 process
             # http-accept-gzip=true (still needed) ?
+            # Note: torify is broken with aria2c, see https://github.com/tatsuhiro-t/aria2/issues/153
             aria2c --continue --daemon=false --dir "$_W_cache"  --enable-rpc=false --input-file='' \
                 --max-connection-per-server=5 --out "$_W_file" --save-session='' --stream-piece-selector=geom "$_W_url"
         elif [ -x "`which wget 2>/dev/null`" ]
@@ -735,7 +742,7 @@ w_download_to()
         then
            # curl doesn't get filename from the location given by the server!
            # fortunately, we know it
-           curl -L -o "$_W_file" -C - \
+           $torify curl -L -o "$_W_file" -C - \
                --header "Accept-Encoding: gzip,deflate" \
                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
                ${_W_agent:+--user-agent "$_W_agent"} \
@@ -4230,6 +4237,7 @@ Tilvalg:
 -k|--keep_isos: lagr iso'er lokalt (muliggør senere installation uden disk)
 -q|--unattended: stil ingen spørgsmål, installér bare automatisk
 -r|--ddrescue: brug alternativ disk-tilgangsmetode (hjælper i tilfælde af en ridset disk)
+-t|--torify: Run downloads under torify, if available
 -v|--verbose: vis alle kommandoer som de bliver udført
 -V|--version: vis programversionen og afslut
 -h|--help: vis denne besked og afslut
@@ -4256,6 +4264,7 @@ Optionen:
 -q, --unattended      Keine Fragen stellen, alles automatisch installieren
 -r, --ddrescue        Alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
     --showbroken      Auch Verben anzeigen die momentan in Wine nicht funktionieren
+-t  --torify          Run downloads under torify, if available
     --verify          Wenn Möglisch automatische GUI Tests für Verben starten
 -v, --verbose         Alle ausgeführten Kommandos anzeigen
 -h, --help            Diese Hilfemeldung anzeigen
@@ -4290,6 +4299,7 @@ Options:
 -q, --unattended      Don't ask any questions, just install automatically
 -r, --ddrescue        Retry hard when caching scratched discs
     --showbroken      Even show verbs that are currently broken in wine
+-t  --torify          Run downloads under torify, if available
     --verify          Run (automated) GUI tests for verbs, if available
 -v, --verbose         Echo all commands as they are executed
 -h, --help            Display this message and exit
@@ -4319,6 +4329,7 @@ winetricks_handle_option()
     -r|--ddrescue) WINETRICKS_OPT_DD=ddrescue ;;
     -k|--keep_isos) WINETRICKS_OPT_KEEPISOS=1 ;;
     -q|--unattended) winetricks_set_unattended 1 ;;
+    -t|--torify)  WINETRICKS_OPT_TORIFY=1 ;;
     -v|--verbose) WINETRICKS_OPT_VERBOSE=1 ; set -x;;
     -vv|--really-verbose) WINETRICKS_OPT_VERBOSE=2 ; set -x ;;
     -V|--version) winetricks_print_version ; exit 0;;
