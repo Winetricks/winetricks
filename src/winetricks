@@ -709,7 +709,7 @@ w_download_to()
         *) torify= ;;
         esac
 
-        if [ -x "$(which aria2c 2>/dev/null)" ] && [ ! "$WINETRICKS_OPT_TORIFY" ]
+        if [ -x "$(which aria2c 2>/dev/null)" ]
         then
             # (Slightly fancy) aria2c support
             # See https://github.com/Winetricks/winetricks/issues/612
@@ -720,9 +720,14 @@ w_download_to()
             # --save-session='' if the user has specified save-session in their config, their session will be
             #   ovewritten by the new aria2 process
             # http-accept-gzip=true (still needed) ?
-            # Note: torify is broken with aria2c, see https://github.com/tatsuhiro-t/aria2/issues/153
-            aria2c --continue --daemon=false --dir "$_W_cache"  --enable-rpc=false --input-file='' \
-                --max-connection-per-server=5 --out "$_W_file" --save-session='' --stream-piece-selector=geom "$_W_url"
+
+            # torify needs --async-dns=false, see https://github.com/tatsuhiro-t/aria2/issues/613
+            case $WINETRICKS_OPT_TORIFY in
+            1) torify aria2c --async-dns=false --continue --daemon=false --dir "$_W_cache"  --enable-rpc=false --input-file='' \
+                --max-connection-per-server=5 --out "$_W_file" --save-session='' --stream-piece-selector=geom "$_W_url" ;;
+            *) aria2c --continue --daemon=false --dir "$_W_cache"  --enable-rpc=false --input-file='' \
+                --max-connection-per-server=5 --out "$_W_file" --save-session='' --stream-piece-selector=geom "$_W_url" ;;
+            esac
         elif [ -x "`which wget 2>/dev/null`" ]
         then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
