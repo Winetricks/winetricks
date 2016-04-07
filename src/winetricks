@@ -4686,7 +4686,7 @@ w_metadata cmd dlls \
 
 load_cmd()
 {
-    w_download ftp://ftp.sunet.se/pub/security/vendor/microsoft/win2000/Security_Bulletins/Q811493_W2K_SP4_X86_EN.exe ac6e28cfd12942e74aa08bddf7715705edb85b6b
+    w_download http://download.microsoft.com/download/8/d/c/8dc79965-dfbc-4b25-9546-e23bc4b791c6/Q811493_W2K_SP4_X86_EN.exe ac6e28cfd12942e74aa08bddf7715705edb85b6b
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_CACHE/$W_PACKAGE/$file1" -F cmd.exe
 
     w_override_dlls native,builtin cmd.exe
