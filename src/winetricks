@@ -2766,6 +2766,31 @@ w_call()
     w_try w_do_call "$@"
 }
 
+w_escape_unicode()
+{
+    # FIXME: mention in dependencies if we stick with this (only used by fakechinese currrently)
+    # FIXME: implement python2 (or POSIX, if possible)
+    # FIXME: redo winetricks in python3..
+
+    my_string="$1"
+
+    if [ -x "$(which python3)" ] ; then
+        cat > "${W_TMP}/blah.py" <<__EOF
+#!$(which python3)
+my_string="${my_string}"
+escaped = my_string.encode('unicode-escape')
+escaped_string = escaped.decode("utf-8")
+replaced_string = escaped_string.replace(r'\\u',r'\\\\\\\\x')
+print(replaced_string)
+__EOF
+        replaced_string=$($(which python3) "${W_TMP}/blah.py")
+        rm "${W_TMP}/blah.py"
+        echo "${replaced_string}"
+    else
+        w_die "Python3 required currently and not installed, sorry!"
+    fi
+}
+
 w_register_font()
 {
     file=$1
@@ -2802,9 +2827,13 @@ _EOF_
 
 w_register_font_replacement()
 {
-    _W_alias=$1
-    shift
+    case "$1" in
+        -u) _W_alias=$(w_escape_unicode "$2") ; shift 2 ;;
+        *) _W_alias=$1;;
+    esac
+
     _W_font=$1
+
     # Kludge: use _r to avoid \r expansion in w_try
     cat > "$W_TMP"/_register-font-replacements.reg <<_EOF_
 REGEDIT4
@@ -10166,6 +10195,9 @@ load_fakechinese()
     w_register_font_replacement "NSimSun" "WenQuanYi Micro Hei"
     w_register_font_replacement "SimKai" "WenQuanYi Micro Hei"
     w_register_font_replacement "SimSun" "WenQuanYi Micro Hei"
+
+    w_register_font_replacement -u "宋体" "WenQuanYi Micro Hei"
+    w_register_font_replacement -u "新細明體" "WenQuanYi Micro Hei"
 }
 
 #----------------------------------------------------------------
