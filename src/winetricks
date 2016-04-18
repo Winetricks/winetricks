@@ -8796,7 +8796,9 @@ load_xna40()
         w_warn "$W_PACKAGE may not install properly in wine yet"
     fi
 
-    w_call dotnet45
+    # See https://bugs.winehq.org/show_bug.cgi?id=30718#c8
+    export COMPlus_OnlyUseLatestCLR=1
+    w_call dotnet40
 
     # http://www.microsoft.com/en-us/download/details.aspx?id=20914
     w_download http://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi 49efdc29f65fc8263c196338552c7009fc96c5de
