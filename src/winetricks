@@ -6707,7 +6707,7 @@ load_jet40()
     # http://support.microsoft.com/kb/239114
     # See also http://bugs.winehq.org/show_bug.cgi?id=6085
     # FIXME: "failed with error 2"
-    w_download http://www.autoxplorer.com/exe/Jet40SP8_9xNT.exe 8cd25342030857969ede2d8fcc34f3f7bcc2d6d4
+    w_download http://download.microsoft.com/download/4/3/9/4393c9ac-e69e-458d-9f6d-2fe191c51469/jet40sp8_9xnt.exe 8cd25342030857969ede2d8fcc34f3f7bcc2d6d4
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" jet40sp8_9xnt.exe $W_UNATTENDED_SLASH_Q
 }
