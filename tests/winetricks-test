@@ -308,8 +308,8 @@ test_command()
 
 test_dlls()
 {
-    sh winetricks list-manual-download > manual.log
-    sh winetricks dlls list | awk '{print $1}' > dlls.log
+    sh winetricks list-manual-download | grep -v 'Using winetricks' > manual.log
+    sh winetricks dlls list | grep -v 'Using winetricks' | awk '{print $1}' > dlls.log
     if grep .------------------- dlls.log
     then
         fail "output of dlls list contained garbage"

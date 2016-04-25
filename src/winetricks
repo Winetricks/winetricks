@@ -4291,6 +4291,8 @@ winetricks_init()
     esac
     WINETRICKS_WINE_MINOR=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1\.\([0-9]*\)\..*/\1/'`
     WINETRICKS_WINE_MICRO=`echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/'`
+
+    echo "Using winetricks $(winetricks_print_version) with $WINETRICKS_WINE_VERSION"
 }
 
 winetricks_usage()
