@@ -1,6 +1,8 @@
 # Makefile for winetricks - a script for working around common problems in wine
 #
-# Copyright (C) 2013 Dan Kegel.  See also copyright notice in src/winetricks.
+# Copyright (C) 2013 Dan Kegel
+# Copyright (C) 2015-2016 Austin English
+# See also copyright notice in src/winetricks.
 #
 # winetricks comes with ABSOLUTELY NO WARRANTY.
 #
