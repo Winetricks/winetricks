@@ -43,7 +43,7 @@ cleanup:
 	sed --in-place 's,[ \t]\+$$,,' $$(find $(SOURCES) -type f)
 
 dist: clean $(SOURCES)
-	tar --exclude='*.patch' --exclude=measurements --exclude=.svn \
+	tar --exclude='*.patch' --exclude=measurements --exclude=.git \
 		--exclude-backups \
 		-czvf winetricks-$(version).tar.gz $(SOURCES)
 
