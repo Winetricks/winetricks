@@ -10872,51 +10872,6 @@ load_python26()
 
 #----------------------------------------------------------------
 
-w_metadata python26_comtypes dlls \
-    title="Comtypes for Python 2.6" \
-    publisher="theller" \
-    year="2014" \
-    media="download" \
-    file1="1.1.1.zip" \
-    installed_file1="c:/Python26/Lib/site-packages/comtypes-1.1.1-py2.6.egg/EGG-INFO/PKG-INFO" \
-    homepage="https://github.com/enthought/comtypes/releases"
-
-load_python26_comtypes()
-{
-    w_call python26
-    w_call python26_setuptools
-
-    w_download https://github.com/enthought/comtypes/archive/${file1} 080921ede048063a3be273f5dca3acc469dfe361
-
-    w_try_unzip "$W_TMP" "${W_CACHE}/${W_PACKAGE}/${file1}"
-    cd "$W_TMP/comtypes-$(basename ${file1} .zip)"
-    w_try "$WINE" "C:\Python26\python.exe" setup.py install
-}
-
-#----------------------------------------------------------------
-
-w_metadata python26_setuptools dlls \
-    title="Setuptools 18.0.1 for Python 2.6" \
-    publisher="Python Packaging Authority" \
-    year="2010" \
-    media="download" \
-    file1="ez_setup.py" \
-    installed_file1="c:/Python26/Lib/site-packages/setuptools.pth" \
-    homepage="https://pypi.python.org/pypi/setuptools"
-
-load_python26_setuptools()
-{
-    w_call python26
-
-    # Not checking sha1sum, script frequently updates and there aren't stable versions
-    w_download https://bootstrap.pypa.io/ez_setup.py
-
-    cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "C:\Python26\python.exe" ${file1}
-}
-
-#----------------------------------------------------------------
-
 w_metadata spotify apps \
     title="Spotify - All the music, all the time" \
     publisher="Spotify" \
@@ -18637,7 +18592,6 @@ for data in \
     pngfilt:size_MB=49,time_sec=0 \
     puzzleagent_demo:size_MB=495,time_sec=36 \
     python26:size_MB=160,time_sec=9 \
-    python26_comtypes:size_MB=46,time_sec=1 \
     quartz:size_MB=62,time_sec=3 \
     quicktime72:size_MB=219,time_sec=9 \
     quicktime76:size_MB=237,time_sec=6 \
@@ -18946,7 +18900,6 @@ execute_command()
     npm-repack) w_call npm=repack ;;
     oss) w_call sound=oss ;;
     python) w_call python26 ;;
-    python-comtypes) w_call python26_comtypes ;;
     vbrun60) w_call vb6run ;;
     vcrun2005sp1) w_call vcrun2005 ;;
     vcrun2008sp1) w_call vcrun2008 ;;
