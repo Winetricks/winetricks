@@ -1,5 +1,5 @@
 .\" -*- nroff -*-
-.TH WINETRICKS 1 "June 2013" "Winetricks 20130615" "Wine package manager"
+.TH WINETRICKS 1 "April 2016" "Winetricks 20160425" "Wine package manager"
 .SH NAME
 winetricks \- manage virtual windows environments using wine
 .SH SYNOPSIS
@@ -30,16 +30,20 @@ Don't check whether packages were already installed
 Show gui diagnostics even when driven by commandline
 .TP
 .B
+\-\-isolate
+Install each app or game in its own bottle
+.TP
+.B
 \-k, \-\-keep_isos
 Cache isos (allows later installation without disc)
 .TP
 .B
-\-\-no\-clean
-Don't delete temp directories (useful during debugging)
+\-\-no\-isolate
+Don't install each app or game in its own bottle (default)
 .TP
 .B
-\-\-no\-isolate
-Don't install each app or game in its own bottle
+\-\-no\-clean
+Don't delete temp directories (useful during debugging)
 .TP
 .B
 \-q, \-\-unattended
@@ -127,6 +131,9 @@ Wine checks several environment variables on startup:
 .I WINE
 If set, this specifies which wine binary to use by default
 .TP
+.I WINESERVER
+If set, this specifies which wineserver to use by default
+.TP
 .I WINEPREFIX
 If set, this specifies the location of the default .wine directory ( usually
 .IR $HOME/.wine
@@ -158,8 +165,8 @@ The most recent version of
 can be downloaded from
 .I http://winetricks.org/download/releases/
 .PP
-The latest snapshot of the code may be obtained via svn; see
-.I http://code.google.com/p/winetricks/source/checkout
+The latest snapshot of the code may be obtained via git; see
+.I https://github.com/Winetricks/winetricks/
 .PP
 For further information about
 .B winetricks
