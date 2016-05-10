@@ -1,6 +1,8 @@
 #!/bin/sh
 # Trivial release helper for winetricks
 #
+# Usage: $0 optional_version_name
+#
 # Copyright (C) 2016 Austin English
 #
 # This software comes with ABSOLUTELY NO WARRANTY.
@@ -19,7 +21,7 @@ if [ ! -f Makefile ] ; then
     exit 1
 fi
 
-version="$(date +%Y%m%d)"
+version="${1:-$(date +%Y%m%d)}"
 
 if git tag | grep ${version} ; then
     echo "A tag for ${version} already exists!"
