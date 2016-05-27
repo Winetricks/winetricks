@@ -60,7 +60,7 @@ WINETRICKS_VERSION=20160425
 #   Copyright (C) 2011 Giuseppe Dia
 #   Copyright (C) 2011 Łukasz Wojniłowicz
 #   Copyright (C) 2011 Matthew Bozarth
-#   Copyright (C) 2013-2014 Andrey Gusev <andrey.goosev!gmail.com>
+#   Copyright (C) 2013-2016 Andrey Gusev <andrey.goosev!gmail.com>
 #   Copyright (C) 2013-2015 Hillwood Yang <hillwood!opensuse.org>
 #   Copyright (C) 2013,2016 André Hentschel <nerv!dawncrow.de>
 #
@@ -177,7 +177,10 @@ w_askpermission()
 
     if test $? -ne 0
     then
-        w_die "Operation cancelled, quitting."
+        case $LANG in
+        uk*) w_die "Операція скасована." ;;
+        *) w_die "Operation cancelled, quitting." ;;
+        esac
         exec false
     fi
 
@@ -2740,7 +2743,7 @@ winetricks_mainmenu()
          _W_msg_winecfg='Запустити winecfg'
          _W_msg_regedit='Запустити regedit'
          _W_msg_taskmgr='Запустити taskmgr'
-         _W_msg_uninstaller='Run uninstaller'
+         _W_msg_uninstaller='Встановлення/видалення програм'
          _W_msg_shell='Запуск командної оболонки (для налагодження)'
          _W_msg_folder='Перегляд файлів'
          _W_msg_annihilate="Видалити УСІ ДАНІ ТА ПРОГРАМИ З ЦЬОГО WINEPREFIX"
@@ -4102,7 +4105,10 @@ winetricks_annihilate_wineprefix()
 {
     w_skip_windows "No wineprefix to delete on windows" && return
 
-    w_askpermission "Delete $WINEPREFIX, its apps, icons, and menu items?"
+    case $LANG in
+    uk*) w_askpermission "Бажаєте видалити '$WINEPREFIX'?" ;;
+    *) w_askpermission "Delete $WINEPREFIX, its apps, icons, and menu items?" ;;
+    esac
     rm -rf "$WINEPREFIX"/*
     rm -rf "$WINEPREFIX"
 
