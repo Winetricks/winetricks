@@ -9873,12 +9873,12 @@ load_ev3()
     cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" "$file1" ${quiet}
 
-    if w_workaround_wine_bug 40174 "Setting override for urlmon.dll to native to avoid crash"
+    if w_workaround_wine_bug 40729 "Setting override for urlmon.dll to native to avoid crash"
     then
         w_override_dlls native urlmon
     fi
 
-    if w_workaround_wine_bug 34897 "Installing update KB2936068 to work around bug 34897"
+    if w_workaround_wine_bug 34897 "Installing update KB2936068 to work around bug 34897" 1.9.10,
     then
         w_call ie8_kb2936068
     fi
