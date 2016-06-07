@@ -2015,6 +2015,7 @@ w_wine_version()
     1.6.*) _W_minor=6; _W_micro=`echo $2 | sed 's/.*\.//'`;;
     1.7.*) _W_minor=7; _W_micro=`echo $2 | sed 's/.*\.//'`;;
     1.8.*) _W_minor=8; _W_micro=`echo $2 | sed 's/.*\.//'`;;
+    1.9.*) _W_minor=9; _W_micro=`echo $2 | sed 's/.*\.//'`;;
     *) w_die "bug: unrecognized version $2";;
     esac
 
