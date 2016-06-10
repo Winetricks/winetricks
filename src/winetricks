@@ -8349,7 +8349,8 @@ load_vcrun2015()
         w_warn "This may fail in non-XP mode, see https://bugs.winehq.org/show_bug.cgi?id=37781"
     fi
 
-    w_override_dlls native,builtin atl140 msvcp140 msvcr140 vcomp140
+    w_override_dlls native,builtin api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0.dll api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 atl140 msvcp140 msvcr140 ucrtbase vcomp140 vcruntime140
+
     cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" vc_redist.x86.exe $W_UNATTENDED_SLASH_Q
 
@@ -8375,7 +8376,6 @@ load_vcrun2015()
             cp "$W_TMP"/vcomp140.dll "$W_SYSTEM64_DLLS"/vcomp140.dll
             cp "$W_TMP"/vcruntime140.dll "$W_SYSTEM64_DLLS"/vcruntime140.dll
 
-            w_override_dlls native,builtin api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0.dll api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 ucrtbase vcruntime140
             cp "$W_TMP"/api_ms_win_crt_conio_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-conio-l1-1-0.dll
             cp "$W_TMP"/api_ms_win_crt_heap_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-heap-l1-1-0.dll
             cp "$W_TMP"/api_ms_win_crt_locale_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-locale-l1-1-0.dll
