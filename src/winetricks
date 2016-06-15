@@ -9384,7 +9384,7 @@ load_opensymbol()
     cd "$W_TMP"
     # FIXME: 7zip also extracts .xz to just get .tar!?
     w_try_ar "$W_CACHE/$W_PACKAGE/$file1" data.tar.xz
-    w_try tar vxf "$W_TMP/data.tar.xz" ./usr/share/fonts/truetype/openoffice/opens___.ttf
+    w_try tar Jvxf "$W_TMP/data.tar.xz" ./usr/share/fonts/truetype/openoffice/opens___.ttf
     w_try mv "$W_TMP/usr/share/fonts/truetype/openoffice/opens___.ttf" "$W_FONTSDIR_UNIX"
     w_register_font opens___.ttf "OpenSymbol"
 }
