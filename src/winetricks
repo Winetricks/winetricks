@@ -312,6 +312,26 @@ w_try_7z()
     fi
 }
 
+w_try_ar()
+{
+    # $1 - ar file (.deb) to extract (keeping internal paths, in cwd)
+    # $2 - file to extract (optional)
+
+    # Not always installed, use Windows 7-zip as a fallback:
+    if test -x "`which ar 2>/dev/null`"
+    then
+        w_try ar x "$@"
+    else
+        w_fatal "Cannot find ar.  Please installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils'."
+
+        # FIXME: 7zip extracts the .ar and the nested .tar.xz, leaving a .tar for opensymbol. Need to find a workaround/fix before enabling 7zip support
+        #
+        # w_warn "Cannot find ar.  Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
+        # WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
+        # w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "`w_pathconv -w $1`"
+    fi
+}
+
 w_try_cabextract()
 {
     # Not always installed, but shouldn't be fatal unless it's being used
@@ -9362,8 +9382,9 @@ load_opensymbol()
     w_download http://security.debian.org/debian-security/pool/updates/main/libr/libreoffice/fonts-opensymbol_102.6+LibO4.3.3-2+deb8u3_all.deb d3e2dd921c6694d24865600e40eceaf2a635d1c6
 
     cd "$W_TMP"
-    w_try ar x "$W_CACHE/$W_PACKAGE/$file1" data.tar.xz
-    w_try tar Jvxf data.tar.xz ./usr/share/fonts/truetype/openoffice/opens___.ttf
+    # FIXME: 7zip also extracts .xz to just get .tar!?
+    w_try_ar "$W_CACHE/$W_PACKAGE/$file1" data.tar.xz
+    w_try tar vxf "$W_TMP/data.tar.xz" ./usr/share/fonts/truetype/openoffice/opens___.ttf
     w_try mv "$W_TMP/usr/share/fonts/truetype/openoffice/opens___.ttf" "$W_FONTSDIR_UNIX"
     w_register_font opens___.ttf "OpenSymbol"
 }
