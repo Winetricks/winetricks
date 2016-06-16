@@ -9555,18 +9555,18 @@ load_3m_library()
 #----------------------------------------------------------------
 
 w_metadata 7zip apps \
-    title="7-Zip 15.05 beta" \
+    title="7-Zip 16.02" \
     publisher="Igor Pavlov" \
-    year="2015" \
+    year="2016" \
     media="download" \
-    file1="7z1505.exe" \
+    file1="7z1602.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/7-Zip/7zFM.exe"
 
 load_7zip()
 {
-    w_download http://www.7-zip.org/a/7z1505.exe ece8bbd4c8903095d44e99196219c953a1d47bfd
+    w_download http://www.7-zip.org/a/7z1602.exe a86f0726019ca84d1de1b036033d888d4538b2a9
     cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" 7z1505.exe $W_UNATTENDED_SLASH_S
+    w_try "$WINE" "${file1}" $W_UNATTENDED_SLASH_S
 }
 
 #----------------------------------------------------------------
