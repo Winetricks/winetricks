@@ -6802,17 +6802,17 @@ w_metadata kindle apps \
     publisher="Amazon" \
     year="2016" \
     media="download" \
-    file1="KindleForPC-installer-1.15.43061.exe" \
+    file1="KindleForPC-installer-1.16.44025.exe" \
     installed_exe1="$W_PROGRAMS_WIN/Amazon/Kindle/Kindle.exe" \
     homepage="http://www.amazon.com/gp/feature.html/?docId=1000426311"
 
 load_kindle()
 {
-    w_download http://kindleforpc.amazon.com/43061/KindleForPC-installer-1.15.43061.exe 27364a6867aac562426494312c2b3f4b673f13e2
+    w_download http://kindleforpc.amazon.com/44025/KindleForPC-installer-1.16.44025.exe c57d0a7d8cd5f1c3020536edf336c3187f3e051f
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
 
-    if w_workaround_wine_bug 32859
+    if w_workaround_wine_bug 35041
     then
         w_warn "You may need to run with taskset -c 0 to avoid a libX11 crash"
     fi
