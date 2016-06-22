@@ -520,7 +520,16 @@ w_expand_env()
 w_get_sha1sum()
 {
     local _W_file="$1"
-    _W_gotsum=`$WINETRICKS_SHA1SUM < "$_W_file" | sed 's/(stdin)= //;s/ .*//'`
+
+    # See https://github.com/Winetricks/winetricks/issues/645
+    # User is running winetricks from /dev/stdin
+    if [ -f "$_W_file" ] || [ -h "$_W_file" ]
+    then
+        _W_gotsum=`$WINETRICKS_SHA1SUM < "$_W_file" | sed 's/(stdin)= //;s/ .*//'`
+    else
+        w_warn "$_W_file is not a regular file, not checking sha1sum"
+        return
+    fi
 }
 
 # verify an sha1sum
