@@ -4,21 +4,21 @@
 # (This doesn't change often, use the sha1sum of the file when reporting problems)
 WINETRICKS_VERSION=20160622
 
-# This is a UTF-8 file
+# This is a UTF-8 file.
 # You should see an o with two dots over it here [ö]
 # You should see a micro (u with a tail) here [µ]
 # You should see a trademark symbol here [™]
 
 #--------------------------------------------------------------------
 #
-# Winetricks is a package manager for Win32 dlls and applications on POSIX.
+# Winetricks is a package manager for Win32 DLLs and applications on POSIX.
 # Features:
-# - Consists of a single shell script - no installation required
-# - Downloads packages automatically from original trusted sources
-# - Points out and works around known wine bugs automatically
-# - Both command-line and GUI operation
-# - Can install many packages in silent (unattended) mode
-# - Multiplatform; written for Linux, but supports OS X and Cygwin too
+# - Consists of a single shell script - no installation required.
+# - Downloads packages automatically from original trusted sources.
+# - Points out and works around known wine bugs automatically.
+# - Both command-line and GUI operation.
+# - Can install many packages in silent (unattended) mode.
+# - Multiplatform; written for Linux, but supports OS X and Cygwin too.
 #
 # Uses the following non-POSIX system tools:
 # - wine is used to execute Win32 apps except on Cygwin.
@@ -29,7 +29,7 @@ WINETRICKS_VERSION=20160622
 # - xdg-open (if present) or open (for OS X) is used to open download pages
 #   for the user when downloads cannot be fully automated.
 # - sudo is used to mount .iso images if the user cached them with -k option.
-# - perl is used to munge steam config files
+# - perl is used to munge Steam config files.
 # On Ubuntu, the following lines can be used to install all the prerequisites:
 #    sudo add-apt-repository ppa:ubuntu-wine/ppa
 #    sudo apt-get update
@@ -81,9 +81,9 @@ WINETRICKS_VERSION=20160622
 # Coding standards:
 #
 # Portability:
-# - Portability matters, as this script is run on many operating systems
-# - No bash, zsh, or csh extensions; only use features from
-#   the POSIX standard shell and utilities; see
+# - Portability matters, as this script is run on many operating systems.
+# - No bash, zsh, or csh extensions; only use features from the POSIX stanard
+#   shell and utilities; see
 #   http://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html
 # - 'checkbashisms -p -x winetricks' should show no warnings (per Debian policy)
 # - Prefer classic sh idioms as described in e.g.
@@ -96,11 +96,11 @@ WINETRICKS_VERSION=20160622
 #   work on systems like OS X.  e.g. "rm -f foo.dat", not "rm foo.dat -f"
 #
 # Formatting:
-# - Your terminal and editor must be configured for UTF-8
+# - Your terminal and editor must be configured for UTF-8.
 #   If you do not see an o with two dots over it here [ö], stop!
 # - Do not use tabs in this file or any verbs.
 # - Indent 4 spaces.
-# - Try to keep line length below 80 (makes printing easier)
+# - Try to keep line length below 80 characters (makes printing easier).
 # - Open curly braces ('{') and 'then' at beginning of line,
 #   close curlies ('}') and 'fi' should line up with the matching { or if,
 #   cases aligned with 'case' and 'esac'.  For instance,
@@ -114,8 +114,8 @@ WINETRICKS_VERSION=20160622
 #      esac
 #
 # Commenting:
-# - Comments should explain intent in English
-# - Keep functions short and well named to reduce need for comments
+# - Comments should explain intent in English.
+# - Keep functions short and well named to reduce need for comments.
 #
 # Naming:
 # Public things defined by this script, for use by verbs:
@@ -317,12 +317,12 @@ w_try_ar()
     # $1 - ar file (.deb) to extract (keeping internal paths, in cwd)
     # $2 - file to extract (optional)
 
-    # Not always installed, use Windows 7-zip as a fallback:
+    # Not always installed, use Windows 7-Zip as a fallback:
     if test -x "`which ar 2>/dev/null`"
     then
         w_try ar x "$@"
     else
-        w_warn "Cannot find ar.  Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
+        w_warn "Cannot find ar.  Using Windows 7-Zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
 
         # -t* prevents 7-zip from decompressing .tar.xz to .tar, see
@@ -423,7 +423,7 @@ w_read_key()
 
     mkdir -p "$W_CACHE/$W_PACKAGE"
 
-    # backwards compatible location
+    # Backwards compatible location
     # Auth doesn't belong in cache, since restoring it requires user input
     _W_keyfile="$W_CACHE/$W_PACKAGE/key.txt"
     if ! test -f "$_W_keyfile"
@@ -510,13 +510,13 @@ w_pathconv()
     esac
 }
 
-# Expand an environment variable and print it to stdout
+# Expand an environment variable and print it to stdout.
 w_expand_env()
 {
     winetricks_early_wine cmd.exe /c echo "%$1%"
 }
 
-# get sha1sum string and set $_W_gotsum to it
+# Get sha1sum string and set $_W_gotsum to it.
 w_get_sha1sum()
 {
     local _W_file="$1"
@@ -527,12 +527,12 @@ w_get_sha1sum()
     then
         _W_gotsum=`$WINETRICKS_SHA1SUM < "$_W_file" | sed 's/(stdin)= //;s/ .*//'`
     else
-        w_warn "$_W_file is not a regular file, not checking sha1sum"
+        w_warn "$_W_file is not a regular file, not checking sha1sum."
         return
     fi
 }
 
-# verify an sha1sum
+# Verify an SHA-1 checksum.
 w_verify_sha1sum()
 {
     _W_vs_wantsum=$1
@@ -551,9 +551,8 @@ w_verify_sha1sum()
 # This function replaces each such line with the pair of lines
 # 0%
 # # Downloading... 823K (40s)
-# It uses minimal buffering, so each line is output immediately
-# and the user can watch progress as it happens.
-
+# It uses minimal buffering, so each line is output immediately and the user
+# can watch the progress as it happens.
 winetricks_parse_wget_progress()
 {
     # Parse a percentage, a size, and a time into $1, $2 and $3
@@ -562,7 +561,7 @@ winetricks_parse_wget_progress()
        '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Downloading... \2 (\3)/'
 }
 
-# Execute wget, and if in GUI mode, also show a graphical progress bar
+# Execute wget, and if in GUI mode, also show a graphical progress bar.
 winetricks_wget_progress()
 {
     case $WINETRICKS_GUI in
@@ -645,7 +644,7 @@ w_dotnet_verify()
             dn_status=$?
 }
 
-# Checks if the user can run the self-update/rollback commands
+# Checks if the user can run the self-update/rollback commands.
 winetricks_check_update_availability()
 {
     # Prevents the development file overwrite:
@@ -707,7 +706,7 @@ winetricks_selfupdate_rollback()
     exit;
 }
 
-# Download a file
+# Download a file.
 # Usage: w_download_to packagename url [sha1sum [filename [cookie jar]]]
 # Caches downloads in winetrickscache/$packagename
 w_download_to()
@@ -719,12 +718,12 @@ w_download_to()
     _W_cookiejar="$5"
 
     case $_W_packagename in
-    .) w_die "bug: please do not download packages to top of cache" ;;
+    .) w_die "bug: please do not download packages to top of cache." ;;
     esac
 
     if echo "$_W_url" | grep ' '
     then
-        w_die "bug: please use %20 instead of literal spaces in urls, curl rejects spaces, and they make life harder for linkcheck.sh"
+        w_die "bug: please use %20 instead of literal spaces in URLs, curl rejects spaces, and they make life harder for linkcheck.sh"
     fi
     if [ "$_W_file"x = ""x ]
     then
@@ -767,7 +766,7 @@ w_download_to()
                 fi
                 if test ! "$WINETRICKS_CONTINUE_DOWNLOAD"
                 then
-                    w_warn "Checksum for $_W_cache/$_W_file did not match, retrying download"
+                    w_warn "Checksum for $_W_cache/$_W_file did not match, retrying download."
                     mv -f "$_W_cache/$_W_file" "$_W_cache/$_W_file".bak
                 fi
             else
@@ -851,7 +850,7 @@ w_download_to()
         if test $? = 0
         then
             # Need to decompress .exe's that are compressed, else Cygwin fails
-            # Also affects ttf files on github
+            # Also affects .ttf files on GitHub
             _W_filetype=`which file 2>/dev/null`
             case $_W_filetype-$_W_file in
             /*-*.exe|/*-*.ttf|/*-*.zip)
@@ -870,7 +869,7 @@ w_download_to()
         elif test $tries = 2
         then
             test -f "$_W_file" && rm "$_W_file"
-            w_die "Downloading $_W_url failed"
+            w_die "Downloading $_W_url failed."
         fi
         # Download from the Wayback Machine on second try
         _W_url="https://web.archive.org/web/$_W_url"
@@ -915,7 +914,7 @@ w_open_webpage()
     unset _W_cmd _W_cmdpath
 }
 
-# Download a file
+# Download a file.
 # Usage: w_download url [sha1sum [filename [cookie jar]]]
 # Caches downloads in winetrickscache/$W_PACKAGE
 w_download()
@@ -923,7 +922,7 @@ w_download()
     w_download_to $W_PACKAGE "$@"
 }
 
-# Download one or more files via BitTorrent
+# Download one or more files via BitTorrent.
 # Usage: w_download_torrent [foo.torrent]
 # Caches downloads in $W_CACHE/$W_PACKAGE, torrent files are assumed to be there
 # If no foo.torrent is given, will add ALL .torrent files in $W_CACHE/$W_PACKAGE
@@ -1036,8 +1035,8 @@ w_download_manual()
     w_download_manual_to $W_PACKAGE "$@"
 }
 
-# Turn off news, overlays, and friend interaction in Steam
-# Run from inside C:\Program Files\Steam
+# Turn off news, overlays, and friend interaction in Steam.
+# Run from inside C:\Program Files\Steam\
 w_steam_safemode()
 {
     cat > "$W_TMP/steamconfig.pl" <<"_EOF_"
@@ -1059,7 +1058,7 @@ use warnings;
 sub read_into_container{
     my( $pcontainer ) = @_;
 
-    $_ = <FILE> || w_die "Can't read first line of container";
+    $_ = <FILE> || w_die "Can't read first line of container.";
     /{/ || w_die "First line of container was not {";
     while (<FILE>) {
        chomp;
@@ -1138,12 +1137,12 @@ w_question()
     case $WINETRICKS_GUI in
     *zenity) $WINETRICKS_GUI --entry --text "$1" ;;
     *kdialog) $WINETRICKS_GUI --inputbox "$1" ;;
-    *xmessage) w_die "sorry, can't ask question with xmessage" ;;
+    *xmessage) w_die "Sorry, can't ask question with xmessage." ;;
     none) echo -n "$1" >&2 ; read W_ANSWER ; echo $W_ANSWER; unset W_ANSWER;;
     esac
 }
 
-# Reads steam username and password from environment, cache, or user
+# Reads Steam username and password from environment, cache, or user
 # If had to ask user, cache answer.
 w_steam_getid()
 {
@@ -1184,7 +1183,7 @@ w_steam_install_game()
 
     w_steam_getid
 
-    # Install the steam runtime
+    # Install the Steam runtime
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call steam
 
     # Steam puts up a bunch of windows.  Here's the sequence:
@@ -1289,7 +1288,7 @@ fi
 
     w_ahk_do "
         ; For DVD's: theoretically, it should be installed now, but most games want to download updates. Do that now.
-        ; For regular downloads: relaunch to coax steam into showing its nice small download progress dialog
+        ; For regular downloads: relaunch to coax Steam into showing its nice small download progress dialog
         process close, Steam.exe
         run steam.exe -login $W_STEAM_ID $W_STEAM_PASSWORD -applaunch $_W_steamid
         winwait Ready -
@@ -1310,19 +1309,19 @@ fi
 # Generic GOG.com installer
 # Usage: game_id game_title [other_files,size [reader_control [run_command [download_id [install_dir [installer_size_and_sha1]]]]]]
 # game_id
-#     Used for main installer name and download url.
+#     Used for main installer name and download URL.
 # game_title
 #     Used for AutoHotKey and installation path in bat script.
 # other_files
 #     Extra installer files, in one string, space-separated.
 # reader_control
 #     If set, the control id of the configuration panel checkbox controling
-#     Adobe Reader installation.
+#     Adobe Acrobat Reader installation.
 #     Some games don't have it, some games do with different ids.
 # run_command
 #     Used for bat script, relative to installation path.
 # download_id
-#     For games which download url doesn't match their game_id
+#     For games which download URL doesn't match their game_id
 # install_dir
 #     If different from game_title
 # installer_size_and_sha1
@@ -1418,7 +1417,7 @@ winetricks_load_gog()
                 }
                 Sleep, 1000
             }
-            ControlGet, checkbox_state, Checked,, $reader_control ; Unckeck Adobe/Foxit Reader
+            ControlGet, checkbox_state, Checked,, $reader_control ; Uncheck Adobe/Foxit Reader
             if (checkbox_state != 0) {
                 ControlClick, $reader_control
             }
@@ -1436,7 +1435,7 @@ winetricks_load_gog()
 # Some games have two volumes with identical volume names.
 # For these, please specify discnum 1 for first disc, discnum 2 for 2nd, etc.,
 # else caching can't work.
-# FIXME: should take mount option 'unhide' for poorly mastered discs
+# FIXME: should take mount option 'unhide' for poorly mastered discs.
 w_mount()
 {
     if test "$3"
@@ -1533,7 +1532,7 @@ w_skip_windows()
 {
     case "$OS" in
     "Windows_NT")
-        echo "Skipping operation '$1' on Windows"
+        echo "Skipping operation '$1' on Windows."
         return 0
         ;;
     esac
@@ -1806,7 +1805,7 @@ w_override_app_dlls()
     _W_mode=$1
     shift
 
-    # Fixme: handle comma-separated list of modes
+    # FIXME: handle comma-separated list of modes
     case $_W_mode in
     b|builtin) _W_mode=builtin ;;
     n|native) _W_mode=native ;;
@@ -1872,7 +1871,7 @@ w_set_winver()
 
     case $1 in
     win31)
-        echo "Setting Windows version to $1"
+        echo "Setting Windows version to $1."
         cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
@@ -1887,7 +1886,7 @@ _EOF_
     win95)
         # This key is only used for Windows 95/98:
 
-        echo "Setting Windows version to $1"
+        echo "Setting Windows version to $1."
         cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
@@ -1903,7 +1902,7 @@ _EOF_
     win98)
         # This key is only used for Windows 95/98:
 
-        echo "Setting Windows version to $1"
+        echo "Setting Windows version to $1."
         cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
@@ -1919,7 +1918,7 @@ _EOF_
     nt40)
         # Similar to modern version, but sets two extra keys:
 
-        echo "Setting Windows version to $1"
+        echo "Setting Windows version to $1."
         cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
@@ -1979,7 +1978,7 @@ _EOF_
         ;;
     esac
 
-    echo "Setting Windows version to $1"
+    echo "Setting Windows version to $1."
     cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
@@ -2000,7 +1999,7 @@ w_unset_winver()
     w_set_winver winxp
 }
 
-# Present app $1 with the Windows personality $2
+# Present app $1 with the Windows personality $2.
 w_set_app_winver()
 {
     w_skip_windows w_set_app_winver && return
@@ -2044,7 +2043,7 @@ w_wine_version()
     1.7.*) _W_minor=7; _W_micro=`echo $2 | sed 's/.*\.//'`;;
     1.8.*) _W_minor=8; _W_micro=`echo $2 | sed 's/.*\.//'`;;
     1.9.*) _W_minor=9; _W_micro=`echo $2 | sed 's/.*\.//'`;;
-    *) w_die "bug: unrecognized version $2";;
+    *) w_die "bug: unrecognized version $2.";;
     esac
 
     # Comparing current wine version 1.$WINETRICKS_WINE_MINOR.$WINETRICKS_WINE_MICRO against 1.$_W_minor.$_W_micro
@@ -2115,24 +2114,24 @@ w_workaround_wine_bug()
 {
     if test "$WINE" = ""
     then
-        echo "No need to work around wine bug $1 on Windows"
+        echo "No need to work around wine bug $1 on Windows."
         return 1
     fi
     case "$2" in
-    [0-9]*) w_die "bug: want message in w_workaround_wine_bug arg 2, got $2" ;;
+    [0-9]*) w_die "bug: want message in w_workaround_wine_bug arg 2, got $2." ;;
     "") _W_msg="";;
     *)  _W_msg="-- $2";;
     esac
 
     if test "$3" && w_wine_version_in $3 $4 $5 $6
     then
-        echo "Current Wine does not have Wine bug $1, so not applying workaround"
+        echo "Current Wine does not have Wine bug $1, so not applying workaround."
         return 1
     fi
 
     case $1 in
     "$WINETRICKS_BLACKLIST")
-        echo "Wine bug $1 workaround blacklisted, skipping"
+        echo "Wine bug $1 workaround blacklisted, skipping."
         return 1
         ;;
     esac
@@ -2186,11 +2185,11 @@ w_metadata()
     do
         case "$arg" in
         installed_exe1=/*)
-            w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_exe1, should be a windows path";;
+            w_die "bug: w_metadata $_W_md_cmd has a Unix path for installed_exe1, should be a Windows path.";;
         installed_file1=/*)
-            w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_file1, should be a windows path";;
+            w_die "bug: w_metadata $_W_md_cmd has a Unix path for installed_file1, should be a Windows path.";;
         media=download_manual)
-            w_die "bug: verb $_W_md_cmd has media=download_manual, should be manual_download" ;;
+            w_die "bug: verb $_W_md_cmd has media=download_manual, should be manual_download." ;;
         esac
         # Use longest match when stripping value,
         # and shortest match when stripping name,
@@ -2226,13 +2225,13 @@ w_metadata()
 }
 
 # Function for verbs to register their main executable [or, if name is given, other executables]
-# Deprecated. No-op for backwards compatibility
+# Deprecated. No-op for backwards compatibility.
 w_declare_exe()
 {
-    w_warn "w_declare_exe is deprecated, now a noop"
+    w_warn "w_declare_exe is deprecated, now a noop."
 }
 
-# Checks that a conflicting verb is not already installed in the prefix
+# Checks that a conflicting verb is not already installed in the prefix.
 # Usage: w_conflicts verb_to_install conflicts
 w_conflicts()
 {
@@ -2245,15 +2244,15 @@ w_conflicts()
     done
 }
 
-# Call a verb, don't let it affect environment
-# Hope that subshell passes through exit status
+# Call a verb, don't let it affect environment.
+# Hope that subshell passes through exit status.
 # Usage: w_do_call foo [bar]       (calls load_foo bar)
-# Or: w_do_call foo=bar            (also calls load_foo bar)
-# Or: w_do_call foo                (calls load_foo)
+#    Or: w_do_call foo=bar         (also calls load_foo bar)
+#    Or: w_do_call foo             (calls load_foo)
 w_do_call()
 {
     (
-        # Hack..
+        # Hack...
         if test $cmd = vd
         then
             load_vd $arg
@@ -2340,7 +2339,7 @@ w_do_call()
         w_try load_$cmd $arg
         winetricks_stats_log_command $*
 
-        # User-specific postinstall hook.
+        # User-specific post-install hook.
         # Source it so the script can call w_download() if needed.
         postfile="$WINETRICKS_POST/$1/$1-postinstall.sh"
         if test -f "$postfile"
@@ -2541,7 +2540,7 @@ winetricks_get_prefix_var()
     )
 }
 
-# Display prefix menu, get which wineprefix the user wants to work with
+# Display prefix menu, get which wineprefix the user wants to work with.
 winetricks_prefixmenu()
 {
     case $LANG in
@@ -2708,7 +2707,7 @@ winetricks_prefixmenu()
     unset _W_msg_help _W_msg_body _W_msg_title _W_msg_new _W_msg_default _W_msg_name
 }
 
-# Display main menu, get which submenu the user wants
+# Display main menu, get which submenu the user wants.
 winetricks_mainmenu()
 {
     case $LANG in
@@ -3037,7 +3036,7 @@ winetricks_settings_menu()
     unset _W_msg_body _W_msg_title
 }
 
-# Display the current menu, output list of verbs to execute to stdout
+# Display the current menu, output list of verbs to execute to stdout.
 winetricks_showmenu()
 {
     case $LANG in
@@ -3277,10 +3276,10 @@ winetricks_showmenu()
     unset _W_msg_body _W_msg_title
 }
 
-# Converts a metadata abolute path to its app code
+# Converts a metadata abolute path to its app code.
 winetricks_metadata_basename()
 {
-    # Classic, but too slow on cygwin
+    # Classic, but too slow on Cygwin
     #basename $1 .vars
 
     # first, remove suffix .vars
@@ -3318,8 +3317,8 @@ winetricks_is_cached()
     return 1
 }
 
-# Returns true if given verb has been installed
-# You must have already loaded its metadata before calling
+# Returns true if given verb has been installed.
+# You must have already loaded its metadata before calling.
 winetricks_is_installed()
 {
     unset _W_file _W_file_unix
@@ -3378,7 +3377,7 @@ winetricks_is_installed()
     return 1  # not installed
 }
 
-# List verbs which are already fully cached locally
+# List verbs which are already fully cached locally.
 winetricks_list_cached()
 {
     for _W_metadatafile in "$WINETRICKS_METADATA"/*/*.vars
@@ -3397,14 +3396,16 @@ winetricks_list_cached()
     unset _W_metadatafile
 }
 
-# List verbs which are automatically downloadable, regardless of whether they're cached yet
+# List verbs which are automatically downloadable, regardless of whether
+# they're cached yet.
 winetricks_list_download()
 {
     cd "$WINETRICKS_METADATA"
     grep -l 'media=.download' */*.vars | sed 's,.*/,,;s/\.vars//' | sort -u
 }
 
-# List verbs which are downloadable with user intervention, regardless of whether they're cached yet
+# List verbs which are downloadable with user intervention, regardless of
+# whether they're cached yet.
 winetricks_list_manual_download()
 {
     cd "$WINETRICKS_METADATA"
@@ -3434,7 +3435,7 @@ winetricks_list_installed()
     unset _W_metadatafile
 }
 
-# Helper for adding a string to a list of flags
+# Helper for adding a string to a list of flags.
 winetricks_append_to_flags()
 {
     if test "$flags"
@@ -3444,8 +3445,8 @@ winetricks_append_to_flags()
     flags="${flags}$1"
 }
 
-# List all verbs in category WINETRICKS_CURMENU verbosely
-# Format is "verb  title  (publisher, year) [flags]"
+# List all verbs in category WINETRICKS_CURMENU verbosely.
+# Format is "verb  title  (publisher, year) [flags]".
 winetricks_list_all()
 {
     # Note: doh123 relies on 'winetricks list' to list main menu categories
@@ -3489,7 +3490,8 @@ winetricks_list_all()
     unset _W_cached _W_metadatafile
 }
 
-# Abort if user doesn't own the given directory (or its parent, if it doesn't exist yet)
+# Abort if user doesn't own the given directory (or its parent, if it doesn't
+# exist yet).
 winetricks_die_if_user_not_dirowner()
 {
     if test -d "$1"
@@ -3508,9 +3510,9 @@ winetricks_die_if_user_not_dirowner()
 }
 
 # See
-# http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf (iso9660)
+# http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf (ISO 9660)
 # http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-167.pdf
-# http://www.osta.org/specs/pdf/udf102.pdf
+# http://www.osta.org/specs/pdf/udf102.pdf (UDF)
 # http://www.ecma-international.org/publications/techreports/E-TR-071.htm
 
 # Usage: read_bytes offset count device
@@ -3530,7 +3532,7 @@ winetricks_read_hex()
 # Usage: read_decimal offset device
 # Reads single four byte word, outputs in decimal.
 # Uses default endianness.
-# udf uses little endian words, so this only works on little endian machines.
+# UDF uses little endian words, so this only works on little endian machines.
 winetricks_read_decimal()
 {
     od -j $1 -N 4  -t u4 $2          | # offset $1, byte count 4, four byte decimal format, file $2
@@ -3564,7 +3566,7 @@ winetricks_read_udf_volume_name()
     # ...
     # 32     24       volume identifier (dstring)
 
-    # 1. check the 16 bit TagIdentifier of the descriptor tag, make sure it's 2
+    # 1. check the 16-bit TagIdentifier of the descriptor tag, make sure it's 2
     tagid=`winetricks_read_hex 524288 2 $1`
     : echo tagid is $tagid
     case "$tagid" in
@@ -3596,7 +3598,7 @@ winetricks_read_udf_volume_name()
     case $width in
     08)   winetricks_read_bytes $offset 30 $1 | sed 's/  *$//' ;;
     10)  winetricks_read_bytes $offset 30 $1 | tr -d '\000' | sed 's/  *$//' ;;
-    *) echo "Unhandled dvd volname character width '$width'"; exit 1;;
+    *) echo "Unhandled DVD volname character width '$width'."; exit 1;;
     esac
 
     echo ""
@@ -3624,7 +3626,7 @@ winetricks_read_volume_name()
     case $std_id in
     CD001) winetricks_read_iso9660_volume_name $1 ;;
     BEA01) winetricks_read_udf_volume_name $1; ;;
-    *) echo "Unrecognized disk type $std_id"; exit 1 ;;
+    *) echo "Unrecognized disk type $std_id."; exit 1 ;;
     esac
 }
 
@@ -3654,7 +3656,7 @@ winetricks_detect_optical_drive()
     done
 
     case "$WINETRICKS_DEV" in
-    "x") w_die "can't find cd/dvd drive" ;;
+    "x") w_die "can't find CD/DVD drive." ;;
     esac
 }
 
@@ -3677,7 +3679,7 @@ winetricks_cache_iso()
 
     while true
     do
-        # Wait for user to insert disc.
+        # Wait for user to insert the disc.
         # Sleep long to make it less likely to close the drive during insertion.
         while ! dd if=$WINETRICKS_DEV of=/dev/null count=1
         do
@@ -3750,7 +3752,7 @@ winetricks_cache_iso()
 
     mv "$W_CACHE"/temp.iso "$WINETRICKS_IMG"
 
-    eject $WINETRICKS_DEV || true    # punt if eject not found (as on cygwin)
+    eject $WINETRICKS_DEV || true    # punt if eject not found (as on Cygwin)
 }
 
 winetricks_load_vcdmount()
@@ -3774,7 +3776,7 @@ winetricks_load_vcdmount()
     then
         w_warn "Installing Virtual CloneDrive"
         w_download_to vcd http://static.slysoft.com/SetupVirtualCloneDrive.exe
-        # have to use cmd else vista won't let cygwin run .exe's?
+        # have to use cmd else Windows Vista won't let Cygwin run .exe's?
         chmod +x "$W_CACHE"/vcd/SetupVirtualCloneDrive.exe
         cd "$W_CACHE/vcd"
         cmd /c SetupVirtualCloneDrive.exe
@@ -3846,7 +3848,7 @@ winetricks_mount_cached_iso()
     fi
 }
 
-# List the currently mounted UDF or iso9660 filesystems that match the given pattern
+# List the currently mounted UDF or iso9660 filesystems that match the given pattern.
 # Output format:
 #   dev mountpoint
 #   dev mountpoint
@@ -3927,14 +3929,14 @@ winetricks_mount_real_volume()
 
     if test "$WINE" = ""
     then
-        # Assume already mounted, just get drive letter
+        # Assume already mounted, just get the drive letter
         W_ISO_MOUNT_LETTER=`awk '/iso/ {print $1}' < /proc/mounts | tr -d :`
         W_ISO_MOUNT_ROOT=`awk '/iso/ {print $2}' < /proc/mounts`
     else
         while ! winetricks_is_mounted "$_W_expected_volname"
         do
             w_try w_warn_cancel "$_W_mountmsg"
-            # In non-gui case, give user two seconds to futz with disc drive before spamming him again
+            # In non-GUI case, give user two seconds to futz with disc drive before spamming him again
             sleep 2
         done
         WINETRICKS_DEV=$_W_dev
@@ -3974,8 +3976,8 @@ winetricks_cleanup()
 winetricks_set_unattended()
 {
     # We shouldn't use all these extra variables.  Instead, we should
-    # use ${foo:+bar} to jam in commandline options for silent install
-    # only if W_OPT_UNATTENDED is nonempty.  See
+    # use ${foo:+bar} to jam in command-line options for silent install
+    # only if W_OPT_UNATTENDED is non-empty.  See
     # http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_02
     # So in attended mode, W_OPT_UNATTENDED should be empty.
 
@@ -4011,7 +4013,7 @@ winetricks_set_unattended()
 }
 
 # Usage: winetricks_set_wineprefix [bottlename]
-# Bottlename must not contain spaces, slashes, or other special characters
+# Bottlename must not contain spaces, slashes, or other special characters.
 # If bottlename is omitted, the default bottle (~/.wine) is used.
 winetricks_set_wineprefix()
 {
@@ -4119,8 +4121,8 @@ winetricks_set_wineprefix()
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
         W_SYSTEM64_DLLS="$W_WINDIR_UNIX/system32"
-        W_SYSTEM64_DLLS_WIN32="C:\\windows\\sysnative" # path to access 64-bit dlls from 32-bit apps
-        W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
+        W_SYSTEM64_DLLS_WIN32="C:\\windows\\sysnative" # path to access 64-bit DLLs from 32-bit apps
+        W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit DLLs from 64-bit apps
         # 64-bit prefixes still have plenty of issues:
         w_warn "You are using a 64-bit WINEPREFIX. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug."
     else
@@ -4132,7 +4134,7 @@ winetricks_set_wineprefix()
 
 winetricks_annihilate_wineprefix()
 {
-    w_skip_windows "No wineprefix to delete on windows" && return
+    w_skip_windows "No wineprefix to delete on Windows." && return
 
     case $LANG in
     uk*) w_askpermission "Бажаєте видалити '$WINEPREFIX'?" ;;
@@ -4146,7 +4148,7 @@ winetricks_annihilate_wineprefix()
 
     # Also remove desktop items.
     # Desktop might be synonym for home directory, so only go one level
-    # deep to avoid extreme slowdown if user has lots of files
+    # deep to avoid extreme slowdown if user has lots of files.
     (
     if ! test "$XDG_DESKTOP_DIR" && test -f $XDG_CONFIG_HOME/user-dirs.dirs
     then
@@ -4165,7 +4167,7 @@ winetricks_init()
 
     if ! test "$USERNAME"
     then
-        # Posix only requires LOGNAME to be defined, and sure enough, when
+        # POSIX only requires LOGNAME to be defined, and sure enough, when
         # logging in via console and startx in Ubuntu 11.04, USERNAME isn't set!
         # And even normal logins in Ubuntu 13.04 doesn't set it.
         # I tried using only LOGNAME in this script, but it's so easy to slip
@@ -4197,7 +4199,7 @@ winetricks_init()
     # Can be inherited from environment or set via -k, defaults to off
     WINETRICKS_OPT_KEEPISOS=${WINETRICKS_OPT_KEEPISOS:-0}
 
-    # what program to use to make disc image (dd or ddrescue)
+    # what program to use to make the disc image (dd or ddrescue)
     WINETRICKS_OPT_DD=${WINETRICKS_OPT_DD:-dd}
 
     # whether to use shared wineprefix (1) or unique wineprefix for each app (0)
@@ -4290,7 +4292,7 @@ winetricks_init()
         _abswine="`which "$WINE" 2>/dev/null`"
         if ! test -x "$_abswine" || ! test -f "$_abswine"
         then
-            w_die "WINE is $WINE, which is neither on the path nor an executable file"
+            w_die "WINE is $WINE, which is neither on the path nor an executable file."
         fi
         case "$WINETRICKS_OPT_VERBOSE" in
         1|2) echo -n "Wine is '$WINE'; Wine version is "
@@ -4396,15 +4398,15 @@ Executes given verbs.  Each verb installs an application or changes a setting.
 
 Options:
     --force           Don't check whether packages were already installed
-    --gui             Show gui diagnostics even when driven by commandline
+    --gui             Show GUI diagnostics even when driven by command line
     --isolate         Install each app or game in its own bottle (WINEPREFIX)
     --self-update     Update this application to the last version
-    --update-rollback Rollback the last self update
+    --update-rollback Rollback the last self-update
 -k, --keep_isos       Cache isos (allows later installation without disc)
     --no-clean        Don't delete temp directories (useful during debugging)
 -q, --unattended      Don't ask any questions, just install automatically
 -r, --ddrescue        Retry hard when caching scratched discs
-    --showbroken      Even show verbs that are currently broken in wine
+    --showbroken      Even show verbs that are currently broken in Wine
 -t  --torify          Run downloads under torify, if available
     --verify          Run (automated) GUI tests for verbs, if available
 -v, --verbose         Echo all commands as they are executed
@@ -4412,18 +4414,18 @@ Options:
 -V, --version         Display version and exit
 
 Commands:
-list                  list categories
-list-all              list all categories and their verbs
-apps list             list verbs in category 'applications'
-benchmarks list       list verbs in category 'benchmarks'
-dlls list             list verbs in category 'dlls'
-games list            list verbs in category 'games'
-settings list         list verbs in category 'settings'
-list-cached           list cached-and-ready-to-install verbs
-list-download         list verbs which download automatically
-list-manual-download  list verbs which download with some help from the user
-list-installed        list already-installed verbs
-prefix=foobar         select WINEPREFIX=$W_PREFIXES_ROOT/foobar
+list                  List categories
+list-all              List all categories and their verbs
+apps list             List verbs in category 'applications'
+benchmarks list       List verbs in category 'benchmarks'
+dlls list             List verbs in category 'dlls'
+games list            List verbs in category 'games'
+settings list         List verbs in category 'settings'
+list-cached           List cached-and-ready-to-install verbs
+list-download         List verbs which download automatically
+list-manual-download  List verbs which download with some help from the user
+list-installed        List already-installed verbs
+prefix=foobar         Select WINEPREFIX=$W_PREFIXES_ROOT/foobar
 _EOF_
         ;;
     esac
@@ -4451,7 +4453,7 @@ winetricks_handle_option()
     --showbroken) W_OPT_SHOWBROKEN=1 ;;
     --optin) WINETRICKS_STATS_REPORT=1;;
     --optout) WINETRICKS_STATS_REPORT=0;;
-    -*) w_die "unknown option $1" ;;
+    -*) w_die "unknown option $1." ;;
     *) return 1 ;;
     esac
     return 0
@@ -4513,7 +4515,7 @@ winetricks_install_app()
 
 helper_directx_dl()
 {
-    # February 2010 DirectX 9c User Redistributable
+    # February 2010 DirectX 9.0c User Redistributable
     # http://www.microsoft.com/downloads/details.aspx?displaylang=en&FamilyID=0cef8180-e94a-4f56-b157-5ab8109cb4f5
     # FIXME: none of the verbs that use this will show download status right
     # until file1 metadata is extended to handle common cache dir
@@ -4524,7 +4526,7 @@ helper_directx_dl()
 
 helper_directx_Jun2010()
 {
-    # June 2010 DirectX 9c User Redistributable
+    # June 2010 DirectX 9.0c User Redistributable
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyID=3b170b25-abab-4bc3-ae91-50ceb6d8fa8d
     w_download_to directx9 http://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe
 
@@ -4537,7 +4539,7 @@ helper_d3dx9_xx()
 
     helper_directx_dl
 
-    # Even kinder, less invasive directx - only extract and override d3dx9_xx.dll
+    # Even kinder, less invasive DirectX - only extract and override d3dx9_xx.dll
     w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
     for x in "$W_TMP"/*.cab
     do
@@ -4801,7 +4803,7 @@ w_metadata comdlg32ocx dlls \
 
 load_comdlg32ocx()
 {
-    # By analogy with vb5 version in http://support.microsoft.com/kb/168917
+    # By analogy with VB5 version in http://support.microsoft.com/kb/168917
     w_download http://activex.microsoft.com/controls/vb6/ComDlg32.cab d4f3e193c6180eccd73bad53a8500beb5b279cbf
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comdlg32ocx/${file1}
     w_try cp "$W_TMP"/comdlg32.ocx "$W_SYSTEM32_DLLS"/comdlg32.ocx
@@ -4922,7 +4924,7 @@ load_d3dx9()
 {
     helper_directx_Jun2010
 
-    # Kinder, less invasive directx - only extract and override d3dx9_??.dll
+    # Kinder, less invasive DirectX - only extract and override d3dx9_??.dll
     w_try_cabextract -d "$W_TMP" -L -F '*d3dx9*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
     for x in "$W_TMP"/*.cab
     do
@@ -4937,7 +4939,7 @@ load_d3dx9()
         done
     fi
 
-    # For now, not needed, but when Wine starts preferring our builtin dll over native it will be.
+    # For now, not needed, but when Wine starts preferring our builtin DLL over native it will be.
     w_override_dlls native d3dx9_24 d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 d3dx9_29 d3dx9_30
     w_override_dlls native d3dx9_31 d3dx9_32 d3dx9_33 d3dx9_34 d3dx9_35 d3dx9_36 d3dx9_37
     w_override_dlls native d3dx9_38 d3dx9_39 d3dx9_40 d3dx9_41 d3dx9_42 d3dx9_43
@@ -5161,7 +5163,7 @@ load_d3dx10()
 {
     helper_directx_Jun2010
 
-    # Kinder, less invasive directx10 - only extract and override d3dx10_??.dll
+    # Kinder, less invasive DirectX 10 - only extract and override d3dx10_??.dll
     w_try_cabextract -d "$W_TMP" -L -F '*d3dx10*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
     for x in "$W_TMP"/*.cab
     do
@@ -5536,7 +5538,7 @@ load_dxsdk_jun2010()
 #----------------------------------------------------------------
 
 w_metadata dmsynth dlls \
-    title="MS midi synthesizer from DirectX user redistributable" \
+    title="MS MIDI synthesizer from DirectX user redistributable" \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
@@ -5558,7 +5560,7 @@ load_dmsynth()
 #----------------------------------------------------------------
 
 w_metadata dotnet11 dlls \
-    title="MS .NET 1.1" \
+    title="MS .NET Framework 1.1" \
     publisher="Microsoft" \
     year="2003" \
     media="download" \
@@ -5570,7 +5572,7 @@ load_dotnet11()
 {
     if [ $W_ARCH = win64 ]
     then
-        w_die "This package does not work on a 64-bit installation"
+        w_die "This package does not work on a 64-bit installations."
     fi
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyId=262D25E3-F589-4842-8157-034D1E7CF3A3
@@ -5619,7 +5621,7 @@ verify_dotnet11()
 #----------------------------------------------------------------
 
 w_metadata dotnet11sp1 dlls \
-    title="MS .NET 1.1 SP1" \
+    title="MS .NET Framework 1.1 SP1" \
     publisher="Microsoft" \
     year="2004" \
     media="download" \
@@ -5672,7 +5674,7 @@ verify_dotnet11sp1()
 #----------------------------------------------------------------
 
 w_metadata dotnet20 dlls \
-    title="MS .NET 2.0" \
+    title="MS .NET Framework 2.0" \
     publisher="Microsoft" \
     year="2006" \
     media="download" \
@@ -5721,7 +5723,7 @@ verify_dotnet20()
 #----------------------------------------------------------------
 
 w_metadata dotnet20sdk dlls \
-    title="MS .NET 2.0 SDK" \
+    title="MS .NET Framework 2.0 SDK" \
     publisher="Microsoft" \
     year="2006" \
     media="download" \
@@ -5790,7 +5792,7 @@ load_dotnet20sdk()
 #----------------------------------------------------------------
 
 w_metadata dotnet20sp1 dlls \
-    title="MS .NET 2.0 SP1 (experimental)" \
+    title="MS .NET Framework 2.0 SP1 (experimental)" \
     publisher="Microsoft" \
     year="2008" \
     media="download" \
@@ -5808,7 +5810,7 @@ load_dotnet20sp1()
     w_call dotnet20
 
     WINEDLLOVERRIDES=
-    w_warn "Setting windows version so installer works"
+    w_warn "Setting Windows version so installer works."
     # Stop services
     # Recipe from http://bugs.winehq.org/show_bug.cgi?id=16956
     $WINESERVER -k
@@ -5854,7 +5856,7 @@ verify_dotnet20sp1()
 #----------------------------------------------------------------
 
 w_metadata dotnet20sp2 dlls \
-    title="MS .NET 2.0 SP2 (experimental)" \
+    title="MS .NET Framework 2.0 SP2 (experimental)" \
     publisher="Microsoft" \
     year="2009" \
     media="download" \
@@ -5920,7 +5922,7 @@ verify_dotnet20sp2()
 #----------------------------------------------------------------
 
 w_metadata dotnet30 dlls \
-    title="MS .NET 3.0" \
+    title="MS .NET Framework 3.0" \
     publisher="Microsoft" \
     year="2006" \
     media="download" \
@@ -5988,7 +5990,7 @@ verify_dotnet30()
 #----------------------------------------------------------------
 
 w_metadata dotnet30sp1 dlls \
-    title="MS .NET 3.0 SP1" \
+    title="MS .NET 3.0 Framework SP1" \
     publisher="Microsoft" \
     year="2007" \
     media="download" \
@@ -6033,7 +6035,7 @@ verify_dotnet30sp1()
 #----------------------------------------------------------------
 
 w_metadata dotnet35 dlls \
-    title="MS .NET 3.5" \
+    title="MS .NET Framework 3.5" \
     publisher="Microsoft" \
     year="2007" \
     media="download" \
@@ -6045,7 +6047,7 @@ load_dotnet35()
 {
     case "$OS" in
     "Windows_NT") ;;
-    *) w_warn "dotnet35 does not yet fully work or install on wine.  Caveat emptor." ;;
+    *) w_warn "dotnet35 does not yet fully work or install on Wine.  Caveat emptor." ;;
     esac
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6
@@ -6081,7 +6083,7 @@ verify_dotnet35()
 #----------------------------------------------------------------
 
 w_metadata dotnet35sp1 dlls \
-    title="MS .NET 3.5 SP1" \
+    title="MS .NET Framework 3.5 SP1" \
     publisher="Microsoft" \
     year="2008" \
     media="download" \
@@ -6144,7 +6146,7 @@ verify_dotnet35sp1()
 #----------------------------------------------------------------
 
 w_metadata dotnet40 dlls \
-    title="MS .NET 4.0" \
+    title="MS .NET Framework 4.0" \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
@@ -6156,7 +6158,7 @@ load_dotnet40()
 {
     if [ $W_ARCH = win64 ]
     then
-        w_die "This package does not work on a 64-bit installation"
+        w_die "This package does not work on a 64-bit installations."
     fi
 
     case "$OS" in
@@ -6194,7 +6196,7 @@ verify_dotnet40()
 #----------------------------------------------------------------
 
 w_metadata dotnet45 dlls \
-    title="MS .NET 4.5" \
+    title="MS .NET Framework 4.5" \
     publisher="Microsoft" \
     year="2012" \
     media="download" \
@@ -6206,7 +6208,7 @@ load_dotnet45()
 {
     if [ $W_ARCH = win64 ]
     then
-        w_warn "This package may not work on a 64-bit installation"
+        w_warn "This package may not work on a 64-bit installations."
     fi
 
     # http://www.microsoft.com/download/en/details.aspx?id=17718
@@ -6250,7 +6252,7 @@ verify_dotnet45()
 #----------------------------------------------------------------
 
 w_metadata dotnet452 dlls \
-    title="MS .NET 4.5.2" \
+    title="MS .NET Framework 4.5.2" \
     publisher="Microsoft" \
     year="2012" \
     media="download" \
@@ -6262,7 +6264,7 @@ load_dotnet452()
 {
     if [ $W_ARCH = win64 ]
     then
-        w_warn "This package may not work on a 64-bit installation"
+        w_warn "This package may not work on a 64-bit installations."
     fi
 
     # http://www.microsoft.com/download/en/details.aspx?id=17718
@@ -6405,7 +6407,7 @@ w_metadata flash dlls \
 
 load_flash()
 {
-    # As of July 9, 2013, Adobe Flash 10 is no longer supported.
+    # As of July 9, 2013, Adobe Flash Player 10 is no longer supported.
     # And as of June 24, 2013, Adobe Flash 10.3 won't even install for me,
     # it tells you to go get a newer version!
     # See
@@ -6446,7 +6448,7 @@ load_flash()
     cd "$W_TMP"/fp_14.0.0.179_archive/14_0_r0_179
     w_try "$WINE" flashplayer14_0r0_179_win.exe ${W_OPT_UNATTENDED:+ /install}
 
-    # Projector (standalone player)
+    # Projector (stand-alone player)
     # 2015-07-06
     w_download http://download.macromedia.com/pub/flashplayer/updaters/14/flashplayer_14_sa.exe 62e5bc2e88b50091847408b9d473ee4a6c185167
     w_try cp "${W_CACHE}/${W_PACKAGE}/${file3}" "$W_SYSTEM32_DLLS/Macromed/Flash"
@@ -6463,7 +6465,7 @@ load_flash()
     #    cd ~/".wine/drive_c/Program Files/Internet Explorer"
     #    wine iexplore.exe http://www.adobe.com/software/flash/about
     # Verify that the version of Flash shows up and that you're not prompted
-    # to install Flash again
+    # to install Adobe Flash Player again
     #
     #    cd ~/winetricks/src
     #    rm -rf ~/.wine
@@ -6471,7 +6473,7 @@ load_flash()
     #    cd ~/.wine/drive_c/Program\ Files/Mozilla\ Firefox
     #    wine firefox.exe http://www.adobe.com/software/flash/about
     # Verify that the version of Flash shows up and that you're not prompted
-    # to install Flash again
+    # to install Adobe Flash Player again
 }
 
 #----------------------------------------------------------------
@@ -6580,7 +6582,7 @@ load_gfw()
 #----------------------------------------------------------------
 
 w_metadata glut dlls \
-    title="The glut utility library for OpenGL" \
+    title="The GLUT utility library for OpenGL" \
     publisher="Mark J. Kilgard" \
     year="2001" \
     media="download" \
@@ -6594,7 +6596,7 @@ load_glut()
     w_try_unzip "$W_TMP" "$W_CACHE"/glut/glut-3.7.6-bin.zip
     w_try mv "$W_TMP/glut-3.7.6-bin" "$W_DRIVE_C"
     w_try cp "$W_DRIVE_C"/glut-3.7.6-bin/glut32.dll "$W_SYSTEM32_DLLS"
-    w_warn "If you want to compile glut programs, add c:/glut-3.7.6-bin to LIB and INCLUDE"
+    w_warn "If you want to compile GLUT programs, add c:/glut-3.7.6-bin to LIB and INCLUDE"
 }
 
 #----------------------------------------------------------------
@@ -6642,7 +6644,7 @@ load_allcodecs()
 #----------------------------------------------------------------
 
 w_metadata dirac dlls \
-    title="The Dirac directshow filter v1.0.2" \
+    title="The Dirac DirectShow filter v1.0.2" \
     publisher="Dirac" \
     year="2009" \
     media="download" \
@@ -6763,7 +6765,7 @@ load_icodecs()
 #----------------------------------------------------------------
 
 w_metadata jet40 dlls \
-    title="MS Jet 4.0 Service Pack 8" \
+    title="MS Jet Database Engine 4.0 Service Pack 8" \
     publisher="Microsoft" \
     year="2003" \
     media="download" \
@@ -6810,7 +6812,7 @@ load_ie8_kb2936068()
     status=$?
     case $status in
         0|194) ;;
-        *) w_die "$W_PACKAGE installation failed"
+        *) w_die "$W_PACKAGE installation failed."
     esac
 }
 
@@ -6823,7 +6825,7 @@ w_metadata kde apps \
     media="download" \
     file1="kdewin-installer-gui-1.0.0.exe" \
     installed_exe1="$W_PROGRAMS_WIN/kde/etc/installer.ini" \
-    homepage="http://windows.kde.org" \
+    homepage="https://community.kde.org/Windows" \
     unattended="no"
 
 load_kde()
@@ -6913,7 +6915,7 @@ load_mdac27()
 #----------------------------------------------------------------
 
 w_metadata mdac28 dlls \
-    title="Microsoft Data Access Components 2.8 sp1" \
+    title="Microsoft Data Access Components 2.8 SP1" \
     publisher="Microsoft" \
     year="2005" \
     media="download" \
@@ -7335,7 +7337,7 @@ load_msxml4()
 #----------------------------------------------------------------
 
 w_metadata msxml6 dlls \
-    title="MS XML Core Services 6.0 sp1" \
+    title="MS XML Core Services 6.0 SP1" \
     publisher="Microsoft" \
     year="2007" \
     media="download" \
@@ -8029,7 +8031,7 @@ load_vb5run()
 #----------------------------------------------------------------
 
 w_metadata vb6run dlls \
-    title="MS Visual Basic 6 runtime sp6" \
+    title="MS Visual Basic 6 runtime SP6" \
     publisher="Microsoft" \
     year="2004" \
     media="download" \
@@ -8193,7 +8195,7 @@ load_vcrun6sp6()
 #----------------------------------------------------------------
 
 w_metadata vcrun2003 dlls \
-    title="Visual C++ 2003 libraries (mfc71,msvcp71,msvcr71)" \
+    title="Visual C++ 2003 libraries (mfc71, msvcp71, msvcr71)" \
     publisher="Microsoft" \
     year="2003" \
     media="download" \
@@ -8221,7 +8223,7 @@ load_vcrun2003()
 # "if installed_file1 is just the single char @, call test_installed_$verb"
 # and then define that function here.
 w_metadata vcrun2005 dlls \
-    title="Visual C++ 2005 libraries (mfc80,msvcp80,msvcr80)" \
+    title="Visual C++ 2005 libraries (mfc80, msvcp80, msvcr80)" \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
@@ -8243,7 +8245,7 @@ load_vcrun2005()
 #----------------------------------------------------------------
 
 w_metadata vcrun2008 dlls \
-    title="Visual C++ 2008 libraries (mfc90,msvcp90,msvcr90)" \
+    title="Visual C++ 2008 libraries (mfc90, msvcp90, msvcr90)" \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
@@ -8264,7 +8266,7 @@ load_vcrun2008()
 #----------------------------------------------------------------
 
 w_metadata vcrun2010 dlls \
-    title="Visual C++ 2010 libraries (mfc100,msvcp100,msvcr100)" \
+    title="Visual C++ 2010 libraries (mfc100, msvcp100, msvcr100)" \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
@@ -8305,7 +8307,7 @@ load_vcrun2010()
 #----------------------------------------------------------------
 
 w_metadata vcrun2012 dlls \
-    title="Visual C++ 2012 libraries (atl110,mfc110,mfc110u,msvcp110,msvcr110,vcomp110)" \
+    title="Visual C++ 2012 libraries (atl110, mfc110, mfc110u, msvcp110, msvcr110, vcomp110)" \
     publisher="Microsoft" \
     year="2012" \
     media="download" \
@@ -8348,7 +8350,7 @@ load_vcrun2012()
 #----------------------------------------------------------------
 
 w_metadata vcrun2013 dlls \
-    title="Visual C++ 2013 libraries (mfc120,mfc120u,msvcp120,msvcr120,vcomp120)" \
+    title="Visual C++ 2013 libraries (mfc120, mfc120u, msvcp120, msvcr120, vcomp120)" \
     publisher="Microsoft" \
     year="2013" \
     media="download" \
@@ -8392,7 +8394,7 @@ load_vcrun2013()
 #----------------------------------------------------------------
 
 w_metadata vcrun2015 dlls \
-    title="Visual C++ 2015 libraries (concrt140.dll,mfc140.dll,mfc140u.dll,mfcm140.dll,mfcm140u.dll,msvcp140.dll,vcamp140.dll,vccorlib140.dll,vcomp140.dll,vcruntime140.dll)" \
+    title="Visual C++ 2015 libraries (concrt140.dll, mfc140.dll, mfc140u.dll, mfcm140.dll, mfcm140u.dll, msvcp140.dll, vcamp140.dll, vccorlib140.dll, vcomp140.dll, vcruntime140.dll)" \
     publisher="Microsoft" \
     year="2015" \
     media="download" \
@@ -8594,7 +8596,7 @@ load_wmi()
 #----------------------------------------------------------------
 
 w_metadata wsh56js dlls \
-    title="MS Windows Script Host 5.6, JScript only, no CScript" \
+    title="MS Windows Script Host 5.6 (JScript only, no CScript)" \
     publisher="Microsoft" \
     year="2006" \
     media="download" \
@@ -8617,7 +8619,7 @@ load_wsh56js()
 #----------------------------------------------------------------
 
 w_metadata wsh56vb dlls \
-    title="MS Windows Script Host 5.6, VBScript only, no CScript" \
+    title="MS Windows Script Host 5.6 (VBScript only, no CScript)" \
     publisher="Microsoft" \
     year="2007" \
     media="download" \
@@ -8863,7 +8865,7 @@ load_xna40()
 {
     if w_workaround_bug 30718
     then
-        w_warn "$W_PACKAGE may not install properly in Wine yet"
+        w_warn "$W_PACKAGE may not install properly in Wine yet."
     fi
 
     # See https://bugs.winehq.org/show_bug.cgi?id=30718#c8
@@ -8879,7 +8881,7 @@ load_xna40()
 #----------------------------------------------------------------
 
 w_metadata xvid dlls \
-    title="Xvid Video Codec" \
+    title="Xvid video codec" \
     publisher="xvid.org" \
     year="2009" \
     media="download" \
@@ -9817,7 +9819,7 @@ load_controlpad()
     w_download http://download.microsoft.com/download/activexcontrolpad/install/4.0.0.950/win98mexp/en-us/setuppad.exe 8921e0f52507ca6a373c94d222777c750fb48af7
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/controlpad/setuppad.exe
 
-    echo "If setup says 'Unable to start DDE ...', press Ignore"
+    echo "If setup says 'Unable to start DDE ...', press Ignore."
 
     cd "$W_TMP"
     w_try "$WINE" setup $W_UNATTENDED_SLASH_QT
@@ -10002,7 +10004,7 @@ load_foobar2000()
 #----------------------------------------------------------------
 
 w_metadata iceweasel apps \
-    title="GNU Icecat 31.7.0" \
+    title="GNU IceCat 31.7.0" \
     publisher="GNU Foundation" \
     year="2015" \
     media="download" \
@@ -10019,7 +10021,7 @@ load_iceweasel()
 #----------------------------------------------------------------
 
 w_metadata irfanview apps \
-    title="Irfanview" \
+    title="IrfanView" \
     publisher="Irfan Skiljan" \
     year="2014" \
     media="download" \
@@ -10352,7 +10354,7 @@ load_ie8()
     fi
     cd "$W_CACHE/$W_PACKAGE"
 
-    # KLUDGE: if / is writable, having a Z: mapping to it causes ie8 to put temporary directories on Z:\
+    # KLUDGE: if / is writable, having a Z: mapping to it causes IE8 to put temporary directories on Z:\
     # so hide it temporarily.  This is not very robust!
     rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
     mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
@@ -10704,7 +10706,7 @@ load_picasa39()
     w_download http://dl.google.com/picasa/picasa39-setup.exe b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
     if w_workaround_wine_bug 29434 "Picasa 3.9 fails to authenticate with Google"
     then
-        w_warn "Picasa 3.9 authentication to the Google account is currently broken under wine. See http://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
+        w_warn "Picasa 3.9 authentication to the Google account is currently broken under Wine. See http://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
     fi
     cd "$W_CACHE"/$W_PACKAGE
     w_ahk_do "
@@ -10751,7 +10753,8 @@ load_protectionid()
     w_download http://pid.gamecopyworld.com/dl.php?f=ProtectionId.670.halloween.2015.rar a307e15f28d00959cffddd8fda073aac6df943c8 "$file1"
     cd "$W_SYSTEM32_DLLS"
     w_try_unrar "${W_CACHE}/${W_PACKAGE}/${file1}"
-    # ProtectionId.670.halloween.2015 has a different executable name than usual, this may need to be disabled on next update:
+    # ProtectionId.670.halloween.2015 has a different executable name than
+    # usual, this may need to be disabled on next update:
     mv Protection_ID.eXe protection_id.exe
 }
 
@@ -10773,7 +10776,7 @@ load_psdk2003()
     w_download http://download.microsoft.com/download/7/5/e/75ec7f04-4c8c-4f38-b582-966e76602643/5.2.3790.1830.15.PlatformSDK_Svr2003SP1_rtm.img
 
     # Unpack ISO (how handy that 7z can do this!)
-    # Only the windows version of 7z can handle .img files?
+    # Only the Windows version of 7z can handle .img files?
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
     cd "$W_PROGRAMS_X86_UNIX"/7-Zip
     w_try "$WINE" 7z.exe x -y -o"$W_TMP_WIN" "$W_CACHE_WIN\\psdk2003\\5.2.3790.1830.15.PlatformSDK_Svr2003SP1_rtm.img"
@@ -11281,7 +11284,7 @@ load_vc2005trial()
     w_download http://download.microsoft.com/download/6/f/5/6f5f7a01-50bb-422d-8742-c099c8896969/En_vs_2005_vsts_180_Trial.img f66ae07618d67e693ca0524d3582208c20e07823
 
     # Unpack ISO (how handy that 7z can do this!)
-    # Only the windows version of 7z can handle .img files?
+    # Only the Windows version of 7z can handle .img files?
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
     cd "$W_PROGRAMS_X86_UNIX"/7-Zip
     w_try "$WINE" 7z.exe x -y -o"$W_TMP_WIN" "$W_CACHE_WIN\\vc2005trial\\En_vs_2005_vsts_180_Trial.img"
@@ -11406,7 +11409,7 @@ w_metadata winamp apps \
 
 load_winamp()
 {
-    w_info "may send information while installing, see http://www.microsoft.com/security/portal/Threat/Encyclopedia/Entry.aspx?threatid=159633"
+    w_info "May send information while installing, see http://www.microsoft.com/security/portal/Threat/Encyclopedia/Entry.aspx?threatid=159633"
     # 2014 winamp5621_full_emusic-7plus_en-us.exe afc172039db52fdc202114bec7bcf8b5bf2468bb
 
     w_download http://winampplugins.co.uk/Winamp/winamp5666_full_all_redux.exe 136314be0da42ed399b88a106cb1f43093e2c0c2
@@ -11478,10 +11481,10 @@ load_wme9()
 
 #----------------------------------------------------------------
 
-# helper - not useful by itself
+# Helper - not useful by itself.
 load_wm9codecs()
 {
-    # Note: must install WMP9 or 10 first, or installer will complain and abort.
+    # Note: must install WMP 9 or 10 first, or installer will complain and abort.
 
     # See http://www.microsoft.com/downloads/details.aspx?FamilyID=06fcaab7-dcc9-466b-b0c4-04db144bb601
     # Used by direct calls from load_wmp9, so we have to specify cache directory.
@@ -11678,7 +11681,7 @@ load_3dmark2001()
 #----------------------------------------------------------------
 
 w_metadata 3dmark03 benchmarks \
-    title="3D Mark 03" \
+    title="3DMark03" \
     publisher="Futuremark" \
     year="2003" \
     media="manual_download" \
@@ -11737,7 +11740,7 @@ load_3dmark03()
 #----------------------------------------------------------------
 
 w_metadata 3dmark05 benchmarks \
-    title="3D Mark 05" \
+    title="3DMark05" \
     publisher="Futuremark" \
     year="2005" \
     media="download" \
@@ -11786,7 +11789,7 @@ load_3dmark05()
 #----------------------------------------------------------------
 
 w_metadata 3dmark06 benchmarks \
-    title="3D Mark 06" \
+    title="3DMark06" \
     publisher="Futuremark" \
     year="2006" \
     media="manual_download" \
@@ -12066,7 +12069,7 @@ load_aoe_demo()
 #----------------------------------------------------------------
 
 w_metadata acreedbro games \
-    title="Assassin's Creed Brotherhood" \
+    title="Assassin's Creed: Brotherhood" \
     publisher="Ubisoft" \
     year="2011" \
     media="dvd" \
@@ -12111,7 +12114,7 @@ load_acreedbro()
     sleep 10
     if ps augxw | grep -i exe | egrep 'winemenubuilder.exe|setup.exe|PnkBstrA.exe | egrep -v egrep'
     then
-        w_warn "Killing processes so patcher does not complain about game still running"
+        w_warn "Killing processes so patcher does not complain about game still running."
         $WINESERVER -k
         sleep 10
     fi
@@ -12194,7 +12197,7 @@ load_atmosphir()
 #----------------------------------------------------------------
 
 w_metadata avatar_demo games \
-    title="James Camerons Avatar: The Game Demo" \
+    title="James Cameron's Avatar: The Game Demo" \
     publisher="Ubisoft" \
     year="2009" \
     media="manual_download" \
@@ -12254,7 +12257,7 @@ load_avatar_demo()
 #----------------------------------------------------------------
 
 w_metadata bttf101 games \
-    title="Back to the Future Episode 1" \
+    title="Back to the Future (Episode 1)" \
     publisher="Telltale" \
     year="2011" \
     media="manual_download" \
@@ -12384,7 +12387,7 @@ load_bioshock2()
 #----------------------------------------------------------------
 
 w_metadata bfbc2 games \
-    title="Battlefield Bad Company 2" \
+    title="Battlefield: Bad Company 2" \
     publisher="EA" \
     year="2010" \
     media="dvd" \
@@ -13184,7 +13187,7 @@ w_metadata darkspore games \
 
 load_darkspore()
 {
-    # Mount disc, verify that expected file is present
+    # Mount disc, verify that the expected file is present
     w_mount DARKSPORE Darkspore.ico
     w_ahk_do "
         SetWinDelay 1000
@@ -14386,7 +14389,7 @@ load_mfsxde()
             cd bothdiscs
         fi
     else
-        w_die "non-broken case not yet supported for this game"
+        w_die "Non-broken case not yet supported for this game."
     fi
 
     w_ahk_do "
@@ -15029,7 +15032,7 @@ load_lego_potc_demo()
 #----------------------------------------------------------------
 
 w_metadata lhp_demo games \
-    title="LEGO Harry Potter Demo [Years 1-4]" \
+    title="Lego Harry Potter Demo [Years 1-4]" \
     publisher="Travellers Tales / WB" \
     year="2010" \
     media="download" \
@@ -15078,7 +15081,7 @@ load_lhp_demo()
 #----------------------------------------------------------------
 
 w_metadata lswcs games \
-    title="Lego Star Wars Complete Saga" \
+    title="Lego Star Wars: Complete Saga" \
     publisher="Lucasarts" \
     year="2009" \
     media="dvd" \
@@ -15465,7 +15468,7 @@ load_menofwar()
 #----------------------------------------------------------------
 
 w_metadata mb_warband_demo games \
-    title="Mount & Blade Warband Demo" \
+    title="Mount & Blade: Warband Demo" \
     publisher="Taleworlds" \
     year="2010" \
     media="download" \
@@ -15613,7 +15616,7 @@ load_myth2_demo()
 #----------------------------------------------------------------
 
 w_metadata nfsshift_demo games \
-    title="Need for Speed: SHIFT Demo" \
+    title="Need for Speed: Shift Demo" \
     publisher="EA" \
     year="2009" \
     media="download" \
@@ -16007,8 +16010,8 @@ load_qqintl()
 #----------------------------------------------------------------
 
 w_metadata ragnarok games \
-    title="Ragnarok" \
-    publisher="GRAVITY" \
+    title="Ragnarok Online" \
+    publisher="Gravity" \
     year="2002" \
     media="manual_download" \
     file1="iRO-13.2.2-FullInstall-20110421-1717.msi" \
@@ -16372,7 +16375,7 @@ load_simsmed()
         winwaitclose
     "
 
-    # DVD region code is last digit.
+    # DVD region code is the last digit.
     # FIXME: download appropriate one rather than just US version.
     w_download http://akamai.cdn.ea.com/eadownloads/u/f/sims/sims/patches/TheSimsMedievalPatch_1.1.10.00001_Update.exe 7214ced8af7315741e05024faeacf9053b999b1b
 
@@ -16688,7 +16691,7 @@ load_spore_cc_demo()
 #----------------------------------------------------------------
 
 w_metadata starcraft2_demo games \
-    title="Starcraft II Demo" \
+    title="StarCraft II Demo" \
     publisher="Blizzard" \
     year="2010" \
     media="manual_download" \
@@ -17314,7 +17317,7 @@ load_twfc()
         }
     "
 
-    # Clean up crap left over in c:\ when the installer runs the vc 2008 redistributable installer
+    # Clean up crap left over in C:\ when the installer runs the vc 2008 redistributable installer
     cd "$W_DRIVE_C"
     rm -f VC_RED.* eula.*.txt globdata.ini install.exe install.ini install.res.*.dll vcredist.bmp
 }
@@ -18181,7 +18184,7 @@ w_metadata native_mdac settings \
 load_native_mdac()
 {
     # Set those overrides globally so user programs get MDAC's ODBC
-    # instead of Wine's unixodbc
+    # instead of Wine's unixODBC
     w_override_dlls native,builtin odbc32 odbccp32 oledb32
 }
 
@@ -18824,7 +18827,7 @@ winetricks_stats_report()
 
     report="os=`winetricks_os_description`&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
     report="`echo $report | sed 's/ /%20/g'`"
-    # Just do a HEAD request with the raw command line.
+    # Just do a HTTP HEAD request with the raw command line.
     # Yes, this can be fooled by caches.  That's ok.
     if [ -x "`which wget 2>/dev/null`" ]
     then
