@@ -1311,7 +1311,7 @@ fi
 # game_id
 #     Used for main installer name and download URL.
 # game_title
-#     Used for AutoHotKey and installation path in bat script.
+#     Used for AutoHotkey and installation path in bat script.
 # other_files
 #     Extra installer files, in one string, space-separated.
 # reader_control
@@ -2475,7 +2475,7 @@ winetricks_early_wine()
     # The sed works around http://bugs.winehq.org/show_bug.cgi?id=25838
     # which unfortunately got released in wine-1.3.12
     # We would like to use DISPLAY= to prevent virtual desktops from
-    # popping up, but that causes AutoHotKey's tray icon to not show up.
+    # popping up, but that causes AutoHotkey's tray icon to not show up.
     # We used to use WINEDLLOVERRIDES=mshtml= here to suppress the Gecko
     # autoinstall, but that yielded wineprefixes that *never* autoinstalled
     # Gecko (winezeug bug 223).
@@ -7638,7 +7638,7 @@ load_quicktime72()
         then
             w_try "$WINE" control "$W_PROGRAMS_WIN\\QuickTime\\QTSystem\\QuickTime.cpl"
         else
-            # FIXME: script the control panel with AutoHotKey?
+            # FIXME: script the control panel with AutoHotkey?
             # We could probably also overwrite QuickTime.qtp but
             # the format isn't known, so we'd have to override all other settings, too.
             :
@@ -7675,7 +7675,7 @@ load_quicktime76()
         then
             w_try "$WINE" control "$W_PROGRAMS_WIN\\QuickTime\\QTSystem\\QuickTime.cpl"
         else
-            # FIXME: script the control panel with AutoHotKey?
+            # FIXME: script the control panel with AutoHotkey?
             # We could probably also overwrite QuickTime.qtp but
             # the format isn't known, so we'd have to override all other settings, too.
             :
@@ -9750,7 +9750,7 @@ load_audibledm()
 #----------------------------------------------------------------
 
 w_metadata autohotkey apps \
-    title="AutoHotKey" \
+    title="AutoHotkey" \
     publisher="autohotkey.org" \
     year="2010" \
     media="download" \
@@ -10805,7 +10805,7 @@ load_psdkwin7()
     w_call dotnet20
     w_call mfc42   # need mfc42u, or setup will abort
     # don't have a working unattended recipe.  Maybe we'll have to
-    # do an AutoHotKey script until Microsoft gets its act together:
+    # do an AutoHotkey script until Microsoft gets its act together:
     # http://social.msdn.microsoft.com/Forums/en-US/windowssdk/thread/c053b616-7d5b-405d-9841-ec465a8e21d5
     w_download http://download.microsoft.com/download/7/A/B/7ABD2203-C472-4036-8BA0-E505528CCCB7/winsdk_web.exe a01dcc67a38f461e80ea649edf1353f306582507
     cd "$W_CACHE/$W_PACKAGE"
@@ -10860,7 +10860,7 @@ load_psdkwin71()
     fi
 
     # don't have a working unattended recipe.  Maybe we'll have to
-    # do an AutoHotKey script until Microsoft gets its act together:
+    # do an AutoHotkey script until Microsoft gets its act together:
     # http://social.msdn.microsoft.com/Forums/en-US/windowssdk/thread/c053b616-7d5b-405d-9841-ec465a8e21d5
     cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" winsdk_web.exe
@@ -10961,7 +10961,7 @@ load_spotify()
 
     cd "$W_CACHE/$W_PACKAGE"
     # w_download doesn't handle renaming for us without a checksum, tsk.
-    # And AutoHotKey thinks % is a variable reference.
+    # And AutoHotkey thinks % is a variable reference.
     if test ! -f SpotifyInstaller.exe
     then
         cp Spotify%20Installer.exe SpotifyInstaller.exe
@@ -17559,7 +17559,7 @@ load_the_witcher_2_gog()
 # - "TsCheckBox4" is the control name for the checkbox deciding whether it will
 #   install some reader (Foxit in this case, could be Acrobat Reader). That
 #   installation is enabled by default, and would just bloat the generic
-#   AutoHotKey script, so it gets disabled.
+#   AutoHotkey script, so it gets disabled.
 # - "ScummVM\\[...]" is the command line to run the game, as fetched from the
 #   shortcut/launcher installer/wine creates, which will be used in BAT scripts
 #   created by wisotool
@@ -17624,7 +17624,7 @@ w_metadata civ5_demo_steam games \
 
 load_civ5_demo_steam()
 {
-    # Start AutoHotKey watching for DirectX 9 option in the background, and select it when it comes up
+    # Start AutoHotkey watching for DirectX 9 option in the background, and select it when it comes up
     w_ahk_do  "
         SetWinDelay 500
         loop
@@ -17645,7 +17645,7 @@ load_civ5_demo_steam()
     " &
     _job=$!
         # While that's running, install the game.
-        # You'll see *two* AutoHotKey icons until that first script
+        # You'll see *two* AutoHotkey icons until that first script
         # finds the dialog it's looking for, clicks, and exits.
         w_info "If you already own the full Civ 5 game on Steam, the installer won't even appear."
     w_steam_install_game 65900 "Sid Meier's Civilization V - Demo"
