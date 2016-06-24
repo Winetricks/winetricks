@@ -8593,6 +8593,34 @@ load_wmi()
 
 #----------------------------------------------------------------
 
+w_metadata wmv9vcm dlls \
+    title="MS Windows Media Video 9 Video Compression Manager" \
+    publisher="Microsoft" \
+    year="2013" \
+    media="download" \
+    file1="WindowsServer2003-WindowsMedia-KB2845142-x86-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/wmv9vcm.dll"
+
+load_wmv9vcm()
+{
+    # https://www.microsoft.com/en-us/download/details.aspx?id=39486
+    # See also https://www.microsoft.com/en-us/download/details.aspx?id=6191
+    w_download https://download.microsoft.com/download/2/8/D/28DA9C3E-6DA2-456F-BD33-1F937EB6E0FF/WindowsServer2003-WindowsMedia-KB2845142-x86-ENU.exe 0ace94c09bfab15410db3a15ffa42370891266de
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
+    w_try cp -f "$W_TMP"/wm64/wmv9vcm.dll "$W_SYSTEM32_DLLS"
+
+    # Register codec:
+    cat > "$W_TMP"/tmp.reg <<_EOF_
+REGEDIT4
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Drivers32]
+"vidc.WMV3"="wmv9vcm.dll"
+
+_EOF_
+    w_try_regedit "$W_TMP_WIN"\\tmp.reg
+}
+
+#----------------------------------------------------------------
+
 w_metadata wsh56js dlls \
     title="MS Windows Script Host 5.6, JScript only, no CScript" \
     publisher="Microsoft" \
