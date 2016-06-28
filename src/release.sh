@@ -41,4 +41,14 @@ git tag -s -m "winetricks-${version}" ${version}
 git push
 git push --tags
 
+
+# create local tarball, identical to github's generated one
+git archive --prefix="winetricks-${version}/" -o "../${version}.tar.gz" "${version}"
+
+# create a detached signature of the tarball
+gpg --armor --detach-sign "../${version}.tar.gz"
+
+# upload the detached signature to github:
+python3 github-api-releases.py  ../"${version}.tar.gz.asc" Winetricks winetricks ${version}
+
 exit 0
