@@ -49,6 +49,6 @@ git archive --prefix="winetricks-${version}/" -o "../${version}.tar.gz" "${versi
 gpg --armor --default-key 0xA041937B --detach-sign "../${version}.tar.gz"
 
 # upload the detached signature to github:
-python3 github-api-releases.py  ../"${version}.tar.gz.asc" Winetricks winetricks ${version}
+python3 src/github-api-releases.py  ../"${version}.tar.gz.asc" Winetricks winetricks ${version}
 
 exit 0
