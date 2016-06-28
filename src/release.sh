@@ -46,7 +46,7 @@ git push --tags
 git archive --prefix="winetricks-${version}/" -o "../${version}.tar.gz" "${version}"
 
 # create a detached signature of the tarball
-gpg --armor --detach-sign "../${version}.tar.gz"
+gpg --armor --default-key 0xA041937B --detach-sign "../${version}.tar.gz"
 
 # upload the detached signature to github:
 python3 github-api-releases.py  ../"${version}.tar.gz.asc" Winetricks winetricks ${version}
