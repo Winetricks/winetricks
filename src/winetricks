@@ -4432,25 +4432,25 @@ _EOF_
 winetricks_handle_option()
 {
     case "$1" in
-    -r|--ddrescue) WINETRICKS_OPT_DD=ddrescue ;;
-    -k|--keep_isos) WINETRICKS_OPT_KEEPISOS=1 ;;
-    -q|--unattended) winetricks_set_unattended 1 ;;
-    -t|--torify)  WINETRICKS_OPT_TORIFY=1 ;;
-    -v|--verbose) WINETRICKS_OPT_VERBOSE=1 ; set -x;;
-    -vv|--really-verbose) WINETRICKS_OPT_VERBOSE=2 ; set -x ;;
-    -V|--version) winetricks_print_version ; exit 0;;
-    --verify) WINETRICKS_VERIFY=1 ;;
-    -h|--help) winetricks_usage ; exit 0 ;;
-    --self-update) winetricks_selfupdate;;
-    --update-rollback) winetricks_selfupdate_rollback;;
-    --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
-    --no-isolate) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
-    --no-clean) W_OPT_NOCLEAN=1 ;;
     --force) WINETRICKS_FORCE=1;;
     --gui) winetricks_detect_gui;;
-    --showbroken) W_OPT_SHOWBROKEN=1 ;;
+    -h|--help) winetricks_usage ; exit 0 ;;
+    --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
+    -k|--keep_isos) WINETRICKS_OPT_KEEPISOS=1 ;;
+    --no-clean) W_OPT_NOCLEAN=1 ;;
+    --no-isolate) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
     --optin) WINETRICKS_STATS_REPORT=1;;
     --optout) WINETRICKS_STATS_REPORT=0;;
+    -q|--unattended) winetricks_set_unattended 1 ;;
+    -r|--ddrescue) WINETRICKS_OPT_DD=ddrescue ;;
+    --self-update) winetricks_selfupdate;;
+    --showbroken) W_OPT_SHOWBROKEN=1 ;;
+    -t|--torify)  WINETRICKS_OPT_TORIFY=1 ;;
+    --update-rollback) winetricks_selfupdate_rollback;;
+    -v|--verbose) WINETRICKS_OPT_VERBOSE=1 ; set -x;;
+    -V|--version) winetricks_print_version ; exit 0;;
+    --verify) WINETRICKS_VERIFY=1 ;;
+    -vv|--really-verbose) WINETRICKS_OPT_VERBOSE=2 ; set -x ;;
     -*) w_die "unknown option $1" ;;
     *) return 1 ;;
     esac
