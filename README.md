@@ -30,7 +30,7 @@ load_iceweasel()
     w_try_unzip "${W_PROGRAMS_X86_UNIX}" "${W_CACHE}/${W_PACKAGE}/${file1}"
 }
 
-Note that the filename and command name (iceweasel) must match. All metadata fields are optional, only commanname and category required.
+Note that the filename and command name (iceweasel) must match. All metadata fields are optional, only command name and category required.
 
 
 # Tests
