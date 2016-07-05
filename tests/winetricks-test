@@ -306,6 +306,118 @@ test_command()
     pass $@
 }
 
+test_custom_verbs()
+{
+    # Custom .verb support isn't commonly used, and may break without notice for a while
+    # Also try with --isolate:
+    # https://github.com/Winetricks/winetricks/issues/599
+
+    # Test as apps first, then dll, since they take different codepaths
+
+    # First, a working 'app' as an app:
+cat > true.verb <<_EOF
+w_metadata true apps
+
+load_true()
+{
+    echo "true should succeed"
+    /bin/true
+}
+
+_EOF
+
+    # Next, a broken 'app' as an app:
+cat > false.verb <<_EOF
+w_metadata false apps
+
+load_false()
+{
+    echo "false should fail"
+    false
+}
+
+_EOF
+
+    sh winetricks --no-isolate true.verb ; ret=$?
+    case $ret in
+        0) pass "true.verb (isolated), as apps passed" ;;
+        *) fail "true.verb (isolated), as apps failed" ;;
+    esac
+
+    sh winetricks --no-isolate false.verb ; ret=$?
+    case $ret in
+        0) fail "false.verb (isolated), as apps worked, should have failed" ;;
+        1) pass "falsee.verb (isolated), as apps passed" ;;
+        *) fail "false.verb (isolated), as apps failed in unexpected way" ;;
+    esac
+
+    sh winetricks --no-isolate true.verb ; ret=$?
+    case $ret in
+        0) pass "true.verb (isolated), as apps passed" ;;
+        *) fail "true.verb (isolated), as apps failed" ;;
+    esac
+
+    sh winetricks --no-isolate false.verb ; ret=$?
+    case $ret in
+        0) fail "false.verb (isolated), as apps worked, should have failed" ;;
+        1) pass "false.verb (isolated), as apps passed" ;;
+        *) fail "false.verb (isolated), as apps failed in unexpected way" ;;
+    esac
+
+    # Repeat as dll:
+
+    # First, a working 'app' as a dll:
+cat > true.verb <<_EOF
+w_metadata true dlls
+
+load_true()
+{
+    echo "true should succeed"
+    true
+}
+_EOF
+
+    # Next, a broken 'app' as a dll:
+cat > false.verb <<_EOF
+w_metadata false dlls
+
+load_false()
+{
+    echo "false should fail"
+    false
+}
+_EOF
+
+    sh winetricks --no-isolate true.verb ; ret=$?
+    case $ret in
+        0) pass "true.verb (isolated), as dlls passed" ;;
+        *) fail "true.verb (isolated), as dlls failed" ;;
+    esac
+
+    sh winetricks --no-isolate false.verb ; ret=$?
+    case $ret in
+        0) fail "false.verb (isolated), as dlls worked, should have failed" ;;
+        1) pass "falsee.verb (isolated), as dlls passed" ;;
+        *) fail "false.verb (isolated), as dlls failed in unexpected way" ;;
+    esac
+
+    sh winetricks --no-isolate true.verb ; ret=$?
+    case $ret in
+        0) pass "true.verb (isolated), as dlls passed" ;;
+        *) fail "true.verb (isolated), as dlls failed" ;;
+    esac
+
+    sh winetricks --no-isolate false.verb ; ret=$?
+    case $ret in
+        0) fail "false.verb (isolated), as dlls worked, should have failed" ;;
+        1) pass "false.verb (isolated), as dlls passed" ;;
+        *) fail "false.verb (isolated), as dlls failed in unexpected way" ;;
+    esac
+
+    rm false.verb true.verb
+    pass
+}
+
 test_dlls()
 {
     sh winetricks list-manual-download | grep -v 'Using winetricks' > manual.log
@@ -431,13 +543,15 @@ test_full() {
     #test_install_cached_or_download
     test_speed list-cached
     test_speed list-installed
+    test_custom_verbs
 }
 
 case "$1" in
 check-deps) check_deps ; exit $? ;;
-quick) check_deps && test_quick;;
+custom-verbs) test_custom_verbs;;
 dotnet) check_deps && test_dotnet;;
 full)  check_deps && test_full;;
+quick) check_deps && test_quick;;
 *)     echo "Usage: $0 quick|full"; exit 1;;
 esac
 
