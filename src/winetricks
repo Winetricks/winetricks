@@ -144,9 +144,9 @@ XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
 
 # For temp files before $WINEPREFIX is available:
-if [ -x "`which mktemp 2>/dev/null`" ]
+if [ -x "$(which mktemp 2>/dev/null)" ]
 then
-    W_TMP_EARLY="`mktemp -d "${TMPDIR:-/tmp}/winetricks.XXXXXXXX"`"
+    W_TMP_EARLY="$(mktemp -d "${TMPDIR:-/tmp}/winetricks.XXXXXXXX")"
     W_TMP_EARLY_CLEAN=1
 elif [ -w "$TMPDIR" ]
 then
@@ -170,7 +170,7 @@ w_askpermission()
     fi
 
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --question --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    zenity) $WINETRICKS_GUI $_W_timeout --question --title=winetricks --text="$(echo $@ | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
     kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
     none) printf %s "Press Y or N, then Enter: " ; read response ; test "$response" = Y || test "$response" = y;;
     esac
@@ -197,7 +197,7 @@ w_info()
     _W_timeout="--timeout 3"
 
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --info --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    zenity) $WINETRICKS_GUI $_W_timeout --info --title=winetricks --text="$(echo $@ | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
     kdialog) $WINETRICKS_GUI --title winetricks --msgbox "$@" ;;
     none) ;;
     esac
@@ -218,7 +218,7 @@ w_warn()
     fi
 
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
+    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="$(echo $@ | sed 's,\\\\,\\\\\\\\,g')";;
     kdialog) $WINETRICKS_GUI --title winetricks --error "$@" ;;
     none) ;;
     esac
@@ -242,7 +242,7 @@ w_warn_cancel()
 
     # Zenity has no cancel button, but will set status to 1 if you click the go-away X
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
+    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="$(echo $@ | sed 's,\\\\,\\\\\\\\,g')";;
     kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
     none) ;;
     esac
@@ -410,7 +410,7 @@ w_try_unzip()
 
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
     # errors out if there is a space between -o and path
-    w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "`w_pathconv -w $zipfile`" -o"`w_pathconv -w $destdir`" "$@"
+    w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w $zipfile)" -o"`w_pathconv -w $destdir)" "$@"
 }
 
 w_read_key()
@@ -821,7 +821,7 @@ w_download_to()
             *) aria2c --continue --daemon=false --dir "$_W_cache"  --enable-rpc=false --input-file='' \
                 --max-connection-per-server=5 --out "$_W_file" --save-session='' --stream-piece-selector=geom "$_W_url" ;;
             esac
-        elif [ -x "`which wget 2>/dev/null`" ]
+        elif [ -x "$(which wget 2>/dev/null)" ]
         then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
            # [*] --retry-connrefused works around the broken sf.net mirroring
@@ -836,7 +836,7 @@ w_download_to()
                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
                ${_W_agent:+--user-agent="$_W_agent"} \
                "$_W_url"
-        elif [ -x "`which curl 2>/dev/null`" ]
+        elif [ -x "$(which curl 2>/dev/null)" ]
         then
            # curl doesn't get filename from the location given by the server!
            # fortunately, we know it
@@ -2449,10 +2449,10 @@ _EOF_
 
 winetricks_get_sha1sum_prog() {
     # Mac folks tend to not have sha1sum, but we can make do with openssl
-    if [ -x "`which sha1sum 2>/dev/null`" ]
+    if [ -x "$(which sha1sum 2>/dev/null)" ]
     then
         WINETRICKS_SHA1SUM="sha1sum"
-    elif [ -x "`which openssl 2>/dev/null`" ]
+    elif [ -x "$(which openssl 2>/dev/null)" ]
     then
         WINETRICKS_SHA1SUM="openssl dgst -sha1"
     else
@@ -3718,7 +3718,7 @@ winetricks_cache_iso()
       WINETRICKS_DD_PID=$!
       ;;
     ddrescue)
-      if test "`which ddrescue`" = ""
+      if test "$(which ddrescue)" = ""
       then
           w_die "Please install ddrescue first."
       fi
@@ -4244,8 +4244,8 @@ winetricks_init()
         for x in \
             "$WINESERVER" \
             "${WINE}server" \
-            "`which wineserver 2> /dev/null`" \
-            "`dirname $WINE`/server/wineserver" \
+            "$(which wineserver 2> /dev/null)" \
+            "$(dirname $WINE`/server/wineserver" \
             /usr/bin/wineserver-development \
             /usr/lib/wine/wineserver \
             /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
@@ -9691,7 +9691,7 @@ load_adobe_diged4()
     then
         w_call corefonts
     fi
-    if [ ! -x "`which winbindd 2>/dev/null`" ]
+    if [ ! -x "$(which winbindd 2>/dev/null)" ]
     then
         w_warn "Adobe Digital Editions 4.5 requires winbind (part of Samba) to be installed, but winbind was not detected."
     fi
@@ -19066,7 +19066,7 @@ then
                 esac
                 ;;
             settings) verbs=`winetricks_settings_menu` ;;
-            *) verbs="`winetricks_showmenu`" ;;
+            *) verbs="$(winetricks_showmenu)" ;;
             esac
 
             if test "$verbs" = ""
@@ -19125,7 +19125,7 @@ then
                 *) . ./$verb ;;
                 esac
                 # And forget that the verb comes from a file
-                verb="`echo $verb | sed 's,.*/,,;s,.verb,,'`"
+                verb="$(echo $verb | sed 's,.*/,,;s,.verb,,')"
                 ;;
             esac
             execute_command "$verb"
