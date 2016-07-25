@@ -85,7 +85,7 @@ w_time()
 }
 
 case "$LANG" in
-""|"C") echo "Some games won't install in the Posix locale; doing 'export LANG=en_US.UTF-8'" ; export LANG=en_US.UTF-8;;
+    ""|"C") echo "Some games won\'t install in the Posix locale; doing \'export LANG=en_US.UTF-8\'" ; export LANG=en_US.UTF-8;;
 esac
 
 case "$OS" in
@@ -109,7 +109,7 @@ case "$OS" in
         "$WINESERVER" \
         "${WINE}server" \
         "$(which wineserver 2> /dev/null)" \
-        "$(dirname $WINE)"/server/wineserver" \
+        "$(dirname $WINE)/server/wineserver" \
         /usr/lib/wine/wineserver \
         /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
         /usr/lib/i386-linux-gnu/wine/wineserver \
@@ -186,7 +186,7 @@ test_app_checksums()
         # FIXME: we need a way to guarantee that all _original_ .sha1sums are the same.
         # Preferably generated under 32-bit wine, so that we don't need a really complex sed
         # substitution here...
-        sed -e "s|/Program\ Files/|/$progdir/|" -e "s|/windows/|/$windir/|" < "$srcdir/winetricksverify.d/$app.sha1sum" > $app.sha1sum.tmp
+        sed -e "s!Program\ Files/!/$progdir/!" -e "s!/windows/!/$windir/!" < "$srcdir/winetricksverify.d/$app.sha1sum" > $app.sha1sum.tmp
         if ! sha1sum -c $app.sha1sum.tmp
         then
             fail "test_app_checksum $app !"
@@ -344,28 +344,28 @@ _EOF
 
     sh winetricks --no-isolate true.verb ; ret=$?
     case $ret in
-        0) pass "true.verb (isolated), as apps passed" ;;
-        *) fail "true.verb (isolated), as apps failed" ;;
+        0) pass "true.verb not isolated, as apps passed" ;;
+        *) fail "true.verb not isolated, as apps failed" ;;
     esac
 
     sh winetricks --no-isolate false.verb ; ret=$?
     case $ret in
-        0) fail "false.verb (isolated), as apps worked, should have failed" ;;
-        1) pass "falsee.verb (isolated), as apps passed" ;;
-        *) fail "false.verb (isolated), as apps failed in unexpected way" ;;
+        0) fail "false.verb not isolated, as apps worked, should have failed" ;;
+        1) pass "false.verb not isolated, as apps passed" ;;
+        *) fail "false.verb not isolated, as apps failed in unexpected way" ;;
     esac
 
-    sh winetricks --no-isolate true.verb ; ret=$?
+    sh winetricks --isolate true.verb ; ret=$?
     case $ret in
-        0) pass "true.verb (isolated), as apps passed" ;;
-        *) fail "true.verb (isolated), as apps failed" ;;
+        0) pass "true.verb isolated, as apps passed" ;;
+        *) fail "true.verb isolated, as apps failed" ;;
     esac
 
-    sh winetricks --no-isolate false.verb ; ret=$?
+    sh winetricks --isolate false.verb ; ret=$?
     case $ret in
-        0) fail "false.verb (isolated), as apps worked, should have failed" ;;
-        1) pass "false.verb (isolated), as apps passed" ;;
-        *) fail "false.verb (isolated), as apps failed in unexpected way" ;;
+        0) fail "false.verb isolated, as apps worked, should have failed" ;;
+        1) pass "false.verb isolated, as apps passed" ;;
+        *) fail "false.verb isolated, as apps failed in unexpected way" ;;
     esac
 
     # Repeat as dll:
@@ -394,28 +394,28 @@ _EOF
 
     sh winetricks --no-isolate true.verb ; ret=$?
     case $ret in
-        0) pass "true.verb (isolated), as dlls passed" ;;
-        *) fail "true.verb (isolated), as dlls failed" ;;
+        0) pass "true.verb isolated, as dlls passed" ;;
+        *) fail "true.verb isolated, as dlls failed" ;;
     esac
 
     sh winetricks --no-isolate false.verb ; ret=$?
     case $ret in
-        0) fail "false.verb (isolated), as dlls worked, should have failed" ;;
-        1) pass "falsee.verb (isolated), as dlls passed" ;;
-        *) fail "false.verb (isolated), as dlls failed in unexpected way" ;;
+        0) fail "false.verb isolated, as dlls worked, should have failed" ;;
+        1) pass "falsee.verb isolated, as dlls passed" ;;
+        *) fail "false.verb isolated, as dlls failed in unexpected way" ;;
     esac
 
     sh winetricks --no-isolate true.verb ; ret=$?
     case $ret in
-        0) pass "true.verb (isolated), as dlls passed" ;;
-        *) fail "true.verb (isolated), as dlls failed" ;;
+        0) pass "true.verb isolated, as dlls passed" ;;
+        *) fail "true.verb isolated, as dlls failed" ;;
     esac
 
     sh winetricks --no-isolate false.verb ; ret=$?
     case $ret in
-        0) fail "false.verb (isolated), as dlls worked, should have failed" ;;
-        1) pass "false.verb (isolated), as dlls passed" ;;
-        *) fail "false.verb (isolated), as dlls failed in unexpected way" ;;
+        0) fail "false.verb isolated, as dlls worked, should have failed" ;;
+        1) pass "false.verb isolated, as dlls passed" ;;
+        *) fail "false.verb isolated, as dlls failed in unexpected way" ;;
     esac
 
     rm false.verb true.verb
@@ -508,7 +508,7 @@ test_install_cached_or_download()
     # state yet.
     # Verbs that are just informative placeholders don't ever download (gecko).
     # And some verbs (gecko110) don't usually install for other reasons.
-    BLACKLIST_CACHE="allfonts|cjkfonts|allcodecs|gecko|gecko110|fontfix"
+    BLACKLIST_CACHE="allfonts\|cjkfonts\|allcodecs\|gecko\|gecko110\|fontfix"
     cat ticd.verbs | egrep -vw "$BLACKLIST_CACHE" > download.txt
     comm -23 download.txt cached.txt > download-but-not-cached.txt
     echo "Supposedly downloadable"
@@ -556,7 +556,7 @@ custom-verbs) test_custom_verbs;;
 dotnet) check_deps && test_dotnet;;
 full)  check_deps && test_full;;
 quick) check_deps && test_quick;;
-*)     echo "Usage: $0 quick|full"; exit 1;;
+*)     echo "Usage: $0 quick\|full"; exit 1;;
 esac
 
 echo "Test over, $errors failures, $passes successes."
