@@ -70,7 +70,11 @@ def upload_asset(path, owner, repo, tag):
     with open(path) as f:
         contents = f.read()
 
-    content_type = magic.from_file(path)
+    try:
+        content_type = mime.from_file(path)
+    except:
+        content = magic.detect_from_filename(path)
+        content_type = content.name
 
     headers = {'Content-Type': content_type, 'Authorization': token}
     params = {'name': fname}
