@@ -1973,6 +1973,34 @@ _EOF_
         csdversion_hex=dword:00000100
         "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
         ;;
+    win2k8)
+        csdversion="Service Pack 1"
+        currentbuildnumber="7601"
+        currentversion="6.1"
+        csdversion_hex=dword:00000100
+        "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
+        ;;
+    win8)
+        csdversion=" "
+        currentbuildnumber="9200"
+        currentversion="6.2"
+        csdversion_hex=dword:00000000
+        "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
+        ;;
+    win81)
+        csdversion=" "
+        currentbuildnumber="9600"
+        currentversion="6.3"
+        csdversion_hex=dword:00000000
+        "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
+        ;;
+    win10)
+        csdversion=" "
+        currentbuildnumber="10240"
+        currentversion="10.0"
+        csdversion_hex=dword:00000000
+        "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
+        ;;
     *)
         w_die "Invalid Windows version given."
         ;;
@@ -18494,6 +18522,18 @@ load_win2k3()
     w_set_winver win2k3
 }
 
+
+#----------------------------------------------------------------
+
+w_metadata win2k8 settings \
+    title_uk="Поставити версію Windows 2008 R2" \
+    title="Set Windows version to Windows 2008 R2"
+
+load_win2k8()
+{
+    w_set_winver win2k8
+}
+
 #----------------------------------------------------------------
 
 w_metadata win31 settings \
@@ -18514,6 +18554,39 @@ w_metadata win7 settings \
 load_win7()
 {
     w_set_winver win7
+}
+
+#----------------------------------------------------------------
+
+w_metadata win8 settings \
+    title_uk="Поставити версію Windows 8" \
+    title="Set Windows version to Windows 8"
+
+load_win8()
+{
+    w_set_winver win8
+}
+
+#----------------------------------------------------------------
+
+w_metadata win81 settings \
+    title_uk="Поставити версію Windows 8.1" \
+    title="Set Windows version to Windows 8.1"
+
+load_win81()
+{
+    w_set_winver win81
+}
+
+#----------------------------------------------------------------
+
+w_metadata win10 settings \
+    title_uk="Поставити версію Windows 10" \
+    title="Set Windows version to Windows 10"
+
+load_win10()
+{
+    w_set_winver win10
 }
 
 #----------------------------------------------------------------
