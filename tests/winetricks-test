@@ -64,13 +64,13 @@ errors=0
 fail()
 {
     echo FAIL: $@
-    errors="$(expr $errors + 1)"
+    errors=$(expr $errors + 1)
 }
 
 pass()
 {
     echo PASS: $@       
-    passes="$(expr $passes + 1)"
+    passes=$(expr $passes + 1)
 }
 
 w_time()
@@ -145,8 +145,8 @@ case "$OS" in
     ;;
 esac
 
-srcdir="$(dirname $0)"
-srcdir="$(cd $srcdir; pwd)"
+srcdir=$(dirname $0)
+srcdir=$(cd $srcdir; pwd)
 
 test_speed()
 {
@@ -154,7 +154,7 @@ test_speed()
     then
         fail "winetricks $1 returned status $?"
     fi
-    if test "$(wc -l < foo.log)" -lt 5
+    if test $(wc -l < foo.log) -lt 5
     then
         fail "winetricks $1 returned too few lines"
     fi
@@ -163,7 +163,7 @@ test_speed()
         # OSX, fake it:
         seconds=0
     else
-        seconds="$(awk '/real/ {print $2}' < time.log | sed 's/\..*//')"
+        seconds=$(awk '/real/ {print $2}' < time.log | sed 's/\..*//')
     fi
     echo test_speed: winetricks $1 took $seconds seconds
     # Longest runtime as of 11 Dec 2010 is 5 seconds on an e8400 with cygwin
@@ -209,10 +209,10 @@ test_app()
     _errors_before=$errors
 
     # Watch transient disk space
-    DF_START="$(total_df)"
+    DF_START=$(total_df)
     if test -d "$W_CACHE"/$app
     then
-        DU_CACHE_START="$(du -s "$W_CACHE"/$app | awk '{print $1}')"
+        DU_CACHE_START=$(du -s "$W_CACHE"/$app | awk '{print $1}')
     else
         DU_CACHE_START=0
     fi
@@ -238,12 +238,12 @@ test_app()
     # Cleanup..
     rm df-daemon
     # Total max disk usage = max df change plus any initial blocks in cache
-    DF_MIN="$(cat df-during.log | awk '{ if (min == "" || $1 < min) min=$1; } END {print min}')"
-    DF_DIFF="$(expr $DF_START - $DF_MIN)"
-    TOTAL="$(expr $DF_DIFF + $DU_CACHE_START)"
+    DF_MIN=$(cat df-during.log | awk '{ if (min == "" || $1 < min) min=$1; } END {print min}' )
+    DF_DIFF=$(expr $DF_START - $DF_MIN)
+    TOTAL=$(expr $DF_DIFF + $DU_CACHE_START)
     echo "test_app: ${app}: max_disk $TOTAL blocks."
 
-    TOTAL_MB="$(expr $TOTAL / 1024)"
+    TOTAL_MB=$(expr $TOTAL / 1024)
     mkdir -p measurements
     echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> measurements/$app.dat
 }
@@ -282,7 +282,7 @@ test_command()
     then
         seconds=0
     else
-        seconds="$(awk '/real/ {print $2}' < time.log | sed 's/\..*//')"
+        seconds=$(awk '/real/ {print $2}' < time.log | sed 's/\..*//')
     fi
     echo "test_app: ${app}: install_time $seconds seconds."
 
@@ -432,7 +432,7 @@ test_dlls()
         exit 1
     fi
     sort -u < dlls.log | fgrep -w -v -f manual.log | egrep -v "$BLACKLIST" > dlls.verbs
-    for a in "$(cat dlls.verbs)"
+    for a in $(cat dlls.verbs)
     do
         test_app $a
     done
@@ -471,7 +471,7 @@ test_manual_dlls()
         exit 1
     fi
     cat dlls.log manual.log | sort | uniq -c | awk '$1 == 2 {print $2}' | egrep -v "$BLACKLIST" > dlls.verbs
-    for a in "$(cat dlls.verbs)"
+    for a in $(cat dlls.verbs)
     do
         test_app $a
     done
@@ -490,13 +490,13 @@ test_install_cached_or_download()
     if true
     then
         # Split into two, only do half
-        nverbs="$(cat ticd.verbs | wc -l)"
-        firsthalf="$(expr $nverbs / 2 + 1)"
+        nverbs=$(cat ticd.verbs | wc -l)
+        firsthalf=$(expr $nverbs / 2 + 1)
         sed ${firsthalf}',$d' < ticd.verbs > ticd-1.verbs
         sed '1,'${firsthalf}d   < ticd.verbs > ticd-2.verbs
-        VERBS="$(cat ticd-1.verbs)"
+        VERBS=$(cat ticd-1.verbs)
     else
-        VERBS="$(cat ticd.verbs)"
+        VERBS=$(cat ticd.verbs)
     fi
 
     for a in $VERBS
@@ -517,7 +517,7 @@ test_install_cached_or_download()
     cat cached.txt
     echo "Downloadable but not cached"
     cat download-but-not-cached.txt
-    if test "$(wc -l < download-but-not-cached.txt)" != 0
+    if test $(wc -l < download-but-not-cached.txt) != 0
     then
         fail "test_install_cached_or_download: asked to install all downloadable apps, but some not listed as cached afterwards"
         cat download-but-not-cached.txt
