@@ -5654,7 +5654,7 @@ load_dotnet11()
         WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" dotnetfx.exe
     fi
 
-    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
 }
 
 verify_dotnet11()
@@ -5707,7 +5707,7 @@ load_dotnet11sp1()
         WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe
     fi
 
-    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
 }
 
 verify_dotnet11sp1()
@@ -5756,7 +5756,7 @@ load_dotnet20()
     # This affects Victoria 2 demo, see http://forum.paradoxplaza.com/forum/showthread.php?p=11523967
     rm -f "$W_SYSTEM32_DLLS"/msvc?80.dll
 
-    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
 
 verify_dotnet20()
@@ -5889,7 +5889,7 @@ load_dotnet20sp1()
 
     w_unset_winver
 
-    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
 
 verify_dotnet20sp1()
@@ -5955,7 +5955,7 @@ load_dotnet20sp2()
 
     w_unset_winver
 
-    W_NGEN_CMD="w_try $WINE $DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
+    W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
 
 verify_dotnet20sp2()
