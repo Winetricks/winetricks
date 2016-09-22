@@ -609,6 +609,7 @@ w_dotnet_verify()
         dotnet40) version="4 Client" ;;
         dotnet45) version="4.5" ;;
         dotnet452) version="4.5.2" ;;
+        dotnet46) version="4.6" ;;
         *) echo error ; exit 1 ;;
     esac
             w_call dotnet_verifier
@@ -6351,6 +6352,58 @@ verify_dotnet452()
     w_dotnet_verify dotnet452
 }
 
+#----------------------------------------------------------------
+
+w_metadata dotnet46 dlls \
+    title="MS .NET 4.6" \
+    publisher="Microsoft" \
+    year="2015" \
+    media="download" \
+    file1="NDP46-KB3045557-x86-x64-AllOS-ENU.exe" \
+    conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet35sp1 dotnet40 vjrun20" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/v4.0.30319/SetupCache/v4.6.00081/1041/SetupResources.dll"
+
+load_dotnet46()
+{
+    if [ $W_ARCH = win64 ]
+    then
+        w_warn "This package may not work on a 64-bit installation"
+    fi
+
+    # https://support.microsoft.com/en-us/kb/3045560
+    w_download https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe 3049a85843eaf65e89e2336d5fe6e85e416797be
+
+    w_call remove_mono
+
+    # Remove Mono registry entry:
+    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
+
+    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
+
+    w_call dotnet45
+    w_set_winver win7
+
+    cd "$W_CACHE/$W_PACKAGE"
+
+    if w_workaround_wine_bug 38959 ; then
+        echo "This installer will fail unless run in quiet mode."
+        echo "See: https://bugs.winehq.org/show_bug.cgi?id=38959"
+
+        WINEDLLOVERRIDES=fusion=b "$WINE" ${file1} /q /c:"install.exe /q"
+        # Once bug is fixed, use:
+        #WINEDLLOVERRIDES=fusion=b "$WINE" ${file1} ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+        status=$?
+    fi
+
+    case $status in
+        0) ;;
+        105) echo "exit status $status - normal, user selected 'restart now'" ;;
+        194) echo "exit status $status - normal, user selected 'restart later'" ;;
+        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
+
+    w_override_dlls native mscoree
+}
 
 #----------------------------------------------------------------
 
