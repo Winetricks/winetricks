@@ -5916,12 +5916,14 @@ load_dotnet20sp2()
     w_call remove_mono
 
     w_call dotnet20
+    $WINESERVER -w
 
     # FIXME: verify on pristine Windows XP:
     if w_workaround_wine_bug 34803
     then
         "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled' /f
     fi
+    $WINESERVER -w
 
     cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
