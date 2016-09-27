@@ -124,6 +124,7 @@ WINETRICKS_VERSION=20160724
 #
 # Private things internal to this script, not for use by verbs:
 # - Local variables have lowercase names starting with uppercase _W_
+#   (and should not use the local declaration, as it is not POSIX)
 # - Global variables have uppercase names starting with WINETRICKS_
 # - Functions have lowercase names starting with winetricks_
 # FIXME: A few verbs still use winetricks-private functions or variables.
@@ -519,15 +520,15 @@ w_expand_env()
 # get sha1sum string and set $_W_gotsum to it
 w_get_sha1sum()
 {
-    local _W_file="$1"
+    _W_sha1_file="$1"
 
     # See https://github.com/Winetricks/winetricks/issues/645
     # User is running winetricks from /dev/stdin
-    if [ -f "$_W_file" ] || [ -h "$_W_file" ]
+    if [ -f "$_W_sha1_file" ] || [ -h "$_W_sha1_file" ]
     then
-        _W_gotsum=$($WINETRICKS_SHA1SUM < "$_W_file" | sed 's/(stdin)= //;s/ .*//')
+        _W_gotsum=$($WINETRICKS_SHA1SUM < "$_W_sha1_file" | sed 's/(stdin)= //;s/ .*//')
     else
-        w_warn "$_W_file is not a regular file, not checking sha1sum"
+        w_warn "$_W_sha1_file is not a regular file, not checking sha1sum"
         return
     fi
 }
@@ -18266,10 +18267,10 @@ load_hidewineexports()
     # See https://bugs.winehq.org/show_bug.cgi?id=38656
     case $arg in
         enable)
-            local registry_value="\"Y\""
+            _W_registry_value="\"Y\""
             ;;
         disable)
-            local registry_value="-"
+            _W_registry_value="-"
             ;;
         *) w_die "Unexpected argument, $arg";;
     esac
@@ -18278,7 +18279,7 @@ load_hidewineexports()
 REGEDIT4
 
 [HKEY_CURRENT_USER\Software\Wine]
-"HideWineExports"=$registry_value
+"HideWineExports"=$_W_registry_value
 
 _EOF_
     w_try_regedit "$W_TMP"/set-wineexports.reg
