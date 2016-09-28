@@ -73,6 +73,13 @@ pass()
     passes=$(expr $passes + 1)
 }
 
+w_die()
+{
+    echo "$@"
+
+    exit 1
+}
+
 w_time()
 {
     # OSX time doesn't support -o, so try it first:
