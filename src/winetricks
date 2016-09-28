@@ -15598,38 +15598,6 @@ load_menofwar()
 
 #----------------------------------------------------------------
 
-w_metadata mb_warband_demo games \
-    title="Mount & Blade Warband Demo" \
-    publisher="Taleworlds" \
-    year="2010" \
-    media="download" \
-    file1="mb_warband_setup_1143.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Mount&Blade Warband/mb_warband.exe" \
-    homepage="http://www.taleworlds.com"
-
-load_mb_warband_demo()
-{
-    w_download "http://download.taleworlds.com/mb_warband_setup_1143.exe" 94fb829068678e27bcd67d9e0fde7f08c51a23af
-
-    cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetTitleMatchMode 2
-        run mb_warband_setup_1143.exe
-        winwait Warband
-        if ( w_opt_unattended > 0 ) {
-            controlclick button2
-            winwait Warband
-            controlclick button2
-            winwait Warband, Finish
-            controlclick button4
-            controlclick button2
-        }
-        winwaitclose Warband
-    "
-}
-
-#----------------------------------------------------------------
-
 w_metadata mise games \
     title="Monkey Island: Special Edition" \
     publisher="LucasArts" \
