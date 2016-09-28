@@ -232,7 +232,7 @@ test_app()
     # Post install:
     # Don't check whether metaverbs are installed
     case "$app" in
-    allcodes) ;;
+    allcodecs) ;;
     *)
         sh winetricks -q list-installed > list-installed.out
         if ! grep -w $app list-installed.out
