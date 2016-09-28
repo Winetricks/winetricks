@@ -451,13 +451,13 @@ test_dotnet()
     # combinations that should work:
     for combo in "dotnet20 dotnet20sp2"
     do
-        test_command --verify $combo
+        test_command --verify "$combo"
     done
 
     # combinations that should break:
     for fail_combo in "dotnet11 dotnet20"
     do
-        EXPECT_FAIL=yes test_command dotnet11 dotnet20
+        EXPECT_FAIL=yes test_command "$fail_combo"
     done
 }
 
