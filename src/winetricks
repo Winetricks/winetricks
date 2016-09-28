@@ -7239,7 +7239,12 @@ load_msdxmocx()
     # Found using http://www.filewatcher.com/m/mpfull.exe.3593680-0.html
     # The sha1sum is different. Perhaps Iceweasel was right. This one is also clean according to clamscan/virustotal.com
 
-    w_download ftp://www.define.fi/Pub/Fixes/Microsoft/Windows%2095/mpfull.exe 99691df6ac455233230faac7514bdea781ba0ce3
+    # (2017/9/28) define.fi is down, these sites have mpfull.exe with the original sha1:
+    # http://hell.pl/agnus/windows95/
+    # http://zerosky.oldos.org/win9x.html
+    # http://sdfox7.com/win95/
+
+    w_download http://hell.pl/agnus/windows95/mpfull.exe 44aef252a660612a01ee13271d84d2da3885e58d
 
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_CACHE/$W_PACKAGE/${file1}"
     w_try_regsvr msdxm.ocx
