@@ -2390,7 +2390,7 @@ w_do_call()
         fi
 
         # If the user specified --verify, also run GUI tests:
-        if test "$WINETRICKS_VERIFY" = 1 && type verify_$cmd 2> /dev/null
+        if test "$WINETRICKS_VERIFY" = 1 && command -v verify_$cmd > /dev/null 2>&1
         then
             w_try verify_$cmd
         fi
