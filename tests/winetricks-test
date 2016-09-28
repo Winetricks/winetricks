@@ -451,7 +451,7 @@ test_dotnet()
     # combinations that should work:
     for combo in "dotnet20 dotnet20sp2"
     do
-        test_command --verify dotnet20 dotnet20sp2
+        test_command --verify $combo
     done
 
     # combinations that should break:
