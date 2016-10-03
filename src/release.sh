@@ -23,7 +23,7 @@ fi
 
 version="${1:-$(date +%Y%m%d)}"
 
-if git tag | grep ${version} ; then
+if git tag | grep -w "${version}" ; then
     echo "A tag for ${version} already exists!"
     exit 1
 fi
@@ -36,7 +36,7 @@ line=".TH WINETRICKS 1 \"$(date +"%B %Y")\" \"Winetricks ${version}\" \"Wine Pac
 sed -i -e "s%\\.TH.*%${line}%" src/winetricks.1
 
 git commit src/winetricks src/winetricks.1 -m "version bump - ${version}"
-git tag -s -m "winetricks-${version}" ${version}
+git tag -s -m "winetricks-${version}" "${version}"
 
 git push
 git push --tags
@@ -49,6 +49,6 @@ git archive --prefix="winetricks-${version}/" -o "../${version}.tar.gz" "${versi
 gpg --armor --default-key 0xA041937B --detach-sign "../${version}.tar.gz"
 
 # upload the detached signature to github:
-python3 src/github-api-releases.py  ../../"${version}.tar.gz.asc" Winetricks winetricks ${version}
+python3 src/github-api-releases.py  ../../"${version}.tar.gz.asc" Winetricks winetricks "${version}"
 
 exit 0
