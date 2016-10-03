@@ -9,13 +9,13 @@ set -e
 # Wrapper around checkbashisms
 # May also add other checks in future, like shellcheck
 
-if [ ! command -v checkbashisms > /dev/null 2>&1 ] ; then
+if ! command -v checkbashisms > /dev/null 2>&1 ; then
     echo "checkbashisms must be installed!"
 fi
 
 for shellscript in \
     $(find . -type f -not -path "./.git/*" -exec file {} \; | grep -e 'POSIX shell script' | cut -d : -f1)
 do
-    echo "Checking ${shellscript}:"
-    checkbashisms ${shellscript} || exit 1
+    echo "Checking ${shellscript} for bashisms:"
+    checkbashisms "${shellscript}" || exit 1
 done
