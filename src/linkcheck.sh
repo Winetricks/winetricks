@@ -29,14 +29,16 @@ WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net
 ftp_microsoft_com=64.4.17.176
 
 w_download() {
-    url="$(echo $1 | sed -e 's,$ftp_microsoft_com,'$ftp_microsoft_com',;s,$WINETRICKS_SOURCEFORGE,'$WINETRICKS_SOURCEFORGE',;s, ,%20,g')"
+    # shellcheck disable=SC2016
+    url="$(echo "$1" | sed -e 's,$ftp_microsoft_com,'$ftp_microsoft_com',;s,$WINETRICKS_SOURCEFORGE,'$WINETRICKS_SOURCEFORGE',;s, ,%20,g')"
     urlkey="$(echo "$url" | tr / _)"
-    echo "$url" > "$datadir"/"$urlkey.url"
+    echo "$url" > "${datadir}/${urlkey.url}"
 }
 
 # Extract list of URLs from winetricks
 extract_all() {
     grep '^ *w_download ' winetricks | egrep 'ftp|http|WINETRICKS_SOURCEFORGE'| sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+    # shellcheck disable=SC1091
     . ./url-script-fragment.tmp
 }
 
@@ -47,15 +49,15 @@ extract_all() {
 show_one() {
     urlfile=$1
     base=${urlfile%.url}
-    url="$(cat $urlfile)"
+    url="$(cat "$urlfile")"
     if egrep "HTTP.*200|HTTP.*30[0-9]|Content-Length" "$base.log" > /dev/null
     then
-        passes=$(expr $passes + 1)
+        passes=$((passes + 1))
     else
         echo "BAD $url"
         cat "$base.log"
         echo ""
-        errors=$(expr $errors + 1)
+        errors=$((errors + 1))
     fi
 }
 
@@ -76,7 +78,7 @@ show_all() {
 crawl_one() {
     urlfile=$1
     base=${urlfile%.url}
-    url="$(cat $urlfile)"
+    url="$(cat "$urlfile")"
 
     curl --connect-timeout 10 --retry 6 -s -S -I "$url" 2>&1 |
        tr -d '\015' |
@@ -97,7 +99,7 @@ crawl_one() {
 crawl_all() {
     for urlfile in "$datadir"/*.url
     do
-        url="$(cat $urlfile)"
+        url="$(cat "$urlfile")"
         echo "Crawling $url"
         crawl_one "$urlfile" &
         sleep 1
