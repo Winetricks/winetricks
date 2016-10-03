@@ -2,7 +2,7 @@
 # Script to locate unique files useful for install checks
 set -e
 
-if ! test $1
+if ! test "$1"
 then
     echo "Please specify a bunch of wineprefixes to grub through"
     echo "For instance, ~/winetrickstest-prefixes/dotnet20sp{,1,2}"
@@ -16,7 +16,7 @@ do
     (
     cd $dir/drive_c
     # FIXME: don't assume there are no ='s in filenames, e.g. rewrite in perl
-    find * -type f | tr ' ' '=' | egrep -iv 'tmp|temp|installer|NativeImages' | sort > ../files.txt
+    find . -type f | tr ' ' '=' | egrep -iv 'tmp|temp|installer|NativeImages' | sort > ../files.txt
     cat ../files.txt >> /tmp/allfiles.txt
     )
 done
