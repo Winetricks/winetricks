@@ -1006,6 +1006,7 @@ w_download_manual_to()
     _W_file="$3"
     _W_sha1sum="$4"
 
+    # shellcheck disable=SC2154
     case "$media" in
     "download")
         w_info "FAIL: bug: media type is download, but w_download_manual was called.  Programmer, please change verb's media type to manual_download."
@@ -2210,6 +2211,7 @@ w_metadata()
         *) set +x ;;
     esac
 
+    # shellcheck disable=SC2154
     if test "$installed_exe1" || test "$installed_file1" || test "$publisher" || test "$year"
     then
         w_die "bug: stray metadata tags set: somebody forgot a backslash in a w_metadata somewhere.  Run with sh -x to see where."
@@ -2349,6 +2351,7 @@ w_do_call()
             windows_cmd|wine_cmd)
             ;;
         *)
+            # shellcheck disable=SC2154
             case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
             apps-0|benchmarks-0|games-0)
                 winetricks_set_wineprefix "$cmd"
@@ -2373,6 +2376,7 @@ w_do_call()
         fi
 
         # Don't install if a conflicting verb is already installed:
+        # shellcheck disable=SC2154
         if test "$WINETRICKS_FORCE" != 1 && test "$conflicts" && test -f "$WINEPREFIX/winetricks.log"
         then
             for x in $conflicts
@@ -3073,6 +3077,7 @@ winetricks_settings_menu()
             # shellcheck disable=SC1090
             . "$metadatafile"
           # Begin 'title' strings localization code
+            # shellcheck disable=SC2154
             case $LANG in
             uk*) case "$title_uk" in
                  "") ;;
@@ -3298,6 +3303,7 @@ winetricks_showmenu()
             author='?'
             # shellcheck disable=SC1090
             . "$metadatafile"
+            # shellcheck disable=SC2154
             if test "$W_OPT_SHOWBROKEN" = 1 || test "$wine_showstoppers" = ""
             then
                 # Compute cached and downloadable flags
@@ -3366,6 +3372,7 @@ winetricks_metadata_exists()
 winetricks_is_cached()
 {
     # FIXME: also check file2... if given
+    # shellcheck disable=SC2154
     _W_path="$W_CACHE/$1/$file1"
     case "$_W_path" in
     *..*)
@@ -6582,6 +6589,7 @@ load_flash()
     # Projector (standalone player)
     # 2015-07-06
     w_download http://download.macromedia.com/pub/flashplayer/updaters/14/flashplayer_14_sa.exe 62e5bc2e88b50091847408b9d473ee4a6c185167
+    # shellcheck disable=SC2154
     w_try cp "${W_CACHE}/${W_PACKAGE}/${file3}" "$W_SYSTEM32_DLLS/Macromed/Flash"
 
     # After updating the above, you should carry the following steps out by
