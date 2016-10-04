@@ -165,13 +165,13 @@ w_askpermission()
     echo "$@"
     echo "------------------------------------------------------"
 
-    if test $W_OPT_UNATTENDED
+    if test "$W_OPT_UNATTENDED"
     then
         _W_timeout="--timeout 5"
     fi
 
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --question --title=winetricks --text="$(echo $@ | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
+    zenity) $WINETRICKS_GUI "$_W_timeout" --question --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
     kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
     none) printf %s "Press Y or N, then Enter: " ; read -r response ; test "$response" = Y || test "$response" = y;;
     esac
@@ -198,7 +198,7 @@ w_info()
     _W_timeout="--timeout 3"
 
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --info --title=winetricks --text="$(echo $@ | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
+    zenity) $WINETRICKS_GUI "$_W_timeout" --info --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
     kdialog) $WINETRICKS_GUI --title winetricks --msgbox "$@" ;;
     none) ;;
     esac
@@ -213,13 +213,13 @@ w_warn()
     echo "$@" >&2
     echo "------------------------------------------------------" >&2
 
-    if test $W_OPT_UNATTENDED
+    if test "$W_OPT_UNATTENDED"
     then
         _W_timeout="--timeout 5"
     fi
 
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="$(echo $@ | sed 's,\\\\,\\\\\\\\,g')";;
+    zenity) $WINETRICKS_GUI "$_W_timeout" --error --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
     kdialog) $WINETRICKS_GUI --title winetricks --error "$@" ;;
     none) ;;
     esac
@@ -236,14 +236,14 @@ w_warn_cancel()
     echo "$@" >&2
     echo "------------------------------------------------------" >&2
 
-    if test $W_OPT_UNATTENDED
+    if test "$W_OPT_UNATTENDED"
     then
         _W_timeout="--timeout 5"
     fi
 
     # Zenity has no cancel button, but will set status to 1 if you click the go-away X
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="$(echo $@ | sed 's,\\\\,\\\\\\\\,g')";;
+    zenity) $WINETRICKS_GUI "$_W_timeout" --error --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
     kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
     none) ;;
     esac
@@ -262,7 +262,7 @@ w_die()
 # Kill all instances of a process in a safe way (Solaris killall kills _everything_)
 w_killall()
 {
-    # shellcheck disable=SC2046
+    # shellcheck disable=SC2046,SC2086
     kill -s KILL $(pgrep $1)
 }
 
@@ -310,7 +310,7 @@ w_try_7z()
         w_warn "Cannot find 7z.  Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip p7zip-plugins')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
         # errors out if there is a space between -o and path
-        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w $2)" -o"$(w_pathconv -w $1)"
+        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$2")" -o"$(w_pathconv -w "$1")"
     fi
 }
 
@@ -329,7 +329,7 @@ w_try_ar()
 
         # -t* prevents 7-zip from decompressing .tar.xz to .tar, see
         # https://sourceforge.net/p/sevenzip/discussion/45798/thread/8cd16946/?limit=25
-        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" -t* x "$(w_pathconv -w $1)"
+        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" -t* x "$(w_pathconv -w "$1")"
     fi
 }
 
@@ -356,6 +356,7 @@ w_try_msiexec64()
         w_die "bug: 64-bit msiexec called from a $W_ARCH prefix."
     fi
 
+    # shellcheck disable=SC2086
     w_try "$WINE" start /wait "$W_SYSTEM64_DLLS_WIN32/msiexec.exe" $W_UNATTENDED_SLASH_Q "$@"
 }
 
@@ -367,12 +368,14 @@ w_try_regedit()
     *) unset cmdc ;;
     esac
 
+    # shellcheck disable=SC2086
     w_try winetricks_early_wine $cmdc regedit $W_UNATTENDED_SLASH_S "$@"
 }
 
 w_try_regsvr()
 {
-    w_try "$WINE" regsvr32 $W_UNATTENDED_SLASH_S $@
+    # shellcheck disable=SC2086
+    w_try "$WINE" regsvr32 $W_UNATTENDED_SLASH_S "$@"
 }
 
 w_try_unrar()
@@ -386,7 +389,7 @@ w_try_unrar()
     else
         w_warn "Cannot find unrar.  Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt-get install unrar' or 'sudo yum install unrar')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
-        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w $1)"
+        w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$1")"
     fi
 }
 
@@ -417,7 +420,7 @@ w_try_unzip()
 
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
     # errors out if there is a space between -o and path
-    w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w $zipfile)" -o"$(w_pathconv -w $destdir)" "$@"
+    w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$zipfile")" -o"$(w_pathconv -w "$destdir")" "$@"
 }
 
 w_read_key()
@@ -479,7 +482,7 @@ w_read_key()
         echo "$W_KEY" > "$_W_keyfile"
     fi
     W_RAW_KEY=$(cat "$_W_keyfile")
-    W_KEY=$(echo $W_RAW_KEY | tr -d '[:blank:][=-=]')
+    W_KEY=$(echo "$W_RAW_KEY" | tr -d '[:blank:][=-=]')
     unset _W_keyfile _W_keymsg _W_nokeymsg
 }
 
@@ -495,7 +498,7 @@ winetricks_wintounix()
     # Prepend the location of drive c
     printf %s "$WINEPREFIX"/dosdevices/c:
     # Change backslashes to slashes
-    echo $_W_winp | sed 's,\\,/,g'
+    echo "$_W_winp" | sed 's,\\,/,g'
 }
 
 # Convert between Unix path and Windows path
@@ -592,6 +595,7 @@ winetricks_wget_progress()
             if pid=$(pgrep -f ."$_W_file")
             then
                 echo User aborted download, killing wget
+                # shellcheck disable=SC2086
                 kill $pid
             fi
         fi
@@ -603,7 +607,7 @@ winetricks_wget_progress()
 
 w_dotnet_verify()
 {
-    case $1 in
+    case "$1" in
         dotnet11) version="1.1" ;;
         dotnet11sp1) version="1.1 SP1" ;;
         dotnet20) version="2.0" ;;
@@ -655,7 +659,7 @@ w_dotnet_verify()
                     }
                 }
             "
-            dn_status=$?
+            dn_status="$?"
 }
 
 # Checks if the user can run the self-update/rollback commands
@@ -669,7 +673,7 @@ winetricks_check_update_availability()
     fi
 
     # Checks read/write permissions on update directories
-    if ! (test -r $0 && test -w $0 && test -w ${0%/*} && test -x ${0%/*})
+    if ! (test -r "$0" && test -w "$0" && test -w "${0%/*}" && test -x "${0%/*}")
     then
         w_warn "You don't have the proper permissions to run this command. Try again with sudo or as root."
         exit;
@@ -687,16 +691,16 @@ winetricks_selfupdate()
     _W_tmpdir=${TMPDIR:-/tmp}
     _W_tmpdir="$(mktemp -d "$_W_tmpdir/$_W_filename.XXXXXXXX")"
 
-    w_download_to $_W_tmpdir https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
-    w_try mv $_W_tmpdir/$_W_filename $_W_update_file.gz
-    w_try gunzip $_W_update_file.gz
-    w_try rmdir $_W_tmpdir
+    w_download_to "$_W_tmpdir" https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+    w_try mv "$_W_tmpdir/$_W_filename" "${_W_update_file}.gz"
+    w_try gunzip "${_W_update_file}.gz"
+    w_try rmdir "$_W_tmpdir"
 
-    w_try cp $0 $_W_rollback_file
-    w_try chmod -x $_W_rollback_file
+    w_try cp "$0" "$_W_rollback_file"
+    w_try chmod -x "$_W_rollback_file"
 
-    w_try mv $_W_update_file $0
-    w_try chmod +x $0
+    w_try mv "$_W_update_file" "$0"
+    w_try chmod +x "$0"
 
     w_warn "Update finished! The current version is $($0 -V). Use 'winetricks --update-rollback' to return to the previous version."
 
@@ -709,10 +713,10 @@ winetricks_selfupdate_rollback()
 
     _W_rollback_file="${0}.bak"
 
-    if test -f $_W_rollback_file
+    if test -f "$_W_rollback_file"
     then
-        w_try mv $_W_rollback_file $0
-        w_try chmod +x $0
+        w_try mv "$_W_rollback_file" "$0"
+        w_try chmod +x "$0"
         w_warn "Rollback finished! The current version is $($0 -V)."
     else
         w_warn "Nothing to rollback."
@@ -802,7 +806,7 @@ w_download_to()
         # redhat.com decompresses liberation-fonts.tar.gz!
         # Note: this causes other sites to compress downloads, hence
         # the kludge further down.  See http://code.google.com/p/winezeug/issues/detail?id=77
-        echo Downloading $_W_url to $_W_cache
+        echo "Downloading $_W_url to $_W_cache"
 
         # For sites that prefer Mozilla in the user-agent header, set W_BROWSERAGENT=1
         case "$W_BROWSERAGENT" in
@@ -893,7 +897,7 @@ w_download_to()
 
     if test "$3" && test ! "$checksum_ok"
     then
-        w_verify_sha1sum $3  "$_W_cache/$_W_file"
+        w_verify_sha1sum "$3" "$_W_cache/$_W_file"
     fi
 }
 
@@ -935,7 +939,7 @@ w_open_webpage()
 # Caches downloads in winetrickscache/$W_PACKAGE
 w_download()
 {
-    w_download_to $W_PACKAGE "$@"
+    w_download_to "$W_PACKAGE" "$@"
 }
 
 # Download one or more files via BitTorrent
@@ -1041,7 +1045,7 @@ w_download_manual_to()
 
     if test "$_W_sha1sum"
     then
-        w_verify_sha1sum $_W_sha1sum "$W_CACHE/$_W_packagename/$_W_file"
+        w_verify_sha1sum "$_W_sha1sum" "$W_CACHE/$_W_packagename/$_W_file"
     fi
 
     unset _W_url _W_file _W_sha1sum _W_dlmsg
@@ -1049,7 +1053,7 @@ w_download_manual_to()
 
 w_download_manual()
 {
-    w_download_manual_to $W_PACKAGE "$@"
+    w_download_manual_to "$W_PACKAGE" "$@"
 }
 
 # Turn off news, overlays, and friend interaction in Steam
@@ -1159,7 +1163,7 @@ w_question()
         # shellcheck disable=SC2039
         echo -n "$1" >&2 ;
         read -r W_ANSWER ;
-        echo $W_ANSWER;
+        echo "$W_ANSWER";
         unset W_ANSWER;;
     esac
 }
@@ -1384,14 +1388,14 @@ winetricks_load_gog()
     do
         case "$file_and_size_and_sha1" in
         *,*,*)
-            sha1sum=$(echo $file_and_size_and_sha1 | sed "s/.*,//")
-            minsize=$(echo $file_and_size_and_sha1 | sed 's/[^,]*,\([^,]*\),.*/\1/')
-            file=$(echo $file_and_size_and_sha1 | sed 's/,.*//')
+            sha1sum=$(echo "$file_and_size_and_sha1" | sed "s/.*,//")
+            minsize=$(echo "$file_and_size_and_sha1" | sed 's/[^,]*,\([^,]*\),.*/\1/')
+            file=$(echo "$file_and_size_and_sha1" | sed 's/,.*//')
             ;;
         *,*)
             sha1sum=""
-            minsize=$(echo $file_and_size_and_sha1 | sed 's/.*,//')
-            file=$(echo $file_and_size_and_sha1 | sed 's/,.*//')
+            minsize=$(echo "$file_and_size_and_sha1" | sed 's/.*,//')
+            file=$(echo "$file_and_size_and_sha1" | sed 's/,.*//')
             ;;
         *)
             sha1sum=""
@@ -1408,7 +1412,7 @@ winetricks_load_gog()
             w_download_manual "https://www.gog.com/en/download/game/$download_id/$file_id" "$file"
             check_sha1=1
             filesize=$(stat -Lc%s "$file_path")
-            if test $minsize -gt 1 && test $filesize -ne $minsize
+            if test $minsize -gt 1 && test "$filesize" -ne $minsize
             then
                 check_sha1=""
                 w_warn "Expected file size $minsize, please report new size $filesize."
@@ -1509,17 +1513,17 @@ w_umount()
         case "$WINETRICKS_SUDO" in
         gksudo)
           # -l lazy unmount in case executable still running
-          $WINETRICKS_SUDO "umount -l $W_ISO_MOUNT_ROOT"
-          w_try $WINETRICKS_SUDO "rm -rf $W_ISO_MOUNT_ROOT"
+          "$WINETRICKS_SUDO" "umount -l $W_ISO_MOUNT_ROOT"
+          w_try "$WINETRICKS_SUDO" "rm -rf $W_ISO_MOUNT_ROOT"
           ;;
         *)
-          $WINETRICKS_SUDO umount -l $W_ISO_MOUNT_ROOT
-          w_try $WINETRICKS_SUDO rm -rf $W_ISO_MOUNT_ROOT
+          "$WINETRICKS_SUDO" "umount -l $W_ISO_MOUNT_ROOT"
+          w_try "$WINETRICKS_SUDO" "rm -rf $W_ISO_MOUNT_ROOT"
           ;;
         esac
-        "$WINE" eject ${W_ISO_MOUNT_LETTER}:
-        rm -f "$WINEPREFIX"/dosdevices/${W_ISO_MOUNT_LETTER}:
-        rm -f "$WINEPREFIX"/dosdevices/${W_ISO_MOUNT_LETTER}::
+        "$WINE" eject "${W_ISO_MOUNT_LETTER}:"
+        rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"
+        rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}::"
     fi
 }
 
@@ -1575,7 +1579,7 @@ Usage: 'w_override_dlls mode[,mode] dll ...'." ;;
         _W_mode="" ;;
     esac
     shift
-    echo Using $_W_mode override for following DLLs: $@
+    echo "Using $_W_mode override for following DLLs: $@"
     cat > "$W_TMP"/override-dll.reg <<_EOF_
 REGEDIT4
 
@@ -1833,14 +1837,13 @@ w_override_app_dlls()
     b|builtin) _W_mode=builtin ;;
     n|native) _W_mode=native ;;
     default) _W_mode=default ;;
-    d|disabled)
-        _W_mode="" ;;
+    d|disabled) _W_mode="" ;;
     *)
         w_die "w_override_app_dlls: unknown mode $_W_mode.  (want native, builtin, default, or disabled)
 Usage: 'w_override_app_dlls app mode dll ...'." ;;
     esac
 
-    echo Using $_W_mode override for following DLLs when running $_W_app: $@
+    echo "Using $_W_mode override for following DLLs when running $_W_app: $@"
     (
     echo REGEDIT4
     echo ""
@@ -1892,7 +1895,7 @@ w_set_winver()
     "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /f || true
     ) > /dev/null 2>&1
 
-    case $1 in
+    case "$1" in
     win31)
         echo "Setting Windows version to $1"
         cat > "$W_TMP"/set-winver.reg <<_EOF_
@@ -2082,27 +2085,27 @@ w_wine_version()
     # Parse major/minor/micro/nano fields of VALUE.  Ignore nano.  Abort if major is not 1.
     case $2 in
     0*|1.0|1.0.*) w_die "bug: $2 is before 1.1, we don't bother with bugs fixed that long ago" ;;
-    1.1.*) _W_minor=1; _W_micro=$(echo $2 | sed 's/.*\.//');;
+    1.1.*) _W_minor=1; _W_micro=$(echo "$2" | sed 's/.*\.//');;
     1.2) _W_minor=2; _W_micro=0;;
-    1.2.*) _W_minor=2; _W_micro=$(echo $2 | sed 's/.*\.//');;
-    1.3.*) _W_minor=3; _W_micro=$(echo $2 | sed 's/.*\.//');;
+    1.2.*) _W_minor=2; _W_micro=$(echo "$2" | sed 's/.*\.//');;
+    1.3.*) _W_minor=3; _W_micro=$(echo "$2" | sed 's/.*\.//');;
     1.4) _W_minor=4; _W_micro=0;;
-    1.4.*) _W_minor=4; _W_micro=$(echo $2 | sed 's/.*\.//');;
-    1.5.*) _W_minor=5; _W_micro=$(echo $2 | sed 's/.*\.//');;
+    1.4.*) _W_minor=4; _W_micro=$(echo "$2" | sed 's/.*\.//');;
+    1.5.*) _W_minor=5; _W_micro=$(echo "$2" | sed 's/.*\.//');;
     1.6|1.6-rc*) _W_minor=6; _W_micro=0;;
-    1.6.*) _W_minor=6; _W_micro=$(echo $2 | sed 's/.*\.//');;
-    1.7.*) _W_minor=7; _W_micro=$(echo $2 | sed 's/.*\.//');;
-    1.8.*) _W_minor=8; _W_micro=$(echo $2 | sed 's/.*\.//');;
-    1.9.*) _W_minor=9; _W_micro=$(echo $2 | sed 's/.*\.//');;
+    1.6.*) _W_minor=6; _W_micro=$(echo "$2" | sed 's/.*\.//');;
+    1.7.*) _W_minor=7; _W_micro=$(echo "$2" | sed 's/.*\.//');;
+    1.8.*) _W_minor=8; _W_micro=$(echo "$2" | sed 's/.*\.//');;
+    1.9.*) _W_minor=9; _W_micro=$(echo "$2" | sed 's/.*\.//');;
     *) w_die "bug: unrecognized version $2";;
     esac
 
     # Comparing current wine version 1.$WINETRICKS_WINE_MINOR.$WINETRICKS_WINE_MICRO against 1.$_W_minor.$_W_micro
-    if test $WINETRICKS_WINE_MINOR = $_W_minor
+    if test "$WINETRICKS_WINE_MINOR" = "$_W_minor"
     then
-        test $WINETRICKS_WINE_MICRO $1 $_W_micro || return 1
+        test "$WINETRICKS_WINE_MICRO" "$1" "$_W_micro" || return 1
     else
-        test $WINETRICKS_WINE_MINOR $1 $_W_minor || return 1
+        test "$WINETRICKS_WINE_MINOR" "$1" "$_W_minor" || return 1
     fi
 }
 
@@ -2174,13 +2177,14 @@ w_workaround_wine_bug()
     *)  _W_msg="-- $2";;
     esac
 
+    # shellcheck disable=SC2086
     if test "$3" && w_wine_version_in $3 $4 $5 $6
     then
         echo "Current Wine does not have Wine bug $1, so not applying workaround"
         return 1
     fi
 
-    case $1 in
+    case "$1" in
     "$WINETRICKS_BLACKLIST")
         echo "Wine bug $1 workaround blacklisted, skipping"
         return 1
@@ -2196,7 +2200,7 @@ w_workaround_wine_bug()
     zh_TW*|zh_HK*)   w_warn "繞過 wine bug ${1} $_W_msg" ;;
     *)   w_warn "Working around wine bug ${1} $_W_msg" ;;
     esac
-    winetricks_stats_log_command w_workaround_wine_bug-$1
+    winetricks_stats_log_command "w_workaround_wine_bug-$1"
     return 0
 }
 
@@ -2221,13 +2225,13 @@ w_metadata()
     then
         w_die "bug: stray metadata tags set: somebody forgot a backslash in a w_metadata somewhere.  Run with sh -x to see where."
     fi
-    if winetricks_metadata_exists $1
+    if winetricks_metadata_exists "$1"
     then
         w_die "bug: a verb named $1 already exists."
     fi
 
     _W_md_cmd="$1"
-    _W_category=$2
+    _W_category="$2"
     file="$WINETRICKS_METADATA/$_W_category/$1.vars"
     shift
     shift
@@ -2251,7 +2255,7 @@ w_metadata()
         # slashes in that variable instead of backslashes.
         echo ${arg%%=*}=\"${arg#*=}\"
     done > "$file"
-    echo category='"'$_W_category'"' >> "$file"
+    echo category='"'"$_W_category"'"' >> "$file"
     # If the problem described above happens, you'd see errors like this:
     # /tmp/w.dank.4650/metadata/dlls/comctl32.vars: 6: Syntax error: Unterminated quoted string
     # so check for lines that aren't properly quoted.
@@ -2305,7 +2309,7 @@ w_do_call()
 {
     (
         # Hack..
-        if test $cmd = vd
+        if test "$cmd" = vd
         then
             load_vd $arg
             _W_status=$?
@@ -2314,8 +2318,8 @@ w_do_call()
             return $_W_status
         fi
 
-        case $1 in
-        *=*) arg=$(echo $1 | sed 's/.*=//'); cmd=$(echo $1 | sed 's/=.*//');;
+        case "$1" in
+        *=*) arg=$(echo "$1" | sed 's/.*=//'); cmd=$(echo "$1" | sed 's/=.*//');;
         *) cmd=$1; arg=$2 ;;
         esac
 
@@ -2331,18 +2335,18 @@ w_do_call()
         # Unset all known used metadata values, in case this is a nested call
         unset conflicts installed_file1 installed_exe1
 
-        if winetricks_metadata_exists $1
+        if winetricks_metadata_exists "$1"
         then
             # shellcheck disable=SC1090
-            . "$WINETRICKS_METADATA"/*/$1.vars
-        elif winetricks_metadata_exists $cmd
+            . "$WINETRICKS_METADATA"/*/"${1}.vars"
+        elif winetricks_metadata_exists "$cmd"
         then
             # shellcheck disable=SC1090
-            . "$WINETRICKS_METADATA"/*/$cmd.vars
-        elif test $cmd = native || test $cmd = disabled || test $cmd = builtin || test $cmd = default
+            . "$WINETRICKS_METADATA"/*/"${cmd}.vars"
+        elif test "$cmd" = native || test "$cmd" = disabled || test "$cmd" = builtin || test "$cmd" = default
         then
             # ugly special case - can't have metadata for these verbs until we allow arbitrary parameters
-            w_override_dlls $cmd $arg
+            w_override_dlls "$cmd" "$arg"
             _W_status=$?
             test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
             mkdir -p "$W_TMP"
@@ -2363,7 +2367,7 @@ w_do_call()
                 # If it's a new wineprefix, give it metadata
                 if test ! -f "$WINEPREFIX"/wrapper.cfg
                 then
-                    echo ww_name=\"$title\" > "$WINEPREFIX"/wrapper.cfg
+                    echo ww_name=\""$title"\" > "$WINEPREFIX"/wrapper.cfg
                 fi
                 ;;
             esac
@@ -2374,7 +2378,7 @@ w_do_call()
         mkdir -p "$W_TMP"
 
         # Don't install if already installed
-        if test "$WINETRICKS_FORCE" != 1 && winetricks_is_installed $1
+        if test "$WINETRICKS_FORCE" != 1 && winetricks_is_installed "$1"
         then
             echo "$1 already installed, skipping"
             return 0
@@ -2386,13 +2390,13 @@ w_do_call()
         then
             for x in $conflicts
             do
-                w_conflicts $1 $x
+                w_conflicts "$1" "$x"
             done
         fi
 
         # We'd like to get rid of W_PACKAGE, but for now, just set it as late as possible.
         W_PACKAGE=$1
-        w_try load_$cmd $arg
+        w_try "load_$cmd" "$arg"
         winetricks_stats_log_command "$@"
 
         # User-specific postinstall hook.
@@ -2408,16 +2412,16 @@ w_do_call()
         # Verify install
         if test "$installed_exe1" || test "$installed_file1"
         then
-            if ! winetricks_is_installed $1
+            if ! winetricks_is_installed "$1"
             then
                 w_die "$1 install completed, but installed file $_W_file_unix not found"
             fi
         fi
 
         # If the user specified --verify, also run GUI tests:
-        if test "$WINETRICKS_VERIFY" = 1 && command -v verify_$cmd > /dev/null 2>&1
+        if test "$WINETRICKS_VERIFY" = 1 && command -v "verify_$cmd" > /dev/null 2>&1
         then
-            w_try verify_$cmd
+            w_try "verify_$cmd"
         fi
 
         # Clean up after this verb
@@ -2486,7 +2490,7 @@ w_append_path()
 {
     # Prepend $1 to the Windows path in the registry.
     # Use printf %s to avoid interpreting backslashes.
-    _W_NEW_PATH="$(printf %s $1| sed 's,\\\\,\\\\\\\\,g')"
+    _W_NEW_PATH="$(printf %s "$1" | sed 's,\\\\,\\\\\\\\,g')"
     _W_WIN_PATH="$(w_expand_env PATH | sed 's,\\\\,\\\\\\\\,g')"
 
     sed 's/$/\r/' > "$W_TMP"/path.reg <<_EOF_
@@ -2520,7 +2524,7 @@ winetricks_get_platform()
 {
     if [ "${OS}" = "Windows_NT" ]
     then
-        if [ ! -v ${WINELOADERNOEXEC} ]
+        if [ ! -v "${WINELOADERNOEXEC}" ]
         then
             export W_PLATFORM="windows_cmd"
         else
@@ -2536,7 +2540,7 @@ winetricks_print_version() {
     # just to get the winetricks version:
     winetricks_get_sha1sum_prog
 
-    w_get_sha1sum $0
+    w_get_sha1sum "$0"
     echo "$WINETRICKS_VERSION - sha1sum: $_W_gotsum"
 }
 
@@ -2609,7 +2613,7 @@ winetricks_get_prefix_var()
         # shellcheck disable=SC1090
         . "$W_PREFIXES_ROOT/$p/wrapper.cfg"
         # The cryptic sed is there to turn ' into '\''
-        eval echo \$ww_$1 | sed "s/'/'\\\''/"
+        eval echo \$ww_"$1" | sed "s/'/'\\\''/"
     )
 }
 
@@ -2720,7 +2724,7 @@ winetricks_prefixmenu()
             " \
             > "$WINETRICKS_WORKDIR"/zenity.sh
 
-        if ls -d $W_PREFIXES_ROOT/*/dosdevices > /dev/null 2>&1
+        if ls -d "$W_PREFIXES_ROOT"/*/dosdevices > /dev/null 2>&1
         then
             for prefix in "$W_PREFIXES_ROOT"/*/dosdevices
             do
@@ -3091,7 +3095,7 @@ winetricks_settings_menu()
             esac
           # End of code
             printf "%s %s %s %s" " " FALSE \
-                    $code \
+                    "$code" \
                     "\"$title\""
             )
         done >> "$WINETRICKS_WORKDIR"/zenity.sh
@@ -3313,12 +3317,12 @@ winetricks_showmenu()
             then
                 # Compute cached and downloadable flags
                 flags=""
-                winetricks_is_cached $code && flags="$_W_cached"
+                winetricks_is_cached "$code" && flags="$_W_cached"
                 installed=FALSE
-                if winetricks_is_installed $code
+                if winetricks_is_installed "$code"
                 then
                     installed=TRUE
-                    echo $code >> "$WINETRICKS_WORKDIR"/installed.txt
+                    echo "$code" >> "$WINETRICKS_WORKDIR"/installed.txt
                 fi
                 printf %s " $installed \
                     $code \
@@ -3360,16 +3364,16 @@ winetricks_metadata_basename()
     #basename $1 .vars
 
     # first, remove suffix .vars
-    _W_mb_tmp=${1%.vars}
+    _W_mb_tmp="${1%.vars}"
     # second, remove any directory prefix
-    echo ${_W_mb_tmp##*/}
+    echo "${_W_mb_tmp##*/}"
     unset _W_mb_tmp
 }
 
 # Returns true if given verb has been registered
 winetricks_metadata_exists()
 {
-    test -f "$WINETRICKS_METADATA"/*/$1.vars
+    test -f "$WINETRICKS_METADATA"/*/"${1}.vars"
 }
 
 # Returns true if given verb has been cached
@@ -3383,7 +3387,7 @@ winetricks_is_cached()
     *..*)
         # Remove /foo/.. so verbs that don't have their own cache directories
         # can refer to siblings
-        _W_path="$(echo $_W_path | sed 's,/[^/]*/\.\.,,')"
+        _W_path="$(echo "$_W_path" | sed 's,/[^/]*/\.\.,,')"
         ;;
     esac
     if test -f "$_W_path"
@@ -3466,9 +3470,9 @@ winetricks_list_cached()
         code=$(winetricks_metadata_basename "$_W_metadatafile")
         # shellcheck disable=SC1090
         . "$_W_metadatafile"
-        if winetricks_is_cached $code
+        if winetricks_is_cached "$code"
         then
-            echo $code
+            echo "$code"
         fi
         )
     done | sort
@@ -3503,9 +3507,9 @@ winetricks_list_installed()
         code=$(winetricks_metadata_basename "$_W_metadatafile")
         # shellcheck disable=SC1090
         . "$_W_metadatafile"
-        if winetricks_is_installed $code
+        if winetricks_is_installed "$code"
         then
-            echo $code
+            echo "$code"
         fi
         )
     done
@@ -3555,14 +3559,14 @@ winetricks_list_all()
         # Compute cached and downloadable flags
         flags=""
         test "$media" = "download" && winetricks_append_to_flags "$_W_download"
-        winetricks_is_cached $code   && winetricks_append_to_flags "$_W_cached"
+        winetricks_is_cached "$code" && winetricks_append_to_flags "$_W_cached"
         test "$flags" && flags="[$flags]"
 
         if ! test "$year" && ! test "$publisher"
         then
-            printf "%-24s %s %s\n" $code "$title" "$flags"
+            printf "%-24s %s %s\n" "$code" "$title" "$flags"
         else
-            printf "%-24s %s (%s, %s) %s\n" $code "$title" "$publisher" "$year" "$flags"
+            printf "%-24s %s (%s, %s) %s\n" "$code" "$title" "$publisher" "$year" "$flags"
         fi
         )
     done
@@ -3581,7 +3585,7 @@ winetricks_die_if_user_not_dirowner()
     fi
     _W_nuser=$(id -u)
     _W_nowner=$(ls -l -n -d -L "$_W_checkdir" | awk '{print $3}')
-    if test x$_W_nuser != x$_W_nowner
+    if test x"$_W_nuser" != x"$_W_nowner"
     then
         w_die "You ($(id -un)) don't own $_W_checkdir.  Don't run this tool as another user!"
     fi
@@ -3596,13 +3600,13 @@ winetricks_die_if_user_not_dirowner()
 # Usage: read_bytes offset count device
 winetricks_read_bytes()
 {
-    dd status=noxfer if=$3 bs=1 skip=$1 count=$2 2>/dev/null
+    dd status=noxfer if="$3" bs=1 skip="$1" count="$2" 2>/dev/null
 }
 
 # Usage: read_hex offset count device
 winetricks_read_hex()
 {
-    od -j $1 -N $2 -t x1 $3          | # offset $1, count $2, single byte hex format, file $3
+    od -j "$1" -N "$2" -t x1 "$3"     | # offset $1, count $2, single byte hex format, file $3
         sed 's/^[^ ]* //'             | # remove address
         sed '$d'                        # remove final line which is just final offset
 }
@@ -3613,7 +3617,7 @@ winetricks_read_hex()
 # udf uses little endian words, so this only works on little endian machines.
 winetricks_read_decimal()
 {
-    od -j $1 -N 4  -t u4 $2          | # offset $1, byte count 4, four byte decimal format, file $2
+    od -j "$1" -N 4  -t u4 "$2"          | # offset $1, byte count 4, four byte decimal format, file $2
         sed 's/^[^ ]* //'             | # remove address
         sed '$d'                        # remove final line which is just final offset
 }
@@ -3645,22 +3649,22 @@ winetricks_read_udf_volume_name()
     # 32     24       volume identifier (dstring)
 
     # 1. check the 16 bit TagIdentifier of the descriptor tag, make sure it's 2
-    tagid=$(winetricks_read_hex 524288 2 $1)
-    : echo tagid is $tagid
+    tagid=$(winetricks_read_hex 524288 2 "$1")
+    : echo "tagid is $tagid"
     case "$tagid" in
-    "02 00") : echo Found AVDP ;;
+    "02 00") : echo "Found AVDP" ;;
     *) echo "Did not find AVDP (tagid was $tagid)"; exit 1;;
     esac
 
     # 2. read the location of the main volume descriptor:
-    offset=$(winetricks_read_decimal 524308 $1)
-    : echo MVD is at sector $offset
+    offset=$(winetricks_read_decimal 524308 "$1")
+    : echo "MVD is at sector $offset"
     offset=$((offset * 2048))
-    : echo MVD is at byte $offset
+    : echo "MVD is at byte $offset"
 
     # 3. check the TagIdentifier of the MVD's descriptor tag, make sure it's 1
-    tagid=$(winetricks_read_hex $offset 2 $1)
-    : echo tagid is $tagid
+    tagid=$(winetricks_read_hex $offset 2 "$1")
+    : echo "tagid is $tagid"
     case "$tagid" in
     "01 00") : echo Found MVD ;;
     *) echo Did not find MVD; exit 1;;
@@ -3668,14 +3672,14 @@ winetricks_read_udf_volume_name()
 
     # 4. Read whether the name is in 8 or 16 bit chars
     offset=$((offset + 24))
-    width=$(winetricks_read_hex $offset 1 $1)
+    width=$(winetricks_read_hex $offset 1 "$1")
 
     offset=$((offset + 1))
 
     # 5. Profit!
     case $width in
-    08)   winetricks_read_bytes $offset 30 $1 | sed 's/  *$//' ;;
-    10)  winetricks_read_bytes $offset 30 $1 | tr -d '\000' | sed 's/  *$//' ;;
+    08)   winetricks_read_bytes $offset 30 "$1" | sed 's/  *$//' ;;
+    10)  winetricks_read_bytes $offset 30 "$1" | tr -d '\000' | sed 's/  *$//' ;;
     *) echo "Unhandled dvd volname character width '$width'"; exit 1;;
     esac
 
@@ -3684,7 +3688,7 @@ winetricks_read_udf_volume_name()
 
 winetricks_read_iso9660_volume_name()
 {
-    winetricks_read_bytes 32808 30 $1 | sed 's/  *$//'
+    winetricks_read_bytes 32808 30 "$1" | sed 's/  *$//'
 }
 
 winetricks_read_volume_name()
@@ -3698,25 +3702,25 @@ winetricks_read_volume_name()
     # "CD001": ecma-119
     # "CDW02": ecma-168
 
-    std_id=$(winetricks_read_bytes 32769 5 $1)
-    : echo std_id is $std_id
+    std_id=$(winetricks_read_bytes 32769 5 "$1")
+    : echo "std_id is $std_id"
 
     case $std_id in
-    CD001) winetricks_read_iso9660_volume_name $1 ;;
-    BEA01) winetricks_read_udf_volume_name $1; ;;
+    CD001) winetricks_read_iso9660_volume_name "$1" ;;
+    BEA01) winetricks_read_udf_volume_name "$1" ;;
     *) echo "Unrecognized disk type $std_id"; exit 1 ;;
     esac
 }
 
 winetricks_volname()
 {
-    x=$(volname $1 2> /dev/null| sed 's/  *$//')
+    x=$(volname "$1" 2> /dev/null| sed 's/  *$//')
     if test "x$x" = "x"
     then
         # UDF?  See https://bugs.launchpad.net/bugs/678419
-        x=$(winetricks_read_volume_name $1)
+        x=$(winetricks_read_volume_name "$1")
     fi
-    echo $x
+    echo "$x"
 }
 
 # Really, should take a volume name as argument, and use 'mount' to get
@@ -3881,9 +3885,9 @@ winetricks_mount_cached_iso()
     if test "$WINE" = ""
     then
         winetricks_load_vcdmount
-        my_img_win="$(w_pathconv -w $WINETRICKS_IMG | tr '\012' ' ' | sed 's/ $//')"
+        my_img_win="$(w_pathconv -w "$WINETRICKS_IMG" | tr '\012' ' ' | sed 's/ $//')"
         w_try_cd "$VCD_DIR"
-        w_try vcdmount.exe /l=$letter "$my_img_win"
+        w_try vcdmount.exe /l="$letter" "$my_img_win"
 
         tries=0
         while test $tries -lt 20
@@ -3913,7 +3917,7 @@ winetricks_mount_cached_iso()
           ;;
         *)
           w_try $WINETRICKS_SUDO mkdir -p $W_ISO_MOUNT_ROOT
-          w_try $WINETRICKS_SUDO mount -o ro,loop,uid=$_W_USERID,unhide "$WINETRICKS_IMG" $W_ISO_MOUNT_ROOT
+          w_try $WINETRICKS_SUDO mount -o ro,loop,uid="$_W_USERID",unhide "$WINETRICKS_IMG" $W_ISO_MOUNT_ROOT
           ;;
         esac
 
@@ -3949,8 +3953,8 @@ winetricks_is_mounted()
     _W_tmp="$(winetricks_list_mounts "$1")"
     if test "$_W_tmp"
     then
-        _W_dev=$(echo $_W_tmp | sed 's/ .*//')
-        _W_mountpoint="$(echo $_W_tmp | sed 's/^[^ ]* //')"
+        _W_dev=$(echo "$_W_tmp" | sed 's/ .*//')
+        _W_mountpoint="$(echo "$_W_tmp" | sed 's/^[^ ]* //')"
         # Volume found!
         return 0
     fi
@@ -3962,10 +3966,10 @@ winetricks_is_mounted()
     do
         IFS= read -r _W_tmp
 
-        _W_dev=$(echo $_W_tmp | sed 's/ .*//')
+        _W_dev=$(echo "$_W_tmp" | sed 's/ .*//')
         test "$_W_dev" || break
-        _W_mountpoint="$(echo $_W_tmp | sed 's/^[^ ]* //')"
-        _W_volname=$(winetricks_volname $_W_dev)
+        _W_mountpoint="$(echo "$_W_tmp" | sed 's/^[^ ]* //')"
+        _W_volname=$(winetricks_volname "$_W_dev")
         if test "$1" = "$_W_volname"
         then
             # Volume found!  Want to return from function here, but can't
@@ -4060,7 +4064,7 @@ winetricks_set_unattended()
     # http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_02
     # So in attended mode, W_OPT_UNATTENDED should be empty.
 
-    case $1 in
+    case "$1" in
     1)
         W_OPT_UNATTENDED=1
         # Might want to trim our stable of variables here a bit...
@@ -4137,7 +4141,7 @@ winetricks_set_wineprefix()
 
     case "$W_PLATFORM" in
      "windows_cmd|wine_cmd")
-        W_CACHE_WIN="$(w_pathconv -w $W_CACHE)"
+        W_CACHE_WIN="$(w_pathconv -w "$W_CACHE")"
         ;;
      *)
         # For case where Z: doesn't exist or / is writable (!),
@@ -4222,16 +4226,16 @@ winetricks_annihilate_wineprefix()
     rm -rf "$WINEPREFIX"
 
     # Also remove menu items.
-    find $XDG_DATA_HOME/applications/wine -type f -name '*.desktop' -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
+    find "$XDG_DATA_HOME/applications/wine" -type f -name '*.desktop' -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
 
     # Also remove desktop items.
     # Desktop might be synonym for home directory, so only go one level
     # deep to avoid extreme slowdown if user has lots of files
     (
-    if ! test "$XDG_DESKTOP_DIR" && test -f $XDG_CONFIG_HOME/user-dirs.dirs
+    if ! test "$XDG_DESKTOP_DIR" && test -f "$XDG_CONFIG_HOME/user-dirs.dirs"
     then
         # shellcheck disable=SC1090
-        . $XDG_CONFIG_HOME/user-dirs.dirs
+        . "$XDG_CONFIG_HOME/user-dirs.dirs"
     fi
     find "$XDG_DESKTOP_DIR" -maxdepth 1 -type f -name '*.desktop' -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
     )
@@ -4265,7 +4269,7 @@ winetricks_init()
     WINETRICKS_CATEGORIES="apps benchmarks dlls fonts games settings"
     for _W_cat in $WINETRICKS_CATEGORIES
     do
-        mkdir -p "$WINETRICKS_METADATA"/$_W_cat
+        mkdir -p "$WINETRICKS_METADATA/$_W_cat"
     done
 
     # Which subdirectory of WINETRICKS_METADATA is currently active (or main, if none)
@@ -4387,7 +4391,7 @@ winetricks_init()
         unset _abswine
         ;;
     esac
-    winetricks_set_wineprefix $1
+    winetricks_set_wineprefix "$1"
 
     # FIXME: don't hardcode
     W_PROGRAMS_DRIVE=c
@@ -4555,7 +4559,7 @@ then
     WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-1}
 
     # Handle options before init, to avoid starting wine for --help or --version
-    while winetricks_handle_option $1
+    while winetricks_handle_option "$1"
     do
         shift
     done
@@ -4564,7 +4568,7 @@ then
     # If --isolate is used, pass verb to winetricks_init, so it can set the wineprefix using winetricks_set_wineprefix()
     # Otherwise, an arch mismatch between ${WINEPREFIX:-$HOME/.wine} and the prefix to be made for the isolated app would cause it to fail
     case $WINETRICKS_OPT_SHAREDPREFIX in
-        0) winetricks_init $1 ;;
+        0) winetricks_init "$1" ;;
         *) winetricks_init ;;
     esac
 fi
@@ -4583,7 +4587,7 @@ winetricks_install_app()
     esac
 
     # FIXME: initialize a new wineprefix for this app, set lots of global variables
-    if ! w_do_call $1 $2
+    if ! w_do_call "$1" "$2"
     then
         w_die "$fail_msg"
     fi
@@ -4638,7 +4642,7 @@ helper_d3dx9_xx()
         done
     fi
 
-    w_override_dlls native $dllname
+    w_override_dlls native "$dllname"
 }
 
 helper_win2ksp4()
@@ -4647,7 +4651,7 @@ helper_win2ksp4()
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=1001AAF1-749F-49F4-8010-297BD6CA33A0&displaylang=en
     w_download_to win2ksp4 http://download.microsoft.com/download/E/6/A/E6A04295-D2A8-40D0-A0C5-241BFECD095E/W2KSP4_EN.EXE fadea6d94a014b039839fecc6e6a11c20afa4fa8
-    w_try_cabextract -d "$W_TMP" -L -F $filename "$W_CACHE"/win2ksp4/W2KSP4_EN.EXE
+    w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win2ksp4/W2KSP4_EN.EXE
 }
 
 helper_xpsp3()
@@ -4657,7 +4661,7 @@ helper_xpsp3()
     # http://www.microsoft.com/en-us/download/details.aspx?id=24
     w_download_to xpsp3 http://download.microsoft.com/download/d/3/0/d30e32d8-418a-469d-b600-f32ce3edf42d/WindowsXP-KB936929-SP3-x86-ENU.exe c81472f7eeea2eca421e116cd4c03e2300ebfde4
 
-    w_try_cabextract -d "$W_TMP" -L -F $filename "$W_CACHE"/xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe
+    w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe
 }
 
 helper_win7sp1()
@@ -4667,7 +4671,7 @@ helper_win7sp1()
     # https://www.microsoft.com/en-us/download/details.aspx?id=5842
     w_download_to win7sp1 http://download.microsoft.com/download/0/A/F/0AFB5316-3062-494A-AB78-7FB0D4461357/windows6.1-KB976932-X86.exe c3516bc5c9e69fee6d9ac4f981f5b95977a8a2fa
 
-    w_try_cabextract -d "$W_TMP" -L -F $filename "$W_CACHE"/win7sp1/windows6.1-KB976932-X86.exe
+    w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win7sp1/windows6.1-KB976932-X86.exe
 }
 
 #---------------------------------------------------------
@@ -4791,7 +4795,7 @@ load_cabinet()
 {
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
     w_download http://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe f68594d1f578c3b47bf0639c46c11c5da161feee
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/cabinet/$file1
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE/cabinet/$file1"
     w_try cp "$W_TMP"/cabinet.dll "$W_SYSTEM32_DLLS"/cabinet.dll
 
     w_override_dlls native,builtin cabinet
@@ -4889,7 +4893,7 @@ load_comdlg32ocx()
 {
     # By analogy with vb5 version in http://support.microsoft.com/kb/168917
     w_download http://activex.microsoft.com/controls/vb6/ComDlg32.cab d4f3e193c6180eccd73bad53a8500beb5b279cbf
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comdlg32ocx/${file1}
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE/comdlg32ocx/${file1}"
     w_try cp "$W_TMP"/comdlg32.ocx "$W_SYSTEM32_DLLS"/comdlg32.ocx
     w_try_regsvr comdlg32.ocx
 }
@@ -6063,7 +6067,7 @@ load_dotnet30()
     WINEDLLOVERRIDES="ngen.exe,mscorsvw.exe=b;$WINEDLLOVERRIDES"
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
@@ -6106,9 +6110,9 @@ load_dotnet30sp1()
     w_try "$WINE" msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_UNATTENDED_SLASH_QB}
     "$WINE" sc delete FontCache3.0.0.0
 
-    "$WINE" $file1 ${W_OPT_UNATTENDED:+/q}
+    "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q}
     status=$?
-    w_info $file1 exited with status $status
+    w_info "$file1 exited with status $status"
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
@@ -6429,9 +6433,9 @@ load_dotnet46()
         echo "This installer will fail unless run in quiet mode."
         echo "See: https://bugs.winehq.org/show_bug.cgi?id=38959"
 
-        WINEDLLOVERRIDES=fusion=b "$WINE" ${file1} /q /c:"install.exe /q"
+        WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" /q /c:"install.exe /q"
         # Once bug is fixed, use:
-        #WINEDLLOVERRIDES=fusion=b "$WINE" ${file1} ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+        #WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
         status=$?
     fi
 
@@ -6465,7 +6469,7 @@ load_dotnet_verifier()
     # 2015/12/27: sha1sum b9712da2943e057668f21f68c473657a205c5cb8
     # 2016/09/22: name change, to netfx_setupverifier_new_2015_12_18.zip
 
-    w_download https://msdnshared.blob.core.windows.net/media/MSDNBlogsFS/prod.evol.blogs.msdn.com/CommunityServer.Components.PostAttachments/00/08/99/90/04/netfx_setupverifier_new_2015_12_18.zip b9712da2943e057668f21f68c473657a205c5cb8 ${file1}
+    w_download https://msdnshared.blob.core.windows.net/media/MSDNBlogsFS/prod.evol.blogs.msdn.com/CommunityServer.Components.PostAttachments/00/08/99/90/04/netfx_setupverifier_new_2015_12_18.zip b9712da2943e057668f21f68c473657a205c5cb8 "${file1}"
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try_unzip "$W_SYSTEM32_DLLS" netfx_5F00_setupverifier_5F00_new.zip netfx_setupverifier.exe
@@ -6692,7 +6696,7 @@ _EOF_
     fi
 
     # NSIS installer
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
 
     if test ${W_OPT_UNATTENDED}
     then
@@ -6951,7 +6955,7 @@ load_ie8_kb2936068()
         quiet=""
     fi
 
-    w_try_cd "$W_CACHE"/"$W_PACKAGE"
+    w_try_cd "$W_CACHE/$W_PACKAGE"
     "$WINE" IE8-WindowsXP-KB2936068-x86-ENU.exe $quiet
     status=$?
     case $status in
@@ -6998,7 +7002,7 @@ load_kindle()
 {
     w_download http://kindleforpc.amazon.com/44025/KindleForPC-installer-1.16.44025.exe c57d0a7d8cd5f1c3020536edf336c3187f3e051f
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
 
     if w_workaround_wine_bug 35041
     then
@@ -7309,7 +7313,7 @@ load_msflxgrd()
     # 2015/11/09: 3d6c04e923781d4ce0d3ab62189b8de352ab25d5
     w_download http://activex.microsoft.com/controls/vb6/MsFlxGrd.cab 3d6c04e923781d4ce0d3ab62189b8de352ab25d5
 
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msflxgrd/${file1}
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE/msflxgrd/${file1}"
     w_try cp -f "$W_TMP"/[Mm][Ss][Ff][Ll][Xx][Gg][Rr][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
     w_try_regsvr MSFLXGRD.OCX
 }
@@ -7553,7 +7557,7 @@ load_ogg()
 {
     w_download http://downloads.xiph.org/releases/oggdsf/opencodecs_0.85.17777.exe 386cf7cd29ffcbf8705eff8c8233de448ecf33ab
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" $file1 $W_UNATTENDED_SLASH_S
+    w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_S
 }
 
 #----------------------------------------------------------------
@@ -7775,7 +7779,7 @@ load_quicktime72()
     w_download http://appldnld.apple.com.edgesuite.net/content.info.apple.com/QuickTime/061-2915.20070710.pO94c/QuickTimeInstaller.exe bb89981f10cf21de57b9453e53cf81b9194271a9
 
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" ${file1} ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $W_UNATTENDED_SLASH_QN > /dev/null 2>&1
+    w_try "$WINE" "$file1" ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $W_UNATTENDED_SLASH_QN > /dev/null 2>&1
 
     if w_workaround_wine_bug 11681
     then
@@ -7846,7 +7850,7 @@ load_remove_mono()
     mono_uuid="$($WINE uninstaller --list | grep Mono | cut -f1 -d\|)"
     if test "$mono_uuid"
     then
-         "$WINE" uninstaller --remove $mono_uuid
+         "$WINE" uninstaller --remove "$mono_uuid"
     else
         w_warn "Mono does not appear to be installed."
     fi
@@ -8060,7 +8064,7 @@ load_tabctl32()
     # Nov 2012: tabctl32
     w_download http://activex.microsoft.com/controls/vb6/TABCTL32.CAB beca51d05924a5466ab80eb0f8d0cdf8bc1ac697
 
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/tabctl32/${file1}
+    w_try_cabextract --directory="$W_TMP" "$W_CACHE/tabctl32/${file1}"
     w_try cp -f "$W_TMP"/[Tt][Aa][Bb][Cc][Tt][Ll][3][2].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
     w_try_regsvr tabctl32.ocx
 }
@@ -8216,7 +8220,7 @@ load_vb6run()
     status=$?
     case $status in
     0|43) ;;
-    *) w_die $W_PACKAGE installation failed
+    *) w_die "$W_PACKAGE installation failed"
     esac
 }
 
@@ -8333,7 +8337,7 @@ load_vcrun6sp6()
     status=$?
     case $status in
     0|43) ;;
-    *) w_die $W_PACKAGE installation failed
+    *) w_die "$W_PACKAGE installation failed"
     esac
 
     # And then some apps need mfc42u.dll, dont know what right way
@@ -8359,7 +8363,7 @@ load_vcrun2003()
     echo "Installing BZFlag (which comes with the Visual C++ 2003 runtimes)"
     # winetricks-test can't handle ${file1} in url since it does a raw parsing :/
     w_download https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe bdd1b32c4202fd77e6513fd507c8236888b09121
-    w_try "$WINE" "$W_CACHE"/vcrun2003/${file1} $W_UNATTENDED_SLASH_S
+    w_try "$WINE" "$W_CACHE/vcrun2003/${file1}" $W_UNATTENDED_SLASH_S
     w_try cp "$W_PROGRAMS_X86_UNIX/BZEdit1.6.5"/m*71* "$W_SYSTEM32_DLLS"
 }
 
@@ -8389,7 +8393,7 @@ load_vcrun2005()
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_override_dlls native,builtin atl80 msvcm80 msvcp80 msvcr80 vcomp
-    w_try "$WINE" $file1 $W_UNATTENDED_SLASH_Q
+    w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_Q
 }
 
 #----------------------------------------------------------------
@@ -8410,7 +8414,7 @@ load_vcrun2008()
     w_download http://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 470640aa4bb7db8e69196b5edb0010933569e98d
     w_override_dlls native,builtin atl90 msvcm90 msvcp90 msvcr90 vcomp90
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" $file1 $W_UNATTENDED_SLASH_Q
+    w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_Q
 }
 
 #----------------------------------------------------------------
@@ -9026,7 +9030,7 @@ load_xna31()
     w_call dotnet20sp2
     w_download http://download.microsoft.com/download/5/9/1/5912526C-B950-4662-99B6-119A83E60E5C/xnafx31_redist.msi bdd33b677c9576a63ff2a6f65e12c0563cc116e6
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec $W_UNATTENDED_SLASH_QUIET /i $file1
+    w_try "$WINE" msiexec $W_UNATTENDED_SLASH_QUIET /i "$file1"
 }
 
 #----------------------------------------------------------------
@@ -9053,7 +9057,7 @@ load_xna40()
     # http://www.microsoft.com/en-us/download/details.aspx?id=20914
     w_download http://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi 49efdc29f65fc8263c196338552c7009fc96c5de
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec $W_UNATTENDED_SLASH_QUIET /i $file1
+    w_try "$WINE" msiexec $W_UNATTENDED_SLASH_QUIET /i "$file1"
 }
 
 #----------------------------------------------------------------
@@ -9070,8 +9074,8 @@ load_xvid()
 {
     w_call vcrun6
     w_download http://www.koepi.info/Xvid-1.3.2-20110601.exe 0a11498a96f75ad019c4c7d06161504140337dc0
-    w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ --mode unattended --decode_divx 1 --decode_3ivx 1 --decode_other 1}
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ --mode unattended --decode_divx 1 --decode_3ivx 1 --decode_other 1}
 }
 
 #----------------------------------------------------------------
@@ -9290,9 +9294,9 @@ w_metadata droid fonts \
     installed_file1="$W_FONTSDIR_WIN/DroidSans-Bold.ttf"
 
 do_droid() {
-    w_download ${DROID_URL}$1'?raw=true'   $3  $1
-    w_try cp -f "$W_CACHE"/droid/$1 "$W_FONTSDIR_UNIX"
-    w_register_font $1 "$2"
+    w_download "${DROID_URL}$1'?raw=true'" "$3"  "$1"
+    w_try cp -f "$W_CACHE/droid/$1" "$W_FONTSDIR_UNIX"
+    w_register_font "$1" "$2"
 }
 
 load_droid()
@@ -9513,7 +9517,7 @@ w_metadata ipamona fonts \
 
 load_ipamona()
 {
-    w_download http://www.geocities.jp/ipa_mona/$file1 57dd13ab58c0005d3ee2932539e4987ab0242bc7
+    w_download "http://www.geocities.jp/ipa_mona/$file1" 57dd13ab58c0005d3ee2932539e4987ab0242bc7
 
     w_try_cd "$W_TMP"
 
@@ -9744,10 +9748,10 @@ load_allfonts()
     # This verb uses reflection, should probably do it portably instead, but that would require keeping it up to date
     for file in "$WINETRICKS_METADATA"/fonts/*.vars
     do
-        cmd=$(basename $file .vars)
+        cmd=$(basename "$file" .vars)
         case $cmd in
         allfonts|cjkfonts) ;;
-        *) w_call $cmd;;
+        *) w_call "$cmd";;
         esac
     done
 }
@@ -9821,7 +9825,7 @@ load_adobe_diged()
 {
     w_download http://kb2.adobe.com/cps/403/kb403051/attachments/setup.exe 4c79685408fa6ca12ef8bb0e0eaa4a846e21f915
     # NSIS installer
-    w_try "$WINE" "$W_CACHE"/$W_PACKAGE/setup.exe ${W_OPT_UNATTENDED:+ /S}
+    w_try "$WINE" "$W_CACHE/$W_PACKAGE/setup.exe" ${W_OPT_UNATTENDED:+ /S}
 }
 
 #----------------------------------------------------------------
@@ -10072,7 +10076,7 @@ w_metadata emu8086 apps \
 load_emu8086()
 {
     w_download http://www.emu8086.com/files/emu8086v408r11.zip aa71b46ee9259e5b31a300c820277e551969da7b
-    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/$file1
+    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
     w_try "$WINE" "$W_TMP/Setup.exe" $W_UNATTENDED_SLASH_SILENT
 }
 
@@ -10176,7 +10180,7 @@ load_foobar2000()
 {
     w_download_manual http://www.foobar2000.org/download foobar2000_v1.3.10.exe d4d60effc26d3ead48ba6f9c5ad32b9066231807
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" $file1 $W_UNATTENDED_SLASH_S
+    w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_S
 }
 
 #----------------------------------------------------------------
@@ -10264,7 +10268,7 @@ load_irfanview()
             winwaitclose
         "
     else
-        w_try "$WINE" $file1
+        w_try "$WINE" "$file1"
     fi
 }
 
@@ -10291,7 +10295,7 @@ load_ie6()
     w_download http://download.oldapps.com/Internet_Explorer/ie60.exe 8e483db28ff01a7cabd39147ab6c59753ea1f533
 
     w_try_cd "$W_TMP"
-    "$WINE" "$W_CACHE"/"$W_PACKAGE"/$file1
+    "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
 
     w_call msls31
 
@@ -10600,7 +10604,7 @@ load_kobo()
 {
     w_download http://download.kobobooks.com/desktop/1/KoboSetup.exe 31a5f5583edf4b716b9feacb857d2170104cabd9
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
 }
 
 #----------------------------------------------------------------
@@ -10720,7 +10724,7 @@ load_nook()
     # 7 Mar 2012 sha1sum e7060a63b9b303ddd820de762d9df254e1c931bc
     w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe e7060a63b9b303ddd820de762d9df254e1c931bc
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+    "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
     # normally has exit status 199?
 }
 
@@ -10862,8 +10866,8 @@ w_metadata opera apps \
 load_opera()
 {
     w_download ftp://ftp.opera.com/pub/opera/win/1150/en/Opera_1150_en_Setup.exe df50c7aed50e92af858e8834f833dd0543014b46
-    w_try_cd "$W_CACHE"/$W_PACKAGE
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /silent /launchopera 0 /allusers}
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /silent /launchopera 0 /allusers}
 }
 
 #----------------------------------------------------------------
@@ -10886,7 +10890,7 @@ load_picasa39()
     then
         w_warn "Picasa 3.9 authentication to the Google account is currently broken under wine. See http://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
     fi
-    w_try_cd "$W_CACHE"/$W_PACKAGE
+    w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         run picasa39-setup.exe
@@ -11178,7 +11182,7 @@ load_safari()
         w_warn "Safari's silent install is broken under Wine. See http://bugs.winehq.org/show_bug.cgi?id=23493. You should do a regular install if you want to use Safari."
     fi
 
-    w_try_cd "$W_CACHE"/$W_PACKAGE
+    w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" SafariSetup.exe $W_UNATTENDED_SLASH_QN
 }
 
@@ -11369,7 +11373,7 @@ load_utorrent3()
     w_try_cd "$W_CACHE/$W_PACKAGE"
     # If you don't use /PERFORMINSTALL, it just runs µTorrent
     # FIXME: That's no longer a quiet option, though..
-    "$WINE" $file1 /PERFORMINSTALL /NORUN
+    "$WINE" "$file1" /PERFORMINSTALL /NORUN
 
     # dang installer exits with status 1 on success
     status=$?
@@ -11570,7 +11574,7 @@ load_vlc()
 {
     w_download http://get.videolan.org/vlc/2.2.1/win32/vlc-2.2.1-win32.exe 4cbcea9764b6b657d2147645eeb5b973b642530e
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
 }
 
 #----------------------------------------------------------------
@@ -11955,11 +11959,9 @@ load_3dmark05()
         }
         WinWaitClose, ahk_class #32770, Complete
     "
-    ARGS=""
     if w_workaround_wine_bug 22392
     then
         w_warn "You must run the app with the -nosysteminfo option to avoid a crash on startup"
-        ARGS="-nosysteminfo"
     fi
 }
 
@@ -12010,11 +12012,9 @@ load_3dmark06()
         w_call d3dx9_36
     fi
 
-    ARGS=""
     if w_workaround_wine_bug 22392
     then
         w_warn "You must run the app with the -nosysteminfo option to avoid a crash on startup"
-        ARGS="-nosysteminfo"
     fi
 }
 
@@ -12708,7 +12708,7 @@ w_metadata cnc_tiberian_sun games \
 
 load_cnc_tiberian_sun()
 {
-    w_download http://lvlt.bioware.cdn.ea.com/u/f/eagames/cnc3/cnc3tv/Classic/$file1 591aabd639fb9f2d2476a2150f3c00b1162674f5
+    w_download http://lvlt.bioware.cdn.ea.com/u/f/eagames/cnc3/cnc3tv/Classic/OfficialCnCTiberianSun.rar 591aabd639fb9f2d2476a2150f3c00b1162674f5
 
     w_try_cd "$W_PROGRAMS_X86_UNIX"
     # FIXME: we need a progress indicator when unpacking large archives
@@ -12776,7 +12776,7 @@ load_cnc_redalert3_demo()
     w_try_cd "$W_CACHE/$W_PACKAGE"
     if test ! "$W_OPT_UNATTENDED"
     then
-        w_try "$WINE" $file1
+        w_try "$WINE" "$file1"
     else
         w_ahk_do "
             SetWinDelay 1000
@@ -13771,7 +13771,7 @@ load_diablo2()
         ControlClick &Cancel, Diablo II Setup - Video Test
         winclose, Diablo II Setup"
 
-    w_try_cd "$W_CACHE"/$W_PACKAGE
+    w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" D2Patch_113c.exe
     w_ahk_do "
         winwait, Blizzard Updater v2.72, has completed
@@ -13799,7 +13799,7 @@ load_digitanks_demo()
     # 11 Nov 2011: e54ffb07232f434bcfaf7b3d43ddf9affa93ef15
     w_download "http://static.digitanks.com/files/digitanks.exe" e54ffb07232f434bcfaf7b3d43ddf9affa93ef15
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
     if w_workaround_wine_bug 8060 "installing corefonts"
     then
         w_call corefonts
@@ -13877,7 +13877,7 @@ w_metadata divinity2_demo games \
 
 load_divinity2_demo()
 {
-    w_download_manual "http://www.gamershell.com/download_54304.shtml" $file1 2a33670b705d4da89e1119d808cda64977bb6096
+    w_download_manual "http://www.gamershell.com/download_54304.shtml" "$file1" 2a33670b705d4da89e1119d808cda64977bb6096
 
     w_try unzip -d "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
     w_try_cd "$W_TMP"
@@ -14291,24 +14291,24 @@ load_fable_tlc()
 
     # Now tell game what the real disc is so user can insert disc 1 and run the game!
     # FIXME: don't guess it's D:
-    cat > "$W_TMP"/$W_PACKAGE.reg <<_EOF_
+    cat > "$W_TMP/${W_PACKAGE}.reg" <<_EOF_
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products\D3BE9C3CAF4226447B48E06CAACF2DDD\InstallProperties]
 "InstallSource"="D:\\"
 
 _EOF_
-    try_regedit "$W_TMP_WIN"\\$W_PACKAGE.reg
+    try_regedit "$W_TMP_WIN\\${W_PACKAGE}.reg"
 
     # Also accept EULA
-    cat > "$W_TMP"/$W_PACKAGE.reg <<_EOF_
+    cat > "$W_TMP/${W_PACKAGE}.reg" <<_EOF_
 REGEDIT4
 
 [HKEY_CURRENT_USER\Software\Microsoft\Microsoft Games\Fable TLC]
 "FIRSTRUN"=dword:00000001
 
 _EOF_
-    try_regedit "$W_TMP_WIN"\\$W_PACKAGE.reg
+    try_regedit "$W_TMP_WIN\\${W_PACKAGE}.reg"
 
     if w_workaround_wine_bug 24912
     then
@@ -15112,9 +15112,10 @@ load_losthorizon_demo()
         SetTitleMatchMode, 2
         run Lost_Horizon_Demo_EN.exe
         WinWait,Lost Horizon Demo, Destination
+        # shellcheck disable=SC2086
         if ( w_opt_unattended > 0 ) {
             Sleep 500
-            Send {RAW}"$W_TMP"
+            Send {RAW}${W_TMP}
             ControlClick Button2 ;Install
             WinWaitClose,Lost Horizon Demo,Installation
             Sleep 1000
@@ -15533,7 +15534,7 @@ load_maxmagicmarker_demo()
 {
     w_download http://www.maxandthemagicmarker.com/maxdemo/max_demo_pc.zip 1a79c583ff40e7b2cf05d18a89a806fd6b88a5d1
 
-    w_try_unzip "$W_PROGRAMS_X86_UNIX"/$W_PACKAGE "$W_CACHE/$W_PACKAGE"/max_demo_pc.zip
+    w_try_unzip "$W_PROGRAMS_X86_UNIX/$W_PACKAGE" "$W_CACHE/$W_PACKAGE"/max_demo_pc.zip
     # Work around bug in game?!
     w_try_cd "$W_PROGRAMS_X86_UNIX/$W_PACKAGE"
     mv "max and the magic markerdemo pc" "max and the magic markerdemo pc"_Data
@@ -15686,9 +15687,9 @@ load_mise()
         "
 
     # FIXME: This app has two different keys - you can use either one.  How do we handle that with w_read_key?
-    if test -f "$W_CACHE"/$W_PACKAGE/activationcode.txt
+    if test -f "$W_CACHE/$W_PACKAGE/activationcode.txt"
     then
-        MISE_KEY=$(cat "$W_CACHE"/$W_PACKAGE/activationcode.txt)
+        MISE_KEY=$(cat "$W_CACHE/$W_PACKAGE/activationcode.txt")
         w_ahk_do "
             SetTitleMatchMode, 2
             run, $W_PROGRAMS_X86_WIN\\LucasArts\\The Secret of Monkey Island Special Edition\\MISE.exe
@@ -15701,9 +15702,9 @@ load_mise()
             sleep 1000
             Process, Close, MISE.exe
         "
-    elif test -f "$W_CACHE"/$W_PACKAGE/unlockcode.txt
+    elif test -f "$W_CACHE/$W_PACKAGE/unlockcode.txt"
     then
-        MISE_KEY=$(cat "$W_CACHE"/$W_PACKAGE/unlockcode.txt)
+        MISE_KEY=$(cat "$W_CACHE/$W_PACKAGE/unlockcode.txt")
         w_ahk_do "
             SetTitleMatchMode, 2
             run, $W_PROGRAMS_X86_WIN\\LucasArts\\The Secret of Monkey Island Special Edition\\MISE.exe
@@ -15860,7 +15861,7 @@ load_njcwp_trial()
         WinWaitClose
         "
     else
-        w_try "$WINE" $file1
+        w_try "$WINE" "$file1"
     fi
 }
 
@@ -15896,7 +15897,7 @@ load_njjwp_trial()
         WinWaitClose
         "
     else
-        w_try "$WINE" $file1
+        w_try "$WINE" "$file1"
     fi
 }
 
@@ -16090,14 +16091,14 @@ load_qq()
     then
         w_try_cd "$W_TMP/"
         tar -zxf "$W_CACHE/qq/QQ.tar.gz"
-        mkdir -p $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ
-        mkdir -p $HOME/.local/share/icons/hicolor/48x48/apps
-        mkdir -p $HOME/.local/share/icons/hicolor/256x256/apps
+        mkdir -p "$HOME/.local/share/applications/wine/Programs/腾讯软件/QQ"
+        mkdir -p "$HOME/.local/share/icons/hicolor/48x48/apps"
+        mkdir -p "$HOME/.local/share/icons/hicolor/256x256/apps"
         w_try mv QQ/腾讯QQ.desktop ~/.local/share/applications/wine/Programs/腾讯软件/QQ
         w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
         w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
         # shellcheck disable=SC1001
-        echo Exec=env WINEPREFIX="$WINEPREFIX" "$WINE" $W_PROGRAMS_X86_WIN\/Tencent\/QQ\/bin\/QQScLauncher.exe >> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop
+        echo Exec=env WINEPREFIX="$WINEPREFIX" "$WINE" "$W_PROGRAMS_X86_WIN"\/Tencent\/QQ\/bin\/QQScLauncher.exe >> "$HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop"
     fi
 
     if w_workaround_wine_bug 39657 "Disable ntoskrnl.exe to work around can't be started bug"
@@ -16435,7 +16436,7 @@ load_sims3()
     # FIXME: download appropriate one rather than just US version.
     w_download http://akamai.cdn.ea.com/eadownloads/u/f/sims/sims3/patches/TS3_1.19.44.010001_Update.exe 7d21a81aaea70bf102267456df4629ce68be0cc8
 
-    w_try_cd "$W_CACHE"/$W_PACKAGE
+    w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         run TS3_1.19.44.010001_Update.exe
         SetTitleMatchMode, 2
@@ -16527,7 +16528,7 @@ load_simsmed()
     # FIXME: download appropriate one rather than just US version.
     w_download http://akamai.cdn.ea.com/eadownloads/u/f/sims/sims/patches/TheSimsMedievalPatch_1.1.10.00001_Update.exe 7214ced8af7315741e05024faeacf9053b999b1b
 
-    w_try_cd "$W_CACHE"/$W_PACKAGE
+    w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
         SetWinDelay 500
@@ -16826,7 +16827,7 @@ load_spore_cc_demo()
             send {SPACE}{DOWN}{SPACE}{ENTER}
             winwaitclose
         "
-        while pgrep -f $file1 > /dev/null
+        while pgrep -f "$file1" > /dev/null
         do
             w_info "Waiting for installer to finish."
             sleep 2
@@ -17913,7 +17914,7 @@ w_metadata glsl=disabled settings \
 
 load_glsl()
 {
-    winetricks_set_wined3d_var UseGLSL $1
+    winetricks_set_wined3d_var UseGLSL "$1"
 }
 
 #----------------------------------------------------------------
@@ -17927,7 +17928,7 @@ w_metadata multisampling=disabled settings \
 
 load_multisampling()
 {
-    winetricks_set_wined3d_var Multisampling $1
+    winetricks_set_wined3d_var Multisampling "$1"
 }
 
 #----------------------------------------------------------------
@@ -17938,7 +17939,7 @@ w_metadata npm=repack settings \
 
 load_npm()
 {
-    winetricks_set_wined3d_var NonPower2Mode $1
+    winetricks_set_wined3d_var NonPower2Mode "$1"
 }
 
 #----------------------------------------------------------------
@@ -17952,7 +17953,7 @@ w_metadata orm=backbuffer settings \
 
 load_orm()
 {
-    winetricks_set_wined3d_var OffscreenRenderingMode $1
+    winetricks_set_wined3d_var OffscreenRenderingMode "$1"
 }
 
 #----------------------------------------------------------------
@@ -17966,7 +17967,7 @@ w_metadata strictdrawordering=disabled settings \
 
 load_strictdrawordering()
 {
-    winetricks_set_wined3d_var StrictDrawOrdering $1
+    winetricks_set_wined3d_var StrictDrawOrdering "$1"
 }
 
 #----------------------------------------------------------------
@@ -17992,7 +17993,7 @@ w_metadata rtlm=textex settings \
 
 load_rtlm()
 {
-    winetricks_set_wined3d_var RenderTargetLockMode $1
+    winetricks_set_wined3d_var RenderTargetLockMode "$1"
 }
 
 #----------------------------------------------------------------
@@ -18007,7 +18008,7 @@ w_metadata ao=disabled settings \
 
 load_ao()
 {
-    winetricks_set_wined3d_var AlwaysOffscreen $1
+    winetricks_set_wined3d_var AlwaysOffscreen "$1"
 }
 
 #----------------------------------------------------------------
@@ -18022,7 +18023,7 @@ w_metadata ddr=opengl settings \
 
 load_ddr()
 {
-    winetricks_set_wined3d_var DirectDrawRenderer $1
+    winetricks_set_wined3d_var DirectDrawRenderer "$1"
 }
 
 #----------------------------------------------------------------
@@ -18043,7 +18044,7 @@ load_mwo()
     # Filter out/correct bad or partial values
     # Confusing because dinput uses 'disable', but d3d uses 'disabled'
     # see alloc_device() in dlls/dinput/mouse.c
-    case $1 in
+    case "$1" in
     enable*) arg=enabled;;
     disable*) arg=disable;;
     force) arg=force;;
@@ -18096,7 +18097,7 @@ w_metadata grabfullscreen=n settings \
 
 load_grabfullscreen()
 {
-    case $1 in
+    case "$1" in
     y|n) arg=$1;;
     *) w_die "illegal value $1 for GrabFullscreen";;
     esac
@@ -18121,7 +18122,7 @@ w_metadata windowmanagerdecorated=n settings \
 
 load_windowmanagerdecorated()
 {
-    case $1 in
+    case "$1" in
     y|n) arg=$1;;
     *) w_die "illegal value $1 for Decorated";;
     esac
@@ -18146,7 +18147,7 @@ w_metadata windowmanagermanaged=n settings \
 
 load_windowmanagermanaged()
 {
-    case $1 in
+    case "$1" in
     y|n) arg=$1;;
     *) w_die "illegal value $1 for Managed";;
     esac
@@ -18176,7 +18177,7 @@ w_metadata alldlls=builtin settings \
 
 load_alldlls()
 {
-    case $1 in
+    case "$1" in
     default) w_override_no_dlls ;;
     builtin) w_override_all_dlls ;;
     esac
@@ -18197,7 +18198,7 @@ w_metadata fontsmooth=gray settings \
 
 load_fontsmooth()
 {
-    case $1 in
+    case "$1" in
     disable)   FontSmoothing=0; FontSmoothingOrientation=1; FontSmoothingType=0;;
     gray|grey) FontSmoothing=2; FontSmoothingOrientation=1; FontSmoothingType=1;;
     bgr)       FontSmoothing=2; FontSmoothingOrientation=0; FontSmoothingType=2;;
@@ -18245,7 +18246,7 @@ w_metadata gsm=3 settings \
 
 load_gsm()
 {
-    winetricks_set_wined3d_var MaxShaderModelGS $1
+    winetricks_set_wined3d_var MaxShaderModelGS "$1"
 }
 
 #----------------------------------------------------------------
@@ -18391,7 +18392,7 @@ w_metadata psm=3 settings \
 
 load_psm()
 {
-    winetricks_set_wined3d_var MaxShaderModelPS $1
+    winetricks_set_wined3d_var MaxShaderModelPS "$1"
 }
 
 #----------------------------------------------------------------
@@ -18483,7 +18484,7 @@ w_metadata vd=1440x900 settings \
 
 load_vd()
 {
-    size=$1
+    size="$1"
     case $size in
     off|disabled)
         cat > "$W_TMP"/vd.reg <<_EOF_
@@ -18531,7 +18532,7 @@ w_metadata videomemorysize=2048 settings \
 
 load_videomemorysize()
 {
-    size=$1
+    size="$1"
     echo "Setting video memory size to $size"
 
     case $size in
@@ -18581,7 +18582,7 @@ w_metadata vsm=3 settings \
 
 load_vsm()
 {
-    winetricks_set_wined3d_var MaxShaderModelVS $1
+    winetricks_set_wined3d_var MaxShaderModelVS "$1"
 }
 
 #----------------------------------------------------------------
@@ -19019,7 +19020,7 @@ winetricks_stats_report()
     echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
 
     report="os=$(winetricks_os_description)&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
-    report="$(echo $report | sed 's/ /%20/g')"
+    report="$(echo "$report" | sed 's/ /%20/g')"
     # Just do a HEAD request with the raw command line.
     # Yes, this can be fooled by caches.  That's ok.
     if [ -x "$(which wget 2>/dev/null)" ]
@@ -19078,7 +19079,7 @@ winetricks_shell()
 execute_command()
 {
     case "$1" in
-    *=*) arg=$(echo $1 | sed 's/.*=//'); cmd=$(echo $1 | sed 's/=.*//');;
+    *=*) arg=$(echo "$1" | sed 's/.*=//'); cmd=$(echo "$1" | sed 's/=.*//');;
     *) cmd="$1"; arg="" ;;
     esac
 
@@ -19086,12 +19087,12 @@ execute_command()
 
     # FIXME: avoid duplicated code
     apps|benchmarks|dlls|fonts|games|prefix|settings)
-        WINETRICKS_CURMENU=$1
+        WINETRICKS_CURMENU="$1"
         ;;
 
     # Late options
     -*)
-        if ! winetricks_handle_option $1
+        if ! winetricks_handle_option "$1"
         then
             winetricks_usage
             exit 1
@@ -19139,12 +19140,12 @@ execute_command()
     strictdrawordering=disable*) w_call strictdrawordering=disabled ;;
 
     # Use winecfg if you want a GUI for plain old DLL overrides
-    alldlls=*) w_call $1 ;;
-    *=native) w_do_call native $cmd;;
-    *=builtin) w_do_call builtin $cmd;;
-    *=default) w_do_call default $cmd;;
-    *=disabled) w_do_call disabled $cmd;;
-    vd=*) w_do_call $cmd;;
+    alldlls=*) w_call "$1" ;;
+    *=native) w_do_call native "$cmd";;
+    *=builtin) w_do_call builtin "$cmd";;
+    *=default) w_do_call default "$cmd";;
+    *=disabled) w_do_call disabled "$cmd";;
+    vd=*) w_do_call "$cmd";;
 
     # Hacks for backwards compatibility
     cc580) w_call comctl32 ;;
@@ -19172,11 +19173,11 @@ execute_command()
 
     # Normal verbs, with metadata and load_ functions
     *)
-        if winetricks_metadata_exists $1
+        if winetricks_metadata_exists "$1"
         then
             w_call "$1"
         else
-            echo Unknown arg $1
+            echo "Unknown arg $1"
             winetricks_usage
             exit 1
         fi
@@ -19208,7 +19209,7 @@ then
         # or
         #  winetricks volnameof=foo.iso
         # This will read the volname from the given image and put it to stdout.
-        winetricks_volname ${1#volnameof=}
+        winetricks_volname "${1#volnameof=}"
         ;;
     "")
         if test x"$DISPLAY" = x""
