@@ -173,7 +173,7 @@ w_askpermission()
     case $WINETRICKS_GUI in
     zenity) $WINETRICKS_GUI $_W_timeout --question --title=winetricks --text="$(echo $@ | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
     kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
-    none) printf %s "Press Y or N, then Enter: " ; read response ; test "$response" = Y || test "$response" = y;;
+    none) printf %s "Press Y or N, then Enter: " ; read -r response ; test "$response" = Y || test "$response" = y;;
     esac
 
     if test $? -ne 0
@@ -293,7 +293,7 @@ w_try()
     status=$?
     if test $status -ne 0
     then
-        w_die "Note: command '$@' returned status $status.  Aborting."
+        w_die "Note: command $* returned status $status.  Aborting."
     fi
 }
 
@@ -435,7 +435,7 @@ w_read_key()
     then
         # read key from user
         case $LANG in
-        da*) _W_keymsg="Angiv venligst registrerings-nøglen for pakken '$_PACKAGE'"
+        da*) _W_keymsg="Angiv venligst registrerings-nøglen for pakken '$W_PACKAGE'"
             _W_nokeymsg="Ingen nøgle angivet"
             ;;
         de*) _W_keymsg="Bitte einen Key für Paket '$W_PACKAGE' eingeben"
@@ -464,7 +464,7 @@ w_read_key()
         *zenity) W_KEY=$(zenity --entry --text "$_W_keymsg") ;;
         *kdialog) W_KEY=$(kdialog --inputbox "$_W_keymsg") ;;
         *xmessage) w_die "sorry, can't read key from GUI with xmessage" ;;
-        none) printf %s "$_W_keymsg": ; read W_KEY ;;
+        none) printf %s "$_W_keymsg": ; read -r W_KEY ;;
         esac
         if test "$W_KEY" = ""
         then
@@ -583,7 +583,7 @@ winetricks_wget_progress()
             # which was the subshell, not all the elements of the pipeline...
             # have to go find and kill the wget.
             # If we ran wget in the background, we could kill it more directly, perhaps...
-            if pid=$(ps augxw | grep ."$_W_file" | grep -v grep | awk '{print $2}')
+            if pid=$(pgrep -f ."$_W_file")
             then
                 echo User aborted download, killing wget
                 kill $pid
@@ -614,10 +614,15 @@ w_dotnet_verify()
         *) echo error ; exit 1 ;;
     esac
             w_call dotnet_verifier
+
             # FIXME: The logfile may be useful somewhere (or at least print the location)
+
+            # for 'run, netfx_setupverifier.exe /q:a /c:"setupverifier2.exe"' line
+            # shellcheck disable=SC2140
             w_ahk_do "
                 SetTitleMatchMode, 2
                 ; FIXME; this only works the first time? Check if it's already verified somehow..
+
                 run, netfx_setupverifier.exe /q:a /c:"setupverifier2.exe"
                 winwait, Verification Utility
                 ControlClick, Button1
@@ -744,7 +749,7 @@ w_download_to()
     tries=0
     while test $tries -lt 2
     do
-        tries=$(expr $tries + 1)
+        tries=$((tries + 1))
 
         if test -s "$_W_cache/$_W_file"
         then
@@ -944,7 +949,7 @@ w_download_torrent()
     then
         w_try "$WINE" utorrent "/DIRECTORY" "$UT_WINPATH" "$UT_WINPATH\\$2" &
     else # grab all torrents
-        for torrent in $(ls *.torrent)
+        for torrent in *.torrent
         do
             w_try "$WINE" utorrent "/DIRECTORY" "$UT_WINPATH" "$UT_WINPATH\\$torrent" &
         done
@@ -1142,7 +1147,12 @@ w_question()
     *zenity) $WINETRICKS_GUI --entry --text "$1" ;;
     *kdialog) $WINETRICKS_GUI --inputbox "$1" ;;
     *xmessage) w_die "sorry, can't ask question with xmessage" ;;
-    none) echo -n "$1" >&2 ; read W_ANSWER ; echo $W_ANSWER; unset W_ANSWER;;
+    none)
+        # shellcheck disable=SC2039
+        echo -n "$1" >&2 ;
+        read -r W_ANSWER ;
+        echo $W_ANSWER;
+        unset W_ANSWER;;
     esac
 }
 
@@ -1399,7 +1409,7 @@ winetricks_load_gog()
                 w_verify_sha1sum "$sha1sum" "$file_path"
             fi
         fi
-        file_id=$(expr $file_id + 1)
+        file_id=$((file_id + 1))
     done
 
     cd "$installer_path"
@@ -2369,7 +2379,7 @@ w_do_call()
         # We'd like to get rid of W_PACKAGE, but for now, just set it as late as possible.
         W_PACKAGE=$1
         w_try load_$cmd $arg
-        winetricks_stats_log_command $*
+        winetricks_stats_log_command "$@"
 
         # User-specific postinstall hook.
         # Source it so the script can call w_download() if needed.
@@ -2377,6 +2387,7 @@ w_do_call()
         if test -f "$postfile"
         then
             chmod +x "$postfile"
+            # shellcheck disable=SC1090
             . "$postfile"
         fi
 
@@ -3621,7 +3632,7 @@ winetricks_read_udf_volume_name()
     # 2. read the location of the main volume descriptor:
     offset=$(winetricks_read_decimal 524308 $1)
     : echo MVD is at sector $offset
-    offset=$(expr $offset \* 2048)
+    offset=$((offset * 2048))
     : echo MVD is at byte $offset
 
     # 3. check the TagIdentifier of the MVD's descriptor tag, make sure it's 1
@@ -3633,10 +3644,10 @@ winetricks_read_udf_volume_name()
     esac
 
     # 4. Read whether the name is in 8 or 16 bit chars
-    offset=$(expr $offset + 24)
+    offset=$((offset + 24))
     width=$(winetricks_read_hex $offset 1 $1)
 
-    offset=$(expr $offset + 1)
+    offset=$((offset + 1))
 
     # 5. Profit!
     case $width in
@@ -3864,7 +3875,7 @@ winetricks_mount_cached_iso()
                     break 2
                 fi
             done
-            tries=$(expr $tries + 1)
+            tries=$((tries + 1))
             echo "Waiting for mount to finish mounting"
             sleep 1
         done
@@ -3926,7 +3937,7 @@ winetricks_is_mounted()
     rm -f "$W_TMP_EARLY/_W_tmp.$LOGNAME"
     winetricks_list_mounts . | while true
     do
-        IFS= read _W_tmp
+        IFS= read -r _W_tmp
 
         _W_dev=$(echo $_W_tmp | sed 's/ .*//')
         test "$_W_dev" || break
@@ -3943,8 +3954,8 @@ winetricks_is_mounted()
     if test -f "$W_TMP_EARLY/_W_tmp.$LOGNAME"
     then
         # Volume found!  Return from function.
-        _W_dev=$(cat "$W_TMP_EARLY/_W_tmp.$LOGNAME" | sed 's/ .*//')
-        _W_mountpoint="$(cat "$W_TMP_EARLY/_W_tmp.$LOGNAME" | sed 's/^[^ ]* //')"
+        _W_dev=$(sed 's/ .*//' "$W_TMP_EARLY/_W_tmp.$LOGNAME")
+        _W_mountpoint="$(sed 's/^[^ ]* //' "$W_TMP_EARLY/_W_tmp.$LOGNAME")"
         rm -f "$W_TMP_EARLY/_W_tmp.$LOGNAME"
         return 0
     fi
@@ -3961,7 +3972,7 @@ winetricks_mount_real_volume()
     # Wait for user to insert disc.
 
     case $LANG in
-    da*)_W_mountmsg="Indsæt venligst disken '$_W_expected_volname' (krævet af pakken '$_PACKAGE')" ;;
+    da*)_W_mountmsg="Indsæt venligst disken '$_W_expected_volname' (krævet af pakken '$W_PACKAGE')" ;;
     de*)_W_mountmsg="Bitte Disk '$_W_expected_volname' einlegen (für Paket '$W_PACKAGE')" ;;
     pl*)  _W_mountmsg="Proszę włożyć dysk '$_W_expected_volname' (potrzebny paczce '$W_PACKAGE')" ;;
     ru*)  _W_mountmsg="Пожалуйста, вставьте том '$_W_expected_volname' (требуется для пакета '$W_PACKAGE')" ;;
@@ -4184,7 +4195,6 @@ winetricks_annihilate_wineprefix()
     uk*) w_askpermission "Бажаєте видалити '$WINEPREFIX'?" ;;
     *) w_askpermission "Delete $WINEPREFIX, its apps, icons, and menu items?" ;;
     esac
-    rm -rf "$WINEPREFIX"/*
     rm -rf "$WINEPREFIX"
 
     # Also remove menu items.
@@ -4266,6 +4276,7 @@ winetricks_init()
     else
         XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
     fi
+    # shellcheck disable=SC2153
     if test "$WINETRICKS_DIR"
     then
         # For backwards compatibility
@@ -4341,7 +4352,9 @@ winetricks_init()
             w_die "WINE is $WINE, which is neither on the path nor an executable file"
         fi
         case "$WINETRICKS_OPT_VERBOSE" in
-        1|2) echo -n "Wine is '$WINE'; Wine version is "
+        1|2)
+             # shellcheck disable=SC2039
+             echo -n "Wine is '$WINE'; Wine version is "
              "$WINE" --version || w_die "Can't get Wine version"
              echo "winetricks is $0 ; winetricks version is $WINETRICKS_VERSION"
              ;;
@@ -6009,6 +6022,7 @@ load_dotnet30()
     # AF's workaround to avoid long pause
     LANGPACKS_BASE_PATH="${W_WINDIR_UNIX}/SYSMSICache/Framework/v3.0"
     test -d "${LANGPACKS_BASE_PATH}" || mkdir -p "${LANGPACKS_BASE_PATH}"
+    # shellcheck disable=SC1010
     for lang in ar cs da de el es fi fr he it jp ko nb nl pl pt-BR pt-PT ru \
                 sv tr zh-CHS zh-CHT
     do
@@ -7070,14 +7084,15 @@ load_mdx()
     cd "$W_WINDIR_UNIX/Microsoft.NET/DirectX for Managed Code"
     for ver in *
     do
-        cd "$ver"
-        for asm in *.dll
-        do
-            name="${asm%%.dll}"
-            w_try mkdir -p "$W_WINDIR_UNIX/assembly/GAC/$name/${ver}__31bf3856ad364e35"
-            w_try cp "$asm" "$W_WINDIR_UNIX/assembly/GAC/$name/${ver}__31bf3856ad364e35"
-        done
-        cd -
+        (
+            cd "$ver"
+            for asm in *.dll
+            do
+                name="${asm%%.dll}"
+                w_try mkdir -p "$W_WINDIR_UNIX/assembly/GAC/$name/${ver}__31bf3856ad364e35"
+                w_try cp "$asm" "$W_WINDIR_UNIX/assembly/GAC/$name/${ver}__31bf3856ad364e35"
+            done
+        )
     done
 
     # AssemblyFolders
@@ -10265,7 +10280,7 @@ load_ie6()
     w_override_dlls native,builtin iexplore.exe inetcpl.cpl itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi
 
     # Remove the fake DLLs, if any
-    mv "$W_PROGRAMS_UNIX"/"Internet Explorer"/iexplore.exe "$W_PROGRAMS_UNIX"/"Internet Explorer"/iexplore.exe.bak
+    mv "$W_PROGRAMS_UNIX/Internet Explorer/iexplore.exe" "$W_PROGRAMS_UNIX/Internet Explorer/iexplore.exe.bak"
     for dll in itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi
     do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
@@ -10423,10 +10438,10 @@ load_ie7()
     # Seeing is believing
     case $WINETRICKS_GUI in
     none)
-        w_warn "To start ie7, use the command "$WINE" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
+        w_warn "To start ie7, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
         ;;
     *)
-        w_warn "Starting ie7.  To start it later, use the command "$WINE" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
+        w_warn "Starting ie7.  To start it later, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
         "$WINE" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore" http://www.microsoft.com/windows/internet-explorer/ie7/ > /dev/null 2>&1 &
         ;;
     esac
@@ -10535,10 +10550,10 @@ _EOF_
     # Seeing is believing
     case $WINETRICKS_GUI in
     none)
-        w_warn "To start ie8, use the command "$WINE" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
+        w_warn "To start ie8, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
         ;;
     *)
-        w_warn "Starting ie8.  To start it later, use the command "$WINE" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
+        w_warn "Starting ie8.  To start it later, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
         "$WINE" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore" http://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
         ;;
     esac
@@ -12161,8 +12176,8 @@ load_aoe3_demo()
             WinKill,Empires
         "
         # or should we just do $WINESERVER -k, like fable_tlc does?
-        PID=$(ps augxw | grep IDriver | grep -v grep | awk '{print $2}')
-        kill $PID
+        # shellcheck disable=SC2046
+        kill $(pgrep -f IDriver)
     fi
 }
 
@@ -12248,6 +12263,7 @@ load_acreedbro()
 
     # FIXME: figure out why these executables don't exit, and do a proper workaround or fix
     sleep 10
+    # shellcheck disable=SC2009
     if ps augxw | grep -i exe | egrep 'winemenubuilder.exe|setup.exe|PnkBstrA.exe | egrep -v egrep'
     then
         w_warn "Killing processes so patcher does not complain about game still running"
@@ -12605,6 +12621,7 @@ load_bfbc2()
 
     if w_workaround_wine_bug 22961
     then
+        # shellcheck disable=SC2016
         w_warn 'If the game says "No CD/DVD error", try "sudo mount -o remount,unhide,uid=$(uid -u)".  See http://bugs.winehq.org/show_bug.cgi?id=22961 for more info.'
     fi
 }
@@ -13790,7 +13807,7 @@ load_dirt2_demo()
     cd "$W_TMP/$W_PACKAGE"
 
     w_ahk_do "
-        Run, "Setup.exe"
+        Run, Setup.exe
         WinWait, Choose Setup Language, Select
         if ( w_opt_unattended > 0 ) {
             sleep 500
@@ -16053,6 +16070,7 @@ load_qq()
         w_try mv QQ/腾讯QQ.desktop ~/.local/share/applications/wine/Programs/腾讯软件/QQ
         w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
         w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
+        # shellcheck disable=SC1001
         echo Exec=env WINEPREFIX="$WINEPREFIX" "$WINE" $W_PROGRAMS_X86_WIN\/Tencent\/QQ\/bin\/QQScLauncher.exe >> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop
     fi
 
@@ -16782,7 +16800,7 @@ load_spore_cc_demo()
             send {SPACE}{DOWN}{SPACE}{ENTER}
             winwaitclose
         "
-        while ps | grep $file1 | grep -v grep > /dev/null
+        while pgrep -f $file1 > /dev/null
         do
             w_info "Waiting for installer to finish."
             sleep 2
@@ -17539,8 +17557,8 @@ load_wog()
     then
         # Get temporary download location
         w_download "http://www.worldofgoo.com/dl2.php?lk=demo&filename=WorldOfGooDemo.1.0.exe"
-        URL=$(cat "$W_CACHE/wog/dl2.php?lk=demo&filename=WorldOfGooDemo.1.0.exe" | \
-           grep WorldOfGooDemo.1.0.exe | sed 's,.*http,http,;s,".*,,')
+        URL=$(grep WorldOfGooDemo.1.0.exe "$W_CACHE/wog/dl2.php?lk=demo&filename=WorldOfGooDemo.1.0.exe" \
+            | sed 's,.*http,http,;s,".*,,')
         w_try rm "$W_CACHE/wog/dl2.php?lk=demo&filename=WorldOfGooDemo.1.0.exe"
 
         w_download "$URL" e61d8253b9fe0663cb3c69018bb3d2ec6152d488
@@ -18971,7 +18989,7 @@ winetricks_stats_report()
     esac
     test -f "$WINETRICKS_WORKDIR"/breadcrumbs || return
 
-    WINETRICKS_STATS_BREADCRUMBS=$(cat "$WINETRICKS_WORKDIR"/breadcrumbs | tr '\012' ' ')
+    WINETRICKS_STATS_BREADCRUMBS=$(tr '\012' ' ' < "$WINETRICKS_WORKDIR"/breadcrumbs)
     echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
 
     report="os=$(winetricks_os_description)&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
