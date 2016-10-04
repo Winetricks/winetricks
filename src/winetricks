@@ -2323,9 +2323,11 @@ w_do_call()
 
         if winetricks_metadata_exists $1
         then
+            # shellcheck disable=SC1090
             . "$WINETRICKS_METADATA"/*/$1.vars
         elif winetricks_metadata_exists $cmd
         then
+            # shellcheck disable=SC1090
             . "$WINETRICKS_METADATA"/*/$cmd.vars
         elif test $cmd = native || test $cmd = disabled || test $cmd = builtin || test $cmd = default
         then
@@ -2592,6 +2594,7 @@ winetricks_detect_sudo()
 winetricks_get_prefix_var()
 {
     (
+        # shellcheck disable=SC1090
         . "$W_PREFIXES_ROOT/$p/wrapper.cfg"
         # The cryptic sed is there to turn ' into '\''
         eval echo \$ww_$1 | sed "s/'/'\\\''/"
@@ -3064,6 +3067,7 @@ winetricks_settings_menu()
             (
             title='?'
             author='?'
+            # shellcheck disable=SC1090
             . "$metadatafile"
           # Begin 'title' strings localization code
             case $LANG in
@@ -3289,6 +3293,7 @@ winetricks_showmenu()
             (
             title='?'
             author='?'
+            # shellcheck disable=SC1090
             . "$metadatafile"
             if test "$W_OPT_SHOWBROKEN" = 1 || test "$wine_showstoppers" = ""
             then
@@ -3444,6 +3449,7 @@ winetricks_list_cached()
         # If this is too slow, we can unset known metadata by hand
         (
         code=$(winetricks_metadata_basename "$_W_metadatafile")
+        # shellcheck disable=SC1090
         . "$_W_metadatafile"
         if winetricks_is_cached $code
         then
@@ -3480,6 +3486,7 @@ winetricks_list_installed()
         # If this is too slow, we can unset known metadata by hand
         (
         code=$(winetricks_metadata_basename "$_W_metadatafile")
+        # shellcheck disable=SC1090
         . "$_W_metadatafile"
         if winetricks_is_installed $code
         then
@@ -3527,6 +3534,7 @@ winetricks_list_all()
         # If this is too slow, we can unset known metadata by hand
         (
         code=$(winetricks_metadata_basename "$_W_metadatafile")
+        # shellcheck disable=SC1090
         . "$_W_metadatafile"
 
         # Compute cached and downloadable flags
@@ -4206,6 +4214,7 @@ winetricks_annihilate_wineprefix()
     (
     if ! test "$XDG_DESKTOP_DIR" && test -f $XDG_CONFIG_HOME/user-dirs.dirs
     then
+        # shellcheck disable=SC1090
         . $XDG_CONFIG_HOME/user-dirs.dirs
     fi
     find "$XDG_DESKTOP_DIR" -maxdepth 1 -type f -name '*.desktop' -exec grep -q -l "$WINEPREFIX" '{}' ';' -exec rm '{}' ';'
@@ -19262,6 +19271,7 @@ then
             case $verb in
             *.verb)
                 # Load the verb file
+                # shellcheck disable=SC1090
                 case $verb in
                 */*) . $verb ;;
                 *) . ./$verb ;;
