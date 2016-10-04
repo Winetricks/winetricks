@@ -9,13 +9,35 @@ set -e
 # Wrapper around checkbashisms
 # May also add other checks in future, like shellcheck
 
+# SC2030: Modification of WINE is local (to subshell caused by (..) group).
+# SC2031: WINE was modified in a subshell. That change might be lost
+export SHELLCHECK_OPTS="-e 2030,2031"
+
 if ! command -v checkbashisms > /dev/null 2>&1 ; then
     echo "checkbashisms must be installed!"
+elif ! command -v shellcheck > /dev/null 2>&1 ; then
+    echo "shellcheck must be installed!"
 fi
+
+w_die() {
+    echo "$* failed"
+    exit 1
+}
+
+w_try() {
+    "$@"
+    status=$?
+    if test $status -ne 0
+    then
+        w_die "Note: command $* returned status $status.  Aborting."
+    fi
+}
 
 for shellscript in \
     $(find . -type f -not -path "./.git/*" -exec file {} \; | grep -e 'POSIX shell script' | cut -d : -f1)
 do
     echo "Checking ${shellscript} for bashisms:"
-    checkbashisms "${shellscript}" || exit 1
+    w_try checkbashisms --posix "${shellscript}"
+    echo "Checking ${shellscript} with shellcheck:"
+    w_try shellcheck -s sh "${shellscript}"
 done
