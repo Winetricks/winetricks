@@ -262,6 +262,7 @@ w_die()
 # Kill all instances of a process in a safe way (Solaris killall kills _everything_)
 w_killall()
 {
+    # shellcheck disable=SC2046
     kill -s KILL $(pgrep $1)
 }
 
@@ -759,6 +760,7 @@ w_download_to()
                 then
                     # The cache was full.  If the file is larger than 500 MB,
                     # don't checksum it, that just annoys the user.
+                    # shellcheck disable=SC2046
                     if test $(du -k "$_W_cache/$_W_file" | cut -f1) -gt 500000
                     then
                         checksum_ok=1
@@ -1392,6 +1394,7 @@ winetricks_load_gog()
             ;;
         esac
         file_path="$installer_path/$file"
+        # shellcheck disable=SC2046
         if ! test -s "$file_path" || test $(stat -Lc%s "$file_path") -lt $minsize
         then
             # FIXME: bring back automated download
@@ -4028,6 +4031,7 @@ winetricks_cleanup()
     set +e
     if test -f "$WINETRICKS_WORKDIR/dd-pid"
     then
+        # shellcheck disable=SC2046
         kill $(cat "$WINETRICKS_WORKDIR/dd-pid")
     fi
     test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
@@ -8864,13 +8868,13 @@ load_xact()
     # Register xactengine?_?.dll
     for x in "$W_SYSTEM32_DLLS"/xactengine*
     do
-      w_try_regsvr $(basename "$x")
+      w_try_regsvr "$(basename "$x")"
     done
 
     # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
     for x in 0 1 2 3 4 5 6 7
     do
-      w_try_regsvr $(basename "$W_SYSTEM32_DLLS/xaudio2_${x}")
+      w_try_regsvr "$(basename "$W_SYSTEM32_DLLS/xaudio2_${x}")"
     done
 }
 
@@ -8916,13 +8920,13 @@ load_xact_jun2010()
     # Register xactengine?_?.dll
     for x in "$W_SYSTEM32_DLLS"/xactengine*
     do
-      w_try_regsvr $(basename "$x")
+      w_try_regsvr "$(basename "$x")"
     done
 
     # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
     for x in 0 1 2 3 4 5 6 7
     do
-      w_try_regsvr $(basename "$W_SYSTEM32_DLLS/xaudio2_${x}")
+      w_try_regsvr "$(basename "$W_SYSTEM32_DLLS/xaudio2_${x}")"
     done
 }
 
@@ -19046,7 +19050,7 @@ winetricks_shell()
     *)
         for term in gnome-terminal konsole Terminal xterm
         do
-            if test $(which $term) 2> /dev/null
+            if test "$(which $term)" 2> /dev/null
             then
                 $term
                 break
