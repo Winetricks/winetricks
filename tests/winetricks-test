@@ -278,10 +278,8 @@ test_command()
     then
         # A success is failure:
         # shellcheck disable=SC2086
-        sh winetricks --no-isolate -q nocrashdialog $command && fail "$* succeeded, should have failed"
-    # FIXME: shellcheck disabling doesn't work here (if clause related). Need to file bug:
-    # shellcheck disable=SC2086
-    elif ! w_time sh winetricks --no-isolate -q nocrashdialog $command
+        sh winetricks --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
+    elif ! w_time sh winetricks --no-isolate -q nocrashdialog "$@"
     then
         rm df-daemon
         fail "test_command $command failed!"
