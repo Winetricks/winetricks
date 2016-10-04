@@ -34,6 +34,7 @@ Note that the filename and command name (iceweasel) must match. All metadata fie
 
 
 # Tests
+The tests need checkbashisms and shellcheck installed.
 Makefile supports two tests targets, check and test.
 Make check will run tests/winetricks-test.
 While make test will first delete winetricks' cache before running tests/winetricks-test, to ensure that the downloads are still valid.
