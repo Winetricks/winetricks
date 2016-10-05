@@ -2437,7 +2437,7 @@ w_do_call()
 # If you want to check exit status yourself, use w_do_call
 w_call()
 {
-    w_try w_do_call $@
+    w_try w_do_call "$@"
 }
 
 w_register_font()
