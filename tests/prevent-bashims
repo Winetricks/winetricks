@@ -9,10 +9,6 @@ set -x
 # Wrapper around checkbashisms
 # May also add other checks in future, like shellcheck
 
-# SC2030: Modification of WINE is local (to subshell caused by (..) group).
-# SC2031: WINE was modified in a subshell. That change might be lost
-export SHELLCHECK_OPTS="-e 2030,2031"
-
 if ! command -v checkbashisms > /dev/null 2>&1 ; then
     echo "checkbashisms must be installed!"
 elif ! command -v shellcheck > /dev/null 2>&1 ; then
@@ -38,6 +34,9 @@ for shellscript in \
 do
     echo "Checking ${shellscript} for bashisms:"
     w_try checkbashisms --posix "${shellscript}"
+
     echo "Checking ${shellscript} with shellcheck:"
-    w_try shellcheck -s sh "${shellscript}"
+    # SC2030: Modification of WINE is local (to subshell caused by (..) group).
+    # SC2031: WINE was modified in a subshell. That change might be lost
+    w_try shellcheck -e 2030,2031 -s sh "${shellscript}"
 done
