@@ -763,7 +763,7 @@ w_download_to()
 
         if test -s "$_W_cache/$_W_file"
         then
-            if test "$3"
+            if test "$_W_sum"
             then
                 if test $tries = 1
                 then
@@ -778,7 +778,7 @@ w_download_to()
                 fi
                 # If checksum matches, declare success and exit loop
                 w_get_sha1sum "$_W_cache/$_W_file"
-                if [ "$_W_gotsum"x = "$3"x ]
+                if [ "$_W_gotsum"x = "$_W_sum"x ]
                 then
                     checksum_ok=1
                     break
@@ -895,9 +895,9 @@ w_download_to()
         _W_url="https://web.archive.org/web/$_W_url"
     done
 
-    if test "$3" && test ! "$checksum_ok"
+    if test "$_W_sum" && test ! "$checksum_ok"
     then
-        w_verify_sha1sum "$3" "$_W_cache/$_W_file"
+        w_verify_sha1sum "$_W_sum" "$_W_cache/$_W_file"
     fi
 }
 
@@ -1358,6 +1358,8 @@ winetricks_load_gog()
     game_title="$2"
     other_files="$3"
     reader_control="$4"
+    # FIXME: actually unused, but not sure how it should be used
+    # shellcheck disable=SC2034
     run_command="$5"
     download_id="$6"
     install_dir="$7"
@@ -3082,7 +3084,6 @@ winetricks_settings_menu()
             code=$(winetricks_metadata_basename "$metadatafile")
             (
             title='?'
-            author='?'
             # shellcheck disable=SC1090
             . "$metadatafile"
           # Begin 'title' strings localization code
@@ -3309,7 +3310,6 @@ winetricks_showmenu()
             code=$(winetricks_metadata_basename "$metadatafile")
             (
             title='?'
-            author='?'
             # shellcheck disable=SC1090
             . "$metadatafile"
             # shellcheck disable=SC2154
@@ -4179,6 +4179,7 @@ winetricks_set_wineprefix()
     fi
 
     W_APPDATA_WIN="$(w_expand_env AppData)"
+    # shellcheck disable=SC2034
     W_APPDATA_UNIX="$(w_pathconv -u "$W_APPDATA_WIN")"
 
     # FIXME: get fonts path from SHGetFolderPath
@@ -4204,7 +4205,9 @@ winetricks_set_wineprefix()
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
         W_SYSTEM64_DLLS="$W_WINDIR_UNIX/system32"
+        # shellcheck disable=SC2034
         W_SYSTEM64_DLLS_WIN32="C:\\windows\\sysnative" # path to access 64-bit dlls from 32-bit apps
+        # shellcheck disable=SC2034
         W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
         # 64-bit prefixes still have plenty of issues:
         w_warn "You are using a 64-bit WINEPREFIX. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug."
@@ -4392,10 +4395,6 @@ winetricks_init()
         ;;
     esac
     winetricks_set_wineprefix "$1"
-
-    # FIXME: don't hardcode
-    W_PROGRAMS_DRIVE=c
-
 
     # Whether to automate installs (0=no, 1=yes)
     winetricks_set_unattended ${W_OPT_UNATTENDED:-0}
@@ -12894,9 +12893,7 @@ load_cod_demo()
     if w_workaround_wine_bug 21558
     then
         # Work around a buffer overflow - not really Wine's fault
-        setvar="@if not defined %__GL_ExtensionStringVersion% then echo \"If you get a buffer overflow error, set __GL_ExtensionStringVersion=17700 before starting Wine.  See http://bugs.winehq.org/show_bug.cgi?id=21558.\""
-    else
-        setvar=
+        w_warn "If you get a buffer overflow error, set __GL_ExtensionStringVersion=17700 before starting Wine.  See http://bugs.winehq.org/show_bug.cgi?id=21558."
     fi
 }
 
@@ -12980,9 +12977,7 @@ load_cod1()
     if w_workaround_wine_bug 21558
     then
         # Work around a buffer overflow - not really Wine's fault
-        setvar="@if not defined %__GL_ExtensionStringVersion% then echo \"If you get a buffer overflow error, set __GL_ExtensionStringVersion=17700 before starting Wine.  See http://bugs.winehq.org/show_bug.cgi?id=21558.\""
-    else
-        setvar=
+        w_warn "If you get a buffer overflow error, set __GL_ExtensionStringVersion=17700 before starting Wine.  See http://bugs.winehq.org/show_bug.cgi?id=21558"
     fi
     w_warn "This game is copy-protected, and requires the real disc in a real drive to run."
 }
