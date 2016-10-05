@@ -6,8 +6,7 @@
 set -e
 set -x
 
-# Wrapper around checkbashisms
-# May also add other checks in future, like shellcheck
+# Wrapper around checkbashisms/shellcheck/whatever other shell checkers I can find
 
 if ! command -v checkbashisms > /dev/null 2>&1 ; then
     echo "checkbashisms must be installed!"
@@ -28,6 +27,15 @@ w_try() {
         w_die "Note: command $* returned status $status.  Aborting."
     fi
 }
+
+# Different versions can give different results:
+echo "======================== Begin checkbashisms version info ==========================="
+checkbashisms --version
+echo "======================== End checkbashisms version info ==========================="
+
+echo "======================== Begin shellcheck version info ==========================="
+shellcheck --version
+echo "======================== End shellcheck version info ==========================="
 
 for shellscript in \
     $(find . -type f -not -path "./.git/*" -exec file {} \; | grep -e 'POSIX shell script' | cut -d : -f1)
