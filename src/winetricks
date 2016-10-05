@@ -812,7 +812,7 @@ w_download_to()
         # For sites that prefer Mozilla in the user-agent header, set W_BROWSERAGENT=1
         case "$W_BROWSERAGENT" in
         1) _W_agent="Mozilla/5.0 (compatible; Konqueror/2.1.1; X11)" ;;
-        *) _W_agent= ;;
+        *) _W_agent="" ;;
         esac
 
         case "$WINETRICKS_OPT_TORIFY" in
@@ -824,7 +824,7 @@ w_download_to()
                w_die "--torify was used, but torify is not installed, please install it." ; exit 1
            fi ;;
         *) torify=
-           aria2c_torify_opts= ;;
+           aria2c_torify_opts="" ;;
         esac
 
         if [ -x "$(which aria2c 2>/dev/null)" ]
