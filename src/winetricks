@@ -1581,7 +1581,7 @@ Usage: 'w_override_dlls mode[,mode] dll ...'." ;;
         _W_mode="" ;;
     esac
     shift
-    echo "Using $_W_mode override for following DLLs: $@"
+    echo "Using $_W_mode override for following DLLs: $*"
     cat > "$W_TMP"/override-dll.reg <<_EOF_
 REGEDIT4
 
@@ -1845,7 +1845,7 @@ w_override_app_dlls()
 Usage: 'w_override_app_dlls app mode dll ...'." ;;
     esac
 
-    echo "Using $_W_mode override for following DLLs when running $_W_app: $@"
+    echo "Using $_W_mode override for following DLLs when running $_W_app: $*"
     (
     echo REGEDIT4
     echo ""
