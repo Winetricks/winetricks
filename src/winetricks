@@ -2422,9 +2422,16 @@ w_do_call()
         fi
 
         # If the user specified --verify, also run GUI tests:
-        if test "$WINETRICKS_VERIFY" = 1 && command -v "verify_$cmd" > /dev/null 2>&1
+        if test "$WINETRICKS_VERIFY" = 1
         then
-            w_try "verify_$cmd"
+            # command -v isn't POSIX :(
+            "verify_$cmd"
+            verify_status=$?
+            case $verify_status in
+                0) w_warn "verify_$cmd succeeded!" ;;
+                127) echo "verify_$cmd not found, not verifying $cmd" ;;
+                *) w_die "verify_$cmd failed!" ;;
+            esac
         fi
 
         # Clean up after this verb
