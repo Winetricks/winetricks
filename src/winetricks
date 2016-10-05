@@ -4391,14 +4391,6 @@ winetricks_init()
         then
             w_die "WINE is $WINE, which is neither on the path nor an executable file"
         fi
-        case "$WINETRICKS_OPT_VERBOSE" in
-        1|2)
-             # shellcheck disable=SC2039
-             echo -n "Wine is '$WINE'; Wine version is "
-             "$WINE" --version || w_die "Can't get Wine version"
-             echo "winetricks is $0 ; winetricks version is $WINETRICKS_VERSION"
-             ;;
-        esac
         unset _abswine
         ;;
     esac
