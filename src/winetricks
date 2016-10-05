@@ -1161,8 +1161,8 @@ w_question()
     *kdialog) $WINETRICKS_GUI --inputbox "$1" ;;
     *xmessage) w_die "sorry, can't ask question with xmessage" ;;
     none)
-        # shellcheck disable=SC2039
-        echo -n "$1" >&2 ;
+        # Using printf instead of echo because we don't want a newline
+        printf "%s" "$1" >&2 ;
         read -r W_ANSWER ;
         echo "$W_ANSWER";
         unset W_ANSWER;;
