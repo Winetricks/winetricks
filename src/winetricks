@@ -849,6 +849,7 @@ w_download_to()
            # [*] --read-timeout is useful on the adobe server that doesn't
            # close the connection unless you tell it to (control-C or closing
            # the socket)
+           # shellcheck disable=SC2086
            winetricks_wget_progress \
                -O "$_W_file" -nd \
                -c --read-timeout=300 --retry-connrefused \
@@ -860,6 +861,7 @@ w_download_to()
         then
            # curl doesn't get filename from the location given by the server!
            # fortunately, we know it
+           # shellcheck disable=SC2086
            $torify curl -L -o "$_W_file" -C - \
                --header "Accept-Encoding: gzip,deflate" \
                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
