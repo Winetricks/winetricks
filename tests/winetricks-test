@@ -411,7 +411,7 @@ _EOF
     sh winetricks --no-isolate false.verb ; ret=$?
     case $ret in
         0) fail "false.verb isolated, as dlls worked, should have failed" ;;
-        1) pass "falsee.verb isolated, as dlls passed" ;;
+        1) pass "false.verb isolated, as dlls passed" ;;
         *) fail "false.verb isolated, as dlls failed in unexpected way" ;;
     esac
 
