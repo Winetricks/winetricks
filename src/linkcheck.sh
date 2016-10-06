@@ -32,7 +32,7 @@ w_download() {
     # shellcheck disable=SC2016
     url="$(echo "$1" | sed -e 's,$ftp_microsoft_com,'$ftp_microsoft_com',;s,$WINETRICKS_SOURCEFORGE,'$WINETRICKS_SOURCEFORGE',;s, ,%20,g')"
     urlkey="$(echo "$url" | tr / _)"
-    echo "$url" > "${datadir}/${urlkey.url}"
+    echo "$url" > "${datadir}/${urlkey}.url"
 }
 
 # Extract list of URLs from winetricks
