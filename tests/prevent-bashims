@@ -38,7 +38,7 @@ shellcheck --version
 echo "======================== End shellcheck version info ==========================="
 
 for shellscript in \
-    $(find . -type f -not -path "./.git/*" -exec file {} \; | grep -e 'POSIX shell script' | cut -d : -f1)
+    $(git ls-files | xargs file | grep -e 'POSIX shell script' | cut -d : -f1)
 do
     echo "Checking ${shellscript} for bashisms:"
     w_try checkbashisms --posix "${shellscript}"
