@@ -2427,7 +2427,7 @@ w_do_call()
         if test "$WINETRICKS_VERIFY" = 1
         then
             # command -v isn't POSIX :(
-            "verify_$cmd"
+            "verify_$cmd" 2>/dev/null
             verify_status=$?
             case $verify_status in
                 0) w_warn "verify_$cmd succeeded!" ;;
