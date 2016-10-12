@@ -459,6 +459,8 @@ test_dotnet()
         test_command --verify $x
     done
 
+    # FIXME: add other possible combinations
+
     # combinations that should work:
     # FIXME: dotnet20sp2: https://bugs.winehq.org/show_bug.cgi?id=40460
     for combo in "dotnet20 dotnet20sp2"
