@@ -75,9 +75,9 @@ check:
 	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
 	echo ''
 	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
-	# Check for shellscript issues first:
-	echo "Running checkbashisms:"
-	sh ./tests/prevent-bashims || exit 1
+	# Check for checkbashisms/shellcheck issues first:
+	echo "Running checkbashisms/shellcheck:"
+	sh ./tests/shell-checks || exit 1
 	# Check all script dependencies before starting tests:
 	echo "Checking dependencies.."
 	sh ./src/linkcheck.sh check-deps || exit 1
@@ -106,9 +106,9 @@ test:
 	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
 	echo ''
 	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
-	# Check for shellscript issues first:
-	echo "Running checkbashisms:"
-	sh ./tests/prevent-bashims || exit 1
+	# Check for checkbashisms/shellcheck issues first:
+	echo "Running checkbashisms/shellcheck:"
+	sh ./tests/shell-checks || exit 1
 	# Check all script dependencies before starting tests:
 	echo "Checking dependencies.."
 	sh ./src/linkcheck.sh check-deps || exit 1
