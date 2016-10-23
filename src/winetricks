@@ -33,7 +33,7 @@ WINETRICKS_VERSION=20161012
 # On Ubuntu, the following lines can be used to install all the prerequisites:
 #    sudo add-apt-repository ppa:ubuntu-wine/ppa
 #    sudo apt-get update
-#    sudo apt-get install cabextract p7zip unrar unzip wget wine1.7 zenity
+#    sudo apt-get install cabextract p7zip unrar unzip wget wine1.8 zenity
 #
 # See http://winetricks.org for documentation and tutorials, including
 # how to contribute changes to winetricks.
@@ -11236,32 +11236,15 @@ load_sketchup()
 w_metadata steam apps \
     title="Steam" \
     publisher="Valve" \
-    year="2010" \
+    year="2016" \
     media="download" \
     file1="SteamInstall.msi" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Steam/Steam.exe"
 
 load_steam()
 {
-    # 18 Mar 2011 7f2fee9ffeaba8424a6c76d6c95b794735ac9959
-    # 29 Nov 2012 fa053c268b6285741d1a1392c25f92c5cb2a6ffb
-    # 17 Mar 2014 b2a3fdbe4a662f3bf751f5b8bfc61f8d35e050fe
-    # 11 Dec 2014 7ad8fbeffa6c963b821f80129c15c9d8e85f9a4a
-    #  6 Jan 2015 e04aefe8bc894f11f211edec8e8a008abe0147d2
-    # 21 Jun 2015 0e8046d40c38d817338135ec73a5b217cc340cf5
-    # 29 Dec 2015 728e3c82fd57c68cbbdb64965719081ffee6272c
-    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 728e3c82fd57c68cbbdb64965719081ffee6272c
+    w_download http://media.steampowered.com/client/installer/SteamSetup.exe e930dbdb3bc638f772a8fcd92dbcd0919c924318
     w_try_cd "$W_CACHE/$W_PACKAGE"
-
-    # Should be fixed in newer steam versions, since 2012. Commenting out for a while before removing in case users need to revert locally
-    #
-    # Install corefonts first, so if the user doesn't have cabextract/Wine with cab support, we abort before installing Steam.
-    # FIXME: support using Wine's cab support
-    #if ! test -f "$W_FONTSDIR_UNIX/Times.TTF" && \
-    #    w_workaround_wine_bug 22751 "Installing corefonts to prevent a Steam crash"
-    #then
-    #    w_call corefonts
-    #fi
 
     if test $W_OPT_UNATTENDED
     then
