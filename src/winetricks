@@ -2570,6 +2570,26 @@ winetricks_get_platform()
     fi
 }
 
+winetricks_latest_check()
+{
+    if [ "$WINETRICKS_LATEST_CHECK" = 'disabled' ] || [ -f "${W_CONFIG}/disable-latest-check" ] ; then
+        w_info "winetricks latest check update disabled"
+        return
+    fi
+
+    latest_file="${W_TMP_EARLY}/latest"
+    # FIXME:
+    #cp $HOME/src/winetricks/files/LATEST "${latest_file}"
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/add-latest-checks/files/LATEST '' "${latest_file}"
+
+    latest_version="$(cat ${latest_file})"
+
+    if [ ! $WINETRICKS_VERSION = "$latest_version" ] ; then
+        w_warn "You are running winetricks-${WINETRICKS_VERSION}, the latest upstream is winetricks-${latest_version}!"
+        w_warn "You should update, either with your package manager, using --self-update, or manually."
+    fi
+}
+
 winetricks_print_version()
 {
     # Normally done by winetricks_init, but we don't want to set up the WINEPREFIX
