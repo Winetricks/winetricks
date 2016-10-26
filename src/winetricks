@@ -2547,7 +2547,8 @@ winetricks_get_platform()
     fi
 }
 
-winetricks_print_version() {
+winetricks_print_version()
+{
     # Normally done by winetricks_init, but we don't want to set up the WINEPREFIX
     # just to get the winetricks version:
     winetricks_get_sha1sum_prog
