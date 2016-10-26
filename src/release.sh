@@ -35,7 +35,10 @@ sed -i -e "s%WINETRICKS_VERSION=.*%WINETRICKS_VERSION=${version}%" src/winetrick
 line=".TH WINETRICKS 1 \"$(date +"%B %Y")\" \"Winetricks ${version}\" \"Wine Package Manager\""
 sed -i -e "s%\\.TH.*%${line}%" src/winetricks.1
 
-git commit src/winetricks src/winetricks.1 -m "version bump - ${version}"
+# update LATEST (version) file
+echo "${version}" > files/LATEST
+
+git commit files/LATEST src/winetricks src/winetricks.1 -m "version bump - ${version}"
 git tag -s -m "winetricks-${version}" "${version}"
 
 git push

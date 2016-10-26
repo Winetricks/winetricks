@@ -139,6 +139,7 @@ WINETRICKS_VERSION=20161012
 #
 #--------------------------------------------------------------------
 
+# FIXME: XDG_CACHE_HOME is defined twice, clean this up
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
@@ -2547,6 +2548,32 @@ winetricks_get_platform()
     fi
 }
 
+winetricks_latest_version_check()
+{
+    if [ "$WINETRICKS_LATEST_VERSION_CHECK" = 'disabled' ] || [ -f "${WINETRICKS_CONFIG}/disable-latest-version-check" ] ; then
+        w_info "winetricks latest version check update disabled"
+        return
+    fi
+
+    latest_file="${W_CACHE}/latest_version_check/LATEST"
+
+    # Obviously, always redownload:
+    if [ -e "$latest_file" ] ; then
+        w_try rm "${latest_file}"
+    fi
+
+    w_download_to latest_version_check https://raw.githubusercontent.com/Winetricks/winetricks/master/files/LATEST
+    # shellcheck disable=SC2086
+    latest_version="$(cat ${latest_file})"
+
+    if [ ! "$WINETRICKS_VERSION" = "${latest_version}" ] ; then
+        w_warn "You are running winetricks-${WINETRICKS_VERSION}, latest upstream is winetricks-${latest_version}!"
+        w_warn "You should update using your distribution's package manager, --self-update, or manually."
+    fi
+
+    w_try rm -rf "$(dirname "${latest_file}")"
+}
+
 winetricks_print_version()
 {
     # Normally done by winetricks_init, but we don't want to set up the WINEPREFIX
@@ -4430,6 +4457,8 @@ winetricks_init()
     WINETRICKS_WINE_MICRO=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/')
 
     echo "Using winetricks $(winetricks_print_version) with $WINETRICKS_WINE_VERSION"
+
+    winetricks_latest_version_check
 }
 
 winetricks_usage()
