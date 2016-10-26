@@ -8,12 +8,6 @@ set -x
 
 # Wrapper around checkbashisms/shellcheck/whatever other shell checkers I can find
 
-if ! command -v checkbashisms > /dev/null 2>&1 ; then
-    echo "checkbashisms must be installed!"
-elif ! command -v shellcheck > /dev/null 2>&1 ; then
-    echo "shellcheck must be installed!"
-fi
-
 w_die() {
     echo "$* failed"
     exit 1
@@ -27,6 +21,12 @@ w_try() {
         w_die "Note: command $* returned status $status.  Aborting."
     fi
 }
+
+if ! command checkbashisms > /dev/null 2>&1 ; then
+    w_die "checkbashisms must be installed!"
+elif ! command shellcheck --version > /dev/null 2>&1 ; then
+    w_die "shellcheck must be installed!"
+fi
 
 # Different versions can give different results:
 echo "======================== Begin checkbashisms version info ==========================="
