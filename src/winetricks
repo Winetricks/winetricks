@@ -2576,27 +2576,28 @@ winetricks_latest_version_check()
         return
     fi
 
-    latest_file="${W_CACHE}/latest_version_check/LATEST"
+    latest_file="${W_TMP_EARLY}/LATEST"
 
     # Obviously, always redownload:
     if [ -e "$latest_file" ] ; then
         w_try rm "${latest_file}"
     fi
 
-    w_download_to latest_version_check https://raw.githubusercontent.com/Winetricks/winetricks/master/files/LATEST
-    # shellcheck disable=SC2086
-    latest_version="$(cat ${latest_file})"
+    w_download_to ${W_TMP_EARLY} https://raw.githubusercontent.com/Winetricks/winetricks/master/files/LATEST
+
+    latest_version="$(cat "${latest_file}")"
 
     if [ ! "$WINETRICKS_VERSION" = "${latest_version}" ] ; then
         if [ -f "${WINETRICKS_CONFIG}/enable-auto-update" ] ; then
+            w_info "You are running winetricks-${WINETRICKS_VERSION}."
+            w_info "New upstream release winetricks-${latest_version} is available."
+            w_info "auto-update enabled: running winetricks_selfupdate"
             winetricks_selfupdate
         else
             w_warn "You are running winetricks-${WINETRICKS_VERSION}, latest upstream is winetricks-${latest_version}!"
             w_warn "You should update using your distribution's package manager, --self-update, or manually."
         fi
-   fi
-
-    w_try rm -rf "$(dirname "${latest_file}")"
+    fi
 }
 
 winetricks_print_version()
