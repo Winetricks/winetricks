@@ -694,8 +694,24 @@ winetricks_selfupdate()
     _W_tmpdir="$(mktemp -d "$_W_tmpdir/$_W_filename.XXXXXXXX")"
 
     w_download_to "$_W_tmpdir" https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
-    w_try mv "$_W_tmpdir/$_W_filename" "${_W_update_file}.gz"
-    w_try gunzip "${_W_update_file}.gz"
+
+    # 2016/10/26: now file is uncompressed? Handle both cases:
+    update_file_type="$(file "$_W_tmpdir/$_W_filename")"
+    case "$update_file_type" in
+        *"POSIX shell script"*)
+            #echo "already decompressed!"
+            w_try mv "$_W_tmpdir/$_W_filename" "${_W_update_file}"
+            ;;
+        *"gzip compressed data"*)
+            w_try mv "$_W_tmpdir/$_W_filename" "${_W_update_file}.gz"
+            w_try gunzip "${_W_update_file}.gz"
+            ;;
+         *)
+            echo "Unknown file type!"
+            exit 1
+            ;;
+    esac
+
     w_try rmdir "$_W_tmpdir"
 
     w_try cp "$0" "$_W_rollback_file"
