@@ -139,6 +139,7 @@ WINETRICKS_VERSION=20161012
 #
 #--------------------------------------------------------------------
 
+# FIXME: XDG_CACHE_HOME is defined twice, clean this up
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
@@ -4311,13 +4312,18 @@ winetricks_init()
 
     # Where application installers are cached
     # See http://standards.freedesktop.org/basedir-spec/latest/ar01s03.html
-    if test -d "$HOME/Library/Caches"
+    # OSX: https://developer.apple.com/library/content/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/MacOSXDirectories/MacOSXDirectories.html
+
+    if test -d "$HOME/Library"
     then
         # OS X
         XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/Library/Caches}"
+        XDG_CONFIG_HOME="${XDG_CACHE_HOME:-$HOME/Library/Preferences}"
     else
         XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+        XDG_CONFIG_HOME="${XDG_CACHE_HOME:-$HOME/.config}"
     fi
+
     # shellcheck disable=SC2153
     if test "$WINETRICKS_DIR"
     then
@@ -4330,6 +4336,11 @@ winetricks_init()
     fi
     test -d "$W_CACHE" || mkdir -p "$W_CACHE"
     WINETRICKS_AUTH="${WINETRICKS_AUTH:-$XDG_DATA_HOME/winetricks/auth}"
+
+    # Config options are currently opt-in and not required, so not creating the config
+    # directory unless there's demand:
+    WINETRICKS_CONFIG="${XDG_CONFIG_HOME}/winetricks"
+    #test -d "$WINETRICKS_CONFIG" || mkdir -p "$WINETRICKS_CONFIG"
 
     # System-specific variables
     case "$W_PLATFORM" in
