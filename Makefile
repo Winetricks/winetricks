@@ -85,6 +85,11 @@ check:
 	echo "Running tests"
 	cd src; if test -z "$(WINEARCH)" ; then export WINEARCH=win32 ; fi ; sh ../tests/winetricks-test quick
 
+shell-checks:
+	echo "This runs shell checks only. Currently, these are checkbashisms and shellcheck."
+	echo "This is relatively fast and doesn't download anything."
+	sh ./tests/shell-checks || exit 1
+
 test:
 	echo 'This verifies that most DLL verbs, plus flash and dotnet, install ok.'
 	echo 'It also makes sure that all URLs in winetricks work, so a fast uncapped internet connection is needed.'
