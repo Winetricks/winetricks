@@ -2520,6 +2520,28 @@ _EOF_
 
 #---- Private Functions ----
 
+winetricks_get_latest_version()
+{
+# FIXME:
+# check for disabled env / config file
+# compare that to winetricks_version
+# w_warn user, tell about self-update
+#
+# next commit, opt-in auto-update
+    latest_file="${W_TMP_EARLY}/latest"
+    echo 20161012 > $HOME/src/winetricks/files/LATEST
+    cp $HOME/src/winetricks/files/LATEST $latest_file
+    # FIXME: master/dev
+    #w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/files/LATEST '' "${latest_file}"
+
+    latest_version="$(cat ${latest_file})"
+
+    if [ ! "$WINETRICKS_VERSION" = "${latest_version}" ] ; then
+        w_warn "You are running winetricks-${WINETRICKS_VERSION}, latest upstream is winetricks-${latest_version}!"
+        w_warn "You should update using your distribution's package manager, --self-update, or manually."
+    fi
+}
+
 winetricks_get_sha1sum_prog() {
     # Mac folks tend to not have sha1sum, but we can make do with openssl
     if [ -x "$(which sha1sum 2>/dev/null)" ]
@@ -4431,6 +4453,8 @@ winetricks_init()
     WINETRICKS_WINE_MICRO=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/')
 
     echo "Using winetricks $(winetricks_print_version) with $WINETRICKS_WINE_VERSION"
+
+    winetricks_get_latest_version
 }
 
 winetricks_usage()
