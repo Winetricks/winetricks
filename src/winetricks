@@ -2567,9 +2567,13 @@ winetricks_latest_version_check()
     latest_version="$(cat ${latest_file})"
 
     if [ ! "$WINETRICKS_VERSION" = "${latest_version}" ] ; then
-        w_warn "You are running winetricks-${WINETRICKS_VERSION}, latest upstream is winetricks-${latest_version}!"
-        w_warn "You should update using your distribution's package manager, --self-update, or manually."
-    fi
+        if [ -f "${WINETRICKS_CONFIG}/enable-auto-update" ] ; then
+            winetricks_selfupdate
+        else
+            w_warn "You are running winetricks-${WINETRICKS_VERSION}, latest upstream is winetricks-${latest_version}!"
+            w_warn "You should update using your distribution's package manager, --self-update, or manually."
+        fi
+   fi
 
     w_try rm -rf "$(dirname "${latest_file}")"
 }
