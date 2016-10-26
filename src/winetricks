@@ -765,7 +765,12 @@ w_download_to()
     then
         _W_file=$(basename "$_W_url")
     fi
-    _W_cache="$W_CACHE/$_W_packagename"
+
+    if [ -z "${_W_packagename%%/*}" ] && pathchk -P "$_W_packagename" ; then
+        _W_cache="$_W_packagename"
+    else
+        _W_cache="$W_CACHE/$_W_packagename"
+    fi
 
     if test ! -d "$_W_cache"
     then
