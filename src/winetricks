@@ -4318,10 +4318,10 @@ winetricks_init()
     then
         # OS X
         XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/Library/Caches}"
-        XDG_CONFIG_HOME="${XDG_CACHE_HOME:-$HOME/Library/Preferences}"
+        XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/Library/Preferences}"
     else
         XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-        XDG_CONFIG_HOME="${XDG_CACHE_HOME:-$HOME/.config}"
+        XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
     fi
 
     # shellcheck disable=SC2153
