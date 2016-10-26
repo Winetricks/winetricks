@@ -707,7 +707,7 @@ winetricks_selfupdate()
             w_try gunzip "${_W_update_file}.gz"
             ;;
          *)
-            echo "Unknown file type!"
+            echo "Unknown file type: $update_file_type"
             exit 1
             ;;
     esac
