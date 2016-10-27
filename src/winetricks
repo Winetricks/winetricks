@@ -4116,8 +4116,8 @@ winetricks_cleanup()
     fi
     test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
     test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
-    # if $W_TMP_EARLY was created by mktemp, remove it:
-    test "$W_OPT_NOCLEAN" = 1 || test "$W_TMP_EARLY_CLEAN" = 1 && rm -rf "$W_TMP_EARLY"
+    # if $W_TMP_EARLY was created by mktemp, remove it (but not if W_OPT_NOCLEAN is set to 1):
+    test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP_EARLY"
 }
 
 winetricks_set_unattended()
