@@ -191,9 +191,12 @@ w_askpermission()
 # Display info message.  Time out quickly if user doesn't click.
 w_info()
 {
-    echo "------------------------------------------------------"
-    echo "$@"
-    echo "------------------------------------------------------"
+    # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
+    if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
+        echo "------------------------------------------------------"
+        echo "$@"
+        echo "------------------------------------------------------"
+    fi
 
     _W_timeout="--timeout 3"
 
@@ -209,9 +212,12 @@ w_info()
 # Display warning message to stderr (since it is called inside redirected code)
 w_warn()
 {
-    echo "------------------------------------------------------" >&2
-    echo "$@" >&2
-    echo "------------------------------------------------------" >&2
+    # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
+    if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
+        echo "------------------------------------------------------"
+        echo "$@"
+        echo "------------------------------------------------------"
+    fi
 
     if test "$W_OPT_UNATTENDED"
     then
@@ -3545,14 +3551,16 @@ winetricks_list_cached()
 # List verbs which are automatically downloadable, regardless of whether they're cached yet
 winetricks_list_download()
 {
-    w_try_cd "$WINETRICKS_METADATA"
+    # Piping output of w_try_cd to /dev/null since winetricks-test parses it:
+    w_try_cd "$WINETRICKS_METADATA" >/dev/null
     grep -l 'media=.download' ./*/*.vars | sed 's,.*/,,;s/\.vars//' | sort -u
 }
 
 # List verbs which are downloadable with user intervention, regardless of whether they're cached yet
 winetricks_list_manual_download()
 {
-    w_try_cd "$WINETRICKS_METADATA"
+    # Piping output of w_try_cd to /dev/null since winetricks-test parses it:
+    w_try_cd "$WINETRICKS_METADATA" >/dev/null
     grep -l 'media=.manual_download' ./*/*.vars | sed 's,.*/,,;s/\.vars//' | sort -u
 }
 
@@ -3561,7 +3569,9 @@ winetricks_list_installed()
     (
     # Jump through a couple hoops to evaluate the verbs in alphabetical order
     # Assume that no filename contains '|'
-    w_try_cd "$WINETRICKS_METADATA"
+
+    # Piping output of w_try_cd to /dev/null since winetricks-test parses it:
+    w_try_cd "$WINETRICKS_METADATA" >/dev/null
     for _W_metadatafile in $(find . -iname \*.vars | sed 's,^\(.*\)/,\1|,' | sort -t\| -k 2 | tr '|' /)
     do
         # Use a subshell to avoid putting metadata in global space

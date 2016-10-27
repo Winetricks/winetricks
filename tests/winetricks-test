@@ -12,6 +12,14 @@ cache="$XDG_CACHE_HOME/winetricks"
 
 set -x
 
+# Disable winetricks update checks:
+WINETRICKS_LATEST_VERSION_CHECK=disabled
+export WINETRICKS_LATEST_VERSION_CHECK
+
+# Disable some verbose output that makes parsing harder:
+WINETRICKS_SUPER_QUIET=1
+export WINETRICKS_SUPER_QUIET
+
 # verbs known to not work in -q mode yet
 BLACKLIST="kde|mingw|psdk2003|psdkwin7"
 # verbs that hang in -q because of simple problem we should work around soon
@@ -434,8 +442,8 @@ _EOF
 
 test_dlls()
 {
-    sh winetricks list-manual-download | grep -v 'Using winetricks' > manual.log
-    sh winetricks dlls list | grep -v 'Using winetricks' | awk '{print $1}' > dlls.log
+    sh winetricks list-manual-download > manual.log
+    sh winetricks dlls list | awk '{print $1}' > dlls.log
     if grep .------------------- dlls.log
     then
         fail "output of dlls list contained garbage"
