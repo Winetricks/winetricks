@@ -6204,9 +6204,12 @@ w_metadata dotnet35 dlls \
 load_dotnet35()
 {
     case "$W_PLATFORM" in
-    windows_cmd) ;;
-    *) w_warn "dotnet35 does not yet fully work or install on wine.  Caveat emptor." ;;
+        windows_cmd) ;;
+        *) w_warn "dotnet35 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
+
+    # This will fail later if cabextract isn't installed, so check/fail now:
+    w_try_cabextract -v >/dev/null
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6
     w_download http://download.microsoft.com/download/6/0/f/60fc5854-3cb8-4892-b6db-bd4f42510f28/dotnetfx35.exe 0a271bb44531aadef902829f98dfad66e4a57586
@@ -6255,6 +6258,9 @@ load_dotnet35sp1()
     windows_cmd) ;;
     *) w_warn "dotnet35sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
+
+    # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
+    w_try_cabextract -v >/dev/null
 
     # http://www.microsoft.com/download/en/details.aspx?id=25150
     w_download http://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 3dce66bae0dd71284ac7a971baed07030a186918
@@ -6369,6 +6375,9 @@ load_dotnet45()
         w_warn "This package may not work on a 64-bit installation"
     fi
 
+    # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
+    w_try_cabextract -v >/dev/null
+
     # http://www.microsoft.com/download/en/details.aspx?id=17718
     w_download http://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe b2ff712ca0947040ca0b8e9bd7436a3c3524bb5d
 
@@ -6424,6 +6433,9 @@ load_dotnet452()
     then
         w_warn "This package may not work on a 64-bit installation"
     fi
+
+    # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
+    w_try_cabextract -v >/dev/null
 
     # http://www.microsoft.com/download/en/details.aspx?id=17718
     w_download http://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe 89f86f9522dc7a8a965facce839abb790a285a63
@@ -11579,6 +11591,9 @@ w_metadata vc2008express apps \
 
 load_vc2008express()
 {
+    # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
+    w_try_cabextract -v >/dev/null
+
     w_call dotnet35
 
     # This is the version without SP1 baked in.  (SP1 requires dotnet35sp1, which doesn't work yet.)
