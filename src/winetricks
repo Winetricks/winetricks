@@ -149,7 +149,6 @@ W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
 if [ -x "$(which mktemp 2>/dev/null)" ]
 then
     W_TMP_EARLY="$(mktemp -d "${TMPDIR:-/tmp}/winetricks.XXXXXXXX")"
-    W_TMP_EARLY_CLEAN=1
 elif [ -w "$TMPDIR" ]
 then
     W_TMP_EARLY="$TMPDIR"
