@@ -11327,7 +11327,8 @@ load_steam()
     #  6 Jan 2015 e04aefe8bc894f11f211edec8e8a008abe0147d2
     # 21 Jun 2015 0e8046d40c38d817338135ec73a5b217cc340cf5
     # 29 Dec 2015 728e3c82fd57c68cbbdb64965719081ffee6272c
-    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 728e3c82fd57c68cbbdb64965719081ffee6272c
+    # 28 Oct 2016 e930dbdb3bc638f772a8fcd92dbcd0919c924318
+    w_download http://media.steampowered.com/client/installer/SteamSetup.exe e930dbdb3bc638f772a8fcd92dbcd0919c924318
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     # Should be fixed in newer steam versions, since 2012. Commenting out for a while before removing in case users need to revert locally
