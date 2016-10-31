@@ -866,8 +866,18 @@ w_download_to()
             #   ovewritten by the new aria2 process
             # http-accept-gzip=true (still needed) ?
 
-            $torify aria2c $aria2c_torify_opts --continue --daemon=false --dir "$_W_cache"  --enable-rpc=false --input-file='' \
-                --max-connection-per-server=5 --out "$_W_file" --save-session='' --stream-piece-selector=geom "$_W_url"
+            $torify aria2c \
+                $aria2c_torify_opts \
+                --continue \
+                --daemon=false \
+                --dir "$_W_cache" \
+                --enable-rpc=false \
+                --input-file='' \
+                --max-connection-per-server=5 \
+                --out "$_W_file" \
+                --save-session='' \
+                --stream-piece-selector=geom \
+                "$_W_url"
         elif [ -x "$(which wget 2>/dev/null)" ]
         then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
@@ -878,8 +888,11 @@ w_download_to()
            # the socket)
            # shellcheck disable=SC2086
            winetricks_wget_progress \
-               -O "$_W_file" -nd \
-               -c --read-timeout=300 --retry-connrefused \
+               -O "$_W_file" \
+               -nd \
+               -c\
+               --read-timeout=300 \
+               --retry-connrefused \
                --header "Accept-Encoding: gzip,deflate" \
                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
                ${_W_agent:+--user-agent="$_W_agent"} \
@@ -889,7 +902,10 @@ w_download_to()
            # curl doesn't get filename from the location given by the server!
            # fortunately, we know it
            # shellcheck disable=SC2086
-           $torify curl -L -o "$_W_file" -C - \
+           $torify curl \
+               -L \
+               -o "$_W_file" \
+               -C - \
                --header "Accept-Encoding: gzip,deflate" \
                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
                ${_W_agent:+--user-agent "$_W_agent"} \
