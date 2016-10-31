@@ -830,10 +830,6 @@ w_download_to()
         w_try_cd "$_W_cache"
         # Mac folks tend to have curl rather than wget
         # On Mac, 'which' doesn't return good exit status
-        # Need to jam in --header "Accept-Encoding: gzip,deflate" else
-        # redhat.com decompresses liberation-fonts.tar.gz!
-        # Note: this causes other sites to compress downloads, hence
-        # the kludge further down.  See http://code.google.com/p/winezeug/issues/detail?id=77
         echo "Downloading $_W_url to $_W_cache"
 
         # For sites that prefer Mozilla in the user-agent header, set W_BROWSERAGENT=1
@@ -864,8 +860,6 @@ w_download_to()
             #   attempt to download everything in that input file again.
             # --save-session='' if the user has specified save-session in their config, their session will be
             #   ovewritten by the new aria2 process
-            # http-accept-gzip=true (still needed) ?
-
             $torify aria2c \
                 $aria2c_torify_opts \
                 --continue \
@@ -893,7 +887,6 @@ w_download_to()
                -c\
                --read-timeout=300 \
                --retry-connrefused \
-               --header "Accept-Encoding: gzip,deflate" \
                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
                ${_W_agent:+--user-agent="$_W_agent"} \
                "$_W_url"
@@ -906,7 +899,6 @@ w_download_to()
                -L \
                -o "$_W_file" \
                -C - \
-               --header "Accept-Encoding: gzip,deflate" \
                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
                ${_W_agent:+--user-agent "$_W_agent"} \
                "$_W_url"
@@ -917,6 +909,7 @@ w_download_to()
         then
             # Need to decompress .exe's that are compressed, else Cygwin fails
             # Also affects ttf files on github
+            # FIXME: gzip hack below may no longer be needed, but need to investigate before removing
             _W_filetype=$(which file 2>/dev/null)
             case $_W_filetype-$_W_file in
             /*-*.exe|/*-*.ttf|/*-*.zip)
