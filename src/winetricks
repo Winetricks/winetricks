@@ -9655,8 +9655,9 @@ load_liberation()
 
     w_download https://fedorahosted.org/releases/l/i/liberation-fonts/liberation-fonts-1.04.tar.gz 097882c92e3260742a3dc3bf033792120d8635a3
     w_try_cd "$W_TMP"
-    gunzip -dc "$W_CACHE"/liberation/liberation-fonts-1.04.tar.gz | tar -xf -
-    mv liberation-fonts-1.04/*.ttf "$W_FONTSDIR_UNIX"
+    # FIXME: w_try doesn't work here, presumably because of the pipe?
+    gunzip -dc "$W_CACHE/$W_PACKAGE/$file1" | tar -xf -
+    w_try mv liberation-fonts-1.04/*.ttf "$W_FONTSDIR_UNIX"
 
     w_register_font LiberationMono-BoldItalic.ttf "LiberationMono-BoldItalic"
     w_register_font LiberationMono-Bold.ttf "LiberationMono-Bold"
