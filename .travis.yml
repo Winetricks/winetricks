@@ -5,8 +5,8 @@ dist: trusty
 before_install:
     # Not in trusty (in trusty-backports, but those aren't available in TravisCI)
     - echo "deb http://archive.ubuntu.com/ubuntu/ xenial universe" | sudo tee -a /etc/apt/sources.list
-    - sudo apt-get -q update
-    - sudo apt-get install shellcheck
+    - time sudo apt-get -q update
+    - time sudo apt-get install shellcheck
 
 addons:
   apt:
@@ -21,4 +21,4 @@ addons:
     # - unzip
     # - wine
 
-script: sh ./tests/shell-checks
+script: time sh ./tests/shell-checks
