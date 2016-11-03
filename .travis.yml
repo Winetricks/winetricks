@@ -1,12 +1,17 @@
 language: shell
+os:
+  - linux
+  - osx
 sudo: required
 dist: trusty
 
-before_install:
-    # Not in trusty (in trusty-backports, but those aren't available in TravisCI)
-    - echo "deb http://archive.ubuntu.com/ubuntu/ xenial universe" | sudo tee -a /etc/apt/sources.list
-    - time sudo apt-get -q update
-    - time sudo apt-get install shellcheck
+
+# Note: needed by winetricks-test, which not yet supported in TravisCI
+# - cabextract
+# - p7zip
+# - unrar
+# - unzip
+# - wine
 
 addons:
   apt:
@@ -14,11 +19,15 @@ addons:
     # for checkbashisms
     - devscripts
 
-    # Needed by winetricks-test, not yet supported in TravisCI
-    # - cabextract
-    # - p7zip
-    # - unrar
-    # - unzip
-    # - wine
+# Note: if statements cannot go across multiple lines. Combine into one, or move to a shell script!
+
+# On Ubuntu, shellcheck is not in trusty, but is in trusty-backports, but those aren't available in TravisCI..)
+before_install:
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then echo "deb http://archive.ubuntu.com/ubuntu/ xenial universe" | sudo tee -a /etc/apt/sources.list ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get -q update ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install shellcheck ; fi
+
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew update ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install checkbashisms shellcheck ; fi
 
 script: time sh ./tests/shell-checks
