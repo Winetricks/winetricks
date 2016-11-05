@@ -18822,6 +18822,30 @@ load_winxp()
 
 #----------------------------------------------------------------
 
+# Not really a setting, just a fake verb, that shouldn't count as 'installed',
+# that always works
+
+w_metadata good settings \
+    title="Fake verb that always returns true"
+
+load_good()
+{
+    w_info "$W_PACKAGE succeeded!"
+}
+
+#----------------------------------------------------------------
+
+# Not really a setting, just a fake verb, that shouldn't count as 'installed',
+# that always fails
+
+w_metadata bad settings \
+    title="Fake verb that always returns false"
+
+load_bad()
+{
+    w_die "$W_PACKAGE failed!"
+}
+
 #---- Derived Metadata ----
 # Generated automatically by measuring time and space requirements of all verbs
 # size_MB includes size of virgin wineprefix, but not the cached installer
