@@ -39,8 +39,17 @@ echo "======================== Begin shellcheck version info ===================
 shellcheck --version
 echo "======================== End shellcheck version info ==========================="
 
-for shellscript in \
-    $(git ls-files | xargs file | grep -e 'POSIX shell script' | cut -d : -f1)
+# Use git ls-files if available, this prevents 'finding' scripts that aren't checked into git.
+# E.g., if patching foo fails, then foo.orig would also be 'found'.
+# The find fallback is for non git users, e.g., distros packaging winetricks or end users
+# running shell-checks from a tarball download.
+if [ -d .git ] ; then
+    files_to_check="$(git ls-files | xargs file | grep -e 'POSIX shell script' | cut -d : -f1)"
+else
+    files_to_check="$(find . -type f -exec file {} \; | grep -e 'POSIX shell script' | cut -d : -f1)"
+fi
+
+for shellscript in $files_to_check
 do
     echo "Checking ${shellscript} for bashisms:"
     w_try checkbashisms --posix "${shellscript}"
