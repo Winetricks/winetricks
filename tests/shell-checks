@@ -26,6 +26,8 @@ if ! command checkbashisms > /dev/null 2>&1 ; then
     w_die "checkbashisms must be installed!"
 elif ! command shellcheck --version > /dev/null 2>&1 ; then
     w_die "shellcheck must be installed!"
+elif [ ! -f Makefile ] ; then
+    w_die "$0 should be run from the top of the source tree"
 fi
 
 # Different versions can give different results:
