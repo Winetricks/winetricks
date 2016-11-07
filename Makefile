@@ -123,3 +123,7 @@ test:
 	echo 'And now, the one hour run check.'
 	if test ! -z "$(XDG_CACHE_HOME)" ; then rm -rf $(XDG_CACHE_HOME)/winetricks ; else rm -rf $(HOME)/.cache/winetricks ; fi
 	cd src; if test -z "$(WINEARCH)" ; then export WINEARCH=win32 ; fi ; sh ../tests/winetricks-test full
+
+xvfb-check:
+	echo "xvfb runs make check, for verbs safe for it"
+	cd src; if test -z "$(WINEARCH)" ; then export WINEARCH=win32 ; fi ; sh ../tests/winetricks-test xvfb-check

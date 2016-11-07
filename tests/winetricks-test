@@ -62,6 +62,12 @@ if [ "$TRAVIS" = "true" ]; then
     BLACKLIST="$ARCHIVE_ORG_BLACKLIST|$BLACKLIST"
 fi
 
+# Tests that fail under Xvfb
+XVFB_DOTNET_BLACKLIST="dotnet11|dotnet11sp1|dotnet20|dotnet20sdk|dotnet20sp1|dotnet30|dotnet40|dotnet46"
+XVFB_BLACKLIST="$XVFB_DOTNET_BLACKLIST|adobeair|binkw32|dirac|directmusic|dxdiag|flash|gdiplus_winxp|gfw|ie6|ie7|ie8"
+XVFB_BLACKLIST="$XVFB_BLACKLIST|jet40|nuget|quicktime72|vcrun2008|vcrun2010|vcrun2012|vcrun2013|vcrun2015"
+XVFB_BLACKLIST="$XVFB_BLACKLIST|vjrun20|windowscodecs|wmi|wmp9|wmp10|wsh56js|wsh56vb|xmllite|xna31|xna40|xvid"
+
 # Verbs known to update frequently
 QUICKCHECK="flash steam"
 
@@ -179,7 +185,7 @@ srcdir=$(cd "$(dirname "$0")" || w_die "Could not cd to $(dirname "$0")" ; pwd)
 
 test_speed()
 {
-    if ! w_time sh winetricks nocrashdialog "$1" > foo.log
+    if ! w_time "$XVFB" sh winetricks nocrashdialog "$1" > foo.log
     then
         fail "winetricks $1 returned status $?"
     fi
@@ -257,6 +263,7 @@ test_app()
     case "$app" in
     allcodecs) ;;
     *)
+        # no xvfb needed
         sh winetricks -q list-installed > list-installed.out
         if ! grep -w "$app" list-installed.out
         then
@@ -292,15 +299,15 @@ test_command()
     fi
 
     # Isolate us from the user's home directory
-    sh -x winetricks sandbox
+    "$XVFB" sh -x winetricks sandbox
 
     echo "Installing $command"
     if [ "$EXPECT_FAIL" = "yes" ]
     then
         # A success is failure:
         # shellcheck disable=SC2086
-        sh winetricks --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
-    elif ! w_time sh winetricks --no-isolate -q nocrashdialog "$@"
+        "$XVFB" sh winetricks --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
+    elif ! w_time "$XVFB" sh winetricks --no-isolate -q nocrashdialog "$@"
     then
         rm df-daemon
         fail "test_command $command failed!"
@@ -373,12 +380,14 @@ load_false()
 
 _EOF
 
+    # no xvfb needed
     sh winetricks --no-isolate true.verb ; ret=$?
     case $ret in
         0) pass "true.verb not isolated, as apps passed" ;;
         *) fail "true.verb not isolated, as apps failed" ;;
     esac
 
+    # no xvfb needed
     sh winetricks --no-isolate false.verb ; ret=$?
     case $ret in
         0) fail "false.verb not isolated, as apps worked, should have failed" ;;
@@ -386,12 +395,14 @@ _EOF
         *) fail "false.verb not isolated, as apps failed in unexpected way" ;;
     esac
 
+    # no xvfb needed
     sh winetricks --isolate true.verb ; ret=$?
     case $ret in
         0) pass "true.verb isolated, as apps passed" ;;
         *) fail "true.verb isolated, as apps failed" ;;
     esac
 
+    # no xvfb needed
     sh winetricks --isolate false.verb ; ret=$?
     case $ret in
         0) fail "false.verb isolated, as apps worked, should have failed" ;;
@@ -423,12 +434,14 @@ load_false()
 }
 _EOF
 
+    # no xvfb needed
     sh winetricks --no-isolate true.verb ; ret=$?
     case $ret in
         0) pass "true.verb isolated, as dlls passed" ;;
         *) fail "true.verb isolated, as dlls failed" ;;
     esac
 
+    # no xvfb needed
     sh winetricks --no-isolate false.verb ; ret=$?
     case $ret in
         0) fail "false.verb isolated, as dlls worked, should have failed" ;;
@@ -436,12 +449,14 @@ _EOF
         *) fail "false.verb isolated, as dlls failed in unexpected way" ;;
     esac
 
+    # no xvfb needed
     sh winetricks --no-isolate true.verb ; ret=$?
     case $ret in
         0) pass "true.verb isolated, as dlls passed" ;;
         *) fail "true.verb isolated, as dlls failed" ;;
     esac
 
+    # no xvfb needed
     sh winetricks --no-isolate false.verb ; ret=$?
     case $ret in
         0) fail "false.verb isolated, as dlls worked, should have failed" ;;
@@ -455,6 +470,7 @@ _EOF
 
 test_dlls()
 {
+    # no xvfb needed
     sh winetricks list-manual-download > manual.log
     sh winetricks dlls list | awk '{print $1}' > dlls.log
     if grep .------------------- dlls.log
@@ -508,6 +524,7 @@ test_dotnet()
 
 test_manual_dlls()
 {
+    # no xvfb needed
     sh winetricks list-manual-download > manual.log
     sh winetricks dlls list | awk '{print $1}' > dlls.log
     if grep .------------------- dlls.log
@@ -523,6 +540,7 @@ test_manual_dlls()
 
 test_install_cached_or_download()
 {
+    # no xvfb needed
     sh winetricks list-cached list-download > ticd.log
     if grep .------------------- ticd.log
     then
@@ -547,6 +565,8 @@ test_install_cached_or_download()
     do
         test_app "$a"
     done
+
+    # no xvfb needed
     sh winetricks list-cached | sort > cached.txt
     # Verbs that are just wrappers around others don't detect cache/install
     # state yet.
@@ -596,12 +616,26 @@ test_full() {
     test_custom_verbs
 }
 
+test_xvfb() {
+    if [ ! "$(which xvfb-run 2>/dev/null)" ] ; then
+        w_die "Please install xvfb-run for xvfb tests"
+    fi
+
+    BLACKLIST="$BLACKLIST|$XVFB_BLACKLIST"
+    export BLACKLIST
+
+    # Not test_quick() since flash fails without proper X, but test_quick() doesn't respect $BLACKLIST
+    # Also, we don't really want to duplicate those tests twice, as this is for TravisCI where time is limited..
+    test_dlls
+}
+
 case "$1" in
 check-deps) check_deps ; exit $? ;;
 custom-verbs) test_custom_verbs;;
 dotnet) check_deps && test_dotnet;;
 full)  check_deps && test_full;;
 quick) check_deps && test_quick;;
+xvfb-check) check_deps && XVFB=xvfb-run && export XVFB && test_xvfb ;;
 *)     echo "Usage: $0 quick\|full"; exit 1;;
 esac
 
