@@ -255,7 +255,7 @@ test_app()
     # Cleanup..
     rm df-daemon
     # Total max disk usage = max df change plus any initial blocks in cache
-    DF_MIN=$(awk '{ if (min == "" || $1 < min) min=$1; } END {print min}' < df-during.log )
+    DF_MIN=$(awk '{ if (min == "" || $1 < min) min=$1; } END {printf "%d\n", min}' < df-during.log )
     DF_DIFF=$((DF_START - DF_MIN))
     TOTAL=$((DF_DIFF + DU_CACHE_START))
     echo "test_app: ${app}: max_disk $TOTAL blocks."
