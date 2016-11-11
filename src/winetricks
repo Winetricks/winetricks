@@ -2412,7 +2412,7 @@ w_do_call()
             ;;
         *)
             # shellcheck disable=SC2154
-            case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+            case "${category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
             apps-0|benchmarks-0|games-0)
                 winetricks_set_wineprefix "$cmd"
                 # If it's a new wineprefix, give it metadata
@@ -2515,6 +2515,7 @@ REGEDIT4
 _EOF_
     # too verbose
     w_try_regedit "$W_TMP_WIN"\\_register-font.reg
+    # shellcheck disable=SC1037
     cp "$W_TMP"/*.reg "$W_TMP_EARLY"/_reg$$.reg
 
     # Wine also updates the win9x fonts key, so let's do that, too
@@ -2525,6 +2526,7 @@ REGEDIT4
 "$font"="$file"
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\_register-font.reg
+    # shellcheck disable=SC1037
     cp "$W_TMP"/*.reg "$W_TMP_EARLY"/_reg$$-2.reg
 }
 
@@ -3514,7 +3516,7 @@ winetricks_is_installed()
         ;;
     *)
         # Compute wineprefix for this app
-        case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+        case "${category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
         apps-0|benchmarks-0|games-0)
             _W_prefix="$W_PREFIXES_ROOT/$1"
             ;;
@@ -3902,20 +3904,20 @@ winetricks_cache_iso()
       WINETRICKS_DD_PID=$!
       ;;
     esac
-    echo $WINETRICKS_DD_PID > "$WINETRICKS_WORKDIR"/dd-pid
+    echo "$WINETRICKS_DD_PID" > "$WINETRICKS_WORKDIR"/dd-pid
 
     # Note: if user presses ^C, winetricks_cleanup will call winetricks_iso_cleanup
     # FIXME: add progress bar for kde, too
     case $WINETRICKS_GUI in
     none|kdialog)
-        while ps -p $WINETRICKS_DD_PID > /dev/null 2>&1
+        while ps -p "$WINETRICKS_DD_PID" > /dev/null 2>&1
         do
           sleep 5
           ls -l "$W_CACHE"/temp.iso
         done
         ;;
     zenity)
-        while ps -p $WINETRICKS_DD_PID > /dev/null 2>&1
+        while ps -p "$WINETRICKS_DD_PID" > /dev/null 2>&1
         do
           echo 1
           sleep 2
@@ -17909,7 +17911,7 @@ load_civ5_demo_steam()
         # finds the dialog it's looking for, clicks, and exits.
         w_info "If you already own the full Civ 5 game on Steam, the installer won't even appear."
     w_steam_install_game 65900 "Sid Meier's Civilization V - Demo"
-    kill -s HUP $_job   # just in case
+    kill -s HUP "$_job"   # just in case
 }
 
 #----------------------------------------------------------------
@@ -19376,7 +19378,7 @@ then
             if test "$verbs" = ""
             then
                 # "user didn't pick anything, back up a level in the menu"
-                case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+                case "${WINETRICKS_CURMENU}-${WINETRICKS_OPT_SHAREDPREFIX}" in
                 apps-0|benchmarks-0|games-0|main-*) WINETRICKS_CURMENU=prefix ;;
                 prefix-*) break ;;
                 *)    WINETRICKS_CURMENU=main ;;
@@ -19399,7 +19401,7 @@ then
                     do
                         execute_command "$verb"
                     done
-                    case "$WINETRICKS_CURMENU"-"$WINETRICKS_OPT_SHAREDPREFIX" in
+                    case "${WINETRICKS_CURMENU}-${WINETRICKS_OPT_SHAREDPREFIX}" in
                     prefix-*|apps-0|benchmarks-0|games-0)
                         # After installing isolated app, return to prefix picker
                         WINETRICKS_CURMENU=prefix
