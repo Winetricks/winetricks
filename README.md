@@ -38,3 +38,13 @@ Makefile supports a few test targets:
 * check - runs './tests/winetricks-tests quick' (without first clearing $WINETRICKS_CACHE)
 * shell-checks - runs './tests/shell-checks'
 * test - runs './tests/winetricks-tests full' (and clears $WINETRICKS_CACHE first)
+
+# Support
+* Winetricks is maintained by Austin English <austinenglish!$gmail.com>.
+* If winetricks has helped you out, then please consider donating to the FSF/EFF as a thank you:
+  * EFF - https://supporters.eff.org/donate/button
+  * FSF - https://my.fsf.org/donate
+* Donations towards electricity bill and developer beer fund can be sent via Paypal to above address.
+* I try to actively respond to bugs and pull requests on GitHub:
+* Bugs: https://github.com/Winetricks/winetricks/issues/new
+* Pull Requests: https://github.com/Winetricks/winetricks/pulls
