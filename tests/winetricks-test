@@ -451,6 +451,14 @@ test_dlls()
     fi
     sort -u < dlls.log | fgrep -w -v -f manual.log | egrep -v "$BLACKLIST" > dlls.verbs
 
+    if [ "$(wc -l dll.verbs)" -eq 0 ] ; then
+        echo "No verbs left after blacklisting? Nothing to test. Check your blacklists."
+        exit 1
+    else
+        echo "Testing these verbs:"
+        cat dll.verbs
+    fi
+
     while IFS= read -r line; do
         test_app "$line"
     done < dlls.verbs
