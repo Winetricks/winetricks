@@ -792,6 +792,12 @@ w_download_to()
         w_try mkdir -p "$_W_cache"
     fi
 
+    # Common values for aria2c/curl/wget
+    # Connection timeout time (in seconds):
+    WINETRICKS_DOWNLOADER_TIMEOUT=${WINETRICKS_DOWNLOADER_TIMEOUT:-15}
+    # Number of retry attempts:
+    WINETRICKS_DOWNLOADER_RETRIES=${WINETRICKS_DOWNLOADER_RETRIES:-3}
+
     # Try download twice
     checksum_ok=""
     tries=0
@@ -872,12 +878,14 @@ w_download_to()
             #   ovewritten by the new aria2 process
             $torify aria2c \
                 $aria2c_torify_opts \
+                --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
                 --continue \
                 --daemon=false \
                 --dir "$_W_cache" \
                 --enable-rpc=false \
                 --input-file='' \
                 --max-connection-per-server=5 \
+                --max-tries="$WINETRICKS_DOWNLOADER_RETRIES" \
                 --out "$_W_file" \
                 --save-session='' \
                 --stream-piece-selector=geom \
@@ -897,6 +905,8 @@ w_download_to()
                -c\
                --read-timeout=300 \
                --retry-connrefused \
+               --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+               --tries="$WINETRICKS_DOWNLOADER_RETRIES" \
                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
                ${_W_agent:+--user-agent="$_W_agent"} \
                "$_W_url"
@@ -906,9 +916,11 @@ w_download_to()
            # fortunately, we know it
            # shellcheck disable=SC2086
            $torify curl \
+               --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
                -L \
                -o "$_W_file" \
                -C - \
+               --retry="$WINETRICKS_DOWNLOADER_RETRIES" \
                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
                ${_W_agent:+--user-agent "$_W_agent"} \
                "$_W_url"
