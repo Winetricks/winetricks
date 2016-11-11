@@ -32,7 +32,9 @@ load_iceweasel()
 ```
 Note that the filename and command name (icecat) must match. All metadata fields are optional, only command name and category required.
 
-
 # Tests
 The tests need `checkbashisms` and `shellcheck` installed.
-Makefile supports two tests targets, check and test. `make check` will run `tests/winetricks-test`, while `make test` will first delete winetricks' cache, then run `tests/winetricks-test`, to ensure that the downloads are still valid.
+Makefile supports a few test targets:
+* check - runs './tests/winetricks-tests quick' (without first clearing $WINETRICKS_CACHE)
+* shell-checks - runs './tests/shell-checks'
+* test - runs './tests/winetricks-tests full' (and clears $WINETRICKS_CACHE first)
