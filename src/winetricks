@@ -781,10 +781,14 @@ w_download_to()
         _W_file=$(basename "$_W_url")
     fi
 
-    if [ -z "${_W_packagename%%/*}" ] && pathchk -P "$_W_packagename" ; then
-        _W_cache="$_W_packagename"
+    if echo "${_W_packagename}" | grep -q -e '\/-' -e '^-'; then
+            w_die "Invalid path ${_W_packagename} given"
     else
-        _W_cache="$W_CACHE/$_W_packagename"
+        if ! echo "${_W_packagename}" | grep -q '^/' ; then
+            _W_cache="$W_CACHE/$_W_packagename"
+        else
+            _W_cache="$_W_packagename"
+        fi
     fi
 
     if test ! -d "$_W_cache"
