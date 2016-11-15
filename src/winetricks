@@ -758,11 +758,11 @@ winetricks_selfupdate_rollback()
 }
 
 # Download a file
-# Usage: w_download_to packagename url [sha1sum [filename [cookie jar]]]
+# Usage: w_download_to (packagename|path to download file) url [sha1sum [filename [cookie jar]]]
 # Caches downloads in winetrickscache/$packagename
 w_download_to()
 {
-    _W_packagename="$1"
+    _W_packagename="$1" # or path to download file to
     _W_url="$2"
     _W_sum="$3"
     _W_file="$4"
