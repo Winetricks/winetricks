@@ -11008,23 +11008,6 @@ $W_CACHE/$W_PACKAGE/key.txt and rerun."
 
 #----------------------------------------------------------------
 
-w_metadata opera apps \
-    title="Opera 11" \
-    publisher="Opera Software" \
-    year="2011" \
-    media="download" \
-    file1="Opera_1150_en_Setup.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Opera/opera.exe"
-
-load_opera()
-{
-    w_download ftp://ftp.opera.com/pub/opera/win/1150/en/Opera_1150_en_Setup.exe df50c7aed50e92af858e8834f833dd0543014b46
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /silent /launchopera 0 /allusers}
-}
-
-#----------------------------------------------------------------
-
 w_metadata picasa39 apps \
     title="Picasa 3.9" \
     publisher="Google" \
