@@ -1,4 +1,8 @@
 #!/bin/sh
+# shellcheck disable=SC2030,SC2031
+# SC2030: Modification of WINE is local (to subshell caused by (..) group).
+# SC2031: WINE was modified in a subshell. That change might be lost
+# This has to be right after the shebang, see: https://github.com/koalaman/shellcheck/issues/779
 
 # Name of this version of winetricks (YYYYMMDD)
 # (This doesn't change often, use the sha1sum of the file when reporting problems)

@@ -22,8 +22,9 @@ addons:
 # Note: if statements cannot go across multiple lines. Combine into one, or move to a shell script!
 
 # On Ubuntu, shellcheck is not in trusty, but is in trusty-backports, but those aren't available in TravisCI..)
+# Using zesty to get 0.4.4, which has support for disabling a check globally within a file
 before_install:
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then echo "deb http://archive.ubuntu.com/ubuntu/ xenial universe" | sudo tee -a /etc/apt/sources.list ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then echo "deb http://archive.ubuntu.com/ubuntu/ zesty universe" | sudo tee -a /etc/apt/sources.list ; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get -q update ; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install shellcheck ; fi
 
