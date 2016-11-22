@@ -1632,13 +1632,14 @@ w_ahk_do()
         chmod +x "$W_CACHE/ahk/AutoHotkey.exe"
     fi
 
-    _W_CR=$(printf \\\\r)
-    cat <<_EOF_ | sed "s/\$/$_W_CR/" > "$W_TMP"/tmp.ahk
+    # Previously this used printf + sed, but that was broken with BSD sed (FreeBSD/OS X):
+    # https://github.com/Winetricks/winetricks/issues/697
+    # So now using trying awk instead (next, perl):
+    cat <<_EOF_ | awk 'sub("$", "\r")' > "$W_TMP"/tmp.ahk
 w_opt_unattended = ${W_OPT_UNATTENDED:-0}
 $@
 _EOF_
     w_try "$WINE" "$W_CACHE_WIN\\ahk\\AutoHotkey.exe" "$W_TMP_WIN"\\tmp.ahk
-    unset _W_CR
 }
 
 # Function to protect Wine-specific sections of code.
