@@ -31,4 +31,16 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew update ; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install checkbashisms shellcheck ; fi
 
+# Note if testing on a branch, you can replace this with your desired command, e.g.,:
+# script: time sh ./src/winetricks -q comctl32
+# Some tests require a working $DISPLAY, and not just Xvfb. See tests/winetricks-test for the list.
+# Either skip those / test manually, or run them on OS X.
+
+# Also note:
+# Installing wine on the vms is a pain.
+# Linux: currently can't get 1.8.x / 1.9.x installed :/
+# OS X: 38 minutes
+
+# shell-checks is quick and works, no display or compiles needed
+
 script: time sh ./tests/shell-checks
