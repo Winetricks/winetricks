@@ -49,6 +49,19 @@ BLACKLIST="$BLACKLIST|xvid"
 # https://bugs.winehq.org/show_bug.cgi?id=40460
 BLACKLIST="$BLACKLIST|dotnet20sp2|xna31"
 
+# Travis CI is apparently blocking archive.org, which breaks several verbs:
+# https://github.com/travis-ci/travis-ci/issues/6798
+# Blacklist those verbs on those hosts:
+# FIXME: setup another test target for torify, use it to d/l these?
+ARCHIVE_ORG_BLACKLIST="atmlib|avifil32|cabinet|cmd|comctl32ocx|comdgl32ocx|gmdls|mdac27|mfc40|msflxgrd|mshflxgd"
+ARCHIVE_ORG_BLACKLIST="$ARCHIVE_ORG_BLACKLIST|msls31ms|msmask|msscript|msxml3|pdh|pngfilt|riched30"
+ARCHIVE_ORG_BLACKLIST="$ARCHIVE_ORG_BLACKLIST|richtx32|secur32|tabctl32|usp10|"
+
+# See https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables
+if [ "$TRAVIS" = "true" ]; then
+    BLACKLIST="$ARCHIVE_ORG_BLACKLIST|$BLACKLIST"
+fi
+
 # Verbs known to update frequently
 QUICKCHECK="flash steam"
 
