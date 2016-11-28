@@ -2598,6 +2598,7 @@ w_append_path()
     _W_NEW_PATH="$(printf %s "$1" | sed 's,\\\\,\\\\\\\\,g')"
     _W_WIN_PATH="$(w_expand_env PATH | sed 's,\\\\,\\\\\\\\,g')"
 
+    # FIXME: OS X? https://github.com/Winetricks/winetricks/issues/697
     sed 's/$/\r/' > "$W_TMP"/path.reg <<_EOF_
 REGEDIT4
 
