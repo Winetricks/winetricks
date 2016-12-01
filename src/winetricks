@@ -9475,7 +9475,7 @@ w_metadata droid fonts \
     installed_file1="$W_FONTSDIR_WIN/DroidSans-Bold.ttf"
 
 do_droid() {
-    w_download "${DROID_URL}$1'?raw=true'" "$3"  "$1"
+    w_download "${DROID_URL}$1?raw=true'" "$3"  "$1"
     w_try cp -f "$W_CACHE/droid/$1" "$W_FONTSDIR_UNIX"
     w_register_font "$1" "$2"
 }
