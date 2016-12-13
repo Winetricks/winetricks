@@ -58,7 +58,7 @@ ARCHIVE_ORG_BLACKLIST="$ARCHIVE_ORG_BLACKLIST|msls31ms|msmask|msscript|msxml3|pd
 ARCHIVE_ORG_BLACKLIST="$ARCHIVE_ORG_BLACKLIST|richtx32|secur32|tabctl32|usp10|"
 
 # See https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables
-if [ "$TRAVIS" = "true" ]; then
+if [ "$TRAVIS" = "true" ] ; then
     BLACKLIST="$ARCHIVE_ORG_BLACKLIST|$BLACKLIST"
 fi
 
@@ -71,6 +71,9 @@ XVFB_BLACKLIST="$XVFB_BLACKLIST|vjrun20|windowscodecs|wmi|wmp9|wmp10|wsh56js|wsh
 # Verbs known to update frequently
 QUICKCHECK="flash steam"
 
+passes=0
+errors=0
+
 # Check for programs this script (or winetricks) uses.
 # Better to find out they're missing now than in the
 # middle of a two day run.
@@ -79,6 +82,7 @@ check_deps() {
     do
         which $tool
         ret=$?
+
         if [ ! $ret -eq 0 ]
         then
             echo "Please install $tool."
@@ -86,9 +90,6 @@ check_deps() {
         fi
      done
 }
-
-passes=0
-errors=0
 
 fail()
 {
@@ -160,15 +161,10 @@ case "$OS" in
         /usr/lib/x86_64-linux-gnu/wine-development/wineserver \
         file-not-found
     do
-        if test -x "$x"
-        then
+        if [ -x "$x" ] ; then
             case "$x" in
-             /usr/lib/*/wine-development/wineserver)
-                if test -x /usr/bin/wine-development
-                then
-                    WINE="/usr/bin/wine-development"
-                fi
-                ;;
+                /usr/lib/*/wine-development/wineserver)
+                        if [ -x /usr/bin/wine-development ] ; then WINE="/usr/bin/wine-development" ; fi ;;
             esac
             break
         fi
@@ -190,23 +186,23 @@ test_speed()
     then
         fail "winetricks $1 returned status $?"
     fi
+
     # shellcheck disable=SC2046
-    if test $(wc -l < foo.log) -lt 5
-    then
+    if [ $(wc -l < foo.log) -lt 5 ] ; then
         fail "winetricks $1 returned too few lines"
     fi
-    if ! test -f time.log
-    then
+
+    if [ ! -f time.log ] ; then
         # OSX, fake it:
         seconds=0
     else
         seconds=$(awk '/real/ {print $2}' < time.log | sed 's/\..*//')
     fi
+
     echo "test_speed: winetricks $1 took $seconds seconds"
     # Longest runtime as of 11 Dec 2010 is 5 seconds on an e8400 with cygwin
     # shellcheck disable=SC2086
-    if test $seconds -gt 7
-    then
+    if [ $seconds -gt 7 ] ; then
         fail "test_speed: winetricks $1 took $seconds seconds"
     fi
 }
@@ -247,8 +243,7 @@ test_app()
 
     # Watch transient disk space
     DF_START=$(total_df)
-    if test -d "$W_CACHE/$app"
-    then
+    if [ -d "$W_CACHE/$app" ] ; then
         DU_CACHE_START=$(du -s "$W_CACHE/$app" | awk '{print $1}')
     else
         DU_CACHE_START=0
@@ -294,8 +289,7 @@ test_command()
     DRIVE_C="$WINEPREFIX/dosdevices/c:"
 
     # always use a clean $WINEPREFIX
-    if test -d "$WINEPREFIX"
-    then
+    if [ -d "$WINEPREFIX" ] ; then
         rm -rf "$WINEPREFIX"
     fi
 
@@ -305,25 +299,24 @@ test_command()
     echo "Installing $command"
 
     # shellcheck disable=SC2086
-    if [ "$EXPECT_FAIL" = "yes" ]
-    then
+    if [ "$EXPECT_FAIL" = "yes" ] ; then
         # A success is failure:
         # shellcheck disable=SC2086
         $XVFB sh winetricks --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
-    elif ! w_time $XVFB sh winetricks --no-isolate -q nocrashdialog "$@"
-    then
+    elif ! w_time $XVFB sh winetricks --no-isolate -q nocrashdialog "$@" ; then
         rm df-daemon
         fail "test_command $command failed!"
         return
     else
         echo "winetricks $* completed"
     fi
-    if ! test -f time.log
-    then
+
+    if [ ! -f time.log ] ; then
         seconds=0
     else
         seconds=$(awk '/real/ {print $2}' < time.log | sed 's/\..*//')
     fi
+
     echo "test_app: ${app}: install_time $seconds seconds."
 
     # Cleanup:
@@ -476,8 +469,7 @@ test_dlls()
     # no xvfb needed
     sh winetricks list-manual-download > manual.log
     sh winetricks dlls list | awk '{print $1}' > dlls.log
-    if grep .------------------- dlls.log
-    then
+    if grep .------------------- dlls.log ; then
         fail "output of dlls list contained garbage"
         exit 1
     fi
@@ -531,12 +523,12 @@ test_manual_dlls()
     # no xvfb needed
     sh winetricks list-manual-download > manual.log
     sh winetricks dlls list | awk '{print $1}' > dlls.log
-    if grep .------------------- dlls.log
-    then
+    if grep .------------------- dlls.log ; then
         fail "output of dlls list contained garbage"
         exit 1
     fi
     cat dlls.log manual.log | sort | uniq -c | awk '$1 == 2 {print $2}' | egrep -v "$BLACKLIST" > dlls.verbs
+
     while IFS= read -r line; do
         test_app "$line"
     done < dlls.verbs
@@ -546,15 +538,13 @@ test_install_cached_or_download()
 {
     # no xvfb needed
     sh winetricks list-cached list-download > ticd.log
-    if grep .------------------- ticd.log
-    then
+    if grep .------------------- ticd.log ; then
         fail "output of list-cached list-download contained garbage"
         exit 1
     fi
     sort -u < ticd.log | egrep -v "$BLACKLIST" > ticd.verbs
 
-    if true
-    then
+    if true ; then
         # Split into two, only do half
         nverbs=$(wc -l < ticd.verbs )
         firsthalf=$((nverbs / 2 + 1))
@@ -572,11 +562,12 @@ test_install_cached_or_download()
 
     # no xvfb needed
     sh winetricks list-cached | sort > cached.txt
-    # Verbs that are just wrappers around others don't detect cache/install
-    # state yet.
+
+    # Verbs that are just wrappers around others don't detect cache/install state yet.
     # Verbs that are just informative placeholders don't ever download (gecko).
     # And some verbs (gecko110) don't usually install for other reasons.
     BLACKLIST_CACHE="allfonts\|cjkfonts\|allcodecs\|gecko\|gecko110\|fontfix"
+
     egrep -vw "$BLACKLIST_CACHE" ticd.verbs > download.txt
     comm -23 download.txt cached.txt > download-but-not-cached.txt
     echo "Supposedly downloadable"
@@ -585,9 +576,9 @@ test_install_cached_or_download()
     cat cached.txt
     echo "Downloadable but not cached"
     cat download-but-not-cached.txt
+
     # shellcheck disable=SC2046
-    if test $(wc -l < download-but-not-cached.txt) != 0
-    then
+    if [ $(wc -l < download-but-not-cached.txt) != 0 ] ; then
         fail "test_install_cached_or_download: asked to install all downloadable apps, but some not listed as cached afterwards"
         cat download-but-not-cached.txt
     fi
@@ -634,18 +625,17 @@ test_xvfb() {
 }
 
 case "$1" in
-check-deps) check_deps ; exit $? ;;
-custom-verbs) test_custom_verbs;;
-dotnet) check_deps && test_dotnet;;
-full)  check_deps && test_full;;
-quick) check_deps && test_quick;;
-xvfb-check) check_deps && XVFB=xvfb-run && export XVFB && test_xvfb ;;
-*)     echo "Usage: $0 quick\|full"; exit 1;;
+    check-deps) check_deps ; exit $? ;;
+    custom-verbs) test_custom_verbs ;;
+    dotnet) check_deps && test_dotnet ;;
+    full)  check_deps && test_full ;;
+    quick) check_deps && test_quick ;;
+    xvfb-check) check_deps && XVFB=xvfb-run && export XVFB && test_xvfb ;;
+    *) echo "Usage: $0 quick\|full" ; exit 1 ;;
 esac
 
 echo "Test over, $errors failures, $passes successes."
-if test $errors = 0 && test $passes -gt 0
-then
+if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
     echo PASS
     exit 0
 else
