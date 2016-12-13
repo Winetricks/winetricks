@@ -185,7 +185,8 @@ srcdir=$(cd "$(dirname "$0")" || w_die "Could not cd to $(dirname "$0")" ; pwd)
 
 test_speed()
 {
-    if ! w_time "$XVFB" sh winetricks nocrashdialog "$1" > foo.log
+    # shellcheck disable=SC2086
+    if ! w_time $XVFB sh winetricks nocrashdialog "$1" > foo.log
     then
         fail "winetricks $1 returned status $?"
     fi
@@ -299,15 +300,17 @@ test_command()
     fi
 
     # Isolate us from the user's home directory
-    "$XVFB" sh -x winetricks sandbox
+    $XVFB sh -x winetricks sandbox
 
     echo "Installing $command"
+
+    # shellcheck disable=SC2086
     if [ "$EXPECT_FAIL" = "yes" ]
     then
         # A success is failure:
         # shellcheck disable=SC2086
-        "$XVFB" sh winetricks --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
-    elif ! w_time "$XVFB" sh winetricks --no-isolate -q nocrashdialog "$@"
+        $XVFB sh winetricks --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
+    elif ! w_time $XVFB sh winetricks --no-isolate -q nocrashdialog "$@"
     then
         rm df-daemon
         fail "test_command $command failed!"
@@ -480,7 +483,8 @@ test_dlls()
     fi
     sort -u < dlls.log | fgrep -w -v -f manual.log | egrep -v "$BLACKLIST" > dlls.verbs
 
-    if [ "$(wc -l dll.verbs)" -eq 0 ] ; then
+    # shellcheck disable=SC2046
+    if [ $(wc -l dll.verbs) -eq 0 ] ; then
         echo "No verbs left after blacklisting? Nothing to test. Check your blacklists."
         exit 1
     else
