@@ -2683,18 +2683,12 @@ winetricks_latest_version_check()
         return
     fi
 
-    latest_file="${W_TMP_EARLY}/LATEST"
+    latest_version="$(winetricks_dl_url_to_stdout https://raw.githubusercontent.com/Winetricks/winetricks/master/files/LATEST)"
 
-    # Obviously, always redownload:
-    if [ -e "$latest_file" ] ; then
-        w_try rm "${latest_file}"
-    fi
+    # Also check that $latest_version is an actual number in case github is down
+    if [ ! -z "${latest_version}" ] && [ ! "$WINETRICKS_VERSION" = "${latest_version}" ] && \
+        echo "${latest_version}" | grep -E "[0-9]{8}" ; then
 
-    w_download_to ${W_TMP_EARLY} https://raw.githubusercontent.com/Winetricks/winetricks/master/files/LATEST
-
-    latest_version="$(cat "${latest_file}")"
-
-    if [ ! "$WINETRICKS_VERSION" = "${latest_version}" ] ; then
         if [ -f "${WINETRICKS_CONFIG}/enable-auto-update" ] ; then
             w_info "You are running winetricks-${WINETRICKS_VERSION}."
             w_info "New upstream release winetricks-${latest_version} is available."
