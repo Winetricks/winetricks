@@ -157,6 +157,7 @@ WINETRICKS_VERSION=20161107
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
+W_COUNTRY=""
 W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
 
 # For temp files before $WINEPREFIX is available:
@@ -831,6 +832,8 @@ w_download_to()
     tries=0
     while test $tries -lt 2
     do
+        # Warn on a second try
+        test "$tries" -eq 1 && winetricks_dl_warning
         tries=$((tries + 1))
 
         if test -s "$_W_cache/$_W_file"
@@ -2646,6 +2649,29 @@ winetricks_dl_url_to_stdout()
     else
         w_die "Please install aria2c, curl, or wget"
     fi
+}
+
+winetricks_dl_warning() {
+    case $LANG in
+        ru*) _W_countrymsg="Скрипт определил, что ваш IP адрес принадлежит России. Если во время загрузки файлов вы увидите ошибки несоответствия сертификата, перезапустите скрипт с опцией '--torify' или скачайте файлы вручную, например, используя VPN." ;;
+        *)  _W_countrymsg="Your IP address has been determined to belong to Russia. If you encounter a certificate error while downloading, please relaunch with the '--torify' option, or download files manually, for instance using VPN." ;;
+    esac
+
+    # Lookup own country via IP address only once (i.e. don't run this function for every download invocation)
+    if [ -z "$W_COUNTRY" ] ; then
+        W_COUNTRY="$(winetricks_dl_url_to_stdout "http://ipinfo.io/$(winetricks_dl_url_to_stdout "http://ipinfo.io/ip")" | awk -F '"' '/country/{print $4}')"
+        export W_COUNTRY
+
+        if [ -z "$W_COUNTRY" ] ; then
+            export W_COUNTRY="unknown"
+        fi
+    fi
+
+    # TODO: Resolve a full country name via https://github.com/umpirsky/country-list/tree/master/data
+    case "$W_COUNTRY" in
+        "RU") w_warn "$_W_countrymsg" ;;
+        *) : ;;
+    esac
 }
 
 winetricks_get_sha1sum_prog() {
