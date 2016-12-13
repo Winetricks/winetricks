@@ -2613,6 +2613,41 @@ _EOF_
 
 #---- Private Functions ----
 
+winetricks_dl_url_to_stdout()
+{
+    # FIXME: get common downloader variables supported
+    # FIXME: --torify support as well
+    if [ "${WINETRICKS_DOWNLOADER}" = "wget" ] ; then
+        w_try wget -q -O - "$1"
+    elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ] ; then
+        w_try curl -s "$1"
+    elif [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ] ; then
+        # aria2c doesn't have support downloading to stdout:
+        # https://github.com/aria2/aria2/issues/190
+        # So instead, download to a temporary directory and cat the file:
+        stdout_tmpfile="${W_TMP_EARLY}/stdout.tmp"
+
+        if [ -e "${stdout_tmpfile}" ] ; then
+            w_try rm "${stdout_tmpfile}"
+        fi
+                aria2c \
+                --continue \
+                --daemon=false \
+                --dir="${W_TMP_EARLY}" \
+                --enable-rpc=false \
+                --input-file='' \
+                --max-connection-per-server=5 \
+                --out="stdout.tmp" \
+                --save-session='' \
+                --stream-piece-selector=geom \
+                "$1" > /dev/null
+        w_try cat "${stdout_tmpfile}"
+        w_try rm "${stdout_tmpfile}"
+    else
+        w_die "Please install aria2c, curl, or wget"
+    fi
+}
+
 winetricks_get_sha1sum_prog() {
     # Mac folks tend to not have sha1sum, but we can make do with openssl
     if [ -x "$(which sha1sum 2>/dev/null)" ]
