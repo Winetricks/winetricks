@@ -821,6 +821,8 @@ w_download_to()
 
     esac
 
+    # FIXME: move these variables and common download options to a global place that can be shared as
+    # downloaders may be used outside of w_download_to() (e.g., winetricks_stats_report() and winetricks_dl_url_to_stdout())
     # Common values for aria2c/curl/wget
     # Connection timeout time (in seconds):
     WINETRICKS_DOWNLOADER_TIMEOUT=${WINETRICKS_DOWNLOADER_TIMEOUT:-15}
@@ -19240,6 +19242,7 @@ winetricks_stats_report()
     report="$(echo "$report" | sed 's/ /%20/g')"
     # Just do a HEAD request with the raw command line.
     # Yes, this can be fooled by caches.  That's ok.
+    # FIXME: get common downloader variables supported
     if [ -x "$(which wget 2>/dev/null)" ]
     then
         wget --spider "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
