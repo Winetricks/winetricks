@@ -6971,14 +6971,19 @@ load_dirac()
         if ( w_opt_unattended > 0 ) {
             ControlClick, Button2
             WinWait, Dirac, License
+            Sleep 1000
             ControlClick, Button2
             WinWait, Dirac, Location
+            Sleep 1000
             ControlClick, Button2
             WinWait, Dirac, Components
+            Sleep 1000
             ControlClick, Button2
             WinWait, Dirac, environment
+            Sleep 1000
             ControlCLick, Button1
             WinWait, Dirac, installed
+            Sleep 1000
             ControlClick, Button2
         }
         WinWaitClose
