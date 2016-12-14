@@ -159,6 +159,8 @@ XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
 
+MYCOUNTRY=""
+
 # For temp files before $WINEPREFIX is available:
 if [ -x "$(which mktemp 2>/dev/null)" ]
 then
@@ -985,6 +987,7 @@ w_download_to()
             w_die "Downloading $_W_url failed"
         fi
         # Download from the Wayback Machine on second try
+        winetricks_dl_warning
         _W_url="https://web.archive.org/web/$_W_url"
     done
 
@@ -2612,6 +2615,28 @@ _EOF_
 }
 
 #---- Private Functions ----
+
+winetricks_dl_warning() {
+    case $LANG in
+    ru*) _W_countrymsg="Скрипт определил, что ваш IP адрес принадлежит России. Если во время загрузки файлов вы увидите ошибки несоответствия сертификата, скачайте файлы вручную или используйте VPN."
+      ;;
+    *)  _W_countrymsg="Your IP address has been determined to belong to Russia. If you encounter a certificate error while downloading, please use VPN or download files manually."
+      ;;
+    esac
+
+    # Lookup own country via IP address only once (i.e. don't run this function for every download invocation)
+    if [ -z "$MYCOUNTRY" -a -x "`which geoiplookup 2>/dev/null`" ]
+    then
+        ip_address=`wget http://ipinfo.io/ip -q -O -`
+        export MYCOUNTRY=`geoiplookup "$ip_address" | awk '/Country Edition/{print $4}' | sed 's/,//'`
+        if [ "$MYCOUNTRY" = "RU" ]
+        then
+           w_warn "$_W_countrymsg"
+        fi
+    else
+        export MYCOUNTRY="Unknown"
+    fi
+}
 
 winetricks_get_sha1sum_prog() {
     # Mac folks tend to not have sha1sum, but we can make do with openssl
