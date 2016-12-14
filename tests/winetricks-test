@@ -473,12 +473,13 @@ test_dlls()
         fail "output of dlls list contained garbage"
         exit 1
     fi
+
     sort -u < dlls.log | fgrep -w -v -f manual.log | egrep -v "$BLACKLIST" > dlls.verbs
 
-    # shellcheck disable=SC2046
-    if [ $(wc -l dll.verbs) -eq 0 ] ; then
-        echo "No verbs left after blacklisting? Nothing to test. Check your blacklists."
-        exit 1
+    if [ ! -f dlls.verbs ] ; then
+        w_die "dlls.verbs doesn't exist? No verbs to test!"
+    elif [ -f dlls.verbs ] && [ ! -s dlls.verbs ] ; then
+        w_die "dlls.verbs exists, but it is empty"
     else
         echo "Testing these verbs:"
         cat dll.verbs
