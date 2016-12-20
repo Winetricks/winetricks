@@ -3497,7 +3497,7 @@ winetricks_showmenu()
              ;;
         esac > "$WINETRICKS_WORKDIR"/zenity.sh
 
-        > "$WINETRICKS_WORKDIR"/installed.txt
+        true > "$WINETRICKS_WORKDIR"/installed.txt
         for metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
         do
             code=$(winetricks_metadata_basename "$metadatafile")
