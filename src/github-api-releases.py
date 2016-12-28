@@ -42,6 +42,7 @@ def create_release(owner, repo, tag, token):
     res = requests.post(url, auth=(owner, token), data=json.dumps(data), headers=headers)
 
     j = json.loads(res.text)
+    print("in create_release")
     if check_status(res, j):
         return 1
     return 0
@@ -55,6 +56,7 @@ def upload_asset(path, owner, repo, tag):
     res = requests.get(url)
 
     j = json.loads(res.text)
+    print("in upload_assets")
     if check_status(res, j):
         # release must not exist, creating release from tag
         if create_release(owner, repo, tag, token):
@@ -83,6 +85,7 @@ def upload_asset(path, owner, repo, tag):
                         headers=headers, params=params)
 
     j = json.loads(res.text)
+    print("in upload_asset2")
     if check_status(res, j):
         return 0
     print('SUCCESS: %s uploaded' % fname)
