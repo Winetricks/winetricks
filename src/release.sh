@@ -38,10 +38,10 @@ sed -i -e "s%\\.TH.*%${line}%" src/winetricks.1
 # update LATEST (version) file
 echo "${version}" > files/LATEST
 
-git commit files/LATEST src/winetricks src/winetricks.1 -m "version bump - ${version}"
+git commit -n files/LATEST src/winetricks src/winetricks.1 -m "version bump - ${version}"
 git tag -s -m "winetricks-${version}" "${version}"
 
-git push
+git push -f
 git push --tags
 
 
@@ -52,6 +52,7 @@ git archive --prefix="winetricks-${version}/" -o "../${version}.tar.gz" "${versi
 gpg --armor --default-key 0xA041937B --detach-sign "../${version}.tar.gz"
 
 # upload the detached signature to github:
-python3 src/github-api-releases.py  ../../"${version}.tar.gz.asc" Winetricks winetricks "${version}"
+#python3 src/github-api-releases.py  ../../"${version}.tar.gz.asc" Winetricks winetricks "${version}"
+python3 src/github-api-releases.py  ../../"${version}.tar.gz.asc" austin987 winetricks-test "${version}"
 
 exit 0
