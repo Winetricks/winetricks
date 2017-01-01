@@ -4616,7 +4616,7 @@ winetricks_init()
     WINETRICKS_WINE_MICRO=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/')
 
     if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
-        echo "Using winetricks $(winetricks_print_version) with $WINETRICKS_WINE_VERSION"
+        echo "Using winetricks $(winetricks_print_version) with ${WINETRICKS_WINE_VERSION} and WINEARCH=${W_ARCH}"
     fi
 
     winetricks_latest_version_check
