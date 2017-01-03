@@ -54,6 +54,10 @@ install:
 	$(INSTALL_PROGRAM) src/winetricks $(DESTDIR)$(PREFIX)/bin/winetricks
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/man/man1
 	$(INSTALL_DATA) src/winetricks.1 $(DESTDIR)$(PREFIX)/share/man/man1/winetricks.1
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/applications
+	$(INSTALL_DATA) src/winetricks.desktop $(DESTDIR)$(PREFIX)/share/applications/winetricks.desktop
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps
+	$(INSTALL_DATA) src/winetricks.svg $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/winetricks.svg
 
 check:
 	echo 'This verifies that most DLL verbs, plus flash, install ok.'
