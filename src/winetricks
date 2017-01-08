@@ -642,6 +642,8 @@ w_dotnet_verify()
         dotnet45) version="4.5" ;;
         dotnet452) version="4.5.2" ;;
         dotnet46) version="4.6" ;;
+        dotnet461) version="4.6.1" ;;
+        dotnet462) version="4.6.2" ;;
         *) echo error ; exit 1 ;;
     esac
             w_call dotnet_verifier
@@ -6666,28 +6668,124 @@ load_dotnet46()
 
 #----------------------------------------------------------------
 
+w_metadata dotnet461 dlls \
+    title="MS .NET 4.6.1" \
+    publisher="Microsoft" \
+    year="2015" \
+    media="download" \
+    file1="NDP461-KB3102436-x86-x64-AllOS-ENU.exe" \
+    conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet35sp1 dotnet40 dotnet46 vjrun20" \
+    installed_file1="c:/windows/Microsoft.NET/Framework/v4.0.30319/SetupCache/v4.6.01055/1041/SetupResources.dll"
+
+load_dotnet461()
+{
+    if [ $W_ARCH = win64 ]
+    then
+        w_warn "This package may not work on a 64-bit installation"
+    fi
+
+    # https://www.microsoft.com/en-au/download/details.aspx?id=49982
+    w_download https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe 83d048d171ff44a3cad9b422137656f585295866
+
+    w_call remove_mono
+
+    # Remove Mono registry entry:
+    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
+
+    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
+
+    w_call dotnet46
+    w_set_winver win7
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    
+    WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /norestart}
+    status=$?
+    
+    echo "exit status: $status"
+
+    case $status in
+        0) ;;
+        105) echo "exit status $status - normal, user selected 'restart now'" ;;
+        194) echo "exit status $status - normal, user selected 'restart later'" ;;
+        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
+
+    w_override_dlls native mscoree
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet462 dlls \
+    title="MS .NET 4.6.2" \
+    publisher="Microsoft" \
+    year="2016" \
+    media="download" \
+    file1="dotNetFx462_Full_x86_x64_Slim.exe" \
+    conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet35sp1 dotnet40 dotnet46 dotnet461 vjrun20"
+
+load_dotnet462()
+{
+    if [ $W_ARCH = win64 ]
+    then
+        w_warn "This package may not work on a 64-bit installation"
+    fi
+
+    # Official .NET 4.6.2 offline installer fails. See https://bugs.winehq.org/show_bug.cgi?id=42170
+    # Un-official slim version does not fail. See http://repacks.net/forum/viewtopic.php?t=7
+    w_download http://my.repacks.space/dotNetFx462_Full_x86_x64_Slim.exe 1886c2b3b6eba37fcf79d59c9e5b100930150fda
+
+    w_call remove_mono
+
+    # Remove Mono registry entry:
+    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
+
+    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
+
+    w_call dotnet461
+    w_set_winver win7
+    
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+
+    WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+/ai /gm2}
+    status=$?
+    
+    echo "exit status: $status"
+
+    case $status in
+        0) ;;
+        5) w_die "exit status $status - user selected 'Cancel'" ;;
+        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
+
+    w_override_dlls native mscoree
+}
+
+#----------------------------------------------------------------
+
 w_metadata dotnet_verifier dlls \
     title="MS .NET Verifier" \
     publisher="Microsoft" \
-    year="2012" \
+    year="2016" \
     media="download" \
-    file1="netfx_5F00_setupverifier_5F00_new.zip" \
+    file1="netfx_setupverifier_new.zip" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/netfx_setupverifier.exe"
 
 load_dotnet_verifier()
 {
-    # http://blogs.msdn.com/b/astebner/archive/2008/10/13/8999004.aspx
+    # https://blogs.msdn.microsoft.com/astebner/2008/10/13/net-framework-setup-verification-tool-users-guide/
     # 2013/03/28: sha1sum 0eba832a0733cd47b7639463dd5a22a41e95ee6e # netfx_5F00_setupverifier_5F00_new.zip
     # 2014/01/23: sha1sum 8818f3460826145e2a66bb91727afa7cd531037b
     # 2014/11/22: sha1sum 47de0b849c4c3d354df23588c709108e7816d788
     # 2015/07/31: sha1sum 32f24526a5716737281dc260451b60a641b23c7e
     # 2015/12/27: sha1sum b9712da2943e057668f21f68c473657a205c5cb8
     # 2016/09/22: name change, to netfx_setupverifier_new_2015_12_18.zip
+    # 2016/10/26: Add the ability to verify the .NET Framework 4.6.2.
 
-    w_download https://msdnshared.blob.core.windows.net/media/MSDNBlogsFS/prod.evol.blogs.msdn.com/CommunityServer.Components.PostAttachments/00/08/99/90/04/netfx_setupverifier_new_2015_12_18.zip b9712da2943e057668f21f68c473657a205c5cb8 "${file1}"
+    w_download https://msdnshared.blob.core.windows.net/media/2016/10/netfx_setupverifier_new.zip 6eef0158dc637d186d4ab5eb13aee6ef577831b2 "${file1}"
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try_unzip "$W_SYSTEM32_DLLS" netfx_5F00_setupverifier_5F00_new.zip netfx_setupverifier.exe
+    w_try_unzip "$W_SYSTEM32_DLLS" netfx_setupverifier_new.zip netfx_setupverifier.exe
 
     w_warn "You can run the .Net Verifier with \"${WINE} netfx_setupverifier.exe\""
 }
