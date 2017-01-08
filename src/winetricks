@@ -6263,8 +6263,6 @@ load_dotnet30()
 
     w_call dotnet20
 
-    w_warn "Installing .NET 3.0 runtime takes 3 minutes on a very fast machine, and the Finished dialog may hide in the taskbar."
-
     # AF's workaround to avoid long pause
     LANGPACKS_BASE_PATH="${W_WINDIR_UNIX}/SYSMSICache/Framework/v3.0"
     test -d "${LANGPACKS_BASE_PATH}" || mkdir -p "${LANGPACKS_BASE_PATH}"
@@ -6284,7 +6282,8 @@ load_dotnet30()
     WINEDLLOVERRIDES="ngen.exe,mscorsvw.exe=b;$WINEDLLOVERRIDES"
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
+    w_warn "Installing .NET 3.0 runtime silently, as otherwise it gets hidden behind taskbar. Installation usually takes about 3 minutes."
+    w_try "$WINE" "$file1" /q /c:"install.exe /q"
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
