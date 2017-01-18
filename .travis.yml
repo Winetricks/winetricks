@@ -44,3 +44,8 @@ before_install:
 # shell-checks is quick and works, no display or compiles needed
 
 script: time sh ./tests/shell-checks
+
+# OS X doesn't allow writing to /usr/bin, skip non-PREFIX make install test there
+install:
+    - if [[ "$TRAVIS_OS_NAME" != "osx" ]] ; then time sudo make install ; fi
+    - time make install PREFIX="$(mktemp -d)"
