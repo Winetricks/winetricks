@@ -18207,6 +18207,21 @@ load_ao()
 }
 
 #----------------------------------------------------------------
+# CheckFloatConstants settings
+
+w_metadata cfc=enabled settings \
+    title_uk="Включити CheckFloatConstants" \
+    title="Enable CheckFloatConstants"
+w_metadata cfc=disable settings \
+    title_uk="Вимкнути CheckFloatConstants (за замовчуванням)" \
+    title="Disable CheckFloatConstants (default)"
+
+load_cfc()
+{
+    winetricks_set_wined3d_var CheckFloatConstants "$1"
+}
+
+#----------------------------------------------------------------
 # DirectDraw settings
 
 w_metadata ddr=gdi settings \
