@@ -10487,16 +10487,10 @@ load_irfanview()
             ControlClick, Button1 ; Images Only associations
             Sleep 900
             ControlClick, Button16 ; Next
-            Sleep 900
-            winwait, Setup, Search
-            Sleep 900
-            ControlClick, Button1 ; deselect chrome googsrch
-            Sleep 900
-            ControlClick, Button18 ; Next
             Sleep 1000
             winwait, Setup, INI
             Sleep 1000
-            ControlClick, Button23 ; Next
+            ControlClick, Button21 ; Next
             Sleep 1000
             winwait, Setup, You want to change
             winactivate, Setup, really
@@ -10506,9 +10500,11 @@ load_irfanview()
             winwait, Setup, successful
             winactivate, Setup, successful
             Sleep 900
+            ControlClick, Button1 ; no load webpage
+            Sleep 900
             ControlClick, Button2 ; no start irfanview
             Sleep 900
-            ControlClick, Button27 ; done
+            ControlClick, Button25 ; done
             Sleep 900
             winwaitclose
         "
