@@ -2931,7 +2931,7 @@ winetricks_prefixmenu()
                 else
                     _W_msg_name="$p"
                 fi
-            case $LANG in 
+            case $LANG in
             zh_CN*) printf %s " FALSE prefix='$p' '选择管理 $_W_msg_name' " ;;
             zh_TW*|zh_HK*) printf %s " FALSE prefix='$p' '選擇管理 $_W_msg_name' " ;;
             de*) printf %s " FALSE prefix='$p' '$_W_msg_name auswählen' " ;;
@@ -11683,7 +11683,7 @@ w_metadata vc2005trial apps \
 load_vc2005trial()
 {
     w_call dotnet20
-    
+
     # Without mfc42.dll, pidgen.dll won't load, and the app claims "A trial edition is already installed..."
     w_call mfc42
 
