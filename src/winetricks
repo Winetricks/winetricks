@@ -6471,11 +6471,6 @@ load_dotnet40()
 
     w_call remove_mono
 
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
-
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     WINEDLLOVERRIDES=fusion=b "$WINE" dotNetFx40_Full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"} || true
@@ -6518,11 +6513,6 @@ load_dotnet45()
     w_download http://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe b2ff712ca0947040ca0b8e9bd7436a3c3524bb5d
 
     w_call remove_mono
-
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
 
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
     w_call dotnet35
@@ -6578,11 +6568,6 @@ load_dotnet452()
 
     w_call remove_mono
 
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
-
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
     w_call dotnet35
     w_call dotnet40
@@ -6634,11 +6619,6 @@ load_dotnet46()
 
     w_call remove_mono
 
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
-
     w_call dotnet45
     w_set_winver win7
 
@@ -6685,12 +6665,7 @@ load_dotnet461()
     # https://www.microsoft.com/en-au/download/details.aspx?id=49982
     w_download https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe 83d048d171ff44a3cad9b422137656f585295866
 
-    w_call remove_mono
-
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
+    w_call remove_mono   
 
     w_call dotnet46
     w_set_winver win7
@@ -6719,7 +6694,6 @@ w_metadata dotnet462 dlls \
     publisher="Microsoft" \
     year="2016" \
     media="download" \
-    file1="dotNetFx462_Full_x86_x64_Slim.exe" \
     conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet35sp1 dotnet40 dotnet46 dotnet461 vjrun20"
 
 load_dotnet462()
@@ -6727,25 +6701,29 @@ load_dotnet462()
     if [ $W_ARCH = win64 ]
     then
         w_warn "This package may not work on a 64-bit installation"
-    fi
+    fi   
 
-    # Official .NET 4.6.2 offline installer fails. See https://bugs.winehq.org/show_bug.cgi?id=42170
-    # Un-official slim version does not fail. See http://repacks.net/forum/viewtopic.php?t=7
-    w_download http://repacks.net/uploads/dotNetFx462_Full_x86_x64_Slim.exe 1886c2b3b6eba37fcf79d59c9e5b100930150fda
-
-    w_call remove_mono
-
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
+    if w_workaround_wine_bug 42170 "Running un-official repacked .NET 4.6.2 setup until official is fixed."
+    then
+        # Un-official slim version. See http://repacks.net/forum/viewtopic.php?t=7
+        w_download http://repacks.net/uploads/dotNetFx462_Full_x86_x64_Slim.exe 1886c2b3b6eba37fcf79d59c9e5b100930150fda
+        file_package="dotNetFx462_Full_x86_x64_Slim.exe"
+        unattended_args="/ai /gm2"
+    else
+         # Official version. See https://www.microsoft.com/en-au/download/details.aspx?id=53344
+        w_download https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe a70f856bda33d45ad0a8ad035f73092441715431
+        file_package="NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
+        unattended_args="/q /norestart"
+    fi   
+    
+    w_call remove_mono  
 
     w_call dotnet461
     w_set_winver win7
     
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+/ai /gm2}
+    WINEDLLOVERRIDES=fusion=b "$WINE" "$file_package" ${W_OPT_UNATTENDED:+$unattended_args}
     status=$?
     
     echo "exit status: $status"
