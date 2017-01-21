@@ -2204,6 +2204,8 @@ w_wine_version()
     # Rather than rework numbering system to handle both, just consider 2.x+ as 1.10, 1.11, etc.
     2.0|2.0-rc*) _W_minor=10; _W_micro=0;;
     2.0.*|2.*) _W_minor=10; _W_micro=$(echo "$2" | sed 's/.*\.//');;
+    3.0|3.0-rc*) _W_minor=11; _W_micro=0;;
+    3.0.*|3.*) _W_minor=11; _W_micro=$(echo "$2" | sed 's/.*\.//');;
 
     *) w_die "bug: unrecognized version $2";;
     esac
@@ -4622,6 +4624,8 @@ winetricks_init()
         wine-1.8) WINETRICKS_WINE_VERSION="wine-1.8.0"; export WINETRICKS_WINE_VERSION;;
         wine-2.0-*) WINETRICKS_WINE_VERSION="wine-1.10.0"; export WINETRICKS_WINE_VERSION;;
         wine-2.0) WINETRICKS_WINE_VERSION="wine-1.10.0"; export WINETRICKS_WINE_VERSION;;
+        wine-3.0-*) WINETRICKS_WINE_VERSION="wine-1.11.0"; export WINETRICKS_WINE_VERSION;;
+        wine-3.0) WINETRICKS_WINE_VERSION="wine-1.11.0"; export WINETRICKS_WINE_VERSION;;
     esac
     WINETRICKS_WINE_MINOR=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1\.\([0-9]*\)\..*/\1/')
     WINETRICKS_WINE_MICRO=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/')
