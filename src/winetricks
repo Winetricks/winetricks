@@ -2183,7 +2183,9 @@ w_set_app_winver()
 #  fi
 w_wine_version()
 {
-    # Parse major/minor/micro/nano fields of VALUE.  Ignore nano.  Abort if major is not 1.
+    # Note, there are also hacks for major releases (1.6/1.8/2.0/etc. and RCs) in winetricks_init()
+    #
+    # Parse major/minor/micro/nano fields of VALUE.  Ignore nano.
     case $2 in
     0*|1.0|1.0.*) w_die "bug: $2 is before 1.1, we don't bother with bugs fixed that long ago" ;;
     1.1.*) _W_minor=1; _W_micro=$(echo "$2" | sed 's/.*\.//');;
@@ -2198,6 +2200,11 @@ w_wine_version()
     1.7.*) _W_minor=7; _W_micro=$(echo "$2" | sed 's/.*\.//');;
     1.8.*) _W_minor=8; _W_micro=$(echo "$2" | sed 's/.*\.//');;
     1.9.*) _W_minor=9; _W_micro=$(echo "$2" | sed 's/.*\.//');;
+
+    # Rather than rework numbering system to handle both, just consider 2.x+ as 1.10, 1.11, etc.
+    2.0|2.0-rc*) _W_minor=10; _W_micro=0;;
+    2.0.*|2.*) _W_minor=10; _W_micro=$(echo "$2" | sed 's/.*\.//');;
+
     *) w_die "bug: unrecognized version $2";;
     esac
 
@@ -2217,6 +2224,7 @@ w_wine_version()
 #WINETRICKS_WINE_MINOR=3 WINETRICKS_WINE_MICRO=4 w_wine_version -gt 1.2 || w_die "fail test case wine-1.3.4 > wine-1.2"
 #echo Verify that version 1.6 is greater than 1.2
 #WINETRICKS_WINE_MINOR=6 WINETRICKS_WINE_MICRO=0 w_wine_version -gt 1.2 || w_die "fail test case wine-1.6 > wine-1.2"
+# FIXME: 2.x tests
 
 # Usage: w_wine_version_in range ...
 # True if wine version in any of the given ranges
@@ -4603,6 +4611,7 @@ winetricks_init()
     W_ISO_MOUNT_LETTER=i
 
     WINETRICKS_WINE_VERSION=$(winetricks_early_wine --version | sed 's/.*wine/wine/')
+    # See also w_wine_version()
     # A small hack...
     case "$WINETRICKS_WINE_VERSION" in
         wine-1.4-*) WINETRICKS_WINE_VERSION="wine-1.4.40"; export WINETRICKS_WINE_VERSION;;
@@ -4611,6 +4620,8 @@ winetricks_init()
         wine-1.6) WINETRICKS_WINE_VERSION="wine-1.6.0"; export WINETRICKS_WINE_VERSION;;
         wine-1.8-*) WINETRICKS_WINE_VERSION="wine-1.8.0"; export WINETRICKS_WINE_VERSION;;
         wine-1.8) WINETRICKS_WINE_VERSION="wine-1.8.0"; export WINETRICKS_WINE_VERSION;;
+        wine-2.0-*) WINETRICKS_WINE_VERSION="wine-1.10.0"; export WINETRICKS_WINE_VERSION;;
+        wine-2.0) WINETRICKS_WINE_VERSION="wine-1.10.0"; export WINETRICKS_WINE_VERSION;;
     esac
     WINETRICKS_WINE_MINOR=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1\.\([0-9]*\)\..*/\1/')
     WINETRICKS_WINE_MICRO=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/')
