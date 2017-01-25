@@ -5999,12 +5999,6 @@ load_dotnet20()
     # and http://bugs.winehq.org/show_bug.cgi?id=30845#c10
     w_set_winver win2k
 
-    # FIXME: verify on pristine Windows XP:
-    if w_workaround_wine_bug 34803
-    then
-        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled' /f
-    fi
-
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
     w_unset_winver
@@ -6177,13 +6171,6 @@ load_dotnet20sp2()
     w_call remove_mono
 
     w_call dotnet20
-    $WINESERVER -w
-
-    # FIXME: verify on pristine Windows XP:
-    if w_workaround_wine_bug 34803
-    then
-        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled' /f
-    fi
     $WINESERVER -w
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -6373,8 +6360,6 @@ load_dotnet35()
         w_call msxml3
     fi
 
-    "$WINE" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f
-
     # See also http://blogs.msdn.com/astebner/archive/2008/07/17/8745415.aspx
     w_try_cd "$W_TMP"
     w_try_cabextract $W_UNATTENDED_DASH_Q "$W_CACHE"/dotnet35/dotnetfx35.exe
@@ -6484,11 +6469,6 @@ load_dotnet40()
 
     w_call remove_mono
 
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
-
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     WINEDLLOVERRIDES=fusion=b "$WINE" dotNetFx40_Full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"} || true
@@ -6531,11 +6511,6 @@ load_dotnet45()
     w_download http://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe b2ff712ca0947040ca0b8e9bd7436a3c3524bb5d
 
     w_call remove_mono
-
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
 
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
     w_call dotnet35
@@ -6591,11 +6566,6 @@ load_dotnet452()
 
     w_call remove_mono
 
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
-
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
     w_call dotnet35
     w_call dotnet40
@@ -6646,11 +6616,6 @@ load_dotnet46()
     w_download https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe 3049a85843eaf65e89e2336d5fe6e85e416797be
 
     w_call remove_mono
-
-    # Remove Mono registry entry:
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f
-
-    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
 
     w_call dotnet45
     w_set_winver win7
@@ -8078,8 +8043,6 @@ w_metadata remove_mono settings \
 
 load_remove_mono()
 {
-    # FIXME: fold other .NET cleanups here (registry entries).
-    # Probably should only do that for wine >= 1.5.6
     mono_uuid="$($WINE uninstaller --list | grep Mono | cut -f1 -d\|)"
     if test "$mono_uuid"
     then
@@ -8087,6 +8050,17 @@ load_remove_mono()
     else
         w_warn "Mono does not appear to be installed."
     fi
+
+    # FIXME: verify on pristine Windows XP:
+    if w_workaround_wine_bug 34803
+    then
+        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled' /f
+    fi
+
+    "$WINE" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
+    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f || true
+
+    w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
 }
 
 #----------------------------------------------------------------
