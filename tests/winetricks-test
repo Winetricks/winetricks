@@ -482,7 +482,7 @@ test_dlls()
         w_die "dlls.verbs exists, but it is empty"
     else
         echo "Testing these verbs:"
-        cat dll.verbs
+        cat dlls.verbs
     fi
 
     while IFS= read -r line; do
