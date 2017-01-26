@@ -12,6 +12,38 @@ cache="$XDG_CACHE_HOME/winetricks"
 
 set -x
 
+TOP="$PWD"
+
+# Workaround for:
+# kcov has trouble with forking shell scripts
+# https://github.com/SimonKagstrom/kcov/issues/64
+# https://github.com/SimonKagstrom/kcov/issues/165
+
+# check-deps checks for time/cabextract, but doesn't invoke winetricks so we don't care about it for coverage
+# If the below code runs, it creates an empty 'kcov-results' dir in the root directory. So, bail out here:
+if [ "$1" = "check-deps" ] ; then
+    true
+
+# Using an environmental variable rather than a CLI option
+# so it doesn't need extra handling/targets in Makefile
+elif [ ! -z "$WINETRICKS_ENABLE_KCOV" ] ; then
+    KCOV_RESULTS="$TOP/kcov-results"
+    rm -rf "$KCOV_RESULTS"
+    mkdir -p "$KCOV_RESULTS"
+
+    # kcov --kcov-options output-dir testscript --test-script-args
+    # I think kcov lets you append results, if not we may have to use separate for each invocation then combine at the end
+    # It seems to be capping out at 468 lines for me. Mentioned on their github here:
+    # https://github.com/SimonKagstrom/kcov/issues/165
+
+    # Previously, winetricks-test used `$WINETRICKS`. That fails for kcov, which
+    # then tracks bash itself and not winetricks. `./winetricks` works fine.
+    WINETRICKS="kcov --configure=bash-use-basic-parser=1 $KCOV_RESULTS ./winetricks"
+    #WINETRICKS="kcov --configure=bash-use-basic-parser=1 $KCOV_RESULTS-$(date +%k-%M-%S) ./winetricks"
+else
+    WINETRICKS="./winetricks"
+fi
+
 # Disable winetricks update checks:
 WINETRICKS_LATEST_VERSION_CHECK=disabled
 export WINETRICKS_LATEST_VERSION_CHECK
@@ -182,7 +214,7 @@ srcdir=$(cd "$(dirname "$0")" || w_die "Could not cd to $(dirname "$0")" ; pwd)
 test_speed()
 {
     # shellcheck disable=SC2086
-    if ! w_time $XVFB sh winetricks nocrashdialog "$1" > foo.log
+    if ! w_time $XVFB $WINETRICKS nocrashdialog "$1" > foo.log
     then
         fail "winetricks $1 returned status $?"
     fi
@@ -260,7 +292,7 @@ test_app()
     allcodecs) ;;
     *)
         # no xvfb needed
-        sh winetricks -q list-installed > list-installed.out
+        ./winetricks -q list-installed > list-installed.out
         if ! grep -w "$app" list-installed.out
         then
             fail "test app $app not installed after install?"
@@ -294,7 +326,7 @@ test_command()
     fi
 
     # Isolate us from the user's home directory
-    $XVFB sh -x winetricks sandbox
+    $XVFB $WINETRICKS sandbox
 
     echo "Installing $command"
 
@@ -302,8 +334,8 @@ test_command()
     if [ "$EXPECT_FAIL" = "yes" ] ; then
         # A success is failure:
         # shellcheck disable=SC2086
-        $XVFB sh winetricks --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
-    elif ! w_time $XVFB sh winetricks --no-isolate -q nocrashdialog "$@" ; then
+        $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
+    elif ! w_time $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@" ; then
         rm df-daemon
         fail "test_command $command failed!"
         return
@@ -377,14 +409,14 @@ load_false()
 _EOF
 
     # no xvfb needed
-    sh winetricks --no-isolate true.verb ; ret=$?
+    $WINETRICKS --no-isolate true.verb ; ret=$?
     case $ret in
         0) pass "true.verb not isolated, as apps passed" ;;
         *) fail "true.verb not isolated, as apps failed" ;;
     esac
 
     # no xvfb needed
-    sh winetricks --no-isolate false.verb ; ret=$?
+    $WINETRICKS --no-isolate false.verb ; ret=$?
     case $ret in
         0) fail "false.verb not isolated, as apps worked, should have failed" ;;
         1) pass "false.verb not isolated, as apps passed" ;;
@@ -392,14 +424,14 @@ _EOF
     esac
 
     # no xvfb needed
-    sh winetricks --isolate true.verb ; ret=$?
+    $WINETRICKS --isolate true.verb ; ret=$?
     case $ret in
         0) pass "true.verb isolated, as apps passed" ;;
         *) fail "true.verb isolated, as apps failed" ;;
     esac
 
     # no xvfb needed
-    sh winetricks --isolate false.verb ; ret=$?
+    $WINETRICKS --isolate false.verb ; ret=$?
     case $ret in
         0) fail "false.verb isolated, as apps worked, should have failed" ;;
         1) pass "false.verb isolated, as apps passed" ;;
@@ -431,14 +463,14 @@ load_false()
 _EOF
 
     # no xvfb needed
-    sh winetricks --no-isolate true.verb ; ret=$?
+    $WINETRICKS --no-isolate true.verb ; ret=$?
     case $ret in
         0) pass "true.verb isolated, as dlls passed" ;;
         *) fail "true.verb isolated, as dlls failed" ;;
     esac
 
     # no xvfb needed
-    sh winetricks --no-isolate false.verb ; ret=$?
+    $WINETRICKS --no-isolate false.verb ; ret=$?
     case $ret in
         0) fail "false.verb isolated, as dlls worked, should have failed" ;;
         1) pass "false.verb isolated, as dlls passed" ;;
@@ -446,14 +478,14 @@ _EOF
     esac
 
     # no xvfb needed
-    sh winetricks --no-isolate true.verb ; ret=$?
+    $WINETRICKS --no-isolate true.verb ; ret=$?
     case $ret in
         0) pass "true.verb isolated, as dlls passed" ;;
         *) fail "true.verb isolated, as dlls failed" ;;
     esac
 
     # no xvfb needed
-    sh winetricks --no-isolate false.verb ; ret=$?
+    $WINETRICKS --no-isolate false.verb ; ret=$?
     case $ret in
         0) fail "false.verb isolated, as dlls worked, should have failed" ;;
         1) pass "false.verb isolated, as dlls passed" ;;
@@ -466,9 +498,9 @@ _EOF
 
 test_dlls()
 {
-    # no xvfb needed
-    sh winetricks list-manual-download > manual.log
-    sh winetricks dlls list | awk '{print $1}' > dlls.log
+    # no xvfb needed, kcov breaks
+    ./winetricks list-manual-download > manual.log
+    ./winetricks dlls list | awk '{print $1}' > dlls.log
     if grep .------------------- dlls.log ; then
         fail "output of dlls list contained garbage"
         exit 1
@@ -521,9 +553,9 @@ test_dotnet()
 
 test_manual_dlls()
 {
-    # no xvfb needed
-    sh winetricks list-manual-download > manual.log
-    sh winetricks dlls list | awk '{print $1}' > dlls.log
+    # no xvfb needed, kcov breaks
+    ./winetricks list-manual-download > manual.log
+    ./winetricks dlls list | awk '{print $1}' > dlls.log
     if grep .------------------- dlls.log ; then
         fail "output of dlls list contained garbage"
         exit 1
@@ -537,8 +569,8 @@ test_manual_dlls()
 
 test_install_cached_or_download()
 {
-    # no xvfb needed
-    sh winetricks list-cached list-download > ticd.log
+    # no xvfb needed, kcov breaks
+    ./winetricks list-cached list-download > ticd.log
     if grep .------------------- ticd.log ; then
         fail "output of list-cached list-download contained garbage"
         exit 1
@@ -561,8 +593,8 @@ test_install_cached_or_download()
         test_app "$a"
     done
 
-    # no xvfb needed
-    sh winetricks list-cached | sort > cached.txt
+    # no xvfb needed, kcov breaks
+    ./winetricks list-cached | sort > cached.txt
 
     # Verbs that are just wrappers around others don't detect cache/install state yet.
     # Verbs that are just informative placeholders don't ever download (gecko).

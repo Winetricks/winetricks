@@ -89,6 +89,9 @@ check:
 	echo "Running tests"
 	cd src; if test -z "$(WINEARCH)" ; then export WINEARCH=win32 ; fi ; sh ../tests/winetricks-test quick
 
+check-coverage:
+	WINETRICKS_ENABLE_KCOV=1 $(MAKE) check
+
 shell-checks:
 	echo "This runs shell checks only. Currently, these are checkbashisms and shellcheck."
 	echo "This is relatively fast and doesn't download anything."
@@ -128,6 +131,12 @@ test:
 	if test ! -z "$(XDG_CACHE_HOME)" ; then rm -rf $(XDG_CACHE_HOME)/winetricks ; else rm -rf $(HOME)/.cache/winetricks ; fi
 	cd src; if test -z "$(WINEARCH)" ; then export WINEARCH=win32 ; fi ; sh ../tests/winetricks-test full
 
+test-coverage:
+	WINETRICKS_ENABLE_KCOV=1 $(MAKE) test
+
 xvfb-check:
 	echo "xvfb runs make check, for verbs safe for it"
 	cd src; if test -z "$(WINEARCH)" ; then export WINEARCH=win32 ; fi ; sh ../tests/winetricks-test xvfb-check
+
+xvfb-check-coverage:
+	WINETRICKS_ENABLE_KCOV=1 $(MAKE) xfvb-check-coverage
