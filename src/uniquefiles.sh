@@ -1,5 +1,15 @@
 #!/bin/sh
 # Script to locate unique files useful for install checks
+#
+# Copyright (C) 2014 Dan Kegel
+# Copyright (C) 2016 Austin English
+#
+# This software comes with ABSOLUTELY NO WARRANTY.
+#
+# This is free software, placed under the terms of the GNU Lesser
+# Public License version 2.1 (or later), as published by the Free
+# Software Foundation. Please see the file COPYING for details.
+
 set -e
 
 if ! test "$1"
