@@ -26,7 +26,7 @@ WINETRICKS_VERSION=20170101
 #
 # Uses the following non-POSIX system tools:
 # - wine is used to execute Win32 apps except on Cygwin.
-# - cabextract, unrar, unzip, and 7z are needed by some verbs.
+# - ar, cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - aria2c, wget, or curl is needed for downloading.
 # - sha1sum or openssl is needed for verifying downloads.
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog.
@@ -37,7 +37,7 @@ WINETRICKS_VERSION=20170101
 # On Ubuntu, the following lines can be used to install all the prerequisites:
 #    sudo add-apt-repository ppa:ubuntu-wine/ppa
 #    sudo apt-get update
-#    sudo apt-get install cabextract p7zip unrar unzip wget wine1.7 zenity
+#    sudo apt-get install binutils cabextract p7zip unrar unzip wget wine1.7 zenity
 #
 # See http://winetricks.org for documentation and tutorials, including
 # how to contribute changes to winetricks.
