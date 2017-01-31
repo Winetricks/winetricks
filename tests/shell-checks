@@ -1,12 +1,16 @@
 #!/bin/sh
-
-# Copyright 2016 Austin English
-# LPGL 2.1+
+# Wrapper around checkbashisms/shellcheck/whatever other shell checkers I can find
+#
+# Copyright (C) 2016 Austin English
+#
+# This software comes with ABSOLUTELY NO WARRANTY.
+#
+# This is free software, placed under the terms of the GNU Lesser
+# Public License version 2.1 (or later), as published by the Free
+# Software Foundation. Please see the file COPYING for details.
 
 set -e
 set -x
-
-# Wrapper around checkbashisms/shellcheck/whatever other shell checkers I can find
 
 w_die() {
     echo "$* failed"
