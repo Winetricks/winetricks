@@ -4,16 +4,16 @@
 # Copyright (C) 2015-2016 Austin English
 # See also copyright notice in src/winetricks.
 #
-# winetricks comes with ABSOLUTELY NO WARRANTY.
+# This software comes with ABSOLUTELY NO WARRANTY.
 #
-# This is free software, placed under the terms of the
-# GNU Lesser Public License version 2.1, as published by the Free Software
-# Foundation. Please see the file src/COPYING for details.
+# This is free software, placed under the terms of the GNU Lesser
+# Public License version 2.1 (or later), as published by the Free
+# Software Foundation. Please see the file COPYING for details.
 #
 # Web Page: http://winetricks.org
 #
 # Maintainers:
-# Dan Kegel <dank!kegel.com>, Austin English <austinenglish!gmail.com>
+# Austin English <austinenglish!gmail.com>
 
 INSTALL = install
 INSTALL_PROGRAM = $(INSTALL)
