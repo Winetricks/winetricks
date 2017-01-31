@@ -7,9 +7,9 @@
 #
 # This software comes with ABSOLUTELY NO WARRANTY.
 #
-# This is free software, placed under the terms of the
-# GNU Lesser Public License version 2.1, as published by the Free Software
-# Foundation. Please see the file COPYING for details.
+# This is free software, placed under the terms of the GNU Lesser
+# Public License version 2.1 (or later), as published by the Free
+# Software Foundation. Please see the file COPYING for details.
 
 set -e
 set -u
