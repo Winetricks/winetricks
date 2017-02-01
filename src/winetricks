@@ -4629,6 +4629,7 @@ winetricks_init()
     W_ISO_MOUNT_LETTER=i
 
     WINETRICKS_WINE_VERSION=$(winetricks_early_wine --version | sed 's/.*wine/wine/')
+    WINETRICKS_ORIG_WINE_VERSION="${WINETRICKS_WINE_VERSION}"
     # See also w_wine_version()
     # A small hack...
     case "$WINETRICKS_WINE_VERSION" in
@@ -4647,7 +4648,7 @@ winetricks_init()
     WINETRICKS_WINE_MICRO=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/')
 
     if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
-        echo "Using winetricks $(winetricks_print_version) with ${WINETRICKS_WINE_VERSION} and WINEARCH=${W_ARCH}"
+        echo "Using winetricks $(winetricks_print_version) with ${WINETRICKS_ORIG_WINE_VERSION} and WINEARCH=${W_ARCH}"
     fi
 
     winetricks_latest_version_check
