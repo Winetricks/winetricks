@@ -6659,6 +6659,11 @@ load_dotnet46()
     w_override_dlls native mscoree
 }
 
+verify_dotnet46()
+{
+    w_dotnet_verify dotnet46
+}
+
 #----------------------------------------------------------------
 
 w_metadata dotnet461 dlls \
@@ -6700,6 +6705,11 @@ load_dotnet461()
     esac
 
     w_override_dlls native mscoree
+}
+
+verify_dotnet461()
+{
+    w_dotnet_verify dotnet461
 }
 
 #----------------------------------------------------------------
@@ -6750,6 +6760,11 @@ load_dotnet462()
     esac
 
     w_override_dlls native mscoree
+}
+
+verify_dotnet462()
+{
+    w_dotnet_verify dotnet462
 }
 
 #----------------------------------------------------------------
