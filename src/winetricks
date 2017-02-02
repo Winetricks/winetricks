@@ -769,6 +769,8 @@ winetricks_selfupdate_rollback()
 # Caches downloads in winetrickscache/$packagename
 w_download_to()
 {
+    winetricks_download_setup
+
     _W_packagename="$1" # or path to download file to
     _W_url="$2"
     _W_sum="$3"
@@ -802,34 +804,6 @@ w_download_to()
     then
         w_try mkdir -p "$_W_cache"
     fi
-
-    # If WINETRICKS_DOWNLOADER is set, ensure it is to a valid value (aria2c, curl, wget), if not, error.
-    # If unset, fallback to checking for them in $PATH as before:
-
-    # shellcheck disable=2104
-    case "${WINETRICKS_DOWNLOADER}" in
-        aria2c|curl|wget) : ;;
-        "") if [ -x "$(which aria2c 2>/dev/null)" ] ; then
-                WINETRICKS_DOWNLOADER="aria2c"
-            elif [ -x "$(which wget 2>/dev/null)" ] ; then
-                WINETRICKS_DOWNLOADER="wget"
-            elif [ -x "$(which curl 2>/dev/null)" ] ; then
-                WINETRICKS_DOWNLOADER="curl"
-            else
-                w_die "Please install wget or aria2c (or, if those aren't available, curl)"
-            fi
-            ;;
-        *) w_die "Invalid value ${WINETRICKS_DOWNLOADER} given for WINETRICKS_DOWNLOADER. Possible values: aria2c, curl, wget"
-
-    esac
-
-    # FIXME: move these variables and common download options to a global place that can be shared as
-    # downloaders may be used outside of w_download_to() (e.g., winetricks_stats_report() and winetricks_dl_url_to_stdout())
-    # Common values for aria2c/curl/wget
-    # Connection timeout time (in seconds):
-    WINETRICKS_DOWNLOADER_TIMEOUT=${WINETRICKS_DOWNLOADER_TIMEOUT:-15}
-    # Number of retry attempts:
-    WINETRICKS_DOWNLOADER_RETRIES=${WINETRICKS_DOWNLOADER_RETRIES:-3}
 
     # Try download twice
     checksum_ok=""
@@ -889,18 +863,6 @@ w_download_to()
         *) _W_agent="" ;;
         esac
 
-        case "$WINETRICKS_OPT_TORIFY" in
-        1) torify=torify
-           # torify needs --async-dns=false, see https://github.com/tatsuhiro-t/aria2/issues/613
-           aria2c_torify_opts="--async-dns=false"
-           if [ ! -x "$(which torify 2>/dev/null)" ]
-           then
-               w_die "--torify was used, but torify is not installed, please install it." ; exit 1
-           fi ;;
-        *) torify=
-           aria2c_torify_opts="" ;;
-        esac
-
         if [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ]
         then
             # Note: aria2c wants = for most options or silently fails
@@ -913,6 +875,8 @@ w_download_to()
             #   attempt to download everything in that input file again.
             # --save-session='' if the user has specified save-session in their config, their session will be
             #   ovewritten by the new aria2 process
+
+            # shellcheck disable=SC2086
             $torify aria2c \
                 $aria2c_torify_opts \
                 --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
@@ -935,6 +899,7 @@ w_download_to()
            # [*] --read-timeout is useful on the adobe server that doesn't
            # close the connection unless you tell it to (control-C or closing
            # the socket)
+
            # shellcheck disable=SC2086
            winetricks_wget_progress \
                -O "$_W_file" \
@@ -953,6 +918,7 @@ w_download_to()
 
            # curl doesn't get filename from the location given by the server!
            # fortunately, we know it
+
            # shellcheck disable=SC2086
            $torify curl \
                --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
@@ -2630,14 +2596,59 @@ _EOF_
 
 #---- Private Functions ----
 
+# Determines downloader to use, etc.
+# I.e., things common to w_download_to(), winetricks_download_to_stdout(), and winetricks_stats_report())
+winetricks_download_setup()
+{
+    # shellcheck disable=SC2104
+    case "${WINETRICKS_DOWNLOADER}" in
+        aria2c|curl|wget) : ;;
+        "") if [ -x "$(which aria2c 2>/dev/null)" ] ; then
+                WINETRICKS_DOWNLOADER="aria2c"
+            elif [ -x "$(which wget 2>/dev/null)" ] ; then
+                WINETRICKS_DOWNLOADER="wget"
+            elif [ -x "$(which curl 2>/dev/null)" ] ; then
+                WINETRICKS_DOWNLOADER="curl"
+            else
+                w_die "Please install wget or aria2c (or, if those aren't available, curl)"
+            fi
+            ;;
+        *) w_die "Invalid value ${WINETRICKS_DOWNLOADER} given for WINETRICKS_DOWNLOADER. Possible values: aria2c, curl, wget"
+    esac
+
+    # Common values for aria2c/curl/wget
+    # Number of retry attempts:
+    WINETRICKS_DOWNLOADER_RETRIES=${WINETRICKS_DOWNLOADER_RETRIES:-3}
+    # Connection timeout time (in seconds):
+    WINETRICKS_DOWNLOADER_TIMEOUT=${WINETRICKS_DOWNLOADER_TIMEOUT:-15}
+
+    case "$WINETRICKS_OPT_TORIFY" in
+    1) torify=torify
+       # torify needs --async-dns=false, see https://github.com/tatsuhiro-t/aria2/issues/613
+       aria2c_torify_opts="--async-dns=false"
+       if [ ! -x "$(which torify 2>/dev/null)" ]
+       then
+           w_die "--torify was used, but torify is not installed, please install it." ; exit 1
+       fi ;;
+    *) torify=
+       aria2c_torify_opts="" ;;
+    esac
+}
+
+
 winetricks_dl_url_to_stdout()
 {
-    # FIXME: get common downloader variables supported
-    # FIXME: --torify support as well
+    winetricks_download_setup
+
+    # Not using w_try here as it adds extra output, breaking things.
+    # FIXME: add a w_try_quiet() wrapper around w_try() that doesn't print the
+    # Executing ... stuff, but still does error checking
     if [ "${WINETRICKS_DOWNLOADER}" = "wget" ] ; then
-        w_try wget -q -O - "$1"
+        $torify wget -q -O - --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+            --tries "$WINETRICKS_DOWNLOADER_RETRIES" "$1"
     elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ] ; then
-        w_try curl -s "$1"
+        $torify curl -s --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+               --retry "$WINETRICKS_DOWNLOADER_RETRIES" "$1"
     elif [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ] ; then
         # aria2c doesn't have support downloading to stdout:
         # https://github.com/aria2/aria2/issues/190
@@ -2647,7 +2658,8 @@ winetricks_dl_url_to_stdout()
         if [ -e "${stdout_tmpfile}" ] ; then
             w_try rm "${stdout_tmpfile}"
         fi
-                aria2c \
+                $torify aria2c \
+                $aria2c_torify_opts \
                 --continue \
                 --daemon=false \
                 --dir="${W_TMP_EARLY}" \
@@ -2657,6 +2669,8 @@ winetricks_dl_url_to_stdout()
                 --out="stdout.tmp" \
                 --save-session='' \
                 --stream-piece-selector=geom \
+                --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+                --max-tries="$WINETRICKS_DOWNLOADER_RETRIES" \
                 "$1" > /dev/null
         w_try cat "${stdout_tmpfile}"
         w_try rm "${stdout_tmpfile}"
@@ -19318,6 +19332,8 @@ winetricks_os_description()
 
 winetricks_stats_report()
 {
+    winetricks_download_setup
+
     # If user has opted in to usage tracking, report what he used (if anything)
     case "$WINETRICKS_STATS_REPORT" in
     1) ;;
@@ -19330,15 +19346,31 @@ winetricks_stats_report()
 
     report="os=$(winetricks_os_description)&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
     report="$(echo "$report" | sed 's/ /%20/g')"
+
     # Just do a HEAD request with the raw command line.
     # Yes, this can be fooled by caches.  That's ok.
-    # FIXME: get common downloader variables supported
-    if [ -x "$(which wget 2>/dev/null)" ]
-    then
-        wget --spider "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
-    elif [ -x "$(which curl 2>/dev/null)" ]
-    then
-        curl -I "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
+
+    # Note: these downloads are expected to fail (the resource won't exist), so don't use w_try and use '|| true' to ignore the expected errors
+    if [ "${WINETRICKS_DOWNLOADER}" = "wget" ] ; then
+        $torify wget --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+            --tries "$WINETRICKS_DOWNLOADER_RETRIES" \
+            --spider "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
+    elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ] ; then
+        $torify curl --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+           --retry "$WINETRICKS_DOWNLOADER_RETRIES" \
+           -I "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
+    elif [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ] ; then
+        $torify aria2c $aria2c_torify_opts \
+                $aria2c_torify_opts \
+                --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+                --daemon=false \
+                --enable-rpc=false \
+                --input-file='' \
+                --max-tries="$WINETRICKS_DOWNLOADER_RETRIES" \
+                --save-session='' \
+                "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
+    else
+        w_die "Here be dragons"
     fi
 }
 
