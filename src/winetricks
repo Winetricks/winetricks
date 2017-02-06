@@ -2656,7 +2656,7 @@ winetricks_dl_url_to_stdout()
         stdout_tmpfile="${W_TMP_EARLY}/stdout.tmp"
 
         if [ -e "${stdout_tmpfile}" ] ; then
-            w_try rm "${stdout_tmpfile}"
+            rm "${stdout_tmpfile}"
         fi
                 $torify aria2c \
                 $aria2c_torify_opts \
@@ -2672,8 +2672,8 @@ winetricks_dl_url_to_stdout()
                 --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
                 --max-tries="$WINETRICKS_DOWNLOADER_RETRIES" \
                 "$1" > /dev/null
-        w_try cat "${stdout_tmpfile}"
-        w_try rm "${stdout_tmpfile}"
+        cat "${stdout_tmpfile}"
+        rm "${stdout_tmpfile}"
     else
         w_die "Please install aria2c, curl, or wget"
     fi
