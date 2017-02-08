@@ -15,6 +15,11 @@ set -e
 set -u
 set -x
 
+if [ -z "$GITHUB_TOKEN" ] ; then
+    echo "GITHUB_TOKEN must be set in the environment!"
+    exit 1
+fi
+
 # Make sure we're at top level:
 if [ ! -f Makefile ] ; then
     echo "Please run this from the top of the source tree"
