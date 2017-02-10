@@ -9024,8 +9024,6 @@ load_vjrun20()
 
 #----------------------------------------------------------------
 
-# FIXME: two exe's, one for win64, one for win32..
-
 w_metadata windowscodecs dlls \
     title="MS Windows Imaging Component" \
     publisher="Microsoft" \
@@ -9041,11 +9039,13 @@ load_windowscodecs()
         # https://www.microsoft.com/en-us/download/details.aspx?id=32
         w_download http://download.microsoft.com/download/f/f/1/ff178bb1-da91-48ed-89e5-478a99387d4f/wic_x86_enu.exe 53c18652ac2f8a51303deb48a1b7abbdb1db427f
         EXE="wic_x86_enu.exe"
-    else
+    elif [ "$W_ARCH" = "win64" ] ; then
         # https://www.microsoft.com/en-us/download/details.aspx?id=1385
         w_download https://download.microsoft.com/download/6/4/5/645FED5F-A6E7-44D9-9D10-FE83348796B0/wic_x64_enu.exe 4bdbf76a7bc96453306c893b4a7b2b8ae6127f67
         EXE="wic_x64_enu.exe"
-   fi
+    else
+        w_die "Invalid W_ARCH value, $W_ARCH"
+    fi
 
     # Avoid a file existence check.
     w_try rm -f "$W_SYSTEM32_DLLS"/windowscodecs.dll "$W_SYSTEM32_DLLS"/windowscodecsext.dll "$W_SYSTEM32_DLLS"/photometadatahandler.dll
@@ -9058,17 +9058,20 @@ load_windowscodecs()
     # AF says in AppDB entry for .NET 3.0 that windowscodecs has to be native only
     w_override_dlls native windowscodecs windowscodecsext
 
-    # Always run the WIC installer in passive mode.
-    # See http://bugs.winehq.org/show_bug.cgi?id=16876 and
-    # http://bugs.winehq.org/show_bug.cgi?id=23232
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-
     if test -x /usr/bin/taskset && w_workaround_wine_bug 32859 "Working around possibly broken libX11"
     then
         TASKSET="taskset -c 0"
     else
         TASKSET=""
     fi
+
+    w_set_winver winxp
+
+    # Always run the WIC installer in passive mode.
+    # See http://bugs.winehq.org/show_bug.cgi?id=16876 and
+    # http://bugs.winehq.org/show_bug.cgi?id=23232
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+
     w_try $TASKSET "$WINE" "$EXE" /passive
 }
 
