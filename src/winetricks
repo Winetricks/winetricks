@@ -10810,6 +10810,9 @@ load_ie7()
     w_download http://download.microsoft.com/download/3/8/8/38889DC1-848C-4BF2-8335-86C573AD86D9/IE7-WindowsXP-x86-enu.exe d39b89c360fbaa9706b5181ae4718100687a5326
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
+    # IE7 requies winxp to install:
+    w_set_winver winxp
+
     "$WINE" IE7-WindowsXP-x86-enu.exe $W_UNATTENDED_SLASH_QUIET
 
     # IE7 exits with 194 to signal a reboot
