@@ -283,6 +283,14 @@ w_die()
     exit 1
 }
 
+w_die_if_win64()
+{
+    if [ $W_ARCH = win64 ]
+    then
+        w_die "This package does not work on a 64-bit installation"
+    fi
+}
+
 # Kill all instances of a process in a safe way (Solaris killall kills _everything_)
 w_killall()
 {
@@ -5895,10 +5903,7 @@ w_metadata dotnet11 dlls \
 
 load_dotnet11()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyId=262D25E3-F589-4842-8157-034D1E7CF3A3
     w_download http://download.microsoft.com/download/a/a/c/aac39226-8825-44ce-90e3-bf8203e74006/dotnetfx.exe 16a354a2207c4c8846b617cbc78f7b7c1856340e
@@ -5955,10 +5960,7 @@ w_metadata dotnet11sp1 dlls \
 
 load_dotnet11sp1()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     w_download http://download.microsoft.com/download/8/b/4/8b4addd8-e957-4dea-bdb8-c4e00af5b94b/NDP1.1sp1-KB867460-X86.exe 74a5b25d65a70b8ecd6a9c301a0aea10d8483a23
 
@@ -6014,10 +6016,7 @@ w_metadata dotnet20 dlls \
 
 load_dotnet20()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
     w_download http://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
@@ -6062,10 +6061,7 @@ w_metadata dotnet20sdk dlls \
 
 load_dotnet20sdk()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     # http://www.microsoft.com/en-us/download/details.aspx?id=19988
     w_download http://download.microsoft.com/download/c/4/b/c4b15d7d-6f37-4d5a-b9c6-8f07e7d46635/setup.exe 4e4b1072b5e65e855358e2028403f2dc52a62ab4
@@ -6136,10 +6132,7 @@ w_metadata dotnet20sp1 dlls \
 
 load_dotnet20sp1()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     # FIXME: URL?
     w_download http://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe eef5a36924cdf0c02598ccf96aa4f60887a49840
@@ -6205,10 +6198,7 @@ w_metadata dotnet20sp2 dlls \
 
 load_dotnet20sp2()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     # http://www.microsoft.com/downloads/details.aspx?familyid=5B2C0358-915B-4EB5-9B1D-10E506DA9D0F
     w_download http://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 22d776d4d204863105a5db99e8b8888be23c61a7
@@ -6271,10 +6261,7 @@ w_metadata dotnet30 dlls \
 
 load_dotnet30()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     # http://msdn.microsoft.com/en-us/netframework/bb264589.aspx
     w_download http://download.microsoft.com/download/3/F/0/3F0A922C-F239-4B9B-9CB0-DF53621C57D9/dotnetfx3.exe f3d2c3c7e4c0c35450cf6dab1f9f2e9e7ff50039
@@ -6344,10 +6331,7 @@ w_metadata dotnet30sp1 dlls \
 
 load_dotnet30sp1()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     # FIXME: URL?
     w_download http://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 8d779e337920b097aa0c01859912950606e9fc12
@@ -6394,10 +6378,7 @@ w_metadata dotnet35 dlls \
 
 load_dotnet35()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     case "$W_PLATFORM" in
         windows_cmd) ;;
@@ -6448,10 +6429,7 @@ w_metadata dotnet35sp1 dlls \
 
 load_dotnet35sp1()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     case "$W_PLATFORM" in
     windows_cmd) ;;
@@ -6519,10 +6497,7 @@ w_metadata dotnet40 dlls \
 
 load_dotnet40()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     case "$W_PLATFORM" in
         windows_cmd) ;;
@@ -10690,10 +10665,7 @@ w_metadata ie6 dlls \
 load_ie6()
 {
     # Installer doesn't support Win64, and I can't find a x64 version on microsoft.com
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "This package does not work on a 64-bit installation"
-    fi
+    w_die_if_win64
 
     w_download http://download.oldapps.com/Internet_Explorer/ie60.exe 8e483db28ff01a7cabd39147ab6c59753ea1f533
 
