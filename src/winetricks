@@ -2128,6 +2128,9 @@ REGEDIT4
 
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\set-winver.reg
+
+    # Prevent a race when calling from another verb
+    "$WINESERVER" -w
 }
 
 w_unset_winver()
