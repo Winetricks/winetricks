@@ -1199,7 +1199,7 @@ sub disable_notifications{
 
 # Read the file
 my(%top);
-open FILE, $ARGV[0] || w_die "can't open ".$ARGV[0];
+open FILE, $ARGV[0] || w_die "cannot open ".$ARGV[0];
 my($line);
 $line = <FILE> || w_die "Could not read first line from ".$ARGV[0];
 $line =~ /"UserLocalConfigStore"/ || w_die "this is not a localconfig.vdf file";
