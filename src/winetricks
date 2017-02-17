@@ -2733,6 +2733,9 @@ winetricks_get_sha1sum_prog() {
     if [ -x "$(which sha1sum 2>/dev/null)" ]
     then
         WINETRICKS_SHA1SUM="sha1sum"
+    elif [ -x "$(which sha1 2>/dev/null)" ]
+    then
+        WINETRICKS_SHA1SUM="sha1"
     elif [ -x "$(which openssl 2>/dev/null)" ]
     then
         WINETRICKS_SHA1SUM="openssl dgst -sha1"
