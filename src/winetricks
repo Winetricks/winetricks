@@ -942,6 +942,14 @@ w_download_to()
                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
                ${_W_agent:+--user-agent "$_W_agent"} \
                "$_W_url"
+        elif [ "${WINETRICKS_DOWNLOADER}" = "fetch" ]
+        then
+           # shellcheck disable=SC2086
+           $torify fetch \
+               -T "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+               -o "$_W_file" \
+               ${_W_agent:+--user-agent="$_W_agent"} \
+               "$_W_url"
         else
             w_die "Here be dragons"
         fi
@@ -2618,18 +2626,20 @@ winetricks_download_setup()
 {
     # shellcheck disable=SC2104
     case "${WINETRICKS_DOWNLOADER}" in
-        aria2c|curl|wget) : ;;
+        aria2c|curl|wget|fetch) : ;;
         "") if [ -x "$(which aria2c 2>/dev/null)" ] ; then
                 WINETRICKS_DOWNLOADER="aria2c"
             elif [ -x "$(which wget 2>/dev/null)" ] ; then
                 WINETRICKS_DOWNLOADER="wget"
             elif [ -x "$(which curl 2>/dev/null)" ] ; then
                 WINETRICKS_DOWNLOADER="curl"
+            elif [ -x "$(which fetch 2>/dev/null)" ] ; then
+                WINETRICKS_DOWNLOADER="fetch"
             else
                 w_die "Please install wget or aria2c (or, if those aren't available, curl)"
             fi
             ;;
-        *) w_die "Invalid value ${WINETRICKS_DOWNLOADER} given for WINETRICKS_DOWNLOADER. Possible values: aria2c, curl, wget"
+        *) w_die "Invalid value ${WINETRICKS_DOWNLOADER} given for WINETRICKS_DOWNLOADER. Possible values: aria2c, curl, wget, fetch"
     esac
 
     # Common values for aria2c/curl/wget
