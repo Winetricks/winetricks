@@ -37,7 +37,7 @@ clean:
 		-o -name "*.log" \
 		-o -name "*.out" \
 		-o -name "*.verbs" \
-	| xargs --no-run-if-empty rm
+	| xargs -r rm
 	rm -rf src/df-* src/measurements src/links.d
 
 # Remove trailing whitespaces
