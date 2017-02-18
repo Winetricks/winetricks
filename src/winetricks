@@ -2702,6 +2702,9 @@ winetricks_dl_url_to_stdout()
                 "$1" > /dev/null
         cat "${stdout_tmpfile}"
         rm "${stdout_tmpfile}"
+    elif [ "${WINETRICKS_DOWNLOADER}" = "fetch" ] ; then
+        # fetch does not support retry count
+        $torify fetch -o - -T "${WINETRICKS_DOWNLOADER_TIMEOUT}" "$1" 2>/dev/null
     else
         w_die "Please install aria2c, curl, or wget"
     fi
