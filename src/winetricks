@@ -29,6 +29,10 @@ WINETRICKS_VERSION=20170207
 # - ar, cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - aria2c, wget, curl, or fetch is needed for downloading.
 # - sha1sum, sha1,  or openssl is needed for verifying downloads.
+# - aria2c, wget, or curl is needed for downloading.
+# - sha1sum/sha1/shasum is needed for verifying downloads (or openssl for OSX 10.5)
+# - Note: there is a transition to sha256 under way, which requires
+# - sha256sum/sha256/shasum (OSX 10.5 does not support these, and is considered deprecated)
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog.
 # - xdg-open (if present) or open (for OS X) is used to open download pages
 #   for the user when downloads cannot be fully automated.
@@ -560,7 +564,7 @@ w_expand_env()
     winetricks_early_wine cmd.exe /c echo "%$1%"
 }
 
-# get sha1sum string and set $_W_gotsum to it
+# get sha1sum string and set $_W_gotsha1um to it
 w_get_sha1sum()
 {
     _W_sha1_file="$1"
@@ -569,25 +573,56 @@ w_get_sha1sum()
     # User is running winetricks from /dev/stdin
     if [ -f "$_W_sha1_file" ] || [ -h "$_W_sha1_file" ]
     then
-        _W_gotsum=$($WINETRICKS_SHA1SUM < "$_W_sha1_file" | sed 's/(stdin)= //;s/ .*//')
+        _W_gotsha1sum=$($WINETRICKS_SHA1SUM < "$_W_sha1_file" | sed 's/(stdin)= //;s/ .*//')
     else
         w_warn "$_W_sha1_file is not a regular file, not checking sha1sum"
         return
     fi
 }
 
-# verify an sha1sum
+# get sha256sum string and set $_W_gotsha256sum to it
+w_get_sha256sum()
+{
+    _W_sha256_file="$1"
+
+    # See https://github.com/Winetricks/winetricks/issues/645
+    # User is running winetricks from /dev/stdin
+    if [ -f "$_W_sha256_file" ] || [ -h "$_W_sha256_file" ]
+    then
+        _W_gotsha256sum=$($WINETRICKS_SHA256SUM < "$_W_sha256_file" | sed 's/(stdin)= //;s/ .*//')
+    else
+        w_warn "$_W_sha256_file is not a regular file, not checking sha1sum"
+        return
+    fi
+}
+
+# verify a sha1sum
 w_verify_sha1sum()
 {
     _W_vs_wantsum=$1
     _W_vs_file=$2
 
     w_get_sha1sum "$_W_vs_file"
-    if [ "$_W_gotsum"x != "$_W_vs_wantsum"x ]
+    if [ "$_W_gotsha1sum"x != "$_W_vs_wantsum"x ]
     then
         w_die "sha1sum mismatch!  Rename $_W_vs_file and try again."
     fi
-    unset _W_vs_wantsum _W_vs_file _W_gotsum
+    unset _W_vs_wantsum _W_vs_file _W_gotsha1sum
+}
+
+# verify a sha256sum
+w_verify_sha256sum()
+{
+    set -x
+    _W_vs_wantsum=$1
+    _W_vs_file=$2
+
+    w_get_sha256sum "$_W_vs_file"
+    if [ "$_W_gotsha256sum"x != "$_W_vs_wantsum"x ]
+    then
+        w_die "sha256sum mismatch!  Rename $_W_vs_file and try again."
+    fi
+    unset _W_vs_wantsum _W_vs_file _W_gotsha256sum
 }
 
 # wget outputs progress messages that look like this:
@@ -803,6 +838,17 @@ w_download_to()
         _W_file=$(basename "$_W_url")
     fi
 
+    # tr -d " " is for FreeBSD/OS X/Solaris return a leading space:
+    # See https://stackoverflow.com/questions/30927590/wc-on-osx-return-includes-spaces/30927885#30927885
+    _W_sum_length="$(echo "$_W_sum" | tr -d "\n" | wc -c | tr -d " ")"
+    case "$_W_sum_length" in
+         0) _W_shatype="none" ;;
+         40) _W_shatype="sha1" ;;
+         64) _W_shatype="sha256" ;;
+         # 128) sha512..
+         *) w_die "unsupported shasum..bug" ;;
+    esac
+
     if echo "${_W_packagename}" | grep -q -e '\/-' -e '^-'; then
             w_die "Invalid path ${_W_packagename} given"
     else
@@ -843,12 +889,28 @@ w_download_to()
                     fi
                 fi
                 # If checksum matches, declare success and exit loop
-                w_get_sha1sum "$_W_cache/$_W_file"
-                if [ "$_W_gotsum"x = "$_W_sum"x ]
-                then
-                    checksum_ok=1
-                    break
-                fi
+                case "$_W_shatype" in
+                    none)
+                        w_warn "No checksum provided, not verifying"
+                        ;;
+                    sha1)
+                        w_get_sha1sum "$_W_cache/$_W_file"
+                        if [ "$_W_gotsha1sum"x = "$_W_sum"x ]
+                        then
+                            checksum_ok=1
+                            break
+                        fi
+                        ;;
+                    sha256)
+                        w_get_sha256sum "$_W_cache/$_W_file"
+                        if [ "$_W_gotsha256sum"x = "$_W_sum"x ]
+                        then
+                            checksum_ok=1
+                            break
+                        fi
+                        ;;
+                esac
+
                 if test ! "$WINETRICKS_CONTINUE_DOWNLOAD"
                 then
                     w_warn "Checksum for $_W_cache/$_W_file did not match, retrying download"
@@ -986,7 +1048,13 @@ w_download_to()
 
     if test "$_W_sum" && test ! "$checksum_ok"
     then
-        w_verify_sha1sum "$_W_sum" "$_W_cache/$_W_file"
+        case "$_W_shatype" in
+            none) w_warn "No checksum provided, not verifying" ;;
+            sha1) w_verify_sha1sum "$_W_sum" "$_W_cache/$_W_file" ;;
+            sha256) w_verify_sha256sum "$_W_sum" "$_W_cache/$_W_file" ;;
+            # 128) sha512..
+            *) w_die "unsupported shasum..bug" ;;
+        esac
     fi
 }
 
@@ -2734,18 +2802,35 @@ winetricks_dl_warning() {
 }
 
 winetricks_get_sha1sum_prog() {
-    # Mac folks tend to not have sha1sum, but we can make do with openssl
-    if [ -x "$(which sha1sum 2>/dev/null)" ]
-    then
+    # Linux/Solaris:
+    if [ -x "$(which sha1sum 2>/dev/null)" ] ; then
         WINETRICKS_SHA1SUM="sha1sum"
-    elif [ -x "$(which sha1 2>/dev/null)" ]
-    then
+    # FreeBSD/NetBSD:
+    elif [ -x "$(which sha1 2>/dev/null)" ] ; then
         WINETRICKS_SHA1SUM="sha1"
-    elif [ -x "$(which openssl 2>/dev/null)" ]
-    then
+    # OSX 10.6+:
+    elif [ -x "$(which shasum 2>/dev/null)" ] ; then
+        WINETRICKS_SHA1SUM="shasum -a 1"
+    # OSX 10.5:
+    elif [ -x "$(which openssl 2>/dev/null)" ] ; then
         WINETRICKS_SHA1SUM="openssl dgst -sha1"
     else
         w_die "No sha1sum utility available."
+    fi
+}
+
+winetricks_get_sha256sum_prog() {
+    # Linux/Solaris:
+    if [ -x "$(which sha256sum 2>/dev/null)" ] ; then
+        WINETRICKS_SHA256SUM="sha256sum"
+    # FreeBSD/NetBSD:
+    elif [ -x "$(which sha256 2>/dev/null)" ] ; then
+        WINETRICKS_SHA256SUM="sha256"
+    # OSX (10.6+), 10.5 doesn't support at all: https://stackoverflow.com/questions/7500691/rvm-sha256sum-nor-shasum-found
+    elif [ -x "$(which shasum 2>/dev/null)" ] ; then
+        WINETRICKS_SHA256SUM="shasum -a 256"
+    else
+        w_die "No sha256um utility available."
     fi
 }
 
@@ -2793,10 +2878,13 @@ winetricks_print_version()
 {
     # Normally done by winetricks_init, but we don't want to set up the WINEPREFIX
     # just to get the winetricks version:
+
+    # FIXME: sha1/sha256
     winetricks_get_sha1sum_prog
+    #winetricks_get_sha256sum_prog
 
     w_get_sha1sum "$0"
-    echo "$WINETRICKS_VERSION - sha1sum: $_W_gotsum"
+    echo "$WINETRICKS_VERSION - sha1sum: $_W_gotsha1sum"
 }
 
 # Run a small wine command for internal use
@@ -4551,6 +4639,7 @@ winetricks_init()
     WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net
 
     winetricks_get_sha1sum_prog
+    winetricks_get_sha256sum_prog
 
     winetricks_get_platform
 
@@ -9888,7 +9977,7 @@ load_fontfix()
     if test -f /usr/share/fonts/truetype/arphic/ukai.ttf
     then
         w_get_sha1sum /usr/share/fonts/truetype/arphic/ukai.ttf
-        if [ "$_W_gotsum"x = "96e1121f89953e5169d3e2e7811569148f573985"x ]
+        if [ "$_W_gotsha1sum"x = "96e1121f89953e5169d3e2e7811569148f573985"x ]
         then
             w_die "Your installed ukai.ttf is known to be broken. Upgrade your ttf-arphic font package!"
         fi
@@ -9897,7 +9986,7 @@ load_fontfix()
     if test -f /usr/share/fonts/truetype/arphic/uming.ttf
     then
         w_get_sha1sum /usr/share/fonts/truetype/arphic/uming.ttf
-        if [ "$_W_gotsum"x = "2a4f4a69e343c21c24d044b2cb19fd4f0decc82c"x ]
+        if [ "$_W_gotsha1sum"x = "2a4f4a69e343c21c24d044b2cb19fd4f0decc82c"x ]
         then
             w_die "Your installed uming.ttf is known to be broken. Upgrade your ttf-uming font package!"
         fi

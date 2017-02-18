@@ -251,6 +251,9 @@ test_speed()
 
 test_app_checksums()
 {
+    # FIXME: this depends on sha1sum binary, doesn't exist on OSX/BSD
+    # Also need support for FreeBSD
+
     # Verify the installation
     if [ -f "$srcdir/winetricksverify.d/$app.sha1sum" ]
     then
