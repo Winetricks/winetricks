@@ -2644,8 +2644,8 @@ winetricks_download_setup()
         *) w_die "Invalid value ${WINETRICKS_DOWNLOADER} given for WINETRICKS_DOWNLOADER. Possible values: aria2c, curl, wget, fetch"
     esac
 
-    # Common values for aria2c/curl/wget
-    # Number of retry attempts:
+    # Common values for aria2c/curl/fetch/wget
+    # Number of retry attempts (not supported by fetch):
     WINETRICKS_DOWNLOADER_RETRIES=${WINETRICKS_DOWNLOADER_RETRIES:-3}
     # Connection timeout time (in seconds):
     WINETRICKS_DOWNLOADER_TIMEOUT=${WINETRICKS_DOWNLOADER_TIMEOUT:-15}
