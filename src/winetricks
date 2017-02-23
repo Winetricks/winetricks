@@ -9697,7 +9697,6 @@ w_metadata corefonts fonts \
 load_corefonts()
 {
     # FIXME: why is this commented out? Should be removed or enabled.
-    #w_download ftp://ftp.fi.debian.org/gentoo/distfiles/andale32.exe c4db8cbe42c566d12468f5fdad38c43721844c69
     w_download ftp://ftp.fi.debian.org/gentoo/distfiles/arial32.exe 6d75f8436f39ab2da5c31ce651b7443b4ad2916e
     w_download ftp://ftp.fi.debian.org/gentoo/distfiles/arialb32.exe d45cdab84b7f4c1efd6d1b369f50ed0390e3d344
     w_download ftp://ftp.fi.debian.org/gentoo/distfiles/comic32.exe 2371d0327683dcc5ec1684fe7c275a8de1ef9a51
@@ -9713,9 +9712,6 @@ load_corefonts()
     # to exit silently. Because there are apps out there that depend on the
     # files being present in the Windows font directory we use cabextract
     # to obtain the files and register the fonts by hand.
-
-    # Andale needs a FontSubstitutes entry
-    # w_try_cabextract --directory="$W_TMP" "$W_CACHE"/corefonts/andale32.exe
 
     w_try_cabextract -q --directory="$W_TMP" "$W_CACHE"/corefonts/arial32.exe
     w_try cp -f "$W_TMP"/Arial*.TTF "$W_FONTSDIR_UNIX"
