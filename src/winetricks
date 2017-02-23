@@ -9717,9 +9717,6 @@ load_corefonts()
     # Andale needs a FontSubstitutes entry
     # w_try_cabextract --directory="$W_TMP" "$W_CACHE"/corefonts/andale32.exe
 
-    # Display EULA
-    test x"$W_UNATTENDED_SLASH_Q" = x"" || w_try "$WINE" "$W_CACHE"/corefonts/arial32.exe $W_UNATTENDED_SLASH_Q
-
     w_try_cabextract -q --directory="$W_TMP" "$W_CACHE"/corefonts/arial32.exe
     w_try cp -f "$W_TMP"/Arial*.TTF "$W_FONTSDIR_UNIX"
     w_register_font Arial.TTF "Arial"
