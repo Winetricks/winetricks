@@ -10250,6 +10250,58 @@ load_allfonts()
 #----------------------------------------------------------------
 # Apps
 #----------------------------------------------------------------
+w_metadata 163mail apps\
+    title="163 MailMaster（网易邮箱大师）" \
+    publisher="NetEase" \
+    year="2015" \
+    media="download" \
+    file1="mail.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/MailMaster/Start.exe" \
+    homepage="http://mail.163.com/dashi/?from=mail46" \
+    unattended="no"
+
+load_163mail()
+{
+w_download http://client.dl.126.net/pcmail/dashi/mail.exe ee242fda1bcee6348ee9d8811784932cb57a458a
+cd "$W_CACHE/$W_PACKAGE"
+
+    # uses vcrun2005
+    w_call vcrun2005
+
+w_try "$WINE" "$file1"
+w_declare_exe "$W_PROGRAMS_X86_WIN\\MailMaster" "Start.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata 163music apps\
+    title="NetEase Cloud Music" \
+    publisher="NetEase" \
+    year="2015" \
+    media="download" \
+    file1="cloudmusicsetup_1_9_1[105579].exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Netease/CloudMusic/cloudmusic.exe" \
+    homepage="http://music.163.com/" \
+    unattended="no"
+
+load_163music()
+{
+w_download http://s1.music.126.net/download/pc/cloudmusicsetup_1_9_1[105579].exe d8e0fef65425fb0efa009936672af14c02beda57
+cd "$W_CACHE/$W_PACKAGE"
+
+    if w_workaround_wine_bug 38028 "Installing native directx9 to work around playback bug"
+    then
+        w_call directx9
+    fi
+
+    # Make sure chinese fonts are available
+    w_call fakechinese
+
+w_try "$WINE" "$file1"
+w_declare_exe "$W_PROGRAMS_X86_WIN\\Netease\CloudMusic" "cloudmusic.exe"
+}
+
+#----------------------------------------------------------------
 
 w_metadata 3m_library apps \
     title="3M Cloud Library" \
@@ -11117,6 +11169,30 @@ load_mingw()
 }
 
 #----------------------------------------------------------------
+
+w_metadata line apps\
+    title="LINE" \
+    publisher="LINE" \
+    year="2014" \
+    media="download" \
+    file1="LineInst.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Naver/LINE/Line.exe" \
+    homepage="http://line.me/" \
+    unattended="no"
+
+load_line()
+{
+w_download http://cdn.line-apps.com/client/win/LineInst.exe aa67d38c07f23792401b31892bbe3f098d6d0d61
+cd "$W_CACHE/$W_PACKAGE"
+
+    # Make sure chinese fonts are available
+    w_call fakechinese
+w_try "$WINE" "$file1"
+w_declare_exe "$W_PROGRAMS_X86_WIN\\Naver\LINE" "Line.exe"
+}
+
+#----------------------------------------------------------------
+
 
 w_metadata mpc apps \
     title="Media Player Classic - Home Cinema" \
@@ -14683,6 +14759,27 @@ load_eve()
 
 #----------------------------------------------------------------
 
+w_metadata evernote apps \
+ title="Evernote" \
+ publisher="Evernote Corporation" \
+ year="2015" \
+ media="download" \
+ file1="Evernote_5.8.3.6507.exe" \
+ installed_exe1="$W_PROGRAMS_X86_WIN/Evernote/Evernote/Evernote.exe" \
+ homepage="http://www.evernote.com" \
+ unattended="no"
+
+load_evernote()
+{
+    w_download https://cdn1.evernote.com/win5/public/Evernote_5.8.3.6507.exe 9b84ffeb842db7848e7b2688aa1b7a581c80c6c8
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "$file1"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Evernote\Evernote" Evernote.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata fable_tlc games \
     title="Fable: The Lost Chapters" \
     publisher="Microsoft" \
@@ -15527,6 +15624,39 @@ load_kotor1()
 
 #----------------------------------------------------------------
 
+w_metadata kugou apps\
+    title="KuGou Music" \
+    publisher="KuGou" \
+    year="2015" \
+    media="download" \
+    file1="kugou7680.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/KuGou/KGMusic/KuGou.exe" \
+    homepage="http://www.kugou.com/" \
+    unattended="no"
+
+load_kugou()
+{
+    w_download http://downmini.kugou.com/kugou7680.exe 87a0ebe14e79b2e624c2bed88e2d0c9e57600500
+    cd "$W_CACHE/$W_PACKAGE"
+
+    if w_workaround_wine_bug 38037 "Installing native directmusic to work around playback bug"
+    then
+    w_call directmusic
+    fi
+
+    if w_workaround_wine_bug 38038 "Installing native riched20 to work around typing in search box"
+    then
+    w_call riched20
+    fi
+
+    # Make sure chinese fonts are available
+    w_call fakechinese
+    w_try "$WINE" "$file1"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\KuGou\KGMusic" "KuGou.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata losthorizon_demo games \
     title="Lost Horizon Demo" \
     publisher="Deep Silver" \
@@ -16039,6 +16169,33 @@ load_mdk()
 
 #----------------------------------------------------------------
 
+w_metadata meitu apps \
+ title="Meitu XiuXiu(美图秀秀，A Chinese raster graphics editor)" \
+ publisher="Meitu" \
+ year="2014" \
+ media="download" \
+ file1="XiuXiu_360Setup_4.0.0.exe" \
+ installed_exe1="$W_PROGRAMS_X86_WIN/Meitu/XiuXiu/XiuXiu.exe" \
+ homepage="http://xiuxiu.web.meitu.com/" \
+ unattended="no"
+
+load_meitu()
+{
+    w_download http://xiuxiu.dl.meitu.com/XiuXiu_360Setup_4.0.0.exe fcf83a61c7587ea775681c55aad388fbf835d646
+
+    # uses mfc42u.dll
+    w_call mfc42
+
+    # Make sure chinese fonts are available
+    w_call fakechinese
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "$file1"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Meitu\\XiuXiu" XiuXiu.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata menofwar games \
     title="Men of War" \
     publisher="Aspyr Media" \
@@ -16192,6 +16349,42 @@ load_myth2_demo()
         }
         winwaitclose
     "
+}
+
+#----------------------------------------------------------------
+
+w_metadata neoimaging apps\
+    title="neoimaging (光影魔术手, A Chinese raster graphics editor)" \
+    publisher="Thunder Network" \
+    year="2014" \
+    media="download" \
+    file1="NeoImagingSetup_4.4.1.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Thunder Network/NeoImaging/Program/nEOiMAGING4.exe" \
+    homepage="http://www.neoimaging.cn/" \
+    unattended="no"
+
+load_neoimaging()
+{
+    w_download http://down.neoimaging.cn/neoimaging/NeoImagingSetup_4.4.1.exe 13d3285601a1e52d0ef719bc7d2eeed994d7c097
+    cd "$W_CACHE/$W_PACKAGE"
+
+    if w_workaround_wine_bug 38038 "Installing native riched20 to work around typing in search box"
+    then
+    w_call riched20
+    fi
+
+# Upstream have fixed this bug in 1.7.37
+    if w_workaround_wine_bug 38080 "Installing native winhttp to work around crash bug" 1.7.37
+    then
+     w_call winhttp
+    fi
+
+    # Make sure chinese fonts are available
+    w_call fakechinese
+
+    w_try "$WINE" "$file1"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Thunder Network\NeoImaging\Program" "nEOiMAGING4.exe"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Thunder Network\NeoViewer\Program" "NeoViewer.exe"
 }
 
 #----------------------------------------------------------------
@@ -16587,6 +16780,57 @@ load_qqintl()
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1"
+}
+
+#----------------------------------------------------------------
+
+w_metadata qqlight apps \
+ title="QQ Light (QQ 轻聊,a Chinese chat app)" \
+ publisher="Tencent" \
+ year="2015" \
+ media="download" \
+ file1="QQ7.5Light.exe" \
+ file2="QQLight.tar.gz"\
+ installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/QQLite/QQScLauncher.exe" \
+ homepage="http://www.qq.com" \
+ unattended="no"
+
+load_qqlight()
+{
+    w_download http://dldir1.qq.com/qqfile/qq/QQ7.5Light/15462/QQ7.5Light.exe e75a0a7ee9ae00283ca5cf18221409c3acf60695
+    w_download http://hillwoodhome.net/wine/QQLight.tar.gz db04deb656c0cce7b223cc3358a8af98b0deed52
+
+    if w_workaround_wine_bug 39383 "Installing native riched20 to work around can't input username bug"
+    then
+        w_call riched20
+    fi
+
+    if w_workaround_wine_bug 38171 "Installing desktop file to work around bug"
+    then
+        cd "$W_TMP/"
+        tar -zxf "$W_CACHE/qqlight/QQLight.tar.gz"
+        w_try mkdir -p $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ轻聊版/
+        w_try mkdir -p $HOME/.local/share/icons/hicolor/48x48/apps
+        w_try mkdir -p $HOME/.local/share/icons/hicolor/256x256/apps
+        w_try mv QQLight/QQ轻聊版.desktop $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ轻聊版
+        w_try mv QQLight/48x48/QQLight.png $HOME/.local/share/icons/hicolor/48x48/apps
+        w_try mv QQLight/256x256/QQLight.png $HOME/.local/share/icons/hicolor/256x256/apps
+        w_try echo Exec=env WINEPREFIX=$WINEPREFIX $WINE \"$W_PROGRAMS_X86_WIN\\Tencent\\QQLite\\bin\\QQScLauncher.exe\" >> $HOME/.local/share/applications/wine/Programs/腾讯软件/QQ轻聊版/QQ轻聊版.desktop
+    fi
+
+    if w_workaround_wine_bug 39384 "Set permission as 000 for QQFrmMgr.sys to work around can't be started bug"
+    then
+        cd $WINEPREFIX/drive_c/windows/system32/drivers/
+        touch QQFrmMgr.sys
+        chmod 000 QQFrmMgr.sys
+    fi
+
+    # Make sure chinese fonts are available
+    w_call fakechinese
+
+    cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "$file1"
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Tencent\\QQLite\\Bin" QQScLauncher.exe
 }
 
 #----------------------------------------------------------------
