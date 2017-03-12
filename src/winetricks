@@ -8449,45 +8449,16 @@ load_setupapi()
 w_metadata shockwave dlls \
     title="Shockwave" \
     publisher="Adobe" \
-    year="2010" \
+    year="2017" \
     media="download" \
     file1="sw_lic_full_installer.msi" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/Adobe/Shockwave 12/shockwave_Projector_Loader.dcr"
 
 load_shockwave() {
-    # Not silent enough, use MSI instead
-    #w_download http://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/Shockwave_Installer_Full.exe 840e34e9b067cf247bfa9092665b8966158f38e3
-    #w_try "$WINE" "$W_CACHE"/Shockwave_Installer_Full.exe $W_UNATTENDED_SLASH_S
-    # old sha1sum: 6a91a9da4b54c3fdc97130a15e1a173117e5f4ff
-    # 2009-07-31 sha1sum: 0bb506ef67a268e8d3fb6c7ce556320ee10b9da5
-    # 2009-12-13 sha1sum: d35649883bf13cb1a86f5650e1050d15533ac0f4
-    # 2010-01-23 sha1sum: 4a837d238c28c5f345d73f105711f20c6d059273
-    # 2010-05-15 sha1sum: bdce02afc82233801e84137e78c2c5fe574db253
-    # 2010-09-02 sha1sum: fed20eccc29fec2f64162b7265343514d43884bc
-    # 2010-11-03 sha1sum: 2ff28665543e80f3bd4ff1933ac05ec9314aaac6
-    # 2011-02-03 sha1sum: e71ddc4fa42662208b2f52c1bd34a40e7775ad75
-    # 2011-06-13 sha1sum: 7fd6cc61bb20d0bef654a44f4501a5a65b55b0c9
-    # 2011-11-10 sha1sum: b55974b471c516f13fb032424247c07390baf380
-    # 2012-03-07 sha1sum: 3b10f645ba1a6815fa97924a6bde4eda3177ff68
-    # 2012-04-26 sha1sum: 48b1a44b2c12c486916d641f3b4e20abffb3d6e4
-    # 2012-08-08 sha1sum: 3c4d531ccf0bb5788f1c197c63e9c0aa89885ee6
-    # 2013-06-15 sha1sum: 9c02499deaf567bde7d827493705e5680833d02e
-    # 2014-01-22 sha1sum: c8f1b2c137a1373d591f7c1d48db9c6baa961caf
-    # 2014-02-26 sha1sum: ae2855b729bfaedc766f3addd8c2b74eac576909
-    # 2014-04-15 sha1sum: c2ea56450fb4a5bac66cb7d70e3b522431521787
-    # 2014-05-21 sha1sum: d95d1a14ee264235b29e093105bd2baa8b06eb12
-    # 2014-11-22 sha1sum: 644d3228654ded798eabe40e7044b96b90e742f6
-    # 2015-03-30 sha1sum: 9f2d4d929e7210ae9fb633881127b21586ffd8ce
-    # 2015-04-27 sha1sum: 244e6a5c5fa2dd26c136bc5b402f6cad588763d7
-    # 2015-08-02 sha1sum: e2efa2eb7db0a6de08905cd61bb3efcf58fda994
-    # 2015-11-09 sha1sum: d13420a6fdc4f8d9c45c5ee6767974f0f0054cdc
-    # 2015-12-27 sha1sum: 3ac6d85e54dffb2940c89fc10e63363a47ec96d0
-    # 2016-02-18 sha1sum: 45147a791e3f71bd67ead1622d9120060dd196e5
-    # 2016-03-11 sha1sum: 4f955f42984ae69d2f6078d3a3fe9fadc4a25e34
-    # 2016-10-11 sha1sum: bcb6a9d9a6f7781db3de3120a0c9dcd8118642d1
     # 2017-02-19 sha1sum: 86eb79ea28ac3801887616cefee2d2b43522312a
+    # 2017-03-12 sha256sum: 39715a84b1d85347066fbf89a3af9f5e612b59402093b055cd423bd30a7f637d
+    w_download https://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi 39715a84b1d85347066fbf89a3af9f5e612b59402093b055cd423bd30a7f637d
 
-    w_download https://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi 86eb79ea28ac3801887616cefee2d2b43522312a
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i sw_lic_full_installer.msi $W_UNATTENDED_SLASH_Q
 }
