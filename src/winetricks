@@ -10948,6 +10948,9 @@ w_metadata ie8 dlls \
 
 load_ie8()
 {
+    # Bundled in Windows 7, so refuses to install. Works with XP:
+    w_call winxp
+
     # Unregister Wine IE
     if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"
     #if [ ! -f "$W_SYSTEM32_DLLS"/plugin.ocx ]
@@ -11046,6 +11049,8 @@ _EOF_
         "$WINE" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore" http://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
         ;;
     esac
+
+    w_unset_winver
 }
 
 #----------------------------------------------------------------
