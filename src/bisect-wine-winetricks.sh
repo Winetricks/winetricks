@@ -25,11 +25,13 @@ set -x
 
 WINE_GIT="${WINE_GIT:-$HOME/wine-git}"
 
+cd "$WINE_GIT" || exit 125
+
 git clean -fxd || exit 125
 
 ./configure --disable-tests || exit 125
 
-if command -v nproc2 >/dev/null 2>&1 ; then
+if command nproc >/dev/null 2>&1 ; then
     make "-j$(nproc)" || exit 125
 else
     make -j2
