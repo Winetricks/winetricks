@@ -24,7 +24,7 @@ check_deps() {
 
 datadir="links.d"
 
-WINETRICKS_SOURCEFORGE=http://downloads.sourceforge.net
+WINETRICKS_SOURCEFORGE=https://downloads.sourceforge.net
 # ftp.microsoft.com resolves to two different IP addresses, one of which is broken
 ftp_microsoft_com=64.4.17.176
 
