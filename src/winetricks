@@ -8948,8 +8948,8 @@ load_vcrun2013()
 {
     # http://www.microsoft.com/en-us/download/details.aspx?id=40784
     # 2014/07/26: 18f81495bc5e6b293c69c28b0ac088a96debbab2
-    # 2015/01/14: df7f0a73bfa077e483e51bfb97f5e2eceedfb6a3
-    w_download https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe df7f0a73bfa077e483e51bfb97f5e2eceedfb6a3
+    # 2015/01/14: a22895e55b26202eae166838edbe2ea6aad00d7ea600c11f8a31ede5cbce2048
+    w_download https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe a22895e55b26202eae166838edbe2ea6aad00d7ea600c11f8a31ede5cbce2048
 
     w_override_dlls native,builtin atl120 msvcp120 msvcr120 vcomp120
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
@@ -8958,8 +8958,8 @@ load_vcrun2013()
     case "$W_ARCH" in
     win64)
         # Also install the 64-bit version
-        # 2015/10/19: 8bf41ba9eef02d30635a10433817dbb6886da5a2
-        w_download https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe 8bf41ba9eef02d30635a10433817dbb6886da5a2
+        # 2015/10/19: e554425243e3e8ca1cd5fe550db41e6fa58a007c74fad400274b128452f38fb8
+        w_download https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe e554425243e3e8ca1cd5fe550db41e6fa58a007c74fad400274b128452f38fb8
         if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"
         then
             rm -f "$W_TMP"/*  # Avoid permission error
