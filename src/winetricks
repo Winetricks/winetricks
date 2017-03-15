@@ -8103,7 +8103,7 @@ w_metadata pdh dlls \
 load_pdh()
 {
     # https://support.microsoft.com/kb/284996
-    w_download http://download.microsoft.com/download/platformsdk/Redist/5.0.2195.2668/NT4/EN-US/pdhinst.exe f42448660def8cd7f42b34aa7bc7264745f4425e
+    w_download http://download.microsoft.com/download/platformsdk/Redist/5.0.2195.2668/NT4/EN-US/pdhinst.exe 5506e34930badec5c27d4c325462530e4b06a4a9797a8f70089b39013b5dffae
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/pdh/pdhinst.exe
     w_try_unzip "$W_TMP" "$W_TMP"/pdh.exe
