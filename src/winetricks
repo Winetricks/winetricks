@@ -7622,7 +7622,7 @@ w_metadata mfc40 dlls \
 
 load_mfc40()
 {
-    w_download http://activex.microsoft.com/controls/vc/mfc40.cab 53c570e2c811674d6e4fa46cff5a3a04cd0ffc24
+    w_download http://activex.microsoft.com/controls/vc/mfc40.cab b15ffb8cbf99ddc63edf9bd5ee9d6c9dffdc851d7aec23670fb6d5af63d2287e
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/mfc40/mfc40.cab
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -F '*40.dll' "$W_TMP"/mfc40.exe
 }
