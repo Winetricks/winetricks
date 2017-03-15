@@ -8389,7 +8389,7 @@ w_metadata secur32 dlls \
 load_secur32()
 {
     # http://www.microsoft.com/downloads/details.aspx?familyid=c4e408d7-6716-4a12-ad3a-8029667f5c84
-    w_download http://download.microsoft.com/download/6/9/5/69501788-B62F-44D8-933F-B6FAA576CA87/Windows2000-KB959426-x86-ENU.EXE bf930a4d2982165a0793465bb255d494ba5b4cf7
+    w_download http://download.microsoft.com/download/6/9/5/69501788-B62F-44D8-933F-B6FAA576CA87/Windows2000-KB959426-x86-ENU.EXE a150e8b8fc68164eed18f214ee0726d9b7eb6c4726aab91decd12627b045d68b
     w_try_cabextract "$W_CACHE"/secur32/Windows2000-KB959426-x86-ENU.EXE -d "$W_SYSTEM32_DLLS" -F secur32.dll
     w_override_dlls native,builtin secur32
 }
