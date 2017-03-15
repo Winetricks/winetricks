@@ -1689,7 +1689,7 @@ w_ahk_do()
     if ! test -f "$W_CACHE/ahk/AutoHotkey.exe"
     then
         W_BROWSERAGENT=1 \
-        w_download_to ahk https://www.autohotkey.com/download/AutoHotkey104805.zip b3981b13fbc45823131f69d125992d6330212f27
+        w_download_to ahk https://www.autohotkey.com/download/AutoHotkey104805.zip c8bf1c3dc4622559963b6626316ba1d083bb8a8af605f78382e371e5294d435a
         w_try_unzip "$W_CACHE/ahk" "$W_CACHE/ahk/AutoHotkey104805.zip" AutoHotkey.exe AU3_Spy.exe
         chmod +x "$W_CACHE/ahk/AutoHotkey.exe"
     fi
