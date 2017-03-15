@@ -8568,7 +8568,7 @@ w_metadata vb4run dlls \
 load_vb4run()
 {
     # See https://support.microsoft.com/kb/196286
-    w_download https://download.microsoft.com/download/vb40ent/sample27/1/w9xnt4/en-us/vb4run.exe 83e968063272e97bfffd628a73bf0ff5f8e1023b
+    w_download https://download.microsoft.com/download/vb40ent/sample27/1/w9xnt4/en-us/vb4run.exe 40931308b5a137f9ce3e9da9b43f4ca6688e18b523687cfea8be6cdffa3153fb
     w_try_unzip "$W_TMP" "$W_CACHE"/vb4run/vb4run.exe
     w_try cp -f "$W_TMP/Vb40032.dll" "$W_SYSTEM32_DLLS"
     w_try cp -f "$W_TMP/Vb40016.dll" "$W_SYSTEM32_DLLS"
