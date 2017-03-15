@@ -8141,7 +8141,7 @@ w_metadata pngfilt dlls \
 load_pngfilt()
 {
     # http://www.microsoft.com/en-us/download/details.aspx?id=3907
-    w_download http://download.microsoft.com/download/5/0/c/50c42d0e-07a8-4a2b-befb-1a403bd0df96/IE5.01sp4-KB871260-Windows2000sp4-x86-ENU.exe 6f5db296ebf58e81c49bc667049a3f88a3f1ec3d
+    w_download http://download.microsoft.com/download/5/0/c/50c42d0e-07a8-4a2b-befb-1a403bd0df96/IE5.01sp4-KB871260-Windows2000sp4-x86-ENU.exe eb1b90677ee969b278494c6180d906af37eda6d20f760dc395350a2da91eb631
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F pngfilt.dll "$W_CACHE"/pngfilt/IE5.01sp4-KB871260-Windows2000sp4-x86-ENU.exe
     w_try_regsvr pngfilt.dll
 }
