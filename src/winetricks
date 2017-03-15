@@ -5009,14 +5009,21 @@ helper_win2ksp4()
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win2ksp4/W2KSP4_EN.EXE
 }
 
-helper_xpsp3()
+helper_winxpsp3()
 {
     filename=$1
 
-    # http://www.microsoft.com/en-us/download/details.aspx?id=24
-    w_download_to xpsp3 http://download.microsoft.com/download/d/3/0/d30e32d8-418a-469d-b600-f32ce3edf42d/WindowsXP-KB936929-SP3-x86-ENU.exe c81472f7eeea2eca421e116cd4c03e2300ebfde4
+    # 2017/03/15: helper was renamed from winxpsp3 to winxpsp3, to match win2k/win7 service pack helpers
+    # To minimize user impact, renaming directory automagically.
+    # This could be removed after a transition period (1 year or so):
+    if [ -d "$W_CACHE/xpsp3" ] ; then
+        w_try mv "$W_CACHE/xpsp3" "$W_CACHE/winxpsp3"
+    fi
 
-    w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe
+    # http://www.microsoft.com/en-us/download/details.aspx?id=24
+    w_download_to winxpsp3 http://download.microsoft.com/download/d/3/0/d30e32d8-418a-469d-b600-f32ce3edf42d/WindowsXP-KB936929-SP3-x86-ENU.exe c81472f7eeea2eca421e116cd4c03e2300ebfde4
+
+    w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe
 }
 
 helper_win7sp1()
@@ -5125,12 +5132,12 @@ w_metadata avifil32 dlls \
     publisher="Microsoft" \
     year="2004" \
     media="download" \
-    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/avifil32.dll"
 
 load_avifil32()
 {
-    helper_xpsp3 i386/avifil32.dl_
+    helper_winxpsp3 i386/avifil32.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/avifil32.dl_
 
     w_override_dlls native avifil32
@@ -5262,14 +5269,14 @@ w_metadata crypt32 dlls \
     publisher="Microsoft" \
     year="2004" \
     media="download" \
-    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/crypt32.dll"
 
 load_crypt32()
 {
     w_call msasn1
 
-    helper_xpsp3 i386/crypt32.dl_
+    helper_winxpsp3 i386/crypt32.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/crypt32.dl_
 
     w_override_dlls native crypt32
@@ -5688,12 +5695,12 @@ w_metadata dbghelp dlls \
     publisher="Microsoft" \
     year="2008" \
     media="download" \
-    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/dbghelp.dll"
 
 load_dbghelp()
 {
-    helper_xpsp3 i386/dbghelp.dll
+    helper_winxpsp3 i386/dbghelp.dll
 
     w_try cp -f "$W_TMP"/i386/dbghelp.dll "$W_SYSTEM32_DLLS"
 
@@ -7685,12 +7692,12 @@ w_metadata msacm32 dlls \
     publisher="Microsoft" \
     year="2003" \
     media="download" \
-    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/msacm32.dll"
 
 load_msacm32()
 {
-    helper_xpsp3 i386/msacm32.dl_
+    helper_winxpsp3 i386/msacm32.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/msacm32.dl_
     w_override_dlls native,builtin msacm32
 }
@@ -7718,12 +7725,12 @@ w_metadata msctf dlls \
     publisher="Microsoft" \
     year="2003" \
     media="download" \
-    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/msctf.dll"
 
 load_msctf()
 {
-    helper_xpsp3 i386/msctf.dl_
+    helper_winxpsp3 i386/msctf.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/msctf.dl_
     w_override_dlls native,builtin msctf
 }
@@ -8437,12 +8444,12 @@ w_metadata setupapi dlls \
     publisher="Microsoft" \
     year="2004" \
     media="download" \
-    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/setupapi.dll"
 
 load_setupapi()
 {
-    helper_xpsp3 i386/setupapi.dl_
+    helper_winxpsp3 i386/setupapi.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/setupapi.dl_
 
     w_override_dlls native,builtin setupapi
@@ -8521,12 +8528,12 @@ w_metadata updspapi dlls \
     publisher="Microsoft" \
     year="2004" \
     media="download" \
-    file1="../xpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/updspapi.dll"
 
 load_updspapi()
 {
-    helper_xpsp3 i386/update/updspapi.dll
+    helper_winxpsp3 i386/update/updspapi.dll
     w_try cp -f "$W_TMP"/i386/update/updspapi.dll "$W_SYSTEM32_DLLS"
 
     w_override_dlls native,builtin updspapi
