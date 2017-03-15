@@ -5088,7 +5088,7 @@ w_metadata art2kmin dlls \
 load_art2kmin()
 {
     # See http://www.microsoft.com/downloads/details.aspx?familyid=d9ae78d9-9dc6-4b38-9fa6-2c745a175aed&displaylang=en
-    w_download https://download.microsoft.com/download/D/2/A/D2A2FC8B-0447-491C-A5EF-E8AA3A74FB98/AccessRuntime.exe 571811b7536e97cf4e4e53bbf8260cddd69f9b2d
+    w_download https://download.microsoft.com/download/D/2/A/D2A2FC8B-0447-491C-A5EF-E8AA3A74FB98/AccessRuntime.exe a00a92fdc4ddc0dcf5d1964214a8d7e4c61bb036908a4b43b3700063eda9f4fb
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" AccessRuntime.exe $W_UNATTENDED_SLASH_Q
 }
