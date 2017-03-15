@@ -6009,13 +6009,13 @@ load_dotnet11()
     w_package_unsupported_win64
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyId=262D25E3-F589-4842-8157-034D1E7CF3A3
-    w_download https://download.microsoft.com/download/a/a/c/aac39226-8825-44ce-90e3-bf8203e74006/dotnetfx.exe 16a354a2207c4c8846b617cbc78f7b7c1856340e
+    w_download https://download.microsoft.com/download/a/a/c/aac39226-8825-44ce-90e3-bf8203e74006/dotnetfx.exe ba0e58ec93f2ffd54fc7c627eeca9502e11ab3c6fc85dcbeff113bd61d995bce
 
     w_call remove_mono
     w_call corefonts
     w_call fontfix
 
-    w_try w_try_cd "$W_CACHE/dotnet11"
+    w_try w_try_cd "$W_CACHE/$W_PACKAGE"
     # Use builtin regsvcs.exe to work around https://bugs.winehq.org/show_bug.cgi?id=25120
     if test $W_OPT_UNATTENDED
     then
