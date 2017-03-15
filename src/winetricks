@@ -5240,7 +5240,7 @@ w_metadata comdlg32ocx dlls \
 load_comdlg32ocx()
 {
     # By analogy with vb5 version in https://support.microsoft.com/kb/168917
-    w_download http://activex.microsoft.com/controls/vb6/ComDlg32.cab d4f3e193c6180eccd73bad53a8500beb5b279cbf
+    w_download http://activex.microsoft.com/controls/vb6/ComDlg32.cab 6a445b34a1a6a0ab302beb1663377d86203594ee83e4e4ee0b5d72aaf47cad97
     w_try_cabextract --directory="$W_TMP" "$W_CACHE/comdlg32ocx/${file1}"
     w_try cp "$W_TMP"/comdlg32.ocx "$W_SYSTEM32_DLLS"/comdlg32.ocx
     w_try_regsvr comdlg32.ocx
