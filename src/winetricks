@@ -7712,14 +7712,14 @@ load_msdxmocx()
     #
     # (2016/02/18) Since then, oldapps.com removed it. It's on a Finnish mirror, where it's been since 2001/10/20
     # Found using http://www.filewatcher.com/m/mpfull.exe.3593680-0.html
-    # The sha1sum is different. Perhaps Iceweasel was right. This one is also clean according to clamscan/virustotal.com
+    # The sha256sum is different. Perhaps Iceweasel was right. This one is also clean according to clamscan/virustotal.com
 
-    # (2017/9/28) define.fi is down, these sites have mpfull.exe with the original sha1:
+    # (2017/9/28) define.fi is down, these sites have mpfull.exe with the original sha256:
     # http://hell.pl/agnus/windows95/
     # http://zerosky.oldos.org/win9x.html
     # http://sdfox7.com/win95/
 
-    w_download http://hell.pl/agnus/windows95/mpfull.exe 44aef252a660612a01ee13271d84d2da3885e58d
+    w_download http://hell.pl/agnus/windows95/mpfull.exe a39b2b9735cedd513fcb78f8634695d35073e9d7e865e536a0da6db38c7225e4
 
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_CACHE/$W_PACKAGE/${file1}"
     w_try_regsvr msdxm.ocx
