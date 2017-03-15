@@ -5047,22 +5047,8 @@ w_metadata adobeair dlls \
 
 load_adobeair()
 {
-    # 2010-02-02: sha1sum 5c95f51a680f8c175a92755238127be4ad22c53b
-    # 2010-02-20: sha1sum 6f03e723bd855abbe00eb8fdf22da54fb49c62db
-    # 2010-07-29: 2.0.2 sha1sum 7b93aedaf48ad7854940e7a4e7d9394a255e888b
-    # 2010-12-08: 2.5.1 sha1sum 2664207ca8e836f5070ee356064829a39785a92e
-    # 2011-04-13: 2.6   sha1sum 3d9c2f9d8f3533424cfea84d61fcb9464278d9fc
-    # 2011-10-26: 2.7   sha1sum dfa337d4b53e9d924356febc116450190fa183dd
-    # 2014-03-01: 4.0   sha1sum 0034bdd4e0b2ce0fa6198b0b715fba85754d9a57
-    # https://helpx.adobe.com/en/flash-player/release-note/fp_12_air_4_release_notes.html
-    # 2014-09-30: 15.0  sha1sum 46341f1358bc6e0b9ddeae3591662a2ac68dc360
-    # 2014-11-24: 15.0.0.356 sha1sum c0e6b8b1ed5ffa282945d21b21f8a5e03febc904
-    # 2015-11-06: 19.x sha1sum 3bc2a568204a3a9b59ca347ab49585f0c5fab279
-    # 2015-12-27: 20.0 sha1sum 9c10b7be43771869c381c73197c9a0fcd1b727cf
-    # 2015-12-29: 20.0.0.233 (had to check with strings on Adobe AIR.dll) sha1sum 7161fb8b47721485882f52720f8b41dbfe3b69d0
-    # 2016-02-17: 20.0.0.260 (strings 'Adobe AIR.dll' | grep 20\\. ) sha1sum 2fdd561556fe881c4e5538d4ee37f523871befd3
-
-    w_download https://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 2fdd561556fe881c4e5538d4ee37f523871befd3
+    # 2017-3-14: 20.0.0.260 (strings 'Adobe AIR.dll' | grep 20\\. ) sha256sum 318770b9a18e59ca4a721a1f5c2b0235cffdbe77a043e99cb2af32074d61de45
+    w_download https://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 318770b9a18e59ca4a721a1f5c2b0235cffdbe77a043e99cb2af32074d61de45
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
 }
