@@ -9987,7 +9987,7 @@ load_liberation()
       ;;
     esac
 
-    w_download https://fedorahosted.org/releases/l/i/liberation-fonts/liberation-fonts-1.04.tar.gz 097882c92e3260742a3dc3bf033792120d8635a3
+    w_download https://fedorahosted.org/releases/l/i/liberation-fonts/liberation-fonts-1.04.tar.gz 0e0d0957c85b758561a3d4aef4ebcd2c39959e5328429d96ae106249d83531a1
     w_try_cd "$W_TMP"
     # FIXME: w_try doesn't work here, presumably because of the pipe?
     gunzip -dc "$W_CACHE/$W_PACKAGE/$file1" | tar -xf -
