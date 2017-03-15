@@ -10137,7 +10137,7 @@ load_wenquanyi()
 {
     # See http://wenq.org/enindex.cgi
     # Donate at http://wenq.org/enindex.cgi?Download(en)#MicroHei_Beta if you want to help support free CJK font development
-    w_download $WINETRICKS_SOURCEFORGE/wqy/wqy-microhei-0.2.0-beta.tar.gz 28023041b22b6368bcfae076de68109b81e77976
+    w_download $WINETRICKS_SOURCEFORGE/wqy/wqy-microhei-0.2.0-beta.tar.gz 2802ac8023aa36a66ea6e7445854e3a078d377ffff42169341bd237871f7213e
     w_try_cd "$W_TMP/"
     gunzip -dc "$W_CACHE/wenquanyi/wqy-microhei-0.2.0-beta.tar.gz" | tar -xf -
     w_try mv wqy-microhei/wqy-microhei.ttc "$W_FONTSDIR_UNIX"
