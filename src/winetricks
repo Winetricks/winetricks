@@ -8459,9 +8459,9 @@ w_metadata shockwave dlls \
     installed_file1="$W_SYSTEM32_DLLS_WIN/Adobe/Shockwave 12/shockwave_Projector_Loader.dcr"
 
 load_shockwave() {
-    # 2017-02-19 sha1sum: 86eb79ea28ac3801887616cefee2d2b43522312a
     # 2017-03-12 sha256sum: 39715a84b1d85347066fbf89a3af9f5e612b59402093b055cd423bd30a7f637d
-    w_download https://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi 39715a84b1d85347066fbf89a3af9f5e612b59402093b055cd423bd30a7f637d
+    # 2017-03-15 sha256sum: 58f2152bf726d52f08fb41f904c62ff00fdf748c8ce413e8c8547da3a21922ba
+    w_download https://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi 58f2152bf726d52f08fb41f904c62ff00fdf748c8ce413e8c8547da3a21922ba
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i sw_lic_full_installer.msi $W_UNATTENDED_SLASH_Q
