@@ -7843,8 +7843,8 @@ load_msmask()
     # old: 3c6b26f68053364ea2e09414b615dbebafb9d5c3
     # May 2009: 30e55679e4a13fe4d9620404476f215f93239292
     # 2015/11/09: Removed from microsoft.com, archive.org has an older copy:
-    # 2015/11/09: bdd2bb3a32d18926a048f302aff18b1e6d250d9d
-    w_download http://activex.microsoft.com/controls/vb6/MSMASK32.CAB bdd2bb3a32d18926a048f302aff18b1e6d250d9d
+    # 2015/11/09: 25e49bd2aa8f96ff3c1068fc0fa7ba87fe86d8d5999e3592919a4b03f0602d67
+    w_download http://activex.microsoft.com/controls/vb6/MSMASK32.CAB 25e49bd2aa8f96ff3c1068fc0fa7ba87fe86d8d5999e3592919a4b03f0602d67
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msmask/MSMASK32.CAB
     w_try cp -f "$W_TMP"/[Mm][Ss][Mm][Aa][Ss][Kk]32.[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"/msmask32.ocx
     w_try_regsvr msmask32.ocx
