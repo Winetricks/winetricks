@@ -8820,7 +8820,7 @@ load_vcrun2008()
     # June 2011 security update, see
     # https://technet.microsoft.com/library/security/ms11-025 or
     # https://support.microsoft.com/kb/2538242
-    w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 470640aa4bb7db8e69196b5edb0010933569e98d
+    w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 6b3e4c51c6c0e5f68c8a72b497445af3dbf976394cbb62aa23569065c28deeb6
     w_override_dlls native,builtin atl90 msvcm90 msvcp90 msvcr90 vcomp90
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_Q
@@ -8828,8 +8828,8 @@ load_vcrun2008()
     case "$W_ARCH" in
     win64)
         # Also install the 64-bit version
-        # 2016/11/15: a7c83077b8a28d409e36316d2d7321fa0ccdb7e8
-        w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x64.exe a7c83077b8a28d409e36316d2d7321fa0ccdb7e8
+        # 2016/11/15: b811f2c047a3e828517c234bd4aa4883e1ec591d88fad21289ae68a6915a6665
+        w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x64.exe b811f2c047a3e828517c234bd4aa4883e1ec591d88fad21289ae68a6915a6665
         if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"
         then
             rm -f "$W_TMP"/*  # Avoid permission error
