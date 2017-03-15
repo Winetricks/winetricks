@@ -7740,8 +7740,8 @@ load_msflxgrd()
     # https://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
     # may 2011: f497c3b390cd80d5bcd1f13d5c0c68b206369aa7
     # 2015/11/09: Removed from Microsoft.com, archive.org has an older copy:
-    # 2015/11/09: 3d6c04e923781d4ce0d3ab62189b8de352ab25d5
-    w_download http://activex.microsoft.com/controls/vb6/MsFlxGrd.cab 3d6c04e923781d4ce0d3ab62189b8de352ab25d5
+    # 2015/11/09: a0d374293ab9556a6eb7705efbca533ad8f20e6b9cb55f14f1ec5bb55552ec8d
+    w_download http://activex.microsoft.com/controls/vb6/MsFlxGrd.cab a0d374293ab9556a6eb7705efbca533ad8f20e6b9cb55f14f1ec5bb55552ec8d
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE/msflxgrd/${file1}"
     w_try cp -f "$W_TMP"/[Mm][Ss][Ff][Ll][Xx][Gg][Rr][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
