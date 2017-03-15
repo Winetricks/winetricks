@@ -5057,7 +5057,7 @@ load_adobeair()
     # 2015-12-29: 20.0.0.233 (had to check with strings on Adobe AIR.dll) sha1sum 7161fb8b47721485882f52720f8b41dbfe3b69d0
     # 2016-02-17: 20.0.0.260 (strings 'Adobe AIR.dll' | grep 20\\. ) sha1sum 2fdd561556fe881c4e5538d4ee37f523871befd3
 
-    w_download https://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 2fdd561556fe881c4e5538d4ee37f523871befd3
+    w_download https://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 318770b9a18e59ca4a721a1f5c2b0235cffdbe77a043e99cb2af32074d61de45
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
 }
@@ -5097,7 +5097,7 @@ w_metadata art2kmin dlls \
 load_art2kmin()
 {
     # See http://www.microsoft.com/downloads/details.aspx?familyid=d9ae78d9-9dc6-4b38-9fa6-2c745a175aed&displaylang=en
-    w_download https://download.microsoft.com/download/D/2/A/D2A2FC8B-0447-491C-A5EF-E8AA3A74FB98/AccessRuntime.exe 571811b7536e97cf4e4e53bbf8260cddd69f9b2d
+    w_download https://download.microsoft.com/download/D/2/A/D2A2FC8B-0447-491C-A5EF-E8AA3A74FB98/AccessRuntime.exe a00a92fdc4ddc0dcf5d1964214a8d7e4c61bb036908a4b43b3700063eda9f4fb
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" AccessRuntime.exe $W_UNATTENDED_SLASH_Q
 }
@@ -5221,7 +5221,7 @@ w_metadata comctl32ocx dlls \
 load_comctl32ocx()
 {
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=25437D98-51D0-41C1-BB14-64662F5F62FE
-    w_download https://download.microsoft.com/download/3/a/5/3a5925ac-e779-4b1c-bb01-af67dc2f96fc/VisualBasic6-KB896559-v1-ENU.exe f52cf2034488235b37a1da837d1c40eb2a1bad84
+    w_download https://download.microsoft.com/download/3/a/5/3a5925ac-e779-4b1c-bb01-af67dc2f96fc/VisualBasic6-KB896559-v1-ENU.exe c4d43fe4aea782d7d6c08c038778fe3635c7bae1b93fb1a7740c6644aabf567e
     # More ActiveX controls. See https://support.microsoft.com/kb/297381
     w_download http://activex.microsoft.com/controls/vb6/mscomct2.cab 766f9ccf8849a04d757faee379da54d635c8ac71
 
@@ -5948,7 +5948,7 @@ w_metadata dxsdk_nov2006 dlls \
 
 load_dxsdk_nov2006()
 {
-    w_download https://download.microsoft.com/download/9/e/5/9e5bfc66-a621-4e0d-8bfe-6688058c3f00/dxsdk_aug2006.exe 1e9cdbef391ebfbf781e6c87a375138d8c195c57
+    w_download https://download.microsoft.com/download/9/e/5/9e5bfc66-a621-4e0d-8bfe-6688058c3f00/dxsdk_aug2006.exe ab8d7d895089a88108d4148ef0f7e214b7a23c1ee9ba720feca78c7d4ca16c00
 
     # dxview.dll uses mfc42u while registering
     w_call mfc42
@@ -5971,7 +5971,7 @@ w_metadata dxsdk_jun2010 dlls \
 
 load_dxsdk_jun2010()
 {
-    w_download https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe 8fe98c00fde0f524760bb9021f438bd7d9304a69
+    w_download https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe 11a0ddeb293040f8b99eeb1bdf6197ae1b26fdb74c036e5717d8e45db9c1576e
 
     # Without dotnet20, install aborts halfway through
     w_call dotnet20
@@ -6018,7 +6018,7 @@ load_dotnet11()
     w_package_unsupported_win64
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyId=262D25E3-F589-4842-8157-034D1E7CF3A3
-    w_download https://download.microsoft.com/download/a/a/c/aac39226-8825-44ce-90e3-bf8203e74006/dotnetfx.exe 16a354a2207c4c8846b617cbc78f7b7c1856340e
+    w_download https://download.microsoft.com/download/a/a/c/aac39226-8825-44ce-90e3-bf8203e74006/dotnetfx.exe ba0e58ec93f2ffd54fc7c627eeca9502e11ab3c6fc85dcbeff113bd61d995bce
 
     w_call remove_mono
     w_call corefonts
@@ -6074,7 +6074,7 @@ load_dotnet11sp1()
 {
     w_package_unsupported_win64
 
-    w_download https://download.microsoft.com/download/8/b/4/8b4addd8-e957-4dea-bdb8-c4e00af5b94b/NDP1.1sp1-KB867460-X86.exe 74a5b25d65a70b8ecd6a9c301a0aea10d8483a23
+    w_download https://download.microsoft.com/download/8/b/4/8b4addd8-e957-4dea-bdb8-c4e00af5b94b/NDP1.1sp1-KB867460-X86.exe 2c0a35409ff0873cfa28b70b8224e9aca2362241c1f0ed6f622fef8d4722fd9a
 
     w_call remove_mono
     w_call dotnet11
@@ -6131,7 +6131,7 @@ load_dotnet20()
     w_package_unsupported_win64
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5
-    w_download https://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe a3625c59d7a2995fb60877b5f5324892a1693b2a
+    w_download https://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe 46693d9b74d12454d117cc61ff2e9481cabb100b4d74eb5367d3cf88b89a0e71
 
     w_call remove_mono
     w_call fontfix
@@ -6176,7 +6176,7 @@ load_dotnet20sdk()
     w_package_unsupported_win64
 
     # http://www.microsoft.com/en-us/download/details.aspx?id=19988
-    w_download https://download.microsoft.com/download/c/4/b/c4b15d7d-6f37-4d5a-b9c6-8f07e7d46635/setup.exe 4e4b1072b5e65e855358e2028403f2dc52a62ab4
+    w_download https://download.microsoft.com/download/c/4/b/c4b15d7d-6f37-4d5a-b9c6-8f07e7d46635/setup.exe 1d7337bfbb2c65f43c82d188688ce152af403bcb67a2cc2a3cc68a580ecd8200
 
     w_call remove_mono
 
@@ -6247,7 +6247,7 @@ load_dotnet20sp1()
     w_package_unsupported_win64
 
     # FIXME: URL?
-    w_download https://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe eef5a36924cdf0c02598ccf96aa4f60887a49840
+    w_download https://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe c36c3a1d074de32d53f371c665243196a7608652a2fc6be9520312d5ce560871
 
     w_call remove_mono
 
@@ -6313,7 +6313,7 @@ load_dotnet20sp2()
     w_package_unsupported_win64
 
     # http://www.microsoft.com/downloads/details.aspx?familyid=5B2C0358-915B-4EB5-9B1D-10E506DA9D0F
-    w_download https://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 22d776d4d204863105a5db99e8b8888be23c61a7
+    w_download https://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 6e3f363366e7d0219b7cb269625a75d410a5c80d763cc3d73cf20841084e851f
 
     w_call remove_mono
 
@@ -6446,9 +6446,9 @@ load_dotnet30sp1()
     w_package_unsupported_win64
 
     # FIXME: URL?
-    w_download https://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 8d779e337920b097aa0c01859912950606e9fc12
+    w_download https://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 3100df4d4db3965ead9520c887a534115cf6fc7ba100abde45226958b865695b
     # Recipe from https://bugs.winehq.org/show_bug.cgi?id=25060#c10
-    w_download https://download.microsoft.com/download/2/5/2/2526f55d-32bc-410f-be18-164ba67ae07d/XPSEP%20XP%20and%20Server%202003%2032%20bit.msi 5d332ebd1025e294adafe72030fe33db707b2c82 "XPSEP XP and Server 2003 32 bit.msi"
+    w_download https://download.microsoft.com/download/2/5/2/2526f55d-32bc-410f-be18-164ba67ae07d/XPSEP%20XP%20and%20Server%202003%2032%20bit.msi 630c86a202c40cbcd430701977d4f1fefa6151624ef9a4870040dff45e547dea "XPSEP XP and Server 2003 32 bit.msi"
 
     w_call remove_mono
     w_call dotnet30
@@ -6501,7 +6501,7 @@ load_dotnet35()
     w_try_cabextract -v >/dev/null
 
     # http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6
-    w_download https://download.microsoft.com/download/6/0/f/60fc5854-3cb8-4892-b6db-bd4f42510f28/dotnetfx35.exe 0a271bb44531aadef902829f98dfad66e4a57586
+    w_download https://download.microsoft.com/download/6/0/f/60fc5854-3cb8-4892-b6db-bd4f42510f28/dotnetfx35.exe 3e3a4104bad9a0c270ed5cbe8abb986de9afaf0281a98998bdbdc8eaab85c3b6
 
     w_call remove_mono
 
@@ -6552,7 +6552,7 @@ load_dotnet35sp1()
     w_try_cabextract -v >/dev/null
 
     # http://www.microsoft.com/download/en/details.aspx?id=25150
-    w_download https://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 3dce66bae0dd71284ac7a971baed07030a186918
+    w_download https://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 0582515bde321e072f8673e829e175ed2e7a53e803127c50253af76528e66bc1
 
     w_call remove_mono
 
@@ -6617,7 +6617,7 @@ load_dotnet40()
     esac
 
     # http://www.microsoft.com/download/en/details.aspx?id=17718
-    w_download https://download.microsoft.com/download/9/5/A/95A9616B-7A37-4AF6-BC36-D6EA96C8DAAE/dotNetFx40_Full_x86_x64.exe 58da3d74db353aad03588cbb5cea8234166d8b99
+    w_download https://download.microsoft.com/download/9/5/A/95A9616B-7A37-4AF6-BC36-D6EA96C8DAAE/dotNetFx40_Full_x86_x64.exe 65e064258f2e418816b304f646ff9e87af101e4c9552ab064bb74d281c38659f
 
     w_call remove_mono
 
@@ -6664,7 +6664,7 @@ load_dotnet45()
     w_try_cabextract -v >/dev/null
 
     # http://www.microsoft.com/download/en/details.aspx?id=17718
-    w_download https://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe b2ff712ca0947040ca0b8e9bd7436a3c3524bb5d
+    w_download https://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe a04d40e217b97326d46117d961ec4eda455e087b90637cb33dd6cc4a2c228d83
 
     w_call remove_mono
 
@@ -6718,7 +6718,7 @@ load_dotnet452()
     w_try_cabextract -v >/dev/null
 
     # http://www.microsoft.com/download/en/details.aspx?id=17718
-    w_download https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe 89f86f9522dc7a8a965facce839abb790a285a63
+    w_download https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe 6c2c589132e830a185c5f40f82042bee3022e721a216680bd9b3995ba86f3781
 
     w_call remove_mono
 
@@ -6769,7 +6769,7 @@ load_dotnet46()
     fi
 
     # https://support.microsoft.com/kb/3045560
-    w_download https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe 3049a85843eaf65e89e2336d5fe6e85e416797be
+    w_download https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe b21d33135e67e3486b154b11f7961d8e1cfd7a603267fb60febb4a6feab5cf87
 
     w_call remove_mono
 
@@ -6822,7 +6822,7 @@ load_dotnet461()
     fi
 
     # https://www.microsoft.com/en-au/download/details.aspx?id=49982
-    w_download https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe 83d048d171ff44a3cad9b422137656f585295866
+    w_download https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe beaa901e07347d056efe04e8961d5546c7518fab9246892178505a7ba631c301
 
     w_call remove_mono
 
@@ -6875,7 +6875,7 @@ load_dotnet462()
         unattended_args="/ai /gm2"
     else
         # Official version. See https://www.microsoft.com/en-au/download/details.aspx?id=53344
-        w_download https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe a70f856bda33d45ad0a8ad035f73092441715431
+        w_download https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe 28886593e3b32f018241a4c0b745e564526dbb3295cb2635944e3a393f4278d4
         file_package="NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
         unattended_args="/q /norestart"
     fi
@@ -6927,7 +6927,7 @@ load_dotnet_verifier()
     # 2016/09/22: name change, to netfx_setupverifier_new_2015_12_18.zip
     # 2016/10/26: sha1sum 6eef0158dc637d186d4ab5eb13aee6ef577831b2, adds .NET Framework 4.6.{1,2} support
 
-    w_download https://msdnshared.blob.core.windows.net/media/2016/10/netfx_setupverifier_new.zip 6eef0158dc637d186d4ab5eb13aee6ef577831b2 "${file1}"
+    w_download https://msdnshared.blob.core.windows.net/media/2016/10/netfx_setupverifier_new.zip 1daf4b1b27669b65f613e17814da3c8342d3bfa9520a65a880c58d6a2a6e32b5 "${file1}"
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try_unzip "$W_SYSTEM32_DLLS" netfx_setupverifier_new.zip netfx_setupverifier.exe
@@ -7176,7 +7176,7 @@ load_gfw()
 {
     # http://www.microsoft.com/games/en-us/live/pages/livejoin.aspx
     # http://www.next-gen.biz/features/should-games-for-windows-live-die
-    w_download https://download.microsoft.com/download/5/5/8/55846E20-4A46-4EF8-B272-7F988BC9090A/gfwlivesetupmin.exe 6f9e0ba052c68c8b51bb0e3ce6024d0e1c7b20b2
+    w_download https://download.microsoft.com/download/5/5/8/55846E20-4A46-4EF8-B272-7F988BC9090A/gfwlivesetupmin.exe b14609508e2f8dba0886ded84e2817ad532ebfa31f8a6d4be2e6a5a03a9d7c23
 
     # FIXME: Depends on .NET 20, but is it really needed? For now, skip it.
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -7390,7 +7390,7 @@ load_jet40()
     # https://support.microsoft.com/kb/239114
     # See also https://bugs.winehq.org/show_bug.cgi?id=6085
     # FIXME: "failed with error 2"
-    w_download https://download.microsoft.com/download/4/3/9/4393c9ac-e69e-458d-9f6d-2fe191c51469/jet40sp8_9xnt.exe 8cd25342030857969ede2d8fcc34f3f7bcc2d6d4
+    w_download https://download.microsoft.com/download/4/3/9/4393c9ac-e69e-458d-9f6d-2fe191c51469/jet40sp8_9xnt.exe b060246cd499085a31f15873689d5fa7df817e407c8261a5c71fa6b9f7042560
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" jet40sp8_9xnt.exe $W_UNATTENDED_SLASH_Q
 }
@@ -7409,7 +7409,7 @@ load_ie8_kb2936068()
 {
     w_call ie8
 
-    w_download https://download.microsoft.com/download/3/8/C/38CE0ABB-01FD-4C0A-A569-BC5E82C34A17/IE8-WindowsXP-KB2936068-x86-ENU.exe 1bdeb741085b8f1ef6efc83f8615121373107347
+    w_download https://download.microsoft.com/download/3/8/C/38CE0ABB-01FD-4C0A-A569-BC5E82C34A17/IE8-WindowsXP-KB2936068-x86-ENU.exe 8bda23c78cdcd9d01c364a01c6d639dfb2d11550a5521b8a81c808c1a2b1824e
 
     if [ $W_UNATTENDED_SLASH_Q ]
     then
@@ -7536,7 +7536,7 @@ w_metadata mdac28 dlls \
 load_mdac28()
 {
     # http://www.microsoft.com/downloads/en/details.aspx?familyid=78cac895-efc2-4f8e-a9e0-3a1afbd5922e
-    w_download https://download.microsoft.com/download/4/a/a/4aafff19-9d21-4d35-ae81-02c48dcbbbff/MDAC_TYP.EXE 4fbc272c79da59e38818924d8575accb0af776fb
+    w_download https://download.microsoft.com/download/4/a/a/4aafff19-9d21-4d35-ae81-02c48dcbbbff/MDAC_TYP.EXE 157ebae46932cb9047b58aa849ac1885e8cbd2f218810cb83e57613b49c679d6
     load_native_mdac
     w_set_winver nt40
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
@@ -7673,7 +7673,7 @@ w_metadata mozillabuild apps \
 
 load_mozillabuild()
 {
-    w_download https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-2.0.0.exe daba4bc03ae9014c68611fd36b05dcc4083c6fdb
+    w_download https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-2.0.0.exe d5ffe52fe634fb7ed02e61041cc183c3af92039ee74e794f7ae83a408e4cf3f5
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" MozillaBuildSetup-2.0.0.exe $W_UNATTENDED_SLASH_S
 }
@@ -7945,7 +7945,7 @@ load_msxml4()
     # MS07-042: http://www.microsoft.com/downloads/details.aspx?FamilyId=021E12F5-CB46-43DF-A2B8-185639BA2807
     # w_download https://download.microsoft.com/download/9/4/2/9422e6b6-08ee-49cb-9f05-6c6ee755389e/msxml4-KB936181-enu.exe 73d75d7b41f8a3d49f272e74d4f73bb5e82f1acf
     # SP3 (2009): http://www.microsoft.com/downloads/details.aspx?familyid=7F6C0CB4-7A5E-4790-A7CF-9E139E6819C0
-    w_download https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi aa70c5c1a7a069af824947bcda1d9893a895318b
+    w_download https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi 47c2ae679c37815da9267c81fc3777de900ad2551c11c19c2840938b346d70bb
     w_override_dlls native,builtin msxml4
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i msxml.msi $W_UNATTENDED_SLASH_Q
@@ -7967,9 +7967,9 @@ load_msxml6()
     # http://www.microsoft.com/downloads/details.aspx?familyid=D21C292C-368B-4CE1-9DAB-3E9827B70604
     if [ $W_ARCH = win64 ]
     then
-        w_download https://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x64.msi ca0c0814a9c7024583edb997296aad7cb0a3cbf7
+        w_download https://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x64.msi 945d8c535758d5178d4de9063cfcba7dfa96987eaa478e0c03ba646cc7ca772f
     else
-        w_download https://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x86.msi 5125220e985b33c946bbf9f60e2b222c7570bfa2
+        w_download https://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x86.msi efa48f8cab5a89b8e667ed3e10dfb71bddc02923d0f3757bd93ffabe6fb6c598
     fi
     w_override_dlls native,builtin msxml6
     rm -f "$W_SYSTEM32_DLLS/msxml6.dll"
@@ -8159,7 +8159,7 @@ w_metadata physx dlls \
 load_physx()
 {
     # Has a minor issue, see bug report https://bugs.winehq.org/show_bug.cgi?id=34167
-    w_download https://uk.download.nvidia.com/Windows/9.14.0702/PhysX-9.14.0702-SystemSoftware.msi 81e2d38e2356e807ad80cdf150ed5acfff839c8b
+    w_download https://uk.download.nvidia.com/Windows/9.14.0702/PhysX-9.14.0702-SystemSoftware.msi 0a022e28accf5851be9d6577487cdcd3d3a3e2a8a21a64456b72b415c217f03c
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i PhysX-9.14.0702-SystemSoftware.msi $W_UNATTENDED_SLASH_Q
 }
@@ -8408,7 +8408,7 @@ w_metadata sdl dlls \
 load_sdl()
 {
     # https://www.libsdl.org/download-1.2.php
-    w_download https://www.libsdl.org/release/SDL-1.2.14-win32.zip d22c71d1c2bdf283548187c4b0bd7ef9d0c1fb23
+    w_download https://www.libsdl.org/release/SDL-1.2.14-win32.zip ce77838902891bf2e4378d4a910afef88aaaae4f833a49cfc9bb8dde11ff89a7
     w_try_unzip "$W_SYSTEM32_DLLS" "$W_CACHE"/sdl/SDL-1.2.14-win32.zip SDL.dll
 }
 
@@ -8480,7 +8480,7 @@ w_metadata speechsdk dlls \
 load_speechsdk()
 {
     # http://www.microsoft.com/download/en/details.aspx?id=10121
-    w_download https://download.microsoft.com/download/B/4/3/B4314928-7B71-4336-9DE7-6FA4CF00B7B3/SpeechSDK51.exe f69efaee8eb47f8c7863693e8b8265a3c12c4f51
+    w_download https://download.microsoft.com/download/B/4/3/B4314928-7B71-4336-9DE7-6FA4CF00B7B3/SpeechSDK51.exe 520aa5d1a72dc6f41dc9b8b88603228ffd5d5d6f696224fc237ec4828fe7f6e0
 
     w_try_unzip "$W_TMP" "$W_CACHE"/speechsdk/SpeechSDK51.exe
 
@@ -8568,7 +8568,7 @@ load_vb2run()
     # See ftp://ftp.microsoft.com/Softlib/index.txt
     # 2014/05/31: Microsoft FTP is down ftp://$ftp_microsoft_com/Softlib/MSLFILES/VBRUN200.EXE
     # 2015/08/10: chatnfiles is down, conradshome.com is up (and has a LOT of old MS installers archived!)
-    w_download https://www.conradshome.com/win31/archive/softlib/vbrun200.exe ac0568b73ee375408778e9b505df995f79ab907e
+    w_download https://www.conradshome.com/win31/archive/softlib/vbrun200.exe 4b0811d8fdcac1fd9411786c9119dc8d98d0540948211bdbc1ac682fbe5c0228
     w_try_unzip "$W_TMP" "$W_CACHE"/vb2run/VBRUN200.EXE
     w_try cp -f "$W_TMP/VBRUN200.DLL" "$W_SYSTEM32_DLLS"
 }
@@ -8586,7 +8586,7 @@ w_metadata vb3run dlls \
 load_vb3run()
 {
     # See https://support.microsoft.com/kb/196285
-    w_download https://download.microsoft.com/download/vb30/utility/1/w9xnt4/en-us/vb3run.exe 518fcfefde9bf680695cadd06512efadc5ac2aa7
+    w_download https://download.microsoft.com/download/vb30/utility/1/w9xnt4/en-us/vb3run.exe 3ca3ad6332f83b5c2b86e4758afa400150f07ae66ce8b850d8f9d6bcd47ad4cd
     w_try_unzip "$W_TMP" "$W_CACHE"/vb3run/vb3run.exe
     w_try cp -f "$W_TMP/Vbrun300.dll" "$W_SYSTEM32_DLLS"
 }
@@ -8604,7 +8604,7 @@ w_metadata vb4run dlls \
 load_vb4run()
 {
     # See https://support.microsoft.com/kb/196286
-    w_download https://download.microsoft.com/download/vb40ent/sample27/1/w9xnt4/en-us/vb4run.exe 83e968063272e97bfffd628a73bf0ff5f8e1023b
+    w_download https://download.microsoft.com/download/vb40ent/sample27/1/w9xnt4/en-us/vb4run.exe 40931308b5a137f9ce3e9da9b43f4ca6688e18b523687cfea8be6cdffa3153fb
     w_try_unzip "$W_TMP" "$W_CACHE"/vb4run/vb4run.exe
     w_try cp -f "$W_TMP/Vb40032.dll" "$W_SYSTEM32_DLLS"
     w_try cp -f "$W_TMP/Vb40016.dll" "$W_SYSTEM32_DLLS"
@@ -8622,7 +8622,7 @@ w_metadata vb5run dlls \
 
 load_vb5run()
 {
-    w_download https://download.microsoft.com/download/vb50pro/utility/1/win98/en-us/msvbvm50.exe 28bfaf09b8ac32cf5ffa81252f3e2fadcb3a8f27
+    w_download https://download.microsoft.com/download/vb50pro/utility/1/win98/en-us/msvbvm50.exe b5f8ea5b9d8b30822a2be2cdcb89cda99ec0149832659ad81f45360daa6e6965
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msvbvm50.exe $W_UNATTENDED_SLASH_Q
 }
@@ -8642,7 +8642,7 @@ load_vb6run()
     # https://support.microsoft.com/kb/290887
     if test ! -f "$W_CACHE"/vb6run/vbrun60sp6.exe
     then
-        w_download https://download.microsoft.com/download/5/a/d/5ad868a0-8ecd-4bb0-a882-fe53eb7ef348/VB6.0-KB290887-X86.exe 73ef177008005675134d2f02c6f580515ab0d842
+        w_download https://download.microsoft.com/download/5/a/d/5ad868a0-8ecd-4bb0-a882-fe53eb7ef348/VB6.0-KB290887-X86.exe 467b5a10c369865f2021d379fc0933cb382146b702bbca4bcb703fc86f4322bb
 
         w_try "$WINE" "$W_CACHE"/vb6run/VB6.0-KB290887-X86.exe "/T:$W_TMP_WIN" /c $W_UNATTENDED_SLASH_Q
         if test ! -f "$W_TMP"/vbrun60sp6.exe
@@ -8763,7 +8763,7 @@ w_metadata vcrun6sp6 dlls \
 
 load_vcrun6sp6()
 {
-    w_download https://download.microsoft.com/download/1/9/f/19fe4660-5792-4683-99e0-8d48c22eed74/Vs6sp6.exe 2292437a8967349261c810ae8b456592eeb76620
+    w_download https://download.microsoft.com/download/1/9/f/19fe4660-5792-4683-99e0-8d48c22eed74/Vs6sp6.exe 7fa1d1778824b55a5fceb02f45c399b5d4e4dce7403661e67e587b5f455edbf3
 
     # No EULA is presented when passing command-line extraction arguments,
     # so we'll simplify extraction with cabextract.
@@ -8807,7 +8807,7 @@ load_vcrun2003()
     # Sadly, I know of no Microsoft URL for these
     echo "Installing BZFlag (which comes with the Visual C++ 2003 runtimes)"
     # winetricks-test can't handle ${file1} in url since it does a raw parsing :/
-    w_download https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe bdd1b32c4202fd77e6513fd507c8236888b09121
+    w_download https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
     w_try "$WINE" "$W_CACHE/vcrun2003/${file1}" $W_UNATTENDED_SLASH_S
     w_try cp "$W_PROGRAMS_X86_UNIX/BZEdit1.6.5"/m*71* "$W_SYSTEM32_DLLS"
 }
@@ -8834,7 +8834,7 @@ load_vcrun2005()
     # June 2011 security update, see
     # https://technet.microsoft.com/library/security/ms11-025 or
     # https://support.microsoft.com/kb/2538242
-    w_download https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x86.EXE b8fab0bb7f62a24ddfe77b19cd9a1451abd7b847
+    w_download https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x86.EXE 4ee4da0fe62d5fa1b5e80c6e6d88a4a2f8b3b140c35da51053d0d7b72a381d29
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_override_dlls native,builtin atl80 msvcm80 msvcp80 msvcr80 vcomp
@@ -8856,7 +8856,7 @@ load_vcrun2008()
     # June 2011 security update, see
     # https://technet.microsoft.com/library/security/ms11-025 or
     # https://support.microsoft.com/kb/2538242
-    w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 470640aa4bb7db8e69196b5edb0010933569e98d
+    w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 6b3e4c51c6c0e5f68c8a72b497445af3dbf976394cbb62aa23569065c28deeb6
     w_override_dlls native,builtin atl90 msvcm90 msvcp90 msvcr90 vcomp90
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_Q
@@ -8865,7 +8865,7 @@ load_vcrun2008()
     win64)
         # Also install the 64-bit version
         # 2016/11/15: a7c83077b8a28d409e36316d2d7321fa0ccdb7e8
-        w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x64.exe a7c83077b8a28d409e36316d2d7321fa0ccdb7e8
+        w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x64.exe b811f2c047a3e828517c234bd4aa4883e1ec591d88fad21289ae68a6915a6665
         if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"
         then
             rm -f "$W_TMP"/*  # Avoid permission error
@@ -8899,7 +8899,7 @@ w_metadata vcrun2010 dlls \
 load_vcrun2010()
 {
     # See http://www.microsoft.com/downloads/details.aspx?FamilyID=a7b7a05e-6de6-4d3a-a423-37bf0912db84
-    w_download https://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 372d9c1670343d3fb252209ba210d4dc4d67d358
+    w_download https://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 8162b2d665ca52884507ede19549e99939ce4ea4a638c537fa653539819138c8
 
     w_override_dlls native,builtin msvcp100 msvcr100 vcomp100 atl100
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -8909,7 +8909,7 @@ load_vcrun2010()
     win64)
         # Also install the 64-bit version
         # http://www.microsoft.com/en-us/download/details.aspx?id=13523
-        w_download https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe 027d0c2749ec5eb21b031f46aee14c905206f482
+        w_download https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe c6cd2d3f0b11dc2a604ffdc4dd97861a83b77e21709ba71b962a47759c93f4c8
         if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"
         then
             w_try_cabextract --directory="$W_TMP" vcredist_x64.exe -F '*.cab'
@@ -8940,7 +8940,7 @@ w_metadata vcrun2012 dlls \
 load_vcrun2012()
 {
     # http://www.microsoft.com/download/details.aspx?id=30679
-    w_download https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x86.exe 96b377a27ac5445328cbaae210fc4f0aaa750d3f
+    w_download https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x86.exe b924ad8062eaf4e70437c8be50fa612162795ff0839479546ce907ffa8d6e386
 
     w_override_dlls native,builtin atl110 msvcp110 msvcr110 vcomp110
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
@@ -8950,7 +8950,7 @@ load_vcrun2012()
     win64)
         # Also install the 64-bit version
         # 2015/10/19: 1a5d93dddbc431ab27b1da711cd3370891542797
-        w_download https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe 1a5d93dddbc431ab27b1da711cd3370891542797
+        w_download https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe 681be3e5ba9fd3da02c09d7e565adfa078640ed66a0d58583efad2c1e3cc4064
         if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"
         then
             rm -f "$W_TMP"/*  # Avoid permission error
@@ -8985,7 +8985,7 @@ load_vcrun2013()
     # http://www.microsoft.com/en-us/download/details.aspx?id=40784
     # 2014/07/26: 18f81495bc5e6b293c69c28b0ac088a96debbab2
     # 2015/01/14: df7f0a73bfa077e483e51bfb97f5e2eceedfb6a3
-    w_download https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe df7f0a73bfa077e483e51bfb97f5e2eceedfb6a3
+    w_download https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe a22895e55b26202eae166838edbe2ea6aad00d7ea600c11f8a31ede5cbce2048
 
     w_override_dlls native,builtin atl120 msvcp120 msvcr120 vcomp120
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
@@ -8995,7 +8995,7 @@ load_vcrun2013()
     win64)
         # Also install the 64-bit version
         # 2015/10/19: 8bf41ba9eef02d30635a10433817dbb6886da5a2
-        w_download https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe 8bf41ba9eef02d30635a10433817dbb6886da5a2
+        w_download https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe e554425243e3e8ca1cd5fe550db41e6fa58a007c74fad400274b128452f38fb8
         if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"
         then
             rm -f "$W_TMP"/*  # Avoid permission error
@@ -9028,7 +9028,7 @@ load_vcrun2015()
 {
     # https://www.microsoft.com/en-us/download/details.aspx?id=48145
     # 2015/10/12: bfb74e498c44d3a103ca3aa2831763fb417134d1
-    w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe bfb74e498c44d3a103ca3aa2831763fb417134d1
+    w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe fdd1e1f0dcae2d0aa0720895eff33b927d13076e64464bb7c7e5843b7667cd14
 
     if w_workaround_wine_bug 37781
     then
@@ -9046,7 +9046,7 @@ load_vcrun2015()
     win64)
         # Also install the 64-bit version
         # 2015/10/12: 3155cb0f146b927fcc30647c1a904cd162548c8c
-        w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 3155cb0f146b927fcc30647c1a904cd162548c8c
+        w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
         if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"
         then
             rm -f "$W_TMP"/*  # Avoid permission error
@@ -9100,7 +9100,7 @@ load_vjrun20()
     w_call dotnet20
 
     # See http://www.microsoft.com/downloads/details.aspx?FamilyId=E9D87F37-2ADC-4C32-95B3-B5E3A21BAB2C
-    w_download https://download.microsoft.com/download/9/2/3/92338cd0-759f-4815-8981-24b437be74ef/vjredist.exe 80a098e36b90d159da915aebfbfbacf35f302bd8
+    w_download https://download.microsoft.com/download/9/2/3/92338cd0-759f-4815-8981-24b437be74ef/vjredist.exe cf8f3dd4ad41453a302870b74de1c6489e7ed255ad3f652ce4af0b424a933b41
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" vjredist.exe ${W_OPT_UNATTENDED:+ /q /C:"install $W_UNATTENDED_SLASH_QNT"}
 }
@@ -9120,11 +9120,11 @@ load_windowscodecs()
     # Separate 32/64-bit installers:
     if [ "$W_ARCH" = "win32" ] ; then
         # https://www.microsoft.com/en-us/download/details.aspx?id=32
-        w_download https://download.microsoft.com/download/f/f/1/ff178bb1-da91-48ed-89e5-478a99387d4f/wic_x86_enu.exe 53c18652ac2f8a51303deb48a1b7abbdb1db427f
+        w_download https://download.microsoft.com/download/f/f/1/ff178bb1-da91-48ed-89e5-478a99387d4f/wic_x86_enu.exe 196868b09d87ae04e4ab42b4a3e0abbb160500e8ff13deb38e2956ee854868b1
         EXE="wic_x86_enu.exe"
     elif [ "$W_ARCH" = "win64" ] ; then
         # https://www.microsoft.com/en-us/download/details.aspx?id=1385
-        w_download https://download.microsoft.com/download/6/4/5/645FED5F-A6E7-44D9-9D10-FE83348796B0/wic_x64_enu.exe 4bdbf76a7bc96453306c893b4a7b2b8ae6127f67
+        w_download https://download.microsoft.com/download/6/4/5/645FED5F-A6E7-44D9-9D10-FE83348796B0/wic_x64_enu.exe 5822fecd69a90c2833965a25e8779000825d69cc8c9250933f0ab70df52171e1
         EXE="wic_x64_enu.exe"
     else
         w_die "Invalid W_ARCH value, $W_ARCH"
@@ -9235,7 +9235,7 @@ load_wmv9vcm()
 {
     # https://www.microsoft.com/en-us/download/details.aspx?id=39486
     # See also https://www.microsoft.com/en-us/download/details.aspx?id=6191
-    w_download https://download.microsoft.com/download/2/8/D/28DA9C3E-6DA2-456F-BD33-1F937EB6E0FF/WindowsServer2003-WindowsMedia-KB2845142-x86-ENU.exe 0ace94c09bfab15410db3a15ffa42370891266de
+    w_download https://download.microsoft.com/download/2/8/D/28DA9C3E-6DA2-456F-BD33-1F937EB6E0FF/WindowsServer2003-WindowsMedia-KB2845142-x86-ENU.exe 51e11691339c1c817b12f92e613145ffcd7b6f7e869d994cc8dbc4591b24f155
     w_try_cabextract --directory="$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
     w_try cp -f "$W_TMP"/wm64/wmv9vcm.dll "$W_SYSTEM32_DLLS"
 
@@ -9263,7 +9263,7 @@ load_wsh56js()
 {
     # This installs JScript 5.6 (but not VBScript)
     # See also http://www.microsoft.com/downloads/details.aspx?FamilyID=16dd21a1-c4ee-4eca-8b80-7bd1dfefb4f8&DisplayLang=en
-    w_download https://download.microsoft.com/download/b/c/3/bc3a0c36-fada-497d-a3de-8b0139766f3b/Windows2000-KB917344-56-x86-enu.exe add5f74c5bd4da6cfae47f8306de213ec6ed52c8
+    w_download https://download.microsoft.com/download/b/c/3/bc3a0c36-fada-497d-a3de-8b0139766f3b/Windows2000-KB917344-56-x86-enu.exe d6d6c2ac2d2a095b0f0650a9a2e81e8943579699662b5cdbf872649038788c51
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_override_dlls native,builtin jscript
@@ -9308,7 +9308,7 @@ w_metadata wsh57 dlls \
 load_wsh57()
 {
     # See also http://www.microsoft.com/downloads/details.aspx?FamilyID=47809025-D896-482E-A0D6-524E7E844D81&displaylang=en
-    w_download https://download.microsoft.com/download/4/4/d/44de8a9e-630d-4c10-9f17-b9b34d3f6417/scripten.exe b15c6a834b7029e2dfed22127cf905b06857e6f5
+    w_download https://download.microsoft.com/download/4/4/d/44de8a9e-630d-4c10-9f17-b9b34d3f6417/scripten.exe 63c781b9e50bfd55f10700eb70b5c571a9bedfd8d35af29f6a22a77550df5e7b
 
     w_try_cabextract -d "$W_SYSTEM32_DLLS" "$W_CACHE"/wsh57/scripten.exe
 
@@ -9502,7 +9502,7 @@ w_metadata xna31 dlls \
 load_xna31()
 {
     w_call dotnet20sp2
-    w_download https://download.microsoft.com/download/5/9/1/5912526C-B950-4662-99B6-119A83E60E5C/xnafx31_redist.msi bdd33b677c9576a63ff2a6f65e12c0563cc116e6
+    w_download https://download.microsoft.com/download/5/9/1/5912526C-B950-4662-99B6-119A83E60E5C/xnafx31_redist.msi 187e7e6b08fe35428d945612a7d258bfed25fad53cc54882983abdc73fe60f91
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec $W_UNATTENDED_SLASH_QUIET /i "$file1"
 }
@@ -9529,7 +9529,7 @@ load_xna40()
     w_call dotnet40
 
     # http://www.microsoft.com/en-us/download/details.aspx?id=20914
-    w_download https://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi 49efdc29f65fc8263c196338552c7009fc96c5de
+    w_download https://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi e6c41d692ebcba854dad4b1c52bb7ddd05926bad3105595d6596b8bab01c25e7
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec $W_UNATTENDED_SLASH_QUIET /i "$file1"
 }
@@ -9608,7 +9608,7 @@ w_metadata cambria fonts \
 load_cambria()
 {
     # http://www.microsoft.com/en-us/download/details.aspx?id=13
-    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe ab48a8ebac88219c84f293c6c1e81f1a0f420da6
+    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
     w_try_cabextract -d "$W_TMP" -L -F ppviewer.cab "$W_CACHE"/consolas/PowerPointViewer.exe
     w_try_cabextract -d "$W_FONTSDIR_UNIX" -L -F 'CAMBRIA*.TT*' "$W_TMP"/ppviewer.cab
     w_register_font cambria.ttc "Cambria"
@@ -9630,7 +9630,7 @@ w_metadata constantia fonts \
 load_constantia()
 {
     # http://www.microsoft.com/en-us/download/details.aspx?id=13
-    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe ab48a8ebac88219c84f293c6c1e81f1a0f420da6
+    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
     w_try_cabextract -d "$W_TMP" -L -F ppviewer.cab "$W_CACHE"/consolas/PowerPointViewer.exe
     w_try_cabextract -d "$W_FONTSDIR_UNIX" -L -F 'CONSTAN*.TTF' "$W_TMP"/ppviewer.cab
     w_register_font constan.ttf "Constantia"
@@ -9652,7 +9652,7 @@ w_metadata consolas fonts \
 load_consolas()
 {
     # http://www.microsoft.com/en-us/download/details.aspx?id=13
-    w_download https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe ab48a8ebac88219c84f293c6c1e81f1a0f420da6
+    w_download https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
     w_try_cabextract -d "$W_TMP" -L -F ppviewer.cab "$W_CACHE"/consolas/PowerPointViewer.exe
     w_try_cabextract -d "$W_FONTSDIR_UNIX" -L -F 'CONSOL*.TTF' "$W_TMP"/ppviewer.cab
     w_register_font consola.ttf "Consoleas"
@@ -9798,7 +9798,7 @@ w_metadata eufonts fonts \
 load_eufonts()
 {
     # https://www.microsoft.com/downloads/details.aspx?FamilyID=0ec6f335-c3de-44c5-a13d-a1e7cea5ddea&displaylang=en
-    w_download https://download.microsoft.com/download/a/1/8/a180e21e-9c2b-4b54-9c32-bf7fd7429970/EUupdate.EXE 9b076c40cb63aa0d8512aa8e610ba11d3466e441
+    w_download https://download.microsoft.com/download/a/1/8/a180e21e-9c2b-4b54-9c32-bf7fd7429970/EUupdate.EXE 464dd2cd5f09f489f9ac86ea7790b7b8548fc4e46d9f889b68d2cdce47e09ea8
     w_try_cabextract -q --directory="$W_TMP" "$W_CACHE"/eufonts/EUupdate.EXE
     w_try cp -f "$W_TMP"/*.ttf "$W_FONTSDIR_UNIX"
 
@@ -10122,7 +10122,7 @@ load_takao()
 {
     # The Takao font provides Japanese glyphs.  May also be needed with fakejapanese function above.
     # See https://launchpad.net/takao-fonts for project page
-    w_download https://launchpad.net/takao-fonts/trunk/003.02.01/+download/takao-fonts-ttf-003.02.01.zip 4f636d5c7c1bc16b96ea723adb16838cfb6df059
+    w_download https://launchpad.net/takao-fonts/trunk/003.02.01/+download/takao-fonts-ttf-003.02.01.zip 2f526a16c7931958f560697d494d8304949b3ce0aef246fb0c727fbbcc39089e
     cp -f "$W_CACHE"/takao/takao-fonts-ttf-003.02.01.zip "$W_TMP"
     w_try_unzip "$W_TMP" "$W_TMP"/takao-fonts-ttf-003.02.01.zip
     w_try cp -f "$W_TMP"/takao-fonts-ttf-003.02.01/*.ttf "$W_FONTSDIR_UNIX"
@@ -10273,7 +10273,7 @@ w_metadata abiword apps \
 
 load_abiword()
 {
-    w_download https://www.abisource.com/downloads/abiword/2.8.6/Windows/abiword-setup-2.8.6.exe a91acd3f60e842d23556032d34f1600602768318
+    w_download https://www.abisource.com/downloads/abiword/2.8.6/Windows/abiword-setup-2.8.6.exe f85c7f32044bbb4d31f1672c86951e35319f8e89fbd6c01ab4c19e960efd9ff8
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" abiword-setup-2.8.6.exe $W_UNATTENDED_SLASH_S
 }
@@ -10291,7 +10291,7 @@ w_metadata adobe_diged apps \
 
 load_adobe_diged()
 {
-    w_download https://kb2.adobe.com/cps/403/kb403051/attachments/setup.exe 4c79685408fa6ca12ef8bb0e0eaa4a846e21f915
+    w_download https://kb2.adobe.com/cps/403/kb403051/attachments/setup.exe 4ebe0fcefbe68900ca6bf499432030c9f8eb8828f8cb5a7e1fd1a16c0eba918e
     # NSIS installer
     w_try "$WINE" "$W_CACHE/$W_PACKAGE/setup.exe" ${W_OPT_UNATTENDED:+ /S}
 }
@@ -10410,7 +10410,7 @@ w_metadata autohotkey apps \
 load_autohotkey()
 {
     W_BROWSERAGENT=1 \
-    w_download https://www.autohotkey.com/download/AutoHotkey104805_Install.exe 13e5a9ca6d5b7705f1cd02560c3af4d38b1904fc
+    w_download https://www.autohotkey.com/download/AutoHotkey104805_Install.exe 4311c3e7c29ed2d67f415138360210bc2f55ff78758b20b003b91d775ee207b9
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" AutoHotkey104805_Install.exe $W_UNATTENDED_SLASH_S
 }
@@ -10427,7 +10427,7 @@ w_metadata cmake apps \
 
 load_cmake()
 {
-    w_download https://www.cmake.org/files/v2.8/cmake-2.8.11.2-win32-x86.exe d79af5715c0ad48d78bb731cce93b5ad89b16512
+    w_download https://www.cmake.org/files/v2.8/cmake-2.8.11.2-win32-x86.exe cb6a7df8fd6f2eca66512279991f3c2349e3f788477c3be8eaa362d46c21dbf0
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" cmake-2.8.11.2-win32-x86.exe $W_UNATTENDED_SLASH_S
 }
@@ -10444,7 +10444,7 @@ w_metadata colorprofile apps \
 
 load_colorprofile()
 {
-    w_download https://download.microsoft.com/download/whistler/hwdev1/1.0/wxp/en-us/ColorProfile.exe 6b72836b32b343c82d0760dff5cb51c2f47170eb
+    w_download https://download.microsoft.com/download/whistler/hwdev1/1.0/wxp/en-us/ColorProfile.exe d04ac910acdd97abd663f559bebc6440d8d68664bf977ec586035247d7b0f728
     w_try_unzip "$W_TMP" "$W_CACHE"/colorprofile/ColorProfile.exe
 
     # It's in system32 for both win32/win64
@@ -10466,7 +10466,7 @@ load_controlpad()
 {
     # https://msdn.microsoft.com/en-us/library/ms968493.aspx
     w_call wsh57
-    w_download https://download.microsoft.com/download/activexcontrolpad/install/4.0.0.950/win98mexp/en-us/setuppad.exe 8921e0f52507ca6a373c94d222777c750fb48af7
+    w_download https://download.microsoft.com/download/activexcontrolpad/install/4.0.0.950/win98mexp/en-us/setuppad.exe eab94091ac391f9bbc8e355a1d231e6a08b8dbbb0f6539245b7f0c58d94f420c
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/controlpad/setuppad.exe
 
     echo "If setup says 'Unable to start DDE ...', press Ignore"
@@ -10663,7 +10663,7 @@ w_metadata iceweasel apps \
 
 load_iceweasel()
 {
-    w_download https://ftp.gnu.org/gnu/gnuzilla/31.7.0/icecat-31.7.0.en-US.win32.zip cf52a728c1af29065b7dc7bdddc9265a79eb5328
+    w_download https://ftp.gnu.org/gnu/gnuzilla/31.7.0/icecat-31.7.0.en-US.win32.zip 27d10e63ab9ea4e6995c235b92258b379f79433a06a12e4ad16811801cf81e36
     w_try_unzip "${W_PROGRAMS_X86_UNIX}" "${W_CACHE}/${W_PACKAGE}/${file1}"
 }
 
@@ -10872,7 +10872,7 @@ load_ie7()
 
     # See https://bugs.winehq.org/show_bug.cgi?id=16013
     # Find instructions to create this file in dlls/wintrust/tests/crypt.c
-    w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
+    w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat 5d18ab44fc289100ccf4b51cf614cc2d36f7ca053e557e2ba973811293c97d38
 
     # Put a dummy catalog file in place
     mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
@@ -10888,7 +10888,7 @@ load_ie7()
     fi
 
     # Install
-    w_download https://download.microsoft.com/download/3/8/8/38889DC1-848C-4BF2-8335-86C573AD86D9/IE7-WindowsXP-x86-enu.exe d39b89c360fbaa9706b5181ae4718100687a5326
+    w_download https://download.microsoft.com/download/3/8/8/38889DC1-848C-4BF2-8335-86C573AD86D9/IE7-WindowsXP-x86-enu.exe bf5c325bbe3f4174869b2a8ff75f92833e7f7debe64777ed0faf293c7725cbef
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     # IE7 requies winxp to install:
@@ -10987,13 +10987,13 @@ load_ie8()
 
     # See https://bugs.winehq.org/show_bug.cgi?id=16013
     # Find instructions to create this file in dlls/wintrust/tests/crypt.c
-    w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat ac8f50dd54d011f3bb1dd79240dae9378748449f
+    w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat 5d18ab44fc289100ccf4b51cf614cc2d36f7ca053e557e2ba973811293c97d38
 
     # Put a dummy catalog file in place
     mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
     w_try cp -f "$W_CACHE"/ie8/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
-    w_download https://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe e489483e5001f95da04e1ebf3c664173baef3e26
+    w_download https://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe 5a2c6c82774bfe99b175f50a05b05bcd1fac7e9d0e54db2534049209f50cd6ef
     if [ $W_UNATTENDED_SLASH_QUIET ]
     then
         quiet="$W_UNATTENDED_SLASH_QUIET /forcerestart"
@@ -11208,7 +11208,7 @@ w_metadata npp apps \
 
 load_npp()
 {
-    w_download https://notepad-plus-plus.org/repository/6.x/6.7.9.2/npp.6.7.9.2.Installer.exe 34574fb2e4e06ff941061bf444b57ce926ce23d7
+    w_download https://notepad-plus-plus.org/repository/6.x/6.7.9.2/npp.6.7.9.2.Installer.exe cecc981d56d759233b804fa77e70ed62e411aaee58dcb1e53b91909c99d29096
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "${file1}" $W_UNATTENDED_SLASH_S
 }
@@ -11336,7 +11336,7 @@ load_picasa39()
     # 2015/09/21: 55907fc84b1d9d6a450463869b16927f07737298
     # 2016/01/02: b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
 
-    w_download https://dl.google.com/picasa/picasa39-setup.exe b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
+    w_download https://dl.google.com/picasa/picasa39-setup.exe 482c1a547d8d3aa25ee446d30ea986de63ef8c8d68b8d1109dd3d9b714e73e08
     if w_workaround_wine_bug 29434 "Picasa 3.9 fails to authenticate with Google"
     then
         w_warn "Picasa 3.9 authentication to the Google account is currently broken under wine. See https://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
@@ -11439,7 +11439,7 @@ load_psdkwin7()
     # don't have a working unattended recipe.  Maybe we'll have to
     # do an AutoHotKey script until Microsoft gets its act together:
     # https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/c053b616-7d5b-405d-9841-ec465a8e21d5/
-    w_download https://download.microsoft.com/download/7/A/B/7ABD2203-C472-4036-8BA0-E505528CCCB7/winsdk_web.exe a01dcc67a38f461e80ea649edf1353f306582507
+    w_download https://download.microsoft.com/download/7/A/B/7ABD2203-C472-4036-8BA0-E505528CCCB7/winsdk_web.exe bb0e3b5d8feb750b3164b657a046f76ff086887719e418f57ce88ada5e8990d5
     w_try_cd "$W_CACHE/$W_PACKAGE"
     if w_workaround_wine_bug 21596
     then
@@ -11484,7 +11484,7 @@ load_psdkwin71()
     w_call dotnet40
     w_call mfc42   # need mfc42u, or setup will abort
     # http://www.microsoft.com/downloads/details.aspx?FamilyID=c17ba869-9671-4330-a63e-1fd44e0e2505&displaylang=en
-    w_download https://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe a8717ebb20a69c7efa85232bcb9899b8b07f98cf
+    w_download https://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe 9ea8d82a66a33946e8673df92d784971b35b8f65ade3e0325855be8490e3d51d
 
     if w_workaround_wine_bug 21596
     then
@@ -11545,7 +11545,7 @@ w_metadata python26 dlls \
 
 load_python26()
 {
-    w_download https://www.python.org/ftp/python/2.6.2/python-2.6.2.msi 2d1503b0e8b7e4c72a276d4d9027cf4856b208b8
+    w_download https://www.python.org/ftp/python/2.6.2/python-2.6.2.msi c2276b398864b822c25a7c240cb12ddb178962afd2e12d602f1a961e31ad52ff
     w_download $WINETRICKS_SOURCEFORGE/project/pywin32/pywin32/Build%20214/pywin32-214.win32-py2.6.exe eca58f29b810d8e3e7951277ebb3e35ac35794a3
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -11838,7 +11838,7 @@ load_vc2005express()
 
     # https://blogs.msdn.microsoft.com/astebner/2006/03/14/how-to-create-an-installable-layout-for-visual-studio-2005-express-editions/
     # https://go.microsoft.com/fwlink/?linkid=57034
-    w_download https://download.microsoft.com/download/A/9/1/A91D6B2B-A798-47DF-9C7E-A97854B7DD18/VC.iso 1ae44e4eaf8c61c3a39e573fd6efd9889e940529
+    w_download https://download.microsoft.com/download/A/9/1/A91D6B2B-A798-47DF-9C7E-A97854B7DD18/VC.iso 5ae700d0285d94ec6df23828c7dc9f5634cd250363bed72e486916af22ff9545
 
     # Unpack ISO (how handy that 7z can do this!)
     w_try_7z "$W_TMP" "$W_CACHE"/vc2005express/VC.iso
@@ -11879,7 +11879,7 @@ load_vc2005expresssp1()
         then
             w_warn "Installer currently fails"
     fi
-    w_download https://download.microsoft.com/download/7/7/3/7737290f-98e8-45bf-9075-85cc6ae34bf1/VS80sp1-KB926748-X86-INTL.exe 8b9a0172efad64774aa122f29e093ad2043b308d
+    w_download https://download.microsoft.com/download/7/7/3/7737290f-98e8-45bf-9075-85cc6ae34bf1/VS80sp1-KB926748-X86-INTL.exe a959d1ea52674b5338473be32a1370f9ec80df84629a2ed3471aa911b42d9e50
     w_try $WINE "$W_CACHE"/vc2005expresssp1/VS80sp1-KB926748-X86-INTL.exe
 }
 
@@ -11955,7 +11955,7 @@ load_vc2008express()
     w_call dotnet35
 
     # This is the version without SP1 baked in.  (SP1 requires dotnet35sp1, which doesn't work yet.)
-    w_download https://download.microsoft.com/download/8/B/5/8B5804AD-4990-40D0-A6AA-CE894CBBB3DC/VS2008ExpressENUX1397868.iso 76c6d28274a67741da720744026ea991a70867d1
+    w_download https://download.microsoft.com/download/8/B/5/8B5804AD-4990-40D0-A6AA-CE894CBBB3DC/VS2008ExpressENUX1397868.iso c4589e21868331b7f8b126220135c88065fecae7cdc94e1a3ff415cb6c813669
 
     # Unpack ISO
     w_try_7z "$W_TMP" "$W_CACHE"/vc2008express/VS2008ExpressENUX1397868.iso
@@ -12142,7 +12142,7 @@ load_wmp9()
     w_set_winver win2k
 
     # See also http://www.microsoft.com/windows/windowsmedia/player/9series/default.aspx
-    w_download https://download.microsoft.com/download/1/b/c/1bc0b1a3-c839-4b36-8f3c-19847ba09299/MPSetup.exe 580536d10657fa3868de2869a3902d31a0de791b
+    w_download https://download.microsoft.com/download/1/b/c/1bc0b1a3-c839-4b36-8f3c-19847ba09299/MPSetup.exe 678c102847c18a92abf13c3fae404c3473a0770c871a046b45efe623c9938fc0
 
     # remove builtin placeholders to allow update
     rm -f "$W_SYSTEM32_DLLS"/wmvcore.dll "$W_SYSTEM32_DLLS"/wmp.dll
@@ -12186,7 +12186,7 @@ load_wmp10()
     w_call wsh57
 
     # http://www.microsoft.com/downloads/en/details.aspx?FamilyID=b446ae53-3759-40cf-80d5-cde4bbe07999
-    w_download https://download.microsoft.com/download/1/2/a/12a31f29-2fa9-4f50-b95d-e45ef7013f87/MP10Setup.exe 69862273a5d9d97b4a2e5a3bd93898d259e86657
+    w_download https://download.microsoft.com/download/1/2/a/12a31f29-2fa9-4f50-b95d-e45ef7013f87/MP10Setup.exe c1e71784c530035916aad5b09fa002abfbb7569b75208dd79351f29c6d197e03
 
     w_set_winver winxp
 
@@ -13633,7 +13633,7 @@ w_metadata crayonphysics_demo games \
 
 load_crayonphysics_demo()
 {
-    w_download https://crayonphysicsdeluxe.s3.amazonaws.com/crayon_release52demo.exe 4ffd64c630f69e7cf024ef946c2c64c8c4ce4eac
+    w_download https://crayonphysicsdeluxe.s3.amazonaws.com/crayon_release52demo.exe 3c221f4c4283d89c180337071b5d3f8b88b68cea0558e6f72abcb34ef954b923
     # Inno Setup installer
     w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
 }
@@ -15938,7 +15938,7 @@ w_metadata maxmagicmarker_demo games \
 
 load_maxmagicmarker_demo()
 {
-    w_download https://www.maxandthemagicmarker.com/maxdemo/max_demo_pc.zip 1a79c583ff40e7b2cf05d18a89a806fd6b88a5d1
+    w_download https://www.maxandthemagicmarker.com/maxdemo/max_demo_pc.zip 6e2abd0cbd0ad04bfea9663402d7e9f24864d3f1c32df69eebf92dfc469fe6dd
 
     w_try_unzip "$W_PROGRAMS_X86_UNIX/$W_PACKAGE" "$W_CACHE/$W_PACKAGE"/max_demo_pc.zip
     # Work around bug in game?!
@@ -16479,7 +16479,7 @@ w_metadata qq apps \
 
 load_qq()
 {
-    w_download https://dldir1.qq.com/qqfile/qq/QQ8.0/16968/QQ8.0.exe ef92f3863113971c95a79aa75e601893d803826c
+    w_download https://dldir1.qq.com/qqfile/qq/QQ8.0/16968/QQ8.0.exe 3af11db606ea9f8358db5c9eb12398da3464de020b7da7cbf3e13662ee33d228
     w_download http://hillwoodhome.net/wine/QQ.tar.gz 08de45d3e5bb34b22e7c33e1163daec69742db58
 
     if w_workaround_wine_bug 5162 "Installing native riched20 to work around can't input username."
@@ -16535,7 +16535,7 @@ w_metadata qqintl apps \
 
 load_qqintl()
 {
-    w_download https://dldir1.qq.com/qqfile/QQIntl/QQi_PC/QQIntl2.11.exe 030df82390e7962177fcef66fc1a0fd1a3ba4090
+    w_download https://dldir1.qq.com/qqfile/QQIntl/QQi_PC/QQIntl2.11.exe a08e5d8432ad41745cfe92479a9a0c3328a546c27f05486392ca7b77b1cb02a8
 
     if w_workaround_wine_bug 33086 "Installing native riched20 to allow typing in username"
     then
