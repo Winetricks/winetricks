@@ -8335,7 +8335,7 @@ load_riched30()
     # msi 2, which just happens to come with riched30 version of riched20
     # (though not with a corresponding riched32, which might be a problem)
     # http://www.microsoft.com/downloads/details.aspx?displaylang=en&FamilyID=CEBBACD8-C094-4255-B702-DE3BB768148F
-    w_download http://download.microsoft.com/download/WindowsInstaller/Install/2.0/W9XMe/EN-US/InstMsiA.exe e739c40d747e7c27aacdb07b50925b1635ee7366
+    w_download http://download.microsoft.com/download/WindowsInstaller/Install/2.0/W9XMe/EN-US/InstMsiA.exe 536e4c8385d7d250fd5702a6868d1ed004692136eefad22252d0dac15f02563a
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/riched30/InstMsiA.exe
     w_try cp -f "$W_TMP"/riched20.dll "$W_SYSTEM32_DLLS"
     w_try cp -f "$W_TMP"/msls31.dll "$W_SYSTEM32_DLLS"
