@@ -8240,7 +8240,7 @@ w_metadata quicktime76 dlls \
 load_quicktime76()
 {
     # https://support.apple.com/kb/DL837
-    w_download http://appldnld.apple.com/QuickTime/041-0025.20101207.Ptrqt/QuickTimeInstaller.exe 1eec8904f041d9e0ad3459788bdb690e45dbc38e
+    w_download http://appldnld.apple.com/QuickTime/041-0025.20101207.Ptrqt/QuickTimeInstaller.exe c2dcda76ed55428e406ad7e6acdc84e804d30752a1380c313394c09bb3e27f56
 
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" QuickTimeInstaller.exe ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No $W_UNATTENDED_SLASH_QN > /dev/null 2>&1
