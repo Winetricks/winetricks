@@ -8550,7 +8550,7 @@ w_metadata vb3run dlls \
 load_vb3run()
 {
     # See https://support.microsoft.com/kb/196285
-    w_download https://download.microsoft.com/download/vb30/utility/1/w9xnt4/en-us/vb3run.exe 518fcfefde9bf680695cadd06512efadc5ac2aa7
+    w_download https://download.microsoft.com/download/vb30/utility/1/w9xnt4/en-us/vb3run.exe 3ca3ad6332f83b5c2b86e4758afa400150f07ae66ce8b850d8f9d6bcd47ad4cd
     w_try_unzip "$W_TMP" "$W_CACHE"/vb3run/vb3run.exe
     w_try cp -f "$W_TMP/Vbrun300.dll" "$W_SYSTEM32_DLLS"
 }
