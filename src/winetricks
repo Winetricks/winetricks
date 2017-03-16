@@ -7761,12 +7761,9 @@ w_metadata mshflxgd dlls \
 load_mshflxgd()
 {
     # https://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
-    # orig: 5f9c7a81022949bfe39b50f2bbd799c448bb7377
-    # Jan 2009: 7ad74e589d5eefcee67fa14e65417281d237a6b6
-    # May 2009: bd8aa796e16e5f213414af78931e0379d9cbe292
-    # 2015/11/09: Removed from Microsoft.com, archive.org has the original copy:
-    # 2015/11/09: 5f9c7a81022949bfe39b50f2bbd799c448bb7377
-    w_download http://activex.microsoft.com/controls/vb6/MSHFLXGD.CAB 5f9c7a81022949bfe39b50f2bbd799c448bb7377
+    # 2015/11/09: Removed from Microsoft.com, archive.org has the original copy: ccff83fd24a0e6d7611050c8cafcb1aede608b6a3d096fb7476ce302e569479a
+
+    w_download http://activex.microsoft.com/controls/vb6/MSHFLXGD.CAB ccff83fd24a0e6d7611050c8cafcb1aede608b6a3d096fb7476ce302e569479a
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/mshflxgd/MSHFLXGD.CAB
     w_try cp -f "$W_TMP"/[Mm][Ss][Hh][Ff][Ll][Xx][Gg][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
