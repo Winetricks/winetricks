@@ -10435,7 +10435,7 @@ w_metadata colorprofile apps \
 
 load_colorprofile()
 {
-    w_download https://download.microsoft.com/download/whistler/hwdev1/1.0/wxp/en-us/ColorProfile.exe 6b72836b32b343c82d0760dff5cb51c2f47170eb
+    w_download https://download.microsoft.com/download/whistler/hwdev1/1.0/wxp/en-us/ColorProfile.exe d04ac910acdd97abd663f559bebc6440d8d68664bf977ec586035247d7b0f728
     w_try_unzip "$W_TMP" "$W_CACHE"/colorprofile/ColorProfile.exe
 
     # It's in system32 for both win32/win64
