@@ -8043,7 +8043,7 @@ load_ollydbg201()
     # The GUI is unreadable without having corefonts installed.
     w_call corefonts
 
-    w_download http://www.ollydbg.de/odbg201.zip d41fe77a2801d38476f20468ab61ddce14c3abb8
+    w_download http://www.ollydbg.de/odbg201.zip 29244e551be31f347db00503c512058086f55b43c93c1ae93729b15ce6e087a5
     w_try_unzip "$W_DRIVE_C/ollydbg201" "$W_CACHE/$W_PACKAGE"/odbg201.zip
 
     # ollydbg201 is affected by Wine bug 36012 if debug symbols are available.
