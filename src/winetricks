@@ -10457,7 +10457,7 @@ load_controlpad()
 {
     # https://msdn.microsoft.com/en-us/library/ms968493.aspx
     w_call wsh57
-    w_download https://download.microsoft.com/download/activexcontrolpad/install/4.0.0.950/win98mexp/en-us/setuppad.exe 8921e0f52507ca6a373c94d222777c750fb48af7
+    w_download https://download.microsoft.com/download/activexcontrolpad/install/4.0.0.950/win98mexp/en-us/setuppad.exe eab94091ac391f9bbc8e355a1d231e6a08b8dbbb0f6539245b7f0c58d94f420c
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/controlpad/setuppad.exe
 
     echo "If setup says 'Unable to start DDE ...', press Ignore"
