@@ -11570,47 +11570,6 @@ load_python26()
 
 #----------------------------------------------------------------
 
-w_metadata spotify apps \
-    title="Spotify - All the music, all the time" \
-    publisher="Spotify" \
-    year="2011" \
-    media="download" \
-    file1="SpotifyInstaller.exe" \
-    installed_exe1="c:/users/$LOGNAME/Application Data/Spotify/spotify.exe"
-
-load_spotify()
-{
-    #             0.4.9  f26712b576baa1c78112a05474293deef39f7f62
-    # 29 Apr 2011 0.4.10 4becb04f8ad08a3ff59d6830bf1d998fcca1815b
-    # 7 may 2011         a3c7daecf1051c4aaab544e6b66753617c0706b1
-    # updates too frequently to check checksum :-(
-    w_download https://www.spotify.com/download/Spotify%20Installer.exe
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    # w_download doesn't handle renaming for us without a checksum, tsk.
-    # And AutoHotKey thinks % is a variable reference.
-    if test ! -f SpotifyInstaller.exe
-    then
-        cp Spotify%20Installer.exe SpotifyInstaller.exe
-    fi
-
-    # Install is silent by default, and always starts app
-    # So all we have to do here is close app if we want unattended install
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run SpotifyInstaller.exe
-        WinWait, ahk_class SpotifyMainWindow
-        if ( w_opt_unattended > 0 ) {
-            WinClose
-        }
-        WinWaitClose
-        sleep 1000
-        Process, Close, SpotifyWebHelper.exe
-        "
-}
-
-#----------------------------------------------------------------
-
 w_metadata safari apps \
     title="Safari" \
     publisher="Apple" \
