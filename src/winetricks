@@ -11151,10 +11151,8 @@ w_metadata nook apps \
 load_nook()
 {
     # Dates from curl --head
-    # 10 Feb 2011 sha1sum 4a06a529b93ed33c3518326d874b40d8d7b70e7a
-    # 7 Oct 2011 sha1sum 3b0301bd55471cc47cced44501547411fac9fcea
-    # 7 Mar 2012 sha1sum e7060a63b9b303ddd820de762d9df254e1c931bc
-    w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe e7060a63b9b303ddd820de762d9df254e1c931bc
+    # 7 Mar 2012 sha256sum 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
+    w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
     w_try_cd "$W_CACHE/$W_PACKAGE"
     "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
     # normally has exit status 199?
