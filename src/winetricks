@@ -5019,7 +5019,7 @@ helper_winxpsp3()
     fi
 
     # http://www.microsoft.com/en-us/download/details.aspx?id=24
-    w_download_to winxpsp3 http://download.microsoft.com/download/d/3/0/d30e32d8-418a-469d-b600-f32ce3edf42d/WindowsXP-KB936929-SP3-x86-ENU.exe c81472f7eeea2eca421e116cd4c03e2300ebfde4
+    w_download_to winxpsp3 http://download.microsoft.com/download/d/3/0/d30e32d8-418a-469d-b600-f32ce3edf42d/WindowsXP-KB936929-SP3-x86-ENU.exe 62e524a552db9f6fd22d469010ea4d7e28ee06fa615a1c34362129f808916654
 
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe
 }
