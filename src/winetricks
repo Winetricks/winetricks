@@ -6910,15 +6910,9 @@ w_metadata dotnet_verifier dlls \
 load_dotnet_verifier()
 {
     # https://blogs.msdn.microsoft.com/astebner/2008/10/13/net-framework-setup-verification-tool-users-guide/
-    # 2013/03/28: sha1sum 0eba832a0733cd47b7639463dd5a22a41e95ee6e # netfx_5F00_setupverifier_5F00_new.zip
-    # 2014/01/23: sha1sum 8818f3460826145e2a66bb91727afa7cd531037b
-    # 2014/11/22: sha1sum 47de0b849c4c3d354df23588c709108e7816d788
-    # 2015/07/31: sha1sum 32f24526a5716737281dc260451b60a641b23c7e
-    # 2015/12/27: sha1sum b9712da2943e057668f21f68c473657a205c5cb8
-    # 2016/09/22: name change, to netfx_setupverifier_new_2015_12_18.zip
-    # 2016/10/26: sha1sum 6eef0158dc637d186d4ab5eb13aee6ef577831b2, adds .NET Framework 4.6.{1,2} support
+    # 2016/10/26: sha256sum 1daf4b1b27669b65f613e17814da3c8342d3bfa9520a65a880c58d6a2a6e32b5, adds .NET Framework 4.6.{1,2} support
 
-    w_download https://msdnshared.blob.core.windows.net/media/2016/10/netfx_setupverifier_new.zip 6eef0158dc637d186d4ab5eb13aee6ef577831b2 "${file1}"
+    w_download https://msdnshared.blob.core.windows.net/media/2016/10/netfx_setupverifier_new.zip 1daf4b1b27669b65f613e17814da3c8342d3bfa9520a65a880c58d6a2a6e32b5 "${file1}"
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try_unzip "$W_SYSTEM32_DLLS" netfx_setupverifier_new.zip netfx_setupverifier.exe
