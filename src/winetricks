@@ -7640,7 +7640,7 @@ w_metadata mozillabuild apps \
 
 load_mozillabuild()
 {
-    w_download https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-2.0.0.exe daba4bc03ae9014c68611fd36b05dcc4083c6fdb
+    w_download https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-2.0.0.exe d5ffe52fe634fb7ed02e61041cc183c3af92039ee74e794f7ae83a408e4cf3f5
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" MozillaBuildSetup-2.0.0.exe $W_UNATTENDED_SLASH_S
 }
