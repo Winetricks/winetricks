@@ -10282,7 +10282,7 @@ w_metadata adobe_diged apps \
 
 load_adobe_diged()
 {
-    w_download https://kb2.adobe.com/cps/403/kb403051/attachments/setup.exe 4c79685408fa6ca12ef8bb0e0eaa4a846e21f915
+    w_download https://kb2.adobe.com/cps/403/kb403051/attachments/setup.exe 4ebe0fcefbe68900ca6bf499432030c9f8eb8828f8cb5a7e1fd1a16c0eba918e
     # NSIS installer
     w_try "$WINE" "$W_CACHE/$W_PACKAGE/setup.exe" ${W_OPT_UNATTENDED:+ /S}
 }
