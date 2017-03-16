@@ -11154,8 +11154,15 @@ load_nook()
     # 7 Mar 2012 sha256sum 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
     w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
     w_try_cd "$W_CACHE/$W_PACKAGE"
+
+    # Exits with 199 for some reason..
     "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
-    # normally has exit status 199?
+
+    status=$?
+    case $status in
+        0|199) echo "Successfully installed $W_PACKAGE" ;;
+        *) w_die "Failed to install $W_PACKAGE" ;;
+    esac
 }
 
 #----------------------------------------------------------------
