@@ -10595,7 +10595,7 @@ w_metadata firefox apps \
 
 load_firefox()
 {
-    w_download "https://download.mozilla.org/?product=firefox-51.0-SSL&os=win&lang=en-US" c4cd6800990f39550abb1af07faf1e6072243d65 "$file1"
+    w_download "https://download.mozilla.org/?product=firefox-51.0-SSL&os=win&lang=en-US" 05fa9ae012eca560f42d593e75eb37045a54e4978b665b51f6a61e4a2d376eb8 "$file1"
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ -ms}
 }
