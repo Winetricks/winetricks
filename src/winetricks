@@ -11401,7 +11401,7 @@ load_psdkwin7()
     # don't have a working unattended recipe.  Maybe we'll have to
     # do an AutoHotKey script until Microsoft gets its act together:
     # https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/c053b616-7d5b-405d-9841-ec465a8e21d5/
-    w_download https://download.microsoft.com/download/7/A/B/7ABD2203-C472-4036-8BA0-E505528CCCB7/winsdk_web.exe a01dcc67a38f461e80ea649edf1353f306582507
+    w_download https://download.microsoft.com/download/7/A/B/7ABD2203-C472-4036-8BA0-E505528CCCB7/winsdk_web.exe bb0e3b5d8feb750b3164b657a046f76ff086887719e418f57ce88ada5e8990d5
     w_try_cd "$W_CACHE/$W_PACKAGE"
     if w_workaround_wine_bug 21596
     then
