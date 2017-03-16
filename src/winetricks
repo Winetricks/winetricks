@@ -5,7 +5,7 @@
 # This has to be right after the shebang, see: https://github.com/koalaman/shellcheck/issues/779
 
 # Name of this version of winetricks (YYYYMMDD)
-# (This doesn't change often, use the sha1sum of the file when reporting problems)
+# (This doesn't change often, use the sha256sum of the file when reporting problems)
 WINETRICKS_VERSION=20170314
 
 # This is a UTF-8 file
@@ -2877,12 +2877,10 @@ winetricks_print_version()
     # Normally done by winetricks_init, but we don't want to set up the WINEPREFIX
     # just to get the winetricks version:
 
-    # FIXME: sha1/sha256
-    winetricks_get_sha1sum_prog
-    #winetricks_get_sha256sum_prog
+    winetricks_get_sha256sum_prog
 
-    w_get_sha1sum "$0"
-    echo "$WINETRICKS_VERSION - sha1sum: $_W_gotsha1sum"
+    w_get_sha256sum "$0"
+    echo "$WINETRICKS_VERSION - sha256sum: $_W_gotsha256sum"
 }
 
 # Run a small wine command for internal use
