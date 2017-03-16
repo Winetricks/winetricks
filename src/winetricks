@@ -11821,7 +11821,7 @@ load_vc2005trial()
     # Without mfc42.dll, pidgen.dll won't load, and the app claims "A trial edition is already installed..."
     w_call mfc42
 
-    w_download https://download.microsoft.com/download/6/f/5/6f5f7a01-50bb-422d-8742-c099c8896969/En_vs_2005_vsts_180_Trial.img f66ae07618d67e693ca0524d3582208c20e07823
+    w_download https://download.microsoft.com/download/6/f/5/6f5f7a01-50bb-422d-8742-c099c8896969/En_vs_2005_vsts_180_Trial.img 3ae9f611c60c64d82e1fa9c94714aa6b6c10f6c2c05446e14b5afb5a257f86dc
 
     # Unpack ISO (how handy that 7z can do this!)
     # Only the windows version of 7z can handle .img files?
@@ -11832,7 +11832,7 @@ load_vc2005trial()
     w_try_cd "$W_TMP"
 
     # Sanity check...
-    w_verify_sha1sum 15433993ab7573c5154dbea2dcb65450f2adbf5c vs/wcu/runmsi.exe
+    w_verify_sha256sum e1d5ddd4bad46c2efe8105f8d73bd62857f6218942d3b9ac5da0e1a6a0a217e0 vs/wcu/runmsi.exe
 
     w_try_cd vs/Setup
     w_ahk_do "
