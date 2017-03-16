@@ -10528,7 +10528,7 @@ w_metadata emu8086 apps \
 
 load_emu8086()
 {
-    w_download http://www.emu8086.com/files/emu8086v408r11.zip aa71b46ee9259e5b31a300c820277e551969da7b
+    w_download http://www.emu8086.com/files/emu8086v408r11.zip d56d6e42fe170c52df5abd6002b1e8fef0b840eb8d8807d77819fe1fc2e17afd
     w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
     w_try "$WINE" "$W_TMP/Setup.exe" $W_UNATTENDED_SLASH_SILENT
 }
