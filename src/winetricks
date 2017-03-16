@@ -7007,32 +7007,16 @@ load_flash()
     # https://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html
 
     # ActiveX plugin
-    # 2013-03-28
-    #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.6.602.180/install_flash_player_ax.exe 359f231d7007c17b419f777125e0f28fffc2e6a1
-    # 2013-06-24
-    # w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.7.700.224/install_flash_player_ax.exe fdadce901fc7da7a175f71cc8f1f2dd0db78ec8e
-    # 2014-01-21
-    #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/12.0.0.38/install_flash_player_ax.exe 8deb33bcbbbbecfcbcbeb0f861d2c7492599da2b
-    # 2014-08-17
-    #w_download https://fpdownload.macromedia.com/get/flashplayer/pdc/14.0.0.176/install_flash_player_ax.exe 16231b509d8e689dc34ae36597d41c4fb1b3a67e
-    # 2014-10-02
-    w_download https://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.176_archive.zip 40df72ab2c22bcd4442aa35eb586000776129982
+    # 2014-10-02 3958827058648cfe05fc6ee510685e8d93f995d3428c3eedbd6814704765672a
+    w_download https://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.176_archive.zip 3958827058648cfe05fc6ee510685e8d93f995d3428c3eedbd6814704765672a
 
     w_try_unzip "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.176_archive.zip fp_14.0.0.176_archive/14_0_r0_176/flashplayer14_0r0_176_winax.exe
     w_try_cd "$W_TMP"/fp_14.0.0.176_archive/14_0_r0_176
     w_try "$WINE" flashplayer14_0r0_176_winax.exe ${W_OPT_UNATTENDED:+ /install}
 
     # Mozilla / Firefox (NPAPI) plugin
-    # 2013-03-28
-    #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.6.602.180/install_flash_player.exe bf44990ade52aa92078495ec39035d8489ff6e05
-    # 2013-06-24
-    #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/11.7.700.224/install_flash_player.exe 9c519fd5a7202c43b5713f9f6b083d970810112e
-    # 2014-01-21
-    #w_download http://fpdownload.macromedia.com/get/flashplayer/pdc/12.0.0.43/install_flash_player.exe 5a68f7aa21c4217cf801a46616fe724d601f773a
-    # 2014-08-17
-    #w_download https://fpdownload.macromedia.com/get/flashplayer/pdc/14.0.0.179/install_flash_player.exe 1d5725fd0d50eb1361213179ffae9ee24944755a
-    # 2014-10-02
-    w_download https://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.179_archive.zip b94860ca0eff3e1420c24f9647a5f9f5e610ce34
+    # 2014-10-02 17496fd3c863c180aead953d7d4499dd36f997a9570abc2b92f55e4ea1d55d73
+    w_download https://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.179_archive.zip 17496fd3c863c180aead953d7d4499dd36f997a9570abc2b92f55e4ea1d55d73
 
     w_try_unzip "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.179_archive.zip fp_14.0.0.179_archive/14_0_r0_179/flashplayer14_0r0_179_win.exe
     w_try_cd "$W_TMP"/fp_14.0.0.179_archive/14_0_r0_179
@@ -7040,20 +7024,18 @@ load_flash()
 
     # Projector (standalone player)
     # 2015-07-06
-    w_download https://download.macromedia.com/pub/flashplayer/updaters/14/flashplayer_14_sa.exe 62e5bc2e88b50091847408b9d473ee4a6c185167
+    w_download https://download.macromedia.com/pub/flashplayer/updaters/14/flashplayer_14_sa.exe 8640c42e73dc44125045e17abd32412c48f3808a8393c94fc8281cf4b0d87bdc
     # shellcheck disable=SC2154
     w_try cp "${W_CACHE}/${W_PACKAGE}/${file3}" "$W_SYSTEM32_DLLS/Macromed/Flash"
 
     # After updating the above, you should carry the following steps out by
-    # hand to verify that plugin works.  (Ideally you'd also do it on
-    # wine-1.5.6 to make sure the new version still uses vcrun2005 and
-    # not something newer.)
+    # hand to verify that plugin works.
 
     #    rm -rf ~/.cache/winetricks/flash
     #    w_try_cd ~/winetricks/src
     #    rm -rf ~/.wine
     #    sh winetricks -q flash ie7
-    #    w_try_cd ~/".wine/drive_c/Program Files/Internet Explorer"
+    #    cd "~/.wine/drive_c/Program Files/Internet Explorer"
     #    wine iexplore.exe https://www.adobe.com/software/flash/about
     # Verify that the version of Flash shows up and that you're not prompted
     # to install Flash again
@@ -7061,7 +7043,7 @@ load_flash()
     #    w_try_cd ~/winetricks/src
     #    rm -rf ~/.wine
     #    sh winetricks -q flash firefox
-    #    w_try_cd ~/.wine/drive_c/Program\ Files/Mozilla\ Firefox
+    #    cd "~/.wine/drive_c/Program Files/Mozilla Firefox"
     #    wine firefox.exe https://www.adobe.com/software/flash/about
     # Verify that the version of Flash shows up and that you're not prompted
     # to install Flash again
