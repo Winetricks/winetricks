@@ -5279,12 +5279,12 @@ w_metadata binkw32 dlls \
 load_binkw32()
 {
     # Mirror: http://www.dlldump.com/download-dll-files_new.php/dllfiles/B/binkw32.dll/1.0q/download.html
-    # Sha1sum of the decompressed file: 613f81f82e12131e86ae60dd318941f40db2200f
+    # sha256sum of the decompressed file: 1fd7ef7873c8a3be7e2f127b306d0d24d7d88e20cf9188894eff87b5af0d495f
     #
-    # Zip sha1sum:
-    # 2015-03-28: 991f77e8df513ccb8663dc4a2753fbf90338ef5c
-    # 2015-12-27: 6a30900885390ef361dbb67444a7944143db36bf
-    w_download http://www.down-dll.com/dll/b/__32-binkw32.dll3.0.0.0.zip 6a30900885390ef361dbb67444a7944143db36bf
+    # Zip sha256sum:
+    # 2015-12-27: 1d5efda8e4af796319b94034ba67b453cbbfddd81eb7d94fd059b40e237fa75d
+
+    w_download http://www.down-dll.com/dll/b/__32-binkw32.dll3.0.0.0.zip 1d5efda8e4af796319b94034ba67b453cbbfddd81eb7d94fd059b40e237fa75d
 
     w_try_unzip "$W_TMP" "$W_CACHE"/binkw32/__32-binkw32.dll3.0.0.0.zip
     w_try cp "$W_TMP"/binkw32.dll "$W_SYSTEM32_DLLS"/binkw32.dll
