@@ -10483,7 +10483,7 @@ w_metadata controlspy apps \
 
 load_controlspy()
 {
-    w_download http://download.microsoft.com/download/a/3/1/a315b133-03a8-4845-b428-ec585369b285/ControlSpy.msi efe33701f78b5853ba73353f028b777b4c849e77
+    w_download http://download.microsoft.com/download/a/3/1/a315b133-03a8-4845-b428-ec585369b285/ControlSpy.msi d9127634dd47580be93c768263ddf37a3a75fd65a545e87ddb9602906a035845
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i ControlSpy.msi ${W_UNATTENDED_SLASH_QB}
 }
