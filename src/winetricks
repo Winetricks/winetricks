@@ -5939,7 +5939,7 @@ w_metadata dxsdk_nov2006 dlls \
 
 load_dxsdk_nov2006()
 {
-    w_download https://download.microsoft.com/download/9/e/5/9e5bfc66-a621-4e0d-8bfe-6688058c3f00/dxsdk_aug2006.exe 1e9cdbef391ebfbf781e6c87a375138d8c195c57
+    w_download https://download.microsoft.com/download/9/e/5/9e5bfc66-a621-4e0d-8bfe-6688058c3f00/dxsdk_aug2006.exe ab8d7d895089a88108d4148ef0f7e214b7a23c1ee9ba720feca78c7d4ca16c00
 
     # dxview.dll uses mfc42u while registering
     w_call mfc42
@@ -5962,7 +5962,7 @@ w_metadata dxsdk_jun2010 dlls \
 
 load_dxsdk_jun2010()
 {
-    w_download https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe 8fe98c00fde0f524760bb9021f438bd7d9304a69
+    w_download https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe 11a0ddeb293040f8b99eeb1bdf6197ae1b26fdb74c036e5717d8e45db9c1576e
 
     # Without dotnet20, install aborts halfway through
     w_call dotnet20
@@ -6866,7 +6866,7 @@ load_dotnet462()
         unattended_args="/ai /gm2"
     else
         # Official version. See https://www.microsoft.com/en-us/download/details.aspx?id=53344
-        w_download https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe a70f856bda33d45ad0a8ad035f73092441715431
+        w_download https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe 28886593e3b32f018241a4c0b745e564526dbb3295cb2635944e3a393f4278d4
         file_package="NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
         unattended_args="/q /norestart"
     fi
@@ -7931,7 +7931,7 @@ load_msxml6()
     # https://www.microsoft.com/en-us/download/details.aspx?id=6276
     if [ $W_ARCH = win64 ]
     then
-        w_download https://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x64.msi ca0c0814a9c7024583edb997296aad7cb0a3cbf7
+        w_download https://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x64.msi 945d8c535758d5178d4de9063cfcba7dfa96987eaa478e0c03ba646cc7ca772f
     else
         w_download https://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x86.msi efa48f8cab5a89b8e667ed3e10dfb71bddc02923d0f3757bd93ffabe6fb6c598
     fi
@@ -9088,7 +9088,7 @@ load_windowscodecs()
         EXE="wic_x86_enu.exe"
     elif [ "$W_ARCH" = "win64" ] ; then
         # https://www.microsoft.com/en-us/download/details.aspx?id=1385
-        w_download https://download.microsoft.com/download/6/4/5/645FED5F-A6E7-44D9-9D10-FE83348796B0/wic_x64_enu.exe 4bdbf76a7bc96453306c893b4a7b2b8ae6127f67
+        w_download https://download.microsoft.com/download/6/4/5/645FED5F-A6E7-44D9-9D10-FE83348796B0/wic_x64_enu.exe 5822fecd69a90c2833965a25e8779000825d69cc8c9250933f0ab70df52171e1
         EXE="wic_x64_enu.exe"
     else
         w_die "Invalid W_ARCH value, $W_ARCH"
@@ -9466,7 +9466,7 @@ w_metadata xna31 dlls \
 load_xna31()
 {
     w_call dotnet20sp2
-    w_download https://download.microsoft.com/download/5/9/1/5912526C-B950-4662-99B6-119A83E60E5C/xnafx31_redist.msi bdd33b677c9576a63ff2a6f65e12c0563cc116e6
+    w_download https://download.microsoft.com/download/5/9/1/5912526C-B950-4662-99B6-119A83E60E5C/xnafx31_redist.msi 187e7e6b08fe35428d945612a7d258bfed25fad53cc54882983abdc73fe60f91
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec $W_UNATTENDED_SLASH_QUIET /i "$file1"
 }
@@ -9572,7 +9572,7 @@ w_metadata cambria fonts \
 load_cambria()
 {
     # https://www.microsoft.com/en-us/download/details.aspx?id=13
-    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe ab48a8ebac88219c84f293c6c1e81f1a0f420da6
+    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
     w_try_cabextract -d "$W_TMP" -L -F ppviewer.cab "$W_CACHE"/consolas/PowerPointViewer.exe
     w_try_cabextract -d "$W_FONTSDIR_UNIX" -L -F 'CAMBRIA*.TT*' "$W_TMP"/ppviewer.cab
     w_register_font cambria.ttc "Cambria"
@@ -9594,7 +9594,7 @@ w_metadata constantia fonts \
 load_constantia()
 {
     # https://www.microsoft.com/en-us/download/details.aspx?id=13
-    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe ab48a8ebac88219c84f293c6c1e81f1a0f420da6
+    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
     w_try_cabextract -d "$W_TMP" -L -F ppviewer.cab "$W_CACHE"/consolas/PowerPointViewer.exe
     w_try_cabextract -d "$W_FONTSDIR_UNIX" -L -F 'CONSTAN*.TTF' "$W_TMP"/ppviewer.cab
     w_register_font constan.ttf "Constantia"
@@ -9616,7 +9616,7 @@ w_metadata consolas fonts \
 load_consolas()
 {
     # https://www.microsoft.com/en-us/download/details.aspx?id=13
-    w_download https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe ab48a8ebac88219c84f293c6c1e81f1a0f420da6
+    w_download https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
     w_try_cabextract -d "$W_TMP" -L -F ppviewer.cab "$W_CACHE"/consolas/PowerPointViewer.exe
     w_try_cabextract -d "$W_FONTSDIR_UNIX" -L -F 'CONSOL*.TTF' "$W_TMP"/ppviewer.cab
     w_register_font consola.ttf "Consoleas"
@@ -9762,7 +9762,7 @@ w_metadata eufonts fonts \
 load_eufonts()
 {
     # https://www.microsoft.com/en-us/download/details.aspx?id=16083
-    w_download https://download.microsoft.com/download/a/1/8/a180e21e-9c2b-4b54-9c32-bf7fd7429970/EUupdate.EXE 9b076c40cb63aa0d8512aa8e610ba11d3466e441
+    w_download https://download.microsoft.com/download/a/1/8/a180e21e-9c2b-4b54-9c32-bf7fd7429970/EUupdate.EXE 464dd2cd5f09f489f9ac86ea7790b7b8548fc4e46d9f889b68d2cdce47e09ea8
     w_try_cabextract -q --directory="$W_TMP" "$W_CACHE"/eufonts/EUupdate.EXE
     w_try cp -f "$W_TMP"/*.ttf "$W_FONTSDIR_UNIX"
 
@@ -10086,7 +10086,7 @@ load_takao()
 {
     # The Takao font provides Japanese glyphs.  May also be needed with fakejapanese function above.
     # See https://launchpad.net/takao-fonts for project page
-    w_download https://launchpad.net/takao-fonts/trunk/003.02.01/+download/takao-fonts-ttf-003.02.01.zip 4f636d5c7c1bc16b96ea723adb16838cfb6df059
+    w_download https://launchpad.net/takao-fonts/trunk/003.02.01/+download/takao-fonts-ttf-003.02.01.zip 2f526a16c7931958f560697d494d8304949b3ce0aef246fb0c727fbbcc39089e
     cp -f "$W_CACHE"/takao/takao-fonts-ttf-003.02.01.zip "$W_TMP"
     w_try_unzip "$W_TMP" "$W_TMP"/takao-fonts-ttf-003.02.01.zip
     w_try cp -f "$W_TMP"/takao-fonts-ttf-003.02.01/*.ttf "$W_FONTSDIR_UNIX"
@@ -11303,9 +11303,9 @@ load_picasa39()
 {
     # 2015/01/17: 39b2df46dbc423e250371e826026a2827f55b956
     # 2015/09/21: 55907fc84b1d9d6a450463869b16927f07737298
-    # 2016/01/02: b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
+    # 2016/01/02: 482c1a547d8d3aa25ee446d30ea986de63ef8c8d68b8d1109dd3d9b714e73e08
 
-    w_download https://dl.google.com/picasa/picasa39-setup.exe b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
+    w_download https://dl.google.com/picasa/picasa39-setup.exe 482c1a547d8d3aa25ee446d30ea986de63ef8c8d68b8d1109dd3d9b714e73e08
     if w_workaround_wine_bug 29434 "Picasa 3.9 fails to authenticate with Google"
     then
         w_warn "Picasa 3.9 authentication to the Google account is currently broken under wine. See https://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
@@ -11453,7 +11453,7 @@ load_psdkwin71()
     w_call dotnet40
     w_call mfc42   # need mfc42u, or setup will abort
     # https://www.microsoft.com/en-us/download/details.aspx?id=3138
-    w_download https://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe a8717ebb20a69c7efa85232bcb9899b8b07f98cf
+    w_download https://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe 9ea8d82a66a33946e8673df92d784971b35b8f65ade3e0325855be8490e3d51d
 
     if w_workaround_wine_bug 21596
     then
@@ -13561,7 +13561,7 @@ w_metadata crayonphysics_demo games \
 
 load_crayonphysics_demo()
 {
-    w_download https://crayonphysicsdeluxe.s3.amazonaws.com/crayon_release52demo.exe 4ffd64c630f69e7cf024ef946c2c64c8c4ce4eac
+    w_download https://crayonphysicsdeluxe.s3.amazonaws.com/crayon_release52demo.exe 3c221f4c4283d89c180337071b5d3f8b88b68cea0558e6f72abcb34ef954b923
     # Inno Setup installer
     w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
 }
@@ -14515,7 +14515,7 @@ w_metadata dragonage2_demo games \
 
 load_dragonage2_demo()
 {
-    w_download https://lvlt.bioware.cdn.ea.com/bioware/u/f/eagames/bioware/dragonage2/demo/DragonAge2Demo_F93M2qCj_EnEsItPlRu.exe a94715cd7943533a3cf1d84d40e667b04e1abc2e
+    w_download https://lvlt.bioware.cdn.ea.com/bioware/u/f/eagames/bioware/dragonage2/demo/DragonAge2Demo_F93M2qCj_EnEsItPlRu.exe 615c014deed9b97de5662774fe25074862a7873c430d5d3650d07c7ce2727e9d
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -15866,7 +15866,7 @@ w_metadata maxmagicmarker_demo games \
 
 load_maxmagicmarker_demo()
 {
-    w_download https://www.maxandthemagicmarker.com/maxdemo/max_demo_pc.zip 1a79c583ff40e7b2cf05d18a89a806fd6b88a5d1
+    w_download https://www.maxandthemagicmarker.com/maxdemo/max_demo_pc.zip 6e2abd0cbd0ad04bfea9663402d7e9f24864d3f1c32df69eebf92dfc469fe6dd
 
     w_try_unzip "$W_PROGRAMS_X86_UNIX/$W_PACKAGE" "$W_CACHE/$W_PACKAGE"/max_demo_pc.zip
     # Work around bug in game?!
