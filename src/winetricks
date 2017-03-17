@@ -11303,9 +11303,9 @@ load_picasa39()
 {
     # 2015/01/17: 39b2df46dbc423e250371e826026a2827f55b956
     # 2015/09/21: 55907fc84b1d9d6a450463869b16927f07737298
-    # 2016/01/02: b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
+    # 2016/01/02: 482c1a547d8d3aa25ee446d30ea986de63ef8c8d68b8d1109dd3d9b714e73e08
 
-    w_download https://dl.google.com/picasa/picasa39-setup.exe b3f7e2ee168811cb1d924eb34afe2b0d8153f89f
+    w_download https://dl.google.com/picasa/picasa39-setup.exe 482c1a547d8d3aa25ee446d30ea986de63ef8c8d68b8d1109dd3d9b714e73e08
     if w_workaround_wine_bug 29434 "Picasa 3.9 fails to authenticate with Google"
     then
         w_warn "Picasa 3.9 authentication to the Google account is currently broken under wine. See https://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
