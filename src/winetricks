@@ -10086,7 +10086,7 @@ load_takao()
 {
     # The Takao font provides Japanese glyphs.  May also be needed with fakejapanese function above.
     # See https://launchpad.net/takao-fonts for project page
-    w_download https://launchpad.net/takao-fonts/trunk/003.02.01/+download/takao-fonts-ttf-003.02.01.zip 4f636d5c7c1bc16b96ea723adb16838cfb6df059
+    w_download https://launchpad.net/takao-fonts/trunk/003.02.01/+download/takao-fonts-ttf-003.02.01.zip 2f526a16c7931958f560697d494d8304949b3ce0aef246fb0c727fbbcc39089e
     cp -f "$W_CACHE"/takao/takao-fonts-ttf-003.02.01.zip "$W_TMP"
     w_try_unzip "$W_TMP" "$W_TMP"/takao-fonts-ttf-003.02.01.zip
     w_try cp -f "$W_TMP"/takao-fonts-ttf-003.02.01/*.ttf "$W_FONTSDIR_UNIX"
