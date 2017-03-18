@@ -9572,7 +9572,7 @@ w_metadata cambria fonts \
 load_cambria()
 {
     # https://www.microsoft.com/en-us/download/details.aspx?id=13
-    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe ab48a8ebac88219c84f293c6c1e81f1a0f420da6
+    w_download_to consolas https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
     w_try_cabextract -d "$W_TMP" -L -F ppviewer.cab "$W_CACHE"/consolas/PowerPointViewer.exe
     w_try_cabextract -d "$W_FONTSDIR_UNIX" -L -F 'CAMBRIA*.TT*' "$W_TMP"/ppviewer.cab
     w_register_font cambria.ttc "Cambria"
