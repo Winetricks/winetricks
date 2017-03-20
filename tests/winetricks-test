@@ -268,32 +268,6 @@ test_speed()
     fi
 }
 
-test_app_checksums()
-{
-    # FIXME: this depends on sha1sum binary, doesn't exist on OSX/BSD
-    # Also need support for FreeBSD
-
-    # Verify the installation
-    if [ -f "$srcdir/winetricksverify.d/$app.sha1sum" ]
-    then
-        windir="$($WINE cmd /c echo "%windir%" | cut -c 4- | tr -d '\015')"
-        progdir="$($WINE cmd /c echo "%ProgramFiles%" | cut -c 4- | tr -d '\015')"
-
-        cd "$DRIVE_C" || w_die "Could not cd to $DRIVE_C"
-        # Fix up the filenames, which can differ between Windows versions/Wine:
-        # FIXME: we need a way to guarantee that all _original_ .sha1sums are the same.
-        # Preferably generated under 32-bit wine, so that we don't need a really complex sed
-        # substitution here...
-        sed -e "s!Program\ Files/!/$progdir/!" -e "s!/windows/!/$windir/!" < "$srcdir/winetricksverify.d/$app.sha1sum" > "$app.sha1sum.tmp"
-        if ! sha1sum -c "$app.sha1sum.tmp"
-        then
-            fail "test_app_checksum $app !"
-        fi
-        rm "$app.sha1sum.tmp"
-        cd "$srcdir" || w_die "Could not cd into $srcdir"
-    fi
-}
-
 # Return the number of blocks available in the system
 total_df()
 {
@@ -316,7 +290,6 @@ test_app()
     (set +x; while test -f "${outputdir}/df-daemon"; do total_df; sleep 1; done ) > "${outputdir}/df-during.log" &
 
     test_command --verify "$app"
-    test_app_checksums
 
     # Post install:
     # Don't check whether metaverbs are installed
