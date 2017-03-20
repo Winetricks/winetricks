@@ -361,16 +361,35 @@ test_command()
     do
         case $x in
         dotnet*)
-            killall wineconsole ;;   # bug in wine?  the wineconsoles are for the langpacks, and seem empty.
+            # bug in wine?  the wineconsoles are for the langpacks, and seem empty.
+            if pgrep wineconsole; then
+                killall wineconsole
+            fi
+            ;;
         wmi)
-            killall WinMgmt.exe ;;   # wmi starts a service
+            # wmi starts a service
+            if pgrep WinMgmt ; then
+                killall WinMgmt.exe
+            fi
+            ;;
         fontxplorer)
-            killall winefile.exe ;;  # a number of apps open a folder on the desktop
+            # a number of apps open a folder on the desktop
+            if pgrep winefile ; then
+                killall winefile.exe
+            fi
+            ;;
         hegemony*)
-            killall Launcher.exe ;;  # or should this be in the verb?
+            # or should this be in the verb?
+            if pgrep Launcher ; then
+                killall Launcher.exe
+            fi
+            ;;
         esac
     done
-    killall notepad.exe          # Arcania-Gothic4 and others
+
+    if pgrep notepad.exe ; then
+        killall notepad.exe          # Arcania-Gothic4 and others
+    fi
 
     echo "Checking for dangling processes!"
     # shellcheck disable=SC2009
