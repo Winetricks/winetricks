@@ -22,7 +22,9 @@ check_deps() {
     fi
 }
 
-datadir="links.d"
+# FIXME: make sure that this is top directory ( -d README.d or something):
+datadir="output/links.d"
+mkdir -p "${datadir}"
 
 WINETRICKS_SOURCEFORGE=https://downloads.sourceforge.net
 # ftp.microsoft.com resolves to two different IP addresses, one of which is broken

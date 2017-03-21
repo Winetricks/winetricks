@@ -20,9 +20,25 @@ WINE_PREFIXES=${WINE_PREFIXES:-$HOME/winetrickstest-prefixes}
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 cache="$XDG_CACHE_HOME/winetricks"
 
+#set -e
 set -x
 
-TOP="$PWD"
+# FIXME: currently this requires running from src (linkcheck.sh might too), which is ugly.
+# IMO it should run from top, and/or have the logic to find src and cd there itself
+# Once this is fixed, check outputdir logic below:
+if [ -f README.md ] ; then
+    TOP="$PWD"
+elif [ -f ../README.md ] ; then
+    TOP="$(realpath ..)"
+else
+    echo "Running from unknown directory. Exiting"
+    exit 1
+fi
+
+# Start with a fresh output dir each time:
+outputdir="${TOP}/output"
+rm -rf "${outputdir}"
+mkdir -p "${outputdir}"
 
 # Workaround for:
 # kcov has trouble with forking shell scripts
@@ -37,7 +53,7 @@ if [ "$1" = "check-deps" ] ; then
 # Using an environmental variable rather than a CLI option
 # so it doesn't need extra handling/targets in Makefile
 elif [ ! -z "$WINETRICKS_ENABLE_KCOV" ] ; then
-    KCOV_RESULTS="$TOP/kcov-results"
+    KCOV_RESULTS="${outputdir}/kcov-results"
     rm -rf "$KCOV_RESULTS"
     mkdir -p "$KCOV_RESULTS"
 
@@ -160,11 +176,11 @@ w_die()
 w_time()
 {
     # OSX time doesn't support -o, so try it first:
-    if ! /usr/bin/time -o test.log echo test > /dev/null 2>&1
+    if ! /usr/bin/time -o "${outputdir}/test.log" echo test > /dev/null 2>&1
     then
         /usr/bin/time -p "$@"
     else
-        /usr/bin/time -p -o time.log "$@"
+        /usr/bin/time -p -o "${outputdir}/time.log" "$@"
     fi
 }
 
@@ -181,7 +197,7 @@ case "$OS" in
     esac
     WINE=""
     WINESERVER=true
-    DRIVE_C="C:/"
+    #DRIVE_C="C:/"
     ;;
  *)
     export WINE=${WINE:-wine}
@@ -224,18 +240,16 @@ case "$OS" in
     ;;
 esac
 
-srcdir=$(cd "$(dirname "$0")" || w_die "Could not cd to $(dirname "$0")" ; pwd)
-
 test_speed()
 {
     # shellcheck disable=SC2086
-    if ! w_time $XVFB $WINETRICKS nocrashdialog "$1" > foo.log
+    if ! w_time $XVFB $WINETRICKS nocrashdialog "$1" > "${outputdir}/foo.log"
     then
         fail "winetricks $1 returned status $?"
     fi
 
     # shellcheck disable=SC2046
-    if [ $(wc -l < foo.log) -lt 5 ] ; then
+    if [ $(wc -l < "${outputdir}/foo.log") -lt 5 ] ; then
         fail "winetricks $1 returned too few lines"
     fi
 
@@ -243,7 +257,7 @@ test_speed()
         # OSX, fake it:
         seconds=0
     else
-        seconds=$(awk '/real/ {print $2}' < time.log | sed 's/\..*//')
+        seconds=$(awk '/real/ {print $2}' < "${outputdir}/time.log" | sed 's/\..*//')
     fi
 
     echo "test_speed: winetricks $1 took $seconds seconds"
@@ -298,8 +312,8 @@ test_app()
     else
         DU_CACHE_START=0
     fi
-    touch df-daemon
-    (set +x; while test -f df-daemon; do total_df; sleep 1; done ) > df-during.log &
+    touch "${outputdir}/df-daemon"
+    (set +x; while test -f "${outputdir}/df-daemon"; do total_df; sleep 1; done ) > "${outputdir}/df-during.log" &
 
     test_command --verify "$app"
     test_app_checksums
@@ -310,8 +324,8 @@ test_app()
     allcodecs) ;;
     *)
         # no xvfb needed
-        ./winetricks -q list-installed > list-installed.out
-        if ! grep -w "$app" list-installed.out
+        ./winetricks -q list-installed > "${outputdir}/list-installed.out"
+        if ! grep -w "$app" "${outputdir}/list-installed.out"
         then
             fail "test app $app not installed after install?"
         fi
@@ -319,15 +333,15 @@ test_app()
     esac
 
     # Cleanup..
-    rm df-daemon
+    rm "${outputdir}/df-daemon"
     # Total max disk usage = max df change plus any initial blocks in cache
-    DF_MIN=$(awk '{ if (min == "" || $1 < min) min=$1; } END {printf "%d\n", min}' < df-during.log )
+    DF_MIN=$(awk '{ if (min == "" || $1 < min) min=$1; } END {printf "%d\n", min}' < "${outputdir}/df-during.log" )
     DF_DIFF=$((DF_START - DF_MIN))
     TOTAL=$((DF_DIFF + DU_CACHE_START))
     echo "test_app: ${app}: max_disk $TOTAL blocks."
     TOTAL_MB=$((TOTAL / 1024))
-    mkdir -p measurements
-    echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> "measurements/$app.dat"
+    mkdir -p "${outputdir}/measurements"
+    echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> "${outputdir}/measurements/$app.dat"
 }
 
 test_command()
@@ -336,7 +350,7 @@ test_command()
     _command_dash="$(echo "$command" | tr " " "-")"
 
     export WINEPREFIX="$WINE_PREFIXES/$_command_dash"
-    DRIVE_C="$WINEPREFIX/dosdevices/c:"
+    #DRIVE_C="$WINEPREFIX/dosdevices/c:"
 
     # always use a clean $WINEPREFIX
     if [ -d "$WINEPREFIX" ] ; then
@@ -354,7 +368,7 @@ test_command()
         # shellcheck disable=SC2086
         $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
     elif ! w_time $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@" ; then
-        rm df-daemon
+        rm "${outputdir}/df-daemon"
         fail "test_command $command failed!"
         return
     else
@@ -403,7 +417,7 @@ test_custom_verbs()
     # Test as apps first, then dll, since they take different codepaths
 
     # First, a working 'app' as an app:
-cat > true.verb <<_EOF
+cat > "${outputdir}/true.verb" <<_EOF
 w_metadata true apps
 
 load_true()
@@ -415,7 +429,7 @@ load_true()
 _EOF
 
     # Next, a broken 'app' as an app:
-cat > false.verb <<_EOF
+cat > "${outputdir}/false.verb" <<_EOF
 w_metadata false apps
 
 load_false()
@@ -427,14 +441,14 @@ load_false()
 _EOF
 
     # no xvfb needed
-    $WINETRICKS --no-isolate true.verb ; ret=$?
+    $WINETRICKS --no-isolate "${outputdir}/true.verb" ; ret=$?
     case $ret in
-        0) pass "true.verb not isolated, as apps passed" ;;
-        *) fail "true.verb not isolated, as apps failed" ;;
+        0) pass "${outputdir}/true.verb not isolated, as apps passed" ;;
+        *) fail "${outputdir}/true.verb not isolated, as apps failed" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --no-isolate false.verb ; ret=$?
+    $WINETRICKS --no-isolate "${outputdir}/false.verb" ; ret=$?
     case $ret in
         0) fail "false.verb not isolated, as apps worked, should have failed" ;;
         1) pass "false.verb not isolated, as apps passed" ;;
@@ -442,24 +456,24 @@ _EOF
     esac
 
     # no xvfb needed
-    $WINETRICKS --isolate true.verb ; ret=$?
+    $WINETRICKS --isolate "${outputdir}/true.verb" ; ret=$?
     case $ret in
-        0) pass "true.verb isolated, as apps passed" ;;
-        *) fail "true.verb isolated, as apps failed" ;;
+        0) pass "${outputdir}/true.verb isolated, as apps passed" ;;
+        *) fail "${outputdir}/true.verb isolated, as apps failed" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --isolate false.verb ; ret=$?
+    $WINETRICKS --isolate "${outputdir}/false.verb" ; ret=$?
     case $ret in
-        0) fail "false.verb isolated, as apps worked, should have failed" ;;
-        1) pass "false.verb isolated, as apps passed" ;;
-        *) fail "false.verb isolated, as apps failed in unexpected way" ;;
+        0) fail "${outputdir}/false.verb isolated, as apps worked, should have failed" ;;
+        1) pass "${outputdir}/false.verb isolated, as apps passed" ;;
+        *) fail "${outputdir}/false.verb isolated, as apps failed in unexpected way" ;;
     esac
 
     # Repeat as dll:
 
     # First, a working 'app' as a dll:
-cat > true.verb <<_EOF
+cat > "${outputdir}/true.verb" <<_EOF
 w_metadata true dlls
 
 load_true()
@@ -470,7 +484,7 @@ load_true()
 _EOF
 
     # Next, a broken 'app' as a dll:
-cat > false.verb <<_EOF
+cat > "${outputdir}/false.verb" <<_EOF
 w_metadata false dlls
 
 load_false()
@@ -481,63 +495,63 @@ load_false()
 _EOF
 
     # no xvfb needed
-    $WINETRICKS --no-isolate true.verb ; ret=$?
+    $WINETRICKS --no-isolate "${outputdir}/true.verb" ; ret=$?
     case $ret in
         0) pass "true.verb isolated, as dlls passed" ;;
         *) fail "true.verb isolated, as dlls failed" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --no-isolate false.verb ; ret=$?
+    $WINETRICKS --no-isolate "${outputdir}/false.verb" ; ret=$?
     case $ret in
-        0) fail "false.verb isolated, as dlls worked, should have failed" ;;
-        1) pass "false.verb isolated, as dlls passed" ;;
-        *) fail "false.verb isolated, as dlls failed in unexpected way" ;;
+        0) fail "${outputdir}/false.verb isolated, as dlls worked, should have failed" ;;
+        1) pass "${outputdir}/false.verb isolated, as dlls passed" ;;
+        *) fail "${outputdir}/false.verb isolated, as dlls failed in unexpected way" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --no-isolate true.verb ; ret=$?
+    $WINETRICKS --no-isolate "${outputdir}/true.verb" ; ret=$?
     case $ret in
-        0) pass "true.verb isolated, as dlls passed" ;;
-        *) fail "true.verb isolated, as dlls failed" ;;
+        0) pass "${outputdir}/true.verb isolated, as dlls passed" ;;
+        *) fail "${outputdir}/true.verb isolated, as dlls failed" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --no-isolate false.verb ; ret=$?
+    $WINETRICKS --no-isolate "${outputdir}/false.verb" ; ret=$?
     case $ret in
-        0) fail "false.verb isolated, as dlls worked, should have failed" ;;
-        1) pass "false.verb isolated, as dlls passed" ;;
-        *) fail "false.verb isolated, as dlls failed in unexpected way" ;;
+        0) fail "${outputdir}/false.verb isolated, as dlls worked, should have failed" ;;
+        1) pass "${outputdir}/false.verb isolated, as dlls passed" ;;
+        *) fail "${outputdir}/false.verb isolated, as dlls failed in unexpected way" ;;
     esac
 
-    rm false.verb true.verb
+    rm "${outputdir}/{false,true}.verb"
     pass
 }
 
 test_dlls()
 {
     # no xvfb needed, kcov breaks
-    ./winetricks list-manual-download > manual.log
-    ./winetricks dlls list | awk '{print $1}' > dlls.log
-    if grep .------------------- dlls.log ; then
+    ./winetricks list-manual-download > "${outputdir}/manual.log"
+    ./winetricks dlls list | awk '{print $1}' > "${outputdir}/dlls.log"
+    if grep .------------------- "${outputdir}/dlls.log" ; then
         fail "output of dlls list contained garbage"
         exit 1
     fi
 
-    sort -u < dlls.log | fgrep -w -v -f manual.log | egrep -v "$BLACKLIST" > dlls.verbs
+    sort -u < "${outputdir}/dlls.log" | fgrep -w -v -f "${outputdir}/manual.log" | egrep -v "$BLACKLIST" > "${outputdir}/dlls.verbs"
 
-    if [ ! -f dlls.verbs ] ; then
-        w_die "dlls.verbs doesn't exist? No verbs to test!"
-    elif [ -f dlls.verbs ] && [ ! -s dlls.verbs ] ; then
-        w_die "dlls.verbs exists, but it is empty"
+    if [ ! -f "${outputdir}/dlls.verbs" ] ; then
+        w_die "${outputdir}/dlls.verbs doesn't exist? No verbs to test!"
+    elif [ -f "${outputdir}/dlls.verbs" ] && [ ! -s "${outputdir}/dlls.verbs" ] ; then
+        w_die "${outputdir}/dlls.verbs exists, but it is empty"
     else
         echo "Testing these verbs:"
-        cat dlls.verbs
+        cat "${outputdir}/dlls.verbs"
     fi
 
     while IFS= read -r line; do
         test_app "$line"
-    done < dlls.verbs
+    done < "${outputdir}/dlls.verbs"
 }
 
 test_dotnet()
@@ -575,23 +589,23 @@ test_dotnet()
 test_manual_dlls()
 {
     # no xvfb needed, kcov breaks
-    ./winetricks list-manual-download > manual.log
-    ./winetricks dlls list | awk '{print $1}' > dlls.log
-    if grep .------------------- dlls.log ; then
+    ./winetricks list-manual-download > "${outputdir}/manual.log"
+    ./winetricks dlls list | awk '{print $1}' > "${outputdir}/dlls.log"
+    if grep .------------------- "${outputdir}/dlls.log" ; then
         fail "output of dlls list contained garbage"
         exit 1
     fi
-    cat dlls.log manual.log | sort | uniq -c | awk '$1 == 2 {print $2}' | egrep -v "$BLACKLIST" > dlls.verbs
+    cat dlls.log "${outputdir}/manual.log" | sort | uniq -c | awk '$1 == 2 {print $2}' | egrep -v "$BLACKLIST" > "${outputdir}/dlls.verbs"
 
     while IFS= read -r line; do
         test_app "$line"
-    done < dlls.verbs
+    done < "${outputdir}/dlls.verbs"
 }
 
 test_install_cached_or_download()
 {
     # no xvfb needed, kcov breaks
-    ./winetricks list-cached list-download > ticd.log
+    ./winetricks list-cached list-download > "${outputdir}/ticd.log"
     if grep .------------------- ticd.log ; then
         fail "output of list-cached list-download contained garbage"
         exit 1
