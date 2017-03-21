@@ -586,22 +586,6 @@ test_dotnet()
     done
 }
 
-test_manual_dlls()
-{
-    # no xvfb needed, kcov breaks
-    ./winetricks list-manual-download > "${outputdir}/manual.log"
-    ./winetricks dlls list | awk '{print $1}' > "${outputdir}/dlls.log"
-    if grep .------------------- "${outputdir}/dlls.log" ; then
-        fail "output of dlls list contained garbage"
-        exit 1
-    fi
-    cat dlls.log "${outputdir}/manual.log" | sort | uniq -c | awk '$1 == 2 {print $2}' | egrep -v "$BLACKLIST" > "${outputdir}/dlls.verbs"
-
-    while IFS= read -r line; do
-        test_app "$line"
-    done < "${outputdir}/dlls.verbs"
-}
-
 test_install_cached_or_download()
 {
     # no xvfb needed, kcov breaks
