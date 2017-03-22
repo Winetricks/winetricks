@@ -9288,100 +9288,45 @@ w_metadata xact dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/xactengine2_0.dll"
 
 load_xact()
 {
-    helper_directx_dl
-
-    # Extract xactengine?_?.dll, X3DAudio?_?.dll, xaudio?_?.dll, xapofx?_?.dll
-    w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
-    w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
-    w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
-      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xactengine*.dll' "$x"
-      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xaudio*.dll' "$x"
-      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'x3daudio*.dll' "$x"
-      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xapofx*.dll' "$x"
-    done
-    if test "$W_ARCH" = "win64"
-    then
-        w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
-        w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
-        w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
-          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xactengine*.dll' "$x"
-          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xaudio*.dll' "$x"
-          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'x3daudio*.dll' "$x"
-          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xapofx*.dll' "$x"
-        done
-    fi
-
-    # Register xactengine?_?.dll
-    for x in "$W_SYSTEM32_DLLS"/xactengine*
-    do
-      w_try_regsvr "$(basename "$x")"
-    done
-
-    # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
-    for x in 0 1 2 3 4 5 6 7
-    do
-      w_try_regsvr "$(basename "$W_SYSTEM32_DLLS/xaudio2_${x}")"
-    done
-}
-
-#----------------------------------------------------------------
-
-w_metadata xact_jun2010 dlls \
-    title="MS XACT Engine" \
-    publisher="Microsoft" \
-    year="2010" \
-    media="download" \
-    file1="../directx9/directx_Jun2010_redist.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/xactengine2_0.dll"
-
-load_xact_jun2010()
-{
     helper_directx_Jun2010
 
     # Extract xactengine?_?.dll, X3DAudio?_?.dll, xaudio?_?.dll, xapofx?_?.dll
-    w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
-    w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
-    w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
-      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xactengine*.dll' "$x"
-      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xaudio*.dll' "$x"
-      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'x3daudio*.dll' "$x"
-      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xapofx*.dll' "$x"
+    w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x86*' "$W_CACHE/directx9/$DIRECTX_NAME"
+    w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x86*' "$W_CACHE/directx9/$DIRECTX_NAME"
+    w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x86*' "$W_CACHE/directx9/$DIRECTX_NAME"
+
+    for x in "$W_TMP"/*.cab ; do
+        w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xactengine*.dll' "$x"
+        w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xaudio*.dll' "$x"
+        w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'x3daudio*.dll' "$x"
+        w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xapofx*.dll' "$x"
     done
-    if test "$W_ARCH" = "win64"
-    then
-        w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
-        w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
-        w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
-          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xactengine*.dll' "$x"
-          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xaudio*.dll' "$x"
-          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'x3daudio*.dll' "$x"
-          w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xapofx*.dll' "$x"
+
+    if test "$W_ARCH" = "win64" ; then
+        w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x64*' "$W_CACHE/directx9/$DIRECTX_NAME"
+        w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x64*' "$W_CACHE/directx9/$DIRECTX_NAME"
+        w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x64*' "$W_CACHE/directx9/$DIRECTX_NAME"
+        for x in "$W_TMP"/*x64.cab ; do
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xactengine*.dll' "$x"
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xaudio*.dll' "$x"
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'x3daudio*.dll' "$x"
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xapofx*.dll' "$x"
         done
     fi
 
     # Register xactengine?_?.dll
-    for x in "$W_SYSTEM32_DLLS"/xactengine*
-    do
-      w_try_regsvr "$(basename "$x")"
+    for x in "$W_SYSTEM32_DLLS"/xactengine* ; do
+        w_try_regsvr "$(basename "$x")"
     done
 
     # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
-    for x in 0 1 2 3 4 5 6 7
-    do
-      w_try_regsvr "$(basename "$W_SYSTEM32_DLLS/xaudio2_${x}")"
+    for x in 0 1 2 3 4 5 6 7 ; do
+        w_try_regsvr "$(basename "$W_SYSTEM32_DLLS/xaudio2_${x}")"
     done
 }
 
@@ -19558,6 +19503,8 @@ execute_command()
     vcrun2005sp1) w_call vcrun2005 ;;
     vcrun2008sp1) w_call vcrun2008 ;;
     wsh56) w_call wsh57 ;;
+    # See https://github.com/Winetricks/winetricks/issues/747
+    xact_jun2010) w_warn "Calling xact_jun2010 is deprecated, please use xact instead" ; w_call xact ;;
     xlive) w_call gfw ;;
 
     # Normal verbs, with metadata and load_ functions
