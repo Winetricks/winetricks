@@ -2165,21 +2165,21 @@ _EOF_
         "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
         ;;
     win8)
-        csdversion=" "
+        csdversion=""
         currentbuildnumber="9200"
         currentversion="6.2"
         csdversion_hex=dword:00000000
         "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
         ;;
     win81)
-        csdversion=" "
+        csdversion=""
         currentbuildnumber="9600"
         currentversion="6.3"
         csdversion_hex=dword:00000000
         "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
         ;;
     win10)
-        csdversion=" "
+        csdversion=""
         currentbuildnumber="10240"
         currentversion="10.0"
         csdversion_hex=dword:00000000
