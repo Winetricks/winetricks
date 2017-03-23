@@ -6,7 +6,7 @@
 
 # Name of this version of winetricks (YYYYMMDD)
 # (This doesn't change often, use the sha256sum of the file when reporting problems)
-WINETRICKS_VERSION=20170316
+WINETRICKS_VERSION=20170323
 
 # This is a UTF-8 file
 # You should see an o with two dots over it here [ö]
@@ -67,7 +67,7 @@ WINETRICKS_VERSION=20170316
 #   Copyright (C) 2011 Łukasz Wojniłowicz
 #   Copyright (C) 2011 Matthew Bozarth
 #   Copyright (C) 2013-2016 Andrey Gusev <andrey.goosev!gmail.com>
-#   Copyright (C) 2013-2015 Hillwood Yang <hillwood!opensuse.org>
+#   Copyright (C) 2013-2017 Hillwood Yang <hillwood!opensuse.org>
 #   Copyright (C) 2013,2016 André Hentschel <nerv!dawncrow.de>
 #
 # License:
@@ -16338,11 +16338,11 @@ load_popfs()
 #----------------------------------------------------------------
 
 w_metadata qq apps \
- title="QQ 8.0 (Chinese chat app)" \
+ title="QQ 8.9.1(Chinese chat app)" \
  publisher="Tencent" \
- year="2015" \
+ year="2017" \
  media="download" \
- file1="QQ8.0.exe" \
+ file1="QQ8.9.1.exe" \
  file2="QQ.tar.gz"\
  installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQScLauncher.exe" \
  homepage="http://www.qq.com" \
@@ -16350,8 +16350,8 @@ w_metadata qq apps \
 
 load_qq()
 {
-    w_download https://dldir1.qq.com/qqfile/qq/QQ8.0/16968/QQ8.0.exe 3af11db606ea9f8358db5c9eb12398da3464de020b7da7cbf3e13662ee33d228
-    w_download http://hillwoodhome.net/wine/QQ.tar.gz eb5cd6371eb75ec9e2fc0271199df05cbb9f38a60c2e81d5d8ac7daeb40aba62
+    w_download http://dldir1.qq.com/qqfile/qq/QQ8.9.1/20437/QQ8.9.1.exe f883a26a398deeb128fd3f5a0bd6f5440340938a
+    w_download http://hillwoodhome.net/wine/QQ.tar.gz 08de45d3e5bb34b22e7c33e1163daec69742db58
 
     if w_workaround_wine_bug 5162 "Installing native riched20 to work around can't input username."
     then
