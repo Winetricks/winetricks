@@ -10104,7 +10104,7 @@ load_unifont()
 {
     # The GNU Unifont provides glyphs for just about everything in common language.  It is intended for multilingual usage.
     # See http://unifoundry.com/unifont.html for project page
-    w_download http://unifoundry.com/unifont-5.1.20080907.zip bb8a3960dc0a96aa305de28312ea8a0ab64123d2
+    w_download http://unifoundry.com/unifont-5.1.20080907.zip 6ec1176f83769072b09de2bc1fff68ec5d802183304756a372e2419236f5b5ba
     cp -f "$W_CACHE"/unifont/unifont-5.1.20080907.zip "$W_TMP"
     w_try_unzip "$W_TMP" "$W_TMP"/unifont-5.1.20080907.zip
     w_try cp -f "$W_TMP"/unifont-5.1.20080907.ttf "$W_FONTSDIR_UNIX/unifont.ttf"
