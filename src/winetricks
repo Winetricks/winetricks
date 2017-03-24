@@ -14107,8 +14107,8 @@ w_metadata digitanks_demo games \
 load_digitanks_demo()
 {
     # 8 june 2011: f204b13dc64c1a54fb1aaf27187c6083ebb16acf
-    # 11 Nov 2011: e54ffb07232f434bcfaf7b3d43ddf9affa93ef15
-    w_download "http://static.digitanks.com/files/digitanks.exe" e54ffb07232f434bcfaf7b3d43ddf9affa93ef15
+    # 11 Nov 2011: bc98de67680e907a30ee1ab5d062e098c07a87292e3fb82ae62ad2d7175e94ff
+    w_download "http://static.digitanks.com/files/digitanks.exe" bc98de67680e907a30ee1ab5d062e098c07a87292e3fb82ae62ad2d7175e94ff
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
     if w_workaround_wine_bug 8060 "installing corefonts"
