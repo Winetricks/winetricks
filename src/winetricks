@@ -7081,7 +7081,8 @@ w_metadata gdiplus_winxp dlls \
 
 load_gdiplus_winxp()
 {
-    w_download_manual http://download.cnet.com/NET-Framework-1-0-GDIPLUS-DLL-Security-Update/3000-10250_4-10732223.html NDP1.0sp2-KB830348-X86-Enu.exe 6113cd89d77525958295ccbd73b5fb8b89abd0aa
+    # https://www.microsoft.com/en-us/download/details.aspx?id=5339
+    w_download https://download.microsoft.com/download/1/4/6/1467c2ba-4d1f-43ad-8d9b-3e8bc1c6ac3d/NDP1.0sp2-KB830348-X86-Enu.exe 3c6c7eed4a0ccd2ea2ce0446359b8c752dd2a3b82332663f655e803ce0b05335
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try_cabextract -d "$W_TMP" -F FL_gdiplus_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "$W_CACHE/${W_PACKAGE}/$file1"
     w_try cp "$W_TMP/FL_gdiplus_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8" "$W_SYSTEM32_DLLS/gdiplus.dll"
