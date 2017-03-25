@@ -67,7 +67,7 @@ WINETRICKS_VERSION=20170327-next
 #   Copyright (C) 2011 Łukasz Wojniłowicz
 #   Copyright (C) 2011 Matthew Bozarth
 #   Copyright (C) 2013-2016 Andrey Gusev <andrey.goosev!gmail.com>
-#   Copyright (C) 2013-2015 Hillwood Yang <hillwood!opensuse.org>
+#   Copyright (C) 2013-2017 Hillwood Yang <hillwood!opensuse.org>
 #   Copyright (C) 2013,2016 André Hentschel <nerv!dawncrow.de>
 #
 # License:
@@ -7996,6 +7996,25 @@ load_ogg()
     w_download http://downloads.xiph.org/releases/oggdsf/opencodecs_0.85.17777.exe fcec3cea637e806501aff447d902de3b5bfef226b629e43ab67e46dbb23f13e7
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_S
+}
+
+
+#----------------------------------------------------------------
+
+w_metadata ole32 dlls \
+    title="MS ole32 Module (ole32.dll)" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/ole32.dll"
+
+load_ole32()
+{
+    # Some applications need this, for example Wechat.
+    helper_winxpsp3 i386/ole32.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/ole32.dl_
+    w_override_dlls native,builtin ole32
 }
 
 #----------------------------------------------------------------
