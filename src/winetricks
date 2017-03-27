@@ -589,7 +589,7 @@ w_get_sha256sum()
     then
         _W_gotsha256sum=$($WINETRICKS_SHA256SUM < "$_W_sha256_file" | sed 's/(stdin)= //;s/ .*//')
     else
-        w_warn "$_W_sha256_file is not a regular file, not checking sha1sum"
+        w_warn "$_W_sha256_file is not a regular file, not checking sha256sum"
         return
     fi
 }
