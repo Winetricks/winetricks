@@ -13162,9 +13162,9 @@ w_metadata cim_demo games \
 
 load_cim_demo()
 {
-    # 29 Mar 2011 d40408b59bc0e6e33b564e9bbb55dbab6c44c630, Inno Setup installer
-    #w_download http://www.pcgamestore.com/games/cities-in-motion-nbsp/trial/cim-demo-1-0-8.exe d40408b59bc0e6e33b564e9bbb55dbab6c44c630
-    w_download_manual https://www.fileplanet.com/218762/210000/fileinfo/Cities-in-Motion-Demo cim-demo-1-0-8.exe d40408b59bc0e6e33b564e9bbb55dbab6c44c630
+    # 29 Mar 2011 cf02066f496637c24f95cf0c4ddfae376951330802500fb11bd74cc6c8872995, Inno Setup installer
+    #w_download http://www.pcgamestore.com/games/cities-in-motion-nbsp/trial/cim-demo-1-0-8.exe cf02066f496637c24f95cf0c4ddfae376951330802500fb11bd74cc6c8872995
+    w_download_manual https://www.fileplanet.com/218762/210000/fileinfo/Cities-in-Motion-Demo cim-demo-1-0-8.exe cf02066f496637c24f95cf0c4ddfae376951330802500fb11bd74cc6c8872995
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" cim-demo-1-0-8.exe ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
 }
