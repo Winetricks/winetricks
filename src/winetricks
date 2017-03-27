@@ -1213,7 +1213,7 @@ w_download_manual_to()
 
     if test "$_W_shasum"
     then
-        w_verify_shasum "$_W_sha1sum" "$W_CACHE/$_W_packagename/$_W_file"
+        w_verify_shasum "$_W_shasum" "$W_CACHE/$_W_packagename/$_W_file"
     fi
 
     unset _W_dlmsg _W_file _W_sha1sum _W_sha256sum _W_url
