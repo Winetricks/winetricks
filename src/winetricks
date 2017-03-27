@@ -11583,7 +11583,7 @@ load_utorrent()
 #----------------------------------------------------------------
 
 w_metadata utorrent3 apps \
-    title="µTorrent 3.1" \
+    title="µTorrent 3.4" \
     publisher="BitTorrent" \
     year="2011" \
     media="download" \
@@ -11592,13 +11592,8 @@ w_metadata utorrent3 apps \
 
 load_utorrent3()
 {
-    # 15 Apr 2011: sha1sum a5f198207919e8f2091a9b4459d7d6fc8a63e874
-    # 27 Apr 2011: sha1sum d969f0c61cf2b2afaea4121f097ef690dffbf771
-    # 7 May 2011: sha1sum 1793a7b15d905a9fa82f9a969a96fa53abaac04c
-    # 14 May: removed checksum, changes too often to track
-    # 7 Mar 2012: sha1sum 73ba69b5d0004239a709af5db57c88c9d9c8f7b2
-    # 28 Jun 2013: sha1sum d2408c8a09a2bd9704af39f818ec7ac9e9cca46e
-    w_download https://download-new.utorrent.com/endpoint/utorrent/os/windows/track/stable/ d2408c8a09a2bd9704af39f818ec7ac9e9cca46e uTorrent.exe
+    # 2017/03/26: sha256sum 482cfc0759f484ad4e6547cc160ef3f08057cb05969242efd75a51525ab9bd92
+    w_download https://download-new.utorrent.com/endpoint/utorrent/os/windows/track/stable/ 482cfc0759f484ad4e6547cc160ef3f08057cb05969242efd75a51525ab9bd92 uTorrent.exe
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     # If you don't use /PERFORMINSTALL, it just runs µTorrent
@@ -11608,8 +11603,8 @@ load_utorrent3()
     # dang installer exits with status 1 on success
     status=$?
     case $status in
-    0|1) ;;
-    *) w_die "Note: utorrent installer returned status '$status'.  Aborting." ;;
+        0|1) ;;
+        *) w_die "Note: utorrent installer returned status '$status'.  Aborting." ;;
     esac
 }
 
