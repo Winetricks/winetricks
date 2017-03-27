@@ -46,6 +46,10 @@ echo "${version}" > files/LATEST
 git commit files/LATEST src/winetricks src/winetricks.1 -m "version bump - ${version}"
 git tag -s -m "winetricks-${version}" "${version}"
 
+# update development version in winetricks
+sed -i -e "s%WINETRICKS_VERSION=.*%WINETRICKS_VERSION=${version}-next%" src/winetricks
+git commit src/winetricks -m "development version bump - ${version}-next"
+
 git push
 git push --tags
 
