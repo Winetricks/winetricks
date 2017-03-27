@@ -16163,20 +16163,20 @@ w_metadata njjwp_trial apps \
     publisher="NJStar" \
     year="2009" \
     media="download" \
-    file1="njjwp.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Japanese WP/njstarj.exe" \
+    file1="njjwp610sw15918.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Japanese WP6/NJStarJ.exe" \
     homepage="https://www.njstar.com/cms/njstar-japanese-word-processor"
 
 load_njjwp_trial()
 {
-    w_download https://www.njstar.com/download/njjwp.exe 363d22e4ca7b79d0290a8ccdb0fa99169971d418
+    w_download http://ftp.njstar.com/sw/njjwp610sw15918.exe 7f36138c3d19539cb73d757cd42a6f7afebdaf9cfed0cf9bc483c33e519e2a26
     w_try_cd "$W_CACHE/$W_PACKAGE"
     if test "$W_OPT_UNATTENDED"
     then
         w_ahk_do "
         SetTitleMatchMode, 2
         run $file1
-        WinWait, Setup, Wizard
+        WinWait, Setup, Welcome
         ControlClick Button2 ; next
         WinWait, Setup, License
         ControlClick Button2 ; agree
