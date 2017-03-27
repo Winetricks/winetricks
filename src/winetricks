@@ -594,6 +594,21 @@ w_get_sha256sum()
     fi
 }
 
+w_get_shatype() {
+    _W_sum="$1"
+
+    # tr -d " " is for FreeBSD/OS X/Solaris return a leading space:
+    # See https://stackoverflow.com/questions/30927590/wc-on-osx-return-includes-spaces/30927885#30927885
+    _W_sum_length="$(echo "$_W_sum" | tr -d "\n" | wc -c | tr -d " ")"
+    case "$_W_sum_length" in
+         0) _W_shatype="none" ;;
+         40) _W_shatype="sha1" ;;
+         64) _W_shatype="sha256" ;;
+         # 128) sha512..
+         *) w_die "unsupported shasum..bug" ;;
+    esac
+}
+
 # verify a sha1sum
 w_verify_sha1sum()
 {
@@ -611,7 +626,6 @@ w_verify_sha1sum()
 # verify a sha256sum
 w_verify_sha256sum()
 {
-    set -x
     _W_vs_wantsum=$1
     _W_vs_file=$2
 
@@ -621,6 +635,23 @@ w_verify_sha256sum()
         w_die "sha256sum mismatch!  Rename $_W_vs_file and try again."
     fi
     unset _W_vs_wantsum _W_vs_file _W_gotsha256sum
+}
+
+# verify any kind of shasum (that winetricks supports ;) ):
+w_verify_shasum()
+{
+    _W_vs_wantsum="$1"
+    _W_vs_file="$2"
+
+    w_get_shatype "$_W_vs_wantsum"
+
+    case "$_W_shatype" in
+        none) w_warn "No checksum provided, not verifying" ;;
+        sha1) w_verify_sha1sum "$_W_sum" "$_W_vs_file" ;;
+        sha256) w_verify_sha256sum "$_W_sum" "$_W_vs_file" ;;
+        # 128) sha512..
+        *) w_die "unsupported shasum..bug" ;;
+    esac
 }
 
 # wget outputs progress messages that look like this:
@@ -836,16 +867,7 @@ w_download_to()
         _W_file=$(basename "$_W_url")
     fi
 
-    # tr -d " " is for FreeBSD/OS X/Solaris return a leading space:
-    # See https://stackoverflow.com/questions/30927590/wc-on-osx-return-includes-spaces/30927885#30927885
-    _W_sum_length="$(echo "$_W_sum" | tr -d "\n" | wc -c | tr -d " ")"
-    case "$_W_sum_length" in
-         0) _W_shatype="none" ;;
-         40) _W_shatype="sha1" ;;
-         64) _W_shatype="sha256" ;;
-         # 128) sha512..
-         *) w_die "unsupported shasum..bug" ;;
-    esac
+    w_get_shatype "$_W_sum"
 
     if echo "${_W_packagename}" | grep -q -e '\/-' -e '^-'; then
             w_die "Invalid path ${_W_packagename} given"
@@ -1044,15 +1066,8 @@ w_download_to()
         _W_url="https://web.archive.org/web/$_W_url"
     done
 
-    if test "$_W_sum" && test ! "$checksum_ok"
-    then
-        case "$_W_shatype" in
-            none) w_warn "No checksum provided, not verifying" ;;
-            sha1) w_verify_sha1sum "$_W_sum" "$_W_cache/$_W_file" ;;
-            sha256) w_verify_sha256sum "$_W_sum" "$_W_cache/$_W_file" ;;
-            # 128) sha512..
-            *) w_die "unsupported shasum..bug" ;;
-        esac
+    if test "$_W_sum" && test ! "$checksum_ok" ; then
+        w_verify_shasum "$_W_sum" "$_W_cache/$_W_file"
     fi
 }
 
@@ -1168,28 +1183,26 @@ w_download_manual_to()
     _W_packagename="$1"
     _W_url="$2"
     _W_file="$3"
-    _W_sha1sum="$4"
+    _W_shasum="$4"
 
     # shellcheck disable=SC2154
     case "$media" in
-    "download")
-        w_info "FAIL: bug: media type is download, but w_download_manual was called.  Programmer, please change verb's media type to manual_download."
-        ;;
-    esac
-
-    case $LANG in
-    da*) _W_dlmsg="Hent venligst filen $_W_file fra $_W_url og placér den i $W_CACHE/$_W_packagename, kør derefter dette skript.";;
-    de*) _W_dlmsg="Bitte laden Sie $_W_file von $_W_url runter, stellen Sie's in $W_CACHE/$_W_packagename, dann wiederholen Sie dieses Kommando.";;
-    pl*) _W_dlmsg="Proszę pobrać plik $_W_file z $_W_url, następnie umieścić go w $W_CACHE/$_W_packagename, a na końcu uruchomić ponownie ten skrypt.";;
-    ru*) _W_dlmsg="Пожалуйста, скачайте файл $_W_file по адресу $_W_url, и поместите его в $W_CACHE/$_W_packagename, а затем запустите winetricks заново.";;
-    uk*) _W_dlmsg="Будь ласка, звантажте $_W_file з $_W_url, розташуйте в $W_CACHE/$_W_packagename, потім запустіть скрипт знову.";;
-    zh_CN*) _W_dlmsg="请从 $_W_url 下载 $_W_file，并置放于 $W_CACHE/$_W_packagename, 然后重新运行 winetricks.";;
-    zh_TW*|zh_HK*) _W_dlmsg="請從 $_W_url 下載 $_W_file，并置放於 $W_CACHE/$_W_packagename, 然后重新執行 winetricks.";;
-    *) _W_dlmsg="Please download $_W_file from $_W_url, place it in $W_CACHE/$_W_packagename, then re-run this script.";;
+        "download") w_info "FAIL: bug: media type is download, but w_download_manual was called.  Programmer, please change verb's media type to manual_download." ;;
     esac
 
     if ! test -f "$W_CACHE/$_W_packagename/$_W_file"
     then
+        case $LANG in
+            da*) _W_dlmsg="Hent venligst filen $_W_file fra $_W_url og placér den i $W_CACHE/$_W_packagename, kør derefter dette skript.";;
+            de*) _W_dlmsg="Bitte laden Sie $_W_file von $_W_url runter, stellen Sie's in $W_CACHE/$_W_packagename, dann wiederholen Sie dieses Kommando.";;
+            pl*) _W_dlmsg="Proszę pobrać plik $_W_file z $_W_url, następnie umieścić go w $W_CACHE/$_W_packagename, a na końcu uruchomić ponownie ten skrypt.";;
+            ru*) _W_dlmsg="Пожалуйста, скачайте файл $_W_file по адресу $_W_url, и поместите его в $W_CACHE/$_W_packagename, а затем запустите winetricks заново.";;
+            uk*) _W_dlmsg="Будь ласка, звантажте $_W_file з $_W_url, розташуйте в $W_CACHE/$_W_packagename, потім запустіть скрипт знову.";;
+            zh_CN*) _W_dlmsg="请从 $_W_url 下载 $_W_file，并置放于 $W_CACHE/$_W_packagename, 然后重新运行 winetricks.";;
+            zh_TW*|zh_HK*) _W_dlmsg="請從 $_W_url 下載 $_W_file，并置放於 $W_CACHE/$_W_packagename, 然后重新執行 winetricks.";;
+            *) _W_dlmsg="Please download $_W_file from $_W_url, place it in $W_CACHE/$_W_packagename, then re-run this script.";;
+        esac
+
         mkdir -p "$W_CACHE/$_W_packagename"
         w_open_folder "$W_CACHE/$_W_packagename"
         w_open_webpage "$_W_url"
@@ -1198,12 +1211,12 @@ w_download_manual_to()
         # FIXME: wait in loop until file is finished?
     fi
 
-    if test "$_W_sha1sum"
+    if test "$_W_shasum"
     then
-        w_verify_sha1sum "$_W_sha1sum" "$W_CACHE/$_W_packagename/$_W_file"
+        w_verify_shasum "$_W_sha1sum" "$W_CACHE/$_W_packagename/$_W_file"
     fi
 
-    unset _W_url _W_file _W_sha1sum _W_dlmsg
+    unset _W_dlmsg _W_file _W_sha1sum _W_sha256sum _W_url
 }
 
 w_download_manual()
