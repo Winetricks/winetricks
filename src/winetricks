@@ -11574,16 +11574,8 @@ w_metadata utorrent apps \
 load_utorrent()
 {
     # BitTorrent client supported on Windows, OS X, Linux through Wine
-    # Oct 2010 2.0.4 sha1sum 8382b8a7bc625d68b6efe18a7b9e5488dc0119ee
-    # Nov 6 2010 2.0.4 sha1sum 263a91693d0976473cd321cd6f1b0103a814f3ad
-    # Dev 17 2010 2.2 sha1sum 0c95bdfba07421fe706b30ee2ec6779217c5dce4, hangs, see Wine bug 24946
-    # Feb 11 2011 2.2.1beta sha1sum 82e81e1484b4e8654b83908509f3777532c6fcb3
-    # Mar 28 2011 2.2.1 sha1sum 7049109e4d3f72338d54b42ae37ecf38fafed46f
-    # Apr 14 2011 2.2.1 sha1sum b1378d7cbe5d1e1b168ce44def8f59facdc046d5
-    # 7 May 2011        sha1sum 2932c9ed1c1225e485f7e3dd2ed267aa7d568c80
-    # 14 May 2011 removed checksum, updates too quickly to track :-(
-    # 7 Mar 2012 sha1sum c6d9a80c02898139b17194d10293f17ecef054cb
-    w_download_manual "https://www.oldapps.com/utorrent.php?old_utorrent=38" utorrent_2.2.1.exe c6d9a80c02898139b17194d10293f17ecef054cb
+    # 7 Mar 2012 sha1sum ec2c086ff784b06e4ff05243164ddb768b81ee32096afed6d5e574ff350b619e
+    w_download_manual "https://www.oldapps.com/utorrent.php?old_utorrent=38" utorrent_2.2.1.exe ec2c086ff784b06e4ff05243164ddb768b81ee32096afed6d5e574ff350b619e
 
     w_try cp -f "$W_CACHE/utorrent/$file1" "$W_WINDIR_UNIX"/utorrent.exe
 }
