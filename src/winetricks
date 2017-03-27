@@ -9862,27 +9862,6 @@ w_metadata fontfix settings \
 
 load_fontfix()
 {
-    # Some versions of ukai.ttf and uming.ttf crash .NET and Picasa
-    # See https://bugs.winehq.org/show_bug.cgi?id=7098#c9
-    # Very unlikely to still be around, so downgrade to fatal warning
-    if test -f /usr/share/fonts/truetype/arphic/ukai.ttf
-    then
-        w_get_sha1sum /usr/share/fonts/truetype/arphic/ukai.ttf
-        if [ "$_W_gotsha1sum"x = "96e1121f89953e5169d3e2e7811569148f573985"x ]
-        then
-            w_die "Your installed ukai.ttf is known to be broken. Upgrade your ttf-arphic font package!"
-        fi
-    fi
-
-    if test -f /usr/share/fonts/truetype/arphic/uming.ttf
-    then
-        w_get_sha1sum /usr/share/fonts/truetype/arphic/uming.ttf
-        if [ "$_W_gotsha1sum"x = "2a4f4a69e343c21c24d044b2cb19fd4f0decc82c"x ]
-        then
-            w_die "Your installed uming.ttf is known to be broken. Upgrade your ttf-uming font package!"
-        fi
-    fi
-
     # Focht says Samyak is bad news, and font substitution isn't a good workaround.
     # I've seen psdkwin7 setup crash because of this; the symptom was a messagebox saying
     # SDKSetup encountered an error: The type initializer for 'Microsoft.WizardFramework.WizardSettings' threw an exception
