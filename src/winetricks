@@ -11252,7 +11252,7 @@ load_psdk2003()
     w_call mfc42
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=15656
-    w_download https://download.microsoft.com/download/7/5/e/75ec7f04-4c8c-4f38-b582-966e76602643/5.2.3790.1830.15.PlatformSDK_Svr2003SP1_rtm.img
+    w_download https://download.microsoft.com/download/7/5/e/75ec7f04-4c8c-4f38-b582-966e76602643/5.2.3790.1830.15.PlatformSDK_Svr2003SP1_rtm.img 7ef138b07a8ed2e008371d8602900eb68e86ac2a832d16b53f462a9e64f24d53
 
     # Unpack ISO (how handy that 7z can do this!)
     # Only the windows version of 7z can handle .img files?
@@ -11263,7 +11263,7 @@ load_psdk2003()
     w_try_cd "$W_TMP/Setup"
 
     # Sanity check...
-    w_verify_sha1sum 6376ab5394226f426366d0646bf244d26156697b  PSDK-x86.msi
+    w_verify_sha256sum d2605ae6f35a7fcc209e1d8dfbdfdb42afcb61e7d173f58fd608ae31db4ab1e7 PSDK-x86.msi
 
     w_try "$WINE" msiexec /i PSDK-x86.msi ${W_UNATTENDED_SLASH_QB}
 }
