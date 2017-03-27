@@ -10156,15 +10156,15 @@ w_metadata 3m_library apps \
     publisher="3M Company" \
     year="2015" \
     media="download" \
-    file1="3M-TM-Cloud-Library-PC-App-LIVE-Installer-1.51.735677.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/3M(TM) Cloud Library PC App/3MCloudLibrary.exe" \
-    homepage="https://www.3m.com/us/library/eBook/index.html"
+    file1="cloudLibrary-2.1.1702011951-Setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/cloudLibrary/cloudLibrary.exe" \
+    homepage="http://www.yourcloudlibrary.com/index.php/en-us/"
 
 load_3m_library()
 {
-    w_download https://www.3m.com/us/library/eBook/docs/3M-TM-Cloud-Library-PC-App-LIVE-Installer-1.51.735677.exe 810dc5f6b74ab7b34893288ee44ef7dc563a4ee7
+    w_download http://download.yourcloudlibrary.com/apps/pc/cloudLibrary-2.1.1702011951-Setup.exe bb3d854cc525c065e7298423bf0019309f4b65497c1d8bc6af09460cd6fcb57f
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" 3M-TM-Cloud-Library-PC-App-LIVE-Installer-1.51.735677.exe $W_UNATTENDED_SLASH_S
+    w_try "$WINE" "${file1}" $W_UNATTENDED_SLASH_S
 }
 
 #----------------------------------------------------------------
