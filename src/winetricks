@@ -16011,11 +16011,11 @@ load_mise()
 #----------------------------------------------------------------
 
 w_metadata myth2_demo games \
-    title="Myth II demo 1.7.2" \
+    title="Myth II demo 1.8.0" \
     publisher="Project Magma" \
     year="2011" \
     media="download" \
-    file1="Myth2_Demo_172.exe" \
+    file1="Myth2_Demo_180.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Myth II Demo/Myth II Demo.exe" \
     homepage="http://projectmagma.net/"
 
@@ -16024,9 +16024,11 @@ load_myth2_demo()
     # Originally a 1998 game by Bungie; according to Wikipedia, they handed the
     # source code to Project Magma for further development.
 
-    # 1 May 2011 1.7.2 sha1sum e0a8f707377e71314a471a09ad2a55179ea44588
-    w_download http://tain.totalcodex.net/items/download/myth-ii-demo-windows e0a8f707377e71314a471a09ad2a55179ea44588 Myth2_Demo_172.exe
-    w_try_cd "$W_CACHE/$W_PACKAGE"
+    # 2017/03/27: 1a5e11be25c43491e2b4da5291b646ffe5330a6289bef236f404906e3b4f5e96
+    w_download http://tain.totalcodex.net/items/download/myth-ii-demo-windows 1a5e11be25c43491e2b4da5291b646ffe5330a6289bef236f404906e3b4f5e96 "${file1}"
+
+    w_try_cd "${W_TMP}"
+    w_try unzip "${W_CACHE}/${W_PACKAGE}/${file1}"
 
     w_ahk_do "
         SetTitleMatchMode, 2
