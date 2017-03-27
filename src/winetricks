@@ -11244,6 +11244,11 @@ w_metadata psdk2003 apps \
 
 load_psdk2003()
 {
+    if [ $W_ARCH = win64 ]
+    then
+        w_die "Installer doesn't support 64-bit architecture."
+    fi
+
     w_call mfc42
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=15656
