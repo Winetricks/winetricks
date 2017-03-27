@@ -17775,7 +17775,7 @@ w_metadata typingofthedead_demo games \
 
 load_typingofthedead_demo()
 {
-    w_download "https://www.fileplanet.com/54947/50000/fileinfo/The-Typing-of-the-Dead-Demo" 96fe3edb2431210932af840e29c59bce6b7fc80f
+    w_download_manual "https://www.fileplanet.com/54947/50000/fileinfo/The-Typing-of-the-Dead-Demo" tod-demo.zip feb0888b6cf1d51af2bf3d752e1727b5d248c2704ca053561f384b55e86267ea
     w_try_cd "$W_TMP"
     w_try_unzip . "$W_CACHE/$W_PACKAGE/tod-demo.zip"
     w_ahk_do "
