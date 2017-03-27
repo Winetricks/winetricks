@@ -17613,15 +17613,15 @@ w_metadata stalker_pripyat_bench benchmarks \
 load_stalker_pripyat_bench()
 {
     # Much faster
-    w_download_manual http://www.bigdownload.com/games/stalker-call-of-pripyat/pc/stalker-call-of-pripyat-benchmark stkcop-bench-setup.exe 8691c3f289ecd0521bed60ffd46e65ad080206e0
-    #w_download http://files.gsc-game.com/st/bench/stkcop-bench-setup.exe 8691c3f289ecd0521bed60ffd46e65ad080206e0
+    w_download_manual http://www.bigdownload.com/games/stalker-call-of-pripyat/pc/stalker-call-of-pripyat-benchmark stkcop-bench-setup.exe 8c810fba1bbb9c58fc01f4f602479886680c9f4b491dd0afe935e27083f54845
+    #w_download http://files.gsc-game.com/st/bench/stkcop-bench-setup.exe 8c810fba1bbb9c58fc01f4f602479886680c9f4b491dd0afe935e27083f54845
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     # FIXME: a bit fragile, if you're browsing the web while installing, it sometimes gets stuck.
     w_ahk_do "
         SetTitleMatchMode, 2
-        run stkcop-bench-setup.exe
+        run $file1
         WinWait,Setup - Call Of Pripyat Benchmark
         if ( w_opt_unattended > 0 ) {
             sleep 1000
