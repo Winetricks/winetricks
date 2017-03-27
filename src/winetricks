@@ -16125,22 +16125,22 @@ load_nfsshift_demo()
 w_metadata njcwp_trial apps \
     title="NJStar Chinese Word Processor trial" \
     publisher="NJStar" \
-    year="2009" \
+    year="2015" \
     media="download" \
-    file1="njcwp.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Chinese WP/njstar.exe" \
+    file1="njcwp610sw15918.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Chinese WP6/NJStar.exe" \
     homepage="https://www.njstar.com/cms/njstar-chinese-word-processor"
 
 load_njcwp_trial()
 {
-    w_download https://www.njstar.com/download/njcwp.exe 006da155bad1ac4a73b953c98cb821eb7fd96507
+    w_download http://ftp.njstar.com/sw/njcwp610sw15918.exe 7afa6dfc431f058d1397ac7100d5650b97347e1f37f81a2e2d2ee5dfdff4660b
     w_try_cd "$W_CACHE/$W_PACKAGE"
     if test "$W_OPT_UNATTENDED"
     then
         w_ahk_do "
         SetTitleMatchMode, 2
         run $file1
-        WinWait, Setup, Wizard
+        WinWait, Setup, Welcome
         ControlClick Button2 ; next
         WinWait, Setup, License
         ControlClick Button2 ; agree
