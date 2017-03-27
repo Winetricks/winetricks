@@ -11302,18 +11302,19 @@ load_picasa39()
 w_metadata protectionid apps \
     title="Protection ID" \
     publisher="CDKiLLER & TippeX" \
-    year="2015" \
-    media="download" \
-    file1="ProtectionId.670.halloween.2015.rar" \
+    year="2016" \
+    media="manual_download" \
+    file1="ProtectionId.685.December.2016.rar" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/protection_id.exe"
 
 load_protectionid()
 {
-    w_download https://pid.gamecopyworld.com/dl.php?f=ProtectionId.670.halloween.2015.rar a307e15f28d00959cffddd8fda073aac6df943c8 "$file1"
+    w_download_manual "http://pid.gamecopyworld.com/" ProtectionId.685.December.2016.rar 27a84d740c9fb96cc866438a2b5cd4afc350affc8b7a0122c28c651af3559aea
     w_try_cd "$W_SYSTEM32_DLLS"
     w_try_unrar "${W_CACHE}/${W_PACKAGE}/${file1}"
-    # ProtectionId.670.halloween.2015 has a different executable name than usual, this may need to be disabled on next update:
-    mv Protection_ID.eXe protection_id.exe
+
+    # ProtectionId.685.December.2016 has a different executable name than usual, this may need to be disabled on next update:
+    w_try mv Protection_ID.eXe protection_id.exe
 }
 
 #----------------------------------------------------------------
