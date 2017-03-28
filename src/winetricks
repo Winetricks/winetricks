@@ -14363,44 +14363,6 @@ _EOF_
 
 #----------------------------------------------------------------
 
-w_metadata farmsim2011_demo games \
-    title="Farming Simulator 2011 Demo" \
-    publisher="Astragon" \
-    year="2011" \
-    media="manual_download" \
-    file1="FarmingSimulator2011DemoEN.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Farming Simulator 2011 Demo/game.exe"
-
-load_farmsim2011_demo()
-{
-    # From http://www.landwirtschafts-simulator.de/demo.php
-    w_download_manual http://www.landwirtschafts-simulator.de/demo.php FarmingSimulator2011DemoEN.exe c1221110e55625a3e797a3060c4bf5e3219bf2f0
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetWinDelay 500
-        SetTitleMatchMode, 2
-        run, FarmingSimulator2011DemoEN.exe
-        if ( w_opt_unattended > 0 ) {
-            WinWait, Setup - Farming Simulator 2011 Demo
-            ControlClick TNewButton1   ; Next
-            WinWait, Setup - Farming Simulator 2011 Demo, License Agreement
-            ControlClick TNewRadioButton1   ; Accept
-            ControlClick TNewButton2   ; Next
-            WinWait, Setup - Farming Simulator 2011 Demo, Setup Type
-            ControlClick TNewButton2   ; Next
-            WinWait, Setup - Farming Simulator 2011 Demo, Ready to Install
-            ControlClick TNewButton2   ; Install
-        }
-        WinWait, Setup - Farming Simulator 2011 Demo, finished
-        if ( w_opt_unattended > 0 )
-            ControlClick TNewButton2   ; Finish
-        WinWaitClose
-    "
-}
-
-#----------------------------------------------------------------
-
 w_metadata fifa11_demo games \
     title="FIFA 11 Demo" \
     publisher="EA Sports" \
