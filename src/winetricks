@@ -2311,8 +2311,8 @@ w_wine_version_in()
 {
    for _W_range
    do
-     _W_val1=$(echo $_W_range | sed 's/,.*//')
-     _W_val2=$(echo $_W_range | sed 's/.*,//')
+     _W_val1=$(echo "$_W_range" | sed 's/,.*//')
+     _W_val2=$(echo "$_W_range" | sed 's/.*,//')
 
      # If in this range, return true
      case $_W_range in
@@ -2437,7 +2437,7 @@ w_metadata()
         # FIXME: backslashes get interpreted here.  This screws up
         # installed_file1 fairly often.  Fortunately, we can use forward
         # slashes in that variable instead of backslashes.
-        echo ${arg%%=*}=\"${arg#*=}\"
+        echo "${arg%%=*}"=\""${arg#*=}"\"
     done > "$file"
     echo category='"'"$_W_category"'"' >> "$file"
     # If the problem described above happens, you'd see errors like this:
@@ -2495,7 +2495,7 @@ w_do_call()
         # Hack..
         if test "$cmd" = vd
         then
-            load_vd $arg
+            load_vd "$arg"
             _W_status=$?
             test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
             mkdir -p "$W_TMP"
@@ -3693,7 +3693,7 @@ winetricks_showmenu()
         # Filter out any verb that's already installed
         sh "$WINETRICKS_WORKDIR"/zenity.sh |
             tr '|' '\012' |
-            fgrep -v -x -f "$WINETRICKS_WORKDIR"/installed.txt |
+            grep -F -v -x -f "$WINETRICKS_WORKDIR"/installed.txt |
             tr '\012' ' '
         ;;
 
@@ -19553,11 +19553,11 @@ then
                 # Load the verb file
                 # shellcheck disable=SC1090
                 case $verb in
-                */*) . $verb ;;
-                *) . ./$verb ;;
+                    */*) . "$verb" ;;
+                    *) . ./"$verb" ;;
                 esac
                 # And forget that the verb comes from a file
-                verb="$(echo $verb | sed 's,.*/,,;s,.verb,,')"
+                verb="$(echo "$verb" | sed 's,.*/,,;s,.verb,,')"
                 ;;
             esac
             execute_command "$verb"

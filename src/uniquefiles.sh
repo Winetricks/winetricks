@@ -24,10 +24,10 @@ rm -f /tmp/allfiles.txt
 for dir
 do
     (
-    cd $dir/drive_c
-    # FIXME: don't assume there are no ='s in filenames, e.g. rewrite in perl
-    find . -type f | tr ' ' '=' | grep -E -iv 'tmp|temp|installer|NativeImages' | sort > ../files.txt
-    cat ../files.txt >> /tmp/allfiles.txt
+        cd "$dir/drive_c"
+        # FIXME: don't assume there are no ='s in filenames, e.g. rewrite in perl
+        find . -type f | tr ' ' '=' | grep -E -iv 'tmp|temp|installer|NativeImages' | sort > ../files.txt
+        cat ../files.txt >> /tmp/allfiles.txt
     )
 done
 
@@ -38,9 +38,9 @@ sort < /tmp/allfiles.txt | uniq -c | awk '$1 == 1 {print $2}' > /tmp/uniqfiles.t
 for dir
 do
     (
-    cd $dir
-    # Undo the space-to-= transformation, too
-    fgrep -f /tmp/uniqfiles.txt < files.txt | tr '=' ' ' > uniqfiles.txt
+        cd "$dir"
+        # Undo the space-to-= transformation, too
+        grep -F -f /tmp/uniqfiles.txt < files.txt | tr '=' ' ' > uniqfiles.txt
     )
-    echo $dir/uniqfiles.txt
+    echo "$dir/uniqfiles.txt"
 done

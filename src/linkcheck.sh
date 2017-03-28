@@ -39,6 +39,8 @@ w_download() {
 
 # Extract list of URLs from winetricks
 extract_all() {
+    # https://github.com/koalaman/shellcheck/issues/861
+    # shellcheck disable=SC1003
     grep '^ *w_download ' winetricks | grep -E 'ftp|http|WINETRICKS_SOURCEFORGE'| sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
     # shellcheck disable=SC1091
     . ./url-script-fragment.tmp

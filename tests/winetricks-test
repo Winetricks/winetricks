@@ -528,7 +528,7 @@ test_dlls()
         exit 1
     fi
 
-    sort -u < "${outputdir}/dlls.log" | fgrep -w -v -f "${outputdir}/manual.log" | grep -E -v "$BLACKLIST" > "${outputdir}/dlls.verbs"
+    sort -u < "${outputdir}/dlls.log" | grep -F -w -v -f "${outputdir}/manual.log" | grep -E -v "$BLACKLIST" > "${outputdir}/dlls.verbs"
 
     if [ ! -f "${outputdir}/dlls.verbs" ] ; then
         w_die "${outputdir}/dlls.verbs doesn't exist? No verbs to test!"
