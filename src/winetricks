@@ -1793,9 +1793,10 @@ w_override_no_dlls()
 w_override_all_dlls()
 {
     # Disable all known native Microsoft DLLs in favor of Wine's built-in ones
-    # Generated with
+    # Generated with:
     # find ~/wine-git/dlls -maxdepth 1 -type d -print | sed 's,.*/,,' | sort | fmt -50 | sed 's/$/ \\/'
-    # Last updated: 2015-09-28
+    #
+    # 2015/09/28: Last list update
     w_override_dlls builtin \
         acledit aclui activeds actxprxy adsiid advapi32 \
         advpack amstream api-ms-win-core-com-l1-1-0 \
@@ -5062,7 +5063,7 @@ w_metadata adobeair dlls \
 
 load_adobeair()
 {
-    # 2017-3-14: 20.0.0.260 (strings 'Adobe AIR.dll' | grep 20\\. ) sha256sum 318770b9a18e59ca4a721a1f5c2b0235cffdbe77a043e99cb2af32074d61de45
+    # 2017/03/14: 20.0.0.260 (strings 'Adobe AIR.dll' | grep 20\\. ) sha256sum 318770b9a18e59ca4a721a1f5c2b0235cffdbe77a043e99cb2af32074d61de45
     w_download https://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 318770b9a18e59ca4a721a1f5c2b0235cffdbe77a043e99cb2af32074d61de45
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
@@ -5193,8 +5194,8 @@ w_metadata comctl32 dlls \
 load_comctl32()
 {
     # Microsoft has removed. Mirrors can be found at http://www.filewatcher.com/m/CC32inst.exe.587496-0.html
-    # 2011-01-17: https://www.microsoft.com/en-us/download/details.aspx?id=14672
-    # 2012-08-11: w_download https://download.microsoft.com/download/platformsdk/redist/5.80.2614.3600/w9xnt4/en-us/cc32inst.exe d68c0cca721870aed39f5f2efd80dfb74f3db66d5f9a49e7578b18279edfa4a7
+    # 2011/01/17: https://www.microsoft.com/en-us/download/details.aspx?id=14672
+    # 2012/08/11: w_download https://download.microsoft.com/download/platformsdk/redist/5.80.2614.3600/w9xnt4/en-us/cc32inst.exe d68c0cca721870aed39f5f2efd80dfb74f3db66d5f9a49e7578b18279edfa4a7
     # 2016/01/07: w_download ftp://ftp.ie.debian.org/disk1/download.sourceforge.net/pub/sourceforge/p/po/pocmin/Win%2095_98%20Controls/Win%2095_98%20Controls/CC32inst.exe
     # 2017/03/12: w_download $WINETRICKS_SOURCEFORGE/project/pocmin/Win%2095_98%20Controls/Win%2095_98%20Controls/CC32inst.exe
 
@@ -5297,7 +5298,7 @@ load_binkw32()
     # sha256sum of the decompressed file: 1fd7ef7873c8a3be7e2f127b306d0d24d7d88e20cf9188894eff87b5af0d495f
     #
     # Zip sha256sum:
-    # 2015-12-27: 1d5efda8e4af796319b94034ba67b453cbbfddd81eb7d94fd059b40e237fa75d
+    # 2015/12/27: 1d5efda8e4af796319b94034ba67b453cbbfddd81eb7d94fd059b40e237fa75d
 
     w_download http://www.down-dll.com/dll/b/__32-binkw32.dll3.0.0.0.zip 1d5efda8e4af796319b94034ba67b453cbbfddd81eb7d94fd059b40e237fa75d
 
@@ -7012,9 +7013,8 @@ w_metadata flash dlls \
 
 load_flash()
 {
-    # As of July 9, 2013, Adobe Flash 10 is no longer supported.
-    # And as of June 24, 2013, Adobe Flash 10.3 won't even install for me,
-    # it tells you to go get a newer version!
+    # 2013/07/09: Adobe Flash 10 is no longer supported.
+    # 2013/06/24: Adobe Flash 10.3 won't even install for me, it tells you to go get a newer version!
     # See
     # https://blogs.adobe.com/psirt/
     # https://get.adobe.com/de/flashplayer/otherversions/
@@ -7022,7 +7022,7 @@ load_flash()
     # https://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html
 
     # ActiveX plugin
-    # 2014-10-02 3958827058648cfe05fc6ee510685e8d93f995d3428c3eedbd6814704765672a
+    # 2014/10/02: 3958827058648cfe05fc6ee510685e8d93f995d3428c3eedbd6814704765672a
     w_download https://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.176_archive.zip 3958827058648cfe05fc6ee510685e8d93f995d3428c3eedbd6814704765672a
 
     w_try_unzip "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.176_archive.zip fp_14.0.0.176_archive/14_0_r0_176/flashplayer14_0r0_176_winax.exe
@@ -7030,7 +7030,7 @@ load_flash()
     w_try "$WINE" flashplayer14_0r0_176_winax.exe ${W_OPT_UNATTENDED:+ /install}
 
     # Mozilla / Firefox (NPAPI) plugin
-    # 2014-10-02 17496fd3c863c180aead953d7d4499dd36f997a9570abc2b92f55e4ea1d55d73
+    # 2014/10/02: 17496fd3c863c180aead953d7d4499dd36f997a9570abc2b92f55e4ea1d55d73
     w_download https://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.179_archive.zip 17496fd3c863c180aead953d7d4499dd36f997a9570abc2b92f55e4ea1d55d73
 
     w_try_unzip "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.179_archive.zip fp_14.0.0.179_archive/14_0_r0_179/flashplayer14_0r0_179_win.exe
@@ -7038,7 +7038,7 @@ load_flash()
     w_try "$WINE" flashplayer14_0r0_179_win.exe ${W_OPT_UNATTENDED:+ /install}
 
     # Projector (standalone player)
-    # 2015-07-06
+    # 2015/07/06:
     w_download https://download.macromedia.com/pub/flashplayer/updaters/14/flashplayer_14_sa.exe 8640c42e73dc44125045e17abd32412c48f3808a8393c94fc8281cf4b0d87bdc
     # shellcheck disable=SC2154
     w_try cp "${W_CACHE}/${W_PACKAGE}/${file3}" "$W_SYSTEM32_DLLS/Macromed/Flash"
@@ -7325,8 +7325,8 @@ load_icodecs()
     # Note: this codec is insecure, see
     # https://support.microsoft.com/kb/954157
     # Original source, ftp://download.intel.com/support/createshare/camerapack/codinstl.exe, had same checksum
-    # 2010-11-14: http://codec.alshow.co.kr/Down/codinstl.exe
-    # 2014-04-11: http://www.cucusoft.com/codecdownload/codinstl.exe (linked from http://www.cucusoft.com/codec.asp)
+    # 2010/11/14: http://codec.alshow.co.kr/Down/codinstl.exe
+    # 2014/04/11: http://www.cucusoft.com/codecdownload/codinstl.exe (linked from http://www.cucusoft.com/codec.asp)
     w_download "http://www.cucusoft.com/codecdownload/codinstl.exe" 0979d43568111cadf0b3bf43cd8d746ac3de505759c14f381592b4f8439f6c95
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -7724,13 +7724,13 @@ w_metadata msdxmocx dlls \
 load_msdxmocx()
 {
     # Previously at https://www.oldapps.com/windows_media_player.php?old_windows_media_player=3?download
-    # (2015/12/01) Iceweasel gave a security warning (!), but clamscan and virustotal.com report it as clean
+    # 2015/12/01: Iceweasel gave a security warning (!), but clamscan and virustotal.com report it as clean
     #
-    # (2016/02/18) Since then, oldapps.com removed it. It's on a Finnish mirror, where it's been since 2001/10/20
+    # 2016/02/18: Since then, oldapps.com removed it. It's on a Finnish mirror, where it's been since 2001/10/20
     # Found using http://www.filewatcher.com/m/mpfull.exe.3593680-0.html
     # The sha256sum is different. Perhaps Iceweasel was right. This one is also clean according to clamscan/virustotal.com
 
-    # (2017/9/28) define.fi is down, these sites have mpfull.exe with the original sha256:
+    # 2017/09/28: define.fi is down, these sites have mpfull.exe with the original sha256:
     # http://hell.pl/agnus/windows95/
     # http://zerosky.oldos.org/win9x.html
     # http://sdfox7.com/win95/
@@ -7754,7 +7754,7 @@ w_metadata msflxgrd dlls \
 load_msflxgrd()
 {
     # https://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
-    # may 2011: f497c3b390cd80d5bcd1f13d5c0c68b206369aa7
+    # 2011/05: f497c3b390cd80d5bcd1f13d5c0c68b206369aa7
     # 2015/11/09: Removed from Microsoft.com, archive.org has an older copy:
     # 2015/11/09: a0d374293ab9556a6eb7705efbca533ad8f20e6b9cb55f14f1ec5bb55552ec8d
     w_download http://activex.microsoft.com/controls/vb6/MsFlxGrd.cab a0d374293ab9556a6eb7705efbca533ad8f20e6b9cb55f14f1ec5bb55552ec8d
@@ -7856,8 +7856,6 @@ load_msmask()
 {
     # https://msdn.microsoft.com/en-us/library/11405hcf(VS.71).aspx
     # https://bugs.winehq.org/show_bug.cgi?id=2934
-    # old: 3c6b26f68053364ea2e09414b615dbebafb9d5c3
-    # May 2009: 30e55679e4a13fe4d9620404476f215f93239292
     # 2015/11/09: Removed from microsoft.com, archive.org has an older copy:
     # 2015/11/09: 25e49bd2aa8f96ff3c1068fc0fa7ba87fe86d8d5999e3592919a4b03f0602d67
     w_download http://activex.microsoft.com/controls/vb6/MSMASK32.CAB 25e49bd2aa8f96ff3c1068fc0fa7ba87fe86d8d5999e3592919a4b03f0602d67
@@ -7976,10 +7974,7 @@ w_metadata nuget dlls \
 load_nuget()
 {
     w_call dotnet40
-    # 2014-01-22: d4082afc4f89df195fa1e83ee1cf02bce3dd2f13
-    # 2014-02-26: 9bc98ced9c2d2b51ab687f86b5580913c025b8b0
-    # 2014-04-17: 3210cc9a2e575384d59b0604c892bccce760e9b6
-    # probably changes too rapidly to check
+    # Changes too rapidly to check shasum
     w_download https://nuget.org/nuget.exe
     w_try cp "$W_CACHE/$W_PACKAGE"/nuget.exe "$W_SYSTEM32_DLLS"
     w_warn "To run NuGet, use the command line \"$WINE nuget\"."
@@ -8439,8 +8434,8 @@ w_metadata shockwave dlls \
     installed_file1="$W_SYSTEM32_DLLS_WIN/Adobe/Shockwave 12/shockwave_Projector_Loader.dcr"
 
 load_shockwave() {
-    # 2017-03-12 sha256sum: 39715a84b1d85347066fbf89a3af9f5e612b59402093b055cd423bd30a7f637d
-    # 2017-03-15 sha256sum: 58f2152bf726d52f08fb41f904c62ff00fdf748c8ce413e8c8547da3a21922ba
+    # 2017/03/12: 39715a84b1d85347066fbf89a3af9f5e612b59402093b055cd423bd30a7f637d
+    # 2017/03/15: 58f2152bf726d52f08fb41f904c62ff00fdf748c8ce413e8c8547da3a21922ba
     w_download https://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi 58f2152bf726d52f08fb41f904c62ff00fdf748c8ce413e8c8547da3a21922ba
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -8486,7 +8481,7 @@ w_metadata tabctl32 dlls \
 load_tabctl32()
 {
     # https://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
-    # Nov 2012: tabctl32
+    # 2012/11: tabctl32
     w_download http://activex.microsoft.com/controls/vb6/TABCTL32.CAB d2a7bdacf74de95146384578d0f08ccefb2defb0081b3d42d34fdcee7ea4cc68
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE/tabctl32/${file1}"
@@ -8811,7 +8806,7 @@ w_metadata vcrun2005 dlls \
 
 load_vcrun2005()
 {
-    # June 2011 security update, see
+    # 2011/06: Security update, see
     # https://technet.microsoft.com/library/security/ms11-025 or
     # https://support.microsoft.com/kb/2538242
     w_download https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x86.EXE 4ee4da0fe62d5fa1b5e80c6e6d88a4a2f8b3b140c35da51053d0d7b72a381d29
@@ -10412,8 +10407,7 @@ load_ev3()
 
     w_call dotnet40
 
-    # 2016-02-18: LMS-EV3-WIN32-ENUS-01-01-01-full-setup.exe 855c914d9a3cf0f4793a046872658fd661389671
-    # 2016-03-22: LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
+    # 2016/03/22: LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
 
     w_download http://esd.lego.com.edgesuite.net/digitaldelivery/mindstorms/6ecda7c2-1189-4816-b2dd-440e22d65814/public/LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
 
@@ -11027,7 +11021,7 @@ w_metadata nook apps \
 load_nook()
 {
     # Dates from curl --head
-    # 7 Mar 2012 sha256sum 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
+    # 2012/03/07: sha256sum 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
     w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
@@ -11495,14 +11489,7 @@ w_metadata steam apps \
 
 load_steam()
 {
-    # 18 Mar 2011 7f2fee9ffeaba8424a6c76d6c95b794735ac9959
-    # 29 Nov 2012 fa053c268b6285741d1a1392c25f92c5cb2a6ffb
-    # 17 Mar 2014 b2a3fdbe4a662f3bf751f5b8bfc61f8d35e050fe
-    # 11 Dec 2014 7ad8fbeffa6c963b821f80129c15c9d8e85f9a4a
-    #  6 Jan 2015 e04aefe8bc894f11f211edec8e8a008abe0147d2
-    # 21 Jun 2015 0e8046d40c38d817338135ec73a5b217cc340cf5
-    # 29 Dec 2015 728e3c82fd57c68cbbdb64965719081ffee6272c
-    # 28 Oct 2016 029f918a29b2b311711788e8a477c8de529c11d7dba3caf99cbbde5a983efdad
+    # 2016/10/28: 029f918a29b2b311711788e8a477c8de529c11d7dba3caf99cbbde5a983efdad
     w_download http://media.steampowered.com/client/installer/SteamSetup.exe 029f918a29b2b311711788e8a477c8de529c11d7dba3caf99cbbde5a983efdad
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
@@ -11581,7 +11568,7 @@ w_metadata utorrent apps \
 load_utorrent()
 {
     # BitTorrent client supported on Windows, OS X, Linux through Wine
-    # 7 Mar 2012 sha1sum ec2c086ff784b06e4ff05243164ddb768b81ee32096afed6d5e574ff350b619e
+    # 2012/03/07: sha1sum ec2c086ff784b06e4ff05243164ddb768b81ee32096afed6d5e574ff350b619e
     w_download_manual "https://www.oldapps.com/utorrent.php?old_utorrent=38" utorrent_2.2.1.exe ec2c086ff784b06e4ff05243164ddb768b81ee32096afed6d5e574ff350b619e
 
     w_try cp -f "$W_CACHE/utorrent/$file1" "$W_WINDIR_UNIX"/utorrent.exe
@@ -11827,7 +11814,6 @@ w_metadata winamp apps \
 load_winamp()
 {
     w_info "may send information while installing, see https://www.microsoft.com/security/portal/Threat/Encyclopedia/Entry.aspx?threatid=159633"
-    # 2014 winamp5621_full_emusic-7plus_en-us.exe afc172039db52fdc202114bec7bcf8b5bf2468bb
 
     w_download https://winampplugins.co.uk/Winamp/winamp5666_full_all_redux.exe ea9a6ba81475d49876d0b8b300d93f28f7959b8e99ce4372dbde746567e14002
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -14029,8 +14015,7 @@ w_metadata digitanks_demo games \
 
 load_digitanks_demo()
 {
-    # 8 june 2011: f204b13dc64c1a54fb1aaf27187c6083ebb16acf
-    # 11 Nov 2011: bc98de67680e907a30ee1ab5d062e098c07a87292e3fb82ae62ad2d7175e94ff
+    # 2011/11/11: bc98de67680e907a30ee1ab5d062e098c07a87292e3fb82ae62ad2d7175e94ff
     w_download "http://static.digitanks.com/files/digitanks.exe" bc98de67680e907a30ee1ab5d062e098c07a87292e3fb82ae62ad2d7175e94ff
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
@@ -15027,12 +15012,7 @@ w_metadata hegemonygold_demo games \
 
 load_hegemonygold_demo()
 {
-    # 6 Mar 2011: 8c4d8aa8f997b106c78b065a4b200e5e1ab846a8
-    # 28 Apr 2011: 93677013fc17f014b1640bed070e8bb1b2a17445
-    # 25 Jun 2011: 4069656ea3c3760b67d1c5adff37de7472955f72
-    # 5 Nov 2011: 723c575ff5fff77941a1c786e28f46c094b8159c
-    # 8 Mar 2012: 36634314f571e345d082bdefe1150c76ef5610a7
-
+    # 2012/03/08: 143a6335b20855922907e3e266fe0ab286ac274dab434f1fca749c7b19c2ab49
     w_download "https://www.longbowgames.com/downloads/Hegemony%20Gold%20Installer.exe" 143a6335b20855922907e3e266fe0ab286ac274dab434f1fca749c7b19c2ab49 HegemonyGoldInstaller.exe
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -17195,8 +17175,7 @@ w_metadata tmnationsforever games \
 
 load_tmnationsforever()
 {
-    # Before:      cab0cf66db0471bc2674a3b1aebc35de0bca6ed0
-    # 29 Mar 2011: 2f659138ed4409da404970841e18f03d29921beaf6a424824c8312ddb20f6355
+    # 2011/03/29: 2f659138ed4409da404970841e18f03d29921beaf6a424824c8312ddb20f6355
     w_download "http://files.trackmaniaforever.com/tmnationsforever_setup.exe" 2f659138ed4409da404970841e18f03d29921beaf6a424824c8312ddb20f6355
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -19405,7 +19384,8 @@ execute_command()
     *=disabled) w_do_call disabled "$cmd";;
     vd=*) w_do_call "$cmd";;
 
-    # Hacks for backwards compatibility (Deprecation notices added 2017/03/22)
+    # Hacks for backwards compatibility
+    # 2017/03/22: add deprecation notices
     cc580) w_warn "Calling cc580 is deprecated, please use comctl32 instead" ; w_call comctl32 ;;
     comdlg32.ocx) w_warn "Calling comdlg32.ocx is deprecated, please use comdlg32ocx instead" ; w_call comdlg32ocx ;;
     dotnet1) w_warn "Calling dotnet1 is deprecated, please use dotnet11 instead" ; w_call dotnet11 ;;
