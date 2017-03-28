@@ -18,7 +18,7 @@ then
     echo "For instance, ~/winetrickstest-prefixes/dotnet20sp{,1,2}"
     exit 1
 fi
- 
+
 # Generate list of all filenames (except those which look ephemeral)
 rm -f /tmp/allfiles.txt
 for dir
@@ -26,7 +26,7 @@ do
     (
     cd $dir/drive_c
     # FIXME: don't assume there are no ='s in filenames, e.g. rewrite in perl
-    find . -type f | tr ' ' '=' | egrep -iv 'tmp|temp|installer|NativeImages' | sort > ../files.txt
+    find . -type f | tr ' ' '=' | grep -E -iv 'tmp|temp|installer|NativeImages' | sort > ../files.txt
     cat ../files.txt >> /tmp/allfiles.txt
     )
 done

@@ -4293,7 +4293,7 @@ winetricks_mount_cached_iso()
 
 winetricks_list_mounts()
 {
-    mount | egrep 'udf|iso9660' | sed 's,^\([^ ]*\) on \(.*\) type .*,\1 \2,'| grep "$1\$"
+    mount | grep -E 'udf|iso9660' | sed 's,^\([^ ]*\) on \(.*\) type .*,\1 \2,'| grep "$1\$"
 }
 
 # Return success and set _W_dev _W_mountpoint if volume $1 is mounted
@@ -9888,7 +9888,7 @@ load_fontfix()
     # SDKSetup encountered an error: The type initializer for 'Microsoft.WizardFramework.WizardSettings' threw an exception
     # and WINEDEBUG=+relay,+seh shows an exception very quickly after
     # Call KERNEL32.CreateFileW(0c83b36c L"Z:\\USR\\SHARE\\FONTS\\TRUETYPE\\TTF-ORIYA-FONTS\\SAMYAK-ORIYA.TTF",80000000,00000001,00000000,00000003,00000080,00000000) ret=70d44091
-    if xlsfonts 2>/dev/null | egrep -i "samyak.*oriya"
+    if xlsfonts 2>/dev/null | grep -E -i "samyak.*oriya"
     then
         w_die "Please uninstall the Samyak/Oriya font, e.g. 'sudo dpkg -r ttf-oriya-fonts', then log out and log in again.  That font causes strange crashes in .net programs."
     fi
@@ -12555,7 +12555,7 @@ load_acreedbro()
     # FIXME: figure out why these executables don't exit, and do a proper workaround or fix
     sleep 10
     # shellcheck disable=SC2009
-    if ps augxw | grep -i exe | egrep 'winemenubuilder.exe|setup.exe|PnkBstrA.exe | egrep -v egrep'
+    if ps augxw | grep -i exe | grep -E 'winemenubuilder.exe|setup.exe|PnkBstrA.exe | grep -v grep'
     then
         w_warn "Killing processes so patcher does not complain about game still running"
         $WINESERVER -k

@@ -528,7 +528,7 @@ test_dlls()
         exit 1
     fi
 
-    sort -u < "${outputdir}/dlls.log" | fgrep -w -v -f "${outputdir}/manual.log" | egrep -v "$BLACKLIST" > "${outputdir}/dlls.verbs"
+    sort -u < "${outputdir}/dlls.log" | fgrep -w -v -f "${outputdir}/manual.log" | grep -E -v "$BLACKLIST" > "${outputdir}/dlls.verbs"
 
     if [ ! -f "${outputdir}/dlls.verbs" ] ; then
         w_die "${outputdir}/dlls.verbs doesn't exist? No verbs to test!"
@@ -584,7 +584,7 @@ test_install_cached_or_download()
         fail "output of list-cached list-download contained garbage"
         exit 1
     fi
-    sort -u < ticd.log | egrep -v "$BLACKLIST" > ticd.verbs
+    sort -u < ticd.log | grep -E -v "$BLACKLIST" > ticd.verbs
 
     if true ; then
         # Split into two, only do half
@@ -610,7 +610,7 @@ test_install_cached_or_download()
     # And some verbs (gecko110) don't usually install for other reasons.
     BLACKLIST_CACHE="allfonts\|cjkfonts\|allcodecs\|gecko\|gecko110\|fontfix"
 
-    egrep -vw "$BLACKLIST_CACHE" ticd.verbs > download.txt
+    grep -E -vw "$BLACKLIST_CACHE" ticd.verbs > download.txt
     comm -23 download.txt cached.txt > download-but-not-cached.txt
     echo "Supposedly downloadable"
     cat download.txt

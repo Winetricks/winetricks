@@ -39,7 +39,7 @@ w_download() {
 
 # Extract list of URLs from winetricks
 extract_all() {
-    grep '^ *w_download ' winetricks | egrep 'ftp|http|WINETRICKS_SOURCEFORGE'| sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+    grep '^ *w_download ' winetricks | grep -E 'ftp|http|WINETRICKS_SOURCEFORGE'| sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
     # shellcheck disable=SC1091
     . ./url-script-fragment.tmp
 }
@@ -52,7 +52,7 @@ show_one() {
     urlfile=$1
     base=${urlfile%.url}
     url="$(cat "$urlfile")"
-    if egrep "HTTP.*200|HTTP.*30[0-9]|Content-Length" "$base.log" > /dev/null
+    if grep -E "HTTP.*200|HTTP.*30[0-9]|Content-Length" "$base.log" > /dev/null
     then
         passes=$((passes + 1))
     else
@@ -88,7 +88,7 @@ crawl_one() {
        sort > "$base.log"
     # more diff-able?
     #cat "$base.log" |
-    #  egrep 'HTTP|Last-Modified:|Content-Length:|ETag:' |
+    #  grep -E 'HTTP|Last-Modified:|Content-Length:|ETag:' |
     #  tr '\012' ' ' |
     #  sed 's/ Connection:.*//' > "$datadir"/"$urlkey.dat"
     #echo "" >> "$base.dat"
