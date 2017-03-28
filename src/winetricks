@@ -13052,6 +13052,7 @@ load_cnc_redalert3_demo()
 #----------------------------------------------------------------
 
 # https://appdb.winehq.org/objectManager.php?sClass=version&iId=9320
+
 w_metadata blobby_volley games \
     title="Blobby Volley" \
     publisher="Daniel Skoraszewsky" \
@@ -13062,7 +13063,7 @@ w_metadata blobby_volley games \
 
 load_blobby_volley()
 {
-    w_download_manual https://www.chip.de/downloads/Blobby-Volley_12990993.html blobby.zip c7057c77a5009a88d9d877e17a63b5536ebeb177
+    w_download_manual https://www.chip.de/downloads/Blobby-Volley_12990993.html blobby.zip ef7d2e61fabe5ac6a556fa7c254edc667df5a6659ea262ee2bc97ed61abc3f64
     w_try_unzip "$W_DRIVE_C/BlobbyVolley" "$W_CACHE/$W_PACKAGE"/blobby.zip
 }
 
