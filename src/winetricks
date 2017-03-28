@@ -12845,50 +12845,6 @@ load_bfbc2()
 
 #----------------------------------------------------------------
 
-w_metadata bladekitten_demo games \
-    title="Blade Kitten Demo" \
-    publisher="Krome Studios" \
-    year="2010" \
-    media="manual_download" \
-    file1="BladeKittenDemoInstall.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Krome Studios/Blade Kitten Demo/BladeKitten_Demo.exe"
-
-load_bladekitten_demo()
-{
-    w_download_manual http://news.bigdownload.com/2010/09/23/download-blade-kitten-demo BladeKittenDemoInstall.exe d3568f94c1ce284b7381e457e9497065bd45001d
-
-    cp "$W_CACHE/$W_PACKAGE"/BladeKittenDemoInstall.exe "$W_TMP"
-    w_try_cd "$W_TMP"
-    w_ahk_do "
-        ; This script always gives full window title, so no need to set a different title match mode
-        run BladeKittenDemoInstall.exe
-        WinWait Blade Kitten Demo Install Package
-        if ( w_opt_unattended > 0 ) {
-            Sleep 500
-            ControlClick Button2 ;  Install
-            WinWait Blade Kitten Demo, Next
-            Sleep 500
-            ControlClick Button1
-            WinWait Blade Kitten Demo, Cost
-            Sleep 500
-            ControlClick Button1  ; Next
-            WinWait Blade Kitten Demo, ready
-            Sleep 500
-            ControlClick Button1 ;  Next
-            ; Note - in older versions of Wine, the DirectX installer may take 6-10 minutes at this point
-        }
-        WinWaitClose
-        WinWait Blade Kitten Demo, Complete
-        if ( w_opt_unattended > 0 ) {
-            Sleep 500
-            ControlClick Button1 ;  Close
-        }
-        WinWaitClose
-    "
-}
-
-#----------------------------------------------------------------
-
 w_metadata cnc_tiberian_sun games \
     title="Command & Conquer: Tiberian Sun (2010 edition)" \
     publisher="EA" \
