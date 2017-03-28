@@ -514,7 +514,7 @@ _EOF
         *) fail "${outputdir}/false.verb isolated, as dlls failed in unexpected way" ;;
     esac
 
-    rm "${outputdir}/{false,true}.verb"
+    rm "${outputdir}/false.verb" "${outputdir}/true.verb"
     pass
 }
 
