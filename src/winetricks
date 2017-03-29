@@ -12255,8 +12255,7 @@ w_metadata unigine_heaven benchmarks \
 
 load_unigine_heaven()
 {
-    # FIXME: use w_download_torrent()
-    w_download_manual http://unigine.com/download/torrents/Unigine_Heaven-2.1.msi.torrent Unigine_Heaven-2.1.msi 3d7b94a3734cdae85f98032b61668e743979c444
+    w_download_manual "https://www.fileplanet.com/212489/210000/fileinfo/Unigine-'Heaven'-Benchmark-2.1-%28Windows%29" 47113b285253a1ebce04527a31d734c0dfce5724e8d2643c6c1b822a940e7073
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
