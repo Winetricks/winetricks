@@ -15038,64 +15038,6 @@ load_losthorizon_demo()
 
 #----------------------------------------------------------------
 
-w_metadata lego_potc_demo games \
-    title="Lego Pirates of the Caribbean Demo" \
-    publisher="Travellers Tales" \
-    year="2011" \
-    media="manual_download" \
-    file1="LPOTC_PC_Demo.zip" \
-    installed_file1="$W_PROGRAMS_X86_WIN/Disney Interactive Studios/LEGO Pirates DEMO/LEGOPiratesDEMO.exe"
-
-load_lego_potc_demo()
-{
-    w_download_manual http://www.gamershell.com/download_73976.shtml LPOTC_PC_Demo.zip 3025dcbbee9ff2d74d7837a78ef5b7aceae15d8f
-    w_try_cd "$W_TMP"
-    w_info "Unpacking $file1"
-    w_try_unzip . "$W_CACHE/$W_PACKAGE/$file1" LPOTC_PC_Demo.exe
-    w_ahk_do "
-        SetWinDelay, 500
-        SetTitleMatchMode, 2
-        SetTitleMatchMode, slow        ; since word English in first dialog can only be read 'slowly'
-        run LPOTC_PC_Demo.exe
-        if ( w_opt_unattended > 0 ) {
-            winwait,LEGO,English
-            sleep 500
-            winactivate
-            send {Tab}{Tab}{Enter}
-            winwaitclose,LEGO,English
-
-            winwait, LEGO, License
-            winactivate
-            send {Space}
-            sleep 500
-            send {Enter}
-            winwaitclose, LEGO, License
-
-            winwait, DirectX
-            ControlClick, Button1  ; next
-            ;send {Enter}  ; next
-            winwaitclose, DirectX
-
-            winwait, LEGO, License       ; DIRECTX shows up in slow text, could wait for that
-            winactivate
-            sleep 500
-            ControlClick, Button1  ; accept
-            ;send {Tab}{Tab}{Space} ; accept
-            sleep 500
-            send {Enter}
-            winwaitclose, LEGO, License
-        }
-        winwait, LEGO, continue
-        if ( w_opt_unattended > 0 ) {
-            ControlClick, Button2
-            sleep 1000
-        }
-        winwaitclose, LEGO
-    "
-}
-
-#----------------------------------------------------------------
-
 w_metadata lhp_demo games \
     title="LEGO Harry Potter Demo [Years 1-4]" \
     publisher="Travellers Tales / WB" \
