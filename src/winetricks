@@ -12435,42 +12435,6 @@ load_aoe3_demo()
 
 #----------------------------------------------------------------
 
-w_metadata aoe_demo games \
-    title="Age of Empires Demo" \
-    publisher="Microsoft" \
-    year="1997" \
-    media="download" \
-    file1="MSAoE.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Age of Empires Trial/empires.exe"
-
-load_aoe_demo()
-{
-    w_download https://download.microsoft.com/download/aoe/Trial/1.0/WIN98/EN-US/MSAoE.exe 23630a65ce4133038107f3175f8fc54a914bc2f3
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        run, MSAoE.exe
-        SetTitleMatchMode, 2
-        winwait, Microsoft Age of Empires Trial Version
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            ControlClick, Button1
-            winwait, End User License Agreement
-            sleep 1000
-            ControlClick, Button1
-            winwait, Microsoft Age of Empires Trial Version, Setup will install
-            sleep 1000
-            ControlClick Button2
-            winwait, Microsoft Age of Empires Trial Version, Setup has successfully
-            sleep 1000
-            ControlClick Button1
-        }
-        WinWaitClose, Microsoft Age of Empires Trial Version
-    "
-}
-
-#----------------------------------------------------------------
-
 w_metadata acreedbro games \
     title="Assassin's Creed Brotherhood" \
     publisher="Ubisoft" \
