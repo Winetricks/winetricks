@@ -14208,18 +14208,19 @@ load_dragonage2_demo()
 w_metadata eve games \
     title="EVE Online Tyrannis" \
     publisher="CCP Games" \
-    year="2011" \
+    year="2017" \
     media="download" \
-    file1="EVE_Online_Installer_561078.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/CCP/EVE/eve.exe"
+    file1="EveLauncher-1104888.exe" \
+    installed_exe1="c:/EVE/eve.exe"
 
 load_eve()
 {
-    # http://www.eveonline.com/download/?fallback=1&
-    w_download http://content.eveonline.com/561078/EVE_Online_Installer_561078.exe 5b5f0cd4fbd42f82b1d1cccb2e22ddeed97d1d3a
+    # https://community.eveonline.com/support/download/
+    w_download http://binaries.eveonline.com/EveLauncher-1104888.exe d1d66ea0a0e4a476a926307dcdb3d7b5e777d7cff7feb172ce7779dac9fdae8f
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
+        # FIXME: doesn't work with latest update, button names don't appear in AHK?
         run, $file1
         WinWait, EVE Online
         if ( w_opt_unattended > 0 ) {
