@@ -9395,37 +9395,20 @@ load_xinput()
 
 #----------------------------------------------------------------
 
-# FIXME: extend metadata to allow file1_en, file1_fr, etc.
 w_metadata xmllite dlls \
     title="MS xmllite dll" \
     publisher="Microsoft" \
-    year="2006" \
+    year="2011" \
     media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/xmllite.dll"
 
 load_xmllite()
 {
-    case $LANG in
-    en*) w_download https://download.microsoft.com/download/f/9/6/f964059a-3747-4ed8-9326-ba1e639031b1/WindowsXP-KB915865-v11-x86-ENU.exe 226d246a1c64e693791de5c727509002d089b0d5 ;;
-    fr*) w_download https://download.microsoft.com/download/4/1/d/41de58a0-6715-4d3e-99e7-ff0c11283d1b/WindowsXP-KB915865-v11-x86-FRA.exe abb70b6a96be7dce453b00877739e90c6f3efba0 ;;
-    de*) w_download https://download.microsoft.com/download/9/b/6/9b67efdb-cce3-4247-a2e0-386673859a1b/WindowsXP-KB915865-v11-x86-DEU.exe a03a325815acf9d624db58ab94a140a5586e64c8 ;;
-    ja*) w_download https://download.microsoft.com/download/f/5/c/f5cf73b7-4dc4-4042-815d-29d2fd24ae6f/WindowsXP-KB915865-v11-x86-JPN.exe eaf443d04d9b13cb86f927f8a7fe372268386395 ;;
-    *) w_die "Sorry, xmllite install not yet implemented for language $LANG" ;;
-    esac
+    helper_win7sp1 x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/xmllite.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/xmllite.dll" "$W_SYSTEM32_DLLS/xmllite.dll"
 
-    # Doesn't install in newer versions:
-    w_set_winver winxp
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_override_dlls native xmllite
-    case $LANG in
-    en*) w_try "$WINE" WindowsXP-KB915865-v11-x86-ENU.exe $W_UNATTENDED_SLASH_Q ;;
-    fr*) w_try "$WINE" WindowsXP-KB915865-v11-x86-FRA.exe $W_UNATTENDED_SLASH_Q ;;
-    de*) w_try "$WINE" WindowsXP-KB915865-v11-x86-DEU.exe $W_UNATTENDED_SLASH_Q ;;
-    ja*) w_try "$WINE" WindowsXP-KB915865-v11-x86-JPN.exe $W_UNATTENDED_SLASH_Q ;;
-    esac
-
-    w_unset_winver
+    w_override_dlls native,builtin xmllite
 }
 
 #----------------------------------------------------------------
