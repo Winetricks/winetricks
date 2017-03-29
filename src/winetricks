@@ -28,9 +28,9 @@ WINETRICKS_VERSION=20170327-next
 # - wine is used to execute Win32 apps except on Cygwin.
 # - ar, cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - aria2c, wget, curl, or fetch is needed for downloading.
-# - sha1sum, sha1, or shasum is needed for verifying downloads (or openssl for OSX 10.5)
-# - Note: there is a transition to sha256 under way, which requires
-# - sha256sum, sha256, or shasum (OSX 10.5 does not support these, and is considered deprecated)
+# - sha256sum, sha256, or shasum (OSX 10.5 does not support these, 10.6+ is required):
+# - note: some legacy verbs may still sha1sum, sha1, or shasum, but this is deprecated and
+#   will be removed in a future release
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog/xmessage.
 # - xdg-open (if present) or open (for OS X) is used to open download pages
 #   for the user when downloads cannot be fully automated.
@@ -100,7 +100,7 @@ WINETRICKS_VERSION=20170327-next
 # - If there is no universally available program for a needed function,
 #   support the two most frequently available programs.
 #   e.g. fall back to wget if curl is not available; likewise, support
-#   both sha1sum and openssl.
+#   both sha256sum and sha256.
 # - When using Unix commands like cp, put options before filenames so it will
 #   work on systems like OS X.  e.g. "rm -f foo.dat", not "rm foo.dat -f"
 #
@@ -572,10 +572,15 @@ w_get_sha1sum()
     if [ -f "$_W_sha1_file" ] || [ -h "$_W_sha1_file" ]
     then
         _W_gotsha1sum=$($WINETRICKS_SHA1SUM < "$_W_sha1_file" | sed 's/(stdin)= //;s/ .*//')
+        w_get_sha256sum "$_W_sha1_file"
     else
         w_warn "$_W_sha1_file is not a regular file, not checking sha1sum"
         return
     fi
+
+    w_warn "sha1sum is considered deprecated and should no longer be used. This package (${W_PACKAGE}) still uses it. This is a bug."
+    w_warn "See https://github.com/Winetricks/winetricks/issues/737 and https://shattered.io/"
+    w_warn "Please report the following to https://github.com/Winetricks/winetricks/: file:${_W_sha1_file} sha1: ${_W_gotsha1sum} sha256:${_W_gotsha256sum}"
 }
 
 # get sha256sum string and set $_W_gotsha256sum to it
@@ -609,6 +614,7 @@ w_get_shatype() {
     esac
 }
 
+# FIXME: remove 2018/04/01 (or 03/31 or 4/2, to avoid April Fools comments), along with any remaining unfixed verbs
 # verify a sha1sum
 w_verify_sha1sum()
 {
@@ -842,7 +848,7 @@ winetricks_selfupdate_rollback()
 }
 
 # Download a file
-# Usage: w_download_to (packagename|path to download file) url [sha1sum [filename [cookie jar]]]
+# Usage: w_download_to (packagename|path to download file) url [shasum [filename [cookie jar]]]
 # Caches downloads in winetrickscache/$packagename
 w_download_to()
 {
@@ -1105,7 +1111,7 @@ w_open_webpage()
 }
 
 # Download a file
-# Usage: w_download url [sha1sum [filename [cookie jar]]]
+# Usage: w_download url [shasum [filename [cookie jar]]]
 # Caches downloads in winetrickscache/$W_PACKAGE
 w_download()
 {
