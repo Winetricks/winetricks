@@ -15422,7 +15422,7 @@ w_metadata lhp_demo games \
     title="LEGO Harry Potter Demo [Years 1-4]" \
     publisher="Travellers Tales / WB" \
     year="2010" \
-    media="download" \
+    media="manual_download" \
     file1="LEGOHarryPotterDEMO.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/WB Games/LEGO_Harry_Potter_DEMO/LEGOHarryPotterDEMO.exe"
 
@@ -15437,7 +15437,7 @@ load_lhp_demo()
         ;;
     esac
 
-    w_download "http://static.kidswb.com/legoharrypottergame/LEGOHarryPotterDEMO.exe" bb0a30ad9a7cc51c80e1bb1f3eec22e6ccc1a706
+    w_download_manual "https://www.fileplanet.com/213663/210000/fileinfo/LEGO-Harry-Potter:-Years-1-4-Demo" 01d8e88511d71f5dd1492034ea4b00eacdbbf891ef23cffa31413d232eee3647
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
