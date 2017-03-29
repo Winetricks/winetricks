@@ -14861,7 +14861,8 @@ load_mfsx_demo()
         w_call vd=1024x768
     fi
 
-    w_download https://download.microsoft.com/download/4/7/7/477dcc35-0b98-42c5-b06f-7ded38a40491/FSXDemo.exe cbb13d2a7918f409f224eab7d3a2014330fc87bc
+    # 2017/03/28: also available at http://www.gamewatcher.com/downloads/flight-simulator-x-download/flight-simulator-x-final-demo
+    w_download_manual "https://www.fileplanet.com/166127/160000/fileinfo/Microsoft-Flight-Simulator-X-Demo-[Final]" fsxdemo.exe 0d616d8fb6315c15e9919a29968f98b1feda14a2a284721dad114395154e58be
     w_try_cd "$W_TMP"
     unzip "$W_CACHE/$W_PACKAGE"/FSXDemo.exe
     w_ahk_do "
