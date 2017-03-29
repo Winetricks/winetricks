@@ -13240,7 +13240,8 @@ w_metadata cod4mw_demo games \
 
 load_cod4mw_demo()
 {
-    w_download http://download.cnet.com/Call-of-Duty-4-Modern-Warfare/3000-7441_4-11277584.html CoD4MWDemoSetup_v2.exe 690a5f789a44437ed10784acfdd6418ca4a21886
+    # 2017/03/28: Also at https://www.fileplanet.com/213663/210000/fileinfo/LEGO-Harry-Potter:-Years-1-4-Demo
+    w_download_manual http://download.cnet.com/Call-of-Duty-4-Modern-Warfare/3000-7441_4-11277584.html CoD4MWDemoSetup_v2.exe 715710678394e9b0edda5dd3a560c9711557297aa2849c83e5c109db9830fbbb
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
