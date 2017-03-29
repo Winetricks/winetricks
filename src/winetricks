@@ -13786,7 +13786,7 @@ w_metadata deusex2_demo games \
 
 load_deusex2_demo()
 {
-    w_download_manual "http://www.techpowerup.com/downloads/1730/Deus_Ex:_Invisible_War_Demo.html" dxiw_demo.zip ccae48fb046d912b3714ea1b4be4294e74bb3092
+    w_download_manual https://www.fileplanet.com/133479/130000/fileinfo/Deus-Ex:-INVISIBLE-WAR-Demo dxiw_demo.zip cd3804a03301afd582c9c9374a670944b8cc1470ad1c2e5f3cd602c60d70244f
 
     w_try unzip "$W_CACHE/$W_PACKAGE/dxiw_demo.zip" -d "$W_TMP"
     w_try_cd "$W_TMP"
