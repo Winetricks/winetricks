@@ -292,13 +292,38 @@ w_killall()
     kill -s KILL $(pgrep $1)
 }
 
+# Warn user if package is broken. Optionally provide a link to the bug report.
+w_package_broken_win64()
+{
+    # Optional:
+    bug_link="$1"
+
+    if [ "$W_ARCH" = "win64" ]
+    then
+        if [ -n "$1" ] ; then
+            w_die "This package is broken on 64-bit Wine. Using a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
+        else
+            w_die "This package is broken on 64-bit Wine. Using a prefix made with WINEARCH=win32 to work around this."
+        fi
+    fi
+}
+
 # Some packages don't support win64, die with an appropriate message
-# Note: this is for packages that natively don't support win64, not packages that are broken on wine64
+# Note: this is for packages that natively don't support win64, not packages that are broken on wine64, for that, use w_package_broken_win64()
 w_package_unsupported_win64()
 {
     if [ "$W_ARCH" = "win64" ]
     then
         w_die "This package does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32."
+    fi
+}
+
+# For packages that are not well tested or have some known issues on win64, but aren't broken
+w_package_warn_win64()
+{
+    if [ "$W_ARCH" = "win64" ]
+    then
+        w_die "This package may not fully work on a 64-bit installation. 32-bit prefixes may work better."
     fi
 }
 
