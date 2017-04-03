@@ -6647,7 +6647,7 @@ w_metadata dotnet40 dlls \
 
 load_dotnet40()
 {
-    w_package_unsupported_win64
+    w_package_warn_win64
 
     case "$W_PLATFORM" in
         windows_cmd) ;;
@@ -6693,10 +6693,7 @@ w_metadata dotnet45 dlls \
 
 load_dotnet45()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_warn "This package may not work on a 64-bit installation"
-    fi
+    w_package_warn_win64
 
     # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
     w_try_cabextract -v >/dev/null
@@ -6707,7 +6704,9 @@ load_dotnet45()
     w_call remove_mono
 
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
-    w_call dotnet35
+
+    # Seems unneeded in wine-2.0
+    # w_call dotnet35
     w_call dotnet40
     w_set_winver win7
 
@@ -6747,10 +6746,7 @@ w_metadata dotnet452 dlls \
 
 load_dotnet452()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_warn "This package may not work on a 64-bit installation"
-    fi
+    w_package_warn_win64
 
     # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
     w_try_cabextract -v >/dev/null
@@ -6761,7 +6757,9 @@ load_dotnet452()
     w_call remove_mono
 
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
-    w_call dotnet35
+
+    # Seems unneeded in wine-2.0
+    # w_call dotnet35
     w_call dotnet40
     w_set_winver win7
 
@@ -6801,10 +6799,7 @@ w_metadata dotnet46 dlls \
 
 load_dotnet46()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_warn "This package may not work on a 64-bit installation"
-    fi
+    w_package_warn_win64
 
     # https://support.microsoft.com/kb/3045560
     w_download https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe b21d33135e67e3486b154b11f7961d8e1cfd7a603267fb60febb4a6feab5cf87
@@ -6854,10 +6849,7 @@ w_metadata dotnet461 dlls \
 
 load_dotnet461()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_warn "This package may not work on a 64-bit installation"
-    fi
+    w_package_warn_win64
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=49982
     w_download https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe beaa901e07347d056efe04e8961d5546c7518fab9246892178505a7ba631c301
@@ -6900,10 +6892,7 @@ w_metadata dotnet462 dlls \
 
 load_dotnet462()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_warn "This package may not work on a 64-bit installation"
-    fi
+    w_package_warn_win64
 
     if w_workaround_wine_bug 42170 "Running un-official repacked .NET 4.6.2 setup until the official version is fixed."
     then
