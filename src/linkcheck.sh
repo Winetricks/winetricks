@@ -22,8 +22,16 @@ check_deps() {
     fi
 }
 
-# FIXME: make sure that this is top directory ( -d README.d or something):
-datadir="output/links.d"
+if [ -f README.md ] ; then
+    TOP="$PWD"
+elif [ -f ../README.md ] ; then
+    TOP=".."
+else
+    echo "Dude, where's my car?!"
+    exit 1
+fi
+
+datadir="${TOP}/output/links.d"
 mkdir -p "${datadir}"
 
 WINETRICKS_SOURCEFORGE=https://downloads.sourceforge.net
