@@ -104,9 +104,6 @@ BLACKLIST="$BLACKLIST|dotnet30sp1|dotnet35|dotnet35sp1|dotnet45"
 BLACKLIST="$BLACKLIST|xvid"
 # https://bugs.winehq.org/show_bug.cgi?id=40460
 BLACKLIST="$BLACKLIST|dotnet20sp2|xna31"
-# https://bugs.winehq.org/show_bug.cgi?id=42470
-# https://bugs.winehq.org/show_bug.cgi?id=42542
-BLACKLIST="$BLACKLIST|dotnet46|dotnet461|dotnet462"
 # https://bugs.winehq.org/show_bug.cgi?id=16876
 BLACKLIST="$BLACKLIST|wmi"
 
@@ -549,10 +546,7 @@ test_dotnet()
     # verify that each individual installer works:
     # skipping dotnet30sp1/dotnet35/dotnet35sp1/dotnet45, known to hang (FIXME bug)
     # dotnet20sp2: https://bugs.winehq.org/show_bug.cgi?id=40460
-    # dotnet46/461/462:
-    # https://bugs.winehq.org/show_bug.cgi?id=42470
-    # https://bugs.winehq.org/show_bug.cgi?id=42542
-    for x in dotnet11 dotnet11sp1 dotnet20 dotnet20sp1 dotnet30 dotnet40
+    for x in dotnet11 dotnet11sp1 dotnet20 dotnet20sp1 dotnet30 dotnet40 dotnet46 dotnet461 dotnet462
     do
         echo "testing $x"
         test_command --verify $x
