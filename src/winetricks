@@ -4978,7 +4978,9 @@ winetricks_install_app()
 #----------------------------------------------------------------
 
 #----- common download for several verbs
+# Note: please put a file list $(find .) at ./misc/filelists/${helper}.txt
 
+# Filelist at ./misc/filelists/directx-feb2010.txt
 helper_directx_dl()
 {
     # February 2010 DirectX 9c User Redistributable
@@ -4990,6 +4992,7 @@ helper_directx_dl()
     DIRECTX_NAME=directx_feb2010_redist.exe
 }
 
+# Filelist at ./misc/filelists/directx-jun2010.txt
 helper_directx_Jun2010()
 {
     # June 2010 DirectX 9c User Redistributable
@@ -4999,6 +5002,7 @@ helper_directx_Jun2010()
     DIRECTX_NAME=directx_Jun2010_redist.exe
 }
 
+# Filelist at ./misc/filelists/directx-feb2010.txt
 helper_d3dx9_xx()
 {
     dllname=d3dx9_$1
@@ -5023,6 +5027,7 @@ helper_d3dx9_xx()
     w_override_dlls native "$dllname"
 }
 
+# Filelist at ./misc/filelists/win2ksp4.txt
 helper_win2ksp4()
 {
     filename=$1
@@ -5032,6 +5037,7 @@ helper_win2ksp4()
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win2ksp4/W2KSP4_EN.EXE
 }
 
+# Filelist at ./misc/filelists/winxpsp3.txt
 helper_winxpsp3()
 {
     filename=$1
@@ -5049,6 +5055,7 @@ helper_winxpsp3()
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe
 }
 
+# Filelist at ./misc/filelists/win7sp1.txt
 helper_win7sp1()
 {
     filename=$1
