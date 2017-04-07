@@ -4576,7 +4576,7 @@ winetricks_set_wineprefix()
         # shellcheck disable=SC2034
         W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
         # 64-bit prefixes still have plenty of issues:
-        w_warn "You are using a 64-bit WINEPREFIX. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug."
+        w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages.  If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug."
     else
         W_ARCH=win32
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
