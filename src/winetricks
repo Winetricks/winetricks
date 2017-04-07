@@ -5066,6 +5066,16 @@ helper_win7sp1()
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win7sp1/windows6.1-KB976932-X86.exe
 }
 
+helper_win7sp1_x64()
+{
+    filename=$1
+
+    # https://www.microsoft.com/en-us/download/details.aspx?id=5842
+    w_download_to win7sp1 https://download.microsoft.com/download/0/A/F/0AFB5316-3062-494A-AB78-7FB0D4461357/windows6.1-KB976932-X64.exe 74865ef2562006e51d7f9333b4a8d45b7a749dab
+
+    w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win7sp1/windows6.1-KB976932-X64.exe
+}
+
 #---------------------------------------------------------
 
 w_metadata adobeair dlls \
@@ -7008,6 +7018,12 @@ load_esent()
     helper_win7sp1 x86_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_f3ebb0cc8a4dd814/esent.dll
     w_try cp "$W_TMP/x86_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_f3ebb0cc8a4dd814/esent.dll" "$W_SYSTEM32_DLLS/esent.dll"
 
+    if [ "$W_ARCH" = "win64" ]
+    then
+        helper_win7sp1_x64 amd64_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_500a4c5042ab494a/esent.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_500a4c5042ab494a/esent.dll" "$W_SYSTEM64_DLLS/esent.dll"
+    fi
+
     w_override_dlls native,builtin esent
 }
 
@@ -7095,6 +7111,12 @@ load_gdiplus()
     # gdiplus has changed in win7. See https://bugs.winehq.org/show_bug.cgi?id=32163#c3
     helper_win7sp1 x86_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_72d18a4386696c80/gdiplus.dll
     w_try cp "$W_TMP/x86_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_72d18a4386696c80/gdiplus.dll" "$W_SYSTEM32_DLLS/gdiplus.dll"
+
+    if [ "$W_ARCH" = "win64" ]
+    then
+        helper_win7sp1_x64 amd64_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_2b24536c71ed437a/gdiplus.dll
+        w_try cp "$W_TMP/amd64_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_2b24536c71ed437a/gdiplus.dll" "$W_SYSTEM64_DLLS/gdiplus.dll"
+    fi
 
     # For some reason, native, builtin isn't good enough...?
     w_override_dlls native gdiplus
@@ -7646,6 +7668,12 @@ load_mf()
     helper_win7sp1 x86_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_9e6699276b03c38e/mf.dll
     w_try cp "$W_TMP/x86_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_9e6699276b03c38e/mf.dll" "$W_SYSTEM32_DLLS/mf.dll"
 
+    if [ "$W_ARCH" = "win64" ]
+    then
+        helper_win7sp1_x64 amd64_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_fa8534ab236134c4/mf.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_fa8534ab236134c4/mf.dll" "$W_SYSTEM64_DLLS/mf.dll"
+    fi
+
     w_override_dlls native,builtin mf
 }
 
@@ -7900,6 +7928,12 @@ load_msftedit()
 {
     helper_win7sp1 x86_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_d7d862f19573a5ff/msftedit.dll
     w_try cp "$W_TMP/x86_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_d7d862f19573a5ff/msftedit.dll" "$W_SYSTEM32_DLLS/msftedit.dll"
+
+    if [ "$W_ARCH" = "win64" ]
+    then
+        helper_win7sp1_x64 amd64_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_33f6fe754dd11735/msftedit.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_33f6fe754dd11735/msftedit.dll" "$W_SYSTEM64_DLLS/msftedit.dll"
+    fi
 
     w_override_dlls native,builtin mstfedit
 }
