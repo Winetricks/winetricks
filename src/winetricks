@@ -4978,7 +4978,7 @@ winetricks_install_app()
 #----------------------------------------------------------------
 
 #----- common download for several verbs
-# Note: please put a file list $(find .) at ./misc/filelists/${helper}.txt
+# Note: please put a file list $(cabextract -l $foo) / $(unzip -l $foo) at ./misc/filelists/${helper}.txt
 
 # Filelist at ./misc/filelists/directx-feb2010.txt
 helper_directx_dl()
