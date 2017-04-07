@@ -7373,19 +7373,26 @@ w_metadata jet40 dlls \
     year="2003" \
     media="download" \
     file1="jet40sp8_9xnt.exe" \
-    installed_file1="$W_COMMONFILES_X86_WIN/Microsoft Shared/dao/dao360.dll"
+    installed_file1="$W_COMMONFILES_WIN/Microsoft Shared/dao/dao360.dll"
 
 load_jet40()
 {
     w_call mdac27
     w_call wsh57
+
     # https://support.microsoft.com/kb/239114
     # See also https://bugs.winehq.org/show_bug.cgi?id=6085
     # FIXME: "failed with error 2"
     w_download https://download.microsoft.com/download/4/3/9/4393c9ac-e69e-458d-9f6d-2fe191c51469/jet40sp8_9xnt.exe b060246cd499085a31f15873689d5fa7df817e407c8261a5c71fa6b9f7042560
+
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" jet40sp8_9xnt.exe $W_UNATTENDED_SLASH_Q
 }
+
+# FIXME: verify_jet40()
+# See https://github.com/Winetricks/winetricks/issues/327,
+# https://en.wikibooks.org/wiki/JET_Database/Creating_and_connecting, and
+# https://msdn.microsoft.com/en-us/library/ms677200%28v=vs.85%29.aspx
 
 #----------------------------------------------------------------
 
