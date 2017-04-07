@@ -4524,8 +4524,11 @@ winetricks_set_wineprefix()
         ;;
     esac
 
-    # FIXME: wrong on 64-bit Windows for now
     W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles)"
+
+    # CommonProgramW6432 is only defined on win64, not win32 arches
+    W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
+    W_COMMONFILES_WIN="${W_COMMONFILES_WIN:-$W_COMMONFILES_X86_WIN}"
 
     W_WINDIR_UNIX="$W_DRIVE_C/windows"
 
