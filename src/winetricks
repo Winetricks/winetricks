@@ -1515,7 +1515,7 @@ fi
 # other_files
 #     Extra installer files, in one string, space-separated.
 # reader_control
-#     If set, the control id of the configuration panel checkbox controling
+#     If set, the control id of the configuration panel checkbox controlling
 #     Adobe Reader installation.
 #     Some games don't have it, some games do with different ids.
 # run_command
@@ -3032,9 +3032,9 @@ winetricks_prefixmenu()
          ;;
     de*) _W_msg_title="Winetricks - wineprefix auswählen"
          _W_msg_body='Was möchten Sie tun?'
-         _W_msg_apps='Eine Programm installieren'
+         _W_msg_apps='Ein Programm installieren'
          _W_msg_games='Ein Spiel installieren'
-         _W_msg_benchmarks='Ein Benchmark installieren'
+         _W_msg_benchmarks='Einen Benchmark-Test installieren'
          _W_msg_default="Standard wineprefix auswählen"
          _W_msg_unattended0="Automatische Installation deaktivieren"
          _W_msg_unattended1="Automatische Installation aktivieren"
@@ -3716,7 +3716,7 @@ winetricks_showmenu()
     unset _W_msg_body _W_msg_title
 }
 
-# Converts a metadata abolute path to its app code
+# Converts a metadata absolute path to its app code
 winetricks_metadata_basename()
 {
     # Classic, but too slow on cygwin
