@@ -29,13 +29,14 @@ WINETRICKS_VERSION=20170823-next
 # - ar, cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - aria2c, wget, curl, or fetch is needed for downloading.
 # - sha256sum, sha256, or shasum (OSX 10.5 does not support these, 10.6+ is required):
-# - note: some legacy verbs may still sha1sum, sha1, or shasum, but this is deprecated and
-#   will be removed in a future release
+#   note: some legacy verbs may still use sha1sum, sha1, or shasum, but this is
+#   deprecated and will be removed in a future release.
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog/xmessage.
 # - xdg-open (if present) or open (for OS X) is used to open download pages
 #   for the user when downloads cannot be fully automated.
 # - sudo is used to mount .iso images if the user cached them with -k option.
-# - perl is used to munge steam config files
+# - perl is used to munge steam config files.
+# - torify is used with option "--torify" if sites are blocked in single countries.
 # On Ubuntu, the following lines can be used to install all the prerequisites:
 #    sudo add-apt-repository ppa:ubuntu-wine/ppa
 #    sudo apt-get update
