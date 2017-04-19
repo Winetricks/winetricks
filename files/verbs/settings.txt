@@ -1,0 +1,93 @@
+Using winetricks 20170419 - sha256sum: 0109852ab14902352298ae3b78da109919bce46087a4583cdc4ade00bc36529a with wine-2.4-55-g5b4f8a3 and WINEARCH=win32
+alldlls=builtin          Override most common DLLs to builtin 
+alldlls=default          Remove all DLL overrides 
+ao=disabled              Disable AlwaysOffscreen (default) 
+ao=enabled               Enable AlwaysOffscreen 
+bad                      Fake verb that always returns false 
+cfc=disable              Disable CheckFloatConstants (default) 
+cfc=enabled              Enable CheckFloatConstants 
+ddr=gdi                  Set DirectDrawRenderer to gdi 
+ddr=opengl               Set DirectDrawRenderer to opengl 
+fontfix                  Check for broken fonts 
+fontsmooth=bgr           Enable subpixel font smoothing for BGR LCDs 
+fontsmooth=disable       Disable font smoothing 
+fontsmooth=gray          Enable subpixel font smoothing 
+fontsmooth=rgb           Enable subpixel font smoothing for RGB LCDs 
+forcemono                Force using Mono instead of .NET (for debugging) 
+glsl=disabled            Disable GLSL shaders, use ARB shaders (faster, but sometimes breaks) 
+glsl=enabled             Enable GLSL shaders (default) 
+good                     Fake verb that always returns true 
+grabfullscreen=n         Disable cursor clipping for full-screen windows (default) 
+grabfullscreen=y         Force cursor clipping for full-screen windows (needed by some games) 
+gsm=0                    Set MaxShaderModelGS to 0 
+gsm=1                    Set MaxShaderModelGS to 1 
+gsm=2                    Set MaxShaderModelGS to 2 
+gsm=3                    Set MaxShaderModelGS to 3 
+heapcheck                Enable heap checking with GlobalFlag 
+hidewineexports=disable  Disable hiding Wine exports from applications (wine-staging) 
+hidewineexports=enable   Enable hiding Wine exports from applications (wine-staging) 
+hosts                    Add empty C:\windows\system32\drivers\etc\{hosts,services} files 
+macdriver=mac            Enable the Mac native Quartz driver (default) 
+macdriver=x11            Disable the Mac native Quartz driver, use X11 instead 
+multisampling=disabled   Disable Direct3D multisampling 
+multisampling=enabled    Enable Direct3D multisampling 
+mwo=disable              Set DirectInput MouseWarpOverride to disable 
+mwo=enabled              Set DirectInput MouseWarpOverride to enabled (default) 
+mwo=force                Set DirectInput MouseWarpOverride to force (needed by some games) 
+native_mdac              Override odbc32, odbccp32 and oledb32 
+native_oleaut32          Override oleaut32 
+nocrashdialog            Disable crash dialog 
+npm=repack               Set NonPower2Mode to repack 
+nt40                     Set windows version to Windows NT 4.0 
+orm=backbuffer           Set OffscreenRenderingMode=backbuffer 
+orm=fbo                  Set OffscreenRenderingMode=fbo (default) 
+psm=0                    Set MaxShaderModelPS to 0 
+psm=1                    Set MaxShaderModelPS to 1 
+psm=2                    Set MaxShaderModelPS to 2 
+psm=3                    Set MaxShaderModelPS to 3 
+remove_mono              Remove builtin wine-mono 
+rtlm=auto                Set RenderTargetLockMode to auto (default) 
+rtlm=disabled            Set RenderTargetLockMode to disabled 
+rtlm=readdraw            Set RenderTargetLockMode to readdraw 
+rtlm=readtex             Set RenderTargetLockMode to readtex 
+rtlm=texdraw             Set RenderTargetLockMode to texdraw 
+rtlm=textex              Set RenderTargetLockMode to textex 
+sandbox                  Sandbox the wineprefix - remove links to /home/austin 
+sound=alsa               Set sound driver to ALSA 
+sound=coreaudio          Set sound driver to Mac CoreAudio 
+sound=disabled           Set sound driver to disabled 
+sound=oss                Set sound driver to OSS 
+sound=pulse              Set sound driver to PulseAudio 
+strictdrawordering=disabled Disable StrictDrawOrdering (default) 
+strictdrawordering=enabled Enable StrictDrawOrdering 
+vd=1024x768              Enable virtual desktop, set size to 1024x768 
+vd=1280x1024             Enable virtual desktop, set size to 1280x1024 
+vd=1440x900              Enable virtual desktop, set size to 1440x900 
+vd=640x480               Enable virtual desktop, set size to 640x480 
+vd=800x600               Enable virtual desktop, set size to 800x600 
+vd=off                   Disable virtual desktop 
+videomemorysize=1024     Tell Wine your video card has 1024MB RAM 
+videomemorysize=2048     Tell Wine your video card has 2048MB RAM 
+videomemorysize=512      Tell Wine your video card has 512MB RAM 
+videomemorysize=default  Let Wine detect amount of video card memory 
+vista                    Set Windows version to Windows Vista 
+vsm=0                    Set MaxShaderModelVS to 0 
+vsm=1                    Set MaxShaderModelVS to 1 
+vsm=2                    Set MaxShaderModelVS to 2 
+vsm=3                    Set MaxShaderModelVS to 3 
+win10                    Set Windows version to Windows 10 
+win2k3                   Set Windows version to Windows 2003 
+win2k8                   Set Windows version to Windows 2008 R2 
+win2k                    Set Windows version to Windows 2000 
+win31                    Set Windows version to Windows 3.1 
+win7                     Set Windows version to Windows 7 
+win81                    Set Windows version to Windows 8.1 
+win8                     Set Windows version to Windows 8 
+win95                    Set Windows version to Windows 95 
+win98                    Set Windows version to Windows 98 
+windowmanagerdecorated=n Prevent the window manager from decorating windows 
+windowmanagerdecorated=y Allow the window manager to decorate windows (default) 
+windowmanagermanaged=n   Prevent the window manager from controling windows 
+windowmanagermanaged=y   Allow the window manager to control windows (default) 
+winver=                  Set Windows version to default (win7) 
+winxp                    Set Windows version to Windows XP 

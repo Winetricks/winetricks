@@ -15,6 +15,9 @@ set -e
 set -u
 set -x
 
+# Needed by the list commands below:
+export WINETRICKS_LATEST_VERSION_CHECK="development"
+
 if [ -z "$GITHUB_TOKEN" ] ; then
     echo "GITHUB_TOKEN must be set in the environment!"
     exit 1
@@ -43,7 +46,20 @@ sed -i -e "s%\\.TH.*%${line}%" src/winetricks.1
 # update LATEST (version) file
 echo "${version}" > files/LATEST
 
-git commit files/LATEST src/winetricks src/winetricks.1 -m "version bump - ${version}"
+# Update verb lists:
+# actual categories
+./src/winetricks apps list > files/verbs/apps.txt
+./src/winetricks benchmarks list > files/verbs/benchmarks.txt
+./src/winetricks dlls list > files/verbs/dlls.txt
+./src/winetricks games list > files/verbs/games.txt
+./src/winetricks settings list > files/verbs/settings.txt
+
+# meta categories
+./src/winetricks list-all > files/verbs/all.txt
+./src/winetricks list-download > files/verbs/download.txt
+./src/winetricks list-manual-download > files/verbs/manual-download.txt
+
+git commit files/LATEST files/verbs/*.txt src/winetricks src/winetricks.1 -m "version bump - ${version}"
 git tag -s -m "winetricks-${version}" "${version}"
 
 # update development version in winetricks

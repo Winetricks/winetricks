@@ -2897,6 +2897,9 @@ winetricks_latest_version_check()
     if [ "$WINETRICKS_LATEST_VERSION_CHECK" = 'disabled' ] || [ -f "${WINETRICKS_CONFIG}/disable-latest-version-check" ] ; then
         w_info "winetricks latest version check update disabled"
         return
+    # Used by ./src/release.sh, not for end users. Silently disables update check, without using $WINETRICKS_SUPER_QUIET
+    elif [ "$WINETRICKS_LATEST_VERSION_CHECK" = 'development' ] ; then
+        return
     fi
 
     latest_version="$(winetricks_dl_url_to_stdout https://raw.githubusercontent.com/Winetricks/winetricks/master/files/LATEST)"
