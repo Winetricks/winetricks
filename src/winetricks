@@ -17786,6 +17786,32 @@ load_cfc()
 {
     winetricks_set_wined3d_var CheckFloatConstants "$1"
 }
+#----------------------------------------------------------------
+# CSMT settings
+
+w_metadata csmt=on settings \
+    title="Enable Command Stream Multithreading"
+w_metadata csmt=off settings \
+    title="Disable Command Stream Multithreading (default)"
+
+load_csmt()
+{
+    case "$1" in
+        off) arg=0;;
+        on)  arg=1;;
+        *) w_die "illegal value $1 for csmt";;
+    esac
+
+    echo "Setting csmt to $arg"
+    cat > "$W_TMP"/set-csmt.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"csmt"="$arg"
+
+_EOF_
+    w_try_regedit "$W_TMP"/set-csmt.reg
+}
 
 #----------------------------------------------------------------
 # DirectDraw settings
