@@ -17810,7 +17810,7 @@ load_csmt()
 REGEDIT4
 
 [HKEY_CURRENT_USER\Software\Wine\Direct3D]
-"csmt"="$arg"
+"csmt"=dword:$arg
 
 _EOF_
     w_try_regedit "$W_TMP"/set-csmt.reg
