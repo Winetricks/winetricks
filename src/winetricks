@@ -1094,7 +1094,7 @@ w_download_to()
             w_die "Downloading $_W_url failed"
         fi
         # Download from the Wayback Machine on second try
-        _W_url="https://web.archive.org/web/$_W_url"
+        _W_url="https://web.archive.org/web/2000/$_W_url"
     done
 
     if test "$_W_sum" && test ! "$checksum_ok" ; then
