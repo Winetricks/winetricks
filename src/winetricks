@@ -18560,6 +18560,32 @@ load_bad()
     w_die "$W_PACKAGE failed!"
 }
 
+#----------------------------------------------------------------
+
+w_metadata csmt=enable settings \
+    title_uk="Ввімкнути CSMT (можливі графічні баги)" \
+    title="Enable CSMT (might cause graphical issues)"
+w_metadata csmt=disable settings \
+    title_uk="Вимкнути CSMT (за замовчуванням)" \
+    title="Disable CSMT (default)"
+
+load_csmt()
+{
+    case "$arg" in
+    enable) arg=00000001;;
+    disable) arg=00000000;;
+    esac
+
+    cat > "$W_TMP"/csmt.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"csmt"=dword:$arg
+
+_EOF_
+    w_try_regedit "$W_TMP"/csmt.reg
+}
+
 #---- Derived Metadata ----
 # Generated automatically by measuring time and space requirements of all verbs
 # size_MB includes size of virgin wineprefix, but not the cached installer
