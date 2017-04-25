@@ -8909,8 +8909,16 @@ load_vcrun2005()
     # https://support.microsoft.com/kb/2538242
     w_download https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x86.EXE 4ee4da0fe62d5fa1b5e80c6e6d88a4a2f8b3b140c35da51053d0d7b72a381d29
 
+    # For native to be used, msvc* dlls must either be set to native only, OR
+    # set to native, builtin and remove wine's builtin manifest. Removing the manifest
+    # Makes it harder for user to revert later, so use native only method.
+    # For more info, see:
+    # https://bugs.winehq.org/show_bug.cgi?id=28225
+    # https://bugs.winehq.org/show_bug.cgi?id=33604
+    # https://bugs.winehq.org/show_bug.cgi?id=42859
+    w_override_dlls native atl80 msvcm80 msvcp80 msvcr80 vcomp
+
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_override_dlls native,builtin atl80 msvcm80 msvcp80 msvcr80 vcomp
     w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_Q
 }
 
