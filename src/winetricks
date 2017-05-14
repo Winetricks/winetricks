@@ -5063,9 +5063,11 @@ helper_win2ksp4()
 {
     filename=$1
 
-    # https://www.microsoft.com/en-us/download/details.aspx?id=4127
-    w_download_to win2ksp4 https://download.microsoft.com/download/E/6/A/E6A04295-D2A8-40D0-A0C5-241BFECD095E/W2KSP4_EN.EXE 167bb78d4adc957cc39fb4902517e1f32b1e62092353be5f8fb9ee647642de7e
-    w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win2ksp4/W2KSP4_EN.EXE
+    # Originally at https://www.microsoft.com/en-us/download/details.aspx?id=4127
+    # Mirror list at http://www.filewatcher.com/m/w2ksp4_en.exe.135477136-0.html
+    # The rename from w2ksp4_en.exe to W2KSP4_EN.EXE avoids users having to redownload for a file rename
+    w_download_to win2ksp4 ftp://ftp.twaren.net/pub/cpatch/msupdate/win2000/en/w2ksp4_en.exe 167bb78d4adc957cc39fb4902517e1f32b1e62092353be5f8fb9ee647642de7e W2KSP4_EN.EXE
+    w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win2ksp4/w2ksp4_en.exe
 }
 
 # Filelist at ./misc/filelists/winxpsp3.txt
