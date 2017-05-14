@@ -5030,22 +5030,25 @@ helper_directx_Jun2010()
     DIRECTX_NAME=directx_Jun2010_redist.exe
 }
 
-# Filelist at ./misc/filelists/directx-feb2010.txt
+# Filelist at ./misc/filelists/directx-jun2010.txt
 helper_d3dx9_xx()
 {
     dllname=d3dx9_$1
 
-    helper_directx_dl
+    helper_directx_Jun2010
 
     # Even kinder, less invasive directx - only extract and override d3dx9_xx.dll
     w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
+
     for x in "$W_TMP"/*.cab
     do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
+
     if test "$W_ARCH" = "win64"
     then
         w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
+
         for x in "$W_TMP"/*x64.cab
         do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
@@ -5477,7 +5480,7 @@ w_metadata d3dx9_25 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_25.dll"
 
 load_d3dx9_25()
@@ -5492,7 +5495,7 @@ w_metadata d3dx9_26 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_26.dll"
 
 load_d3dx9_26()
@@ -5507,7 +5510,7 @@ w_metadata d3dx9_27 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_27.dll"
 
 load_d3dx9_27()
@@ -5522,7 +5525,7 @@ w_metadata d3dx9_28 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_28.dll"
 
 load_d3dx9_28()
@@ -5537,7 +5540,7 @@ w_metadata d3dx9_29 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_29.dll"
 
 load_d3dx9_29()
@@ -5552,7 +5555,7 @@ w_metadata d3dx9_30 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_30.dll"
 
 load_d3dx9_30()
@@ -5567,7 +5570,7 @@ w_metadata d3dx9_31 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_31.dll"
 
 load_d3dx9_31()
@@ -5582,7 +5585,7 @@ w_metadata d3dx9_32 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_32.dll"
 
 load_d3dx9_32()
@@ -5597,7 +5600,7 @@ w_metadata d3dx9_33 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_33.dll"
 
 load_d3dx9_33()
@@ -5612,7 +5615,7 @@ w_metadata d3dx9_34 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_34.dll"
 
 load_d3dx9_34()
@@ -5627,7 +5630,7 @@ w_metadata d3dx9_35 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_35.dll"
 
 load_d3dx9_35()
@@ -5642,7 +5645,7 @@ w_metadata d3dx9_36 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_36.dll"
 
 load_d3dx9_36()
@@ -5657,7 +5660,7 @@ w_metadata d3dx9_37 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_37.dll"
 
 load_d3dx9_37()
@@ -5672,7 +5675,7 @@ w_metadata d3dx9_38 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_38.dll"
 
 load_d3dx9_38()
@@ -5687,7 +5690,7 @@ w_metadata d3dx9_39 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_39.dll"
 
 load_d3dx9_39()
@@ -5702,7 +5705,7 @@ w_metadata d3dx9_40 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_40.dll"
 
 load_d3dx9_40()
@@ -5717,7 +5720,7 @@ w_metadata d3dx9_41 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_41.dll"
 
 load_d3dx9_41()
@@ -5732,7 +5735,7 @@ w_metadata d3dx9_42 dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3dx9_42.dll"
 
 load_d3dx9_42()
@@ -5752,25 +5755,7 @@ w_metadata d3dx9_43 dlls \
 
 load_d3dx9_43()
 {
-    dllname=d3dx9_43
-
-    helper_directx_Jun2010
-
-    w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
-      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
-    done
-    if test "$W_ARCH" = "win64"
-    then
-        w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
-            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
-        done
-    fi
-
-    w_override_dlls native $dllname
+    helper_d3dx9_xx 43
 }
 
 #----------------------------------------------------------------
