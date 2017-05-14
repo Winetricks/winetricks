@@ -9643,7 +9643,7 @@ w_metadata xinput dlls \
 
 load_xinput()
 {
-    helper_directx_dl
+    helper_directx_Jun2010
 
     w_try_cabextract -d "$W_TMP" -L -F '*_xinput_*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
     for x in "$W_TMP"/*.cab
