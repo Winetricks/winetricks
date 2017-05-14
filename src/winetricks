@@ -8435,23 +8435,25 @@ load_pngfilt()
 #----------------------------------------------------------------
 
 w_metadata qdvd dlls \
-    title="qdvd.dll (from DirectX 9 user redistributable)" \
+    title="qdvd.dll" \
     publisher="Microsoft" \
-    year="2010" \
+    year="2011" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/qdvd.dll"
 
 load_qdvd()
 {
-    helper_directx_dl
+    helper_win7sp1 x86_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_562994bd321aac67/qdvd.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_562994bd321aac67/qdvd.dll" "$W_SYSTEM32_DLLS/qdvd.dll"
 
-    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F qdvd.dll "$W_TMP/dxnt.cab"
+    if [ "$W_ARCH" = "win64" ]
+    then
+        helper_win7sp1_x64 amd64_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_b2483040ea781d9d/qdvd.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_b2483040ea781d9d/qdvd.dll" "$W_SYSTEM64_DLLS/qdvd.dll"
+    fi
 
-    w_try_regsvr qdvd.dll
-
-    w_override_dlls native qdvd
+    w_override_dlls native,builtin qdvd
 }
 
 #----------------------------------------------------------------
