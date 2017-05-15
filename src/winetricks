@@ -323,7 +323,7 @@ w_package_warn_win64()
 {
     if [ "$W_ARCH" = "win64" ]
     then
-        w_die "This package may not fully work on a 64-bit installation. 32-bit prefixes may work better."
+        w_warn "This package may not fully work on a 64-bit installation. 32-bit prefixes may work better."
     fi
 }
 
