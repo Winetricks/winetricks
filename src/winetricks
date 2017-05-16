@@ -5404,27 +5404,17 @@ load_comctl32()
 w_metadata comctl32ocx dlls \
     title="MS comctl32.ocx and mscomctl.ocx, comctl32 wrappers for VB6" \
     publisher="Microsoft" \
-    year="2009" \
+    year="2012" \
     media="download" \
-    file1="VisualBasic6-KB896559-v1-ENU.exe" \
-    file2="mscomct2.cab" \
+    file1="../vb6sp6/VB60SP6-KB2708437-x86-ENU.msi" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mscomctl.ocx"
 
 load_comctl32ocx()
 {
-    # https://www.microsoft.com/en-us/download/details.aspx?id=10019
-    w_download https://download.microsoft.com/download/3/a/5/3a5925ac-e779-4b1c-bb01-af67dc2f96fc/VisualBasic6-KB896559-v1-ENU.exe c4d43fe4aea782d7d6c08c038778fe3635c7bae1b93fb1a7740c6644aabf567e
-    # More ActiveX controls. See https://support.microsoft.com/kb/297381
-    w_download http://activex.microsoft.com/controls/vb6/mscomct2.cab a2efa44a8caff106c8101bd62eff8ed61732182afb8bc57e0ae563135acd2e13
+    helper_vb6sp6 "$W_SYSTEM32_DLLS" comctl32.ocx mscomctl.ocx mscomct2.ocx
 
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comctl32ocx/VisualBasic6-KB896559-v1-ENU.exe
-    w_try cp "$W_TMP"/mscomctl.ocx "$W_SYSTEM32_DLLS"/mscomctl.ocx
-    w_try cp "$W_TMP"/comctl32.ocx "$W_SYSTEM32_DLLS"/comctl32.ocx
     w_try_regsvr comctl32.ocx
     w_try_regsvr mscomctl.ocx
-
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/comctl32ocx/mscomct2.cab
-    w_try cp "$W_TMP"/mscomct2.ocx "$W_SYSTEM32_DLLS"/mscomct2.ocx
     w_try_regsvr mscomct2.ocx
 }
 
