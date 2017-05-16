@@ -8487,19 +8487,23 @@ load_openwatcom()
 w_metadata pdh dlls \
     title="MS pdh.dll (Performance Data Helper)" \
     publisher="Microsoft" \
-    year="2001" \
+    year="2011" \
     media="download" \
-    file1="pdhinst.exe" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/pdh.dll"
 
 load_pdh()
 {
-    # https://support.microsoft.com/kb/284996
-    w_download https://download.microsoft.com/download/platformsdk/Redist/5.0.2195.2668/NT4/EN-US/pdhinst.exe 5506e34930badec5c27d4c325462530e4b06a4a9797a8f70089b39013b5dffae
+    helper_win7sp1 x86_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_b5e3f88a8eb425e8/pdh.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_b5e3f88a8eb425e8/pdh.dll" "$W_SYSTEM32_DLLS/pdh.dll"
 
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/pdh/pdhinst.exe
-    w_try_unzip "$W_TMP" "$W_TMP"/pdh.exe
-    w_try cp -f "$W_TMP"/x86/Pdh.Dll "$W_SYSTEM32_DLLS"/pdh.dll
+    if [ "$W_ARCH" = "win64" ]
+    then
+        helper_win7sp1_x64 amd64_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_1202940e4711971e/pdh.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_1202940e4711971e/pdh.dll" "$W_SYSTEM64_DLLS/pdh.dll"
+    fi
+
+    w_override_dlls native,builtin pdh
 }
 
 #----------------------------------------------------------------
