@@ -4657,10 +4657,8 @@ winetricks_set_wineprefix()
     W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
     W_COMMONFILES_WIN="${W_COMMONFILES_WIN:-$W_COMMONFILES_X86_WIN}"
 
-    W_WINDIR_UNIX="$W_DRIVE_C/windows"
-
-    # FIXME: move that tr into w_pathconv, if it's still needed?
     W_PROGRAMS_UNIX="$(w_pathconv -u "$W_PROGRAMS_WIN")"
+    W_WINDIR_UNIX="$W_DRIVE_C/windows"
 
     # 64-bit Windows has a second directory for program files
     W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN} (x86)"
