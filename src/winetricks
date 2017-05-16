@@ -7553,7 +7553,7 @@ load_gmdls()
     w_try mv "$W_TMP"/gm16.dls "$W_SYSTEM32_DLLS"/drivers/gm.dls
     if test "$W_ARCH" = "win64"
     then
-        w_try w_try_cd "$W_SYSTEM64_DLLS"/drivers
+        w_try_cd "$W_SYSTEM64_DLLS"/drivers
         w_try ln -s ../../syswow64/drivers/gm.dls
     fi
 }
