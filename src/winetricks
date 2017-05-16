@@ -4652,10 +4652,14 @@ winetricks_set_wineprefix()
     esac
 
     W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles)"
+    W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
 
     # CommonProgramW6432 is only defined on win64, not win32 arches
-    W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
-    W_COMMONFILES_WIN="${W_COMMONFILES_WIN:-$W_COMMONFILES_X86_WIN}"
+    # win32: %CommonProgramW6432%
+    # win64: 'C:\Program Files\Common Files'
+    if [ -z "$W_COMMONFILES_WIN" ] || [ "$W_COMMONFILES_WIN" = "%CommonProgramW6432%" ] ; then
+        W_COMMONFILES_WIN="$W_COMMONFILES_X86_WIN"
+    fi
 
     W_PROGRAMS_UNIX="$(w_pathconv -u "$W_PROGRAMS_WIN")"
     W_WINDIR_UNIX="$W_DRIVE_C/windows"
