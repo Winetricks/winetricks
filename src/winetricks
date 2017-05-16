@@ -5423,17 +5423,15 @@ load_comctl32ocx()
 w_metadata comdlg32ocx dlls \
     title="Common Dialog ActiveX Control for VB6" \
     publisher="Microsoft" \
-    year="2009" \
+    year="2012" \
     media="download" \
-    file1="ComDlg32.cab" \
+    file1="../vb6sp6/VB60SP6-KB2708437-x86-ENU.msi" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/comdlg32.ocx"
 
 load_comdlg32ocx()
 {
-    # By analogy with vb5 version in https://support.microsoft.com/kb/168917
-    w_download http://activex.microsoft.com/controls/vb6/ComDlg32.cab 6a445b34a1a6a0ab302beb1663377d86203594ee83e4e4ee0b5d72aaf47cad97
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE/comdlg32ocx/${file1}"
-    w_try cp "$W_TMP"/comdlg32.ocx "$W_SYSTEM32_DLLS"/comdlg32.ocx
+    helper_vb6sp6 "$W_TMP" ComDlg32.ocx
+    w_try mv "$W_TMP/ComDlg32.ocx" "$W_SYSTEM32_DLLS/comdlg32.ocx"
     w_try_regsvr comdlg32.ocx
 }
 
