@@ -5165,6 +5165,19 @@ helper_d3dx9_xx()
     w_override_dlls native "$dllname"
 }
 
+# Filelist at ./misc/filelists/vb6sp6.txt
+helper_vb6sp6()
+{
+    # $1 - directory to extract to
+    # $2 .. $n - files to extract from the archive
+
+    destdir="$1"
+    shift
+
+    w_download_to vb6sp6 https://download.microsoft.com/download/5/6/3/5635D6A9-885E-4C80-A2E7-8A7F4488FBF1/VB60SP6-KB2708437-x86-ENU.msi 350602b2e084b39c97d1394c8594b18e41ef622315d4a9635c5e8ea6aa977b5e
+    w_try_7z "$destdir" "$W_CACHE"/vb6sp6/VB60SP6-KB2708437-x86-ENU.msi "$@"
+}
+
 # Filelist at ./misc/filelists/win2ksp4.txt
 helper_win2ksp4()
 {
