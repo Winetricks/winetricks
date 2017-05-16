@@ -11769,6 +11769,27 @@ load_sketchup()
 
 #----------------------------------------------------------------
 
+w_metadata songbird apps \
+    title="Songbird" \
+    publisher="POTI" \
+    year="2010" \
+    media="download" \
+    file1="Songbird_2.2.0-2453_windows-i686-msvc8.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Songbird/songbird.exe" \
+    homepage="http://filehippo.com/download_songbird/"
+
+load_songbird()
+{
+    w_download \
+        http://filehippo.com/download/file/19cf44e65c0070a8bc4e4d470a18965bc32c1023a7a066d677bf2054db5340f7/  \
+        5f9e95ea9015c485602add7b759c956088cae7f1 Songbird_2.2.0-2453_windows-i686-msvc8.exe
+    cd "$W_CACHE/songbird"
+    w_try "$WINE" $file1 ${W_OPT_UNATTENDED:+ /S}
+    w_declare_exe "$W_PROGRAMS_X86_WIN\\Songbird" songbird.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata steam apps \
     title="Steam" \
     publisher="Valve" \
