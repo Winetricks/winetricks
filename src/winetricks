@@ -8738,16 +8738,15 @@ load_riched30()
 w_metadata richtx32 dlls \
     title="MS Rich TextBox Control 6.0" \
     publisher="Microsoft" \
-    year="2009" \
+    year="2012" \
     media="download" \
-    file1="richtx32.cab" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/RichTx32.Ocx"
+    file1="../vb6sp6/VB60SP6-KB2708437-x86-ENU.msi" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/richtx32.ocx"
 
 load_richtx32()
 {
-    w_download http://activex.microsoft.com/controls/vb6/richtx32.cab bb75c45af3e7428f1ee5380d33175aa9f36a6a84f5a2d74927a1dbf0d4b7f938
-    w_try_cabextract "$W_CACHE"/richtx32/richtx32.cab -d "$W_SYSTEM32_DLLS" -F RichTx32.ocx
-    w_try_regsvr RichTx32.ocx
+    helper_vb6sp6 "$W_SYSTEM32_DLLS" richtx32.ocx
+    w_try_regsvr richtx32.ocx
 }
 
 #----------------------------------------------------------------
