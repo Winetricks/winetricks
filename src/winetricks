@@ -3004,7 +3004,7 @@ winetricks_latest_version_check()
     latest_version="$(winetricks_dl_url_to_stdout https://raw.githubusercontent.com/Winetricks/winetricks/master/files/LATEST)"
 
     # Check that $latest_version is an actual number in case github is down
-    if ! echo "${latest_version}" | grep -E "[0-9]{8}" || [ -z "${latest_version}" ] ; then
+    if ! echo "${latest_version}" | grep -q -E "[0-9]{8}" || [ -z "${latest_version}" ] ; then
         w_warn "Github down? version '${latest_version}' doesn't appear to be a valid version"
     fi
 
