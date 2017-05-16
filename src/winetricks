@@ -8103,21 +8103,16 @@ load_msdxmocx()
 w_metadata msflxgrd dlls \
     title="MS FlexGrid Control (msflxgrd.ocx)" \
     publisher="Microsoft" \
-    year="2009" \
+    year="2012" \
     media="download" \
-    file1="MsFlxGrd.cab" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/MSFLXGRD.OCX"
+    file1="../vb6sp6/VB60SP6-KB2708437-x86-ENU.msi" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msflxgrd.ocx"
 
 load_msflxgrd()
 {
-    # https://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
-    # 2015/11/09: Removed from Microsoft.com, archive.org has an older copy:
-    # 2015/11/09: a0d374293ab9556a6eb7705efbca533ad8f20e6b9cb55f14f1ec5bb55552ec8d
-    w_download http://activex.microsoft.com/controls/vb6/MsFlxGrd.cab a0d374293ab9556a6eb7705efbca533ad8f20e6b9cb55f14f1ec5bb55552ec8d
-
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE/msflxgrd/${file1}"
-    w_try cp -f "$W_TMP"/[Mm][Ss][Ff][Ll][Xx][Gg][Rr][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
-    w_try_regsvr MSFLXGRD.OCX
+    helper_vb6sp6 "$W_TMP" MSFlxGrd.ocx
+    w_try mv "${W_TMP}/MSFlxGrd.ocx" "$W_SYSTEM32_DLLS/msflxgrd.ocx"
+    w_try_regsvr msflxgrd.ocx
 }
 
 #----------------------------------------------------------------
