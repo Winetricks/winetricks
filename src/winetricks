@@ -8897,20 +8897,24 @@ load_updspapi()
 #----------------------------------------------------------------
 
 w_metadata usp10 dlls \
-    title="Uniscribe 1.325 " \
+    title="Uniscribe" \
     publisher="Microsoft" \
-    year="2001" \
+    year="2011" \
     media="download" \
-    file1="../msi2/InstMsiA.exe" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/usp10.dll"
 
 load_usp10()
 {
-    # https://en.wikipedia.org/wiki/Uniscribe
-    # https://www.microsoft.com/en-us/download/details.aspx?id=21990
-    w_download_to msi2 https://download.microsoft.com/download/WindowsInstaller/Install/2.0/W9XMe/EN-US/InstMsiA.exe 536e4c8385d7d250fd5702a6868d1ed004692136eefad22252d0dac15f02563a
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msi2/InstMsiA.exe
-    w_try cp -f "$W_TMP"/usp10.dll "$W_SYSTEM32_DLLS"
+    helper_win7sp1 x86_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_af01e2f9b6be7939/usp10.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_af01e2f9b6be7939/usp10.dll" "$W_SYSTEM32_DLLS/usp10.dll"
+
+    if [ "$W_ARCH" = "win64" ]
+    then
+        helper_win7sp1_x64 amd64_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_0b207e7d6f1bea6f/usp10.dll
+        w_try "$W_TMP/amd64_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_0b207e7d6f1bea6f/usp10.dll" "$W_SYSTEM64_DLLS/usp10.dll"
+    fi
+
     w_override_dlls native,builtin usp10
 }
 
