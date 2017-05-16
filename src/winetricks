@@ -8852,19 +8852,15 @@ load_speechsdk()
 w_metadata tabctl32 dlls \
     title="Microsoft Tabbed Dialog Control 6.0 (tabctl32.ocx)" \
     publisher="Microsoft" \
-    year="2009" \
+    year="2012" \
     media="download" \
-    file1="TABCTL32.CAB" \
+    file1="../vb6sp6/VB60SP6-KB2708437-x86-ENU.msi" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/tabctl32.ocx"
 
 load_tabctl32()
 {
-    # https://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
-    # 2012/11: tabctl32
-    w_download http://activex.microsoft.com/controls/vb6/TABCTL32.CAB d2a7bdacf74de95146384578d0f08ccefb2defb0081b3d42d34fdcee7ea4cc68
-
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE/tabctl32/${file1}"
-    w_try cp -f "$W_TMP"/[Tt][Aa][Bb][Cc][Tt][Ll][3][2].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
+    helper_vb6sp6 "$W_TMP" TabCtl32.ocx
+    w_try mv "${W_TMP}/TabCtl32.ocx" "$W_SYSTEM32_DLLS/tabctl32.ocx"
     w_try_regsvr tabctl32.ocx
 }
 
