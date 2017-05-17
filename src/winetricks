@@ -8737,7 +8737,7 @@ load_riched30()
     # with sha256sum 536e4c8385d7d250fd5702a6868d1ed004692136eefad22252d0dac15f02563a
     # Mirror list at http://www.filewatcher.com/m/InstMsiA.Exe.1707856-0.html
     # But they all have a different sha256sum, 5ab8b82f578f09dbccf797754155e531b5996b532c1f19c531596ec07cc4b46d
-    w_download ftp://ftp.vim.org/vol/2/linux-asp/i386/beta/cpe/b29/Changed_Components/win/InstMsiA.Exe 5ab8b82f578f09dbccf797754155e531b5996b532c1f19c531596ec07cc4b46d
+    w_download ftp://ftp.vim.org/vol/2/linux-asp/i386/beta/cpe/b29/Changed_Components/win/InstMsiA.Exe 5ab8b82f578f09dbccf797754155e531b5996b532c1f19c531596ec07cc4b46d InstMsiA.exe
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/riched30/InstMsiA.exe
     w_try cp -f "$W_TMP"/riched20.dll "$W_SYSTEM32_DLLS"
