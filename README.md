@@ -45,7 +45,7 @@ Makefile supports a few test targets:
 * If winetricks has helped you out, then please consider donating to the FSF/EFF as a thank you:
   * EFF - https://supporters.eff.org/donate/button
   * FSF - https://my.fsf.org/donate
-* Donations towards electricity bill and developer beer fund can be sent via Paypal to above address.
+* Donations towards electricity bill and developer beer fund can be sent via Bitcoin to 18euSAZztpZ9wcN6xZS3vtNnE1azf8niDk
 * I try to actively respond to bugs and pull requests on GitHub:
 * Bugs: https://github.com/Winetricks/winetricks/issues/new
 * Pull Requests: https://github.com/Winetricks/winetricks/pulls
