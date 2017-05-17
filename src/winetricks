@@ -6204,6 +6204,7 @@ load_directx9()
     # list down as soon as we can.
 
     # Setting Windows version to win2k apparently crashes the installer on OS X.
+    # FIXME: seems this didn't get migrated to Github?
     # See https://code.google.com/p/winezeug/issues/detail?id=71
     w_set_winver winxp
 
@@ -8706,7 +8707,7 @@ load_riched20()
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/riched20.dl_
     w_override_dlls native,builtin riched20
 
-    # https://code.google.com/p/winetricks/issues/detail?id=292
+    # https://github.com/Winetricks/winetricks/issues/292
     w_call msls31
 }
 
@@ -11019,6 +11020,7 @@ load_ie6()
     w_set_winver win2k
 
     # Workaround https://bugs.winehq.org/show_bug.cgi?id=21009
+    # FIXME: seems this didn't get migrated to Github?
     # See also https://code.google.com/p/winezeug/issues/detail?id=78
     rm -f "$W_SYSTEM32_DLLS"/browseui.dll "$W_SYSTEM32_DLLS"/inseng.dll
 
@@ -19267,7 +19269,7 @@ execute_command()
 
     # Hard-coded verbs
     main) WINETRICKS_CURMENU=main ;;
-    help) w_open_webpage https://code.google.com/archive/p/winetricks/wikis ;;
+    help) w_open_webpage https://github.com/Winetricks/winetricks/wiki ;;
     list) winetricks_list_all ;;
     list-cached) winetricks_list_cached ;;
     list-download) winetricks_list_download ;;
