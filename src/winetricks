@@ -15245,11 +15245,13 @@ w_metadata ie8 dlls \
 
 load_ie8()
 {
-    # Installer itself bails out
-    w_package_unsupported_win64
-
-    # Bundled in Windows 7, so refuses to install. Works with XP:
-    w_set_winver winxp
+    if [ "${W_ARCH}" = "win32" ]; then
+        # Bundled in Windows 7, so refuses to install. Works with XP:
+        w_set_winver winxp
+    else
+        # Bundled in Windows 7, so refuses to install. Works with Win2003:
+        w_set_winver win2k3
+    fi
 
     # Unregister Wine IE
     #if [ ! -f "$W_SYSTEM32_DLLS"/plugin.ocx ]; then
@@ -15274,9 +15276,19 @@ load_ie8()
         w_try mv "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe" "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe.bak"
     fi
 
+    if [ "${W_ARCH}" = "win64" ]; then
+        if [ -f "${W_PROGRAMS_UNIX}/Internet Explorer/iexplore.exe" ]; then
+            w_try mv "${W_PROGRAMS_UNIX}/Internet Explorer/iexplore.exe" "${W_PROGRAMS_UNIX}/Internet Explorer/iexplore.exe.bak"
+        fi
+    fi
+
     for dll in browseui inseng itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon; do
         test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
             w_try mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak
+        if [ "${W_ARCH}" = "win64" ]; then
+            test -f "${W_SYSTEM64_DLLS}"/${dll}.dll &&
+                w_try mv "${W_SYSTEM64_DLLS}"/${dll}.dll "${W_SYSTEM64_DLLS}"/${dll}.dll.bak
+        fi
     done
 
     # See https://bugs.winehq.org/show_bug.cgi?id=16013
@@ -15287,7 +15299,11 @@ load_ie8()
     mkdir -p "${W_SYSTEM32_DLLS}"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
     w_try cp -f "${W_CACHE}"/ie8/winetest.cat "${W_SYSTEM32_DLLS}"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
-    w_download https://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe 5a2c6c82774bfe99b175f50a05b05bcd1fac7e9d0e54db2534049209f50cd6ef
+    if [ "${W_ARCH}" = "win32" ]; then
+        w_download https://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe 5a2c6c82774bfe99b175f50a05b05bcd1fac7e9d0e54db2534049209f50cd6ef
+    else
+        w_download https://download.microsoft.com/download/7/5/4/754D6601-662D-4E39-9788-6F90D8E5C097/IE8-WindowsServer2003-x64-ENU.exe bcff753e92ceabf31cfefaa6def146335c7cb27a50b95cd4f4658a0c3326f499
+    fi
 
     # KLUDGE: if / is writable (as on OS X?), having a Z: mapping to it
     # causes ie7 to put temporary directories on Z:\.
@@ -15303,7 +15319,11 @@ load_ie8()
     # FIXME: There's an option for /updates-noupdates to disable checking for updates, but that
     # forces the install to fail on Wine. Not sure if it's an IE8 or Wine bug...
     # FIXME: can't check status, as it always reports failure on wine?
-    "${WINE}" IE8-WindowsXP-x86-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
+    if [ "${W_ARCH}" = "win32" ]; then
+        "${WINE}" IE8-WindowsXP-x86-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
+    else
+        "${WINE}" IE8-WindowsServer2003-x64-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
+    fi
 
     if [ "${_W_restore_z}" = 1 ]; then
         # END KLUDGE: restore Z:, assuming that the user didn't kill us
@@ -15312,7 +15332,6 @@ load_ie8()
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
     # FIXME: whittle down this list
-    w_try_cd "${W_SYSTEM32_DLLS}"
     for i in actxprxy.dll browseui.dll browsewm.dll cdfview.dll ddraw.dll \
         dispex.dll dsound.dll iedkcs32.dll iepeers.dll iesetup.dll \
         imgutil.dll inetcomm.dll isetup.dll jscript.dll laprxy.dll \
@@ -15324,6 +15343,9 @@ load_ie8()
         wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
         plugin.ocx proctexe.ocx tdc.ocx uxtheme.dll webcheck.dll wshom.ocx; do
         "${WINE}" regsvr32 /i ${i} > /dev/null 2>&1
+        if [ "${W_ARCH}" = "win64" ]; then
+            "${WINE64}" regsvr32 /i ${i} > /dev/null 2>&1
+        fi
     done
 
     if w_workaround_wine_bug 25648 "Setting TabProcGrowth=0 to avoid hang"; then
@@ -15342,6 +15364,9 @@ _EOF_
     # native doesn't help because setupapi ignores DLL overrides. To work
     # around this problem, copy native ieproxy to system32.
     w_try cp -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/ieproxy.dll" "${W_SYSTEM32_DLLS}"
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try cp -f "${W_PROGRAMS_UNIX}/Internet Explorer/ieproxy.dll" "${W_SYSTEM64_DLLS}"
+    fi
 
     # Seeing is believing
     case ${WINETRICKS_GUI} in
