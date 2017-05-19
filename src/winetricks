@@ -200,6 +200,7 @@ w_askpermission()
     then
         case $LANG in
         uk*) w_die "Операція скасована." ;;
+        pl*) w_die "Anulowano operację, opuszczanie." ;;
         *) w_die "Operation cancelled, quitting." ;;
         esac
         exec false
@@ -2929,6 +2930,7 @@ winetricks_dl_url_to_stdout()
 winetricks_dl_warning() {
     case $LANG in
         ru*) _W_countrymsg="Скрипт определил, что ваш IP адрес принадлежит России. Если во время загрузки файлов вы увидите ошибки несоответствия сертификата, перезапустите скрипт с опцией '--torify' или скачайте файлы вручную, например, используя VPN." ;;
+        pl*) _W_countrymsg="Wykryto, że twój adres IP należy do Rosji. W wypadku problemów z pobieraniem, uruchom z parametrem '--torify' lub pobierz plik manualnie, np. z użyciem VPN." ;;
         *)  _W_countrymsg="Your IP address has been determined to belong to Russia. If you encounter a certificate error while downloading, please relaunch with the '--torify' option, or download files manually, for instance using VPN." ;;
     esac
 
@@ -3175,6 +3177,18 @@ winetricks_prefixmenu()
          _W_msg_showbroken1="Defekte Programme anzeigen (z.B. solche mit DRM Problemen)"
          _W_msg_help="Hilfe anzeigen"
          ;;
+    pl*) _W_msg_title="Winetricks - wybierz prefiks Wine"
+         _W_msg_body='Co chcesz zrobić?'
+         _W_msg_apps='Zainstalować aplikację'
+         _W_msg_games='Zainstalować grę'
+         _W_msg_benchmarks='Zainstalować program sprawdzający wydajność komputera'
+         _W_msg_default="Wybrać domyślny prefiks Wine"
+         _W_msg_unattended0="Wyłącz cichą instalację"
+         _W_msg_unattended1="Włącz cichą instalację"
+         _W_msg_showbroken0="Ukrywaj uszkodzone aplikacje (np. z problemami z DRM)"
+         _W_msg_showbroken1="Pokazuj uszkodzone aplikacje (np. z problemami z DRM)"
+         _W_msg_help="Wyświetl pomoc"
+         ;;
     *)   _W_msg_title="Winetricks - choose a wineprefix"
          _W_msg_body='What do you want to do?'
          _W_msg_apps='Install an application'
@@ -3234,6 +3248,7 @@ winetricks_prefixmenu()
             zh_CN*) printf %s " FALSE prefix='$p' '选择管理 $_W_msg_name' " ;;
             zh_TW*|zh_HK*) printf %s " FALSE prefix='$p' '選擇管理 $_W_msg_name' " ;;
             de*) printf %s " FALSE prefix='$p' '$_W_msg_name auswählen' " ;;
+            pl*) printf %s " FALSE prefix='$p' 'Wybierz $_W_msg_name' " ;;
             *) printf %s " FALSE prefix='$p' 'Select $_W_msg_name' " ;;
             esac
             done >> "$WINETRICKS_WORKDIR"/zenity.sh
@@ -3309,17 +3324,17 @@ winetricks_mainmenu()
          _W_msg_annihilate="ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen"
          ;;
     pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
-         _W_msg_body='What would you like to do to this wineprefix?'
-         _W_msg_dlls="Zainstaluj Windowsową bibliotekę DLL lub komponent"
-         _W_msg_fonts='Zainstaluj czcionkę'
-         _W_msg_settings='Zmień ustawienia'
-         _W_msg_winecfg='Uruchom winecfg'
-         _W_msg_regedit='Uruchom regedit'
-         _W_msg_taskmgr='Uruchom taskmgr'
-         _W_msg_uninstaller='Run uninstaller'
-         _W_msg_shell='Uruchom powłokę wiersza poleceń (dla debugowania)'
-         _W_msg_folder='Przeglądaj pliki'
-         _W_msg_annihilate="Usuń WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO WINEPREFIXA"
+         _W_msg_body='Co chcesz zrobić w tym prefiksie?'
+         _W_msg_dlls="Zainstalować windowsową bibliotekę DLL lub komponent"
+         _W_msg_fonts='Zainstalować czcionkę'
+         _W_msg_settings='Zmienić ustawienia'
+         _W_msg_winecfg='Uruchomić winecfg'
+         _W_msg_regedit='Uruchomić edytor rejestru'
+         _W_msg_taskmgr='Uruchomić menedżer zadań'
+         _W_msg_uninstaller='Uruchomić program odinstalowujący'
+         _W_msg_shell='Uruchomić powłokę wiersza poleceń (dla debugowania)'
+         _W_msg_folder='Przeglądać pliki'
+         _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
          ;;
     ru*) _W_msg_title="Winetricks - текущий путь для wine (wineprefix) \"$WINEPREFIX\""
          _W_msg_body='Что вы хотите сделать с этим wineprefix?'
@@ -3451,7 +3466,7 @@ winetricks_settings_menu()
          _W_msg_body='Welche Einstellungen möchten Sie ändern?'
          ;;
     pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
-         _W_msg_body='Which settings would you like to change?'
+         _W_msg_body='Jakie ustawienia chcesz zmienić?'
          ;;
     ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"$WINEPREFIX\""
          _W_msg_body='Какие настройки вы хотите изменить?'
@@ -3692,7 +3707,7 @@ winetricks_showmenu()
                 --list \
                 --checklist \
                 --column '' \
-                --column Paczka \
+                --column Pakiet \
                 --column Nazwa \
                 --column Wydawca \
                 --column Rok \
@@ -4276,7 +4291,7 @@ winetricks_cache_iso()
             case $LANG in
             da*)  w_warn "Forkert disk [$_W_volname] indsat. Indsæt venligst disken [$_W_expected_volname]" ;;
             de*)  w_warn "Falsche Disk [$_W_volname] eingelegt. Bitte legen Sie Disk [$_W_expected_volname] ein!" ;;
-            pl*)  w_warn "Włożono zły dysk [$_W_volname]. Proszę włożyć dysk [$_W_expected_volname]" ;;
+            pl*)  w_warn "Umieszczono zły dysk [$_W_volname]. Proszę włożyć dysk [$_W_expected_volname]" ;;
             ru*)  w_warn "Неверный диск [$_W_volname]. Пожалуйста, вставьте диск [$_W_expected_volname]" ;;
             uk*)  w_warn "Неправильний диск [$_W_volname]. Будь ласка, вставте диск [$_W_expected_volname]" ;;
             zh_CN*)    w_warn " [$_W_volname] 光盘插入错误，请插入光盘 [$_W_expected_volname]" ;;
@@ -4725,6 +4740,7 @@ winetricks_annihilate_wineprefix()
 
     case $LANG in
     uk*) w_askpermission "Бажаєте видалити '$WINEPREFIX'?" ;;
+    pl*) w_askpermission "Czy na pewno chcesz usunąć prefiks $WINEPREFIX i wszystkie jego elementy?" ;;
     *) w_askpermission "Delete $WINEPREFIX, its apps, icons, and menu items?" ;;
     esac
     rm -rf "$WINEPREFIX"
@@ -19121,6 +19137,12 @@ winetricks_stats_init()
                 question="Möchten Sie die Winetricks Entwicklung unterstützen indem Sie Winetricks Statistiken übermitteln lassen?  Sie können die Übermittlung jederzeit mit 'winetricks --optout' ausschalten"
                 thanks="Danke! Sie bekommen diese Frage nicht mehr gestellt.  Sie können die Übermittlung jederzeit mit 'winetricks --optout' wieder ausschalten"
                 declined="OK, Winetricks wird *keine* Statistiken übermitteln.  Sie bekommen diese Frage nicht mehr gestellt."
+                ;;
+            pl*)
+                title="Jednorazowe pytanie dotyczące pomocy w rozwoju Winetricks"
+                question="Czy chcesz pomóc w rozwoju Winetricks pozwalając na wysyłanie statystyk przez program? Możesz wyłączyć tą opcję w każdej chwili z użyciem komendy 'winetricks --optout'."
+                thanks="Dziękujemy!  Nie otrzymasz już tego pytania.  Pamiętaj, ze możesz wyłączyć tą opcję komendą 'winetricks --optout'"
+                declined="OK, Winetricks *nie* będzie wysyłać statystyk.  Nie otrzymasz już tego pytania."
                 ;;
             *)
                 title="One-time question about helping Winetricks development"
