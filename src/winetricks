@@ -8796,16 +8796,22 @@ load_sdl()
 w_metadata secur32 dlls \
     title="MS Security Support Provider Interface" \
     publisher="Microsoft" \
-    year="2009" \
+    year="2011" \
     media="download" \
-    file1="Windows2000-KB959426-x86-ENU.EXE" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/secur32.dll"
 
 load_secur32()
 {
-    # https://www.microsoft.com/en-us/download/details.aspx?id=12784
-    w_download https://download.microsoft.com/download/6/9/5/69501788-B62F-44D8-933F-B6FAA576CA87/Windows2000-KB959426-x86-ENU.EXE a150e8b8fc68164eed18f214ee0726d9b7eb6c4726aab91decd12627b045d68b
-    w_try_cabextract "$W_CACHE"/secur32/Windows2000-KB959426-x86-ENU.EXE -d "$W_SYSTEM32_DLLS" -F secur32.dll
+    helper_win7sp1 x86_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_a851f4adbb0d5141/secur32.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_a851f4adbb0d5141/secur32.dll" "$W_SYSTEM32_DLLS/secur32.dll"
+
+    if [ "$W_ARCH" = "win64" ]
+    then
+        helper_win7sp1_x64 amd64_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_04709031736ac277/secur32.dll
+        w_try "$W_TMP/amd64_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_04709031736ac277/secur32.dll" "$W_SYSTEM64_DLLS/secur32.dll"
+    fi
+
     w_override_dlls native,builtin secur32
 }
 
