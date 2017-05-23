@@ -8143,21 +8143,16 @@ load_msflxgrd()
 w_metadata mshflxgd dlls \
     title="MS Hierarchical FlexGrid Control (mshflxgd.ocx)" \
     publisher="Microsoft" \
-    year="2009" \
+    year="2012" \
     media="download" \
-    file1="MSHFLXGD.CAB" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/MSHFLXGD.OCX"
+    file1="../vb6sp6/VB60SP6-KB2708437-x86-ENU.msi" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mshflxgd.ocx"
 
 load_mshflxgd()
 {
-    # https://msdn.microsoft.com/en-us/library/aa240864(VS.60).aspx
-    # 2015/11/09: Removed from Microsoft.com, archive.org has the original copy: ccff83fd24a0e6d7611050c8cafcb1aede608b6a3d096fb7476ce302e569479a
-
-    w_download http://activex.microsoft.com/controls/vb6/MSHFLXGD.CAB ccff83fd24a0e6d7611050c8cafcb1aede608b6a3d096fb7476ce302e569479a
-
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/mshflxgd/MSHFLXGD.CAB
-    w_try cp -f "$W_TMP"/[Mm][Ss][Hh][Ff][Ll][Xx][Gg][Dd].[Oo][Cc][Xx] "$W_SYSTEM32_DLLS"
-    w_try_regsvr MSHFLXGD.OCX
+    helper_vb6sp6 "$W_TMP" MShflxgd.ocx
+    w_try mv "${W_TMP}/MShflxgd.ocx" "$W_SYSTEM32_DLLS/mshflxgd.ocx"
+    w_try_regsvr mshflxgd.ocx
 }
 
 #----------------------------------------------------------------
