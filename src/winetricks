@@ -10413,19 +10413,20 @@ w_metadata tahoma fonts \
 
 load_tahoma()
 {
-    # The tahoma and tahomabd fonts are needed by e.g. Steam
+    # Formerly at https://download.microsoft.com/download/office97pro/fonts/1/w95/en-us/tahoma32.exe
+    # Mirror list: http://www.filewatcher.com/_/?q=tahoma32.exe
+    w_download ftp://ftp.uevora.pt/pub/windows/Microsoft/Euro/Euro-Compatible%20Tahoma%20Font/tahoma32.exe 57496fb91d1629d2b6f313aaa6ebcdbcfd09c269b6462fe490420c786c089a40
 
-    w_download https://download.microsoft.com/download/office97pro/fonts/1/w95/en-us/tahoma32.exe 57496fb91d1629d2b6f313aaa6ebcdbcfd09c269b6462fe490420c786c089a40
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/tahoma/tahoma32.exe
-    w_try cp -f "$W_TMP"/Tahoma.TTF "$W_FONTSDIR_UNIX"/tahoma.ttf
-    w_try cp -f "$W_TMP"/Tahomabd.TTF "$W_FONTSDIR_UNIX"/tahomabd.ttf
+    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
+    w_try cp -f "${W_TMP}/Tahoma.TTF" "${W_FONTSDIR_UNIX}/tahoma.ttf"
+    w_try cp -f "${W_TMP}/Tahomabd.TTF" "${W_FONTSDIR_UNIX}/tahomabd.ttf"
 
-    # FIXME:  Wine seems to nuke the registry entries for Tahoma.  Why?  Font Xplorer always lists it as 'not installed'.
+    # FIXME: Wine seems to nuke the registry entries for Tahoma. Why? Font Xplorer always lists it as 'not installed'.
     w_register_font tahoma.ttf "Tahoma"
     w_register_font tahomabd.ttf "Tahoma Bold"
 
-    # ? does some app assume it can overwrite these, or is this a leftover from before we had install checks?
-    chmod +w "$W_FONTSDIR_UNIX"/tahoma*.ttf
+    # FIXME: ? does some app assume it can overwrite these, or is this a leftover from before we had install checks?
+    chmod +w "${W_FONTSDIR_UNIX}"/tahoma*.ttf
 }
 
 #----------------------------------------------------------------
