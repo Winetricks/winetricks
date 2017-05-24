@@ -7717,6 +7717,60 @@ load_icodecs()
     # https://support.britannica.com/other/touchthesky/win/issues/TSTUw_150.htm
     # https://appdb.winehq.org/objectManager.php?sClass=version&iId=7091
     w_try_regsvr ir50_32.dll
+
+    # Apparently some codecs are missing, see https://github.com/Winetricks/winetricks/issues/302
+    # Download at https://www.moviecodec.com/download-codec-packs/indeo-codecs-legacy-package-31/
+    w_download http://s3.amazonaws.com/moviecodec/files/iv5setup.exe 51bec25488b5b94eb3ce49b0a117618c9526161fd0753817a7a724ce25ff0cad
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run iv5setup.exe
+        winwait, InstallShield Wizard
+        if ( w_opt_unattended > 0 ) {
+            sleep 1000
+            controlclick, Button2  ; Next
+            winwait, Welcome
+            controlclick, Button1  ; Next
+            winwait, Software License Agreement
+            sleep 1000
+            controlclick, Button2  ; Yes
+            winwait, Choose Destination
+            sleep 1000
+            controlclick, Button1  ; Next
+            winwait, Setup Type
+            sleep 1000
+            controlclick, ListBox1  ; Next
+            sleep 1000
+            Send C ; Custom
+            sleep 1000
+            controlclick, Button2  ; Next
+            winwait, Select Components
+            controlclick, ISAVIEWCMPTCLASS1 ; Component Selection
+            Send {Home}
+            Send {Down}  ;
+            Send {Down}  ; IV5 Directshow plugin (gives error about missing Ivfsrc.ax)
+            Send {Space} ; Disable it (directshow plugin)
+            Send {End}   ; Web browser (Netscape) plugin
+            sleep 1000
+            Send {Space} ; Disable it (web plugin)
+            sleep 1000
+            controlclick, Button3  ; Next
+            winwait, Question
+            sleep 1000
+            controlclick, Button2  ; No
+            winwait, Start Copying Files
+            sleep 1000
+            controlclick, Button1  ; No
+        }
+        winwait, Setup Complete
+        if ( w_opt_unattended > 0 ) {
+            sleep 1000
+            controlclick, Button4  ; Finish
+        }
+        winwaitclose
+        ; Dangling explorer window
+        winclose, Wine Explorer
+    "
 }
 
 #----------------------------------------------------------------
