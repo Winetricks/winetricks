@@ -7769,6 +7769,8 @@ load_icodecs()
         }
         winwaitclose
         ; Dangling explorer window
+        winwait, Wine Explorer
+        sleep 1000
         winclose, Wine Explorer
     "
 }
