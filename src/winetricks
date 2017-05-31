@@ -17787,42 +17787,6 @@ load_wog()
 }
 
 #----------------------------------------------------------------
-
-w_metadata zootycoon2_demo games \
-    title="Zoo Tycoon 2 demo" \
-    publisher="Microsoft" \
-    year="2004" \
-    media="download" \
-    file1="Zoo2Trial.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Zoo Tycoon 2 Trial Version/zt2demoretail.exe"
-
-load_zootycoon2_demo()
-{
-    w_download "https://download.microsoft.com/download/9/f/6/9f6a95f0-f34a-4312-9749-77b81d3de245/Zoo2Trial.exe" d50e9c8bd8fd70d920f312dbe1b520688a5c6ae1352a6cbf2cfa5fc2036d0c5d
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        ; Uses winwaitactive, because the windows appear and immediately after another window
-        ; gets in the way, then disappears after a second or so
-        SetTitleMatchMode, 2
-        run Zoo2Trial.exe
-        winwaitclose, APPMESSAGE
-        winwaitactive, Zoo Tycoon 2 Trial, AUTORUN
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            controlclick, CButtonClassName1, Zoo Tycoon 2 Trial, AUTORUN
-            winwaitclose, APPMESSAGE
-            winwaitactive, Zoo Tycoon 2 Trial, INSTALLTYPE
-            ; 1 second was not enough.
-            sleep 3000
-            controlclick, CButtonClassName1, Zoo Tycoon 2 Trial, INSTALLTYPE
-        }
-        winwaitactive, Zoo Tycoon 2 Trial, COMPLETE
-        winclose, Zoo Tycoon 2 Trial, COMPLETE
-        "
-}
-
-#----------------------------------------------------------------
 # Gog.com games
 #----------------------------------------------------------------
 
