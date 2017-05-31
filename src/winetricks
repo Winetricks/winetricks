@@ -7923,10 +7923,7 @@ w_metadata mdac27 dlls \
 
 load_mdac27()
 {
-    if test $W_ARCH = win64
-    then
-        w_die "Installer doesn't support 64-bit architecture."
-    fi
+    w_package_unsupported_win64
 
     # https://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
     # Originally at: https://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe
@@ -9702,10 +9699,7 @@ w_metadata wmi dlls \
 
 load_wmi()
 {
-    if test $W_ARCH = win64
-    then
-        w_die "Installer doesn't support 64-bit architecture."
-    fi
+    w_package_unsupported_win64
 
     # WMI for NT4.0 need validation: https://www.microsoft.com/en-us/download/details.aspx?id=7665
     # See also https://www.microsoft.com/en-us/download/details.aspx?id=16510
@@ -11766,10 +11760,7 @@ w_metadata psdk2003 apps \
 
 load_psdk2003()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "Installer doesn't support 64-bit architecture."
-    fi
+    w_package_unsupported_win64
 
     w_call mfc42
 
@@ -12399,10 +12390,7 @@ w_metadata wme9 apps \
 
 load_wme9()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "Installer doesn't support 64-bit architecture."
-    fi
+    w_package_unsupported_win64
 
     # See also https://www.microsoft.com/en-us/download/details.aspx?id=17792
     # Formerly at: https://download.microsoft.com/download/8/1/f/81f9402f-efdd-439d-b2a4-089563199d47/WMEncoder.exe
@@ -12444,10 +12432,7 @@ load_wmp9()
     # Not really expected to work well yet; see
     # https://appdb.winehq.org/appview.php?versionId=1449
 
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "Installer doesn't support 64-bit architecture."
-    fi
+    w_package_unsupported_win64
 
     w_call wsh57
 
@@ -12486,10 +12471,7 @@ w_metadata wmp10 dlls \
 
 load_wmp10()
 {
-    if [ $W_ARCH = win64 ]
-    then
-        w_die "Installer doesn't support 64-bit architecture. Use a 32-bit WINEPREFIX instead."
-    fi
+    w_package_unsupported_win64
 
     # FIXME: what versions of Windows are really bundled with wmp10?
     w_skip_windows wmp10 && return
