@@ -8251,9 +8251,11 @@ load_msscript()
 {
     # https://msdn.microsoft.com/scripting/scriptcontrol/x86/sct10en.exe
     # https://www.microsoft.com/en-us/download/details.aspx?id=1949
-    w_download https://download.microsoft.com/download/d/2/a/d2a7430c-6d5b-48e9-96c4-3c751be7bffe/sct10en.exe 9b6730c3070f252f5051e0cf6b99523b66730599d795a607efd40b7fb0e11efb
+    # Originally at: https://download.microsoft.com/download/d/2/a/d2a7430c-6d5b-48e9-96c4-3c751be7bffe/sct10en.exe
+    # Mirror list: http://www.filewatcher.com/_/?q=sct10en.exe (make sure you get the 196.98KB version)
+    w_download ftp://beorn.sftcomp.ru/support/gpb/V7/WS/sct10en.exe 9b6730c3070f252f5051e0cf6b99523b66730599d795a607efd40b7fb0e11efb
 
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msscript/sct10en.exe
+    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
     w_try cp -f "$W_TMP"/msscript.ocx "$W_SYSTEM32_DLLS"
     w_try_regsvr msscript.ocx
 }
