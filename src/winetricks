@@ -5351,15 +5351,18 @@ w_metadata cabinet dlls \
     publisher="Microsoft" \
     year="2002" \
     media="download" \
-    file1="mdac_typ.exe" \
+    file1="MDAC_TYP.EXE" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/cabinet.dll"
 
 load_cabinet()
 {
     # https://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
-    w_download https://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
-    w_try_cabextract --directory="$W_TMP" "$W_CACHE/cabinet/$file1"
-    w_try cp "$W_TMP"/cabinet.dll "$W_SYSTEM32_DLLS"/cabinet.dll
+    # Originally at: https://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe
+    # Mirror list: http://www.filewatcher.com/m/MDAC_TYP.EXE.5389224-0.html (5.14 MB MDAC_TYP.EXE)
+    w_download ftp://ftp.gunadarma.ac.id/pub/driver/itegno/USB%20Software/MDAC/MDAC_TYP.EXE 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
+
+    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
+    w_try cp "${W_TMP}/cabinet.dll" "${W_SYSTEM32_DLLS}/cabinet.dll"
 
     w_override_dlls native,builtin cabinet
 }
@@ -7913,7 +7916,7 @@ w_metadata mdac27 dlls \
     publisher="Microsoft" \
     year="2006" \
     media="download" \
-    file1="mdac_typ.exe" \
+    file1="MDAC_TYP.EXE" \
     installed_file1="$W_COMMONFILES_X86_WIN/System/ADO/msado26.tlb"
 
 load_mdac27()
@@ -7924,11 +7927,14 @@ load_mdac27()
     fi
 
     # https://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
-    w_download https://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
+    # Originally at: https://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe
+    # Mirror list: http://www.filewatcher.com/m/MDAC_TYP.EXE.5389224-0.html (5.14 MB MDAC_TYP.EXE)
+    w_download ftp://ftp.gunadarma.ac.id/pub/driver/itegno/USB%20Software/MDAC/MDAC_TYP.EXE 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
+
     load_native_mdac
     w_set_winver nt40
-    w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup $W_UNATTENDED_SLASH_QNT"}
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" "${file1}" ${W_OPT_UNATTENDED:+ /q /C:"setup $W_UNATTENDED_SLASH_QNT"}
     w_unset_winver
 }
 
