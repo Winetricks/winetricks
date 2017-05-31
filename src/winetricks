@@ -9786,7 +9786,9 @@ load_wsh56vb()
 {
     # This installs VBScript 5.6 (but not JScript)
     # See also https://www.microsoft.com/en-us/download/details.aspx?id=8495
-    w_download https://download.microsoft.com/download/IE60/Patch/Q318089/W9XNT4Me/EN-US/vbs56men.exe 792a36d629e01cb474a434761e8cd33211c19ff84f5aa52f0d41111e054ecaac
+    # Originally at: https://download.microsoft.com/download/IE60/Patch/Q318089/W9XNT4Me/EN-US/vbs56men.exe
+    # Mirror list: ftp://ftp.uni-rostock.de/pub/tools/microsoft/ServicePacks/IE/us/vbs56men.exe
+    w_download ftp://ftp.uni-rostock.de/pub/tools/microsoft/ServicePacks/IE/us/vbs56men.exe 792a36d629e01cb474a434761e8cd33211c19ff84f5aa52f0d41111e054ecaac
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_override_dlls native,builtin vbscript
