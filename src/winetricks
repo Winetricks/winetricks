@@ -12399,8 +12399,11 @@ load_wme9()
     then
         w_die "Installer doesn't support 64-bit architecture."
     fi
+
     # See also https://www.microsoft.com/en-us/download/details.aspx?id=17792
-    w_download https://download.microsoft.com/download/8/1/f/81f9402f-efdd-439d-b2a4-089563199d47/WMEncoder.exe 19d1610d12b51c969f64703c4d3a76aae30dee526bae715381b5f3369f717d76
+    # Formerly at: https://download.microsoft.com/download/8/1/f/81f9402f-efdd-439d-b2a4-089563199d47/WMEncoder.exe
+    # Mirror list: http://www.filewatcher.com/_/?q=WMEncoder.exe
+    w_download ftp://ftp.upmost.com.tw/pub/UPMOST/CD-ISO/V30I/Extra/WMEncoder/Media%20Encoder%209/ENG/WMEncoder.exe 19d1610d12b51c969f64703c4d3a76aae30dee526bae715381b5f3369f717d76
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" WMEncoder.exe $W_UNATTENDED_SLASH_Q
