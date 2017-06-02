@@ -6218,45 +6218,30 @@ w_metadata directmusic dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/dmusic.dll"
+    file1="../directx9/directx_feb2010_redist.exe"
 
 load_directmusic()
 {
 # Untested. Based off https://bugs.winehq.org/show_bug.cgi?id=4805 and https://bugs.winehq.org/show_bug.cgi?id=24911
 
+    w_warn "You can specify individual DirectMusic verbs instead. e.g. 'winetricks dmsynth dmusic'"
+
+    w_call devenum
+    w_call dmband
+    w_call dmcompos
+    w_call dmime
+    w_call dmloader
+    w_call dmscript
+    w_call dmstyle
+    w_call dmsynth
+    w_call dmusic
+    w_call dmusic32
     w_call dsound
+    w_call dswave
+    w_call quartz
 
-    helper_directx_dl
-
-    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'devenum.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmband.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmcompos.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmime.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmloader.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmscript.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmstyle.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmsynth.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmusic.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmusic32.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dswave.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'streamci.dll' "$W_TMP/dxnt.cab"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'quartz.dll' "$W_TMP/dxnt.cab"
-
-    w_try_regsvr devenum.dll
-    w_try_regsvr dmband.dll
-    w_try_regsvr dmcompos.dll
-    w_try_regsvr dmime.dll
-    w_try_regsvr dmloader.dll
-    w_try_regsvr dmscript.dll
-    w_try_regsvr dmstyle.dll
-    w_try_regsvr dmsynth.dll
-    w_try_regsvr dmusic.dll
-    w_try_regsvr dswave.dll
-    w_try_regsvr quartz.dll
-
-    w_override_dlls native devenum dmband dmcompos dmime dmloader dmscript dmstyle dmsynth dmusic dmusic32 dswave streamci quartz
+    # FIXME: dxnt.cab doesn't contain this DLL. Is this really needed?
+    w_override_dlls native streamci
 }
 
 #----------------------------------------------------------------
@@ -6434,8 +6419,160 @@ load_dxsdk_jun2010()
 
 #----------------------------------------------------------------
 
+w_metadata dmusic32 dlls \
+    title="MS dmusic32.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="../directx9/directx_apr2006_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmusic32.dll"
+
+load_dmusic32()
+{
+    w_download_to directx9 https://download.microsoft.com/download/3/9/7/3972f80c-5711-4e14-9483-959d48a2d03b/directx_apr2006_redist.exe dd8c3d401efe4561b67bd88475201b2f62f43cd23e4acc947bb34a659fa74952
+
+    w_try_cabextract -d "$W_TMP" -F DirectX.cab "$W_CACHE"/directx9/directx_apr2006_redist.exe
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F dmusic32.dll "$W_TMP"/DirectX.cab
+
+    w_override_dlls native dmusic32
+}
+
+#----------------------------------------------------------------
+
+w_metadata dmband dlls \
+    title="MS dmband.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmband.dll"
+
+load_dmband()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmband.dll' "$W_TMP/dxnt.cab"
+
+    w_try_regsvr dmband.dll
+
+    w_override_dlls native dmband
+}
+
+#----------------------------------------------------------------
+
+w_metadata dmcompos dlls \
+    title="MS dmcompos.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmcompos.dll"
+
+load_dmcompos()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmcompos.dll' "$W_TMP/dxnt.cab"
+
+    w_try_regsvr dmcompos.dll
+
+    w_override_dlls native dmcompos
+}
+
+#----------------------------------------------------------------
+
+w_metadata dmime dlls \
+    title="MS dmime.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmime.dll"
+
+load_dmime()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmime.dll' "$W_TMP/dxnt.cab"
+
+    w_try_regsvr dmime.dll
+
+    w_override_dlls native dmime
+}
+
+#----------------------------------------------------------------
+
+w_metadata dmloader dlls \
+    title="MS dmloader.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmloader.dll"
+
+load_dmloader()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmloader.dll' "$W_TMP/dxnt.cab"
+
+    w_try_regsvr dmloader.dll
+
+    w_override_dlls native dmloader
+}
+
+#----------------------------------------------------------------
+
+w_metadata dmscript dlls \
+    title="MS dmscript.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmscript.dll"
+
+load_dmscript()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmscript.dll' "$W_TMP/dxnt.cab"
+
+    w_try_regsvr dmscript.dll
+
+    w_override_dlls native dmscript
+}
+
+#----------------------------------------------------------------
+
+w_metadata dmstyle dlls \
+    title="MS dmstyle.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmstyle.dll"
+
+load_dmstyle()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmstyle.dll' "$W_TMP/dxnt.cab"
+
+    w_try_regsvr dmstyle.dll
+
+    w_override_dlls native dmstyle
+}
+
+#----------------------------------------------------------------
+
 w_metadata dmsynth dlls \
-    title="MS midi synthesizer from DirectX user redistributable" \
+    title="MS dmsynth.dll from DirectX user redistributable" \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
@@ -6452,6 +6589,50 @@ load_dmsynth()
     w_try_regsvr dmsynth.dll
 
     w_override_dlls native dmsynth
+}
+
+#----------------------------------------------------------------
+
+w_metadata dmusic dlls \
+    title="MS dmusic.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmusic.dll"
+
+load_dmusic()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dmusic.dll' "$W_TMP/dxnt.cab"
+
+    w_try_regsvr dmusic.dll
+
+    w_override_dlls native dmusic
+}
+
+#----------------------------------------------------------------
+
+w_metadata dswave dlls \
+    title="MS dswave.dll from DirectX user redistributable" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dswave.dll"
+
+load_dswave()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dswave.dll' "$W_TMP/dxnt.cab"
+
+    w_try_regsvr dswave.dll
+
+    w_override_dlls native dswave
 }
 
 #----------------------------------------------------------------
