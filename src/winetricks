@@ -2384,59 +2384,45 @@ w_set_app_winver()
     unset _W_app
 }
 
-# Usage: w_wine_version OP VALUE
-# All the integer comparison operators of 'test' are supported, since 'test' does the work.
+# Usage: w_compare_wine_version OP VALUE
+# Note: currently only -ge and -le are supported,
+#       as well as the special case -bn (between)
 # Example:
-#  if w_wine_version -gt 1.3.2
-#  then
+#  if w_compare_wine_version -gt 2.5 ; then
 #      ...
 #  fi
-w_wine_version()
+w_compare_wine_version()
 {
-    # Note, there are also hacks for major releases (1.6/1.8/2.0/etc. and RCs) in winetricks_init()
-    #
-    # Parse major/minor/micro/nano fields of VALUE.  Ignore nano.
-    case $2 in
-    0*|1.0|1.0.*) w_die "bug: $2 is before 1.1, we don't bother with bugs fixed that long ago" ;;
-    1.1.*) _W_minor=1; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-    1.2) _W_minor=2; _W_micro=0;;
-    1.2.*) _W_minor=2; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-    1.3.*) _W_minor=3; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-    1.4) _W_minor=4; _W_micro=0;;
-    1.4.*) _W_minor=4; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-    1.5.*) _W_minor=5; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-    1.6|1.6-rc*) _W_minor=6; _W_micro=0;;
-    1.6.*) _W_minor=6; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-    1.7.*) _W_minor=7; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-    1.8.*) _W_minor=8; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-    1.9.*) _W_minor=9; _W_micro=$(echo "$2" | sed 's/.*\.//');;
+    comparison="$1"
+    known_wine_val1="$2"
+    known_wine_val2="$3"
 
-    # Rather than rework numbering system to handle both, just consider 2.x+ as 1.10, 1.11, etc.
-    2.0|2.0-rc*) _W_minor=10; _W_micro=0;;
-    2.0.*|2.*) _W_minor=10; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-    3.0|3.0-rc*) _W_minor=11; _W_micro=0;;
-    3.0.*|3.*) _W_minor=11; _W_micro=$(echo "$2" | sed 's/.*\.//');;
-
-    *) w_die "bug: unrecognized version $2";;
+    case "$comparison" in
+        # expected value if the comparison is true
+        -bn) _expected_pos_current_wine="2"
+             _wine_versions_string="${known_wine_val1}\n${_wine_version_stripped}\n${known_wine_val2}"
+             ;;
+        -ge) _expected_pos_current_wine="2"
+             _wine_versions_string="${known_wine_val1}\n${_wine_version_stripped}"
+             ;;
+        -le) _expected_pos_current_wine="1"
+             _wine_versions_string="${known_wine_val1}\n${_wine_version_stripped}"
+             ;;
+        *) w_die "Unsupported comparison. Only -ge and -le are supported" ;;
     esac
 
-    # Comparing current wine version 1.$WINETRICKS_WINE_MINOR.$WINETRICKS_WINE_MICRO against 1.$_W_minor.$_W_micro
-    if test "$WINETRICKS_WINE_MINOR" = "$_W_minor"
-    then
-        test "$WINETRICKS_WINE_MICRO" "$1" "$_W_micro" || return 1
+    # shellcheck disable=SC2039
+    _pos_current_wine="$(echo -e "${_wine_versions_string}" | sort -V | grep -n "^${_wine_version_stripped}\$" | cut -d : -f1)"
+    if [ "$_pos_current_wine" = "$_expected_pos_current_wine" ] ; then
+        #echo "true: known_wine_version=$2, comparison=$1, stripped wine=$_wine_version_stripped, expected_pos=$_expected_pos_known, pos_known=$_pos_known_wine"
+        #echo "Wine version comparison is true"
+        return 1
     else
-        test "$WINETRICKS_WINE_MINOR" "$1" "$_W_minor" || return 1
+        #echo "false: known_wine_version=$2, comparison=$1, stripped wine=$_wine_version_stripped, expected_pos=$_expected_pos_known, pos_known=$_pos_known_wine"
+        #echo "Wine version comparison is false"
+        return 0
     fi
 }
-
-# Built-in self test for w_wine_version
-#echo Verify that version 1.3.4 is equal to itself
-#WINETRICKS_WINE_MINOR=3 WINETRICKS_WINE_MICRO=4 w_wine_version -eq 1.3.4 || w_die "fail test case wine-1.3.4 = 1.3.4"
-#echo Verify that version 1.3.4 is greater than 1.2
-#WINETRICKS_WINE_MINOR=3 WINETRICKS_WINE_MICRO=4 w_wine_version -gt 1.2 || w_die "fail test case wine-1.3.4 > wine-1.2"
-#echo Verify that version 1.6 is greater than 1.2
-#WINETRICKS_WINE_MINOR=6 WINETRICKS_WINE_MICRO=0 w_wine_version -gt 1.2 || w_die "fail test case wine-1.6 > wine-1.2"
-# FIXME: 2.x tests
 
 # Usage: w_wine_version_in range ...
 # True if wine version in any of the given ranges
@@ -2446,40 +2432,20 @@ w_wine_version()
 #    val1,val2 (for >= val1 && <= val2)
 w_wine_version_in()
 {
-   for _W_range
-   do
-     _W_val1=$(echo "$_W_range" | sed 's/,.*//')
-     _W_val2=$(echo "$_W_range" | sed 's/.*,//')
-
-     # If in this range, return true
-     case $_W_range in
-     ,*)                                  w_wine_version   -le "$_W_val2" && unset _W_range _W_val1 _W_val2 && return 0;;
-     *,) w_wine_version -ge "$_W_val1"                                    && unset _W_range _W_val1 _W_val2 && return 0;;
-     *)  w_wine_version -ge "$_W_val1" && w_wine_version   -le "$_W_val2" && unset _W_range _W_val1 _W_val2 && return 0;;
-     esac
-   done
-   unset _W_range _W_val1 _W_val2
-   return 1
+    for _W_range
+    do
+        _W_val1=$(echo "$_W_range" | sed 's/,.*//')
+        _W_val2=$(echo "$_W_range" | sed 's/.*,//')
+        # If in this range, return true
+        case $_W_range in
+            ,*) w_compare_wine_version -le "$_W_val2"            && unset _W_range _W_val1 _W_val2 && return 0;;
+            *,) w_compare_wine_version -ge "$_W_val1"            && unset _W_range _W_val1 _W_val2 && return 0;;
+            *)  w_compare_wine_version -bn "$_W_val1" "$_W_val2" && unset _W_range _W_val1 _W_val2 && return 0;;
+        esac
+    done
+    unset _W_range _W_val1 _W_val2
+    return 1
 }
-
-# Built-in self test for w_wine_version_in
-#w_wine_version_in_test()
-#{
-#    WINETRICKS_WINE_MINOR=$1 WINETRICKS_WINE_MICRO=$2 w_wine_version_in $3 $4 $5 $6 || w_die "fail test case wine-1.$1.$2 in $3 $4 $5 $6"
-#}
-#w_wine_version_not_in_test()
-#{
-#    WINETRICKS_WINE_MINOR=$1 WINETRICKS_WINE_MICRO=$2 w_wine_version_in $3 $4 $5 $6 && w_die "fail test case wine-1.$1.$2 in $3 $4 $5 $6"
-#}
-#echo Verify that version 1.2.0 is in the range 1.2,
-#w_wine_version_in_test 2 0  1.2,
-#echo Verify that version 1.3.4 is in the range 1.2,
-#w_wine_version_in_test 3 4  1.2,
-#echo Verify that version 1.3 is not in the range ,1.2
-#w_wine_version_not_in_test 3 0  ,1.2
-#echo Verify that version 1.6-rc1 is in the range 1.2,
-#w_wine_version_in_test 6 0  1.2,
-#echo test passed
 
 # Usage: workaround_wine_bug bugnumber [message] [good-wine-version-range ...]
 # Returns true and outputs given msg if the workaround needs to be applied.
@@ -4924,22 +4890,15 @@ winetricks_init()
 
     WINETRICKS_WINE_VERSION=${WINETRICKS_WINE_VERSION:-$(winetricks_early_wine --version | sed 's/.*wine/wine/')}
     WINETRICKS_ORIG_WINE_VERSION="${WINETRICKS_WINE_VERSION}"
-    # See also w_wine_version()
-    # A small hack...
-    case "$WINETRICKS_WINE_VERSION" in
-        wine-1.4-*) WINETRICKS_WINE_VERSION="wine-1.4.40"; export WINETRICKS_WINE_VERSION;;
-        wine-1.4) WINETRICKS_WINE_VERSION="wine-1.4.0"; export WINETRICKS_WINE_VERSION;;
-        wine-1.6-*) WINETRICKS_WINE_VERSION="wine-1.6.0"; export WINETRICKS_WINE_VERSION;;
-        wine-1.6) WINETRICKS_WINE_VERSION="wine-1.6.0"; export WINETRICKS_WINE_VERSION;;
-        wine-1.8-*) WINETRICKS_WINE_VERSION="wine-1.8.0"; export WINETRICKS_WINE_VERSION;;
-        wine-1.8) WINETRICKS_WINE_VERSION="wine-1.8.0"; export WINETRICKS_WINE_VERSION;;
-        wine-2.0-*) WINETRICKS_WINE_VERSION="wine-1.10.0"; export WINETRICKS_WINE_VERSION;;
-        wine-2.0) WINETRICKS_WINE_VERSION="wine-1.10.0"; export WINETRICKS_WINE_VERSION;;
-        wine-3.0-*) WINETRICKS_WINE_VERSION="wine-1.11.0"; export WINETRICKS_WINE_VERSION;;
-        wine-3.0) WINETRICKS_WINE_VERSION="wine-1.11.0"; export WINETRICKS_WINE_VERSION;;
-    esac
-    WINETRICKS_WINE_MINOR=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1\.\([0-9]*\)\..*/\1/')
-    WINETRICKS_WINE_MICRO=$(echo $WINETRICKS_WINE_VERSION | sed 's/wine-1.[0-9][0-9]*\.\([0-9]*\).*/\1/')
+
+    # Need to account for lots of variations:
+    # wine-1.9.22
+    # wine-1.9.22 (Debian 1.9.22-1)
+    # wine-1.9.22 (Staging)
+    # wine-2.0 (Debian 2.0-1)
+    # wine-2.0-rc1
+    # wine-2.8
+    _wine_version_stripped="$(echo "$WINETRICKS_WINE_VERSION" | cut -d ' ' -f1 | sed -e 's/wine-//' -e 's/-rc.*//')"
 
     if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
         echo "Using winetricks $(winetricks_print_version) with ${WINETRICKS_ORIG_WINE_VERSION} and WINEARCH=${W_ARCH}"

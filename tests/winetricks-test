@@ -645,6 +645,7 @@ test_full() {
     test_speed list-cached
     test_speed list-installed
     test_custom_verbs
+    test_w_compare_wine_version
 }
 
 test_xvfb() {
@@ -660,12 +661,117 @@ test_xvfb() {
     test_dlls
 }
 
+helper_test_w_compare_wine_version()
+{
+    version="$1" # version we're pretending to be (e.g., wine-2.0)
+    comparison="$2" # the comparison to make (e.g., ',1.8', '1.9,', or '1.8,1.9')
+    workaround_expected="$3" # should the workaround be executed (yes/no)
+
+    WINETRICKS_WINE_VERSION="$version"
+    export WINETRICKS_WINE_VERSION
+
+if [ "${workaround_expected}" = "yes" ] ; then
+    cat > "${outputdir}/test_version.verb" <<_EOF
+w_metadata test_version settings
+
+load_test_version()
+{
+    # FIXME: w_info/w_die aren't getting through b/c of QUIET? stop using quiet everywhere..
+    if w_workaround_wine_bug 99999 "test" "$comparison" ; then
+        w_info "Using w_workaround, expected, version: $WINETRICKS_WINE_VERSION"
+    else
+        w_die "Not using w_workaround, unexpected, version: $WINETRICKS_WINE_VERSION"
+    fi
+}
+_EOF
+elif [ "${workaround_expected}" = "no" ] ; then
+      cat > "${outputdir}/test_version.verb" <<_EOF
+w_metadata test_version settings
+
+load_test_version()
+{
+    if w_workaround_wine_bug 99999 "test" "$comparison" ; then
+        w_die "Using w_workaround, unexpected, version: $WINETRICKS_WINE_VERSION"
+    else
+        w_info "Not using w_workaround, expected, version: $WINETRICKS_WINE_VERSION"
+    fi
+}
+_EOF
+else
+    w_die "unknown value ${workaround_expected}!"
+fi
+
+    # no xvfb needed
+    $WINETRICKS -v --no-isolate "${outputdir}/test_version.verb" ; ret=$?
+    case $ret in
+	0) pass "test_version.verb (version: $version comparison: $comparison expected: $workaround_expected passed" ;;
+        *) fail "test_version.verb (version: $version comparison: $comparison expected: $workaround_expected failed" ;;
+    esac
+}
+
+test_w_compare_wine_version()
+{
+    # Previous code was very fragile, and had no regression tests.
+    # Now that we can override reported Wine version with $WINETRICKS_WINE_VERSION, easier to test using some custom verbs
+
+    #    val1,   (for >= val1)
+    #    ,val2   (for <= val2)
+    #    val1,val2 (for >= val1 && <= val2)
+
+    # helper_test_w_compare_wine_version() {
+    #    version="$1" # version we're pretending to be (e.g., wine-2.0)
+    #    comparison="$2" # the comparison to make (e.g., ',1.8', '1.9,', or '1.8,1.9')
+    #    workaround_expected="$3" # should the workaround be executed (yes/no)
+
+    helper_test_w_compare_wine_version "wine-2.0" ",1.6" "no"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.4" "no"
+    helper_test_w_compare_wine_version "wine-2.0" "1.4,1.6" "no"
+    helper_test_w_compare_wine_version "wine-1.6" "1.4,2.0" "yes"
+    helper_test_w_compare_wine_version "wine-1.0" "1.8.0," "no"
+    helper_test_w_compare_wine_version "wine-1.0" ",1.8.0" "yes"
+    helper_test_w_compare_wine_version "wine-1.3" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-1.3" "1.2," "yes"
+    helper_test_w_compare_wine_version "wine-1.3.4" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-1.3.4" "1.2," "yes"
+    helper_test_w_compare_wine_version "wine-1.6" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-1.6" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-1.6" "1.2," "yes"
+    helper_test_w_compare_wine_version "wine-1.6-rc1" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-1.6-rc1" "1.2," "yes"
+    helper_test_w_compare_wine_version "wine-2.0.1" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0.1" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-2.0.1" ",2.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0.1" ",2.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0.1" "2.0," "yes"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-2.0" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.8.1" "no"
+    helper_test_w_compare_wine_version "wine-2.0" "1.8.1," "yes"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.8" "no"
+    helper_test_w_compare_wine_version "wine-2.0" "1.8," "yes"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.9" "no"
+    helper_test_w_compare_wine_version "wine-2.0.1 (debian 2.0.1-r1)" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0.1 (debian 2.0.1-r1)" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-2.0.1 (staging)" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0.1 (staging)" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-2.0-rc1" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0-rc1" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0-rc1" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-3.0" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-3.0" "1.8.0," "yes"
+
+    # FIXME: there's plenty of room for more tests..
+}
+
 case "$1" in
     check-deps) check_deps ; exit $? ;;
     custom-verbs) test_custom_verbs ;;
     dotnet) check_deps && test_dotnet ;;
     full)  check_deps && test_full ;;
     quick) check_deps && test_quick ;;
+    w_compare_wine_version) check_deps && test_w_compare_wine_version ;;
     xvfb-check) check_deps && XVFB=xvfb-run && export XVFB && test_xvfb ;;
     *) echo "Usage: $0 quick\|full" ; exit 1 ;;
 esac
