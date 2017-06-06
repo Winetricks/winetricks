@@ -4922,7 +4922,7 @@ winetricks_init()
     W_ISO_MOUNT_ROOT=/mnt/winetricks
     W_ISO_MOUNT_LETTER=i
 
-    WINETRICKS_WINE_VERSION=$(winetricks_early_wine --version | sed 's/.*wine/wine/')
+    WINETRICKS_WINE_VERSION=${WINETRICKS_WINE_VERSION:-$(winetricks_early_wine --version | sed 's/.*wine/wine/')}
     WINETRICKS_ORIG_WINE_VERSION="${WINETRICKS_WINE_VERSION}"
     # See also w_wine_version()
     # A small hack...
