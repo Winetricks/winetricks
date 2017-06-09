@@ -11,6 +11,8 @@
 # Public License version 2.1 (or later), as published by the Free
 # Software Foundation. Please see the file COPYING for details.
 
+# Requires wine >= 2.8 (https://bugs.winehq.org/show_bug.cgi?id=37811)
+
 # TODO:
 # add selfupdate tests
 # automate non -q verbs with autohotkey
@@ -100,8 +102,6 @@ BLACKLIST="$BLACKLIST|xmllite"
 BLACKLIST="$BLACKLIST|allcodecs"
 # FIXME: (wine/winetricks bug?) usually hangs in winetricks-test:
 BLACKLIST="$BLACKLIST|dotnet30sp1|dotnet35|dotnet35sp1|dotnet45"
-# mfplat.dll.MFTRegister https://bugs.winehq.org/show_bug.cgi?id=37811
-BLACKLIST="$BLACKLIST|xvid"
 # https://bugs.winehq.org/show_bug.cgi?id=40460
 BLACKLIST="$BLACKLIST|dotnet20sp2|xna31"
 # https://bugs.winehq.org/show_bug.cgi?id=16876
