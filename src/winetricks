@@ -7216,7 +7216,8 @@ w_metadata dotnet462 dlls \
     publisher="Microsoft" \
     year="2016" \
     media="download" \
-    conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet35sp1 dotnet40 dotnet46 dotnet461 vjrun20"
+    conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet35sp1 dotnet40 dotnet46 dotnet461 vjrun20" \
+    installed_file1="c:/windows/dotnet462.installed.workaround"
 
 load_dotnet462()
 {
@@ -7254,6 +7255,10 @@ load_dotnet462()
     esac
 
     w_override_dlls native mscoree
+
+    # Unfortunately, dotnet462 install the same files that dotnet461 does, but with different checksums
+    # The only unique files are temporary ones. As a workaround, touch a file instead so that we know it's been installed for list-installed
+    w_try touch "${W_WINDIR_UNIX}/dotnet462.installed.workaround"
 }
 
 verify_dotnet462()
