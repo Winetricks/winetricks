@@ -1774,19 +1774,44 @@ w_skip_windows()
     return 1
 }
 
+# for common code in w_override_dlls and w_override_app_dlls
+w_common_override_dll()
+{
+    _W_mode="$1"
+    module="$2"
+
+    case "$module" in
+        comctl32)
+            w_try rm -rf "$W_WINDIR_UNIX"/winsxs/manifests/amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.2600.2982_none_deadbeef.manifest
+            w_try rm -rf "$W_WINDIR_UNIX"/winsxs/manifests/x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.2600.2982_none_deadbeef.manifest
+            ;;
+    esac
+
+    if [ "$_W_mode" = default ] ; then
+        # To delete a registry key, give an unquoted dash as value
+        echo "\"*$module\"=-" >> "$W_TMP"/override-dll.reg
+    else
+        # Note: if you want to override even DLLs loaded with an absolute
+        # path, you need to add an asterisk:
+        echo "\"*$module\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
+    fi
+}
+
 w_override_dlls()
 {
     w_skip_windows w_override_dlls && return
 
     _W_mode=$1
     case $_W_mode in
-    *=*)
-        w_die "w_override_dlls: unknown mode $_W_mode.
+        *=*)
+            w_die "w_override_dlls: unknown mode $_W_mode.
 Usage: 'w_override_dlls mode[,mode] dll ...'." ;;
-    disabled)
-        _W_mode="" ;;
+        disabled)
+            _W_mode="" ;;
     esac
+
     shift
+
     echo "Using $_W_mode override for following DLLs: $*"
     cat > "$W_TMP"/override-dll.reg <<_EOF_
 REGEDIT4
@@ -1795,23 +1820,7 @@ REGEDIT4
 _EOF_
     while test "$1" != ""
     do
-        case "$1" in
-        comctl32)
-           rm -rf "$W_WINDIR_UNIX"/winsxs/manifests/x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.2600.2982_none_deadbeef.manifest
-           ;;
-        esac
-
-        if [ "$_W_mode" = default ]
-        then
-            # To delete a registry key, give an unquoted dash as value
-            echo "\"*$1\"=-" >> "$W_TMP"/override-dll.reg
-        else
-            # Note: if you want to override even DLLs loaded with an absolute
-            # path, you need to add an asterisk:
-            echo "\"*$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
-            #echo "\"$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
-        fi
-
+        w_common_override_dll "$_W_mode" "$1"
         shift
     done
 
@@ -2142,44 +2151,30 @@ w_override_app_dlls()
 
     # Fixme: handle comma-separated list of modes
     case $_W_mode in
-    b|builtin) _W_mode=builtin ;;
-    n|native) _W_mode=native ;;
-    default) _W_mode=default ;;
-    d|disabled) _W_mode="" ;;
-    *)
+        b|builtin) _W_mode=builtin ;;
+        n|native) _W_mode=native ;;
+        default) _W_mode=default ;;
+        d|disabled) _W_mode="" ;;
+        *)
         w_die "w_override_app_dlls: unknown mode $_W_mode.  (want native, builtin, default, or disabled)
 Usage: 'w_override_app_dlls app mode dll ...'." ;;
     esac
 
     echo "Using $_W_mode override for following DLLs when running $_W_app: $*"
     (
-    echo REGEDIT4
-    echo ""
-    echo "[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\$_W_app\\DllOverrides]"
+        echo REGEDIT4
+        echo ""
+        echo "[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\$_W_app\\DllOverrides]"
     ) > "$W_TMP"/override-dll.reg
 
     while test "$1" != ""
     do
-        case "$1" in
-        comctl32)
-           rm -rf "$W_WINDIR_UNIX"/winsxs/manifests/x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.2600.2982_none_deadbeef.manifest
-           ;;
-        esac
-        if [ "$_W_mode" = default ]
-        then
-            # To delete a registry key, give an unquoted dash as value
-            echo "\"*$1\"=-" >> "$W_TMP"/override-dll.reg
-        else
-            # Note: if you want to override even DLLs loaded with an absolute
-            # path, you need to add an asterisk:
-            echo "\"*$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
-            #echo "\"$1\"=\"$_W_mode\"" >> "$W_TMP"/override-dll.reg
-        fi
+        w_common_override_dll "$_W_mode" "$1"
         shift
     done
 
     w_try_regedit "$W_TMP_WIN"\\override-dll.reg
-    rm "$W_TMP"/override-dll.reg
+    w_try rm "$W_TMP"/override-dll.reg
     unset _W_app _W_mode
 }
 
