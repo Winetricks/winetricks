@@ -26,9 +26,11 @@ addons:
 before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then echo "deb http://archive.ubuntu.com/ubuntu/ zesty universe" | sudo tee -a /etc/apt/sources.list ; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get -q update ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install shellcheck ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install python-bashate shellcheck ; fi
 
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew update ; fi
+    # No bashate on homebrew yet
+    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install checkbashisms bashate shellcheck ; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install checkbashisms shellcheck ; fi
 
 # Note if testing on a branch, you can replace this with your desired command, e.g.,:
