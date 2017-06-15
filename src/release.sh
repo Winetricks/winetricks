@@ -12,8 +12,18 @@
 # Software Foundation. Please see the file COPYING for details.
 
 set -e
-set -u
+#set -u
 set -x
+
+nopush=0
+# Don't push commits/tags or upload files
+if [ "$1" = "--no-push" ] ; then
+    nopush=1
+    shift
+fi
+
+# FIXME: If "--no-push" isn't set, above statement dies, not sure how to construct properly to avoid
+set -u
 
 # For a WINEPREFIX for winetricks list commands:
 tmpdir="$(mktemp -d)"
@@ -78,8 +88,12 @@ git tag -s -m "winetricks-${version}" "${version}"
 sed -i -e "s%WINETRICKS_VERSION=.*%WINETRICKS_VERSION=${version}-next%" src/winetricks
 git commit src/winetricks -m "development version bump - ${version}-next"
 
-git push
-git push --tags
+if [ $nopush = 1 ] ; then
+    echo "--no-push used, not pushing commits / tags"
+else
+    git push
+    git push --tags
+fi
 
 # create local tarball, identical to github's generated one
 git archive --prefix="winetricks-${version}/" -o "${tmpdir}/${version}.tar.gz" "${version}"
@@ -88,7 +102,11 @@ git archive --prefix="winetricks-${version}/" -o "${tmpdir}/${version}.tar.gz" "
 gpg --armor --default-key 0xA041937B --detach-sign "${tmpdir}/${version}.tar.gz"
 
 # upload the detached signature to github:
-python3 src/github-api-releases.py  "${tmpdir}/${version}.tar.gz.asc" Winetricks winetricks "${version}"
+if [ $nopush = 1 ] ; then
+    echo "--no-push used, not uploading signature file"
+else
+    python3 src/github-api-releases.py  "${tmpdir}/${version}.tar.gz.asc" Winetricks winetricks "${version}"
+fi
 
 rm -rf "${tmpdir}"
 
