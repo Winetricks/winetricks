@@ -15,6 +15,18 @@ set -e
 set -u
 set -x
 
+# For a WINEPREFIX for winetricks list commands:
+tmpdir="$(mktemp -d)"
+
+# WINEPREFIX must be under a directory owned by user, so can't be in /tmp directly..
+export WINEPREFIX="${tmpdir}/wineprefix"
+
+# Set an empty cache so nothing shows as cached:
+export W_CACHE="/dev/null"
+
+# Set WINEARCH="win32" so we don't get 64-bit warning in output:
+export WINEARCH="win32"
+
 # Needed by the list commands below:
 export WINETRICKS_LATEST_VERSION_CHECK="development"
 
@@ -78,5 +90,7 @@ gpg --armor --default-key 0xA041937B --detach-sign "../${version}.tar.gz"
 
 # upload the detached signature to github:
 python3 src/github-api-releases.py  ../../"${version}.tar.gz.asc" Winetricks winetricks "${version}"
+
+rm -rf "${tmpdir}"
 
 exit 0
