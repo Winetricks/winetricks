@@ -33,7 +33,7 @@ load_iceweasel()
 Note that the filename and command name (icecat) must match. All metadata fields are optional, only command name and category required.
 
 # Tests
-The tests need `checkbashisms` and `shellcheck>=0.4.4` installed.
+The tests need `bashate`, `checkbashisms`, and `shellcheck>=0.4.4` installed.
 Makefile supports a few test targets:
 * check - runs './tests/winetricks-tests quick' (without first clearing $WINETRICKS_CACHE)
 * shell-checks - runs './tests/shell-checks'
