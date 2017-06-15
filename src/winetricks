@@ -165,11 +165,9 @@ W_COUNTRY=""
 W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
 
 # For temp files before $WINEPREFIX is available:
-if [ -x "$(which mktemp 2>/dev/null)" ]
-then
+if [ -x "$(which mktemp 2>/dev/null)" ] ; then
     W_TMP_EARLY="$(mktemp -d "${TMPDIR:-/tmp}/winetricks.XXXXXXXX")"
-elif [ -w "$TMPDIR" ]
-then
+elif [ -w "$TMPDIR" ] ; then
     W_TMP_EARLY="$TMPDIR"
 else
     W_TMP_EARLY="/tmp"
@@ -298,8 +296,7 @@ w_package_broken_win64()
     # Optional:
     bug_link="$1"
 
-    if [ "$W_ARCH" = "win64" ]
-    then
+    if [ "$W_ARCH" = "win64" ] ; then
         if [ -n "$1" ] ; then
             w_die "This package is broken on 64-bit Wine. Using a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
         else
@@ -312,8 +309,7 @@ w_package_broken_win64()
 # Note: this is for packages that natively don't support win64, not packages that are broken on wine64, for that, use w_package_broken_win64()
 w_package_unsupported_win64()
 {
-    if [ "$W_ARCH" = "win64" ]
-    then
+    if [ "$W_ARCH" = "win64" ] ; then
         w_die "This package does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32."
     fi
 }
@@ -321,8 +317,7 @@ w_package_unsupported_win64()
 # For packages that are not well tested or have some known issues on win64, but aren't broken
 w_package_warn_win64()
 {
-    if [ "$W_ARCH" = "win64" ]
-    then
+    if [ "$W_ARCH" = "win64" ] ; then
         w_warn "This package may not fully work on a 64-bit installation. 32-bit prefixes may work better."
     fi
 }
@@ -600,8 +595,7 @@ w_get_sha1sum()
 
     # See https://github.com/Winetricks/winetricks/issues/645
     # User is running winetricks from /dev/stdin
-    if [ -f "$_W_sha1_file" ] || [ -h "$_W_sha1_file" ]
-    then
+    if [ -f "$_W_sha1_file" ] || [ -h "$_W_sha1_file" ] ; then
         _W_gotsha1sum=$($WINETRICKS_SHA1SUM < "$_W_sha1_file" | sed 's/(stdin)= //;s/ .*//')
         w_get_sha256sum "$_W_sha1_file"
     else
@@ -621,8 +615,7 @@ w_get_sha256sum()
 
     # See https://github.com/Winetricks/winetricks/issues/645
     # User is running winetricks from /dev/stdin
-    if [ -f "$_W_sha256_file" ] || [ -h "$_W_sha256_file" ]
-    then
+    if [ -f "$_W_sha256_file" ] || [ -h "$_W_sha256_file" ] ; then
         _W_gotsha256sum=$($WINETRICKS_SHA256SUM < "$_W_sha256_file" | sed 's/(stdin)= //;s/ .*//')
     else
         w_warn "$_W_sha256_file is not a regular file, not checking sha256sum"
@@ -653,8 +646,7 @@ w_verify_sha1sum()
     _W_vs_file=$2
 
     w_get_sha1sum "$_W_vs_file"
-    if [ "$_W_gotsha1sum"x != "$_W_vs_wantsum"x ]
-    then
+    if [ "$_W_gotsha1sum"x != "$_W_vs_wantsum"x ] ; then
         w_die "sha1sum mismatch!  Rename $_W_vs_file and try again."
     fi
     unset _W_vs_wantsum _W_vs_file _W_gotsha1sum
@@ -667,8 +659,7 @@ w_verify_sha256sum()
     _W_vs_file=$2
 
     w_get_sha256sum "$_W_vs_file"
-    if [ "$_W_gotsha256sum"x != "$_W_vs_wantsum"x ]
-    then
+    if [ "$_W_gotsha256sum"x != "$_W_vs_wantsum"x ] ; then
         w_die "sha256sum mismatch!  Rename $_W_vs_file and try again."
     fi
     unset _W_vs_wantsum _W_vs_file _W_gotsha256sum
@@ -895,12 +886,10 @@ w_download_to()
     .) w_die "bug: please do not download packages to top of cache" ;;
     esac
 
-    if echo "$_W_url" | grep ' '
-    then
+    if echo "$_W_url" | grep ' ' ; then
         w_die "bug: please use %20 instead of literal spaces in urls, curl rejects spaces, and they make life harder for linkcheck.sh"
     fi
-    if [ "$_W_file"x = ""x ]
-    then
+    if [ "$_W_file"x = ""x ] ; then
         _W_file=$(basename "$_W_url")
     fi
 
@@ -916,31 +905,25 @@ w_download_to()
         fi
     fi
 
-    if test ! -d "$_W_cache"
-    then
+    if test ! -d "$_W_cache" ; then
         w_try mkdir -p "$_W_cache"
     fi
 
     # Try download twice
     checksum_ok=""
     tries=0
-    while test $tries -lt 2
-    do
+    while test $tries -lt 2 ; do
         # Warn on a second try
         test "$tries" -eq 1 && winetricks_dl_warning
         tries=$((tries + 1))
 
-        if test -s "$_W_cache/$_W_file"
-        then
-            if test "$_W_sum"
-            then
-                if test $tries = 1
-                then
+        if test -s "$_W_cache/$_W_file" ; then
+            if test "$_W_sum" ; then
+                if test $tries = 1 ; then
                     # The cache was full.  If the file is larger than 500 MB,
                     # don't checksum it, that just annoys the user.
                     # shellcheck disable=SC2046
-                    if test $(du -k "$_W_cache/$_W_file" | cut -f1) -gt 500000
-                    then
+                    if test $(du -k "$_W_cache/$_W_file" | cut -f1) -gt 500000 ; then
                         checksum_ok=1
                         break
                     fi
@@ -952,24 +935,21 @@ w_download_to()
                         ;;
                     sha1)
                         w_get_sha1sum "$_W_cache/$_W_file"
-                        if [ "$_W_gotsha1sum"x = "$_W_sum"x ]
-                        then
+                        if [ "$_W_gotsha1sum"x = "$_W_sum"x ] ; then
                             checksum_ok=1
                             break
                         fi
                         ;;
                     sha256)
                         w_get_sha256sum "$_W_cache/$_W_file"
-                        if [ "$_W_gotsha256sum"x = "$_W_sum"x ]
-                        then
+                        if [ "$_W_gotsha256sum"x = "$_W_sum"x ] ; then
                             checksum_ok=1
                             break
                         fi
                         ;;
                 esac
 
-                if test ! "$WINETRICKS_CONTINUE_DOWNLOAD"
-                then
+                if test ! "$WINETRICKS_CONTINUE_DOWNLOAD" ; then
                     w_warn "Checksum for $_W_cache/$_W_file did not match, retrying download"
                     mv -f "$_W_cache/$_W_file" "$_W_cache/$_W_file".bak
                 fi
@@ -977,8 +957,7 @@ w_download_to()
                 # file exists, no checksum known, declare success and exit loop
                 break
             fi
-        elif test -f "$_W_cache/$_W_file"
-        then
+        elif test -f "$_W_cache/$_W_file" ; then
             # zero-length file, just delete before retrying
             rm "$_W_cache/$_W_file"
         fi
@@ -995,8 +974,7 @@ w_download_to()
         *) _W_agent="" ;;
         esac
 
-        if [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ]
-        then
+        if [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ] ; then
             # Note: aria2c wants = for most options or silently fails
 
             # (Slightly fancy) aria2c support
@@ -1023,8 +1001,7 @@ w_download_to()
                 --save-session='' \
                 --stream-piece-selector=geom \
                 "$_W_url"
-        elif [ "${WINETRICKS_DOWNLOADER}" = "wget" ]
-        then
+        elif [ "${WINETRICKS_DOWNLOADER}" = "wget" ] ; then
            # Use -nd to insulate ourselves from people who set -x in WGETRC
            # [*] --retry-connrefused works around the broken sf.net mirroring
            # system when downloading corefonts
@@ -1044,8 +1021,7 @@ w_download_to()
                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
                ${_W_agent:+--user-agent="$_W_agent"} \
                "$_W_url"
-        elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ]
-        then
+        elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ] ; then
            # Note: curl does not accept '=' when passing options
 
            # curl doesn't get filename from the location given by the server!
@@ -1061,8 +1037,7 @@ w_download_to()
                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
                ${_W_agent:+--user-agent "$_W_agent"} \
                "$_W_url"
-        elif [ "${WINETRICKS_DOWNLOADER}" = "fetch" ]
-        then
+        elif [ "${WINETRICKS_DOWNLOADER}" = "fetch" ] ; then
            # Note: fetch does not support configurable retry count
 
            # shellcheck disable=SC2086
@@ -1074,8 +1049,8 @@ w_download_to()
         else
             w_die "Here be dragons"
         fi
-        if test $? = 0
-        then
+
+        if test $? = 0 ; then
             # Need to decompress .exe's that are compressed, else Cygwin fails
             # Also affects ttf files on github
             # FIXME: gzip hack below may no longer be needed, but need to investigate before removing
@@ -1112,11 +1087,9 @@ w_download_to()
 # Usage: w_open_folder directory
 w_open_folder()
 {
-    for _W_cmd in xdg-open open cygstart true
-    do
+    for _W_cmd in xdg-open open cygstart true ; do
         _W_cmdpath=$(which $_W_cmd)
-        if test -n "$_W_cmdpath"
-        then
+        if test -n "$_W_cmdpath" ; then
             break
         fi
     done
@@ -1129,11 +1102,9 @@ w_open_folder()
 w_open_webpage()
 {
     # See https://www.dwheeler.com/essays/open-files-urls.html
-    for _W_cmd in xdg-open sdtwebclient cygstart open firefox true
-    do
+    for _W_cmd in xdg-open sdtwebclient cygstart open firefox true ; do
         _W_cmdpath=$(which $_W_cmd)
-        if test -n "$_W_cmdpath"
-        then
+        if test -n "$_W_cmdpath" ; then
             break
         fi
     done
@@ -1163,12 +1134,10 @@ w_download_torrent()
     UT_WINPATH="$W_CACHE_WIN\\$W_PACKAGE"
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    if [ "$2"x != ""x ] # foo.torrent parameter supplied
-    then
+    if [ "$2"x != ""x ] ; then # foo.torrent parameter supplied
         w_try "$WINE" utorrent "/DIRECTORY" "$UT_WINPATH" "$UT_WINPATH\\$2" &
     else # grab all torrents
-        for torrent in *.torrent
-        do
+        for torrent in *.torrent ; do
             w_try "$WINE" utorrent "/DIRECTORY" "$UT_WINPATH" "$UT_WINPATH\\$torrent" &
         done
     fi
@@ -1291,14 +1260,14 @@ sub read_into_container{
        if (/"([^"]*)"\s*"([^"]*)"$/) {
            ${$pcontainer}{$1} = $2;
        } elsif (/"([^"]*)"$/) {
-           my( %newcon, $name );
-           $name = $1;
-           read_into_container(\%newcon);
-           ${$pcontainer}{$name} = \%newcon;
+             my( %newcon, $name );
+             $name = $1;
+             read_into_container(\%newcon);
+             ${$pcontainer}{$name} = \%newcon;
         } elsif (/}/) {
-           return;
+              return;
         } else {
-           w_die "huh?";
+                w_die "huh?";
         }
     }
 }
@@ -1351,8 +1320,7 @@ dump_container(\%top, "\t");
 print "}\n";
 _EOF_
 
-for file in userdata/*/config/localconfig.vdf
-do
+for file in userdata/*/config/localconfig.vdf ; do
     cp "$file" "$file.old"
     perl "$W_TMP"/steamconfig.pl "$file.old" > "$file"
 done
