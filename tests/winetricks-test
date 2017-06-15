@@ -141,8 +141,7 @@ check_deps() {
         which $tool
         ret=$?
 
-        if [ ! $ret -eq 0 ]
-        then
+        if [ ! $ret -eq 0 ] ; then
             echo "Please install $tool."
             exit 1
         fi
@@ -222,7 +221,9 @@ case "$OS" in
         if [ -x "$x" ] ; then
             case "$x" in
                 /usr/lib/*/wine-development/wineserver)
-                        if [ -x /usr/bin/wine-development ] ; then WINE="/usr/bin/wine-development" ; fi ;;
+                        if [ -x /usr/bin/wine-development ] ; then
+                            WINE="/usr/bin/wine-development"
+                        fi ;;
             esac
             break
         fi
@@ -704,7 +705,7 @@ fi
     # no xvfb needed
     $WINETRICKS -v --no-isolate "${outputdir}/test_version.verb" ; ret=$?
     case $ret in
-	0) pass "test_version.verb (version: $version comparison: $comparison expected: $workaround_expected passed" ;;
+        0) pass "test_version.verb (version: $version comparison: $comparison expected: $workaround_expected passed" ;;
         *) fail "test_version.verb (version: $version comparison: $comparison expected: $workaround_expected failed" ;;
     esac
 }
