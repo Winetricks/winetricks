@@ -81,15 +81,14 @@ git commit src/winetricks -m "development version bump - ${version}-next"
 git push
 git push --tags
 
-
 # create local tarball, identical to github's generated one
-git archive --prefix="winetricks-${version}/" -o "../${version}.tar.gz" "${version}"
+git archive --prefix="winetricks-${version}/" -o "${tmpdir}/${version}.tar.gz" "${version}"
 
 # create a detached signature of the tarball
-gpg --armor --default-key 0xA041937B --detach-sign "../${version}.tar.gz"
+gpg --armor --default-key 0xA041937B --detach-sign "${tmpdir}/${version}.tar.gz"
 
 # upload the detached signature to github:
-python3 src/github-api-releases.py  ../../"${version}.tar.gz.asc" Winetricks winetricks "${version}"
+python3 src/github-api-releases.py  "${tmpdir}/${version}.tar.gz.asc" Winetricks winetricks "${version}"
 
 rm -rf "${tmpdir}"
 
