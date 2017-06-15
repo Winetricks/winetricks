@@ -75,8 +75,7 @@ show_one() {
 
 # Show full report on most recent crawl
 show_all() {
-    for urlfile in "$datadir"/*.url
-    do
+    for urlfile in "$datadir"/*.url ; do
         show_one "$urlfile"
     done
 }
@@ -93,15 +92,15 @@ crawl_one() {
     url="$(cat "$urlfile")"
 
     curl --connect-timeout 10 --retry 6 -s -S -I "$url" 2>&1 |
-       tr -d '\015' |
-       grep . |
-       sort > "$base.log"
+        tr -d '\015' |
+        grep . |
+        sort > "$base.log"
     # more diff-able?
-    #cat "$base.log" |
+    # cat "$base.log" |
     #  grep -E 'HTTP|Last-Modified:|Content-Length:|ETag:' |
     #  tr '\012' ' ' |
     #  sed 's/ Connection:.*//' > "$datadir"/"$urlkey.dat"
-    #echo "" >> "$base.dat"
+    # echo "" >> "$base.dat"
     show_one "$urlfile"
 }
 
@@ -109,8 +108,7 @@ crawl_one() {
 # Do fetches in background so slow servers don't hang us
 # Print quick feedback as results come in
 crawl_all() {
-    for urlfile in "$datadir"/*.url
-    do
+    for urlfile in "$datadir"/*.url ; do
         url="$(cat "$urlfile")"
         echo "Crawling $url"
         crawl_one "$urlfile" &
