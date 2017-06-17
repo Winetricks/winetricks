@@ -62,9 +62,14 @@ do
     w_try shellcheck -s sh "${shellscript}"
 
     echo "Checking ${shellscript} with bashate:"
+
     # Can't ignore individual things for now, filed bug:
     # https://bugs.launchpad.net/bash8/+bug/1698088
     # E003=indent spacing check
     # E010=do/while same line (in some perl in winetricks)
-    w_try bashate -i E003,E010 "${shellscript}"
+
+    # Also, not on homebrew yet, so don't expect it to always be around:
+    if [ -x "$(which bashate)" ] ; then
+        w_try bashate -i E003,E010 "${shellscript}"
+    fi
 done
