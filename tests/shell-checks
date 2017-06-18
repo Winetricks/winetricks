@@ -66,10 +66,7 @@ do
     # Can't ignore individual things for now, filed bug:
     # https://bugs.launchpad.net/bash8/+bug/1698088
     # E003=indent spacing check
+    # E006=line length check
     # E010=do/while same line (in some perl in winetricks)
-
-    # Also, not on homebrew yet, so don't expect it to always be around:
-    if [ -x "$(which bashate)" ] ; then
-        w_try bashate -i E003,E010 "${shellscript}"
-    fi
+    w_try bashate -i E003,E006,E010 "${shellscript}"
 done
