@@ -2,7 +2,7 @@
 #
 # Script to bisect Wine regressions in Winetricks
 #
-# Usage: git bisect $0 winetricks_command
+# Usage: git bisect run $0 winetricks_command
 #
 # Copyright (C) 2017 Austin English
 #
