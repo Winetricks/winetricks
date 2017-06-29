@@ -548,6 +548,14 @@ w_read_key()
     unset _W_keyfile _W_keymsg _W_nokeymsg
 }
 
+w_verify_cabextract_available()
+{
+    # If verb_a requires verb_b, then verba will fail when the dependency for verb_b is installed
+    # This should be called by verb_a, to give a proper warning
+
+    w_try_cabextract -q -v
+}
+
 # Convert a Windows path to a Unix path quickly.
 # $1 is an absolute Windows path starting with c:\ or C:/
 # with no funny business, so we can use the simplest possible
@@ -6809,8 +6817,7 @@ load_dotnet35()
         *) w_warn "dotnet35 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
-    # This will fail later if cabextract isn't installed, so check/fail now:
-    w_try_cabextract -v >/dev/null
+    w_verify_cabextract_available
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=21
     w_download https://download.microsoft.com/download/6/0/f/60fc5854-3cb8-4892-b6db-bd4f42510f28/dotnetfx35.exe 3e3a4104bad9a0c270ed5cbe8abb986de9afaf0281a98998bdbdc8eaab85c3b6
@@ -6860,8 +6867,7 @@ load_dotnet35sp1()
     *) w_warn "dotnet35sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
-    # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
-    w_try_cabextract -v >/dev/null
+    w_verify_cabextract_available
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=25150
     w_download https://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 0582515bde321e072f8673e829e175ed2e7a53e803127c50253af76528e66bc1
@@ -6969,8 +6975,7 @@ load_dotnet45()
 {
     w_package_warn_win64
 
-    # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
-    w_try_cabextract -v >/dev/null
+    w_verify_cabextract_available
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=17718
     w_download https://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe a04d40e217b97326d46117d961ec4eda455e087b90637cb33dd6cc4a2c228d83
@@ -7022,8 +7027,7 @@ load_dotnet452()
 {
     w_package_warn_win64
 
-    # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
-    w_try_cabextract -v >/dev/null
+    w_verify_cabextract_available
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=17718
     w_download https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe 6c2c589132e830a185c5f40f82042bee3022e721a216680bd9b3995ba86f3781
@@ -12225,8 +12229,7 @@ w_metadata vc2008express apps \
 
 load_vc2008express()
 {
-    # The installer will fail later in dotnet35 if cabextract isn't installed, so check/fail now:
-    w_try_cabextract -v >/dev/null
+    w_verify_cabextract_available
 
     w_call dotnet35
 
