@@ -31,7 +31,8 @@ set -x
 if [ -f README.md ] ; then
     TOP="$PWD"
 elif [ -f ../README.md ] ; then
-    TOP="$(realpath ..)"
+    # realpath isn't available on OSX, use a subshell instead:
+    TOP="$(cd .. && echo "$PWD")"
 else
     echo "Running from unknown directory. Exiting"
     exit 1
