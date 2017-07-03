@@ -9727,54 +9727,6 @@ _EOF_
 
 #----------------------------------------------------------------
 
-w_metadata wsh56js dlls \
-    title="MS Windows Script Host 5.6, JScript only, no CScript" \
-    publisher="Microsoft" \
-    year="2006" \
-    media="download" \
-    file1="Windows2000-KB917344-56-x86-enu.exe" \
-    installed_file1="c:/windows/inf/jscren.inf"
-
-load_wsh56js()
-{
-    # This installs JScript 5.6 (but not VBScript)
-    # See also https://www.microsoft.com/en-us/download/details.aspx?id=12364
-    w_download https://download.microsoft.com/download/b/c/3/bc3a0c36-fada-497d-a3de-8b0139766f3b/Windows2000-KB917344-56-x86-enu.exe d6d6c2ac2d2a095b0f0650a9a2e81e8943579699662b5cdbf872649038788c51
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_override_dlls native,builtin jscript
-    # setupapi looks at the versions in new and original jscript.dll, and Wine's original is newer than wsh56js's, so we have to nuke the original
-    w_try rm "$W_SYSTEM32_DLLS/jscript.dll"
-    w_try "$WINE" Windows2000-KB917344-56-x86-enu.exe $W_UNATTENDED_SLASH_Q
-}
-
-#----------------------------------------------------------------
-
-w_metadata wsh56vb dlls \
-    title="MS Windows Script Host 5.6, VBScript only, no CScript" \
-    publisher="Microsoft" \
-    year="2007" \
-    media="download" \
-    file1="vbs56men.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/vbscript.dll"
-
-load_wsh56vb()
-{
-    # This installs VBScript 5.6 (but not JScript)
-    # See also https://www.microsoft.com/en-us/download/details.aspx?id=8495
-    # Originally at: https://download.microsoft.com/download/IE60/Patch/Q318089/W9XNT4Me/EN-US/vbs56men.exe
-    # Mirror list: ftp://ftp.uni-rostock.de/pub/tools/microsoft/ServicePacks/IE/us/vbs56men.exe
-    w_download ftp://ftp.uni-rostock.de/pub/tools/microsoft/ServicePacks/IE/us/vbs56men.exe 792a36d629e01cb474a434761e8cd33211c19ff84f5aa52f0d41111e054ecaac
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_override_dlls native,builtin vbscript
-    # setupapi looks at the versions in new and original vbscript.dll, and Wine's original is newer than wsh56vb's, so we have to nuke the original
-    w_try rm "$W_SYSTEM32_DLLS/vbscript.dll"
-    w_try "$WINE" vbs56men.exe $W_UNATTENDED_SLASH_Q
-}
-
-#----------------------------------------------------------------
-
 w_metadata wsh57 dlls \
     title="MS Windows Script Host 5.7" \
     publisher="Microsoft" \
@@ -19141,7 +19093,7 @@ execute_command()
     vbrun60) w_warn "Calling vbrun60 is deprecated, please use vb6run instead" ; w_call vb6run ;;
     vcrun2005sp1) w_warn "Calling vcrun2005sp1 is deprecated, please use vcrun2005 instead" ; w_call vcrun2005 ;;
     vcrun2008sp1) w_warn "Calling vcrun2008sp1 is deprecated, please use vcrun2008 instead" ; w_call vcrun2008 ;;
-    wsh56) w_warn "Calling wsh56 is deprecated, please use wsh57 instead" ; w_call wsh57 ;;
+    wsh56|wsh56jb|wsh56vb) w_warn "Calling wsh56 is deprecated, please use wsh57 instead" ; w_call wsh57 ;;
     # See https://github.com/Winetricks/winetricks/issues/747
     xact_jun2010) w_warn "Calling xact_jun2010 is deprecated, please use xact instead" ; w_call xact ;;
     xlive) w_warn "Calling xlive is deprecated, please use gfw instead" ; w_call gfw ;;
