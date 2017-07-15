@@ -66,7 +66,7 @@ WINETRICKS_VERSION=20170614-next
 #   Copyright (C) 2011 Giuseppe Dia
 #   Copyright (C) 2011 Łukasz Wojniłowicz
 #   Copyright (C) 2011 Matthew Bozarth
-#   Copyright (C) 2013-2016 Andrey Gusev <andrey.goosev!gmail.com>
+#   Copyright (C) 2013-2017 Andrey Gusev <andrey.goosev!gmail.com>
 #   Copyright (C) 2013-2017 Hillwood Yang <hillwood!opensuse.org>
 #   Copyright (C) 2013,2016 André Hentschel <nerv!dawncrow.de>
 #
@@ -3095,8 +3095,8 @@ winetricks_prefixmenu()
          _W_msg_games='Встановити гру'
          _W_msg_benchmarks='Встановити benchmark'
          _W_msg_default="Вибрати wineprefix за замовчуванням"
-         _W_msg_unattended0="Вимкнути автоматичну установку"
-         _W_msg_unattended1="Включити автоматичну установку"
+         _W_msg_unattended0="Вимкнути автоматичне встановлення"
+         _W_msg_unattended1="Увімкнути автоматичне встановлення"
          _W_msg_showbroken0="Сховати нестабільні додатки (наприклад з проблемами з DRM)"
          _W_msg_showbroken1="Показати нестабільні додатки (наприклад з проблемами з DRM)"
          _W_msg_help="Переглянути довідку"
@@ -10299,6 +10299,7 @@ load_fakekorean()
 #----------------------------------------------------------------
 
 w_metadata fontfix settings \
+    title_uk="Перевірка шрифтів" \
     title="Check for broken fonts"
 
 load_fontfix()
@@ -17959,10 +17960,10 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata glsl=enabled settings \
-    title_uk="Включити GLSL шейдери (за замовчуванням)" \
+    title_uk="Увімкнути GLSL шейдери (за замовчуванням)" \
     title="Enable GLSL shaders (default)"
 w_metadata glsl=disabled settings \
-    title_uk="Вимкнути GLSL шейдери та використовувати ARB шейдери (швидше, але іноді з перервами)" \
+    title_uk="Вимкнути GLSL шейдери та використовувати ARB шейдери (іноді впливає на швидкодію)" \
     title="Disable GLSL shaders, use ARB shaders (faster, but sometimes breaks)"
 
 load_glsl()
@@ -17973,7 +17974,7 @@ load_glsl()
 #----------------------------------------------------------------
 
 w_metadata multisampling=enabled settings \
-    title_uk="Включити Direct3D мультисемплінг" \
+    title_uk="Увімкнути Direct3D мультисемплінг" \
     title="Enable Direct3D multisampling"
 w_metadata multisampling=disabled settings \
     title_uk="Вимкнути Direct3D мультисемплінг" \
@@ -17987,7 +17988,7 @@ load_multisampling()
 #----------------------------------------------------------------
 
 w_metadata npm=repack settings \
-    title_uk="Поставити NonPower2Mode на repack" \
+    title_uk="Встановити NonPower2Mode на repack" \
     title="Set NonPower2Mode to repack"
 
 load_npm()
@@ -17998,10 +17999,10 @@ load_npm()
 #----------------------------------------------------------------
 
 w_metadata orm=fbo settings \
-    title_uk="Поставити OffscreenRenderingMode=fbo (за замовчуванням)" \
+    title_uk="Встановити OffscreenRenderingMode=fbo (за замовчуванням)" \
     title="Set OffscreenRenderingMode=fbo (default)"
 w_metadata orm=backbuffer settings \
-    title_uk="Поставити OffscreenRenderingMode=backbuffer" \
+    title_uk="Встановити OffscreenRenderingMode=backbuffer" \
     title="Set OffscreenRenderingMode=backbuffer"
 
 load_orm()
@@ -18012,7 +18013,7 @@ load_orm()
 #----------------------------------------------------------------
 
 w_metadata strictdrawordering=enabled settings \
-    title_uk="Включити StrictDrawOrdering" \
+    title_uk="Увімкнути StrictDrawOrdering" \
     title="Enable StrictDrawOrdering"
 w_metadata strictdrawordering=disabled settings \
     title_uk="Вимкнути StrictDrawOrdering (за замовчуванням)" \
@@ -18026,22 +18027,22 @@ load_strictdrawordering()
 #----------------------------------------------------------------
 
 w_metadata rtlm=auto settings \
-    title_uk="Поставити RenderTargetLockMode на авто (за замовчуванням)" \
+    title_uk="Встановити RenderTargetLockMode на авто (за замовчуванням)" \
     title="Set RenderTargetLockMode to auto (default)"
 w_metadata rtlm=disabled settings \
     title_uk="Вимкнути RenderTargetLockMode" \
     title="Set RenderTargetLockMode to disabled"
 w_metadata rtlm=readdraw settings \
-    title_uk="Поставити RenderTargetLockMode на readdraw" \
+    title_uk="Встановити RenderTargetLockMode на readdraw" \
     title="Set RenderTargetLockMode to readdraw"
 w_metadata rtlm=readtex settings \
-    title_uk="Поставити RenderTargetLockMode на readtex" \
+    title_uk="Встановити RenderTargetLockMode на readtex" \
     title="Set RenderTargetLockMode to readtex"
 w_metadata rtlm=texdraw settings \
-    title_uk="Поставити RenderTargetLockMode на texdraw" \
+    title_uk="Встановити RenderTargetLockMode на texdraw" \
     title="Set RenderTargetLockMode to texdraw"
 w_metadata rtlm=textex settings \
-    title_uk="Поставити RenderTargetLockMode на textex" \
+    title_uk="Встановити RenderTargetLockMode на textex" \
     title="Set RenderTargetLockMode to textex"
 
 load_rtlm()
@@ -18053,7 +18054,7 @@ load_rtlm()
 # AlwaysOffscreen settings
 
 w_metadata ao=enabled settings \
-    title_uk="Включити AlwaysOffscreen" \
+    title_uk="Увімкнути AlwaysOffscreen" \
     title="Enable AlwaysOffscreen"
 w_metadata ao=disabled settings \
     title_uk="Вимкнути AlwaysOffscreen (за замовчуванням)" \
@@ -18068,7 +18069,7 @@ load_ao()
 # CheckFloatConstants settings
 
 w_metadata cfc=enabled settings \
-    title_uk="Включити CheckFloatConstants" \
+    title_uk="Увімкнути CheckFloatConstants" \
     title="Enable CheckFloatConstants"
 w_metadata cfc=disable settings \
     title_uk="Вимкнути CheckFloatConstants (за замовчуванням)" \
@@ -18082,8 +18083,10 @@ load_cfc()
 # CSMT settings
 
 w_metadata csmt=on settings \
+    title_uk="Увімкнути Command Stream Multithreading" \
     title="Enable Command Stream Multithreading"
 w_metadata csmt=off settings \
+    title_uk="Вимкнути Command Stream Multithreading (за замовчуванням)" \
     title="Disable Command Stream Multithreading (default)"
 
 load_csmt()
@@ -18109,10 +18112,10 @@ _EOF_
 # DirectDraw settings
 
 w_metadata ddr=gdi settings \
-    title_uk="Поставити DirectDrawRenderer на gdi" \
+    title_uk="Встановити DirectDrawRenderer на gdi" \
     title="Set DirectDrawRenderer to gdi"
 w_metadata ddr=opengl settings \
-    title_uk="Поставити DirectDrawRenderer на opengl" \
+    title_uk="Встановити DirectDrawRenderer на opengl" \
     title="Set DirectDrawRenderer to opengl"
 
 load_ddr()
@@ -18124,10 +18127,10 @@ load_ddr()
 # DirectInput settings
 
 w_metadata mwo=force settings \
-    title_uk="Поставити примусове DirectInput MouseWarpOverride (необхідно для деяких ігор)" \
+    title_uk="Встановити примусове DirectInput MouseWarpOverride (необхідно для деяких ігор)" \
     title="Set DirectInput MouseWarpOverride to force (needed by some games)"
 w_metadata mwo=enabled settings \
-    title_uk="Включити DirectInput MouseWarpOverride (за замовчуванням)" \
+    title_uk="Увімкнути DirectInput MouseWarpOverride (за замовчуванням)" \
     title="Set DirectInput MouseWarpOverride to enabled (default)"
 w_metadata mwo=disable settings \
     title_uk="Вимкнути DirectInput MouseWarpOverride" \
@@ -18160,7 +18163,7 @@ _EOF_
 # Mac Driver settings
 
 w_metadata macdriver=mac settings \
-    title_uk="Включити рідний Mac Quartz драйвер (за замовчуванням)" \
+    title_uk="Увімкнути рідний Mac Quartz драйвер (за замовчуванням)" \
     title="Enable the Mac native Quartz driver (default)"
 w_metadata macdriver=x11 settings \
     title_uk="Вимкнути рідний Mac Quartz драйвер та використовувати замість нього X11" \
@@ -18281,13 +18284,13 @@ w_metadata fontsmooth=disable settings \
     title_uk="Вимкнути згладжування шрифту" \
     title="Disable font smoothing"
 w_metadata fontsmooth=bgr settings \
-    title_uk="Включити субпіксельне згладжування шрифту для BGR LCD моніторів" \
+    title_uk="Увімкнути субпіксельне згладжування шрифту для BGR LCD моніторів" \
     title="Enable subpixel font smoothing for BGR LCDs"
 w_metadata fontsmooth=rgb settings \
-    title_uk="Включити субпіксельне згладжування шрифту для RGB LCD моніторів" \
+    title_uk="Увімкнути субпіксельне згладжування шрифту для RGB LCD моніторів" \
     title="Enable subpixel font smoothing for RGB LCDs"
 w_metadata fontsmooth=gray settings \
-    title_uk="Включити субпіксельне згладжування шрифту" \
+    title_uk="Увімкнути субпіксельне згладжування шрифту" \
     title="Enable subpixel font smoothing"
 
 load_fontsmooth()
@@ -18318,7 +18321,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata forcemono settings \
-    title_uk="Примусове використання mono замість .NET (для налогодження)" \
+    title_uk="Примусове використання mono замість .NET (для налагодження)" \
     title="Force using Mono instead of .NET (for debugging)"
 
 load_forcemono()
@@ -18330,12 +18333,16 @@ load_forcemono()
 #----------------------------------------------------------------
 
 w_metadata gsm=0 settings \
+    title_uk="Встановити MaxShaderModelGS на 0" \
     title="Set MaxShaderModelGS to 0"
 w_metadata gsm=1 settings \
+    title_uk="Встановити MaxShaderModelGS на 1" \
     title="Set MaxShaderModelGS to 1"
 w_metadata gsm=2 settings \
+    title_uk="Встановити MaxShaderModelGS на 2" \
     title="Set MaxShaderModelGS to 2"
 w_metadata gsm=3 settings \
+    title_uk="Встановити MaxShaderModelGS на 3" \
     title="Set MaxShaderModelGS to 3"
 
 load_gsm()
@@ -18346,7 +18353,7 @@ load_gsm()
 #----------------------------------------------------------------
 
 w_metadata heapcheck settings \
-    title_uk="Включити накопичувальну перевірку GlobalFlag" \
+    title_uk="Увімкнути накопичувальну перевірку GlobalFlag" \
     title="Enable heap checking with GlobalFlag"
 
 load_heapcheck()
@@ -18465,7 +18472,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata nt40 settings \
-    title_uk="Поставити версію Windows NT 4.0" \
+    title_uk="Встановити версію Windows NT 4.0" \
     title="Set windows version to Windows NT 4.0"
 
 load_nt40()
@@ -18476,12 +18483,16 @@ load_nt40()
 #----------------------------------------------------------------
 
 w_metadata psm=0 settings \
+    title_uk="Встановити MaxShaderModelPS на 0" \
     title="Set MaxShaderModelPS to 0"
 w_metadata psm=1 settings \
+    title_uk="Встановити MaxShaderModelPS на 1" \
     title="Set MaxShaderModelPS to 1"
 w_metadata psm=2 settings \
+    title_uk="Встановити MaxShaderModelPS на 2" \
     title="Set MaxShaderModelPS to 2"
 w_metadata psm=3 settings \
+    title_uk="Встановити MaxShaderModelPS на 3" \
     title="Set MaxShaderModelPS to 3"
 
 load_psm()
@@ -18527,19 +18538,19 @@ load_sandbox()
 #----------------------------------------------------------------
 
 w_metadata sound=alsa settings \
-    title_uk="Поставити звуковий драйвер ALSA" \
+    title_uk="Встановити звуковий драйвер ALSA" \
     title="Set sound driver to ALSA"
 w_metadata sound=coreaudio settings \
-    title_uk="Поставити звуковий драйвер Mac CoreAudio" \
+    title_uk="Встановити звуковий драйвер Mac CoreAudio" \
     title="Set sound driver to Mac CoreAudio"
 w_metadata sound=disabled settings \
     title_uk="Вимкнути звуковий драйвер" \
     title="Set sound driver to disabled"
 w_metadata sound=oss settings \
-    title_uk="Поставити звуковий драйвер OSS" \
+    title_uk="Встановити звуковий драйвер OSS" \
     title="Set sound driver to OSS"
 w_metadata sound=pulse settings \
-    title_uk="Поставити звуковий драйвер PulseAudio" \
+    title_uk="Встановити звуковий драйвер PulseAudio" \
     title="Set sound driver to PulseAudio"
 
 load_sound()
@@ -18561,19 +18572,19 @@ w_metadata vd=off settings \
     title_uk="Вимкнути віртуальний робочий стіл" \
     title="Disable virtual desktop"
 w_metadata vd=640x480 settings \
-    title_uk="Включити віртуальний робочий стіл та поставити розмір 640x480" \
+    title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 640x480" \
     title="Enable virtual desktop, set size to 640x480"
 w_metadata vd=800x600 settings \
-    title_uk="Включити віртуальний робочий стіл та поставити розмір 800x600" \
+    title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 800x600" \
     title="Enable virtual desktop, set size to 800x600"
 w_metadata vd=1024x768 settings \
-    title_uk="Включити віртуальний робочий стіл та поставити розмір 1024x768" \
+    title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 1024x768" \
     title="Enable virtual desktop, set size to 1024x768"
 w_metadata vd=1280x1024 settings \
-    title_uk="Включити віртуальний робочий стіл та поставити розмір 1280x1024" \
+    title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 1280x1024" \
     title="Enable virtual desktop, set size to 1280x1024"
 w_metadata vd=1440x900 settings \
-    title_uk="Включити віртуальний робочий стіл та поставити розмір 1440x900" \
+    title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 1440x900" \
     title="Enable virtual desktop, set size to 1440x900"
 
 load_vd()
@@ -18655,7 +18666,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata vista settings \
-    title_uk="Поставити версію Windows Vista" \
+    title_uk="Встановити версію Windows Vista" \
     title="Set Windows version to Windows Vista"
 
 load_vista()
@@ -18666,12 +18677,16 @@ load_vista()
 #----------------------------------------------------------------
 
 w_metadata vsm=0 settings \
+    title_uk="Встановити MaxShaderModelVS на 0" \
     title="Set MaxShaderModelVS to 0"
 w_metadata vsm=1 settings \
+    title_uk="Встановити MaxShaderModelVS на 1" \
     title="Set MaxShaderModelVS to 1"
 w_metadata vsm=2 settings \
+    title_uk="Встановити MaxShaderModelVS на 2" \
     title="Set MaxShaderModelVS to 2"
 w_metadata vsm=3 settings \
+    title_uk="Встановити MaxShaderModelVS на 3" \
     title="Set MaxShaderModelVS to 3"
 
 load_vsm()
@@ -18682,7 +18697,7 @@ load_vsm()
 #----------------------------------------------------------------
 
 w_metadata win2k settings \
-    title_uk="Поставити версію Windows 2000" \
+    title_uk="Встановити версію Windows 2000" \
     title="Set Windows version to Windows 2000"
 
 load_win2k()
@@ -18693,7 +18708,7 @@ load_win2k()
 #----------------------------------------------------------------
 
 w_metadata win2k3 settings \
-    title_uk="Поставити версію Windows 2003" \
+    title_uk="Встановити версію Windows 2003" \
     title="Set Windows version to Windows 2003"
 
 load_win2k3()
@@ -18705,7 +18720,7 @@ load_win2k3()
 #----------------------------------------------------------------
 
 w_metadata win2k8 settings \
-    title_uk="Поставити версію Windows 2008 R2" \
+    title_uk="Встановити версію Windows 2008 R2" \
     title="Set Windows version to Windows 2008 R2"
 
 load_win2k8()
@@ -18716,7 +18731,7 @@ load_win2k8()
 #----------------------------------------------------------------
 
 w_metadata win31 settings \
-    title_uk="Поставити версію Windows 3.1" \
+    title_uk="Встановити версію Windows 3.1" \
     title="Set Windows version to Windows 3.1"
 
 load_win31()
@@ -18727,7 +18742,7 @@ load_win31()
 #----------------------------------------------------------------
 
 w_metadata win7 settings \
-    title_uk="Поставити версію Windows 7" \
+    title_uk="Встановити версію Windows 7" \
     title="Set Windows version to Windows 7"
 
 load_win7()
@@ -18738,7 +18753,7 @@ load_win7()
 #----------------------------------------------------------------
 
 w_metadata win8 settings \
-    title_uk="Поставити версію Windows 8" \
+    title_uk="Встановити версію Windows 8" \
     title="Set Windows version to Windows 8"
 
 load_win8()
@@ -18749,7 +18764,7 @@ load_win8()
 #----------------------------------------------------------------
 
 w_metadata win81 settings \
-    title_uk="Поставити версію Windows 8.1" \
+    title_uk="Встановити версію Windows 8.1" \
     title="Set Windows version to Windows 8.1"
 
 load_win81()
@@ -18760,7 +18775,7 @@ load_win81()
 #----------------------------------------------------------------
 
 w_metadata win10 settings \
-    title_uk="Поставити версію Windows 10" \
+    title_uk="Встановити версію Windows 10" \
     title="Set Windows version to Windows 10"
 
 load_win10()
@@ -18771,7 +18786,7 @@ load_win10()
 #----------------------------------------------------------------
 
 w_metadata win95 settings \
-    title_uk="Поставити версію Windows 95" \
+    title_uk="Встановити версію Windows 95" \
     title="Set Windows version to Windows 95"
 
 load_win95()
@@ -18782,7 +18797,7 @@ load_win95()
 #----------------------------------------------------------------
 
 w_metadata win98 settings \
-    title_uk="Поставити версію Windows 98" \
+    title_uk="Встановити версію Windows 98" \
     title="Set Windows version to Windows 98"
 
 load_win98()
@@ -18794,7 +18809,7 @@ load_win98()
 
 # Really, we should support other values, since winetricks did
 w_metadata winver= settings \
-    title_uk="Поставити версію Windows за замовчуванням (win7)" \
+    title_uk="Встановити версію Windows за замовчуванням (Windows 7)" \
     title="Set Windows version to default (win7)"
 
 load_winver()
@@ -18805,7 +18820,7 @@ load_winver()
 #----------------------------------------------------------------
 
 w_metadata winxp settings \
-    title_uk="Поставити версію Windows XP" \
+    title_uk="Встановити версію Windows XP" \
     title="Set Windows version to Windows XP"
 
 load_winxp()
@@ -18875,6 +18890,12 @@ winetricks_stats_init()
                 question="Czy chcesz pomóc w rozwoju Winetricks pozwalając na wysyłanie statystyk przez program? Możesz wyłączyć tą opcję w każdej chwili z użyciem komendy 'winetricks --optout'."
                 thanks="Dziękujemy!  Nie otrzymasz już tego pytania.  Pamiętaj, ze możesz wyłączyć tą opcję komendą 'winetricks --optout'"
                 declined="OK, Winetricks *nie* będzie wysyłać statystyk.  Nie otrzymasz już tego pytania."
+                ;;
+            uk*)
+                title="Допомога в розробці Winetricks"
+                question="Ви хочете допомогти в розробці Winetricks дозволивши звітувати статистику?\nВи можете в будь-який час вимкнути цю опцію за допомогою команди 'winetricks --optout'"
+                thanks="Дякуємо! Ви більше не отримуватиме це питання знову. Пам'ятайте, що ви можете будь-коли вимкнути звітність за допомогою команди 'winetricks --optout'"
+                declined="Надсилання звітності Winetricks вимкнено. Ви більше не отримуватиме це питання знову."
                 ;;
             *)
                 title="One-time question about helping Winetricks development"
