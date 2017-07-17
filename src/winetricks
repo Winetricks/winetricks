@@ -2889,7 +2889,7 @@ winetricks_dl_url_to_stdout()
 
 winetricks_dl_warning() {
     case $LANG in
-        ru*) _W_countrymsg="Скрипт определил, что ваш IP адрес принадлежит России. Если во время загрузки файлов вы увидите ошибки несоответствия сертификата, перезапустите скрипт с опцией '--torify' или скачайте файлы вручную, например, используя VPN." ;;
+        ru*) _W_countrymsg="Скрипт определил, что ваш IP-адрес принадлежит России. Если во время загрузки файлов вы увидите ошибки несоответствия сертификата, перезапустите скрипт с опцией '--torify' или скачайте файлы вручную, например, используя VPN." ;;
         pl*) _W_countrymsg="Wykryto, że twój adres IP należy do Rosji. W wypadku problemów z pobieraniem, uruchom z parametrem '--torify' lub pobierz plik manualnie, np. z użyciem VPN." ;;
         *)  _W_countrymsg="Your IP address has been determined to belong to Russia. If you encounter a certificate error while downloading, please relaunch with the '--torify' option, or download files manually, for instance using VPN." ;;
     esac
@@ -3087,7 +3087,7 @@ winetricks_prefixmenu()
          _W_msg_unattended1="Включить автоматическую установку"
          _W_msg_showbroken0="Спрятать нерабочие программы (например, использующие DRM)"
          _W_msg_showbroken1="Отобразить нерабочие программы (например, использующие DRM)"
-         _W_msg_help="Просмотр справки (в веб браузере)"
+         _W_msg_help="Просмотр справки (в веб-браузере)"
          ;;
     uk*) _W_msg_title="Winetricks - виберіть wineprefix"
          _W_msg_body='Що Ви хочете зробити?'
@@ -3298,13 +3298,13 @@ winetricks_mainmenu()
          ;;
     ru*) _W_msg_title="Winetricks - текущий путь для wine (wineprefix) \"$WINEPREFIX\""
          _W_msg_body='Что вы хотите сделать с этим wineprefix?'
-         _W_msg_dlls="Установить DLL библиотеку или компонент Windows"
+         _W_msg_dlls="Установить библиотеку DLL или компонент Windows"
          _W_msg_fonts='Установить шрифт'
          _W_msg_settings='Поменять настройки'
          _W_msg_winecfg='Запустить winecfg (редактор настроек wine)'
-         _W_msg_regedit='Запустить regedit (редактор рееста)'
+         _W_msg_regedit='Запустить regedit (редактор реестра)'
          _W_msg_taskmgr='Запустить taskmgr (менеджер задач)'
-         _W_msg_uninstaller='Запустить uninstaller (деинсталятор)'
+         _W_msg_uninstaller='Запустить uninstaller (деинсталлятор)'
          _W_msg_shell='Запустить графический терминал (для отладки)'
          _W_msg_folder='Проводник файлов'
          _W_msg_annihilate="Удалить ВСЕ ДАННЫЕ И ПРИЛОЖЕНИЯ В ЭТОМ WINEPREFIX"
