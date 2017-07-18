@@ -310,7 +310,10 @@ w_package_broken_win64()
 w_package_unsupported_win64()
 {
     if [ "$W_ARCH" = "win64" ] ; then
-        w_die "This package does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32."
+        case $LANG in
+            ru*) w_die "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
+            *) w_die "This package does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32." ;;
+        esac
     fi
 }
 
@@ -318,7 +321,10 @@ w_package_unsupported_win64()
 w_package_warn_win64()
 {
     if [ "$W_ARCH" = "win64" ] ; then
-        w_warn "This package may not fully work on a 64-bit installation. 32-bit prefixes may work better."
+        case $LANG in
+            ru*) w_warn "Данный пакет может работать не полностью в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
+            *) w_warn "This package may not fully work on a 64-bit installation. 32-bit prefixes may work better." ;;
+        esac
     fi
 }
 
@@ -350,7 +356,10 @@ w_try()
     status=$?
     if test $status -ne 0
     then
-        w_die "Note: command $* returned status $status.  Aborting."
+        case $LANG in
+            ru*) w_die "Важно: команда $* вернула статус $status. Прерывание." ;;
+            *) w_die "Note: command $* returned status $status. Aborting." ;;
+        esac
     fi
 }
 
@@ -655,7 +664,10 @@ w_verify_sha1sum()
 
     w_get_sha1sum "$_W_vs_file"
     if [ "$_W_gotsha1sum"x != "$_W_vs_wantsum"x ] ; then
-        w_die "sha1sum mismatch!  Rename $_W_vs_file and try again."
+        case $LANG in
+            ru*) w_die "Контрольная сумма sha1sum не совпадает! Переименуйте файл $_W_vs_file и попробуйте еще раз." ;;
+            *) w_die "sha1sum mismatch! Rename $_W_vs_file and try again." ;;
+        esac
     fi
     unset _W_vs_wantsum _W_vs_file _W_gotsha1sum
 }
@@ -668,7 +680,10 @@ w_verify_sha256sum()
 
     w_get_sha256sum "$_W_vs_file"
     if [ "$_W_gotsha256sum"x != "$_W_vs_wantsum"x ] ; then
-        w_die "sha256sum mismatch!  Rename $_W_vs_file and try again."
+        case $LANG in
+            ru*) w_die "Контрольная сумма sha256sum не совпадает! Переименуйте файл $_W_vs_file и попробуйте еще раз." ;;
+            *) w_die "sha256sum mismatch! Rename $_W_vs_file and try again." ;;
+        esac
     fi
     unset _W_vs_wantsum _W_vs_file _W_gotsha256sum
 }
@@ -702,8 +717,12 @@ winetricks_parse_wget_progress()
 {
     # Parse a percentage, a size, and a time into $1, $2 and $3
     # then use them to create the output line.
-    perl -p -e \
-       '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Downloading... \2 (\3)/'
+    case $LANG in
+        ru*) perl -p -e \
+            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Загрузка... \2 (\3)/' ;;
+        *) perl -p -e \
+            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Downloading... \2 (\3)/' ;;
+    esac
 }
 
 # Execute wget, and if in GUI mode, also show a graphical progress bar
@@ -958,7 +977,10 @@ w_download_to()
                 esac
 
                 if test ! "$WINETRICKS_CONTINUE_DOWNLOAD" ; then
-                    w_warn "Checksum for $_W_cache/$_W_file did not match, retrying download"
+                    case $LANG in
+                        ru*) w_warn "Контрольная сумма файла $_W_cache/$_W_file не совпадает, попытка повторной загрузки" ;;
+                        *) w_warn "Checksum for $_W_cache/$_W_file did not match, retrying download" ;;
+                    esac
                     mv -f "$_W_cache/$_W_file" "$_W_cache/$_W_file".bak
                 fi
             else
@@ -4686,7 +4708,10 @@ winetricks_set_wineprefix()
         # shellcheck disable=SC2034
         W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
         # 64-bit prefixes still have plenty of issues:
-        w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages.  If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug."
+        case $LANG in
+            ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
+            *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
+        esac
     else
         W_ARCH=win32
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
@@ -8664,7 +8689,10 @@ load_quicktime72()
         # https://support.apple.com/kb/HT1425
         # in QuickTimePlayer.
 
-        w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play."
+        case $LANG in
+            ru*) w_warn "В настройках Quicktime включите Дополнительно / Безопасный режим (только gdi), иначе видеофайлы не будут воспроизводиться." ;;
+            *) w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play." ;;
+        esac
         if test "$W_UNATTENDED_SLASH_Q" = ""
         then
             w_try "$WINE" control "$W_PROGRAMS_WIN\\QuickTime\\QTSystem\\QuickTime.cpl"
@@ -8701,7 +8729,10 @@ load_quicktime76()
         # https://support.apple.com/kb/HT1425
         # in QuickTimePlayer.
 
-        w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play."
+        case $LANG in
+            ru*) w_warn "В настройках Quicktime включите Дополнительно / Безопасный режим (только gdi), иначе видеофайлы не будут воспроизводиться." ;;
+            *) w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play." ;;
+        esac
         if test "$W_UNATTENDED_SLASH_Q" = ""
         then
             w_try "$WINE" control "$W_PROGRAMS_WIN\\QuickTime\\QTSystem\\QuickTime.cpl"
