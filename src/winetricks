@@ -4920,6 +4920,11 @@ winetricks_init()
     # wine-2.8
     _wine_version_stripped="$(echo "$WINETRICKS_WINE_VERSION" | cut -d ' ' -f1 | sed -e 's/wine-//' -e 's/-rc.*//')"
 
+    # If WINE is < 2.0, warn user:
+    if w_wine_version_in 2.0, ; then
+        w_warn "Your version of wine $_wine_version_stripped is no longer supported upstream. You should upgrade to 2.x"
+    fi
+
     if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
         echo "Using winetricks $(winetricks_print_version) with ${WINETRICKS_ORIG_WINE_VERSION} and WINEARCH=${W_ARCH}"
     fi
