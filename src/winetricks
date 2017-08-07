@@ -1779,7 +1779,7 @@ w_common_override_dll()
     module="$2"
 
     # Remove wine's builtin manifest, if present. Use:
-    # wineboot ; find "$WINEPREFIX"/drive_c/windows/winsxs/ -iname *manifest | grep deadbeef | sort
+    # wineboot ; find "$WINEPREFIX"/drive_c/windows/winsxs/ -iname \*deadbeef.manifest | sort
     case "$W_PACKAGE" in
         comctl32)
             w_try rm -rf "$W_WINDIR_UNIX"/winsxs/manifests/amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.2600.2982_none_deadbeef.manifest
