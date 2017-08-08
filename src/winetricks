@@ -5241,7 +5241,14 @@ load_adobeair()
     # 2017/03/14: 20.0.0.260 (strings 'Adobe AIR.dll' | grep 20\\. ) sha256sum 318770b9a18e59ca4a721a1f5c2b0235cffdbe77a043e99cb2af32074d61de45
     w_download https://airdownload.adobe.com/air/win/download/20.0/AdobeAIRInstaller.exe 318770b9a18e59ca4a721a1f5c2b0235cffdbe77a043e99cb2af32074d61de45
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=43506
+    # and https://github.com/Winetricks/winetricks/issues/821
+    if w_workaround_wine_bug 43506 "Forcing quiet install"; then
+        w_try "$WINE" AdobeAIRInstaller.exe -silent
+    else
+        w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
+    fi
 }
 
 #----------------------------------------------------------------
