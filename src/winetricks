@@ -2422,7 +2422,7 @@ w_compare_wine_version()
         *) w_die "Unsupported comparison. Only -ge and -le are supported" ;;
     esac
 
-    _pos_current_wine="$(printf "%s\n%s\n%s" "${known_wine_val1}" "${_wine_version_stripped}" "${known_wine_val2}" | sort -V | grep -n "^${_wine_version_stripped}\$" | cut -d : -f1)"
+    _pos_current_wine="$(printf "%s\n%s\n%s" "${known_wine_val1}" "${_wine_version_stripped}" "${known_wine_val2}" | sort -n -t. -k1 -k3 | grep -n "^${_wine_version_stripped}\$" | cut -d : -f1)"
     if [ "$_pos_current_wine" = "$_expected_pos_current_wine" ] ; then
         #echo "true: known_wine_version=$2, comparison=$1, stripped wine=$_wine_version_stripped, expected_pos=$_expected_pos_known, pos_known=$_pos_known_wine"
         #echo "Wine version comparison is true"
