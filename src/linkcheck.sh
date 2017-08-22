@@ -15,8 +15,7 @@ passes=0
 errors=0
 
 check_deps() {
-    if ! test -x "$(which curl 2>/dev/null)"
-    then
+    if ! test -x "$(which curl 2>/dev/null)"; then
         echo "Please install curl"
         exit 1
     fi
@@ -49,7 +48,7 @@ w_download() {
 extract_all() {
     # https://github.com/koalaman/shellcheck/issues/861
     # shellcheck disable=SC1003
-    grep '^ *w_download ' winetricks | grep -E 'ftp|http|WINETRICKS_SOURCEFORGE'| sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+    grep '^ *w_download ' winetricks | grep -E 'ftp|http|WINETRICKS_SOURCEFORGE' | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
     # shellcheck disable=SC1091
     . ./url-script-fragment.tmp
 }
@@ -62,8 +61,7 @@ show_one() {
     urlfile=$1
     base=${urlfile%.url}
     url="$(cat "$urlfile")"
-    if grep -E "HTTP.*200|HTTP.*30[0-9]|Content-Length" "$base.log" > /dev/null
-    then
+    if grep -E "HTTP.*200|HTTP.*30[0-9]|Content-Length" "$base.log" > /dev/null; then
         passes=$((passes + 1))
     else
         echo "BAD $url"
