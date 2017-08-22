@@ -7414,8 +7414,8 @@ w_metadata gmdls dlls \
 load_gmdls()
 {
     # Originally at https://download.microsoft.com/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe
-    # Mirror list: http://www.filewatcher.com/m/DX81Redist.exe.25746272-0.html
-    w_download_to directx8 ftp://140.164.21.241/dati_server_win/a_ERALAB/Data/Software/Remote_Sensing/NI-1428/NI-IMAQ/v.3.1.1/NIIMAQ311/DirectX%208.1/DX81Redist.exe 5ddc1a8e204381254dc5d65f406584787155983adf245a75000dcd0d2efb04c6
+    # Only archive.org seems to have it now
+    w_download_to directx8 http://web.archive.org/web/20070105100243if_/http://download.microsoft.com:80/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe 5ddc1a8e204381254dc5d65f406584787155983adf245a75000dcd0d2efb04c6
 
     w_try_unzip "$W_TMP" "$W_CACHE"/directx8/DX81Redist.exe "*/*/DirectX.cab"
     w_try_cabextract -d "$W_TMP" -F gm16.dls "$W_TMP"/*/*/DirectX.cab
@@ -11090,8 +11090,8 @@ load_ie8()
     w_set_winver winxp
 
     # Unregister Wine IE
-    if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"
     #if [ ! -f "$W_SYSTEM32_DLLS"/plugin.ocx ]; then
+    if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"; then
         w_override_dlls builtin iexplore.exe
         w_try "$WINE" iexplore -unregserver
     fi
