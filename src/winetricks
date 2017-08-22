@@ -586,15 +586,15 @@ winetricks_wintounix()
 w_pathconv()
 {
     case "$W_PLATFORM" in
-     windows_cmd)
-        # for some reason, cygpath turns some spaces into newlines?!
-        cygpath "$@" | tr '\012' '\040' | sed 's/ $//'
-        ;;
-     *)
-        case "$@" in
-        -u?c:\\*|-u?C:\\*|-u?c:/*|-u?C:/*) winetricks_wintounix "$2" ;;
-        *) winetricks_early_wine winepath "$@" ;;
-        esac
+        windows_cmd)
+            # for some reason, cygpath turns some spaces into newlines?!
+            cygpath "$@" | tr '\012' '\040' | sed 's/ $//'
+            ;;
+        *)
+            case "$@" in
+                -u?c:\\*|-u?C:\\*|-u?c:/*|-u?C:/*) winetricks_wintounix "$2" ;;
+                *) winetricks_early_wine winepath "$@" ;;
+            esac
         ;;
     esac
 }
@@ -647,11 +647,11 @@ w_get_shatype() {
     # See https://stackoverflow.com/questions/30927590/wc-on-osx-return-includes-spaces/30927885#30927885
     _W_sum_length="$(echo "$_W_sum" | tr -d "\n" | wc -c | tr -d " ")"
     case "$_W_sum_length" in
-         0) _W_shatype="none" ;;
-         40) _W_shatype="sha1" ;;
-         64) _W_shatype="sha256" ;;
-         # 128) sha512..
-         *) w_die "unsupported shasum..bug" ;;
+        0) _W_shatype="none" ;;
+        40) _W_shatype="sha1" ;;
+        64) _W_shatype="sha256" ;;
+        # 128) sha512..
+        *) w_die "unsupported shasum..bug" ;;
     esac
 }
 
@@ -860,7 +860,7 @@ winetricks_selfupdate()
             w_try mv "$_W_tmpdir/$_W_filename" "${_W_update_file}.gz"
             w_try gunzip "${_W_update_file}.gz"
             ;;
-         *)
+        *)
             echo "Unknown file type: $update_file_type"
             exit 1
             ;;
@@ -1032,50 +1032,49 @@ w_download_to()
                 --stream-piece-selector=geom \
                 "$_W_url"
         elif [ "${WINETRICKS_DOWNLOADER}" = "wget" ] ; then
-           # Use -nd to insulate ourselves from people who set -x in WGETRC
-           # [*] --retry-connrefused works around the broken sf.net mirroring
-           # system when downloading corefonts
-           # [*] --read-timeout is useful on the adobe server that doesn't
-           # close the connection unless you tell it to (control-C or closing
-           # the socket)
+            # Use -nd to insulate ourselves from people who set -x in WGETRC
+            # [*] --retry-connrefused works around the broken sf.net mirroring
+            # system when downloading corefonts
+            # [*] --read-timeout is useful on the adobe server that doesn't
+            # close the connection unless you tell it to (control-C or closing
+            # the socket)
 
-           # shellcheck disable=SC2086
-           winetricks_wget_progress \
-               -O "$_W_file" \
-               -nd \
-               -c\
-               --read-timeout 300 \
-               --retry-connrefused \
-               --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-               --tries "$WINETRICKS_DOWNLOADER_RETRIES" \
-               ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
-               ${_W_agent:+--user-agent="$_W_agent"} \
-               "$_W_url"
+            # shellcheck disable=SC2086
+            winetricks_wget_progress \
+                -O "$_W_file" \
+                -nd \
+                -c\
+                --read-timeout 300 \
+                --retry-connrefused \
+                --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+                --tries "$WINETRICKS_DOWNLOADER_RETRIES" \
+                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
+                ${_W_agent:+--user-agent="$_W_agent"} \
+                "$_W_url"
         elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ] ; then
-           # Note: curl does not accept '=' when passing options
+            # Note: curl does not accept '=' when passing options
+            # curl doesn't get filename from the location given by the server!
+            # fortunately, we know it
 
-           # curl doesn't get filename from the location given by the server!
-           # fortunately, we know it
-
-           # shellcheck disable=SC2086
-           $torify curl \
-               --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-               -L \
-               -o "$_W_file" \
-               -C - \
-               --retry "$WINETRICKS_DOWNLOADER_RETRIES" \
-               ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
-               ${_W_agent:+--user-agent "$_W_agent"} \
-               "$_W_url"
+            # shellcheck disable=SC2086
+            $torify curl \
+                --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+                -L \
+                -o "$_W_file" \
+                -C - \
+                --retry "$WINETRICKS_DOWNLOADER_RETRIES" \
+                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
+                ${_W_agent:+--user-agent "$_W_agent"} \
+                "$_W_url"
         elif [ "${WINETRICKS_DOWNLOADER}" = "fetch" ] ; then
-           # Note: fetch does not support configurable retry count
+            # Note: fetch does not support configurable retry count
 
-           # shellcheck disable=SC2086
-           $torify fetch \
-               -T "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-               -o "$_W_file" \
-               ${_W_agent:+--user-agent="$_W_agent"} \
-               "$_W_url"
+            # shellcheck disable=SC2086
+            $torify fetch \
+                -T "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+                -o "$_W_file" \
+                ${_W_agent:+--user-agent="$_W_agent"} \
+                "$_W_url"
         else
             w_die "Here be dragons"
         fi
@@ -1286,18 +1285,18 @@ sub read_into_container{
     $_ = <FILE> || w_die "Can't read first line of container";
     /{/ || w_die "First line of container was not {";
     while (<FILE>) {
-       chomp;
-       if (/"([^"]*)"\s*"([^"]*)"$/) {
-           ${$pcontainer}{$1} = $2;
-       } elsif (/"([^"]*)"$/) {
-             my( %newcon, $name );
-             $name = $1;
-             read_into_container(\%newcon);
-             ${$pcontainer}{$name} = \%newcon;
+        chomp;
+        if (/"([^"]*)"\s*"([^"]*)"$/) {
+            ${$pcontainer}{$1} = $2;
+        } elsif (/"([^"]*)"$/) {
+            my( %newcon, $name );
+            $name = $1;
+            read_into_container(\%newcon);
+            ${$pcontainer}{$name} = \%newcon;
         } elsif (/}/) {
-              return;
+            return;
         } else {
-                w_die "huh?";
+            w_die "huh?";
         }
     }
 }
@@ -7854,22 +7853,27 @@ load_kde()
 w_metadata kindle apps \
     title="Amazon Kindle" \
     publisher="Amazon" \
-    year="2016" \
+    year="2017" \
     media="download" \
-    file1="KindleForPC-installer-1.16.44025.exe" \
+    file1="KindleForPC-installer-1.20.47037.exe" \
     installed_exe1="$W_PROGRAMS_WIN/Amazon/Kindle/Kindle.exe" \
-    homepage="http://www.amazon.com/gp/feature.html/?docId=1000426311"
+    homepage="https://www.amazon.com/kindle-dbs/fd/kcp"
 
 load_kindle()
 {
-    w_download http://kindleforpc.amazon.com/44025/KindleForPC-installer-1.16.44025.exe 2655fa8be7b8f4659276c46ef9f3fede847135bf6e5c1de136c9de7af6cac1e2
+    w_download https://s3.amazonaws.com/kindleforpc/47037/KindleForPC-installer-1.20.47037.exe cb20581d3455d458c7ac4bafa5c67dcfc5186c7b35951168efcf5a8263706b47
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
 
-    if w_workaround_wine_bug 35041
-    then
+    if w_workaround_wine_bug 35041; then
         w_warn "You may need to run with taskset -c 0 to avoid a libX11 crash."
     fi
+
+    if w_workaround_wine_bug 29045; then
+        w_call corefonts
+    fi
+
+    w_warn "If kindle does not load for you, try increasing your open file limit"
 }
 
 #----------------------------------------------------------------
