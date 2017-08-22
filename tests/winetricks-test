@@ -133,8 +133,7 @@ errors=0
 # Better to find out they're missing now than in the
 # middle of a two day run.
 check_deps() {
-    for tool in time cabextract
-    do
+    for tool in time cabextract; do
         which $tool
         ret=$?
 
@@ -142,7 +141,7 @@ check_deps() {
             echo "Please install $tool."
             exit 1
         fi
-     done
+    done
 }
 
 fail()
@@ -180,47 +179,49 @@ case "$LANG" in
 esac
 
 case "$OS" in
- "Windows_NT")
-    # Mostly unimplemented...
-    # Cheezy fix for getting rid of double slashes when running cygwin in wine
-    case "$HOME" in
-      /) HOME="" ;;
-    esac
-    WINE=""
-    WINESERVER=true
-    #DRIVE_C="C:/"
-    ;;
- *)
-    export WINE=${WINE:-wine}
-    # Find wineserver.  Some distros (Debian) don't have it on the path,
-    # on the mistaken understanding that user scripts never need it :-(
-    # If wineserver is from wine-development set WINE to wine-development.
-    # FIXME: get packagers to put wineserver on the path.
-    for x in \
-        "$WINESERVER" \
-        "${WINE}server" \
-        "$(which wineserver 2> /dev/null)" \
-        "$(dirname $WINE)/server/wineserver" \
-        /usr/lib/wine/wineserver \
-        /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
-        /usr/lib/i386-linux-gnu/wine/wineserver \
-        /usr/lib/powerpc-linux-gnu/wine/wineserver \
-        /usr/lib/i386-kfreebsd-gnu/wine/bin/wineserver \
-        /usr/lib/i386-linux-gnu/wine/bin/wineserver \
-        /usr/lib/powerpc-linux-gnu/wine/bin/wineserver \
-        /usr/lib/x86_64-linux-gnu/wine/bin/wineserver \
-        /usr/lib/i386-kfreebsd-gnu/wine-development/wineserver \
-        /usr/lib/i386-linux-gnu/wine-development/wineserver \
-        /usr/lib/powerpc-linux-gnu/wine-development/wineserver \
-        /usr/lib/x86_64-linux-gnu/wine-development/wineserver \
-        file-not-found
+    "Windows_NT")
+        # Mostly unimplemented...
+        # Cheezy fix for getting rid of double slashes when running cygwin in wine
+        case "$HOME" in
+            /) HOME="" ;;
+        esac
+
+        WINE=""
+        WINESERVER=true
+        #DRIVE_C="C:/"
+        ;;
+    *)
+        export WINE=${WINE:-wine}
+        # Find wineserver.  Some distros (Debian) don't have it on the path,
+        # on the mistaken understanding that user scripts never need it :-(
+        # If wineserver is from wine-development set WINE to wine-development.
+        # FIXME: get packagers to put wineserver on the path.
+        for x in \
+            "$WINESERVER" \
+            "${WINE}server" \
+            "$(which wineserver 2> /dev/null)" \
+            "$(dirname $WINE)/server/wineserver" \
+            /usr/lib/wine/wineserver \
+            /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
+            /usr/lib/i386-linux-gnu/wine/wineserver \
+            /usr/lib/powerpc-linux-gnu/wine/wineserver \
+            /usr/lib/i386-kfreebsd-gnu/wine/bin/wineserver \
+            /usr/lib/i386-linux-gnu/wine/bin/wineserver \
+            /usr/lib/powerpc-linux-gnu/wine/bin/wineserver \
+            /usr/lib/x86_64-linux-gnu/wine/bin/wineserver \
+            /usr/lib/i386-kfreebsd-gnu/wine-development/wineserver \
+            /usr/lib/i386-linux-gnu/wine-development/wineserver \
+            /usr/lib/powerpc-linux-gnu/wine-development/wineserver \
+            /usr/lib/x86_64-linux-gnu/wine-development/wineserver \
+            file-not-found
     do
         if [ -x "$x" ] ; then
             case "$x" in
                 /usr/lib/*/wine-development/wineserver)
-                        if [ -x /usr/bin/wine-development ] ; then
-                            WINE="/usr/bin/wine-development"
-                        fi ;;
+                    if [ -x /usr/bin/wine-development ] ; then
+                        WINE="/usr/bin/wine-development"
+                    fi
+                    ;;
             esac
             break
         fi
@@ -350,8 +351,7 @@ test_command()
     echo "test_app: ${app}: install_time $seconds seconds."
 
     # Cleanup:
-    for x in $command
-    do
+    for x in $command; do
         case $x in
         dotnet*)
             # bug in wine?  the wineconsoles are for the langpacks, and seem empty.
@@ -544,8 +544,7 @@ test_dotnet()
     # verify that each individual installer works:
     # skipping dotnet30sp1/dotnet35/dotnet35sp1/dotnet45, known to hang (FIXME bug)
     # dotnet20sp2: https://bugs.winehq.org/show_bug.cgi?id=40460
-    for x in dotnet11 dotnet11sp1 dotnet20 dotnet20sp1 dotnet30 dotnet40 dotnet46 dotnet461 dotnet462
-    do
+    for x in dotnet11 dotnet11sp1 dotnet20 dotnet20sp1 dotnet30 dotnet40 dotnet46 dotnet461 dotnet462; do
         echo "testing $x"
         test_command --verify $x
     done
@@ -554,15 +553,13 @@ test_dotnet()
 
     # combinations that should work:
     # FIXME: dotnet20sp2: https://bugs.winehq.org/show_bug.cgi?id=40460
-    for combo in "dotnet20 dotnet20sp2"
-    do
+    for combo in "dotnet20 dotnet20sp2"; do
         # shellcheck disable=SC2086
         EXPECT_FAIL=yes test_command --verify $combo
     done
 
     # combinations that should break:
-    for fail_combo in "dotnet11 dotnet20"
-    do
+    for fail_combo in "dotnet11 dotnet20"; do
         # shellcheck disable=SC2086
         EXPECT_FAIL=yes test_command $fail_combo
     done
@@ -589,8 +586,7 @@ test_install_cached_or_download()
         VERBS=$(cat ticd.verbs)
     fi
 
-    for a in $VERBS
-    do
+    for a in $VERBS; do
         test_app "$a"
     done
 
@@ -623,8 +619,7 @@ test_quick()
     echo "warning: quick test takes up around 20GB"
     # Test the frequent download-changes-checksum offenders first
     export W_CACHE="$cache"
-    for a in $QUICKCHECK
-    do
+    for a in $QUICKCHECK; do
         # shellcheck disable=SC2115
         rm -rf "$WINE_PREFIXES/$a"
         test_app "$a"
@@ -683,7 +678,7 @@ load_test_version()
 }
 _EOF
 elif [ "${workaround_expected}" = "no" ] ; then
-      cat > "${outputdir}/test_version.verb" <<_EOF
+    cat > "${outputdir}/test_version.verb" <<_EOF
 w_metadata test_version settings
 
 load_test_version()
