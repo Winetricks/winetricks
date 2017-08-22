@@ -53,8 +53,7 @@ else
     files_to_check="$(find . -type f -exec file {} \; | grep -e 'POSIX shell script' | cut -d : -f1)"
 fi
 
-for shellscript in $files_to_check
-do
+for shellscript in $files_to_check; do
     echo "Checking ${shellscript} for bashisms:"
     w_try checkbashisms --posix "${shellscript}"
 
