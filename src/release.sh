@@ -70,16 +70,16 @@ echo "${version}" > files/LATEST
 
 # Update verb lists:
 # actual categories
-./src/winetricks apps list > files/verbs/apps.txt
-./src/winetricks benchmarks list > files/verbs/benchmarks.txt
-./src/winetricks dlls list > files/verbs/dlls.txt
-./src/winetricks games list > files/verbs/games.txt
-./src/winetricks settings list > files/verbs/settings.txt
+./src/winetricks apps list | sed 's/[[:blank:]]*$//' > files/verbs/apps.txt
+./src/winetricks benchmarks list | sed 's/[[:blank:]]*$//' > files/verbs/benchmarks.txt
+./src/winetricks dlls list | sed 's/[[:blank:]]*$//' > files/verbs/dlls.txt
+./src/winetricks games list | sed 's/[[:blank:]]*$//' > files/verbs/games.txt
+./src/winetricks settings list | sed 's/[[:blank:]]*$//' > files/verbs/settings.txt
 
 # meta categories
-./src/winetricks list-all > files/verbs/all.txt
-./src/winetricks list-download > files/verbs/download.txt
-./src/winetricks list-manual-download > files/verbs/manual-download.txt
+./src/winetricks list-all | sed 's/[[:blank:]]*$//' > files/verbs/all.txt
+./src/winetricks list-download | sed 's/[[:blank:]]*$//' > files/verbs/download.txt
+./src/winetricks list-manual-download | sed 's/[[:blank:]]*$//' > files/verbs/manual-download.txt
 
 git commit files/LATEST files/verbs/*.txt src/winetricks src/winetricks.1 -m "version bump - ${version}"
 git tag -s -m "winetricks-${version}" "${version}"
