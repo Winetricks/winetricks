@@ -20,8 +20,7 @@ w_die() {
 w_try() {
     "$@"
     status=$?
-    if test $status -ne 0
-    then
+    if test $status -ne 0; then
         w_die "Note: command $* returned status $status.  Aborting."
     fi
 }

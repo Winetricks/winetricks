@@ -166,8 +166,7 @@ w_die()
 w_time()
 {
     # OSX time doesn't support -o, so try it first:
-    if ! /usr/bin/time -o "${outputdir}/test.log" echo test > /dev/null 2>&1
-    then
+    if ! /usr/bin/time -o "${outputdir}/test.log" echo test > /dev/null 2>&1; then
         /usr/bin/time -p "$@"
     else
         /usr/bin/time -p -o "${outputdir}/time.log" "$@"
@@ -237,8 +236,7 @@ esac
 test_speed()
 {
     # shellcheck disable=SC2086
-    if ! w_time $XVFB $WINETRICKS nocrashdialog "$1" > "${outputdir}/foo.log"
-    then
+    if ! w_time $XVFB $WINETRICKS nocrashdialog "$1" > "${outputdir}/foo.log"; then
         fail "winetricks $1 returned status $?"
     fi
 
@@ -292,8 +290,7 @@ test_app()
     *)
         # no xvfb needed
         ./winetricks -q list-installed > "${outputdir}/list-installed.out"
-        if ! grep -w "$app" "${outputdir}/list-installed.out"
-        then
+        if ! grep -w "$app" "${outputdir}/list-installed.out"; then
             fail "test app $app not installed after install?"
         fi
         ;;
