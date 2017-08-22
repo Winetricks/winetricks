@@ -64,8 +64,7 @@ for shellscript in $files_to_check; do
 
     # Can't ignore individual things for now, filed bug:
     # https://bugs.launchpad.net/bash8/+bug/1698088
-    # E003=indent spacing check
     # E006=line length check
     # E010=do/while same line (in some perl in winetricks)
-    w_try bashate -i E003,E006,E010 "${shellscript}"
+    w_try bashate -i E006,E010 "${shellscript}"
 done
