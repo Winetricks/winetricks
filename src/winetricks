@@ -1859,9 +1859,9 @@ w_override_all_dlls()
     #   -e '/^.*\/wsock32$/ d' \
     #   -e 's,.*/,        ,' | sort | fmt -63 | sed 's/$/ \\/'
     #
-    # 2017/04/30: Last list update (wine-2.7)
+    # 2017-09-01: Last list update (wine-2.16)
     w_override_dlls builtin \
-        acledit aclui activeds actxprxy advpack \
+        acledit aclui activeds actxprxy adsldpc advpack \
         amstream api-ms-win-appmodel-identity-l1-1-0 \
         api-ms-win-appmodel-runtime-l1-1-1 \
         api-ms-win-core-apiquery-l1-1-0 \
@@ -1873,6 +1873,7 @@ w_override_all_dlls()
         api-ms-win-core-com-private-l1-1-0 \
         api-ms-win-core-console-l1-1-0 \
         api-ms-win-core-console-l2-1-0 \
+        api-ms-win-core-crt-l1-1-0 api-ms-win-core-crt-l2-1-0 \
         api-ms-win-core-datetime-l1-1-0 \
         api-ms-win-core-datetime-l1-1-1 \
         api-ms-win-core-debug-l1-1-0 \
@@ -1928,6 +1929,7 @@ w_override_all_dlls()
         api-ms-win-core-processthreads-l1-1-1 \
         api-ms-win-core-processthreads-l1-1-2 \
         api-ms-win-core-profile-l1-1-0 \
+        api-ms-win-core-psapi-ansi-l1-1-0 \
         api-ms-win-core-psapi-l1-1-0 \
         api-ms-win-core-psapi-obsolete-l1-1-0 \
         api-ms-win-core-quirks-l1-1-0 \
@@ -2000,22 +2002,27 @@ w_override_all_dlls()
         api-ms-win-eventing-classicprovider-l1-1-0 \
         api-ms-win-eventing-consumer-l1-1-0 \
         api-ms-win-eventing-controller-l1-1-0 \
+        api-ms-win-eventing-legacy-l1-1-0 \
         api-ms-win-eventing-provider-l1-1-0 \
         api-ms-win-eventlog-legacy-l1-1-0 \
         api-ms-win-mm-misc-l1-1-1 api-ms-win-mm-mme-l1-1-0 \
+        api-ms-win-mm-time-l1-1-0 \
         api-ms-win-ntuser-dc-access-l1-1-0 \
         api-ms-win-power-base-l1-1-0 \
         api-ms-win-power-setting-l1-1-0 \
         api-ms-win-rtcore-ntuser-private-l1-1-0 \
+        api-ms-win-security-activedirectoryclient-l1-1-0 \
         api-ms-win-security-audit-l1-1-1 \
         api-ms-win-security-base-l1-1-0 \
         api-ms-win-security-base-l1-2-0 \
         api-ms-win-security-base-private-l1-1-1 \
+        api-ms-win-security-credentials-l1-1-0 \
         api-ms-win-security-grouppolicy-l1-1-0 \
         api-ms-win-security-lsalookup-l1-1-0 \
         api-ms-win-security-lsalookup-l1-1-1 \
         api-ms-win-security-lsalookup-l2-1-1 \
         api-ms-win-security-lsapolicy-l1-1-0 \
+        api-ms-win-security-provider-l1-1-0 \
         api-ms-win-security-sddl-l1-1-0 \
         api-ms-win-security-systemfunctions-l1-1-0 \
         api-ms-win-service-core-l1-1-0 \
@@ -2028,47 +2035,54 @@ w_override_all_dlls()
         api-ms-win-shell-shellcom-l1-1-0 \
         api-ms-win-shell-shellfolders-l1-1-0 apphelp \
         appwiz.cpl atl atl100 atl110 atl80 atl90 authz \
-        avicap32 avifil32 avrt bcrypt bluetoothapis browseui \
-        bthprops.cpl cabinet cards cfgmgr32 clusapi combase \
-        comcat comctl32 comdlg32 compstui comsvcs concrt140 \
-        connect credui crtdll crypt32 cryptdlg cryptdll \
-        cryptext cryptnet cryptui ctapi32 ctl3d32 d2d1 d3d10 \
-        d3d10_1 d3d10core d3d11 d3d8 d3d9 d3dcompiler_33 \
-        d3dcompiler_34 d3dcompiler_35 d3dcompiler_36 \
-        d3dcompiler_37 d3dcompiler_38 d3dcompiler_39 \
-        d3dcompiler_40 d3dcompiler_41 d3dcompiler_42 \
-        d3dcompiler_43 d3dcompiler_46 d3dcompiler_47 d3dim \
-        d3drm d3dx10_33 d3dx10_34 d3dx10_35 d3dx10_36 \
-        d3dx10_37 d3dx10_38 d3dx10_39 d3dx10_40 d3dx10_41 \
-        d3dx10_42 d3dx10_43 d3dx11_42 d3dx11_43 d3dx9_24 \
-        d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 d3dx9_29 d3dx9_30 \
-        d3dx9_31 d3dx9_32 d3dx9_33 d3dx9_34 d3dx9_35 d3dx9_36 \
-        d3dx9_37 d3dx9_38 d3dx9_39 d3dx9_40 d3dx9_41 d3dx9_42 \
-        d3dx9_43 d3dxof davclnt dbgeng dciman32 ddrawex \
-        devenum dhcpcsvc difxapi dinput dinput8 dispex dmband \
-        dmcompos dmime dmloader dmscript dmstyle dmsynth \
-        dmusic dmusic32 dnsapi dplay dplayx dpnaddr dpnet \
-        dpnhpast dpnlobby dpvoice dpwsockx drmclien dsound \
-        dssenh dswave dwmapi dwrite dxdiagn dxgi dxva2 esent \
-        evr explorerframe ext-ms-win-domainjoin-netjoin-l1-1-0 \
+        avicap32 avifil32 avrt bcrypt bluetoothapis \
+        browseui bthprops.cpl cabinet cards cfgmgr32 \
+        clusapi combase comcat comctl32 comdlg32 compstui \
+        comsvcs concrt140 connect credui crtdll crypt32 \
+        cryptdlg cryptdll cryptext cryptnet cryptui ctapi32 \
+        ctl3d32 d2d1 d3d10 d3d10_1 d3d10core d3d11 d3d8 \
+        d3d9 d3dcompiler_33 d3dcompiler_34 d3dcompiler_35 \
+        d3dcompiler_36 d3dcompiler_37 d3dcompiler_38 \
+        d3dcompiler_39 d3dcompiler_40 d3dcompiler_41 \
+        d3dcompiler_42 d3dcompiler_43 d3dcompiler_46 \
+        d3dcompiler_47 d3dim d3drm d3dx10_33 d3dx10_34 \
+        d3dx10_35 d3dx10_36 d3dx10_37 d3dx10_38 d3dx10_39 \
+        d3dx10_40 d3dx10_41 d3dx10_42 d3dx10_43 d3dx11_42 \
+        d3dx11_43 d3dx9_24 d3dx9_25 d3dx9_26 d3dx9_27 d3dx9_28 \
+        d3dx9_29 d3dx9_30 d3dx9_31 d3dx9_32 d3dx9_33 d3dx9_34 \
+        d3dx9_35 d3dx9_36 d3dx9_37 d3dx9_38 d3dx9_39 d3dx9_40 \
+        d3dx9_41 d3dx9_42 d3dx9_43 d3dxof davclnt dbgeng \
+        dciman32 ddrawex devenum dhcpcsvc difxapi dinput \
+        dinput8 dispex dmband dmcompos dmime dmloader \
+        dmscript dmstyle dmsynth dmusic dmusic32 dnsapi \
+        dplay dplayx dpnaddr dpnet dpnhpast dpnlobby \
+        dpvoice dpwsockx drmclien dsound dsquery dssenh \
+        dswave dwmapi dwrite dxdiagn dxgi dxva2 esent evr \
+        explorerframe ext-ms-win-authz-context-l1-1-0 \
+        ext-ms-win-domainjoin-netjoin-l1-1-0 \
         ext-ms-win-gdi-dc-create-l1-1-1 \
         ext-ms-win-gdi-dc-l1-2-0 ext-ms-win-gdi-devcaps-l1-1-0 \
         ext-ms-win-gdi-draw-l1-1-1 \
         ext-ms-win-gdi-render-l1-1-0 \
         ext-ms-win-kernel32-package-current-l1-1-0 \
+        ext-ms-win-kernel32-package-l1-1-1 \
         ext-ms-win-ntuser-message-l1-1-1 \
         ext-ms-win-ntuser-private-l1-1-1 \
         ext-ms-win-ntuser-rectangle-ext-l1-1-0 \
         ext-ms-win-ntuser-uicontext-ext-l1-1-0 \
+        ext-ms-win-ntuser-windowclass-l1-1-1 \
         ext-ms-win-ntuser-window-l1-1-1 \
+        ext-ms-win-ras-rasapi32-l1-1-0 \
         ext-ms-win-rtcore-gdi-object-l1-1-0 \
         ext-ms-win-rtcore-gdi-rgn-l1-1-0 \
         ext-ms-win-rtcore-ntuser-dc-access-l1-1-0 \
         ext-ms-win-rtcore-ntuser-dpi-l1-1-0 \
-        ext-ms-win-rtcore-ntuser-sysparams-l1-1-0 faultrep \
-        fltlib fltmgr.sys fntcache fontsub fusion fwpuclnt \
-        gameux gdiplus gpkcsp hal hhctrl.ocx hid hidclass.sys \
-        hlink hnetcfg httpapi iccvid ieframe imaadp32.acm \
+        ext-ms-win-rtcore-ntuser-sysparams-l1-1-0 \
+        ext-ms-win-security-credui-l1-1-0 \
+        ext-ms-win-security-cryptui-l1-1-0 faultrep fltlib \
+        fltmgr.sys fntcache fontsub fusion fwpuclnt gameux \
+        gdiplus gpkcsp hal hhctrl.ocx hid hidclass.sys hlink \
+        hnetcfg httpapi iccvid ieframe ieproxy imaadp32.acm \
         imagehlp imm32 inetcomm inetcpl.cpl inetmib1 infosoft \
         initpki inkobj inseng iprop irprops.cpl itircl itss \
         joy.cpl jscript jsproxy kernelbase ksuser ktmw32 \
@@ -2099,23 +2113,23 @@ w_override_all_dlls()
         security sensapi serialui setupapi sfc sfc_os shdoclc \
         shdocvw shell32 shfolder shlwapi slbcsp slc snmpapi \
         softpub spoolss sspicli sti svrapi sxs t2embed tapi32 \
-        taskschd tdi.sys traffic ucrtbase uiautomationcore \
-        updspapi url urlmon usbd.sys userenv usp10 uxtheme \
-        vbscript vcomp vcomp100 vcomp110 vcomp120 vcomp140 \
-        vcomp90 vcruntime140 version virtdisk vssapi \
+        taskschd tdh tdi.sys traffic ucrtbase uiautomationcore \
+        uiribbon updspapi url urlmon usbd.sys userenv usp10 \
+        uxtheme vbscript vcomp vcomp100 vcomp110 vcomp120 \
+        vcomp140 vcomp90 vcruntime140 version virtdisk vssapi \
         wbemdisp wbemprox webservices wer wevtapi wiaservc \
         wimgapi windowscodecs windowscodecsext winebus.sys \
         winegstreamer winehid.sys winemapi wing32 winhttp \
         wininet winnls32 winscard winsta wintrust winusb \
-        wlanapi wldap32 wmasf wmi wmiutils wmp wmvcore wpc \
-        wpcap wsdapi wshom.ocx wsnmp32 wtsapi32 wuapi wuaueng \
-        x3daudio1_0 x3daudio1_1 x3daudio1_2 x3daudio1_3 \
-        x3daudio1_4 x3daudio1_5 x3daudio1_6 x3daudio1_7 \
-        xapofx1_1 xapofx1_2 xapofx1_3 xapofx1_4 xapofx1_5 \
-        xaudio2_0 xaudio2_1 xaudio2_2 xaudio2_3 xaudio2_4 \
-        xaudio2_5 xaudio2_6 xaudio2_7 xaudio2_8 xaudio2_9 \
-        xinput1_1 xinput1_2 xinput1_3 xinput1_4 xinput9_1_0 \
-        xmllite xolehlp xpsprint xpssvcs \
+        wlanapi wldap32 wmasf wmi wmiutils wmp wmphoto \
+        wmvcore wpc wpcap wsdapi wshom.ocx wsnmp32 wtsapi32 \
+        wuapi wuaueng x3daudio1_0 x3daudio1_1 x3daudio1_2 \
+        x3daudio1_3 x3daudio1_4 x3daudio1_5 x3daudio1_6 \
+        x3daudio1_7 xapofx1_1 xapofx1_2 xapofx1_3 xapofx1_4 \
+        xapofx1_5 xaudio2_0 xaudio2_1 xaudio2_2 xaudio2_3 \
+        xaudio2_4 xaudio2_5 xaudio2_6 xaudio2_7 xaudio2_8 \
+        xaudio2_9 xinput1_1 xinput1_2 xinput1_3 xinput1_4 \
+        xinput9_1_0 xmllite xolehlp xpsprint xpssvcs \
 
         # blank line so you don't have to remove the extra trailing \
 }
