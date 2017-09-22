@@ -8678,20 +8678,20 @@ w_metadata remove_mono settings \
 
 load_remove_mono()
 {
-    mono_uuid="$($WINE uninstaller --list | grep Mono | cut -f1 -d\|)"
+    mono_uuid="$("${WINE_ARCH}" uninstaller --list | grep Mono | cut -f1 -d\|)"
     if test "$mono_uuid"; then
-         "$WINE" uninstaller --remove "$mono_uuid"
+         "${WINE_ARCH}" uninstaller --remove "$mono_uuid"
     else
         w_warn "Mono does not appear to be installed."
     fi
 
     # FIXME: verify on pristine Windows XP:
     if w_workaround_wine_bug 34803; then
-        "$WINE" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled' /f
+        "${WINE_ARCH}" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled' /f
     fi
 
-    "$WINE" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
-    "$WINE" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f || true
+    "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
+    "${WINE_ARCH}" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f || true
 
     w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
 }
