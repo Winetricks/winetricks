@@ -304,6 +304,7 @@ w_package_broken_win64()
 
 # Some packages don't support win64, die with an appropriate message
 # Note: this is for packages that natively don't support win64, not packages that are broken on wine64, for that, use w_package_broken_win64()
+# Returns 32 (for tests/winetricks-test)
 w_package_unsupported_win64()
 {
     if [ "$W_ARCH" = "win64" ] ; then
@@ -311,6 +312,7 @@ w_package_unsupported_win64()
             ru*) w_die "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
             *) w_die "This package ($W_PACKAGE) does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32." ;;
         esac
+        exit 32
     fi
 }
 
