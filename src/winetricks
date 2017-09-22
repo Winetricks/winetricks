@@ -11088,6 +11088,8 @@ w_metadata ie7 dlls \
 
 load_ie7()
 {
+    w_package_unsupported_win64
+
     # Unregister Wine IE
     if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"; then
         w_override_dlls builtin iexplore.exe
