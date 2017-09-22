@@ -9496,10 +9496,7 @@ w_metadata vjrun20 dlls \
 
 load_vjrun20()
 {
-    if [ $W_ARCH = win64 ]; then
-        w_warn "vjrun20 depends on dotnet20, which doesn't work on 64-bit Wine yet. Skipping."
-        return
-    fi
+    w_package_unsupported_win64
 
     w_call dotnet20
 
