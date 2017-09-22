@@ -128,6 +128,7 @@ QUICKCHECK="flash steam"
 
 passes=0
 errors=0
+skips=0
 
 # Check for programs this script (or winetricks) uses.
 # Better to find out they're missing now than in the
@@ -156,10 +157,16 @@ pass()
     passes=$((passes + 1))
 }
 
+skip()
+{
+    echo "SKIP: $*"
+    skips=$((skips + 1))
+    was_skipped=1
+}
+
 w_die()
 {
     echo "$*"
-
     exit 1
 }
 
@@ -270,6 +277,7 @@ total_df()
 test_app()
 {
     app=$1
+    was_skipped=0
 
     # Watch transient disk space
     DF_START=$(total_df)
@@ -283,29 +291,33 @@ test_app()
 
     test_command --verify "$app"
 
-    # Post install:
-    # Don't check whether metaverbs are installed
-    case "$app" in
-        allcodecs) ;;
-        *)
-            # no xvfb needed
-            ./winetricks -q list-installed > "${outputdir}/list-installed.out"
-            if ! grep -w "$app" "${outputdir}/list-installed.out"; then
-                fail "test app $app not installed after install?"
-            fi
-            ;;
-    esac
+    if [ $was_skipped = 1 ]; then
+        skip "post-install file check for skipped verb $app"
+    else
+        # Post install:
+        # Don't check whether metaverbs are installed
+        case "$app" in
+            allcodecs) ;;
+            *)
+                # no xvfb needed
+                ./winetricks -q list-installed > "${outputdir}/list-installed.out"
+                if ! grep -w "$app" "${outputdir}/list-installed.out"; then
+                    fail "test app $app not installed after install?"
+                fi
+                ;;
+        esac
 
-    # Cleanup..
-    rm "${outputdir}/df-daemon"
-    # Total max disk usage = max df change plus any initial blocks in cache
-    DF_MIN=$(awk '{ if (min == "" || $1 < min) min=$1; } END {printf "%d\n", min}' < "${outputdir}/df-during.log" )
-    DF_DIFF=$((DF_START - DF_MIN))
-    TOTAL=$((DF_DIFF + DU_CACHE_START))
-    echo "test_app: ${app}: max_disk $TOTAL blocks."
-    TOTAL_MB=$((TOTAL / 1024))
-    mkdir -p "${outputdir}/measurements"
-    echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> "${outputdir}/measurements/$app.dat"
+        # Cleanup..
+        rm "${outputdir}/df-daemon"
+        # Total max disk usage = max df change plus any initial blocks in cache
+        DF_MIN=$(awk '{ if (min == "" || $1 < min) min=$1; } END {printf "%d\n", min}' < "${outputdir}/df-during.log" )
+        DF_DIFF=$((DF_START - DF_MIN))
+        TOTAL=$((DF_DIFF + DU_CACHE_START))
+        echo "test_app: ${app}: max_disk $TOTAL blocks."
+        TOTAL_MB=$((TOTAL / 1024))
+        mkdir -p "${outputdir}/measurements"
+        echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> "${outputdir}/measurements/$app.dat"
+    fi
 }
 
 test_command()
@@ -327,14 +339,23 @@ test_command()
     echo "Installing $command"
 
     # shellcheck disable=SC2086
+    $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@"
+    return=$?
+
+    rm "${outputdir}/df-daemon"
+
     if [ "$EXPECT_FAIL" = "yes" ] ; then
         # A success is failure:
-        # shellcheck disable=SC2086
-        $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
-    elif ! w_time $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@" ; then
-        rm "${outputdir}/df-daemon"
-        fail "test_command $command failed!"
-        return
+        if [ "$return" = "0" ] ; then
+            fail "$command succeeded, should have failed"
+        elif [ "$return" = "32" ] && [ "$WINEARCH" != "win32" ]; then
+            skip "$command is not supported on $WINEARCH, requires win32"
+        elif [ "$return" = "64" ] && [ "$WINEARCH" != "win64" ]; then
+            skip "$command is not supported on $WINEARCH, requires win64"
+        else
+            fail "test_command $command failed!"
+            return
+        fi
     else
         echo "winetricks $* completed"
     fi
@@ -769,7 +790,7 @@ case "$1" in
     *) echo "Usage: $0 quick\|full" ; exit 1 ;;
 esac
 
-echo "Test over, $errors failures, $passes successes."
+echo "Test over, $errors failures, $passes successes, $skips skipped."
 if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
     echo PASS
     exit 0
