@@ -425,7 +425,9 @@ w_try_msiexec64()
     w_try "$WINE" start /wait "$W_SYSTEM64_DLLS_WIN32/msiexec.exe" $W_UNATTENDED_SLASH_Q "$@"
 }
 
-w_try_regedit()
+# fixme: cleanup. For wow64 registries, some/all entries need to be duplicated.
+# Not sure of the best way yet, but thinking running wine/wine64 regedit for each?
+w_try_regedit32()
 {
     # on windows, doesn't work without cmd /c
     case "$W_PLATFORM" in
@@ -434,7 +436,32 @@ w_try_regedit()
     esac
 
     # shellcheck disable=SC2086
-    w_try winetricks_early_wine $cmdc regedit $W_UNATTENDED_SLASH_S "$@"
+    w_try "$WINE_MULTI" $cmdc regedit $W_UNATTENDED_SLASH_S "$@"
+}
+
+w_try_regedit64()
+{
+    # on windows, doesn't work without cmd /c
+    case "$W_PLATFORM" in
+        windows_cmd|wine_cmd) cmdc="cmd /c";;
+        *) unset cmdc ;;
+    esac
+
+    # shellcheck disable=SC2086
+    w_try "$WINE64" $cmdc regedit $W_UNATTENDED_SLASH_S "$@"
+}
+
+w_try_regedit()
+{
+    # If on wow64, run under both wine and wine64 (otherwise they only go in the 32-bit registry afaict)
+
+    # shellcheck disable=SC2086
+    if [ "$W_ARCH" = "win32" ]; then
+        w_try_regedit32 "$@"
+    elif [ "$W_ARCH" = "win64" ]; then
+        w_try_regedit32 "$@"
+        w_try_regedit64 "$@"
+    fi
 }
 
 w_try_regsvr()
