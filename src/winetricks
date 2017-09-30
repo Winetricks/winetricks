@@ -2940,7 +2940,10 @@ winetricks_latest_version_check()
 
     # Check that $latest_version is an actual number in case github is down
     if ! echo "${latest_version}" | grep -q -E "[0-9]{8}" || [ -z "${latest_version}" ] ; then
-        w_warn "Github down? version '${latest_version}' doesn't appear to be a valid version"
+        case $LANG in
+            ru*) w_warn "Отсутствует подключение к Github? версия '${latest_version}' может быть неактуальной" ;;
+            *) w_warn "Github down? version '${latest_version}' doesn't appear to be a valid version" ;;
+        esac
     fi
 
     if [ ! "$WINETRICKS_VERSION" = "${latest_version}" ] && [ ! "$WINETRICKS_VERSION" = "${latest_version}-next" ]; then
@@ -2950,8 +2953,16 @@ winetricks_latest_version_check()
             w_info "auto-update enabled: running winetricks_selfupdate"
             winetricks_selfupdate
         else
-            w_warn "You are running winetricks-${WINETRICKS_VERSION}, latest upstream is winetricks-${latest_version}!"
-            w_warn "You should update using your distribution's package manager, --self-update, or manually."
+            case $LANG in
+            ru*)
+                w_warn "Запущен winetricks-${WINETRICKS_VERSION}, последняя версия winetricks-${latest_version}!"
+                w_warn "Вы можете ее обновить с помощью менеджера пакетов, --self-update или вручную."
+                ;;
+            *)
+                w_warn "You are running winetricks-${WINETRICKS_VERSION}, latest upstream is winetricks-${latest_version}!"
+                w_warn "You should update using your distribution's package manager, --self-update, or manually."
+                ;;
+            esac
         fi
     fi
 }
@@ -18709,15 +18720,21 @@ winetricks_stats_init()
             case $LANG in
             de*)
                 title="Einmalige Frage zur Hilfe an der Winetricks Entwicklung"
-                question="Möchten Sie die Winetricks Entwicklung unterstützen indem Sie Winetricks Statistiken übermitteln lassen?  Sie können die Übermittlung jederzeit mit 'winetricks --optout' ausschalten"
-                thanks="Danke! Sie bekommen diese Frage nicht mehr gestellt.  Sie können die Übermittlung jederzeit mit 'winetricks --optout' wieder ausschalten"
-                declined="OK, Winetricks wird *keine* Statistiken übermitteln.  Sie bekommen diese Frage nicht mehr gestellt."
+                question="Möchten Sie die Winetricks Entwicklung unterstützen indem Sie Winetricks Statistiken übermitteln lassen? Sie können die Übermittlung jederzeit mit 'winetricks --optout' ausschalten"
+                thanks="Danke! Sie bekommen diese Frage nicht mehr gestellt. Sie können die Übermittlung jederzeit mit 'winetricks --optout' wieder ausschalten"
+                declined="OK, Winetricks wird *keine* Statistiken übermitteln. Sie bekommen diese Frage nicht mehr gestellt."
                 ;;
             pl*)
                 title="Jednorazowe pytanie dotyczące pomocy w rozwoju Winetricks"
                 question="Czy chcesz pomóc w rozwoju Winetricks pozwalając na wysyłanie statystyk przez program? Możesz wyłączyć tą opcję w każdej chwili z użyciem komendy 'winetricks --optout'."
-                thanks="Dziękujemy!  Nie otrzymasz już tego pytania.  Pamiętaj, ze możesz wyłączyć tą opcję komendą 'winetricks --optout'"
-                declined="OK, Winetricks *nie* będzie wysyłać statystyk.  Nie otrzymasz już tego pytania."
+                thanks="Dziękujemy! Nie otrzymasz już tego pytania. Pamiętaj, ze możesz wyłączyć tą opcję komendą 'winetricks --optout'"
+                declined="OK, Winetricks *nie* będzie wysyłać statystyk. Nie otrzymasz już tego pytania."
+                ;;
+            ru*)
+                title="Помощь в разработке Winetricks"
+                question="Вы хотите помочь разработке winetricks, отправляя статистику? Вы можете отключить отправку статистики в любое время с помощью команды 'winetricks --optout'"
+                thanks="Спасибо! Этот вопрос больше не появится. Помните: вы можете отключить отправку статистики в любое время с помощью команды 'winetricks --optout'"
+                declined="OK, winetricks НЕ будет отправлять статистику. Этот вопрос больше не появится."
                 ;;
             uk*)
                 title="Допомога в розробці Winetricks"
@@ -18727,9 +18744,9 @@ winetricks_stats_init()
                 ;;
             *)
                 title="One-time question about helping Winetricks development"
-                question="Would you like to help winetricks development by letting winetricks report statistics?  You can turn reporting off at any time with the command 'winetricks --optout'"
-                thanks="Thanks!  You won't be asked this question again.  Remember, you can turn reporting off at any time with the command 'winetricks --optout'"
-                declined="OK, winetricks will *not* report statistics.  You won't be asked this question again."
+                question="Would you like to help winetricks development by letting winetricks report statistics? You can turn reporting off at any time with the command 'winetricks --optout'"
+                thanks="Thanks! You won't be asked this question again. Remember, you can turn reporting off at any time with the command 'winetricks --optout'"
+                declined="OK, winetricks will *not* report statistics. You won't be asked this question again."
                 ;;
             esac
             if $WINETRICKS_GUI --question --text "$question" --title "$title"; then
