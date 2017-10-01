@@ -10389,6 +10389,32 @@ load_uff()
 
 #----------------------------------------------------------------
 
+w_metadata vlgothic fonts \
+    title="VLGothic Japanese fonts" \
+    publisher="Project Vine / Daisuke Suzuki" \
+    year="2014" \
+    media="download" \
+    file1="VLGothic-20141206.tar.xz" \
+    installed_file1="$W_FONTSDIR_WIN/VL-Gothic-Regular.ttf" \
+    homepage="https://ja.osdn.net/projects/vlgothic"
+
+load_vlgothic()
+{
+    # $homepage is already assigned in w_do_call(), and works as expected:
+    # shellcheck disable=SC2154
+    w_download "$homepage/downloads/62375/$file1" 982040db2f9cb73d7c6ab7d9d163f2ed46d1180f330c9ba2fae303649bf8102d
+
+    w_try_cd "$W_TMP"
+
+    unxz -dc "$W_CACHE/$W_PACKAGE/$file1" | tar -xf -
+    w_try mv ./VLGothic/*.ttf "$W_FONTSDIR_UNIX"
+
+    w_register_font VL-Gothic-Regular.ttf "VL Gothic"
+    w_register_font VL-PGothic-Regular.ttf "VL PGothic"
+}
+
+#----------------------------------------------------------------
+
 w_metadata wenquanyi fonts \
     title="WenQuanYi CJK font" \
     publisher="wenq.org" \
