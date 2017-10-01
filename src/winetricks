@@ -10151,6 +10151,28 @@ load_fakejapanese_ipamona()
 
 #----------------------------------------------------------------
 
+w_metadata fakejapanese_vlgothic fonts \
+    title="Creates aliases for Japanese Meiryo fonts using VLGothic fonts" \
+    publisher="Project Vine / Daisuke Suzuki" \
+    year="2014"
+
+load_fakejapanese_vlgothic()
+{
+    w_call vlgothic
+
+    # Aliases to set:
+    # Meiryo UI --> VL Gothic
+    # Meiryo (メイリオ) --> VL Gothic
+
+    jpname_meiryo="$(echo "メイリオ" | iconv -f utf8 -t cp932)"
+
+    w_register_font_replacement "Meiryo UI" "VL Gothic"
+    w_register_font_replacement "Meiryo" "VL Gothic"
+    w_register_font_replacement "$jpname_meiryo" "VL Gothic"
+}
+
+#----------------------------------------------------------------
+
 w_metadata fakekorean fonts \
     title="Creates aliases for Korean fonts using Baekmuk fonts" \
     publisher="Wooderart Inc. / kldp.net" \
