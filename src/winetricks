@@ -10422,6 +10422,9 @@ w_metadata vlgothic fonts \
 
 load_vlgothic()
 {
+    # The "homepage" is already assigned in w_do_call()
+    # and this works as expected
+    # shellcheck disable=SC2154
     w_download "$homepage/downloads/62375/$file1" 982040db2f9cb73d7c6ab7d9d163f2ed46d1180f330c9ba2fae303649bf8102d
 
     w_try_cd "$W_TMP"
