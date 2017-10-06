@@ -4574,6 +4574,9 @@ winetricks_set_wineprefix()
         W_COMMONFILES_WIN="$W_COMMONFILES_X86_WIN"
     fi
 
+    W_COMMONFILES_X86="$(w_pathconv -u "$W_COMMONFILES_X86_WIN")"
+    #W_COMMONFILES="$(w_pathconv -u "$W_COMMONFILES_WIN")"
+
     W_PROGRAMS_UNIX="$(w_pathconv -u "$W_PROGRAMS_WIN")"
     W_WINDIR_UNIX="$W_DRIVE_C/windows"
 
@@ -4614,6 +4617,9 @@ winetricks_set_wineprefix()
         W_SYSTEM64_DLLS_WIN32="C:\\windows\\sysnative" # path to access 64-bit dlls from 32-bit apps
         # shellcheck disable=SC2034
         W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
+        # Common variable for 32-bit dlls on win32/win64:
+        W_32BIT_DLLS="$W_WINDIR_UNIX/syswow64"
+
         # 64-bit prefixes still have plenty of issues:
         case $LANG in
             ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
@@ -4623,6 +4629,8 @@ winetricks_set_wineprefix()
         W_ARCH=win32
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
+        # Common variable for 32-bit dlls on win32/win64:
+        W_32BIT_DLLS="$W_WINDIR_UNIX/system32"
     fi
 }
 
@@ -8823,8 +8831,21 @@ load_speechsdk()
     # Otherwise it only installs the SDK and not the redistributable:
     w_set_winver win2k
 
+    # Only added in wine-2.18
+    for stub in "$W_SYSTEM32_DLLS/Speech/Common/sapi.dll" "$W_SYSTEM64_DLLS/Speech/Common/sapi.dll"; do
+        if [ -f "$stub" ]; then
+            w_try rm "$stub"
+        fi
+    done
+
     w_try_cd "$W_TMP"
     w_try "$WINE" msiexec /i "Microsoft Speech SDK 5.1.msi" $W_UNATTENDED_SLASH_Q
+
+    # If sapi.dll isn't in original location, applications won't start, see
+    # e.g., https://bugs.winehq.org/show_bug.cgi?id=43841
+    w_try ln -s "$W_COMMONFILES_X86/Microsoft Shared/Speech/sapi.dll" "$W_32BIT_DLLS/Speech/Common"
+
+    w_override_dlls native sapi
 
     w_unset_winver
 }
