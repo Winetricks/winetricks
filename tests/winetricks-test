@@ -286,14 +286,14 @@ test_app()
     # Post install:
     # Don't check whether metaverbs are installed
     case "$app" in
-    allcodecs) ;;
-    *)
-        # no xvfb needed
-        ./winetricks -q list-installed > "${outputdir}/list-installed.out"
-        if ! grep -w "$app" "${outputdir}/list-installed.out"; then
-            fail "test app $app not installed after install?"
-        fi
-        ;;
+        allcodecs) ;;
+        *)
+            # no xvfb needed
+            ./winetricks -q list-installed > "${outputdir}/list-installed.out"
+            if ! grep -w "$app" "${outputdir}/list-installed.out"; then
+                fail "test app $app not installed after install?"
+            fi
+            ;;
     esac
 
     # Cleanup..
@@ -350,35 +350,38 @@ test_command()
     # Cleanup:
     for x in $command; do
         case $x in
-        dotnet*)
-            # bug in wine?  the wineconsoles are for the langpacks, and seem empty.
-            if pgrep wineconsole; then
-                killall wineconsole
-            fi
-            ;;
-        wmi)
-            # wmi starts a service
-            if pgrep WinMgmt ; then
-                killall WinMgmt.exe
-            fi
-            ;;
-        fontxplorer)
-            # a number of apps open a folder on the desktop
-            if pgrep winefile ; then
-                killall winefile.exe
-            fi
-            ;;
-        hegemony*)
-            # or should this be in the verb?
-            if pgrep Launcher ; then
-                killall Launcher.exe
-            fi
-            ;;
+            dotnet*)
+                # bug in wine?  the wineconsoles are for the langpacks, and seem empty.
+                if pgrep wineconsole; then
+                    killall wineconsole
+                fi
+                ;;
+            fontxplorer)
+                # a number of apps open a folder on the desktop
+                # FIXME: this should this be in the verb
+                if pgrep winefile ; then
+                    killall winefile.exe
+                fi
+                ;;
+            hegemony*)
+                # FIXME: this should this be in the verb
+                if pgrep Launcher ; then
+                    killall Launcher.exe
+                fi
+                ;;
+            wmi)
+                # wmi starts a service
+                # FIXME: this should this be in the verb
+                if pgrep WinMgmt ; then
+                    killall WinMgmt.exe
+                fi
+                ;;
         esac
     done
 
+    # Arcania-Gothic4, et al
     if pgrep notepad.exe ; then
-        killall notepad.exe          # Arcania-Gothic4 and others
+        killall notepad.exe
     fi
 
     echo "Checking for dangling processes!"
