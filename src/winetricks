@@ -313,6 +313,14 @@ w_package_unsupported_win64()
     fi
 }
 
+w_package_unsupported_win32()
+{
+    if [ "$W_ARCH" = "win32" ]
+    then
+        w_die "This package does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64."
+    fi
+}
+
 # For packages that are not well tested or have some known issues on win64, but aren't broken
 w_package_warn_win64()
 {
@@ -11180,6 +11188,8 @@ w_metadata ie8 dlls \
 
 load_ie8()
 {
+    w_package_unsupported_win64
+
     # Bundled in Windows 7, so refuses to install. Works with XP:
     w_set_winver winxp
 
@@ -11217,7 +11227,7 @@ load_ie8()
 
     # Put a dummy catalog file in place
     mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
-    w_try cp -f "$W_CACHE"/ie8/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
+    w_try cp -f "$W_CACHE"/"$W_PACKAGE"/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
     w_download https://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe 5a2c6c82774bfe99b175f50a05b05bcd1fac7e9d0e54db2534049209f50cd6ef
     if [ $W_UNATTENDED_SLASH_QUIET ]; then
@@ -11270,11 +11280,155 @@ _EOF_
     # Seeing is believing
     case $WINETRICKS_GUI in
     none)
-        w_warn "To start ie8, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
+        w_warn "To start ie8, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
         ;;
     *)
-        w_warn "Starting ie8.  To start it later, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
-        "$WINE" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore" https://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
+        w_warn "Starting ie8.  To start it later, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
+        "$WINE" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" https://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
+        ;;
+    esac
+
+    w_unset_winver
+}
+
+#----------------------------------------------------------------
+
+w_metadata ie8x64 dlls \
+    title="Internet Explorer 8 x64" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="IE8-WindowsServer2003-x64-ENU.exe" \
+    installed_file1="c:/windows/ie8_main.log"
+
+load_ie8x64()
+{
+    w_package_unsupported_win32
+
+    # Bundled in Windows 7, so refuses to install. Works with Win2003:
+    w_set_winver win2k3
+
+    # Unregister Wine IE
+    if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"
+    #if [ ! -f "$W_SYSTEM32_DLLS"/plugin.ocx ]
+    then
+        w_override_dlls builtin iexplore.exe
+        w_try "$WINE" iexplore -unregserver
+    fi
+
+    w_call msls31
+
+    # Change the override to the native so we are sure we use and register them
+    w_override_dlls native,builtin itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
+
+    # IE8 installer will check the version number of iexplore.exe which causes IE8 installer to fail on wine-1.9.0+
+    w_override_dlls native iexplore.exe
+
+    # Bundled updspapi cannot work on Wine
+    w_override_dlls builtin updspapi
+
+    # Remove the fake DLLs from the existing WINEPREFIX
+    if [ -f "$W_DRIVE_C/Program Files (x86)/Internet Explorer/iexplore.exe" ]
+    then
+        mv "$W_DRIVE_C/Program Files (x86)/Internet Explorer/iexplore.exe" "$W_DRIVE_C/Program Files (x86)/Internet Explorer/iexplore.exe.bak"
+    fi
+    for dll in browseui inseng itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon
+    do
+        test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
+        mv "$W_SYSTEM32_DLLS"/$dll.dll "$W_SYSTEM32_DLLS"/$dll.dll.bak
+    done
+
+    if [ -f "$W_DRIVE_C/Program Files/Internet Explorer/iexplore.exe" ]
+    then
+        mv "$W_DRIVE_C/Program Files/Internet Explorer/iexplore.exe" "$W_DRIVE_C/Program Files/Internet Explorer/iexplore.exe.bak"
+    fi
+    for dll in browseui inseng itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon
+    do
+        test -f "$W_SYSTEM64_DLLS"/$dll.dll &&
+        mv "$W_SYSTEM64_DLLS"/$dll.dll "$W_SYSTEM64_DLLS"/$dll.dll.bak
+    done
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=16013
+    # Find instructions to create this file in dlls/wintrust/tests/crypt.c
+    w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat 5d18ab44fc289100ccf4b51cf614cc2d36f7ca053e557e2ba973811293c97d38
+
+    # Put a dummy catalog file in place
+    mkdir -p "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
+    w_try cp -f "$W_CACHE"/"$W_PACKAGE"/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
+
+    w_download https://download.microsoft.com/download/7/5/4/754D6601-662D-4E39-9788-6F90D8E5C097/IE8-WindowsServer2003-x64-ENU.exe bcff753e92ceabf31cfefaa6def146335c7cb27a50b95cd4f4658a0c3326f499
+    if [ $W_UNATTENDED_SLASH_QUIET ]
+    then
+        quiet="$W_UNATTENDED_SLASH_QUIET /forcerestart"
+    else
+        quiet=""
+    fi
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+
+    # KLUDGE: if / is writable, having a Z: mapping to it causes ie8 to put temporary directories on Z:\
+    # so hide it temporarily.  This is not very robust!
+    rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
+    mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
+
+    # FIXME: There's an option for /updates-noupdates to disable checking for updates, but that
+    # forces the install to fail on Wine. Not sure if it's an IE8 or Wine bug...
+    # FIXME: can't check status, as it always reports failure on wine?
+    "$WINE" IE8-WindowsServer2003-x64-ENU.exe $quiet
+    # END KLUDGE: restore Z:, assuming user didn't kill us
+    mv "$WINEPREFIX/dosdevices/z:.bak_wt" "$WINEPREFIX/dosdevices/z:"
+
+    # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
+    # FIXME: whittle down this list
+    w_try_cd "$W_SYSTEM32_DLLS"
+    for i in actxprxy.dll browseui.dll browsewm.dll cdfview.dll ddraw.dll \
+      dispex.dll dsound.dll iedkcs32.dll iepeers.dll iesetup.dll \
+      imgutil.dll inetcomm.dll isetup.dll jscript.dll laprxy.dll \
+      mlang.dll msctf.dll mshtml.dll mshtmled.dll msi.dll msimtf.dll msident.dll \
+      msoeacct.dll msrating.dll mstime.dll msxml3.dll occache.dll \
+      ole32.dll oleaut32.dll olepro32.dll pngfilt.dll quartz.dll \
+      rpcrt4.dll rsabase.dll rsaenh.dll scrobj.dll scrrun.dll \
+      shdocvw.dll shell32.dll urlmon.dll vbscript.dll webcheck.dll \
+      wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
+      plugin.ocx proctexe.ocx tdc.ocx uxtheme.dll webcheck.dll wshom.ocx
+    do
+        "$WINE" regsvr32 /i $i > /dev/null 2>&1
+    done
+
+    w_try_cd "$W_SYSTEM64_DLLS"
+    for i in actxprxy.dll browseui.dll browsewm.dll cdfview.dll ddraw.dll \
+      dispex.dll dsound.dll iedkcs32.dll iepeers.dll iesetup.dll \
+      imgutil.dll inetcomm.dll isetup.dll jscript.dll laprxy.dll \
+      mlang.dll msctf.dll mshtml.dll mshtmled.dll msi.dll msimtf.dll msident.dll \
+      msoeacct.dll msrating.dll mstime.dll msxml3.dll occache.dll \
+      ole32.dll oleaut32.dll olepro32.dll pngfilt.dll quartz.dll \
+      rpcrt4.dll rsabase.dll rsaenh.dll scrobj.dll scrrun.dll \
+      shdocvw.dll shell32.dll urlmon.dll vbscript.dll webcheck.dll \
+      wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
+      plugin.ocx proctexe.ocx tdc.ocx uxtheme.dll webcheck.dll wshom.ocx
+    do
+        "$WINE" regsvr32 /i $i > /dev/null 2>&1
+    done
+
+    if w_workaround_wine_bug 25648 "Setting TabProcGrowth=0 to avoid hang"
+    then
+        cat > "$W_TMP"/set-tabprocgrowth.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main]
+"TabProcGrowth"=dword:00000000
+
+_EOF_
+        w_try_regedit "$W_TMP_WIN"\\set-tabprocgrowth.reg
+    fi
+
+    # Seeing is believing
+    case $WINETRICKS_GUI in
+    none)
+        w_warn "To start ie8, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
+        ;;
+    *)
+        w_warn "Starting ie8.  To start it later, use the command \"$WINE\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
+        "$WINE" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" https://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
         ;;
     esac
 
