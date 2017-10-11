@@ -5439,7 +5439,7 @@ w_metadata binkw32 dlls \
 
 load_binkw32()
 {
-    # Mirror: http://www.dlldump.com/download-dll-files_new.php/dllfiles/B/binkw32.dll/1.0q/download.html
+    # Mirror: https://www.dlldump.com/download-dll-files_new.php/dllfiles/B/binkw32.dll/1.0q/download.html
     # sha256sum of the decompressed file: 1fd7ef7873c8a3be7e2f127b306d0d24d7d88e20cf9188894eff87b5af0d495f
     #
     # Zip sha256sum:
@@ -7166,7 +7166,7 @@ load_dotnet462()
     w_package_warn_win64
 
     if w_workaround_wine_bug 42170 "Running un-official repacked .NET 4.6.2 setup until the official version is fixed."; then
-        # Un-official slim version. See http://repacks.net/forum/viewtopic.php?t=7
+        # Un-official slim version. See https://repacks.net/forum/viewtopic.php?t=7
         file_package="dotNetFx462_Full_x86_x64_Slim.exe"
         w_download https://www.dropbox.com/s/1bdocgbate8hc8z/dotNetFx462_Full_x86_x64_Slim.exe?dl=1 8f03c8a9b2f4666c3707abe2d70145f200cb2f0f3b792626e64d167d1ad0565f $file_package
         unattended_args="/ai /gm2"
@@ -7509,7 +7509,7 @@ load_gmdls()
 {
     # Originally at https://download.microsoft.com/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe
     # Only archive.org seems to have it now
-    w_download_to directx8 http://web.archive.org/web/20070105100243if_/http://download.microsoft.com:80/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe 5ddc1a8e204381254dc5d65f406584787155983adf245a75000dcd0d2efb04c6
+    w_download_to directx8 https://web.archive.org/web/20070105100243if_/download.microsoft.com/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe 5ddc1a8e204381254dc5d65f406584787155983adf245a75000dcd0d2efb04c6
 
     w_try_unzip "$W_TMP" "$W_CACHE"/directx8/DX81Redist.exe "*/*/DirectX.cab"
     w_try_cabextract -d "$W_TMP" -F gm16.dls "$W_TMP"/*/*/DirectX.cab
@@ -8370,7 +8370,7 @@ w_metadata ogg dlls \
 
 load_ogg()
 {
-    w_download http://downloads.xiph.org/releases/oggdsf/opencodecs_0.85.17777.exe fcec3cea637e806501aff447d902de3b5bfef226b629e43ab67e46dbb23f13e7
+    w_download https://downloads.xiph.org/releases/oggdsf/opencodecs_0.85.17777.exe fcec3cea637e806501aff447d902de3b5bfef226b629e43ab67e46dbb23f13e7
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_S
 }
@@ -10347,26 +10347,17 @@ w_metadata liberation fonts \
     publisher="Red Hat" \
     year="2008" \
     media="download" \
-    file1="liberation-fonts-1.04.tar.gz" \
+    file1="liberation-fonts-ttf-1.07.4.tar.gz" \
     installed_file1="$W_FONTSDIR_WIN/LiberationMono-BoldItalic.ttf"
 
 load_liberation()
 {
-    # https://www.redhat.com/en/about/blog/liberation-fonts
-    case $(uname -s) in
-        SunOS|Solaris)
-            echo "If you get 'ERROR: Certificate verification error for fedorahosted.org: unable to get local issuer certificate':"
-            echo "Then you need to add Verisign root certificates to your local keystore."
-            echo "OpenSolaris users, see: https://www.linuxtopia.org/online_books/opensolaris_2008/SYSADV1/html/swmgrpatchtasks-14.html"
-            echo "Or edit winetricks's download function, and add '--no-check-certificate' to the command."
-            ;;
-    esac
-
-    w_download http://pkgs.fedoraproject.org/repo/pkgs/liberation-fonts/liberation-fonts-1.04.tar.gz/4846797ef0fc70b0cbaede2514677c58/liberation-fonts-1.04.tar.gz 0e0d0957c85b758561a3d4aef4ebcd2c39959e5328429d96ae106249d83531a1
+    # https://pagure.io/liberation-fonts
+    w_download https://releases.pagure.org/liberation-fonts/liberation-fonts-ttf-1.07.4.tar.gz 61a7e2b6742a43c73e8762cdfeaf6dfcf9abdd2cfa0b099a9854d69bc4cfee5c
     w_try_cd "$W_TMP"
     # FIXME: w_try doesn't work here, presumably because of the pipe?
     gunzip -dc "$W_CACHE/$W_PACKAGE/$file1" | tar -xf -
-    w_try mv liberation-fonts-1.04/*.ttf "$W_FONTSDIR_UNIX"
+    w_try mv liberation-fonts-ttf-1.07.4/*.ttf "$W_FONTSDIR_UNIX"
 
     w_register_font LiberationMono-BoldItalic.ttf "LiberationMono-BoldItalic"
     w_register_font LiberationMono-Bold.ttf "LiberationMono-Bold"
@@ -12200,8 +12191,8 @@ load_vc2010express()
     # Originally at: https://download.microsoft.com/download/1/E/5/1E5F1C0A-0D5B-426A-A603-1798B951DDAE/VS2010Express1.iso
     # Mirror list at: http://www.filewatcher.com/_/?q=VS2010Express1.iso
     # Formerly at: ftp://www.daba.lv/pub/Programmeeshana/VisualStudio/VS2010Express1.iso a9d5dcdf55e539a06547a8ebbc63d55dc167113e09ee9e42096ab9098313039b
-    w_download https://web.archive.org/web/20140227220734/http://download.microsoft.com/download/1/E/5/1E5F1C0A-0D5B-426A-A603-1798B951DDAE/VS2010Express1.iso a9d5dcdf55e539a06547a8ebbc63d55dc167113e09ee9e42096ab9098313039b
-    
+    w_download https://web.archive.org/web/20140227220734/download.microsoft.com/download/1/E/5/1E5F1C0A-0D5B-426A-A603-1798B951DDAE/VS2010Express1.iso a9d5dcdf55e539a06547a8ebbc63d55dc167113e09ee9e42096ab9098313039b
+
     # Unpack ISO
     w_try_7z "$W_TMP" "$W_CACHE"/vc2010express/VS2010Express1.iso
     w_try_cd "$W_TMP"/VCExpress
@@ -13398,7 +13389,7 @@ w_metadata cim_demo games \
 load_cim_demo()
 {
     # 29 Mar 2011 cf02066f496637c24f95cf0c4ddfae376951330802500fb11bd74cc6c8872995, Inno Setup installer
-    #w_download http://www.pcgamestore.com/games/cities-in-motion-nbsp/trial/cim-demo-1-0-8.exe cf02066f496637c24f95cf0c4ddfae376951330802500fb11bd74cc6c8872995
+    #w_download https://www.pcgamestore.com/games/cities-in-motion-nbsp/trial/cim-demo-1-0-8.exe cf02066f496637c24f95cf0c4ddfae376951330802500fb11bd74cc6c8872995
     w_download_manual https://www.fileplanet.com/218762/210000/fileinfo/Cities-in-Motion-Demo cim-demo-1-0-8.exe cf02066f496637c24f95cf0c4ddfae376951330802500fb11bd74cc6c8872995
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" cim-demo-1-0-8.exe ${W_OPT_UNATTENDED:+ /sp- /silent /norestart}
