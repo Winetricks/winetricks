@@ -9648,21 +9648,19 @@ load_windowscodecs()
 w_metadata winhttp dlls \
     title="MS Windows HTTP Services" \
     publisher="Microsoft" \
-    year="2011" \
+    year="2005" \
     media="download" \
-    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    file1="../win2ksp4/W2KSP4_EN.EXE" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/winhttp.dll"
 
 load_winhttp()
 {
-    helper_win7sp1 x86_microsoft.windows.winhttp_31bf3856ad364e35_5.1.7601.17514_none_5ea69615819a23e4/winhttp.dll
-    w_try cp "$W_TMP/x86_microsoft.windows.winhttp_31bf3856ad364e35_5.1.7601.17514_none_5ea69615819a23e4/winhttp.dll" "$W_SYSTEM32_DLLS/winhttp.dll"
+    # 2017/10/12: Can't use win7's version, as that need webio.dll, which wants ntdll.EtwEventActivityIdControl.
+    # Should get that into wine{,-stable} so we can use win7 version in the long run
+    # See https://github.com/Winetricks/winetricks/issues/831
 
-    if [ "$W_ARCH" = "win64" ]; then
-        helper_win7sp1_x64 amd64_microsoft.windows.winhttp_31bf3856ad364e35_5.1.7601.17514_none_bac5319939f7951a/winhttp.dll
-        w_try cp "$W_TMP/amd64_microsoft.windows.winhttp_31bf3856ad364e35_5.1.7601.17514_none_bac5319939f7951a/winhttp.dll" "$W_SYSTEM64_DLLS/winhttp.dll"
-    fi
-
+    helper_win2ksp4 i386/new/winhttp.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/new/winhttp.dl_
     w_override_dlls native,builtin winhttp
 }
 
