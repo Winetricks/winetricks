@@ -4799,6 +4799,22 @@ winetricks_init()
     WINETRICKS_CONFIG="${XDG_CONFIG_HOME}/winetricks"
     #test -d "$WINETRICKS_CONFIG" || mkdir -p "$WINETRICKS_CONFIG"
 
+    # Pin a task to a single cpu. Helps prevent race conditions.
+    #
+    # Linux/FreeBSD: supported
+    # OSX: doesn't have a utility for this
+    # Solaris: no access, PR welcome
+
+    if [ -x "$(which taskset 2>/dev/null)" ]; then
+        W_TASKSET="taskset -c 0"
+    elif [ -x "$(which cpuset 2>/dev/null)" ]; then
+        W_TASKSET="cpuset -l 0"
+    else
+        # not using w_warn so we don't annoy everyone running via GUI, but still printed to terminal:
+        echo "warning: taskset/cpuset not available on your platform!"
+        W_TASKSET=""
+    fi
+
     # System-specific variables
     case "$W_PLATFORM" in
         windows_cmd)
@@ -7823,8 +7839,8 @@ load_kindle()
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
 
-    if w_workaround_wine_bug 35041; then
-        w_warn "You may need to run with taskset -c 0 to avoid a libX11 crash."
+    if w_workaround_wine_bug 35041 && [ ! -z "$W_TASKSET" ] ; then
+        w_warn "You may need to run with $W_TASKSET to avoid a libX11 crash."
     fi
 
     if w_workaround_wine_bug 29045; then
@@ -9589,12 +9605,6 @@ load_windowscodecs()
     # AF says in AppDB entry for .NET 3.0 that windowscodecs has to be native only
     w_override_dlls native windowscodecs windowscodecsext
 
-    if test -x /usr/bin/taskset && w_workaround_wine_bug 32859 "Working around possibly broken libX11"; then
-        TASKSET="taskset -c 0"
-    else
-        TASKSET=""
-    fi
-
     w_set_winver winxp
 
     # Always run the WIC installer in passive mode.
@@ -9602,7 +9612,11 @@ load_windowscodecs()
     # https://bugs.winehq.org/show_bug.cgi?id=23232
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    w_try $TASKSET "$WINE" "$EXE" /passive
+    if w_workaround_wine_bug 32859 "Working around possibly broken libX11"; then
+        w_try $W_TASKSET "$WINE" "$EXE" /passive
+    else
+        w_try "$WINE" "$EXE" /passive
+    fi
 }
 
 #----------------------------------------------------------------
