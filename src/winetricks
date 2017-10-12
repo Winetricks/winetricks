@@ -9572,6 +9572,30 @@ load_vjrun20()
 
 #----------------------------------------------------------------
 
+w_metadata webio dlls \
+    title="MS Windows Web I/O" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/webio.dll"
+
+load_webio()
+{
+    helper_win7sp1 x86_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_5ef1a4093cf55387/webio.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_5ef1a4093cf55387/webio.dll" "$W_SYSTEM32_DLLS/webio.dll"
+
+    if [ "$W_ARCH" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_bb103f8cf552c4bd/webio.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_bb103f8cf552c4bd/webio.dll" "$W_SYSTEM64_DLLS/webio.dll"
+    fi
+
+    w_override_dlls native,builtin webio
+}
+
+
+#----------------------------------------------------------------
+
 w_metadata windowscodecs dlls \
     title="MS Windows Imaging Component" \
     publisher="Microsoft" \
