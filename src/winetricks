@@ -730,6 +730,18 @@ w_verify_shasum()
 # It uses minimal buffering, so each line is output immediately
 # and the user can watch progress as it happens.
 
+# wrapper around wineserver, to let users know that it will wait indefinitely/kill stuff
+w_wineserver()
+{
+    case "$@" in
+        *-k) w_warn "Running $WINESERVER -k. This will kill all running wine processes in prefix=$WINEPREFIX";;
+        *-w) w_warn "Running $WINESERVER -w. This will hang until all wine processes in prefix=$WINEPREFIX terminate";;
+        *)   w_warn "Invoking wineserver with '$*'";;
+    esac
+    # shellcheck disable=SC2068
+    "$WINESERVER" $@
+}
+
 winetricks_parse_wget_progress()
 {
     # Parse a percentage, a size, and a time into $1, $2 and $3
@@ -2378,7 +2390,7 @@ _EOF_
     w_try_regedit "$W_TMP_WIN"\\set-winver.reg
 
     # Prevent a race when calling from another verb
-    "$WINESERVER" -w
+    w_wineserver -w
 }
 
 w_unset_winver()
@@ -6580,10 +6592,10 @@ load_dotnet20sp1()
     w_warn "Setting windows version so installer works"
     # Stop services
     # Recipe from https://bugs.winehq.org/show_bug.cgi?id=16956
-    $WINESERVER -k
+    w_wineserver -k
     # Fight a race condition, see bug 16956 comment 43
     w_set_winver win2k
-    $WINESERVER -w
+    w_wineserver -w
     WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b
     export WINEDLLOVERRIDES
 
@@ -6641,7 +6653,7 @@ load_dotnet20sp2()
     w_call remove_mono
 
     w_call dotnet20
-    $WINESERVER -w
+    w_wineserver -w
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -6777,9 +6789,9 @@ load_dotnet30sp1()
 
     w_call remove_mono
     w_call dotnet30
-    $WINESERVER -w
+    w_wineserver -w
     w_call dotnet20sp1
-    $WINESERVER -w
+    w_wineserver -w
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
@@ -6830,7 +6842,7 @@ load_dotnet35()
     w_call remove_mono
 
     w_call dotnet30sp1
-    $WINESERVER -w
+    w_wineserver -w
 
     if w_workaround_wine_bug 33450 "Installing msxml3"  ,1.5.28; then
         w_call msxml3
@@ -6879,9 +6891,9 @@ load_dotnet35sp1()
     w_call remove_mono
 
     w_call dotnet35
-    $WINESERVER -w
+    w_wineserver -w
     w_call dotnet20sp2
-    $WINESERVER -w
+    w_wineserver -w
 
     # Work around hang in https://bugs.winehq.org/show_bug.cgi?id=25060#c19
     WINEDLLOVERRIDES=ngen.exe,mscorsvw.exe=b
@@ -12875,7 +12887,7 @@ load_aoe3_demo()
             SetTitleMatchMode, 2
             WinKill,Empires
         "
-        # or should we just do $WINESERVER -k, like fable_tlc does?
+        # or should we just do w_wineserver -k, like fable_tlc does?
         # shellcheck disable=SC2046
         kill $(pgrep -f IDriver)
     fi
@@ -12930,7 +12942,7 @@ load_acreedbro()
     # shellcheck disable=SC2009
     if ps augxw | grep -i exe | grep -E 'winemenubuilder.exe|setup.exe|PnkBstrA.exe | grep -v grep'; then
         w_warn "Killing processes so patcher does not complain about game still running"
-        $WINESERVER -k
+        w_wineserver -k
         sleep 10
     fi
 
