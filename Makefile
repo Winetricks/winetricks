@@ -56,8 +56,8 @@ install:
 	$(INSTALL_DATA) src/winetricks.1 $(DESTDIR)$(PREFIX)/share/man/man1/winetricks.1
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/applications
 	$(INSTALL_DATA) src/winetricks.desktop $(DESTDIR)$(PREFIX)/share/applications/winetricks.desktop
-	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/appdata
-	$(INSTALL_DATA) src/winetricks.appdata.xml $(DESTDIR)$(PREFIX)/share/appdata/winetricks.appdata.xml
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/metainfo
+	$(INSTALL_DATA) src/winetricks.appdata.xml $(DESTDIR)$(PREFIX)/share/metainfo/winetricks.appdata.xml
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps
 	$(INSTALL_DATA) src/winetricks.svg $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/winetricks.svg
 
