@@ -2679,12 +2679,6 @@ w_do_call()
         test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
         mkdir -p "$W_TMP"
 
-        # Don't install if already installed
-        if test "$WINETRICKS_FORCE" != 1 && winetricks_is_installed "$1"; then
-            echo "$1 already installed, skipping"
-            return 0
-        fi
-
         # Don't install if a conflicting verb is already installed:
         # shellcheck disable=SC2154
         if test "$WINETRICKS_FORCE" != 1 && test "$conflicts" && test -f "$WINEPREFIX/winetricks.log"; then
@@ -2692,6 +2686,12 @@ w_do_call()
             do
                 w_conflicts "$1" "$x"
             done
+        fi
+
+        # Don't install if already installed
+        if test "$WINETRICKS_FORCE" != 1 && winetricks_is_installed "$1"; then
+            echo "$1 already installed, skipping"
+            return 0
         fi
 
         # We'd like to get rid of W_PACKAGE, but for now, just set it as late as possible.
