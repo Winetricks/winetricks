@@ -18787,6 +18787,9 @@ winetricks_stats_save()
 {
     # Save opt-in status
     if test "$WINETRICKS_STATS_REPORT"; then
+        if test ! -d "$W_CACHE"; then
+            mkdir -p "$W_CACHE"
+        fi
         echo "$WINETRICKS_STATS_REPORT" > "$W_CACHE"/track_usage
     fi
 }
@@ -18841,11 +18844,10 @@ winetricks_stats_init()
                     $WINETRICKS_GUI --info --text "$declined"
                     WINETRICKS_STATS_REPORT=0
                 fi
-                echo $WINETRICKS_STATS_REPORT > "$W_CACHE"/track_usage
+                winetricks_stats_save
                 ;;
         esac
     fi
-    winetricks_stats_save
 }
 
 # Retrieve a short string with the operating system name and version
