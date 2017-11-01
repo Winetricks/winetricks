@@ -11205,7 +11205,7 @@ load_ie6()
     status=$?
     case $status in
         0|194) ;;
-        *) w_die ie6 installation failed
+        *) w_die ie6 installation failed;;
     esac
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
@@ -18586,6 +18586,7 @@ REGEDIT4
 "VideoMemorySize"="$size"
 
 _EOF_
+    ;;
     esac
     w_try_regedit "$W_TMP_WIN"\\set-video.reg
 }
