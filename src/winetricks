@@ -10256,6 +10256,7 @@ load_eufonts()
     w_try_cabextract -q --directory="$W_TMP" "$W_CACHE"/eufonts/EUupdate.EXE
     w_try cp -f "$W_TMP"/*.ttf "$W_FONTSDIR_UNIX"
 
+    w_register_font ArialBd.ttf "Arial Bold"
     w_register_font ArialBI.ttf "Arial Bold Italic"
     w_register_font ArialI.ttf "Arial Italic"
     w_register_font Arial.ttf "Arial"
