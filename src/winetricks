@@ -2741,14 +2741,25 @@ w_call()
     w_try w_do_call "$@"
 }
 
+w_backup_reg_file()
+{
+    W_reg_file=$1
+
+    w_get_sha256sum "$W_reg_file"
+
+    w_try cp "$W_reg_file" "$W_TMP_EARLY/_reg_$(echo "$_W_gotsha256sum" | cut -c1-8)"_$$.reg
+
+    unset W_reg_file _W_gotsha256sum
+}
+
 w_register_font()
 {
-    file=$1
+    W_file=$1
     shift
-    font=$1
+    W_font=$1
 
-    case "$file" in
-        *.TTF|*.ttf) font="$font (TrueType)";;
+    case "$W_file" in
+        *.TTF|*.ttf) W_font="$W_font (TrueType)";;
     esac
 
     # Kludge: use _r to avoid \r expansion in w_try
@@ -2756,23 +2767,25 @@ w_register_font()
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Fonts]
-"$font"="$file"
+"$W_font"="$W_file"
 _EOF_
     # too verbose
     w_try_regedit "$W_TMP_WIN"\\_register-font.reg
     # shellcheck disable=SC1037
-    cp "$W_TMP"/*.reg "$W_TMP_EARLY"/_reg$$.reg
+    w_backup_reg_file "$W_TMP"/_register-font.reg
 
     # Wine also updates the win9x fonts key, so let's do that, too
     cat > "$W_TMP"/_register-font.reg <<_EOF_
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Fonts]
-"$font"="$file"
+"$W_font"="$W_file"
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\_register-font.reg
     # shellcheck disable=SC1037
-    cp "$W_TMP"/*.reg "$W_TMP_EARLY"/_reg$$-2.reg
+    w_backup_reg_file "$W_TMP"/_register-font.reg
+
+    unset W_file W_font
 }
 
 w_register_font_replacement()
@@ -2788,6 +2801,9 @@ REGEDIT4
 "$_W_alias"="$_W_font"
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\_register-font-replacements.reg
+
+    w_backup_reg_file "$W_TMP"/_register-font-replacements.reg
+
     unset _W_alias _W_font
 }
 
