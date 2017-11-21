@@ -4759,6 +4759,11 @@ winetricks_init()
         USERNAME="$LOGNAME"
     fi
 
+    # Running Wine as root is (generally) bad, mmkay?
+    if [ "$(id -u)" = 0 ]; then
+        w_warn "Running Wine/winetricks as root is highly discouraged. See https://wiki.winehq.org/FAQ#Should_I_run_Wine_as_root.3F"
+    fi
+
     # Ephemeral files for this run
     WINETRICKS_WORKDIR="$W_TMP_EARLY/w.$LOGNAME.$$"
     test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
