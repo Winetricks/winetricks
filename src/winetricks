@@ -7273,7 +7273,7 @@ load_dotnet_verifier()
     # 2016/10/26: sha256sum 1daf4b1b27669b65f613e17814da3c8342d3bfa9520a65a880c58d6a2a6e32b5, adds .NET Framework 4.6.{1,2} support
     # 2017/06/12: sha256sum , adds .NET Framework 4.7 support
 
-    w_download https://msdnshared.blob.core.windows.net/media/2017/05/netfx_setupverifier_new.zip 22c596a13f0822871a01346d2f5736a3b230e1f6cb8ea429aba844d52adc568a
+    w_download https://msdnshared.blob.core.windows.net/media/2017/11/netfx_setupverifier_new.zip 310a0341fbe68f5b8601f2d8deef5d05ca6bce50df03912df391bc843794ef60
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try_unzip "$W_SYSTEM32_DLLS" netfx_setupverifier_new.zip netfx_setupverifier.exe
