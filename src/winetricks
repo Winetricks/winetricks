@@ -514,6 +514,49 @@ w_try_unzip()
     w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$zipfile")" -o"$(w_pathconv -w "$destdir")" "$@"
 }
 
+# Copy font files matching a glob pattern from source directory to destination directory.
+# Also remove any file in the destination directory that has the same name as
+# any of the files that we're trying to copy, but with different case letters.
+# Note: it converts font file names to lower case to avoid inconsistencies due to paths
+#       being case-insensitive under Wine.
+w_try_cp_font_files()
+{
+    # $1 - source directory
+    # $2 - destination directory
+    # $3 - optional font file glob pattern (default: "*.ttf")
+
+    _W_src_dir="$1"
+    _W_dest_dir="$2"
+    _W_pattern="$3"
+    shift 2
+
+    if test ! -d "$_W_src_dir"; then
+        w_die "bug: missing source dir"
+    fi
+
+    if test ! -d "$_W_dest_dir"; then
+        w_die "bug: missing destination dir"
+    fi
+
+    if test -z "$_W_pattern"; then
+        _W_pattern="*.ttf"
+    fi
+
+    _W_src_files=$(find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern")
+
+    for _W_src_file in $_W_src_files; do
+        # Extract the file name and lower case it
+        _W_file_name=$(basename "$_W_src_file" | tr "[:upper:]" "[:lower:]")
+
+        # Remove any existing font files that might have the same name, but with different case characters
+        find "$_W_dest_dir" -maxdepth 1 -type f -iname "$_W_file_name" -exec rm '{}' ';'
+
+        w_try cp -f "$_W_src_file" "$_W_dest_dir/$_W_file_name"
+    done
+
+    unset _W_src_files _W_dest_dir _W_src_file _W_file_name
+}
+
 w_read_key()
 {
     if test ! "$W_OPT_UNATTENDED"; then
