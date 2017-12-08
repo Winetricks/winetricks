@@ -29,8 +29,10 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install python-bashate shellcheck ; fi
 
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew update ; fi
+    # Travis decided to remove pip from the OSX image
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time sudo easy_install pip; fi
     # Bashate isn't on homebrew, they don't package things that are on pypi, so we have to pip install it instead:
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time pip install bashate ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time sudo pip install bashate ; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install checkbashisms shellcheck ; fi
 
 # Note if testing on a branch, you can replace this with your desired command, e.g.,:
