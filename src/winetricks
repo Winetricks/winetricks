@@ -1886,7 +1886,7 @@ Usage: 'w_override_dlls mode[,mode] dll ...'." ;;
     cat > "$W_TMP"/override-dll.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\DllOverrides]
+[HKEY_CURRENT_USER\\Software\\Wine\\DllOverrides]
 _EOF_
     while test "$1" != ""
     do
@@ -1903,7 +1903,7 @@ w_override_no_dlls()
 {
     w_skip_windows override && return
 
-    "$WINE" regedit /d 'HKEY_CURRENT_USER\Software\Wine\DllOverrides'
+    "$WINE" regedit /d 'HKEY_CURRENT_USER\\Software\\Wine\\DllOverrides'
 }
 
 w_override_all_dlls()
@@ -2270,15 +2270,15 @@ w_set_winver()
 
     # First, delete any lingering version info, otherwise it may conflict:
     (
-    "$WINE" reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion" /v SubVersionNumber /f || true
-    "$WINE" reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion" /v VersionNumber /f || true
-    "$WINE" reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v CSDVersion /f || true
-    "$WINE" reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber /f || true
-    "$WINE" reg delete "HKLM\Software\Microsoft\Windows NT\CurrentVersion" /v CurrentVersion /f || true
-    "$WINE" reg delete "HKLM\System\CurrentControlSet\Control\ProductOptions" /v ProductType /f || true
-    "$WINE" reg delete "HKLM\System\CurrentControlSet\Control\ServiceCurrent" /v OS /f || true
-    "$WINE" reg delete "HKLM\System\CurrentControlSet\Control\Windows" /v CSDVersion /f || true
-    "$WINE" reg delete "HKCU\Software\Wine" /v Version /f || true
+    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion" /v SubVersionNumber /f || true
+    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion" /v VersionNumber /f || true
+    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CSDVersion /f || true
+    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CurrentBuildNumber /f || true
+    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CurrentVersion /f || true
+    "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /f || true
+    "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ServiceCurrent" /v OS /f || true
+    "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\Windows" /v CSDVersion /f || true
+    "$WINE" reg delete "HKCU\\Software\\Wine" /v Version /f || true
     "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /f || true
     ) > /dev/null 2>&1
 
@@ -2288,7 +2288,7 @@ w_set_winver()
             cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
-[HKEY_USERS\S-1-5-4\Software\Wine]
+[HKEY_USERS\\S-1-5-4\\Software\\Wine]
 "Version"="win31"
 
 _EOF_
@@ -2302,7 +2302,7 @@ _EOF_
             cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion]
 "ProductName"="Microsoft Windows 95"
 "SubVersionNumber"=""
 "VersionNumber"="4.0.950"
@@ -2318,7 +2318,7 @@ _EOF_
             cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion]
 "ProductName"="Microsoft Windows 98"
 "SubVersionNumber"=" A "
 "VersionNumber"="4.10.2222"
@@ -2334,18 +2334,18 @@ _EOF_
             cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion]
 "CSDVersion"="Service Pack 6a"
 "CurrentBuildNumber"="1381"
 "CurrentVersion"="4.0"
 
-[HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\ProductOptions]
+[HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\ProductOptions]
 "ProductType"="WinNT"
 
-[HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\ServiceCurrent]
+[HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\ServiceCurrent]
 "OS"="Windows_NT"
 
-[HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Windows]
+[HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Windows]
 "CSDVersion"=dword:00000600
 
 _EOF_
@@ -2422,12 +2422,12 @@ _EOF_
     cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion]
 "CSDVersion"="$csdversion"
 "CurrentBuildNumber"="$currentbuildnumber"
 "CurrentVersion"="$currentversion"
 
-[HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Windows]
+[HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Windows]
 "CSDVersion"=$csdversion_hex
 
 _EOF_
@@ -2809,7 +2809,7 @@ w_register_font()
     cat > "$W_TMP"/_register-font.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Fonts]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts]
 "$W_font"="$W_file"
 _EOF_
     # too verbose
@@ -2821,7 +2821,7 @@ _EOF_
     cat > "$W_TMP"/_register-font.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Fonts]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Fonts]
 "$W_font"="$W_file"
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\_register-font.reg
@@ -2840,7 +2840,7 @@ w_register_font_replacement()
     cat > "$W_TMP"/_register-font-replacements.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\Fonts\Replacements]
+[HKEY_CURRENT_USER\\Software\\Wine\\Fonts\\Replacements]
 "$_W_alias"="$_W_font"
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\_register-font-replacements.reg
@@ -7529,7 +7529,7 @@ load_glidewrapper()
         cat > "$W_TMP"/disable-browser.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\WineBrowser]
+[HKEY_CURRENT_USER\\Software\\Wine\\WineBrowser]
 "Browsers"=""
 
 _EOF_
@@ -7541,7 +7541,7 @@ _EOF_
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
 
     if test ${W_OPT_UNATTENDED}; then
-        "$WINE" reg delete "HKEY_CURRENT_USER\Software\Wine\WineBrowser" /v Browsers /f || true
+        "$WINE" reg delete "HKEY_CURRENT_USER\\Software\\Wine\\WineBrowser" /v Browsers /f || true
     fi
 }
 
@@ -8046,34 +8046,34 @@ load_mdx()
     cat > "$W_TMP"/asmfolders.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2902.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2902.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2902.0\\\\"
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2903.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2903.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2903.0\\\\"
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2904.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2904.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2904.0\\\\"
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2905.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2905.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2905.0\\\\"
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2906.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2906.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2906.0\\\\"
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2907.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2907.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2907.0\\\\"
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2908.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2908.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2908.0\\\\"
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2909.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2909.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2909.0\\\\"
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2910.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2910.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2910.0\\\\"
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\.NETFramework\AssemblyFolders\DX_1.0.2911.0]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\AssemblyFolders\\DX_1.0.2911.0]
 @="C:\\\\windows\\\\Microsoft.NET\\\\DirectX for Managed Code\\\\1.0.2911.0\\\\"
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\asmfolders.reg
@@ -8809,11 +8809,11 @@ load_remove_mono()
 
     # FIXME: verify on pristine Windows XP:
     if w_workaround_wine_bug 34803; then
-        "${WINE_ARCH}" reg delete 'HKLM\Software\Microsoft\.NETFramework\v2.0.50727\SBSDisabled' /f
+        "${WINE_ARCH}" reg delete 'HKLM\\Software\\Microsoft\\.NETFramework\\v2.0.50727\\SBSDisabled' /f
     fi
 
     "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
-    "${WINE_ARCH}" reg delete "HKLM\Software\Microsoft\NET Framework Setup\NDP\v4" /f || true
+    "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4" /f || true
 
     w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
 }
@@ -9876,7 +9876,7 @@ load_wmv9vcm()
     # Register codec:
     cat > "$W_TMP"/tmp.reg <<_EOF_
 REGEDIT4
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Drivers32]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Drivers32]
 "vidc.WMV3"="wmv9vcm.dll"
 
 _EOF_
@@ -11495,7 +11495,7 @@ load_ie8()
         cat > "$W_TMP"/set-tabprocgrowth.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main]
+[HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main]
 "TabProcGrowth"=dword:00000000
 
 _EOF_
@@ -11914,14 +11914,14 @@ load_psdkwin7()
         cat > "$W_TMP"/set-psdk7.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs]
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs\\Windows]
 "CurrentVersion"="v7.0"
-"CurrentInstallFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.0\\\"
+"CurrentInstallFolder"="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.0\\\\"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0]
-"InstallationFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.0\\\"
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs\\Windows\\v7.0]
+"InstallationFolder"="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.0\\\\"
 "ProductVersion"="7.0.7600.16385.40715"
 "ProductName"="Microsoft Windows SDK for Windows 7 (7.0.7600.16385.40715)"
 _EOF_
@@ -11962,30 +11962,30 @@ load_psdkwin71()
         cat > "$W_TMP"/set-psdk71.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs]
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs\\Windows]
 "CurrentVersion"="v7.1"
-"CurrentInstallFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\"
+"CurrentInstallFolder"="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1\\\\"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1]
-"InstallationFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\"
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs\\Windows\\v7.1]
+"InstallationFolder"="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1\\\\"
 "ProductVersion"="7.0.7600.0.30514"
 "ProductName"="Microsoft Windows SDK for Windows 7 (7.0.7600.0.30514)"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1\WinSDKBuild]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs\\Windows\\v7.1\\WinSDKBuild]
 "ComponentName"="Microsoft Windows SDK Headers and Libraries"
-"InstallationFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\"
+"InstallationFolder"="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1\\\\"
 "ProductVersion"="7.0.7600.0.30514"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1\WinSDKTools]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs\\Windows\\v7.1\\WinSDKTools]
 "ComponentName"="Microsoft Windows SDK Headers and Libraries"
-"InstallationFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\bin\\\"
+"InstallationFolder"="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1\\\\bin\\\\"
 "ProductVersion"="7.0.7600.0.30514"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1\WinSDKWin32Tools]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs\\Windows\\v7.1\\WinSDKWin32Tools]
 "ComponentName"="Microsoft Windows SDK Utilities for Win32 Development"
-"InstallationFolder"="C:\\\Program Files\\\Microsoft SDKs\\\Windows\\\v7.1\\\bin\\\"
+"InstallationFolder"="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1\\\\bin\\\\"
 "ProductVersion"="7.0.7600.0.30514"
 _EOF_
         w_try_regedit "$W_TMP_WIN"\\set-psdk71.reg
@@ -12580,8 +12580,8 @@ load_wmp10()
     w_try "$WINE" MP10Setup.exe $W_UNATTENDED_SLASH_Q
 
     # Disable WMP's services, since they depend on unimplemented stuff, they trigger the GUI debugger several times
-    w_try_regedit /D "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Cdr4_2K"
-    w_try_regedit /D "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Cdralw2k"
+    w_try_regedit /D "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\Cdr4_2K"
+    w_try_regedit /D "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\Cdralw2k"
 
     load_wm9codecs
 
@@ -14893,7 +14893,7 @@ load_fable_tlc()
     cat > "$W_TMP/${W_PACKAGE}.reg" <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products\D3BE9C3CAF4226447B48E06CAACF2DDD\InstallProperties]
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Installer\\UserData\\S-1-5-18\\Products\\D3BE9C3CAF4226447B48E06CAACF2DDD\\InstallProperties]
 "InstallSource"="D:\\"
 
 _EOF_
@@ -14903,7 +14903,7 @@ _EOF_
     cat > "$W_TMP/${W_PACKAGE}.reg" <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Microsoft\Microsoft Games\Fable TLC]
+[HKEY_CURRENT_USER\\Software\\Microsoft\\Microsoft Games\\Fable TLC]
 "FIRSTRUN"=dword:00000001
 
 _EOF_
@@ -17942,7 +17942,7 @@ winetricks_set_wined3d_var()
     cat > "$W_TMP"/set-wined3d.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]
 "$1"="$arg"
 
 _EOF_
@@ -18093,7 +18093,7 @@ load_csmt()
     cat > "$W_TMP"/set-csmt.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]
 "csmt"=dword:$arg
 
 _EOF_
@@ -18144,7 +18144,7 @@ load_mwo()
     cat > "$W_TMP"/set-mwo.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\DirectInput]
+[HKEY_CURRENT_USER\\Software\\Wine\\DirectInput]
 "MouseWarpOverride"="$arg"
 
 _EOF_
@@ -18167,7 +18167,7 @@ load_macdriver()
     cat > "$W_TMP"/set-mac.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\Drivers]
+[HKEY_CURRENT_USER\\Software\\Wine\\Drivers]
 "Graphics"="$arg"
 
 _EOF_
@@ -18195,7 +18195,7 @@ load_grabfullscreen()
     cat > "$W_TMP"/set-gfs.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+[HKEY_CURRENT_USER\\Software\\Wine\\X11 Driver]
 "GrabFullscreen"="$arg"
 
 _EOF_
@@ -18220,7 +18220,7 @@ load_windowmanagerdecorated()
     cat > "$W_TMP"/set-wmd.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+[HKEY_CURRENT_USER\\Software\\Wine\\X11 Driver]
 "Decorated"="$arg"
 
 _EOF_
@@ -18245,7 +18245,7 @@ load_windowmanagermanaged()
     cat > "$W_TMP"/set-wmm.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+[HKEY_CURRENT_USER\\Software\\Wine\\X11 Driver]
 "Managed"="$arg"
 
 _EOF_
@@ -18300,7 +18300,7 @@ load_fontsmooth()
     cat > "$W_TMP"/fontsmooth.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Control Panel\Desktop]
+[HKEY_CURRENT_USER\\Control Panel\\Desktop]
 "FontSmoothing"="$FontSmoothing"
 "FontSmoothingGamma"=dword:00000578
 "FontSmoothingOrientation"=dword:0000000$FontSmoothingOrientation
@@ -18353,7 +18353,7 @@ load_heapcheck()
     cat > "$W_TMP"/heapcheck.reg <<_EOF_
 REGEDIT4
 
-[HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager]
+[HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Session Manager]
 "GlobalFlag"=dword:00200030
 
 _EOF_
@@ -18389,7 +18389,7 @@ load_hidewineexports()
     cat > "$W_TMP"/set-wineexports.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine]
+[HKEY_CURRENT_USER\\Software\\Wine]
 "HideWineExports"=$_W_registry_value
 
 _EOF_
@@ -18453,7 +18453,7 @@ load_nocrashdialog()
     cat > "$W_TMP"/crashdialog.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\WineDbg]
+[HKEY_CURRENT_USER\\Software\\Wine\\WineDbg]
 "ShowCrashDialog"=dword:00000000
 
 _EOF_
@@ -18520,7 +18520,7 @@ load_sandbox()
     # Disable unixfs
     # Unfortunately, when you run with a different version of Wine, Wine will recreate this key.
     # See https://bugs.winehq.org/show_bug.cgi?id=22450
-    "$WINE" regedit /d 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\Namespace\{9D20AAE8-0625-44B0-9CA7-71889C2254D9}'
+    "$WINE" regedit /d 'HKEY_LOCAL_MACHINE\\Software\\Microsoft\Windows\CurrentVersion\Explorer\Desktop\Namespace\{9D20AAE8-0625-44B0-9CA7-71889C2254D9}'
 
     # Disable recreation of the above key - or any updating of the registry - when running with a newer version of Wine.
     echo disable > "$WINEPREFIX/.update-timestamp"
@@ -18550,7 +18550,7 @@ load_sound()
     cat > "$W_TMP"/set-sound.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\Drivers]
+[HKEY_CURRENT_USER\\Software\\Wine\\Drivers]
 "Audio"="$1"
 
 _EOF_
@@ -18586,9 +18586,9 @@ load_vd()
         cat > "$W_TMP"/vd.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\Explorer]
+[HKEY_CURRENT_USER\\Software\\Wine\\Explorer]
 "Desktop"=-
-[HKEY_CURRENT_USER\Software\Wine\Explorer\Desktops]
+[HKEY_CURRENT_USER\\Software\\Wine\\Explorer\\Desktops]
 "Default"=-
 
 _EOF_
@@ -18597,9 +18597,9 @@ _EOF_
         cat > "$W_TMP"/vd.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\Explorer]
+[HKEY_CURRENT_USER\\Software\\Wine\\Explorer]
 "Desktop"="Default"
-[HKEY_CURRENT_USER\Software\Wine\Explorer\Desktops]
+[HKEY_CURRENT_USER\\Software\\Wine\\Explorer\\Desktops]
 "Default"="$size"
 
 _EOF_
@@ -18637,7 +18637,7 @@ load_videomemorysize()
     cat > "$W_TMP"/set-video.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]
 "VideoMemorySize"=-
 
 _EOF_
@@ -18646,7 +18646,7 @@ _EOF_
     cat > "$W_TMP"/set-video.reg <<_EOF_
 REGEDIT4
 
-[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]
 "VideoMemorySize"="$size"
 
 _EOF_
