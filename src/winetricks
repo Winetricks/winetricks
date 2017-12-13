@@ -8919,7 +8919,8 @@ load_shockwave() {
     # 2017/03/12: 39715a84b1d85347066fbf89a3af9f5e612b59402093b055cd423bd30a7f637d
     # 2017/03/15: 58f2152bf726d52f08fb41f904c62ff00fdf748c8ce413e8c8547da3a21922ba
     # 2017/08/03: bebebaef1644a994179a2e491ce3f55599d768f7c6019729f21e7029b1845b9c
-    w_download https://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi bebebaef1644a994179a2e491ce3f55599d768f7c6019729f21e7029b1845b9c
+    # 2017/12/12: 0a9813ac55a8718440518dc2f5f410a3a065b422fe0618c073bfc631b9abf12c
+    w_download https://fpdownload.macromedia.com/get/shockwave/default/english/win95nt/latest/sw_lic_full_installer.msi 0a9813ac55a8718440518dc2f5f410a3a065b422fe0618c073bfc631b9abf12c
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" msiexec /i sw_lic_full_installer.msi $W_UNATTENDED_SLASH_Q
