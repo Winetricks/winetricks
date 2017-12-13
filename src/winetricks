@@ -706,7 +706,7 @@ w_get_shatype() {
 
     # tr -d " " is for FreeBSD/OS X/Solaris return a leading space:
     # See https://stackoverflow.com/questions/30927590/wc-on-osx-return-includes-spaces/30927885#30927885
-    _W_sum_length="$(echo "$_W_sum" | tr -d "\n" | wc -c | tr -d " ")"
+    _W_sum_length="$(echo "$_W_sum" | tr -d "\\n" | wc -c | tr -d " ")"
     case "$_W_sum_length" in
         0) _W_shatype="none" ;;
         40) _W_shatype="sha1" ;;
@@ -2483,7 +2483,7 @@ w_compare_wine_version()
         *) w_die "Unsupported comparison. Only -ge and -le are supported" ;;
     esac
 
-    _pos_current_wine="$(printf "%s\n%s\n%s" "${known_wine_val1}" "${_wine_version_stripped}" "${known_wine_val2}" | sort -t. -k 1,1n -k 2,2n -k 3,3n | grep -n "^${_wine_version_stripped}\$" | cut -d : -f1)"
+    _pos_current_wine="$(printf "%s\\n%s\\n%s" "${known_wine_val1}" "${_wine_version_stripped}" "${known_wine_val2}" | sort -t. -k 1,1n -k 2,2n -k 3,3n | grep -n "^${_wine_version_stripped}\$" | cut -d : -f1)"
     if [ "$_pos_current_wine" = "$_expected_pos_current_wine" ] ; then
         #echo "true: known_wine_version=$2, comparison=$1, stripped wine=$_wine_version_stripped, expected_pos=$_expected_pos_known, pos_known=$_pos_known_wine"
         #echo "Wine version comparison is true"
@@ -3142,7 +3142,9 @@ winetricks_get_prefix_var()
     (
         # shellcheck disable=SC1090
         . "$W_PREFIXES_ROOT/$p/wrapper.cfg"
+
         # The cryptic sed is there to turn ' into '\''
+        # shellcheck disable=SC1117
         eval echo \$ww_"$1" | sed "s/'/'\\\''/"
     )
 }
@@ -4102,9 +4104,9 @@ winetricks_list_all()
         test "$flags" && flags="[$flags]"
 
         if ! test "$year" && ! test "$publisher"; then
-            printf "%-24s %s %s\n" "$code" "$title" "$flags"
+            printf "%-24s %s %s\\n" "$code" "$title" "$flags"
         else
-            printf "%-24s %s (%s, %s) %s\n" "$code" "$title" "$publisher" "$year" "$flags"
+            printf "%-24s %s (%s, %s) %s\\n" "$code" "$title" "$publisher" "$year" "$flags"
         fi
         )
     done
@@ -18399,8 +18401,8 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata hosts settings \
-    title_uk="Додати порожні файли у C:\windows\system32\drivers\etc\{hosts,services}" \
-    title="Add empty C:\windows\system32\drivers\etc\{hosts,services} files"
+    title_uk="Додати порожні файли у C:\\windows\\system32\\drivers\\etc\\{hosts,services}" \
+    title="Add empty C:\\windows\\system32\\drivers\\etc\\{hosts,services} files"
 
 load_hosts()
 {
@@ -18891,7 +18893,7 @@ winetricks_stats_init()
                     ;;
                 uk*)
                     title="Допомога в розробці Winetricks"
-                    question="Ви хочете допомогти в розробці Winetricks дозволивши звітувати статистику?\nВи можете в будь-який час вимкнути цю опцію за допомогою команди 'winetricks --optout'"
+                    question="Ви хочете допомогти в розробці Winetricks дозволивши звітувати статистику?\\nВи можете в будь-який час вимкнути цю опцію за допомогою команди 'winetricks --optout'"
                     thanks="Дякуємо! Ви більше не отримуватиме це питання знову. Пам'ятайте, що ви можете будь-коли вимкнути звітність за допомогою команди 'winetricks --optout'"
                     declined="Надсилання звітності Winetricks вимкнено. Ви більше не отримуватиме це питання знову."
                     ;;

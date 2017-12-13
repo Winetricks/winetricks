@@ -181,7 +181,7 @@ w_time()
 }
 
 case "$LANG" in
-    ""|"C") echo "Some games won\'t install in the Posix locale; doing \'export LANG=en_US.UTF-8\'" ; export LANG=en_US.UTF-8;;
+    ""|"C") echo "Some games won't install in the Posix locale; doing 'export LANG=en_US.UTF-8'" ; export LANG=en_US.UTF-8;;
 esac
 
 case "$OS" in
@@ -617,7 +617,7 @@ test_install_cached_or_download()
     # Verbs that are just wrappers around others don't detect cache/install state yet.
     # Verbs that are just informative placeholders don't ever download (gecko).
     # And some verbs (gecko110) don't usually install for other reasons.
-    BLACKLIST_CACHE="allfonts\|cjkfonts\|allcodecs\|gecko\|gecko110\|fontfix"
+    BLACKLIST_CACHE="allfonts|cjkfonts|allcodecs|gecko|gecko110|fontfix"
 
     grep -E -vw "$BLACKLIST_CACHE" ticd.verbs > download.txt
     comm -23 download.txt cached.txt > download-but-not-cached.txt
@@ -787,7 +787,7 @@ case "$1" in
     quick) check_deps && test_quick ;;
     w_compare_wine_version) check_deps && test_w_compare_wine_version ;;
     xvfb-check) check_deps && XVFB=xvfb-run && export XVFB && test_xvfb ;;
-    *) echo "Usage: $0 quick\|full" ; exit 1 ;;
+    *) echo "Usage: $0 quick|full" ; exit 1 ;;
 esac
 
 echo "Test over, $errors failures, $passes successes, $skips skipped."
