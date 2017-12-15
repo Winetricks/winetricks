@@ -2801,8 +2801,8 @@ w_register_font()
     shift
     W_font=$1
 
-    case "$W_file" in
-        *.TTF|*.ttf) W_font="$W_font (TrueType)";;
+    case $(echo "$W_file" | tr "[:upper:]" "[:lower:]") in
+        *.ttf|*.ttc) W_font="$W_font (TrueType)";;
     esac
 
     # Kludge: use _r to avoid \r expansion in w_try
