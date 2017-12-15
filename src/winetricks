@@ -3957,6 +3957,12 @@ winetricks_is_installed()
         return 1  # not installed
     fi
 
+    # Test if the verb has been executed before
+    if ! grep -qw "$1" "$WINEPREFIX/winetricks.log"; then
+        unset _W_file
+        return 1  # not installed
+    fi
+
     case "$W_PLATFORM" in
         windows_cmd|wine_cmd)
             # On Windows, there's no wineprefix, just check if file's there
@@ -3994,8 +4000,7 @@ winetricks_is_installed()
             fi
             ;;
     esac
-    unset _W_file _W_prefix  # leak _W_file_unix for caller.  Is this wise?
-    unset _W_IFS _W_file_
+    unset _W_file _W_prefix _W_IFS  # leak _W_file_unix for caller. Is this wise?
     return 1  # not installed
 }
 
