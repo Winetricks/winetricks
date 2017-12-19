@@ -10170,7 +10170,7 @@ load_cambria()
     w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE/PowerPointViewer/$file1"
     w_try_cabextract -d "$W_TMP" -F "CAMBRIA*.TT*" "$W_TMP/ppviewer.cab"
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CAMBRIA*.TT*"
-    w_register_font cambria.ttc "Cambria"
+    w_register_font cambria.ttc "Cambria & Cambria Math"
     w_register_font cambriab.ttf "Cambria Bold"
     w_register_font cambriai.ttf "Cambria Italic"
     w_register_font cambriaz.ttf "Cambria Bold Italic"
