@@ -10675,20 +10675,32 @@ w_metadata uff fonts \
     publisher="Ubuntu" \
     year="2010" \
     media="download" \
-    file1="ubuntu-font-family-0.70.1.zip" \
+    file1="ubuntu-font-family-0.83.zip" \
     installed_file1="$W_FONTSDIR_WIN/ubuntu-r.ttf" \
     homepage="https://launchpad.net/ubuntu-font-family"
 
 load_uff()
 {
-    w_download "http://font.ubuntu.com/download/ubuntu-font-family-0.70.1.zip" c3737665b85e48664feabb8448957bdf17eab26cc320270f1641d9f98b7ea22e
-    w_try_unzip "$W_TMP" "$W_CACHE"/uff/ubuntu-font-family-0.70.1.zip
-    w_try_cp_font_files "$W_TMP/ubuntu-font-family-0.70.1" "$W_FONTSDIR_UNIX"
+    w_download "https://assets.ubuntu.com/v1/fad7939b-ubuntu-font-family-0.83.zip" 456d7d42797febd0d7d4cf1b782a2e03680bb4a5ee43cc9d06bda172bac05b42 ubuntu-font-family-0.83.zip
+    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
 
-    w_register_font ubuntu-r.ttf "Ubuntu"
-    w_register_font ubuntu-i.ttf "Ubuntu Italic"
-    w_register_font ubuntu-b.ttf "Ubuntu Bold"
+    w_try_cp_font_files "$W_TMP/$(basename "${file1}" .zip)" "$W_FONTSDIR_UNIX"
+
     w_register_font ubuntu-bi.ttf "Ubuntu Bold Italic"
+    w_register_font ubuntu-b.ttf "Ubuntu Bold"
+    w_register_font ubuntu-c.ttf "Ubuntu Condensed"
+    w_register_font ubuntu-i.ttf "Ubuntu Italic"
+    w_register_font ubuntu-li.ttf "Ubuntu Light Italic"
+    w_register_font ubuntu-l.ttf "Ubuntu Light"
+    w_register_font ubuntu-mi.ttf "Ubuntu Medium Italic"
+    w_register_font ubuntumono-bi.ttf "Ubuntu Mono Bold Italic"
+    w_register_font ubuntumono-b.ttf "Ubuntu Mono Bold"
+    w_register_font ubuntumono-ri.ttf "Ubuntu Mono Italic"
+    w_register_font ubuntumono-r.ttf "Ubuntu Mono"
+    w_register_font ubuntu-m.ttf "Ubuntu Medium"
+    w_register_font ubuntu-ri.ttf "Ubuntu Italic"
+    w_register_font ubuntu-r.ttf "Ubuntu"
+
 }
 
 #----------------------------------------------------------------
