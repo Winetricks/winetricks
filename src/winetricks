@@ -554,6 +554,9 @@ w_try_cp_font_files()
         w_try cp -f "$_W_src_file" "$_W_dest_dir/$_W_file_name"
     done
 
+    # Wait for Wine to add the new font to the registry under HKCU\Software\Wine\Fonts\Cache
+    w_wineserver -w
+
     unset _W_src_files _W_dest_dir _W_src_file _W_file_name
 }
 
