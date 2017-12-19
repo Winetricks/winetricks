@@ -34,6 +34,12 @@ if [ ! -f Makefile ] ; then
 fi
 
 # Different versions can give different results:
+
+#echo "======================== Begin bashate version info ==========================="
+## bashate doesn't have a --version option (as of bashate-0.3.1)
+#bashate --version
+#echo "======================== End checkbashisms version info ==========================="
+
 echo "======================== Begin checkbashisms version info ==========================="
 checkbashisms --version
 echo "======================== End checkbashisms version info ==========================="
