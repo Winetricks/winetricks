@@ -10267,6 +10267,27 @@ load_consolas()
 
 #----------------------------------------------------------------
 
+w_metadata meiryo fonts \
+    title="MS Meiryo font" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="PowerPointViewer.exe" \
+    installed_file1="$W_FONTSDIR_WIN/meiryo.ttc"
+
+load_meiryo()
+{
+    # https://www.microsoft.com/en-us/download/details.aspx?id=13
+    w_download_to PowerPointViewer "https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe" 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
+    w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE/PowerPointViewer/$file1"
+    w_try_cabextract -d "$W_TMP" -F "MEIRYO*.TTC" "$W_TMP/ppviewer.cab"
+    w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "MEIRYO*.TTC"
+    w_register_font meiryo.ttc "Meiryo & Meiryo Italic & Meiryo UI & Meiryo UI Italic"
+    w_register_font meiryob.ttc "Meiryo Bold & Meiryo Bold Italic & Meiryo UI Bold & Meiryo UI Bold Italic"
+}
+
+#----------------------------------------------------------------
+
 w_metadata corefonts fonts \
     title="MS Arial, Courier, Times fonts" \
     publisher="Microsoft" \
