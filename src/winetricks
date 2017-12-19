@@ -10558,22 +10558,25 @@ load_liberation()
     w_try tar -zxf "$W_CACHE/$W_PACKAGE/$file1"
     w_try_cp_font_files "${file1%.tar.gz}" "$W_FONTSDIR_UNIX"
 
-    w_register_font liberationmono-bolditalic.ttf "LiberationMono-BoldItalic"
-    w_register_font liberationmono-bold.ttf "LiberationMono-Bold"
-    w_register_font liberationmono-italic.ttf "LiberationMono-Italic"
-    w_register_font liberationmono-regular.ttf "LiberationMono-Regular"
-    w_register_font liberationsans-bolditalic.ttf "LiberationSans-BoldItalic"
-    w_register_font liberationsans-bold.ttf "LiberationSans-Bold"
-    w_register_font liberationsans-italic.ttf "LiberationSans-Italic"
-    w_register_font liberationsansnarrow-bolditalic.ttf "LiberationSansNarrow-BoldItalic"
-    w_register_font liberationsansnarrow-bold.ttf "LiberationSansNarrow-Bold"
-    w_register_font liberationsansnarrow-italic.ttf "LiberationSansNarrow-Italic"
-    w_register_font liberationsansnarrow-regular.ttf "LiberationSansNarrow-Regular"
-    w_register_font liberationsans-regular.ttf "LiberationSans-Regular"
-    w_register_font liberationserif-bolditalic.ttf "LiberationSerif-BoldItalic"
-    w_register_font liberationserif-bold.ttf "LiberationSerif-Bold"
-    w_register_font liberationserif-italic.ttf "LiberationSerif-Italic"
-    w_register_font liberationserif-regular.ttf "LiberationSerif-Regular"
+    w_register_font liberationmono-bolditalic.ttf "Liberation Mono Bold Italic"
+    w_register_font liberationmono-bold.ttf "Liberation Mono Bold"
+    w_register_font liberationmono-italic.ttf "Liberation Mono Italic"
+    w_register_font liberationmono-regular.ttf "Liberation Mono"
+
+    w_register_font liberationsans-bolditalic.ttf "Liberation Sans Bold Italic"
+    w_register_font liberationsans-bold.ttf "Liberation Sans Bold"
+    w_register_font liberationsans-italic.ttf "Liberation Sans Italic"
+    w_register_font liberationsans-regular.ttf "Liberation Sans"
+
+    w_register_font liberationsansnarrow-bolditalic.ttf "Liberation Sans Narrow Bold Italic"
+    w_register_font liberationsansnarrow-bold.ttf "Liberation Sans Narrow Bold"
+    w_register_font liberationsansnarrow-italic.ttf "Liberation Sans Narrow Italic"
+    w_register_font liberationsansnarrow-regular.ttf "Liberation Sans Narrow"
+
+    w_register_font liberationserif-bolditalic.ttf "Liberation Serif Bold Italic"
+    w_register_font liberationserif-bold.ttf "Liberation Serif Bold"
+    w_register_font liberationserif-italic.ttf "Liberation Serif Italic"
+    w_register_font liberationserif-regular.ttf "Liberation Serif"
 }
 
 #----------------------------------------------------------------
