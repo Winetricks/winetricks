@@ -2645,7 +2645,7 @@ w_conflicts()
 {
     for x in $2
     do
-        if grep -qw "$x" "$WINEPREFIX/winetricks.log"; then
+        if grep -qw "$x" "$WINEPREFIX/winetricks.log" 2>/dev/null; then
             w_die "error: $1 conflicts with $x, which is already installed."
         fi
     done
@@ -3958,7 +3958,7 @@ winetricks_is_installed()
     fi
 
     # Test if the verb has been executed before
-    if ! grep -qw "$1" "$WINEPREFIX/winetricks.log"; then
+    if ! grep -qw "$1" "$WINEPREFIX/winetricks.log" 2>/dev/null; then
         unset _W_file
         return 1  # not installed
     fi
