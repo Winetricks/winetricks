@@ -10224,6 +10224,29 @@ load_constantia()
 
 #----------------------------------------------------------------
 
+w_metadata corbel fonts \
+    title="MS Corbel font" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="PowerPointViewer.exe" \
+    installed_file1="$W_FONTSDIR_WIN/corbel.ttf"
+
+load_corbel()
+{
+    # https://www.microsoft.com/en-us/download/details.aspx?id=13
+    w_download_to PowerPointViewer "https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe" 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
+    w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE/PowerPointViewer/$file1"
+    w_try_cabextract -d "$W_TMP" -F "CORBEL*.TTF" "$W_TMP/ppviewer.cab"
+    w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CORBEL*.TTF"
+    w_register_font corbel.ttf "Corbel"
+    w_register_font corbelb.ttf "Corbel Bold"
+    w_register_font corbeli.ttf "Corbel Italic"
+    w_register_font corbelz.ttf "Corbel Bold Italic"
+}
+
+#----------------------------------------------------------------
+
 w_metadata consolas fonts \
     title="MS Consolas console font" \
     publisher="Microsoft" \
