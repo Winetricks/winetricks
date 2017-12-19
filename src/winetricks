@@ -10198,6 +10198,29 @@ load_candara()
 
 #----------------------------------------------------------------
 
+w_metadata consolas fonts \
+    title="MS Consolas console font" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="PowerPointViewer.exe" \
+    installed_file1="$W_FONTSDIR_WIN/consola.ttf"
+
+load_consolas()
+{
+    # https://www.microsoft.com/en-us/download/details.aspx?id=13
+    w_download_to PowerPointViewer "https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe" 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
+    w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE/PowerPointViewer/$file1"
+    w_try_cabextract -d "$W_TMP" -F "CONSOLA*.TTF" "$W_TMP/ppviewer.cab"
+    w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CONSOLA*.TTF"
+    w_register_font consola.ttf "Consolas"
+    w_register_font consolab.ttf "Consolas Bold"
+    w_register_font consolai.ttf "Consolas Italic"
+    w_register_font consolaz.ttf "Consolas Bold Italic"
+}
+
+#----------------------------------------------------------------
+
 w_metadata constantia fonts \
     title="MS Constantia font" \
     publisher="Microsoft" \
@@ -10244,29 +10267,6 @@ load_corbel()
 
 #----------------------------------------------------------------
 
-w_metadata consolas fonts \
-    title="MS Consolas console font" \
-    publisher="Microsoft" \
-    year="2011" \
-    media="download" \
-    file1="PowerPointViewer.exe" \
-    installed_file1="$W_FONTSDIR_WIN/consola.ttf"
-
-load_consolas()
-{
-    # https://www.microsoft.com/en-us/download/details.aspx?id=13
-    w_download_to PowerPointViewer "https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe" 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
-    w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE/PowerPointViewer/$file1"
-    w_try_cabextract -d "$W_TMP" -F "CONSOLA*.TTF" "$W_TMP/ppviewer.cab"
-    w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CONSOLA*.TTF"
-    w_register_font consola.ttf "Consolas"
-    w_register_font consolab.ttf "Consolas Bold"
-    w_register_font consolai.ttf "Consolas Italic"
-    w_register_font consolaz.ttf "Consolas Bold Italic"
-}
-
-#----------------------------------------------------------------
-
 w_metadata meiryo fonts \
     title="MS Meiryo font" \
     publisher="Microsoft" \
@@ -10299,9 +10299,9 @@ load_pptfonts()
     w_call calibri
     w_call cambria
     w_call candara
+    w_call consolas
     w_call constantia
     w_call corbel
-    w_call consolas
     w_call meiryo
 }
 
