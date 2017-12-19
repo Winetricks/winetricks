@@ -10288,6 +10288,25 @@ load_meiryo()
 
 #----------------------------------------------------------------
 
+w_metadata pptfonts fonts \
+    title="All MS PowerPoint Viewer fonts" \
+    publisher="various" \
+    date="2007-2009" \
+    media="download"
+
+load_pptfonts()
+{
+    w_call calibri
+    w_call cambria
+    w_call candara
+    w_call constantia
+    w_call corbel
+    w_call consolas
+    w_call meiryo
+}
+
+#----------------------------------------------------------------
+
 w_metadata corefonts fonts \
     title="MS Arial, Courier, Times fonts" \
     publisher="Microsoft" \
