@@ -25,11 +25,11 @@ w_try() {
     fi
 }
 
-if ! command checkbashisms > /dev/null 2>&1 ; then
-    w_die "checkbashisms must be installed!"
-elif ! command shellcheck --version > /dev/null 2>&1 ; then
-    w_die "shellcheck must be installed!"
-elif [ ! -f Makefile ] ; then
+command bashate --help > /dev/null || w_die "bashate must be installed!"
+command checkbashisms --help > /dev/null || w_die "checkbashisms must be installed!"
+command shellcheck --version > /dev/null || w_die "shellcheck must be installed!"
+
+if [ ! -f Makefile ] ; then
     w_die "$0 should be run from the top of the source tree"
 fi
 
