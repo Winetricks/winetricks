@@ -2805,6 +2805,12 @@ w_register_font()
         *.ttf|*.ttc) W_font="$W_font (TrueType)";;
     esac
 
+    # See https://github.com/Winetricks/winetricks/issues/896
+    if [ ! -f "$W_file" ] && [ -f "${W_FONTSDIR_UNIX}/${W_file}" ]; then
+       W_file_unescaped="${W_FONTSDIR_WIN}\\${W_file}"
+       W_file="$(echo "$W_file_unescaped" | sed -e 's!\\!\\\\!g')"
+    fi
+
     # Kludge: use _r to avoid \r expansion in w_try
     cat > "$W_TMP"/_register-font.reg <<_EOF_
 REGEDIT4
