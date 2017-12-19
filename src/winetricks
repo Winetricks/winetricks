@@ -10220,10 +10220,10 @@ load_corefonts()
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/arial32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Arial*.TTF"
-    w_register_font arial.ttf "Arial"
     w_register_font arialbd.ttf "Arial Bold"
     w_register_font arialbi.ttf "Arial Bold Italic"
     w_register_font ariali.ttf "Arial Italic"
+    w_register_font arial.ttf "Arial"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/arialb32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "AriBlk.TTF"
@@ -10231,22 +10231,22 @@ load_corefonts()
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/comic32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Comic*.TTF"
-    w_register_font comic.ttf "Comic Sans MS"
     w_register_font comicbd.ttf "Comic Sans MS Bold"
+    w_register_font comic.ttf "Comic Sans MS"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/courie32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "cour*.ttf"
-    w_register_font cour.ttf "Courier New"
     w_register_font courbd.ttf "Courier New Bold"
     w_register_font courbi.ttf "Courier New Bold Italic"
     w_register_font couri.ttf "Courier New Italic"
+    w_register_font cour.ttf "Courier New"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/georgi32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Georgia*.TTF"
-    w_register_font georgia.ttf "Georgia"
     w_register_font georgiab.ttf "Georgia Bold"
-    w_register_font georgiaz.ttf "Georgia Bold Italic"
     w_register_font georgiai.ttf "Georgia Italic"
+    w_register_font georgia.ttf "Georgia"
+    w_register_font georgiaz.ttf "Georgia Bold Italic"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/impact32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Impact.TTF"
@@ -10254,24 +10254,24 @@ load_corefonts()
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/times32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Times*.TTF"
-    w_register_font times.ttf "Times New Roman"
     w_register_font timesbd.ttf "Times New Roman Bold"
     w_register_font timesbi.ttf "Times New Roman Bold Italic"
     w_register_font timesi.ttf "Times New Roman Italic"
+    w_register_font times.ttf "Times New Roman"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/trebuc32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "[tT]rebuc*.ttf"
-    w_register_font trebuc.ttf "Trebuchet MS"
     w_register_font trebucbd.ttf "Trebuchet MS Bold"
     w_register_font trebucbi.ttf "Trebuchet MS Bold Italic"
     w_register_font trebucit.ttf "Trebuchet MS Italic"
+    w_register_font trebuc.ttf "Trebuchet MS"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/verdan32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Verdana*.TTF"
-    w_register_font verdana.ttf "Verdana"
     w_register_font verdanab.ttf "Verdana Bold"
-    w_register_font verdanaz.ttf "Verdana Bold Italic"
     w_register_font verdanai.ttf "Verdana Italic"
+    w_register_font verdana.ttf "Verdana"
+    w_register_font verdanaz.ttf "Verdana Bold Italic"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/webdin32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Webdings.TTF"
