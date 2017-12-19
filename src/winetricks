@@ -10175,6 +10175,29 @@ load_cambria()
 
 #----------------------------------------------------------------
 
+w_metadata candara fonts \
+    title="MS Candara font" \
+    publisher="Microsoft" \
+    year="2009" \
+    media="download" \
+    file1="PowerPointViewer.exe" \
+    installed_file1="$W_FONTSDIR_WIN/candara.ttf"
+
+load_candara()
+{
+    # https://www.microsoft.com/en-us/download/details.aspx?id=13
+    w_download_to PowerPointViewer "https://download.microsoft.com/download/E/6/7/E675FFFC-2A6D-4AB0-B3EB-27C9F8C8F696/PowerPointViewer.exe" 249473568eba7a1e4f95498acba594e0f42e6581add4dead70c1dfb908a09423
+    w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE/PowerPointViewer/$file1"
+    w_try_cabextract -d "$W_TMP" -F "CANDARA*.TTF" "$W_TMP/ppviewer.cab"
+    w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CANDARA*.TTF"
+    w_register_font candara.ttf "Candara"
+    w_register_font candarab.ttf "Candara Bold"
+    w_register_font candarai.ttf "Candara Italic"
+    w_register_font candaraz.ttf "Candara Bold Italic"
+}
+
+#----------------------------------------------------------------
+
 w_metadata constantia fonts \
     title="MS Constantia font" \
     publisher="Microsoft" \
