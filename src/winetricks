@@ -10563,17 +10563,14 @@ w_metadata fakejapanese_vlgothic fonts \
 
 load_fakejapanese_vlgothic()
 {
-    w_call vlgothic
+    w_warn "load_fakejapanese_vlgothic is deprecated, now only calls load_meiryo and adds an alias for the Japanese spelling of Meiryo"
 
-    # Aliases to set:
-    # Meiryo UI --> VL Gothic
-    # Meiryo (メイリオ) --> VL Gothic
+    w_call meiryo
 
+    # Set the following alias:
+    # Meiryo (メイリオ) --> Meiryo
     jpname_meiryo="$(echo "メイリオ" | iconv -f utf8 -t cp932)"
-
-    w_register_font_replacement "Meiryo UI" "VL Gothic"
-    w_register_font_replacement "Meiryo" "VL Gothic"
-    w_register_font_replacement "$jpname_meiryo" "VL Gothic"
+    w_register_font_replacement "$jpname_meiryo" "Meiryo"
 }
 
 #----------------------------------------------------------------
@@ -10903,7 +10900,7 @@ load_allfonts()
     do
         cmd=$(basename "$file" .vars)
         case $cmd in
-            allfonts|cjkfonts) ;;
+            allfonts|cjkfonts|load_fakejapanese_vlgothic) ;;
             *) w_call "$cmd";;
         esac
     done
