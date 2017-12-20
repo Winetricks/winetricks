@@ -10752,7 +10752,6 @@ load_tahoma()
     w_try_cabextract -d "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "*.TTF"
 
-    # FIXME: Wine seems to nuke the registry entries for Tahoma. Why? Font Xplorer always lists it as 'not installed'.
     w_register_font tahoma.ttf "Tahoma"
     w_register_font tahomabd.ttf "Tahoma Bold"
 }
