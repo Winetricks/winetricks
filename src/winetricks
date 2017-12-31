@@ -3132,8 +3132,8 @@ winetricks_detect_sudo()
         elif test -x "$(which kdesudo 2>/dev/null)"; then
             WINETRICKS_SUDO=kdesudo
         # fall back to the su versions if sudo isn't available (Fedora, etc.):
-        elif test -x "$(which gksu 2>/dev/null)"; then
-            WINETRICKS_SUDO=gksu
+        elif test -x "$(which pkexec 2>/dev/null)"; then
+            WINETRICKS_SUDO=pkexec
         elif test -x "$(which kdesu 2>/dev/null)"; then
             WINETRICKS_SUDO=kdesu
         fi
