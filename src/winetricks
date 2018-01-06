@@ -18389,7 +18389,6 @@ _EOF_
 
 #----------------------------------------------------------------
 # Other settings
-
 #----------------------------------------------------------------
 
 w_metadata alldlls=default settings \
@@ -18406,6 +18405,37 @@ load_alldlls()
         builtin) w_override_all_dlls ;;
     esac
 }
+
+#----------------------------------------------------------------
+
+w_metadata autostart_winedbg=enable settings \
+    title="Automatically launch winedbg when an unhandled exception occurs (default)"
+w_metadata autostart_winedbg=disable settings \
+    title="Prevent winedbg from launching when an unhandled exception occurs"
+
+load_autostart_winedbg()
+{
+    case "$arg" in
+        enable) _W_debugger_value="winedbg --auto %ld %ld";;
+        disable) _W_debugger_value="false";;
+        *) w_die "Unexpected argument '$arg'. Should be enable/disable";;
+    esac
+
+    echo "Setting HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug\\Debugger to '$arg'"
+    cat > "$W_TMP"/autostart_winedbg.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AeDebug]
+"Debugger"="${_W_debugger_value}"
+_EOF_
+
+    w_try_regedit "$W_TMP_WIN"\\autostart_winedbg.reg
+    w_backup_reg_file "$W_TMP"/autostart_winedbg.reg
+
+    unset _W_debugger_value
+}
+
+#----------------------------------------------------------------
 
 w_metadata fontsmooth=disable settings \
     title_uk="Вимкнути згладжування шрифту" \
