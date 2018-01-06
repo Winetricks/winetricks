@@ -2825,7 +2825,6 @@ REGEDIT4
 _EOF_
     # too verbose
     w_try_regedit "$W_TMP_WIN"\\_register-font.reg
-    # shellcheck disable=SC1037
     w_backup_reg_file "$W_TMP"/_register-font.reg
 
     # Wine also updates the win9x fonts key, so let's do that, too
@@ -2836,7 +2835,6 @@ REGEDIT4
 "$W_font"="$W_file"
 _EOF_
     w_try_regedit "$W_TMP_WIN"\\_register-font.reg
-    # shellcheck disable=SC1037
     w_backup_reg_file "$W_TMP"/_register-font.reg
 
     unset W_file W_font
