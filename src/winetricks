@@ -310,6 +310,7 @@ w_package_unsupported_win64()
 {
     if [ "$W_ARCH" = "win64" ] ; then
         case $LANG in
+            pl*) w_die "Ten pakiet ($W_PACKAGE) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
             ru*) w_die "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
             *) w_die "This package ($W_PACKAGE) does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32." ;;
         esac
@@ -322,6 +323,7 @@ w_package_warn_win64()
 {
     if [ "$W_ARCH" = "win64" ] ; then
         case $LANG in
+            pl*) w_warn "Ten pakiet ($W_PACKAGE) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działąć lepiej." ;;
             ru*) w_warn "Данный пакет может работать не полностью в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
             *) w_warn "This package ($W_PACKAGE) may not fully work on a 64-bit installation. 32-bit prefixes may work better." ;;
         esac
@@ -356,6 +358,7 @@ w_try()
     status=$?
     if test $status -ne 0; then
         case $LANG in
+            pl*) w_die "Informacja: poelcenie $* zwróciło status $status. Przerywam." ;;
             ru*) w_die "Важно: команда $* вернула статус $status. Прерывание." ;;
             *) w_die "Note: command $* returned status $status. Aborting." ;;
         esac
@@ -729,6 +732,7 @@ w_verify_sha1sum()
     w_get_sha1sum "$_W_vs_file"
     if [ "$_W_gotsha1sum"x != "$_W_vs_wantsum"x ] ; then
         case $LANG in
+            pl*) w_die "Niezgodność sumy sha1sum! Zmień nazwę $_W_vs_file i spróbuj ponownie." ;;
             ru*) w_die "Контрольная сумма sha1sum не совпадает! Переименуйте файл $_W_vs_file и попробуйте еще раз." ;;
             *) w_die "sha1sum mismatch! Rename $_W_vs_file and try again." ;;
         esac
@@ -745,6 +749,7 @@ w_verify_sha256sum()
     w_get_sha256sum "$_W_vs_file"
     if [ "$_W_gotsha256sum"x != "$_W_vs_wantsum"x ] ; then
         case $LANG in
+            pl*) w_die "Niezgodność sumy sha256sum! Zmień nazwę $_W_vs_file i spróbuj ponownie." ;;
             ru*) w_die "Контрольная сумма sha256sum не совпадает! Переименуйте файл $_W_vs_file и попробуйте еще раз." ;;
             *) w_die "sha256sum mismatch! Rename $_W_vs_file and try again." ;;
         esac
@@ -794,6 +799,8 @@ winetricks_parse_wget_progress()
     # Parse a percentage, a size, and a time into $1, $2 and $3
     # then use them to create the output line.
     case $LANG in
+        pl*) perl -p -e \
+            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Pobieranie… \2 (\3)/' ;;
         ru*) perl -p -e \
             '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Загрузка... \2 (\3)/' ;;
         *) perl -p -e \
@@ -1049,6 +1056,7 @@ w_download_to()
 
                 if test ! "$WINETRICKS_CONTINUE_DOWNLOAD" ; then
                     case $LANG in
+                        pl*) w_warn "Niezgodność sum kontrolnych dla $_W_cache/$_W_file, pobieram ponownie" ;;
                         ru*) w_warn "Контрольная сумма файла $_W_cache/$_W_file не совпадает, попытка повторной загрузки" ;;
                         *) w_warn "Checksum for $_W_cache/$_W_file did not match, retrying download" ;;
                     esac
@@ -3047,6 +3055,7 @@ winetricks_latest_version_check()
     # Check that $latest_version is an actual number in case github is down
     if ! echo "${latest_version}" | grep -q -E "[0-9]{8}" || [ -z "${latest_version}" ] ; then
         case $LANG in
+            pl*) w_warn "GitHub nie działa? Wersja '${latest_version}' nie wydaje się być prawdiłową wersją" ;;
             ru*) w_warn "Отсутствует подключение к Github? версия '${latest_version}' может быть неактуальной" ;;
             *) w_warn "Github down? version '${latest_version}' doesn't appear to be a valid version" ;;
         esac
@@ -3060,6 +3069,10 @@ winetricks_latest_version_check()
             winetricks_selfupdate
         else
             case $LANG in
+                pl*)
+                    w_warn "Korzystasz z winetricks-${WINETRICKS_VERSION}, a najnowszą wersją winetricks-${latest_version}!"
+                    w_warn "Zalecana jest aktualizacja z użyciem menedżera pakietów Twojej dystrybucji, --self-update lub ręczna aktualizacja."
+                    ;;
                 ru*)
                     w_warn "Запущен winetricks-${WINETRICKS_VERSION}, последняя версия winetricks-${latest_version}!"
                     w_warn "Вы можете ее обновить с помощью менеджера пакетов, --self-update или вручную."
