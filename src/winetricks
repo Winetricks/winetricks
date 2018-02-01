@@ -12683,8 +12683,9 @@ load_wmp9()
 
     # remove builtin placeholders to allow update
     rm -f "$W_SYSTEM32_DLLS"/wmvcore.dll "$W_SYSTEM32_DLLS"/wmp.dll
-    # need native wmp override to allow update and later checks to succeed
-    w_override_dlls native wmp
+    rm -f "$W_PROGRAMS_X86_UNIX/Windows Media Player/wmplayer.exe"
+    # need native overrides to allow update and later checks to succeed
+    w_override_dlls native l3codeca.acm wmp wmplayer.exe wmvcore
 
     # FIXME: should we override quartz?  Builtin crashes when you play
     # anything, but maybe that's bug 30557 and only affects new systems?
