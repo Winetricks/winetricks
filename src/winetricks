@@ -12725,6 +12725,12 @@ load_wmp10()
 
     w_set_winver winxp
 
+    # remove builtin placeholders to allow update
+    rm -f "$W_SYSTEM32_DLLS"/wmvcore.dll "$W_SYSTEM32_DLLS"/wmp.dll
+    rm -f "$W_PROGRAMS_X86_UNIX/Windows Media Player/wmplayer.exe"
+    # need native overrides to allow update and later checks to succeed
+    w_override_dlls native l3codeca.acm wmp wmplayer.exe wmvcore
+
     # Crashes on exit, but otherwise ok; see https://bugs.winehq.org/show_bug.cgi?id=12633
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" MP10Setup.exe $W_UNATTENDED_SLASH_Q
