@@ -10908,7 +10908,12 @@ load_allfonts()
     do
         cmd=$(basename "$file" .vars)
         case $cmd in
-            allfonts|cjkfonts) ;;
+            # "fake*" verbs need to be skipped because
+            # this "allfonts" verb is intended to only install real fonts and
+            # adding font replacements at the same time may invalidate the replacements
+            # "pptfonts" can be skipped because it only calls other verbs for installing fonts
+            # See https://github.com/Winetricks/winetricks/issues/899
+            allfonts|cjkfonts|fake*|pptfonts) ;;
             *) w_call "$cmd";;
         esac
     done
