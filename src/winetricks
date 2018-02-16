@@ -3142,17 +3142,31 @@ winetricks_detect_sudo()
     fi
 
     if test x"$DISPLAY" != x""; then
-        if test -x "$(which gksudo 2>/dev/null)"; then
+        # This should be the default option because some of GUI sudo programs are unmaintained
+        # See https://github.com/Winetricks/winetricks/issues/912
+        if test -x "$(which pkexec 2>/dev/null)"; then
+            # Maintained and recommended, part of Polkit, desktop-independent
+            # Usage: pkexec command ...
+            WINETRICKS_SUDO=pkexec
+        # Austin said "gksu*/kdesu* should stay (at least for a while)" in Feb 2018
+        # See https://github.com/Winetricks/winetricks/pull/915#issuecomment-362984379
+        elif test -x "$(which gksudo 2>/dev/null)"; then
+            # Unmaintained [2009], part of gksu
             # Usage: gksudo "command ..."
             WINETRICKS_SUDO=gksudo
         elif test -x "$(which kdesudo 2>/dev/null)"; then
+            # Unmaintained [2015] (latest is for KDE4, no KF5 version available)
+            # https://cgit.kde.org/kdesudo.git/
             # Usage: kdesudo "command ..."
             WINETRICKS_SUDO=kdesudo
         # fall back to the su versions if sudo isn't available (Fedora, etc.):
         elif test -x "$(which gksu 2>/dev/null)"; then
+            # Unmaintained [2009]
             # Usage: gksu "command ..."
             WINETRICKS_SUDO=gksu
         elif test -x "$(which kdesu 2>/dev/null)"; then
+            # Maintained, KF5 version available
+            # https://cgit.kde.org/kdesu.git/
             # Usage: kdesu -c "command ..."
             WINETRICKS_SUDO=kdesu
         fi
