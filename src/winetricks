@@ -1776,14 +1776,18 @@ w_umount()
         echo "Running $WINETRICKS_SUDO umount $W_ISO_MOUNT_ROOT"
 
         case "$WINETRICKS_SUDO" in
-            gksudo)
+            gksu*|kdesudo)
               # -l lazy unmount in case executable still running
               "$WINETRICKS_SUDO" "umount -l $W_ISO_MOUNT_ROOT"
               w_try "$WINETRICKS_SUDO" "rm -rf $W_ISO_MOUNT_ROOT"
               ;;
+            kdesu)
+              "$WINETRICKS_SUDO" -c "umount -l $W_ISO_MOUNT_ROOT"
+              w_try "$WINETRICKS_SUDO" -c "rm -rf $W_ISO_MOUNT_ROOT"
+              ;;
             *)
-              "$WINETRICKS_SUDO" "umount -l $W_ISO_MOUNT_ROOT"
-              w_try "$WINETRICKS_SUDO" "rm -rf $W_ISO_MOUNT_ROOT"
+              "$WINETRICKS_SUDO" umount -l "$W_ISO_MOUNT_ROOT"
+              w_try "$WINETRICKS_SUDO" rm -rf "$W_ISO_MOUNT_ROOT"
               ;;
         esac
 
@@ -3139,13 +3143,17 @@ winetricks_detect_sudo()
 
     if test x"$DISPLAY" != x""; then
         if test -x "$(which gksudo 2>/dev/null)"; then
+            # Usage: gksudo "command ..."
             WINETRICKS_SUDO=gksudo
         elif test -x "$(which kdesudo 2>/dev/null)"; then
+            # Usage: kdesudo "command ..."
             WINETRICKS_SUDO=kdesudo
         # fall back to the su versions if sudo isn't available (Fedora, etc.):
         elif test -x "$(which gksu 2>/dev/null)"; then
+            # Usage: gksu "command ..."
             WINETRICKS_SUDO=gksu
         elif test -x "$(which kdesu 2>/dev/null)"; then
+            # Usage: kdesu -c "command ..."
             WINETRICKS_SUDO=kdesu
         fi
     fi
@@ -4309,7 +4317,8 @@ winetricks_cache_iso()
     # Horrible hack for Gentoo - make sure we can read from the drive
     if ! test -r $WINETRICKS_DEV; then
         case "$WINETRICKS_SUDO" in
-            gksudo) $WINETRICKS_SUDO "chmod 666 $WINETRICKS_DEV" ;;
+            gksu*|kdesudo) $WINETRICKS_SUDO "chmod 666 $WINETRICKS_DEV" ;;
+            kdesu) $WINETRICKS_SUDO -c "chmod 666 $WINETRICKS_DEV" ;;
             *) $WINETRICKS_SUDO chmod 666 $WINETRICKS_DEV ;;
         esac
     fi
@@ -4457,10 +4466,15 @@ winetricks_mount_cached_iso()
         # Linux
         # FIXME: find a way to mount or copy from image without sudo
         _W_USERID=$(id -u)
+        # WINETRICKS_IMG may contain spaces and needs to be quoted
         case "$WINETRICKS_SUDO" in
-            gksudo)
+            gksu*|kdesudo)
               w_try $WINETRICKS_SUDO "mkdir -p $W_ISO_MOUNT_ROOT"
-              w_try $WINETRICKS_SUDO "mount -o ro,loop,uid=$_W_USERID,unhide $WINETRICKS_IMG $W_ISO_MOUNT_ROOT"
+              w_try $WINETRICKS_SUDO "mount -o ro,loop,uid=$_W_USERID,unhide '$WINETRICKS_IMG' $W_ISO_MOUNT_ROOT"
+              ;;
+            kdesu)
+              w_try $WINETRICKS_SUDO -c "mkdir -p $W_ISO_MOUNT_ROOT"
+              w_try $WINETRICKS_SUDO -c "mount -o ro,loop,uid=$_W_USERID,unhide '$WINETRICKS_IMG' $W_ISO_MOUNT_ROOT"
               ;;
             *)
               w_try $WINETRICKS_SUDO mkdir -p $W_ISO_MOUNT_ROOT
