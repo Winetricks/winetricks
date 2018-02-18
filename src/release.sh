@@ -99,7 +99,7 @@ fi
 git archive --prefix="winetricks-${version}/" -o "${tmpdir}/${version}.tar.gz" "${version}"
 
 # create a detached signature of the tarball
-gpg --armor --default-key 0xA041937B --detach-sign "${tmpdir}/${version}.tar.gz"
+gpg --armor --default-key 0x053F0749 --detach-sign "${tmpdir}/${version}.tar.gz"
 
 # upload the detached signature to github:
 if [ $nopush = 1 ] ; then
