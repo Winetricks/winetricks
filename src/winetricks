@@ -7667,9 +7667,9 @@ load_gmdls()
 # um, codecs are kind of clustered here.  They probably deserve their own real category.
 
 w_metadata allcodecs dlls \
-    title="All codecs (dirac, ffdshow, icodecs, l3codecx, xvid) except wmp" \
+    title="All codecs (dirac, ffdshow, icodecs, cinepak, l3codecx, xvid) except wmp" \
     publisher="various" \
-    year="1998-2009" \
+    year="1995-2009" \
     media="download"
 
 load_allcodecs()
@@ -7678,6 +7678,7 @@ load_allcodecs()
     w_call l3codecx
     w_call ffdshow
     w_call icodecs
+    w_call cinepak
     w_call xvid
 }
 
@@ -7861,6 +7862,32 @@ load_icodecs()
         sleep 1000
         winclose, Wine Explorer
     "
+}
+
+#----------------------------------------------------------------
+
+w_metadata cinepak dlls \
+    title="Cinepak Codec" \
+    publisher="Radius" \
+    year="1995" \
+    media="download" \
+    file1="cvid32.zip" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/iccvid.dll" \
+    homepage="http://www.probo.com/cinepak.php"
+
+load_cinepak()
+{
+    w_download "http://www.probo.com/pub/cinepak/cvid32.zip" a41984a954fe77557f228fa8a95cdc05db22bf9ff5429fe4307fd6fc51e11969
+
+    if [ -f "$W_SYSTEM32_DLLS/iccvid.dll" ]; then
+        w_try rm -f "$W_SYSTEM32_DLLS/iccvid.dll"
+    fi
+
+    w_try_unzip "$W_SYSTEM32_DLLS" "${W_CACHE}/${W_PACKAGE}/${file1}" ICCVID.DLL
+
+    w_try mv -f "$W_SYSTEM32_DLLS/ICCVID.DLL" "$W_SYSTEM32_DLLS/iccvid.dll"
+
+    w_override_dlls native iccvid
 }
 
 #----------------------------------------------------------------
