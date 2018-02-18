@@ -18157,6 +18157,34 @@ load_glsl()
 
 #----------------------------------------------------------------
 
+w_metadata mst=on settings \
+    title_uk="Увімкнути MultisampleTextures" \
+    title="Enable MultisampleTextures"
+w_metadata mst=off settings \
+    title_uk="Вимкнути MultisampleTextures (за замовчуванням)" \
+    title="Disable MultisampleTextures (default)"
+
+load_mst()
+{
+    case "$1" in
+        off) arg=0;;
+        on)  arg=1;;
+        *) w_die "illegal value $1 for mst";;
+    esac
+
+    echo "Setting mst to $arg"
+    cat > "$W_TMP"/set-mst.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]
+"MultisampleTextures"=dword:$arg
+
+_EOF_
+    w_try_regedit "$W_TMP"/set-mst.reg
+}
+
+#----------------------------------------------------------------
+
 w_metadata multisampling=enabled settings \
     title_uk="Увімкнути Direct3D мультисемплінг" \
     title="Enable Direct3D multisampling"
