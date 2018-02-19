@@ -18157,18 +18157,18 @@ load_glsl()
 
 #----------------------------------------------------------------
 
-w_metadata mst=on settings \
+w_metadata mst=enable settings \
     title_uk="Увімкнути MultisampleTextures" \
     title="Enable MultisampleTextures"
-w_metadata mst=off settings \
+w_metadata mst=disable settings \
     title_uk="Вимкнути MultisampleTextures (за замовчуванням)" \
     title="Disable MultisampleTextures (default)"
 
 load_mst()
 {
     case "$1" in
-        off) arg=0;;
-        on)  arg=1;;
+        disable) arg=0;;
+        enable)  arg=1;;
         *) w_die "illegal value $1 for mst";;
     esac
 
