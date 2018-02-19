@@ -20,6 +20,7 @@ If available and up to date, you should use the ```winetricks``` package, availa
 * Gentoo: https://packages.gentoo.org/packages/app-emulation/winetricks
 * Homebrew (OSX): http://brewformulas.org/Winetricks
 * MacPorts (OSX): https://www.macports.org/ports.php?by=name&substr=winetricks
+* Slackbuilds (Slackware): http://slackbuilds.org/repository/14.2/system/winetricks/?search=winetricks
 * Ubuntu: https://packages.ubuntu.com/search?keywords=winetricks Note: Ubuntu LTS versions are years out of date, do a manual install instead.
 
 If it's not available, outdated (e.g., Ubuntu LTSs), or you want the bleeding edge version, you can manually install winetricks:
