@@ -10000,6 +10000,24 @@ load_vjrun20()
 
 #----------------------------------------------------------------
 
+w_metadata vulkansdk dlls \
+    title="Vulkan SDK 1.0.68 (developers only)" \
+    publisher="LunarG" \
+    year="2018" \
+    media="download" \
+    file1="VulkanSDK-1.0.68.0-Installer.exe" \
+    installed_file1="C:/VulkanSDK/1.0.68.0/Vulkan.ico"
+
+load_vulkansdk()
+{
+    # https://vulkan.lunarg.com/sdk/home
+    w_download "https://sdk.lunarg.com/sdk/download/1.0.68.0/windows/VulkanSDK-1.0.68.0-Installer.exe" 8e6401d4f90af1ab384f76cb59f1b7fe9bcd717c92b2080089f893f2de4b33bb
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_S
+}
+
+#----------------------------------------------------------------
+
 w_metadata webio dlls \
     title="MS Windows Web I/O" \
     publisher="Microsoft" \
