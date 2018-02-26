@@ -36,6 +36,7 @@ WINETRICKS_VERSION=20180513-next
 #   for the user when downloads cannot be fully automated.
 # - pkexec, sudo, or kdesu (gksu/gksudo/kdesudo are deprecated upstream but also still supported)
 #   are used to mount .iso images if the user cached them with -k option.
+# - fuseiso, archivemount (Linux), or hdiutil (macOS) is used to mount .iso images.
 # - perl is used to munge steam config files.
 # - torify is used with option "--torify" if sites are blocked in single countries.
 # On Ubuntu, the following lines can be used to install all the prerequisites:
@@ -1792,27 +1793,56 @@ w_umount()
         w_try_cd "$VCD_DIR"
         w_try vcdmount.exe /u
     else
-        echo "Running $WINETRICKS_SUDO umount $W_ISO_MOUNT_ROOT"
+        if test "$W_USE_USERMOUNT"; then
+            # FUSE-based tools or hdiutil
+            if test -d "$W_ISO_USER_MOUNT_ROOT"; then
+                "$WINE" eject "${W_ISO_MOUNT_LETTER}:"
+                cat > "$W_TMP"/unset_type_cdrom.reg <<_EOF_
+REGEDIT4
 
-        case "$WINETRICKS_SUDO" in
-            gksu*|kdesudo)
-              # -l lazy unmount in case executable still running
-              "$WINETRICKS_SUDO" "umount -l $W_ISO_MOUNT_ROOT"
-              w_try "$WINETRICKS_SUDO" "rm -rf $W_ISO_MOUNT_ROOT"
-              ;;
-            kdesu)
-              "$WINETRICKS_SUDO" -c "umount -l $W_ISO_MOUNT_ROOT"
-              w_try "$WINETRICKS_SUDO" -c "rm -rf $W_ISO_MOUNT_ROOT"
-              ;;
-            *)
-              "$WINETRICKS_SUDO" umount -l "$W_ISO_MOUNT_ROOT"
-              w_try "$WINETRICKS_SUDO" rm -rf "$W_ISO_MOUNT_ROOT"
-              ;;
-        esac
+[HKEY_LOCAL_MACHINE\\Software\\Wine\\Drives]
+"${W_ISO_MOUNT_LETTER}:"=-
+_EOF_
+                w_try_regedit "$W_TMP"/unset_type_cdrom.reg
+                rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"
+                rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}::"
 
-        "$WINE" eject "${W_ISO_MOUNT_LETTER}:"
-        rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"
-        rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}::"
+                case "$WINETRICKS_ISO_MOUNT" in
+                    hdiutil)
+                        "$WINETRICKS_ISO_MOUNT" detach "$W_ISO_USER_MOUNT_ROOT"
+                        ;;
+                    *)
+                        # -uz lazy unmount in case executable still running
+                        fusermount -uz "$W_ISO_USER_MOUNT_ROOT"
+                        ;;
+                esac
+                w_try rmdir "$W_ISO_USER_MOUNT_ROOT"
+            fi
+            W_ISO_MOUNT_ROOT=/mnt/winetricks
+        else
+            # sudo + umount
+            echo "Running $WINETRICKS_SUDO umount $W_ISO_MOUNT_ROOT"
+
+            case "$WINETRICKS_SUDO" in
+                gksu*|kdesudo)
+                    # -l lazy unmount in case executable still running
+                    "$WINETRICKS_SUDO" "umount -l $W_ISO_MOUNT_ROOT"
+                    w_try "$WINETRICKS_SUDO" "rm -rf $W_ISO_MOUNT_ROOT"
+                    ;;
+                kdesu)
+                    "$WINETRICKS_SUDO" -c "umount -l $W_ISO_MOUNT_ROOT"
+                    w_try "$WINETRICKS_SUDO" -c "rm -rf $W_ISO_MOUNT_ROOT"
+                    ;;
+                *)
+                    "$WINETRICKS_SUDO" umount -l "$W_ISO_MOUNT_ROOT"
+                    w_try "$WINETRICKS_SUDO" rm -rf "$W_ISO_MOUNT_ROOT"
+                    ;;
+            esac
+
+            "$WINE" eject "${W_ISO_MOUNT_LETTER}:"
+            rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"
+            rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}::"
+        fi
     fi
 }
 
@@ -2830,6 +2860,9 @@ w_do_call()
         test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
         mkdir -p "$W_TMP"
 
+        # Reset whether use of user mount tool
+        unset W_USE_USERMOUNT
+
         # Calling subshell must explicitly propagate error code with exit $?
     ) || exit $?
 }
@@ -3218,6 +3251,31 @@ winetricks_detect_sudo()
             WINETRICKS_SUDO=kdesu
         fi
     fi
+}
+
+# Detect which iso mount tool to use
+winetricks_detect_iso_mount()
+{
+    if test -x "$(which fuseiso 2>/dev/null)"; then
+        # File/dir names are converted to lowercase
+        WINETRICKS_ISO_MOUNT=fuseiso
+    elif test -x "$(which archivemount 2>/dev/null)"; then
+        # File/dir names may be uppercase and we may need
+        # case-insensitive operations
+        #   e.g. w_try "$WINE" cmd /c "copy $W_ISO_MOUNT_LETTER:\\DOC.PDF C:\\doc.pdf"
+        # This tool had path issue in 0.8.8 or older versions
+        #   e.g. office2013pro works in 0.8.9 or later but doesn't work in 0.8.8
+        WINETRICKS_ISO_MOUNT=archivemount
+    elif test -x "$(which hdiutil 2>/dev/null)"; then
+        # File/dir names may be uppercase (same as archivemount)
+        WINETRICKS_ISO_MOUNT=hdiutil
+    else
+        WINETRICKS_ISO_MOUNT=none
+    fi
+    # Notes about other tools:
+    #   fuseiso9660: may append ";1" to filenames
+    #   unar: the drive icon is not "optical drive + disc" in Wine Explorer
+    #         and "wine eject" command fails
 }
 
 winetricks_get_prefix_var()
@@ -4511,31 +4569,94 @@ winetricks_mount_cached_iso()
             sleep 1
         done
     else
-        # Linux
-        # FIXME: find a way to mount or copy from image without sudo
-        _W_USERID=$(id -u)
-        # WINETRICKS_IMG may contain spaces and needs to be quoted
-        case "$WINETRICKS_SUDO" in
-            gksu*|kdesudo)
-              w_try $WINETRICKS_SUDO "mkdir -p $W_ISO_MOUNT_ROOT"
-              w_try $WINETRICKS_SUDO "mount -o ro,loop,uid=$_W_USERID,unhide '$WINETRICKS_IMG' $W_ISO_MOUNT_ROOT"
-              ;;
-            kdesu)
-              w_try $WINETRICKS_SUDO -c "mkdir -p $W_ISO_MOUNT_ROOT"
-              w_try $WINETRICKS_SUDO -c "mount -o ro,loop,uid=$_W_USERID,unhide '$WINETRICKS_IMG' $W_ISO_MOUNT_ROOT"
-              ;;
-            *)
-              w_try $WINETRICKS_SUDO mkdir -p $W_ISO_MOUNT_ROOT
-              w_try $WINETRICKS_SUDO mount -o ro,loop,uid="$_W_USERID",unhide "$WINETRICKS_IMG" $W_ISO_MOUNT_ROOT
-              ;;
-        esac
+        if test "$W_USE_USERMOUNT"; then
+            # Linux (FUSE-based tools), macOS (hdiutil)
+            if test "$WINETRICKS_ISO_MOUNT" = "none"; then
+                # If no tools found, fall back to sudo + mount
+                w_warn "No user mount tools detected, using sudo + mount"
+                unset W_USE_USERMOUNT
+                winetricks_mount_cached_iso
+                return
+            fi
+            echo "Running mkdir -p $W_ISO_USER_MOUNT_ROOT"
+            mkdir -p "$W_ISO_USER_MOUNT_ROOT"
+            if test $? -ne 0; then
+                w_warn "mkdir -p $W_ISO_USER_MOUNT_ROOT failed, falling back to sudo + mount"
+                unset W_USE_USERMOUNT
+                winetricks_mount_cached_iso
+                return
+            fi
+            case "$WINETRICKS_ISO_MOUNT" in
+                fuseiso)
+                    echo "Running $WINETRICKS_ISO_MOUNT $WINETRICKS_IMG $W_ISO_USER_MOUNT_ROOT"
+                    $WINETRICKS_ISO_MOUNT "$WINETRICKS_IMG" "$W_ISO_USER_MOUNT_ROOT"
+                    ;;
+                archivemount)
+                    echo "Running $WINETRICKS_ISO_MOUNT $WINETRICKS_IMG $W_ISO_USER_MOUNT_ROOT -o readonly"
+                    $WINETRICKS_ISO_MOUNT "$WINETRICKS_IMG" "$W_ISO_USER_MOUNT_ROOT" -o readonly
+                    ;;
+                hdiutil)
+                    echo "Running $WINETRICKS_ISO_MOUNT attach -mountpoint $W_ISO_USER_MOUNT_ROOT $WINETRICKS_IMG"
+                    $WINETRICKS_ISO_MOUNT attach -mountpoint "$W_ISO_USER_MOUNT_ROOT" "$WINETRICKS_IMG"
+                    ;;
+                *)
+                    w_warn "Unknown ISO mount tool $WINETRICKS_ISO_MOUNT, using sudo + mount"
+                    unset W_USE_USERMOUNT
+                    winetricks_mount_cached_iso
+                    return
+                    ;;
+            esac
+            if test $? -ne 0; then
+                w_warn "$WINETRICKS_ISO_MOUNT failed, falling back to sudo + mount"
+                unset W_USE_USERMOUNT
+                winetricks_mount_cached_iso
+                return
+            fi
 
-        echo "Mounting as drive ${W_ISO_MOUNT_LETTER}:"
-        # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
-        rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"*
-        ln -sf "$WINETRICKS_IMG" "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}::"
-        ln -sf "$W_ISO_MOUNT_ROOT" "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"
-        unset _W_USERID
+            echo "Mounting as drive ${W_ISO_MOUNT_LETTER}:"
+            # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
+            rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"*
+            ln -sf "$WINETRICKS_IMG" "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}::"
+            ln -sf "$W_ISO_USER_MOUNT_ROOT" "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"
+            # Gotta set the type to "cdrom", else "wine eject" will fail
+            cat > "$W_TMP"/set_type_cdrom.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\\Software\\Wine\\Drives]
+"${W_ISO_MOUNT_LETTER}:"="cdrom"
+_EOF_
+            w_try_regedit "$W_TMP"/set_type_cdrom.reg
+            # The new drive is not recognized without waiting
+            # FIXME: not sure if the duration is appropriate
+            sleep 5
+
+            W_ISO_MOUNT_ROOT="$W_ISO_USER_MOUNT_ROOT"
+        else
+            # Linux (sudo + mount)
+            _W_USERID=$(id -u)
+            # WINETRICKS_IMG may contain spaces and needs to be quoted
+            case "$WINETRICKS_SUDO" in
+                gksu*|kdesudo)
+                    w_try $WINETRICKS_SUDO "mkdir -p $W_ISO_MOUNT_ROOT"
+                    w_try $WINETRICKS_SUDO "mount -o ro,loop,uid=$_W_USERID,unhide '$WINETRICKS_IMG' $W_ISO_MOUNT_ROOT"
+                    ;;
+                kdesu)
+                    w_try $WINETRICKS_SUDO -c "mkdir -p $W_ISO_MOUNT_ROOT"
+                    w_try $WINETRICKS_SUDO -c "mount -o ro,loop,uid=$_W_USERID,unhide '$WINETRICKS_IMG' $W_ISO_MOUNT_ROOT"
+                    ;;
+                *)
+                    w_try $WINETRICKS_SUDO mkdir -p "$W_ISO_MOUNT_ROOT"
+                    w_try $WINETRICKS_SUDO mount -o ro,loop,uid="$_W_USERID",unhide "$WINETRICKS_IMG" "$W_ISO_MOUNT_ROOT"
+                    ;;
+            esac
+
+            echo "Mounting as drive ${W_ISO_MOUNT_LETTER}:"
+            # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
+            rm -f "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"*
+            ln -sf "$WINETRICKS_IMG" "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}::"
+            ln -sf "$W_ISO_MOUNT_ROOT" "$WINEPREFIX/dosdevices/${W_ISO_MOUNT_LETTER}:"
+            unset _W_USERID
+        fi
     fi
 }
 
@@ -5055,6 +5176,7 @@ winetricks_init()
 
     # Overridden for windows
     W_ISO_MOUNT_ROOT=/mnt/winetricks
+    W_ISO_USER_MOUNT_ROOT="$HOME"/winetricks-iso
     W_ISO_MOUNT_LETTER=i
 
     WINETRICKS_WINE_VERSION=${WINETRICKS_WINE_VERSION:-$(winetricks_early_wine --version | sed 's/.*wine/wine/')}
@@ -19677,6 +19799,7 @@ then
             # No non-option arguments given, so read them from GUI, and loop until user quits
             winetricks_detect_gui
             winetricks_detect_sudo
+            test -z "$WINETRICKS_ISO_MOUNT" && winetricks_detect_iso_mount
             while true
             do
                 case $WINETRICKS_CURMENU in
@@ -19737,6 +19860,7 @@ then
             winetricks_stats_init
             # Command-line case
             winetricks_detect_sudo
+            test -z "$WINETRICKS_ISO_MOUNT" && winetricks_detect_iso_mount
             # User gave command-line arguments, so just run those verbs and exit
             for verb; do
                 case $verb in
