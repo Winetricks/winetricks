@@ -14094,7 +14094,7 @@ load_cod1()
             WinWait, Call of Duty, Start
             ControlClick Button1
         }
-        WinWait, Insert CD, Please insert the Call of Duty w_try_cd 2
+        WinWait, Insert CD, Please insert the Call of Duty cd 2
         "
 
     "$WINE" eject ${W_ISO_MOUNT_LETTER}:
@@ -14105,7 +14105,7 @@ load_cod1()
         if ( w_opt_unattended > 0 ) {
             Send {Enter}    ;continue installation
         }
-        WinWait, Insert CD, Please insert the Call of Duty w_try_cd 1
+        WinWait, Insert CD, Please insert the Call of Duty cd 1
     "
 
     "$WINE" eject ${W_ISO_MOUNT_LETTER}:
