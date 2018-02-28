@@ -4948,6 +4948,11 @@ winetricks_init()
     WINETRICKS_CONFIG="${XDG_CONFIG_HOME}/winetricks"
     #test -d "$WINETRICKS_CONFIG" || mkdir -p "$WINETRICKS_CONFIG"
 
+    # Load country code from config file only when "--country=" option is not specified
+    if test -z "$W_COUNTRY" -a -f "${WINETRICKS_CONFIG}"/country; then
+        W_COUNTRY="$(cat "${WINETRICKS_CONFIG}"/country)"
+    fi
+
     # Pin a task to a single cpu. Helps prevent race conditions.
     #
     # Linux/FreeBSD: supported
@@ -5126,6 +5131,7 @@ Usage: $0 [options] [command|verb|path-to-verb] ...
 Executes given verbs.  Each verb installs an application or changes a setting.
 
 Options:
+    --country=CC      Set country code to CC and don't detect your IP address
     --force           Don't check whether packages were already installed
     --gui             Show gui diagnostics even when driven by commandline
     --isolate         Install each app or game in its own bottle (WINEPREFIX)
@@ -5163,6 +5169,7 @@ _EOF_
 winetricks_handle_option()
 {
     case "$1" in
+        --country=*) W_COUNTRY="${1##--country=}" ;;
         --force) WINETRICKS_FORCE=1;;
         --gui) winetricks_detect_gui;;
         -h|--help) winetricks_usage ; exit 0 ;;
