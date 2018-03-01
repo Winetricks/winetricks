@@ -1178,6 +1178,9 @@ w_download_to()
 
             w_try_cd "$_W_dl_olddir"
             unset _W_dl_olddir
+
+            # downloaded successfully, exit from loop
+            break
         elif test $tries = 2; then
             test -f "$_W_file" && rm "$_W_file"
             w_die "Downloading $_W_url failed"
