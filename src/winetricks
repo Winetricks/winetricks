@@ -5367,7 +5367,7 @@ helper_win7sp1_x64()
 w_metadata adobeair dlls \
     title="Adobe AIR" \
     publisher="Adobe" \
-    year="2017" \
+    year="2018" \
     media="download" \
     file1="AdobeAIRInstaller.exe" \
     installed_file1="$W_COMMONFILES_X86_WIN/Adobe AIR/Versions/1.0/Adobe AIR.dll" \
@@ -5377,7 +5377,8 @@ load_adobeair()
 {
     # 2017/03/14: 20.0.0.260 (strings 'Adobe AIR.dll' | grep 20\\. ) sha256sum 318770b9a18e59ca4a721a1f5c2b0235cffdbe77a043e99cb2af32074d61de45
     # 2018/01/30: 28.0.0.127 (strings 'Adobe AIR.dll' | grep 28\\. ) sha256sum 9076489e273652089a4a53a1d38c6631e8b7477e39426a843e0273f25bfb109f
-    w_download https://airdownload.adobe.com/air/win/download/latest/AdobeAIRInstaller.exe 9076489e273652089a4a53a1d38c6631e8b7477e39426a843e0273f25bfb109f
+    # 2018/03/16: 29.0.0.112 (strings 'Adobe AIR.dll' | grep -E "^29\..+\..+" ) sha256sum 5186b54682644a30f2be61c9b510de9a9a76e301bc1b42f0f1bc50bd809a3625
+    w_download https://airdownload.adobe.com/air/win/download/latest/AdobeAIRInstaller.exe 5186b54682644a30f2be61c9b510de9a9a76e301bc1b42f0f1bc50bd809a3625
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     # See https://bugs.winehq.org/show_bug.cgi?id=43506
