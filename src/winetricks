@@ -7589,6 +7589,7 @@ w_metadata dxdiagn dlls \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
+    conflicts="dxdiagn_feb2010" \
     file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/dxdiagn.dll"
 
@@ -7603,6 +7604,26 @@ load_dxdiagn()
     fi
 
     w_override_dlls native,builtin dxdiagn
+}
+
+#----------------------------------------------------------------
+
+w_metadata dxdiagn_feb2010 dlls \
+    title="DirectX Diagnostic Library (February 2010)" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    conflicts="dxdiagn" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dxdiagn.dll"
+
+load_dxdiagn_feb2010()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dxdiagn.dll' "$W_TMP/dxnt.cab"
+    w_override_dlls native dxdiagn
 }
 
 #----------------------------------------------------------------
