@@ -11459,7 +11459,11 @@ load_dxdiag()
         w_call dxdiagn_feb2010
     fi
     if w_workaround_wine_bug 9027; then
-        w_call directmusic
+        w_call dmband
+        w_call dmime
+        w_call dmstyle
+        w_call dmsynth
+        w_call dmusic
     fi
 }
 
