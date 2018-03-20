@@ -12430,6 +12430,24 @@ _EOF_
         w_try_regedit "$W_TMP_WIN"\\MaxVersionGL.reg
     fi
 
+    case "$WINETRICKS_ISO_MOUNT" in
+        # archivemount > 0.8.8: works
+        # archivemount <= 0.8.8: cannot finish installation due to path issue
+        archivemount)
+            _W_last_bad_ver=0.8.8
+            _W_tool_ver="$(archivemount --version 2>&1 | head -n 1 | cut -d ' ' -f3)"
+            _W_pos_am_ver="$(printf "%s\\n%s" "${_W_tool_ver}" "${_W_last_bad_ver}" | sort -t. -k 1,1n -k 2,2n -k 3,3n | grep -n "^${_W_tool_ver}\$" | cut -d : -f1 | head -n 1)"
+            if test "$_W_pos_am_ver" = "2"; then
+                W_USE_USERMOUNT=1
+            else
+                w_warn "archivemount <= $_W_last_bad_ver has path issue and cannot be used."
+            fi
+            unset _W_last_bad_ver _W_tool_ver _W_pos_am_ver
+            ;;
+        # fuseiso: works
+        # hdiutil: partially tested (only mounting/unmounting and copying files)
+        *) W_USE_USERMOUNT=1 ;;
+    esac
     w_mount OFFICE15
 
     if test $W_OPT_UNATTENDED; then
