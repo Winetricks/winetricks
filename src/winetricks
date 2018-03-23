@@ -10096,10 +10096,10 @@ load_windowscodecs()
     fi
 
     # Avoid a file existence check.
-    w_try rm -f "$W_SYSTEM32_DLLS"/windowscodecs.dll "$W_SYSTEM32_DLLS"/windowscodecsext.dll "$W_SYSTEM32_DLLS"/photometadatahandler.dll
+    w_try rm -f "$W_SYSTEM32_DLLS"/windowscodecs.dll "$W_SYSTEM32_DLLS"/windowscodecsext.dll "$W_SYSTEM32_DLLS"/wmphoto.dll "$W_SYSTEM32_DLLS"/photometadatahandler.dll
 
     if [ "$W_ARCH" = "win64" ]; then
-         w_try rm -f "$W_SYSTEM64_DLLS"/windowscodecs.dll "$W_SYSTEM64_DLLS"/windowscodecsext.dll "$W_SYSTEM64_DLLS"/photometadatahandler.dll
+         w_try rm -f "$W_SYSTEM64_DLLS"/windowscodecs.dll "$W_SYSTEM64_DLLS"/windowscodecsext.dll "$W_SYSTEM64_DLLS"/wmphoto.dll "$W_SYSTEM64_DLLS"/photometadatahandler.dll
     fi
 
     # AF says in AppDB entry for .NET 3.0 that windowscodecs has to be native only
