@@ -21189,16 +21189,17 @@ load_vsm()
 
 #----------------------------------------------------------------
 
-w_metadata autostart_winedbg=enable settings \
+w_metadata autostart_winedbg=enabled settings \
     title="Automatically launch winedbg when an unhandled exception occurs (default)"
-w_metadata autostart_winedbg=disable settings \
+w_metadata autostart_winedbg=disabled settings \
     title="Prevent winedbg from launching when an unhandled exception occurs"
 
 load_autostart_winedbg()
 {
     case "$arg" in
-        enable) _W_debugger_value="winedbg --auto %ld %ld";;
-        disable) _W_debugger_value="false";;
+	# accidentally commited as enable/disable, so accept that, but prefer enabled/disabled
+        enable|enabled) _W_debugger_value="winedbg --auto %ld %ld";;
+        disable|disabled) _W_debugger_value="false";;
         *) w_die "Unexpected argument '$arg'. Should be enable/disable";;
     esac
 
