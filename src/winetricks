@@ -8219,13 +8219,17 @@ w_metadata kindle apps \
     publisher="Amazon" \
     year="2017" \
     media="download" \
-    file1="KindleForPC-installer-1.20.47037.exe" \
+    file1="KindleForPC-installer-1.16.44025.exe" \
     installed_exe1="$W_PROGRAMS_WIN/Amazon/Kindle/Kindle.exe" \
     homepage="https://www.amazon.com/kindle-dbs/fd/kcp"
 
 load_kindle()
 {
-    w_download https://s3.amazonaws.com/kindleforpc/47037/KindleForPC-installer-1.20.47037.exe cb20581d3455d458c7ac4bafa5c67dcfc5186c7b35951168efcf5a8263706b47
+    if w_workaround_wine_bug 43508; then
+        w_warn "Using an older version of Kindle (1.16.44025) to work around https://bugs.winehq.org/show_bug.cgi?id=43508"
+    fi
+
+    w_download https://s3.amazonaws.com/kindleforpc/44025/KindleForPC-installer-1.16.44025.exe
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
 
