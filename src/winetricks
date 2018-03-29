@@ -10267,17 +10267,12 @@ load_xact()
         w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xapofx*.dll' "$x"
     done
 
-    if test "$W_ARCH" = "win64" ; then
-        w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x64*' "$W_CACHE/directx9/$DIRECTX_NAME"
-        w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x64*' "$W_CACHE/directx9/$DIRECTX_NAME"
-        w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x64*' "$W_CACHE/directx9/$DIRECTX_NAME"
-        for x in "$W_TMP"/*x64.cab ; do
-            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xactengine*.dll' "$x"
-            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xaudio*.dll' "$x"
-            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'x3daudio*.dll' "$x"
-            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xapofx*.dll' "$x"
-        done
-    fi
+    # Don't install 64-bit xact DLLs. They are broken in Wine, see:
+    # https://bugs.winehq.org/show_bug.cgi?id=41618#c5
+
+    w_override_dlls native,builtin xaudio2_0 xaudio2_1 xaudio2_2 xaudio2_3 xaudio2_4 xaudio2_5 xaudio2_6 xaudio2_7
+    w_override_dlls native,builtin x3daudio1_0 x3daudio1_1 x3daudio1_2 x3daudio1_3 x3daudio1_4 x3daudio1_5 x3daudio1_6 x3daudio1_7
+    w_override_dlls native,builtin xapofx1_1 xapofx1_2 xapofx1_3 xapofx1_4 xapofx1_5
 
     # Register xactengine?_?.dll
     for x in "$W_SYSTEM32_DLLS"/xactengine* ; do
