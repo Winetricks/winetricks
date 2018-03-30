@@ -1,9 +1,9 @@
 # Winetricks
-Homepage of Winetricks, previously hosted at <https://code.google.com/p/winetricks>.
+The homepage for Winetricks was previously hosted at <https://code.google.com/p/winetricks>.
 
 Winetricks is an easy way to work around problems in Wine.
 
-It has a menu of supported games/apps for which it can do all the workarounds automatically. It also lets you install missing DLLs or tweak various Wine settings individually.
+It has a menu of supported games/apps for automatic workarounds. It also allows the installation of missing DLLs and tweaking of various Wine settings.
 
 The latest version can be downloaded here:
 https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
@@ -12,7 +12,7 @@ Tagged releases are accessible here:
 https://github.com/Winetricks/winetricks/releases
 
 # Installing
-If available and up to date, you should use the ```winetricks``` package, available in most distributions:
+The ```winetricks``` package should be used if it is available and updated. The package is available in most distributions:
 
 * Arch: https://www.archlinux.org/packages/community/any/winetricks/
 * Debian: https://packages.debian.org/sid/winetricks
@@ -21,15 +21,15 @@ If available and up to date, you should use the ```winetricks``` package, availa
 * Homebrew (OSX): http://brewformulas.org/Winetricks
 * MacPorts (OSX): https://www.macports.org/ports.php?by=name&substr=winetricks
 * Slackbuilds (Slackware): http://slackbuilds.org/repository/14.2/system/winetricks/?search=winetricks
-* Ubuntu: https://packages.ubuntu.com/search?keywords=winetricks Note: Ubuntu LTS versions are years out of date, do a manual install instead.
+* Ubuntu: https://packages.ubuntu.com/search?keywords=winetricks Note: Ubuntu LTS versions are years out of date, a manual installation should be done instead.
 
-If it's not available, outdated (e.g., Ubuntu LTSs), or you want the bleeding edge version, you can manually install winetricks:
+If the package is unavailable, outdated (e.g., Ubuntu LTSs), or newest version is wanted, a manual installation of winetricks can be done:
 ```
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 chmod +x winetricks
 sudo mv winetricks /usr/local/bin
 ```
-or if you don't have wget, you can use curl:
+curl can be used instead of wget:
 
 ```
 curl -O https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
@@ -38,13 +38,13 @@ sudo mv winetricks /usr/local/bin
 ```
 Note: /usr/local/bin must be in your $PATH for this to work.
 
-You can then keep winetricks up to date in the future by doing:
+Winetricks can be kept updated by doing:
 ```
 winetricks --self-update
 ```
 
 # Custom .verb files
-You can pass winetricks a custom .verb (format below), that can be used to add new dlls/settings/programs.
+New dll/settings/programs can be added to Winetricks by passing a custom .verb (format below)
 
 Example `icecat.verb`:
 
@@ -64,7 +64,7 @@ load_icecat()
 }
 ```
 
-Note that the file prefix (icecat.verb) and command name (icecat) must match. All metadata fields are optional, only command name and category required.
+Note that the file prefix (icecat.verb) and command name (icecat) must match. All metadata fields are optional, only the command name and category are required.
 
 # Tests
 The tests need `bashate`, `checkbashisms`, and `shellcheck>=0.4.4` installed.
