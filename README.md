@@ -1,9 +1,9 @@
 # Winetricks
-The homepage for Winetricks was previously hosted at <https://code.google.com/p/winetricks>.
+Homepage of Winetricks, previously hosted at <https://code.google.com/p/winetricks>.
 
 Winetricks is an easy way to work around problems in Wine.
 
-It has a menu of supported games/apps for automatic workarounds. It also allows the installation of missing DLLs and tweaking of various Wine settings.
+It has a menu of supported games/apps for which it can do all the workarounds automatically. It also allows the installation of missing DLLs and tweaking of various Wine settings.
 
 The latest version can be downloaded here:
 https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
@@ -12,7 +12,7 @@ Tagged releases are accessible here:
 https://github.com/Winetricks/winetricks/releases
 
 # Installing
-The ```winetricks``` package should be used if it is available and updated. The package is available in most distributions:
+The ```winetricks``` package should be used if it is available and up to date. The package is available in most distributions:
 
 * Arch: https://www.archlinux.org/packages/community/any/winetricks/
 * Debian: https://packages.debian.org/sid/winetricks
@@ -23,7 +23,7 @@ The ```winetricks``` package should be used if it is available and updated. The 
 * Slackbuilds (Slackware): http://slackbuilds.org/repository/14.2/system/winetricks/?search=winetricks
 * Ubuntu: https://packages.ubuntu.com/search?keywords=winetricks Note: Ubuntu LTS versions are years out of date, a manual installation should be done instead.
 
-If the package is unavailable, outdated (e.g., Ubuntu LTSs), or newest version is wanted, a manual installation of winetricks can be done:
+If the package is unavailable, outdated (e.g., Ubuntu LTSs), or the latest version is desired, a manual installation of winetricks can be done:
 ```
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 chmod +x winetricks
@@ -38,7 +38,7 @@ sudo mv winetricks /usr/local/bin
 ```
 Note: /usr/local/bin must be in your $PATH for this to work.
 
-Winetricks can be kept updated by doing:
+Winetricks can be updated by doing:
 ```
 winetricks --self-update
 ```
