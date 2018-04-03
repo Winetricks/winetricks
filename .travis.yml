@@ -16,23 +16,43 @@ dist: trusty
 addons:
   apt:
     packages:
+    # for bashate
+    - python-tz
     # for checkbashisms
     - devscripts
 
 # Note: if statements cannot go across multiple lines. Combine into one, or move to a shell script!
 
-# On Ubuntu, shellcheck is not in trusty, but is in trusty-backports, but those aren't available in TravisCI..)
-# Using artful to get 0.4.6, which has support for disabling a check globally within a file
+# Ubuntu notes:
+#    * ShellCheck is already installed in TravisCI
+#    * bashate is not available on Trusty and we need to install it manually
+# macOS note:
+#    * Homebrew doesn't provide bashate, they don't package things
+#      that are on pypi
+#
+# We use a script that installs bashate by unpacking .deb files built for
+# Ubuntu Bionic (18.04) because:
+#   1. python-bashate 0.3.1-2 (for Artful) can be installed but
+#      Artful will not be supported after July 2018
+#   2. python-bashate 0.5.1-1 (for Bionic) can't be installed on Trusty
+#      because it contains "control.tar.xz"
+#      > dpkg-deb: error: archive '/var/cache/apt/archives/python-bashate_0.5.1-1_all.deb' has premature member 'control.tar.xz' before 'control.tar.gz', giving up
+#      > dpkg: error processing archive /var/cache/apt/archives/python-bashate_0.5.1-1_all.deb (--unpack):
+#      > subprocess dpkg-deb --control returned error exit status 2
+#   3. Adding apt-line for newer Ubuntu release breaks dependencies
+#      e.g. can't install Official Wine package on Ubuntu
+#      > The following packages have unmet dependencies:
+#      >  winehq-stable : Depends: wine-stable (= 3.0.0~trusty)
+#      > E: Unable to correct problems, you have held broken packages.
+#   4. Ubuntu Bionic is an LTS release and will be supported until April 2023
+#      This means that we can use version 0.5.1-1 until April 2023
+#   5. The installation via the script is quick
+#      (simply download and unpack files)
+#
+# If the script fails, install pip and use it to install bashate
 before_install:
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then echo "deb http://archive.ubuntu.com/ubuntu/ artful universe" | sudo tee -a /etc/apt/sources.list ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get -q update ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install python-bashate shellcheck ; fi
-
+    - time sh ./misc/travis-install-bashate-deb.sh || time sh ./misc/travis-install-bashate-pip.sh
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew update ; fi
-    # Travis decided to remove pip from the OSX image
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time curl https://bootstrap.pypa.io/get-pip.py | sudo python ; fi
-    # Bashate isn't on homebrew, they don't package things that are on pypi, so we have to pip install it instead:
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time sudo pip install bashate ; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install checkbashisms shellcheck ; fi
 
 # Note if testing on a branch, you can replace this with your desired command, e.g.,:
