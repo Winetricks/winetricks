@@ -12321,53 +12321,6 @@ _EOF_
 
 #----------------------------------------------------------------
 
-w_metadata picasa39 apps \
-    title="Picasa 3.9" \
-    publisher="Google" \
-    year="2014" \
-    file1="picasa39-setup.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Google/Picasa3/Picasa3.exe"
-
-load_picasa39()
-{
-    # 2016/01/02: 482c1a547d8d3aa25ee446d30ea986de63ef8c8d68b8d1109dd3d9b714e73e08
-
-    w_download https://dl.google.com/picasa/picasa39-setup.exe 482c1a547d8d3aa25ee446d30ea986de63ef8c8d68b8d1109dd3d9b714e73e08
-    if w_workaround_wine_bug 29434 "Picasa 3.9 fails to authenticate with Google"; then
-        w_warn "Picasa 3.9 authentication to the Google account is currently broken under wine. See https://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
-    fi
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run picasa39-setup.exe
-        WinWait, Picasa 3 Setup
-        if ( w_opt_unattended > 0 ) {
-             Sleep 1000
-             ControlClick Button2 ;I Agree - License
-             Sleep 1000
-             WinWait, Picasa 3 Setup, Choose Install Location
-             ControlClick Button2 ;Install
-             Sleep 1000
-             WinWait, Picasa 3 Setup, Picasa 3 has been installed on your computer
-             Sleep 500
-             ControlClick Button5 ; Desktop Icon
-             Sleep 500
-             ControlClick Button6 ; Quick Launch
-             Sleep 500
-             ControlClick Button7 ; Default search off
-             Sleep 500
-             ControlClick Button8 ; Usage statistics sent
-             Sleep 500
-             ControlClick Button4 ; Run Picasa
-             Sleep 500
-             ControlClick Button2 ; Finish
-        }
-        WinWaitClose
-        "
-}
-
-#----------------------------------------------------------------
-
 w_metadata protectionid apps \
     title="Protection ID" \
     publisher="CDKiLLER & TippeX" \
