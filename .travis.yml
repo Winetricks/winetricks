@@ -52,8 +52,12 @@ addons:
 # If the script fails, install pip and use it to install bashate
 before_install:
     - time sh ./misc/travis-install-bashate-deb.sh || time sh ./misc/travis-install-bashate-pip.sh
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew update ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install checkbashisms shellcheck ; fi
+      # "brew update" (or auto-update when installing) takes long time
+      # checkbashisms and shellcheck can be installed without this
+      # So installing with "HOMEBREW_NO_AUTO_UPDATE=1" considerably reduces
+      # job time on macOS
+      # If it fails retry with auto-update
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time env HOMEBREW_NO_AUTO_UPDATE=1 brew install checkbashisms shellcheck || time brew install checkbashisms shellcheck ; fi
 
 # Note if testing on a branch, you can replace this with your desired command, e.g.,:
 # script: time sh ./src/winetricks -q comctl32
