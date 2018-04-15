@@ -5417,6 +5417,8 @@ load_amstream()
         w_try cp "$W_TMP/amd64_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_6b778d68f75a1a54/amstream.dll" "$W_SYSTEM64_DLLS/amstream.dll"
     fi
 
+    w_try_regsvr amstream.dll
+
     w_override_dlls native,builtin amstream
 }
 
