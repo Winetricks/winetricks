@@ -1,0 +1,487 @@
+# bash completion for winetricks script                             -*- shell-script -*-
+
+WINETRICKS="$(which winetricks)"
+
+declare -r COUNTRY_CODE_URL="https://pkgstore.datahub.io/core/country-list/data_csv/data/d7c9d7cfb42cb69f4422dec222dbbaa8/data_csv.csv"
+declare -r INVERTABLE_OPTS="clean isolate"
+declare -r TERMINATING_OPTS="gui help update version"
+declare -r TERMINATING_COMMAND="list"
+declare -r COMMAND_WINEPREFIX="prefix="
+declare -r VERB_WINVER="winver="
+declare -r COMMAND_PREFIX_CATEGORY="prefix"
+
+declare -r CATEGORY_SEPERATOR_REGEX="^===== [[:lower:]]+ =====$"
+declare -r COMMAND_START_REGEX="^Commands\\:$"
+
+declare CATEGORY_VERBS COMMANDS COUNTRY_CODES INVERTABLE_OPTS OPTS WINETRICKS_HELP WINETRICKS_LIST_ALL
+declare -a CATEGORIES_ARRAY DUPLICATE_OPTS_ARRAY
+
+# Download a string of 2 ASCII uppercase character Global Country Codes.
+_store_country_codes()
+{
+	COUNTRY_CODES="$(wget -O - -q "${COUNTRY_CODE_URL}" 2>/dev/null \
+	| awk -F ',' \
+		'{
+			if ($2 ~ "^[[:upper:]][[:upper:]]")
+				printf("%s ",substr($2,1,2))
+		}'
+	)"
+}
+
+# _store_help()
+# > WINETRICKS_HELP
+#
+# Store winetricks help message in a variable (for later processing)
+_store_help()
+{
+	WINETRICKS_HELP="$("${WINETRICKS}" --help)"
+}
+
+# _strore_list_all()
+# > WINETRICKS_LIST_ALL
+#
+# Store winetricks list-all verbs message in a variable (for later processing)
+_strore_list_all()
+{
+	WINETRICKS_LIST_ALL="$("${WINETRICKS}" list-all)"
+}
+
+# _get_duplicate_options()
+# (< WINETRICKS_HELP, INVERTABLE_OPTS)
+#  > stdout
+#
+# For each long option determine if it has a matching short option or is
+# invertable (i.e. "--no-xxxx" vs "--xxxx")
+#
+# >
+# "[short-option|inverted-long-option] long-option
+#  ...
+#  [short-option|inverted-long-option] long-option"
+_get_duplicate_options()
+{
+	echo "${WINETRICKS_HELP}" | awk \
+		-vinvertable_options="${INVERTABLE_OPTS}" \
+		'BEGIN{
+			gsub(" ","|",invertable_options)
+		}
+		{
+			duplicate=""
+			for (f=1;f<=2;++f) {
+				sub(",$","",$f)
+				if ($f !~ "^\-") {
+					duplicate=""
+					break
+				}
+				duplicate=(duplicate " " $f)
+			}
+			if ((duplicate == "") && ($1 ~ invertable_options)) {
+				negated_duplicate=$1
+				sub("^\-\-no\-","--",negated_duplicate) ||
+					sub("^\-\-","--no-",negated_duplicate)
+				duplicate=(negated_duplicate " " $1)
+			}
+			if (duplicate != "")
+				printf(" %s \n", duplicate);
+		}'
+}
+
+# _get_commands()
+# (< WINETRICKS_HELP, COMMAND_WINEPREFIX, COMMAND_START_REGEX)
+#  > stdout
+#
+# Parse list of commands (excluding options) from winetricks help.
+# Also discard all 2 verb commands of the form: <prefix> list.
+#
+# >
+# "command
+#  ...
+#  command"
+_get_commands()
+{
+	echo "${WINETRICKS_HELP}" | awk -F '[[:blank:]][[:blank:]]+' \
+		-vwineprefix_command="${COMMAND_WINEPREFIX}" \
+		-vcommand_start_regex=${COMMAND_START_REGEX} \
+		'{
+			verb=$1
+			if (dump && !sub(" ","",verb)) {
+				sub(("^" wineprefix_command ".*$"),wineprefix_command,verb)
+				verbs=(verbs " " verb)
+			}
+			if ($0 ~ command_start_regex)
+				dump=1
+		}
+		END{
+			printf("%s \n", verbs)
+		}'
+}
+
+# _get_categories()
+# (< WINETRICKS_LIST_ALL, CATEGORY_SEPERATOR_REGEX, VERB_WINVER)
+#  > stdout
+#
+# Parse winetricks list-all to get sets of all categories and
+# the verbs contained within that category.
+#
+# >
+# "category
+#  verb [... verb]
+#  category
+#  verb [... verb]
+#  ..."
+_get_categories()
+{
+	# shellcheck disable=SC1004
+	echo "${WINETRICKS_LIST_ALL}" | awk \
+	-vcategory_seperator_regex="${CATEGORY_SEPERATOR_REGEX}" \
+	-vwin_version_verb="${VERB_WINVER}" \
+	'function get_win_versions(array_items, category,
+			i, verb, verbs)
+	{
+		for (i=1 ; i<=array_items[category,0] ; ++i) {
+			verb=array_items[category,i]
+			if ((verb ~ "^win") && (length(verb) <= 6) && (verb !~ "=$"))
+				verbs=((verbs ? (verbs "|") : "") verb)
+		}
+		return (verbs)
+	}
+
+	function insert_assignment_verb(verbs, verb,
+			verb_prefix, verb_suffix)
+	{
+		verb_suffix=verb_prefix=verb
+		sub("=.*$","",verb_prefix)
+		sub("^.*=","",verb_suffix)
+		match(verbs, verb_prefix)
+		if (RSTART)
+			verbs=(substr(verbs,1,RSTART+RLENGTH+1) \
+			       verb_suffix "|" \
+			       substr(verbs,RSTART+RLENGTH+2))
+		else
+			verbs=(verbs " " verb_prefix "=(" verb_suffix ")")
+		return verbs
+	}
+
+	function get_category(array_items, category,
+			i, is_settings, verb, verbs)
+	{
+		is_settings=(category == "settings")
+		for (i=1 ; i<array_items[category,0] ; ++i ) {
+			verb=array_items[category,i]
+			if (is_settings && (verb == win_version_verb))
+				verbs=(verbs " " \
+					win_version_verb \
+					"(" get_win_versions(array_items, category) ")")
+			else if (verb ~ "=") 
+				verbs=insert_assignment_verb(verbs, verb)
+			else
+				verbs=(verbs " " verb)
+		}
+		return (verbs)
+	}
+
+	{
+		if (category) 
+			array_items[category,++array_items[category,0]]=$1
+		if ($0 ~ category_seperator_regex) {
+			category=$2
+			array_categories[++array_categories[0]]=category
+		}
+	}
+	END{
+		for (i=1 ; i<=array_categories[0] ; ++i) {
+			category=array_categories[i]
+			printf("%s\n", category)
+			printf("%s\n", get_category(array_items, category))
+		}
+	}'
+}
+
+# _get_options()
+# (< WINETRICKS_HELP, COUNTRY_CODES, INVERTABLE_OPTS)
+#  > stdout
+#
+# Parse winetricks help to get a list of all available options.
+# Expand invertible options ("--no-xxxx" vs "--xxxx") with the alternate
+# version.
+#
+# >
+#  "[short-option|inverted-long-option] long-option ... [short-option|
+# inverted-long-option] long-option"
+_get_options()
+{
+	echo "${WINETRICKS_HELP}" | awk \
+		-vcountry_codes="${COUNTRY_CODES}" \
+		-vinvertable_options="${INVERTABLE_OPTS}" \
+		'BEGIN{
+			invertable_options_count=split(invertable_options, invertable_options_array)
+		}
+		{
+			for (f=1;f<=2;++f)
+			{
+				field=$f
+				sub(",$","",field)
+				if (field ~ "^\-\-") {
+					if (field ~ "=CC$") {
+						gsub(" ","|",country_codes)
+						sub("=.*$",("=(" country_codes ")"),field)
+					}
+					long=(long " " field)
+					for (i=1;i<=invertable_options_count;++i) {
+						if (field == ("--no-" invertable_options_array[i])) {
+							sub("^\-\-no\-","--",field)
+							long=(long " " field)
+							break
+						}
+						else if (field == ("--" invertable_options_array[i])) {
+							sub("^\-\-","--no-",field)
+							long=(long " " field)
+							break
+						}
+					}
+				}
+				else if (field ~ "^\-") {
+					short=(short " " field)
+					continue
+				}
+				next
+			}
+		}
+		END{
+			printf(" %s%s ", short, long)
+		}'
+}
+
+# _get_verb_category()
+# (< CATEGORIES_ARRAY)
+# 1< category
+#  > stdout
+#
+# For the specified category, print a line of all verbs in that category.
+# If no category is specified then print a line of all verbs, for all categories.
+#
+# >
+#  "verb [... verb]"
+_get_verb_category()
+{
+	local category="${1}" array_length
+
+	array_length="${#CATEGORIES_ARRAY[@]}"
+	for (( i=0 ; i<array_length ; i+=2 )); do
+		if [[ -z "${category}" || ( "${CATEGORIES_ARRAY[i]}" = "${category}" ) ]]; then
+			printf " %s" "${CATEGORIES_ARRAY[i+1]}"
+		fi
+	done
+	printf " \\n"
+}
+
+# _assignment_strip_values())
+#  < stdin
+#  > stdout
+#
+# Takes a list of verbs or options and processes assignments,
+# which use the "=" assignment operator.
+# Remove the post-assignment regex values.
+#
+# <
+# "... winver=(win10|win2k|win2k3|win2k8|win31|win7||win8||win81|win95|win98|winxp) ..."
+# >
+# "... winver= ..."
+_assignment_strip_values()
+{
+	(($# < 1)) && return
+
+	echo "${@}" | awk '{ gsub("=\([^\)]+\)","="); print $0 }'
+}
+
+# _assignment_get_values()
+# 1< target
+#  < stdin
+#  > stdout
+#
+# Takes a list of verbs or options and processes a single specified target assignment.
+# Remove the prefix target name.
+# Convert the postfix regex values to a simple WS separated list.
+#
+# 1< target="winver"
+# <
+# "... winver=(win10|win2k|win2k3|win2k8|win31|win7||win8||win81|win95|win98|winxp) ..."
+# >
+# "win10 win2k win2k3 win2k8 win31 win7 win8 win81 win95 win98 winxp"
+_assignment_get_values()
+{
+	(($# < 2)) && return
+
+	local target="${1}"
+	echo "${@:2}" | awk \
+		-vtarget="${target}" \
+		'{
+			for (i=1 ; i <= NF ; ++i) {
+				if ($i !~ "=")
+					continue
+				verb_suffix=verb_prefix=$i
+				sub("=.*$","",verb_prefix)
+				sub("^.*=","",verb_suffix)
+				if (verb_prefix == target) {
+					sub("^\(","",verb_suffix)
+					sub("\)$","",verb_suffix)
+					gsub("\|"," ",verb_suffix)
+					printf("%s\n", verb_suffix)
+					exit
+				}
+			}
+		}'
+}
+
+# _get_alternate_opt()
+# 1< option
+#  > stdout (alternate-option)
+#
+# Given the specified option find the alternate
+# (or inverse) operation - if one exists.
+# Print this to stdout.
+#
+# < option="--no-isolate"
+# >
+#   "--isolate"
+_get_alternate_opt()
+{
+	(($# < 1)) && return
+	local opt="${1}" alternate_opt opt_pair
+
+	for opt_pair in "${DUPLICATE_OPTS_ARRAY[@]}"; do
+		alternate_opt="${opt_pair/ ${opt} /}"
+		if [ "${alternate_opt}" != "${opt_pair}" ]; then
+			alternate_opt="${alternate_opt// /}"
+			break
+		fi
+	done
+	[[ -z "${alternate_opt}" ]] || echo "${alternate_opt}"
+}
+
+# _get_matching_opts()
+#       (< OPTS, DUPLICATE_OPTS_ARRAY)
+# 1[..N] < regex [... regex]
+#        > stdout
+#
+# Takes a list of regular expressions.
+# Match all available options, including duplicate / inverse options,
+# against each regular expression.
+# Dump all matching options to stdout.
+#
+# < "help" "update"
+# >
+#  " -h --help --self-update --update-rollback "
+_get_matching_opts()
+{
+	(($# < 1)) && return
+	local -a arg_array=( "${@}" )
+	local matching_opts="" arg opt opt_pair striped_opts_array
+
+	# shellcheck disable=SC2207
+	striped_opts_array=( $( _assignment_strip_values "${OPTS[*]}" ) )
+	for arg in "${arg_array[@]}"; do
+		for opt_pair in "${DUPLICATE_OPTS_ARRAY[@]}"; do
+			if [[ "${opt_pair}" =~ ${arg} ]]; then
+				matching_opts="${matching_opts} ${opt_pair}"
+			fi
+		done
+		for opt in "${striped_opts_array[@]}"; do
+			if [[ "${opt}" =~ ${arg} ]]; then
+				matching_opts="${matching_opts} ${opt}"
+			fi
+		done
+	done
+	echo "${matching_opts} "
+}
+
+_winetricks()
+{
+	local alernate_opt cur i prefix_verbs test_cur test_prev reply terminating_opts
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	COMPREPLY=( )
+
+	prefix_verbs="$( _get_verb_category "${COMMAND_PREFIX_CATEGORY}" )"
+
+	if [[ "${prefix_verbs}" =~ \ ${prev}\  ]]; then
+		# shellcheck disable=SC2207
+		COMPREPLY=( $(compgen -W "list" -- "${cur}") )
+		return 0
+	fi
+
+	if [[ ( "${COMP_WORDS[COMP_CWORD-2]}" == "${COMMAND_WINEPREFIX%=}" ) || ( "${prev}" == "${COMMAND_WINEPREFIX%=}" ) ]]; then
+		_filedir -d
+		return 0
+	fi
+
+	# Disable tab expansion when a terminating option or command has been typed...
+	# shellcheck disable=SC2086
+	terminating_opts="$(_get_matching_opts ${TERMINATING_OPTS})"
+	if [[ " ${terminating_opts} ${COMMANDS} ${TERMINATING_COMMAND} " =~ \ ${prev//-/\\-}\  ]]; then
+		# shellcheck disable=SC2207
+		COMPREPLY=( $(compgen -W "" -- "") )
+		return 0
+	fi
+
+	# When an option is specified disable this option, and duplicate/inverse options, from tab expansion on this command line entry...
+	# shellcheck disable=SC1001
+	if [[ "${prev}" =~ ^\- ]]; then
+		OPTS="${OPTS/ ${prev} / }"
+		alernate_opt="$( _get_alternate_opt "${prev}" )"
+		[[ -z "${alernate_opt}" ]] || OPTS="${OPTS/ ${alernate_opt} / }"
+	fi
+	
+	CATEGORY_VERBS="$( _get_verb_category "" )"
+
+	# Parse assignment verbs and options
+	for (( i=((COMP_WORD>1) ? 1 : 0) ; i >= 0 ; --i )); do
+		test_cur="${COMP_WORDS[COMP_CWORD-i]}"
+		test_prev="${COMP_WORDS[COMP_CWORD-i-1]}"
+
+		[[ "${test_cur}" = "=" ]] || continue
+
+		case "${test_prev}" in
+			-*)
+				reply="${OPTS[*]}"
+				;;
+			*)
+				reply="${COMMANDS[*]} ${CATEGORY_VERBS[*]}"
+				;;
+		esac
+		reply="$( _assignment_get_values "${test_prev}" "${reply[*]}" )"
+		# shellcheck disable=SC2207
+		COMPREPLY=( $(compgen -W "${reply[*]}" -- "${cur/%=/}") )
+		[[ "${COMPREPLY[0]}" == *= ]] && compopt -o nospace
+		return 0
+	done
+
+	# Parse general (non-assignment) verbs and options
+	case "${cur}" in
+		--*)
+			reply="$( _assignment_strip_values "${OPTS[*]}" )"
+			;;
+		-*)
+			reply="${OPTS[*]/ --*/}"
+			;;
+		*)
+			reply="$( _assignment_strip_values "${COMMANDS[*]}" "${CATEGORY_VERBS[*]}" )"
+			;;
+	esac
+
+	# shellcheck disable=SC2207
+	COMPREPLY=( $(compgen -W "${reply}" -- "${cur}") )
+	[[ "${COMPREPLY[0]}" == *= ]] && compopt -o nospace
+	return 0
+}
+
+_store_country_codes
+_store_help
+_strore_list_all
+
+OPTS="$(_get_options)"
+COMMANDS="$(_get_commands)"
+
+readarray -t DUPLICATE_OPTS_ARRAY< <(_get_duplicate_options)
+readarray -t CATEGORIES_ARRAY< <(_get_categories)
+
+complete -F _winetricks winetricks
