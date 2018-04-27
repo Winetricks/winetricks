@@ -9135,6 +9135,9 @@ load_remove_mono()
     "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4" /f || true
 
     w_try rm -f "$W_WINDIR_UNIX/system32/mscoree.dll"
+    if [ "$W_ARCH" = "win64" ]; then
+        w_try rm -f "$W_WINDIR_UNIX/syswow64/mscoree.dll"
+    fi
 }
 
 #----------------------------------------------------------------
