@@ -3131,14 +3131,15 @@ winetricks_early_wine()
 {
     # The sed works around https://bugs.winehq.org/show_bug.cgi?id=25838
     # which unfortunately got released in wine-1.3.12
-    # We would like to use DISPLAY= to prevent virtual desktops from
-    # popping up, but that causes AutoHotKey's tray icon to not show up.
+    # We can use DISPLAY= here (e.g. to prevent virtual desktops from
+    # popping up and WINEPREFIX update notifications) as this function
+    # is only called for command line wine instructions.
     # We used to use WINEDLLOVERRIDES=mshtml= here to suppress the Gecko
     # autoinstall, but that yielded wineprefixes that *never* autoinstalled
     # Gecko (winezeug bug 223).
     # The tr removes carriage returns so expanded variables don't have crud on the end
     # The grep works around using new wineprefixes with old wine
-    WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
+    DISPLAY="" WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
 }
 
 winetricks_detect_gui()
