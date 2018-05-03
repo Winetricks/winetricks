@@ -3129,16 +3129,23 @@ winetricks_print_version()
 # Handy place to put small workarounds
 winetricks_early_wine()
 {
-    # The sed works around https://bugs.winehq.org/show_bug.cgi?id=25838
-    # which unfortunately got released in wine-1.3.12
-    # We would like to use DISPLAY= to prevent virtual desktops from
-    # popping up, but that causes AutoHotKey's tray icon to not show up.
-    # We used to use WINEDLLOVERRIDES=mshtml= here to suppress the Gecko
-    # autoinstall, but that yielded wineprefixes that *never* autoinstalled
-    # Gecko (winezeug bug 223).
-    # The tr removes carriage returns so expanded variables don't have crud on the end
-    # The grep works around using new wineprefixes with old wine
-    WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
+    local saved_timestamp=""
+    if [ -f "$WINEPREFIX/.update-timestamp" ] && [ -f "$WINEPREFIX/system.reg" ] && [ -f "$WINEPREFIX/user.reg" ]; then
+        saved_timestamp="$(cat "$WINEPREFIX/.update-timestamp")"
+        echo disable >"$WINEPREFIX/.update-timestamp"
+        # We can use DISPLAY= here (e.g. to prevent virtual desktops from
+        # popping up and WINEPREFIX update notifications) as we know the current
+        # Wineprefix exists and we have temporarily disabled Wineprefix updates.
+        # The tr removes carriage returns so expanded variables don't have crud on the end
+        # The grep works around using new wineprefixes with old wine
+        DISPLAY="" WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt \
+            | ( tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
+        echo "${saved_timestamp}" >"$WINEPREFIX/.update-timestamp"
+    else 
+        # As above but the DISPLAY env var is enabled as we are creating the Wineprefix.
+        WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt \
+            | ( tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
+    fi
 }
 
 winetricks_detect_gui()
@@ -5342,7 +5349,8 @@ helper_winxpsp3()
     # https://www.microsoft.com/en-us/download/details.aspx?id=24
     # https://download.microsoft.com/download/d/3/0/d30e32d8-418a-469d-b600-f32ce3edf42d/WindowsXP-KB936929-SP3-x86-ENU.exe
     # Mirror list: http://www.filewatcher.com/m/WindowsXP-KB936929-SP3-x86-ENU.exe.331805736-0.html
-    w_download_to winxpsp3 ftp://ftp.gnome.org/mirror/archive/ftp.sunet.se/pub/security/vendor/microsoft/winxp/Service_Packs/WindowsXP-KB936929-SP3-x86-ENU.exe 62e524a552db9f6fd22d469010ea4d7e28ee06fa615a1c34362129f808916654
+    # 2018/04/04: http://www.download.windowsupdate.com/msdownload/update/software/dflt/2008/04/windowsxp-kb936929-sp3-x86-enu_c81472f7eeea2eca421e116cd4c03e2300ebfde4.exe
+    w_download_to winxpsp3 ftp://ftp.emacinc.com/LegacyProducts/SBC/drivers/vdx/WINXP/WindowsXP-KB936929-SP3-x86-ENU.exe 62e524a552db9f6fd22d469010ea4d7e28ee06fa615a1c34362129f808916654
 
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe
 }
@@ -12321,53 +12329,6 @@ _EOF_
 
 #----------------------------------------------------------------
 
-w_metadata picasa39 apps \
-    title="Picasa 3.9" \
-    publisher="Google" \
-    year="2014" \
-    file1="picasa39-setup.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Google/Picasa3/Picasa3.exe"
-
-load_picasa39()
-{
-    # 2016/01/02: 482c1a547d8d3aa25ee446d30ea986de63ef8c8d68b8d1109dd3d9b714e73e08
-
-    w_download https://dl.google.com/picasa/picasa39-setup.exe 482c1a547d8d3aa25ee446d30ea986de63ef8c8d68b8d1109dd3d9b714e73e08
-    if w_workaround_wine_bug 29434 "Picasa 3.9 fails to authenticate with Google"; then
-        w_warn "Picasa 3.9 authentication to the Google account is currently broken under wine. See https://bugs.winehq.org/show_bug.cgi?id=29434 for more details."
-    fi
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run picasa39-setup.exe
-        WinWait, Picasa 3 Setup
-        if ( w_opt_unattended > 0 ) {
-             Sleep 1000
-             ControlClick Button2 ;I Agree - License
-             Sleep 1000
-             WinWait, Picasa 3 Setup, Choose Install Location
-             ControlClick Button2 ;Install
-             Sleep 1000
-             WinWait, Picasa 3 Setup, Picasa 3 has been installed on your computer
-             Sleep 500
-             ControlClick Button5 ; Desktop Icon
-             Sleep 500
-             ControlClick Button6 ; Quick Launch
-             Sleep 500
-             ControlClick Button7 ; Default search off
-             Sleep 500
-             ControlClick Button8 ; Usage statistics sent
-             Sleep 500
-             ControlClick Button4 ; Run Picasa
-             Sleep 500
-             ControlClick Button2 ; Finish
-        }
-        WinWaitClose
-        "
-}
-
-#----------------------------------------------------------------
-
 w_metadata protectionid apps \
     title="Protection ID" \
     publisher="CDKiLLER & TippeX" \
@@ -16752,40 +16713,6 @@ load_penpenxmas()
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     "$WINE" PenPenXmasOlympics100.exe $W_UNATTENDED_SLASH_S
-}
-
-#----------------------------------------------------------------
-
-w_metadata plantsvszombies games \
-    title="Plants vs. Zombies" \
-    publisher="PopCap Games" \
-    year="2009" \
-    media="download" \
-    file1="PlantsVsZombiesSetup.exe" \
-    installed_file1="$W_PROGRAMS_X86_WIN/PopCap Games/Plants vs. Zombies/PlantsVsZombies.exe"
-
-load_plantsvszombies()
-{
-    w_download "https://downloads.popcap.com/www/popcap_downloads/PlantsVsZombiesSetup.exe" 4b4bb4d19fb639e5698983e39d7ad061c7667bcec19056560532c7ad0d67d0e4
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        run PlantsVsZombiesSetup.exe
-        winwait, Plants vs. Zombies Installer
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            send {Enter}
-            winwait, Plants vs. Zombies License Agreement
-            ControlClick Button1
-        }
-        winwait, Plants vs. Zombies Installation Complete!
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            send {Space}{Enter}
-            ControlClick, x309 y278, Plants vs. Zombies Installation Complete!,,,, Pos
-        }
-        WinWaitClose
-    "
 }
 
 #----------------------------------------------------------------
