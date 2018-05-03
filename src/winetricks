@@ -3129,16 +3129,23 @@ winetricks_print_version()
 # Handy place to put small workarounds
 winetricks_early_wine()
 {
-    # The sed works around https://bugs.winehq.org/show_bug.cgi?id=25838
-    # which unfortunately got released in wine-1.3.12
-    # We would like to use DISPLAY= to prevent virtual desktops from
-    # popping up, but that causes AutoHotKey's tray icon to not show up.
-    # We used to use WINEDLLOVERRIDES=mshtml= here to suppress the Gecko
-    # autoinstall, but that yielded wineprefixes that *never* autoinstalled
-    # Gecko (winezeug bug 223).
-    # The tr removes carriage returns so expanded variables don't have crud on the end
-    # The grep works around using new wineprefixes with old wine
-    WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
+    local saved_timestamp=""
+    if [ -f "$WINEPREFIX/.update-timestamp" ] && [ -f "$WINEPREFIX/system.reg" ] && [ -f "$WINEPREFIX/user.reg" ]; then
+        saved_timestamp="$(cat "$WINEPREFIX/.update-timestamp")"
+        echo disable >"$WINEPREFIX/.update-timestamp"
+        # We can use DISPLAY= here (e.g. to prevent virtual desktops from
+        # popping up and WINEPREFIX update notifications) as we know the current
+        # Wineprefix exists and we have temporarily disabled Wineprefix updates.
+        # The tr removes carriage returns so expanded variables don't have crud on the end
+        # The grep works around using new wineprefixes with old wine
+        DISPLAY="" WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt \
+            | ( tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
+        echo "${saved_timestamp}" >"$WINEPREFIX/.update-timestamp"
+    else 
+        # As above but the DISPLAY env var is enabled as we are creating the Wineprefix.
+        WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt \
+            | ( tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
+    fi
 }
 
 winetricks_detect_gui()
