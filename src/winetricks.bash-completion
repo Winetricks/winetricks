@@ -1,0 +1,819 @@
+#!/bin/bash
+#
+# BASH completion for the Winetricks package manager
+#
+#--------------------------------------------------------------------
+#
+# Copyright:
+#   Copyright (C) 2018 Rob Walker <bob.mt.wya!gmail.com>
+#
+# License:
+#   This program is free software; you can redistribute it and/or
+#   modify it under the terms of the GNU Lesser General Public
+#   License as published by the Free Software Foundation; either
+#   version 2.1 of the License, or (at your option) any later
+#   version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU Lesser General Public License for more details.
+#
+#   You should have received a copy of the GNU Lesser General Public
+#   License along with this program.  If not, see
+#   <https://www.gnu.org/licenses/>.
+
+
+##### Define Global constants / variables #####
+WINETRICKS_PATH="$(command -v winetricks)"
+COUNTRY_CODES="AF AX AL DZ AS AD AO AI AQ AG AR AM AW AU AT AZ BS BH BD BB BY BE BZ BJ BM BT BA BW BV BR IO BN BG BF BI \
+KH CM CA CV KY CF TD CL CN CX CC CO KM CG CK CR CI HR CU CW CY CZ DK DJ DM DO EC EG SV GQ ER EE ET FK FO FJ FI FR \
+GF PF TF GA GM GE DE GH GI GR GL GD GP GU GT GG GN GW GY HT HM VA HN HK HU IS IN ID IQ IE IM IL IT JM JP JE JO KZ KE KI KW KG \
+LA LV LB LS LR LY LI LT LU MO MG MW MY MV ML MT MH MQ MR MU YT MX MC MN ME MS MA MZ MM NA NR NP NL NC NZ NI NE NG NU NF MP NO \
+OM PK PW PA PG PY PE PH PN PL PT PR QA RE RO RU RW BL KN LC MF PM VC WS SM ST SA SN RS SC SL SG SX SK SI SB SO ZA GS SS ES LK \
+SD SR SJ SZ SE CH SY TJ TH TL TG TK TO TT TN TR TM TC TV UG UA AE GB US UM UY UZ VU VN WF EH YE ZM ZW"
+COUNTRY_CODE_URL="https://pkgstore.datahub.io/core/country-list/data_csv/data/d7c9d7cfb42cb69f4422dec222dbbaa8/data_csv.csv"
+INVERTIBLE_OPTS="isolate opt"
+TERMINATING_OPTS="help update version"
+TERMINATING_LIST_COMMAND="list"
+VERB_WINVER="winver="
+COMMAND_WINEPREFIX="prefix="
+
+
+##### Define Global regular expression constants #####
+BLANK_LINE_REGEX="^[[:blank:]]*$"
+VERB_REGEX="[[:alnum:]][-_[:alnum:]]*(|=[[:alnum:]][[:alnum:]]*)"
+METADATA_REGEX="^w_metadata[[:blank:]][[:blank:]]*[^\\\\]*[\\\\]\$"
+SHORT_OPTION_REGEX="[-]([[:alpha:]]|[[:alpha:]][[:alpha:]])"
+LONG_OPTION_REGEX="[-][-][[:lower:]][-_=*[:lower:]]*"
+FUNCTION_HANDLE_OPTIONS_REGEX="^winetricks_handle_option[(][)]$"
+FUNCTION_EXECUTE_COMMAND_REGEX="^execute_command[(][)]$"
+COMMAND_LINE_REGEX="^[[:blank:]][[:blank:]]*${VERB_REGEX}(|[=][*])[)]"
+REGULAR_VERB_LINE_REGEX="[[:blank:]](w_call|w_do_call)[[:blank:]]"
+DEPRECIATED_LINE_REGEX="[[:blank:]]w_warn[[:blank:]]"
+
+##### Find and wrap a functioning awk variant #####
+AWK="$(command -v awk 2>/dev/null || command -v mawk 2>/dev/null)"
+if [[ -z "${AWK}" ]] || "${AWK}" -W version 2>/dev/null | grep -q -E '^mawk 1\.3\.3'; then
+    AWK="$(command -v gawk 2>/dev/null || command -v nawk 2>/dev/null)"
+    [[ -z "${AWK}" ]] && AWK="$(command -v busybox)" && AWK="${AWK}${AWK:+ awk}"
+fi
+
+##### Define shared awk functions #####
+
+# _parse_and_dump_verbs()
+#
+#  1< array_verbs
+#   > stdout
+#
+# awk function to parse an array of verbs or commands.
+# Assignment commands/ verbs are grouped in an array and parsed separately
+# from regular verbs, i.e. verbs of the form:
+#
+#   videomem=512|1024|2048|default
+#
+# Dump output in the form:
+#
+# >
+# "verb(1) [... verb(M)] verb(M+1)=...|... [... verb(N)=...|...]"
+#
+awk_function_parse_and_dump_verbs=\
+'function _parse_and_dump_verbs(array_verbs,
+            i, j, test_verb_prefix, verb_prefix, verb_suffix)
+{
+    for (i=1 ; i<=array_verbs[0] ; ++i) {
+        # Dump non-assignment verbs first...
+        # Deleting these array entries as we go.
+        if (array_verbs[i] !~ "=") {
+            printf("%s ", array_verbs[i])
+            delete array_verbs[i]
+            continue
+        }
+
+        # Process assignment verbs, by appending the suffix value to
+        # an existing array entry (with the same prefix), and deleting
+        # the current array entry...
+        # Or if no existing, matching array entry exists, then simply leave
+        # the existing array entry in place and take no further action.
+        verb_prefix=verb_suffix=array_verbs[i]
+        sub("=.*$", "", verb_prefix)
+        sub("^.*=", "", verb_suffix)
+        for (j=1; j<i ; ++j) {
+            if (! (j in array_verbs))
+                continue
+
+            test_verb_prefix=array_verbs[j]
+            sub("=.*$", "", test_verb_prefix)
+            if (verb_prefix == test_verb_prefix) {
+                array_verbs[j]=(array_verbs[j] "|" verb_suffix)
+                delete array_verbs[i]
+                break
+            }
+        }
+    }
+    # Secondly dump all assignment verbs...
+    for (i=1 ; i<=array_verbs[0] ; ++i) {
+        if (i in array_verbs)
+            printf("%s ", array_verbs[i])
+    }
+    printf("\n")
+}'
+
+
+##### Define awk-based BASH functions to scrape winetricks script #####
+
+
+# _scrape_options()
+#  (< WINETRICKS_PATH)
+#   > stdout
+#
+# Dumps winetricks options, which can then be stored for later processing.
+# Parse the raw winetricks script, to increase processing and avoid any
+# calls to wine.
+#
+_scrape_options()
+{
+    # shellcheck disable=SC2016
+    ${AWK} -vblank_line_regex="${BLANK_LINE_REGEX}" \
+        -vfunction_handle_options_regex="${FUNCTION_HANDLE_OPTIONS_REGEX}" \
+        -vshort_long_option_regex="^[[:blank:]][[:blank:]]*${SHORT_OPTION_REGEX}[|]${LONG_OPTION_REGEX}[)]" \
+        -vlong_option_regex="^[[:blank:]][[:blank:]]*${LONG_OPTION_REGEX}[)]" \
+    '{
+        in_function=in_function || ($0 ~ function_handle_options_regex)
+        is_blank=($0 ~ blank_line_regex)
+        is_comment=($0 ~ "^[[:blank:]]*#")
+        if (!in_function || is_blank || is_comment)
+            next
+
+        if (($0 ~ long_option_regex) || ($0 ~ short_long_option_regex)) {
+            gsub("(^[[:blank:]]*|[)][^)]*$)" , "")
+            printf("%s\n", $0)
+        }
+        in_function=($0 !~ "^[}]$")
+        if (!in_function)
+            exit 0
+    }' "${WINETRICKS_PATH}" 2>/dev/null
+}
+
+
+# _scrape_commands()
+#  (< VERB_REGEX, WINETRICKS_RAW_COMMANDS)
+#   > stdout
+#
+# Parse list of commands (excluding options) directly from the
+# winetricks script. Dump all regular commands, followed by
+# a list of assignment commands (i.e. prefix=*)
+#
+# >
+# "command(1) [... command(M)] command(M+1)=...|... [... command(N)=...|...]"
+#
+_scrape_commands()
+{
+    # shellcheck disable=SC2016
+    ${AWK} -vfunction_execute_command_regex="${FUNCTION_EXECUTE_COMMAND_REGEX}" \
+        -vcommand_line_regex="${COMMAND_LINE_REGEX}"  \
+        -vregular_verb_line_regex="${REGULAR_VERB_LINE_REGEX}" \
+        -vdepreciated_line_regex="${DEPRECIATED_LINE_REGEX}" \
+    "${awk_function_parse_and_dump_verbs}"'
+
+    {
+        in_function=in_function || ($0 ~ function_execute_command_regex)
+        if (!in_function)
+            next
+
+        in_function=($0 !~ "^[}]$")
+        if (!in_function)
+            exit 0
+
+        is_command=($0 ~ command_line_regex)
+        is_warning=($0 ~ depreciated_line_regex)
+        is_normal_verb=($0 ~ regular_verb_line_regex)
+        if (!is_command || is_warning || is_normal_verb)
+            next
+
+        gsub("(^[[:blank:]][[:blank:]]*|[)].*)", "")
+        if ($0 == "*=*")
+            next
+
+        array_commands[++array_commands[0]]=$0
+    }
+
+    END{
+        _parse_and_dump_verbs(array_commands)
+    }' "${WINETRICKS_PATH}" 2>/dev/null
+}
+
+
+# _scrape_all_categories_and_verbs()
+# (< METADATA_REGEX, WINETRICKS_RAW_METADATA)
+#  > stdout
+#
+# Parse winetricks list-all to get sets of all categories and
+# the verbs contained within that category.
+# NB the BASH completion script copes with jumbled up category
+# blocks in the main winetricks script (i.e. blocks of one category
+# that are interspersed with other categories).
+#
+# >
+# "category(1)
+#  verb(1) [... verb(N)]
+#  category(2)
+#  verb(1) [... verb(N)]
+#  ..."
+#
+_scrape_all_categories_and_verbs()
+{
+    # shellcheck disable=SC2016
+    ${AWK} -vmetadata_regex="${METADATA_REGEX//\\/\\\\}" \
+    "${awk_function_parse_and_dump_verbs}"'
+
+    {
+        if (($0 !~ metadata_regex) || (NF < 3))
+            next
+
+        new_verb=$2
+        new_category=$3
+        if (category != new_category) {
+            if (array_verbs[0]) {
+                printf("%s\n", category)
+                _parse_and_dump_verbs(array_verbs)
+            }
+            category=new_category
+            delete array_verbs
+        }
+        array_verbs[++array_verbs[0]]=new_verb
+    }
+    END{
+        if (array_verbs[0]) {
+            printf("%s\n", category)
+            _parse_and_dump_verbs(array_verbs)
+        }
+    }' "${WINETRICKS_PATH}" 2>/dev/null
+}
+
+
+##### Define general BASH helper functions #####
+
+
+# _store_country_codes()
+#   (> COUNTRY_CODE_URL)
+#   (< COUNTRY_CODES)
+#
+# Download a string of 2 ASCII uppercase character Global Country Codes.
+# Only update global variable COUNTRY_CODES, if the list download is successful...
+# Otherwise fallback to the local copy of the Country Codes list.
+#
+_fetch_country_codes()
+{
+    local country_codes
+
+    # Use some aggressive timeouts here... We can fallback to a local copy of these codes.
+    # shellcheck disable=SC2016
+    country_codes="$(wget -t 3 -T 10 -O - -q "${COUNTRY_CODE_URL}" 2>/dev/null | ${AWK} -F ',' \
+        '{
+            if ($2 ~ "^[[:upper:]][[:upper:]]") {
+                printf("%s%s", not_first ? " " : "", substr($2,1,2))
+                not_first=1;
+            }
+        }' 2>/dev/null
+    )"
+    [[ -z "${country_codes}" ]] || COUNTRY_CODES="${country_codes}"
+}
+
+
+# _list_remove_items()
+#  1-N< search-term1 [... search-termN]
+#     < stdin  (list)
+#     > stdout (list)
+#
+# Takes a list of items and parses items to stdout.
+# Removing any items matching the supplied 'search-term'(s).
+#
+_list_remove_items()
+{
+    (($#>=1)) || return 1
+    local found i item search_term
+
+    while read -r -d ' ' item || [[ -n "${item}" ]]; do
+        [[ -z "${item}" ]] && continue
+
+        found=0
+        for ((i=1 ; i<=$# ; ++i)); do
+            # shellcheck disable=SC2124
+            search_term="${@:i:1}"
+            [[ -z "${search_term}" ]] && continue
+
+            if [[ "${item}" = "${search_term}" ]]; then
+                found=1
+                break
+            fi
+        done
+
+        if ((!found)); then
+            printf "%s " "${item}"
+        fi
+    done
+}
+
+
+# _list_remove_regex_item()
+#  1< regular-expression
+#   < stdin  (list)
+#   > stdout (list)
+#
+# Takes a list of items and parses items to stdout.
+# Removing any items matching 'regular-expression'.
+#
+_list_remove_regex_item()
+{
+    (($#==1)) || return 1
+    local regex_search_term="${1}" item
+
+    while read -r -d ' ' item || [[ -n "${item}" ]]; do
+        if [[ ! ( -z "${item}" || "${item}" =~ ${regex_search_term} ) ]]; then
+            printf "%s " "${item}"
+        fi
+    done
+}
+
+
+# _list_match_item()
+#    1 < search-text
+# [2-N]< items to match against (list)
+#      > match?
+#
+# Match list of items on stdin with 'search-text',
+#
+# Return 0=match / 1=no match
+#
+_list_match_item()
+{
+    (($#>=1)) || return 1
+    [[ -z "${1}" ]] && return 1
+    local search_text="${1}"
+
+    shift 1
+    while [[ ! -z "${1}" ]]; do
+        [[ "${search_text}" = "${1}" ]] && return 0
+
+        shift 1
+    done
+    return 1
+}
+
+
+# _get_duplicate_options()
+# 1-N< Winetricks options (multi-line list)
+#   (< INVERTIBLE_OPTS)
+#    > stdout
+#
+# For each long option determine if it has a matching short option or if
+# the long option is invertible (i.e. "--no-xxxx" vs "--xxxx").
+#
+# >
+# "[short-option(1)|inverted-long-option(1)] long-option(1)
+#  ...
+#  [short-option(N)|inverted-long-option(N)] long-option(N)"
+#
+_get_duplicate_options()
+{
+    (($#>=1)) || return 1
+
+    local first_item item option options invertible_option \
+          invertible_options=" ${INVERTIBLE_OPTS} " \
+          removed_options=""
+
+    while IFS='' read -r options || [[ -n "${options}" ]]; do
+        options=" ${options//|/ } "
+        for option in ${removed_options}; do
+            options="${options// ${option} / }"
+        done
+
+        [[ "${options}" =~ ${BLANK_LINE_REGEX} ]] && continue
+
+        unset -v negated_duplicate
+        # shellcheck disable=SC2016
+        first_item="$( echo "${options}" | ${AWK} '{print $1}' 2>/dev/null )"
+        for invertible_option in ${invertible_options}; do
+            case "${invertible_option}" in
+                isolate)
+                    negated_duplicate="${first_item/#--no-${invertible_option}/--${invertible_option}}"
+                    [[ "${negated_duplicate}" = "${first_item}" ]] || break
+                    negated_duplicate="${first_item/#--${invertible_option}/--no-${invertible_option}}"
+                    [[ "${negated_duplicate}" = "${first_item}" ]] || break
+                    ;;
+                opt)
+                    negated_duplicate="${first_item/%${invertible_option}out/${invertible_option}in}"
+                    [[ "${negated_duplicate}" = "${first_item}" ]] || break
+                    negated_duplicate="${first_item/%${invertible_option}in/${invertible_option}out}"
+                    [[ "${negated_duplicate}" = "${first_item}" ]] || break
+                    ;;
+            esac
+        done
+        if [[ ! -z "${negated_duplicate}" && ( ! "${negated_duplicate}" = "${first_item}" ) ]]; then
+            options="${options} ${negated_duplicate}"
+            removed_options="${removed_options} ${first_item} ${negated_duplicate}"
+            invertible_options="${invertible_options// ${invertible_option} / }"
+        fi
+
+        [[ "${options}" =~ ${BLANK_LINE_REGEX} ]] && continue
+
+        printf " %s \\n" "${options}"
+    done <<<"${@}"
+}
+
+
+# _process_options()
+# (< COUNTRY_CODES)
+#  1< Winetricks options (multi-line list)
+#  > stdout
+#
+# Process winetricks options. Format these into a list of short options
+# followed by a list of long options. Expands country codes assignment
+# variable arguments.
+#
+# >
+#  "short-option(1) [... short-option(N)] long-option(1) [... long-option(N)]"
+#
+_process_options()
+{
+    (($#==1)) || return 1
+    [[ -z "${1}" ]] && return 1
+
+    local line long_options option short_options
+
+    while IFS='' read -r line || [[ -n "${line}" ]]; do
+        while read -r -d '|' option || [[ -n "${option}" ]]; do
+            case "${option}" in
+                --*)
+                    if [[ ! "${option}" = "${option/country/}" ]]; then
+                        option="${option%=*}=${COUNTRY_CODES// /|}"
+                    fi
+                    long_options="${long_options} ${option}"
+                    ;;
+                -*)
+                    short_options="${short_options} ${option}"
+                    ;;
+            esac
+        done <<<"${line}"
+    done <<<"${1}"
+
+    printf "%s\\n" "${short_options}${long_options}"
+}
+
+
+# _get_categories()
+# ( < CATEGORIES_VERBS_LIST )
+#   > stdout
+#
+# Get a list of categories.
+#
+# >
+#  "category(1) [... category(N)]"
+#
+_get_categories()
+{
+    local categories="" is_category=1 line
+
+    while IFS='' read -r line || [[ -n "${line}" ]]; do
+        if ((is_category)) && [[ ! "${categories}" =~ ${line} ]]; then
+            categories="${categories} ${line}"
+        fi
+        is_category=$((!is_category))
+    done <<<"${CATEGORIES_VERBS_LIST}"
+
+    [[ -z "${categories}" ]] || printf "%s " "${categories}"
+}
+
+
+# _get_category_verbs()
+# ( < CATEGORIES_VERBS_LIST )
+# [1< category]
+#   > stdout
+#
+# For the specified category, print a line of all verbs in that category.
+# If no category is specified then print a line of all verbs, for all categories.
+#
+# >
+#  "verb(1) [... verb(N)]"
+#
+_get_category_verbs()
+{
+    local category="${1:-}" is_category=1 line matched
+
+    while IFS='' read -r line || [[ -n "${line}" ]]; do
+        if ((is_category)); then
+            matched=0
+            if [[ -z "${category}" || ( "${category}" = "${line}" ) ]]; then
+                matched=1
+            fi
+        elif ((matched)); then
+            printf " %s " "${line}"
+        fi
+        is_category=$((!is_category))
+    done <<<"${CATEGORIES_VERBS_LIST}"
+}
+
+
+# _assignment_strip_values()
+#  1< new line: 1= TRUE , 0=FALSE (for all items)
+#   < stdin
+#   > stdout
+#
+# Takes a list of verbs or options and processes assignments,
+# which use the "=" assignment operator.
+# Remove the post-assignment regex values.
+#
+# <
+# "... videomem=default|512|1024|2048 ..."
+# >
+# "... videomem= ..."
+#
+_assignment_strip_values()
+{
+    (($#==1)) || return 1
+
+    # shellcheck disable=SC2016
+    ${AWK} -vnew_line="${1}" \
+    '{
+        gsub("=[^[:blank:]]*","=")
+        for (i=1 ; i<=NF ; ++i)
+            printf("%s%s", $i, new_line ? "\n" : " ")
+    }' 2>/dev/null
+}
+
+
+# _assignment_get_values()
+# 1< target
+#  < stdin
+#  > stdout
+#
+# Takes a list of verbs or options and processes a single specified target assignment.
+# Remove the prefix target name.
+# Convert the postfix regex values to a simple WS separated list.
+#
+# 1< target="videomem"
+# <
+# "... videomem=default|512|1024|2048 ..."
+# >
+# "default 512 1024 2048"
+#
+_assignment_get_values()
+{
+    (($#==1)) || return 1
+
+    # shellcheck disable=SC2016
+    ${AWK} -vtarget_prefix="${1}" \
+    '{
+        for (i=1 ; i<=NF ; ++i) {
+            verb_prefix=verb_suffix=verb=$i
+            if (verb !~ "=")
+                continue
+
+            sub("=.*$", "", verb_prefix)
+            sub("^.*=", "", verb_suffix)
+            if (verb_prefix != target_prefix)
+                continue
+
+            gsub("[|]", " ", verb_suffix)
+            printf("%s\n", verb_suffix)
+        }
+    }'
+}
+
+
+# _get_alternate_opt()
+#    (< DUP_OPTS_LIST)
+#    1< search-option
+#     > stdout (alternate-option)
+#
+# Given the specified 'search-option' find the alternate
+# (or inverse) operation, if one exists.
+# Print this to stdout.
+#
+# < option="--no-isolate"
+# >
+#   "--isolate"
+#
+_get_alternate_opt()
+{
+    (($#==1)) || return 1
+    local search_opt="${1}" alt_opt dummy line opt
+
+    while IFS='' read -r line || [[ -n "${line}" ]]; do
+        # shellcheck disable=SC2034
+        read -r opt alt_opt dummy<<<"${line}" || continue
+        [[ -z "${opt}" || -z "${alt_opt}" ]] && continue
+
+        if [[ "${opt}" = "${search_opt}" ]]; then
+            printf "%s\\n" "${alt_opt}"
+        elif [[ "${alt_opt}" = "${search_opt}" ]]; then
+            printf "%s\\n" "${opt}"
+        fi
+    done <<<"${DUP_OPTS_LIST}"
+}
+
+
+# _get_opt_regex_matches()
+#       (< OPTS, DUP_OPTS_LIST)
+#    1-N < regex [... regex]
+#        > stdout
+#
+# Takes a list of regular expressions.
+# Match all available options, including duplicate / inverse options,
+# against each regular expression.
+# Dump all matching options to stdout.
+#
+# < "help" "update"
+# >
+#  " -h --help --self-update --update-rollback "
+#
+_get_opt_regex_matches()
+{
+    (($#>=1)) || return 1
+    local i line opts_list search_regex
+
+    # shellcheck disable=SC2207
+    opts_list="$( echo "${OPTS}" | _assignment_strip_values 1 )"
+    opts_list="${opts_list}
+${DUP_OPTS_LIST}"
+
+    while IFS='' read -r line || [[ -n "${line}" ]]; do
+        for ((i=1 ; i<=$# ; ++i)); do
+            # shellcheck disable=SC2124
+            search_regex="${@:i:1}"
+            if [[ "${line}" =~ ${search_regex} ]]; then
+                printf "%s " "${line}"
+            fi
+        done
+    done <<<"${opts_list}"
+    printf " \\n"
+}
+
+
+# _cull_duplicate_options()
+#      1 < option to remove
+#    2-N < option list to process
+#        > stdout
+#
+# Takes an option to remove, from an list of options.
+# Note: also removes duplicate or inverse option(s) (if any exist).
+#
+_cull_duplicate_options()
+{
+    (($#>=1)) || return 1
+    local opt="${1}" alt_other_alt_opt alt_opt other_alt_opt
+    shift 1
+
+    # Ignore non-option verbs, not starting with '-'
+    if [[ "${opt#-}" == "${opt}" ]]; then
+        echo "${@}"
+        return
+    fi
+
+    alt_opt="$( _get_alternate_opt "${opt}" )"
+
+    # Try to remove additional duplicate operations of the form:
+    #   --really-verbose = --verbose / -vv = -v
+    # shellcheck disable=SC1001
+    if [[ "${opt}" =~ ^\-[[:alpha:]][[:alpha:]]$ ]]; then
+        other_alt_opt="${opt%?}"
+    else
+        other_alt_opt="${opt/really-/}"
+    fi
+    alt_other_alt_opt="$( _get_alternate_opt "${other_alt_opt}" )"
+    echo "${@}" | _list_remove_items "${opt}" "${alt_opt}" "${other_alt_opt}" "${alt_other_alt_opt}"
+}
+
+
+##### Define main BASH completion function #####
+
+
+_winetricks()
+{
+    local cur i opt test_cur test_prev reply temp_opts temp_verbs terminating_opts
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    COMPREPLY=( )
+
+    # shellcheck disable=SC2086
+    if _list_match_item "${prev}" ${CATEGORIES_LIST}; then
+        # shellcheck disable=SC2207
+        COMPREPLY=( $(compgen -W "${TERMINATING_LIST_COMMAND}" -- "${cur}") )
+        return 0
+    fi
+
+    # Handle the special case when a Wineprefix path needs to be specified.
+    for ((i=(COMP_CWORD-1) ; i>=(COMP_CWORD-2) ; --i)); do
+        ((i < 0)) && continue
+
+        if [[ "${COMP_WORDS[i]}=" = "${COMMAND_WINEPREFIX}" ]]; then
+            _filedir -d
+            return 0
+        fi
+    done
+
+    # Disable tab expansion when a terminating option or command has been typed...
+    # shellcheck disable=SC2086
+
+    terminating_opts="$(_get_opt_regex_matches ${TERMINATING_OPTS})"
+    # shellcheck disable=SC2086
+    if _list_match_item "${prev}" ${terminating_opts} ${COMMANDS} ${TERMINATING_LIST_COMMAND}; then
+        # shellcheck disable=SC2207
+        COMPREPLY=( $(compgen -W "" -- "") )
+        return 0
+    fi
+
+    # When an option or verb is specified then disable from being repeated via tab expansion.
+    # For options also handle any duplicate and inverse/negated variants.
+    # NB we don't touch the global OPTS / ALL_VERBS variables. If the user starts a new line
+    # or deletes a term, then we must be able to revert back to the default verbs / options.
+    temp_opts="${OPTS}"
+    temp_verbs="${ALL_VERBS}"
+    for ((i=1 ; i<=(COMP_CWORD-1) ; ++i)); do
+        # shellcheck disable=SC2086
+        temp_opts="$( _cull_duplicate_options "${COMP_WORDS[i]}" ${temp_opts} )"
+        temp_verbs="${temp_verbs// ${COMP_WORDS[i]} / }"
+    done
+
+    # Parse assignment verbs and options, of the form 'videomem='
+    for ((i=(COMP_CWORD-1) ; i<=COMP_CWORD ; ++i)); do
+        ((i<1)) && continue
+
+        test_cur="${COMP_WORDS[i]}"
+        test_prev="${COMP_WORDS[i-1]}"
+
+        if [[ ( "${test_cur}" != "=" ) || ( "${test_prev}=" == "${VERB_WINVER}" ) ]]; then
+            continue
+        fi
+
+        case "${test_prev}" in
+            -*)
+                reply="${temp_opts}"
+                ;;
+            *)
+                reply="${COMMANDS} ${temp_verbs}"
+                ;;
+        esac
+
+        # If the reply contains any assignment operations matching the previous term
+        # then strip the first part of the verb (e.g. 'videomem=') from the reply term.
+        # Replace this with all the possible assignment values, e.g.: '1024 2048 512 default'.
+        reply="$( echo "${reply}" | _assignment_get_values "${test_prev}" )"
+
+        # shellcheck disable=SC2207
+        COMPREPLY=( $(compgen -W "${reply}" -- "${cur%=}") )
+        # Suppress starting a new argument when have an assignment option or command...
+        if [[ "${COMPREPLY[0]%=}=" = "${COMPREPLY[0]}" ]]; then
+            compopt -o nospace
+        fi
+        return 0
+    done
+
+    # Parse general (non-assignment) verbs and options.
+    # Only display all available short options when the end user tab completes a hyphen character.
+    # Only display all available long options when the end user tab completes a pair of hyphen characters.
+    # Reduces end-user overload!
+    case "${cur}" in
+        --*)
+            reply="$( echo "${temp_opts}" | _assignment_strip_values 0 )"
+            ;;
+        -*)
+            reply="$( echo "${temp_opts}" | _list_remove_regex_item "${LONG_OPTION_REGEX}" )"
+            ;;
+        *)
+            reply="$( echo "${COMMANDS}" "${temp_verbs}" | _assignment_strip_values 0 )"
+            ;;
+    esac
+
+    # shellcheck disable=SC2207
+    COMPREPLY=( $(compgen -W "${reply}" -- "${cur}") )
+    if [[ "${COMPREPLY[0]}" = "${VERB_WINVER}" ]]; then
+        return 0
+    fi
+    # Suppress starting a new argument when have an assignment option or command...
+    if [[ "${COMPREPLY[0]%=}=" = "${COMPREPLY[0]}" ]]; then
+        compopt -o nospace
+    fi
+    return 0
+}
+
+# We've found no winetricks script in the end-user's PATH, so give up now ...
+[[ -z "${WINETRICKS_PATH}" || ! -f "${WINETRICKS_PATH}" ]] && return 1
+
+# We've tried real hard, but the end-user doesn't appear to have a working awk implementation...
+[[ -z "${AWK}" ]] && return 1
+
+# Setup various Global variables (when this script is initially source'd)...
+_fetch_country_codes
+CATEGORIES_VERBS_LIST="$(_scrape_all_categories_and_verbs)"
+RAW_OPTIONS="$(_scrape_options)"
+COMMANDS="$(_scrape_commands)"
+CATEGORIES_LIST="$(_get_categories)"
+COMMANDS="${COMMANDS} ${CATEGORIES_LIST}"
+OPTS="$(_process_options "${RAW_OPTIONS}")"
+DUP_OPTS_LIST="$(_get_duplicate_options "${RAW_OPTIONS}")"
+# Convert a multi-line list of all categories and verbs into a single line of verbs...
+ALL_VERBS="$(_get_category_verbs "")"
+
+complete -F _winetricks winetricks
