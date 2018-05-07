@@ -41,7 +41,10 @@ WINETRICKS_VERSION=20180217-next
 # On Ubuntu, the following lines can be used to install all the prerequisites:
 #    sudo add-apt-repository ppa:ubuntu-wine/ppa
 #    sudo apt-get update
-#    sudo apt-get install binutils cabextract p7zip unrar unzip wget wine zenity
+#    sudo apt-get install binutils cabextract p7zip-full unrar unzip wget wine zenity
+# On Fedora, these commands can be used (RPM Fusion is used to install unrar):
+#    sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+#    sudo dnf install binutils cabextract p7zip-plugins unrar unzip wget wine zenity
 #
 # See http://winetricks.org for documentation and tutorials, including
 # how to contribute changes to winetricks.
@@ -380,7 +383,7 @@ w_try_7z()
     if test -x "$(which 7z 2>/dev/null)"; then
         w_try 7z x "$filename" -o"$destdir" "$@"
     else
-        w_warn "Cannot find 7z.  Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip p7zip-plugins')."
+        w_warn "Cannot find 7z.  Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip-plugins')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
         # errors out if there is a space between -o and path
         w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$filename")" -o"$(w_pathconv -w "$destdir")" "$@"
