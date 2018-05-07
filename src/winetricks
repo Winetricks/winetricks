@@ -7180,10 +7180,6 @@ load_dotnet35()
     w_call dotnet30sp1
     w_wineserver -w
 
-    if w_workaround_wine_bug 33450 "Installing msxml3"  ,1.5.28; then
-        w_call msxml3
-    fi
-
     # See also https://blogs.msdn.microsoft.com/astebner/2008/07/17/scenarios-where-net-framework-3-5-setup-tries-to-connect-to-the-internet-and-how-to-avoid-them/
     w_try_cd "$W_TMP"
     w_try_cabextract $W_UNATTENDED_DASH_Q "$W_CACHE"/dotnet35/dotnetfx35.exe
