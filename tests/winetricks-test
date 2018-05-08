@@ -88,6 +88,7 @@ export WINETRICKS_SUPER_QUIET
 # Bug: Link to wine/winetricks bug report
 ###
 
+
 # FIXME last:
 # verbs known to not work in -q mode yet
 BLACKLIST="dx8sdk|kde|mingw|psdk2003|psdkwin7"
@@ -98,13 +99,18 @@ BLACKLIST="$BLACKLIST|bfbc2|dxsdk_nov2006|dxsdk_jun2010"
 # steam verbs I don't have
 BLACKLIST="$BLACKLIST|borderlands|supermeatboy|trine"
 
-
+##
 # FIXME (update): failing as of 2018/05/07
+
+# FIXME: anything with autohotkey hangs on buildbox/laptop with forwarding
+# Interestingly, dotnet20p2 uses ahk w/o issue..
+BLACKLIST="$BLACKLIST|allcodecs dirac dotnet20sdk steam "
+
 BLACKLIST="$BLACKLIST|directmusic" # FIXME2
 BLACKLIST="$BLACKLIST|mdac28" # FIXME2
 BLACKLIST="$BLACKLIST|speechsdk" # FIXME2
 BLACKLIST="$BLACKLIST|xvid" # FIXME2
-
+##
 
 # FIXME: Verify, move up:
 # hang lately, probably ui changes in install process
@@ -127,7 +133,7 @@ XVFB_BLACKLIST="$XVFB_BLACKLIST|jet40|nuget|quicktime72|vcrun2008|vcrun2010|vcru
 XVFB_BLACKLIST="$XVFB_BLACKLIST|vjrun20|windowscodecs|wmi|wmp9|wmp10|wsh56js|wsh56vb|xmllite|xna31|xna40|xvid"
 
 # Verbs known to update frequently
-QUICKCHECK="flash steam"
+QUICKCHECK="flash" # steam"
 
 passes=0
 errors=0
