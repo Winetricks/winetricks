@@ -195,7 +195,15 @@ w_askpermission()
     case $WINETRICKS_GUI in
         zenity) $WINETRICKS_GUI "$_W_timeout" --question --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
         kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
-        none) printf %s "Press Y or N, then Enter: " ; read -r response ; test "$response" = Y || test "$response" = y;;
+        none)
+            if [ -n "$_W_timeout" ]; then
+                # -t / TMOUT don't seem to be portable, so just assume yes in unattended mode
+                w_info "Unattended mode, not prompting for confirmation"
+            else
+                printf %s "Press Y or N, then Enter: "
+                read -r response
+                test "$response" = Y || test "$response" = y
+            fi
     esac
 
     if test $? -ne 0; then
