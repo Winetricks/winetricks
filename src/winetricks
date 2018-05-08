@@ -5104,6 +5104,7 @@ list-cached: vis en liste over verber for allerede-hentede installationsprogramm
 list-download: vis en liste over verber for programmer der kan hentes
 list-manual-download: list applications which can be downloaded with some help from the user
 list-installed: list already-installed applications
+annihilate            Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX
 _EOF_
             ;;
         de*)
@@ -5140,6 +5141,7 @@ list-download         Verben für automatisch herunterladbare Anwendungen auflis
 list-manual-download  Verben für vom Benutzer herunterladbare Anwendungen auflisten
 list-installed        Bereits installierte Verben auflisten
 prefix=foobar         WINEPREFIX=$W_PREFIXES_ROOT/foobar auswählen
+annihilate            ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen
 _EOF_
             ;;
         *)
@@ -5178,6 +5180,7 @@ list-download         list verbs which download automatically
 list-manual-download  list verbs which download with some help from the user
 list-installed        list already-installed verbs
 prefix=foobar         select WINEPREFIX=$W_PREFIXES_ROOT/foobar
+annihilate            Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX
 _EOF_
             ;;
     esac
