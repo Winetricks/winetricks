@@ -3990,6 +3990,7 @@ winetricks_metadata_exists()
 winetricks_is_cached()
 {
     # FIXME: also check file2... if given
+    # https://github.com/Winetricks/winetricks/issues/989
     # shellcheck disable=SC2154
     _W_path="$W_CACHE/$1/$file1"
     case "$_W_path" in
@@ -7683,6 +7684,7 @@ load_esent()
 #----------------------------------------------------------------
 
 # FIXME: update winetricks_is_installed to look at installed_file2..n
+# https://github.com/Winetricks/winetricks/issues/988
 w_metadata flash dlls \
     title="Flash Player 14" \
     publisher="Adobe" \
