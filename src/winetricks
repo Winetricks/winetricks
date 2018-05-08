@@ -11363,6 +11363,30 @@ load_autohotkey()
 
 #----------------------------------------------------------------
 
+w_metadata busybox apps \
+    title="BusyBox FRP-2121" \
+    publisher="Ron Yorston / Busybox authors" \
+    year="2015" \
+    media="download" \
+    file1="busybox-w32-FRP-2121-ga316078ad.exe" \
+    installed_exe1=""
+
+load_busybox()
+{
+    # Could use https://frippery.org/files/busybox/busybox.exe, but it hasn't updated in last 3 years..
+    w_download https://frippery.org/files/busybox/busybox-w32-FRP-2121-ga316078ad.exe 1bab530f2fd2a9d69528bc2b35ba1f9f75481ae053443b47cb23ad2c2740d887
+
+    if test "$W_ARCH" = "win64"; then
+        w_download https://frippery.org/files/busybox/busybox-w64-FRP-2121-ga316078ad.exe dcb2faf17f996fda8d273d513bc195aec615ef468e3d55b8b4dc9c089b22e035
+        w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "$W_SYSTEM32_DLLS/busybox.exe"
+        w_try cp "${W_CACHE}/${W_PACKAGE}/busybox-w64-FRP-2121-ga316078ad.exe" "$W_SYSTEM64_DLLS/busybox.exe"
+    else
+        w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "$W_SYSTEM32_DLLS/busybox.exe"
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata cmake apps \
     title="CMake 2.8" \
     publisher="Kitware" \
