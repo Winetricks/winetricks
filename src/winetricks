@@ -4121,27 +4121,13 @@ winetricks_list_manual_download()
 
 winetricks_list_installed()
 {
-    (
-    # Jump through a couple hoops to evaluate the verbs in alphabetical order
-    # Assume that no filename contains '|'
-
-    # Piping output of w_try_cd to /dev/null since winetricks-test parses it:
-    w_try_cd "$WINETRICKS_METADATA" >/dev/null
-    for _W_metadatafile in $(find . -iname \*.vars | sed 's,^\(.*\)/,\1|,' | sort -t\| -k 2 | tr '|' /)
-    do
-        # Use a subshell to avoid putting metadata in global space
-        # If this is too slow, we can unset known metadata by hand
-        (
-        code=$(winetricks_metadata_basename "$_W_metadatafile")
-        # shellcheck disable=SC1090
-        . "$_W_metadatafile"
-        if winetricks_is_installed "$code"; then
-            echo "$code"
-        fi
-        )
-    done
-    )
-    unset _W_metadatafile
+    # Rather than check individual metadata/files (slow/brittle/breaks settings/metaverbs)
+    # Just show winetricks.log (if it exists), which list verbs in the order they were installed
+    if [ -f "$WINEPREFIX/winetricks.log" ]; then
+        cat "$WINEPREFIX/winetricks.log"
+    else
+        echo "warning: $WINEPREFIX/winetricks.log not found; winetricks has not installed anything in this prefix."
+    fi
 }
 
 # Helper for adding a string to a list of flags
