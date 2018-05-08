@@ -4813,10 +4813,14 @@ winetricks_set_wineprefix()
         W_32BIT_DLLS="$W_WINDIR_UNIX/syswow64"
 
         # Probably need fancier handling/checking, but for a basic start:
+        # Note 'wine' may be named 'wine-stable'/'wine-staging'/etc.):
         # WINE64 = wine64, available on 64-bit prefixes
         # WINE_ARCH = the native wine for the prefix (wine for 32-bit, wine64 for 64-bit)
         # WINE_MULTI = generic wine, new name
-        WINE64="${WINE}64"
+        case "$WINE" in
+            *64) WINE64="${WINE}" ;;
+            *) WINE64="${WINE}64" ;;
+        esac
         WINE_ARCH="${WINE64}"
         WINE_MULTI="${WINE}"
 
