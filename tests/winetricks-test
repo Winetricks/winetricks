@@ -126,6 +126,7 @@ XVFB_BLACKLIST="$XVFB_BLACKLIST|vjrun20|windowscodecs|wmi|wmp9|wmp10|wsh56js|wsh
 # Verbs known to update frequently
 QUICKCHECK="flash steam"
 
+failed_verbs=""
 passes=0
 errors=0
 skips=0
@@ -148,6 +149,7 @@ check_deps() {
 fail()
 {
     echo "FAIL: $*"
+    failed_verbs="${failed_verbs}|$*"
     errors=$((errors + 1))
 }
 
@@ -792,11 +794,27 @@ case "$1" in
     *) echo "Usage: $0 quick|full" ; exit 1 ;;
 esac
 
+# Turn off set -x so the results are cleaner:
+set +x
+
+echo "==============================================================="
 echo "Test over, $errors failures, $passes successes, $skips skipped."
 if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
     echo PASS
+    echo "==============================================================="
     exit 0
 else
     echo FAIL
+    echo "Test failures:"
+    oldifs="$IFS"
+    IFS="|"
+    for test_failure in $failed_verbs; do
+        if [ -z "$test_failure" ]; then
+            :
+        fi
+        echo "$test_failure"
+    done
+    IFS=$oldifs
+    echo "==============================================================="
     exit 1
 fi
