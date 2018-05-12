@@ -8100,11 +8100,14 @@ load_icodecs()
             controlclick, Button4  ; Finish
         }
         winwaitclose
-        ; Dangling explorer window
-        winwait, Wine Explorer
-        sleep 1000
-        winclose, Wine Explorer
     "
+        # Note, this leaves a dangling explorer window. The window name changed at some point
+        # because of a fixed wine bug that I'm too lazy to find. Since AHK doesn't make command line
+        # arguments easily accessible, we'd have to just kill all explorer.exe processes.
+        #
+        # So instead, use system kill
+        inode_pid="$(pgrep -f 'explorer.exe C:\\Program Files\\Ligos\\Indeo')"
+        kill -HUP "$inode_pid"
 }
 
 #----------------------------------------------------------------
