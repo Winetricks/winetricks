@@ -342,6 +342,8 @@ w_package_warn_win64()
     fi
 }
 
+### w_try and w_try wrappers ###
+
 # Execute with error checking
 # Put this in front of any command that might fail
 w_try()
@@ -431,6 +433,52 @@ w_try_cd()
     w_try cd "$@"
 }
 
+# Copy font files matching a glob pattern from source directory to destination directory.
+# Also remove any file in the destination directory that has the same name as
+# any of the files that we're trying to copy, but with different case letters.
+# Note: it converts font file names to lower case to avoid inconsistencies due to paths
+#       being case-insensitive under Wine.
+w_try_cp_font_files()
+{
+    # $1 - source directory
+    # $2 - destination directory
+    # $3 - optional font file glob pattern (default: "*.ttf")
+
+    _W_src_dir="$1"
+    _W_dest_dir="$2"
+    _W_pattern="$3"
+    shift 2
+
+    if test ! -d "$_W_src_dir"; then
+        w_die "bug: missing source dir"
+    fi
+
+    if test ! -d "$_W_dest_dir"; then
+        w_die "bug: missing destination dir"
+    fi
+
+    if test -z "$_W_pattern"; then
+        _W_pattern="*.ttf"
+    fi
+
+    _W_src_files=$(find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern")
+
+    for _W_src_file in $_W_src_files; do
+        # Extract the file name and lower case it
+        _W_file_name=$(basename "$_W_src_file" | tr "[:upper:]" "[:lower:]")
+
+        # Remove any existing font files that might have the same name, but with different case characters
+        find "$_W_dest_dir" -maxdepth 1 -type f -iname "$_W_file_name" -exec rm '{}' ';'
+
+        w_try cp -f "$_W_src_file" "$_W_dest_dir/$_W_file_name"
+    done
+
+    # Wait for Wine to add the new font to the registry under HKCU\Software\Wine\Fonts\Cache
+    w_wineserver -w
+
+    unset _W_src_files _W_dest_dir _W_src_file _W_file_name
+}
+
 w_try_msiexec64()
 {
     if test "$W_ARCH" != "win64"; then
@@ -439,6 +487,19 @@ w_try_msiexec64()
 
     # shellcheck disable=SC2086
     w_try "$WINE" start /wait "$W_SYSTEM64_DLLS_WIN32/msiexec.exe" $W_UNATTENDED_SLASH_Q "$@"
+}
+
+w_try_regedit()
+{
+    # If on wow64, run under both wine and wine64 (otherwise they only go in the 32-bit registry afaict)
+
+    # shellcheck disable=SC2086
+    if [ "$W_ARCH" = "win32" ]; then
+        w_try_regedit32 "$@"
+    elif [ "$W_ARCH" = "win64" ]; then
+        w_try_regedit32 "$@"
+        w_try_regedit64 "$@"
+    fi
 }
 
 # fixme: cleanup. For wow64 registries, some/all entries need to be duplicated.
@@ -465,19 +526,6 @@ w_try_regedit64()
 
     # shellcheck disable=SC2086
     w_try "$WINE64" $cmdc regedit $W_UNATTENDED_SLASH_S "$@"
-}
-
-w_try_regedit()
-{
-    # If on wow64, run under both wine and wine64 (otherwise they only go in the 32-bit registry afaict)
-
-    # shellcheck disable=SC2086
-    if [ "$W_ARCH" = "win32" ]; then
-        w_try_regedit32 "$@"
-    elif [ "$W_ARCH" = "win64" ]; then
-        w_try_regedit32 "$@"
-        w_try_regedit64 "$@"
-    fi
 }
 
 w_try_regsvr()
@@ -529,51 +577,7 @@ w_try_unzip()
     w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$zipfile")" -o"$(w_pathconv -w "$destdir")" "$@"
 }
 
-# Copy font files matching a glob pattern from source directory to destination directory.
-# Also remove any file in the destination directory that has the same name as
-# any of the files that we're trying to copy, but with different case letters.
-# Note: it converts font file names to lower case to avoid inconsistencies due to paths
-#       being case-insensitive under Wine.
-w_try_cp_font_files()
-{
-    # $1 - source directory
-    # $2 - destination directory
-    # $3 - optional font file glob pattern (default: "*.ttf")
-
-    _W_src_dir="$1"
-    _W_dest_dir="$2"
-    _W_pattern="$3"
-    shift 2
-
-    if test ! -d "$_W_src_dir"; then
-        w_die "bug: missing source dir"
-    fi
-
-    if test ! -d "$_W_dest_dir"; then
-        w_die "bug: missing destination dir"
-    fi
-
-    if test -z "$_W_pattern"; then
-        _W_pattern="*.ttf"
-    fi
-
-    _W_src_files=$(find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern")
-
-    for _W_src_file in $_W_src_files; do
-        # Extract the file name and lower case it
-        _W_file_name=$(basename "$_W_src_file" | tr "[:upper:]" "[:lower:]")
-
-        # Remove any existing font files that might have the same name, but with different case characters
-        find "$_W_dest_dir" -maxdepth 1 -type f -iname "$_W_file_name" -exec rm '{}' ';'
-
-        w_try cp -f "$_W_src_file" "$_W_dest_dir/$_W_file_name"
-    done
-
-    # Wait for Wine to add the new font to the registry under HKCU\Software\Wine\Fonts\Cache
-    w_wineserver -w
-
-    unset _W_src_files _W_dest_dir _W_src_file _W_file_name
-}
+### End of w_try ###
 
 w_read_key()
 {
