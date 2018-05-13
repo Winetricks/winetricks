@@ -8214,61 +8214,6 @@ load_ie8_kb2936068()
 
 #----------------------------------------------------------------
 
-w_metadata kde apps \
-    title="KDE on Windows" \
-    publisher="various" \
-    year="2013" \
-    media="download" \
-    file1="kdewin-installer-gui-1.0.0.exe" \
-    installed_exe1="$W_PROGRAMS_WIN/kde/etc/installer.ini" \
-    homepage="https://community.kde.org/Windows" \
-    unattended="no"
-
-load_kde()
-{
-    w_download http://mirrors.mit.edu/kde/stable/kdewin/installer/kdewin-installer-gui-1.0.0.exe 6bc5e0cc9e3418c08b6545300f68de0652ac297cbcdc81fd0ebe04f5934006f5
-    mkdir -p "$W_PROGRAMS_UNIX/kde"
-    w_try cp "$W_CACHE/kde/${file1}" "$W_PROGRAMS_UNIX/kde"
-    w_try_cd "$W_PROGRAMS_UNIX/kde"
-    # There's no unattended option, probably because there are so many choices,
-    # it's like Cygwin
-    w_try "$WINE" "${file1}"
-}
-
-#----------------------------------------------------------------
-
-w_metadata kindle apps \
-    title="Amazon Kindle" \
-    publisher="Amazon" \
-    year="2017" \
-    media="download" \
-    file1="KindleForPC-installer-1.16.44025.exe" \
-    installed_exe1="$W_PROGRAMS_WIN/Amazon/Kindle/Kindle.exe" \
-    homepage="https://www.amazon.com/kindle-dbs/fd/kcp"
-
-load_kindle()
-{
-    if w_workaround_wine_bug 43508; then
-        w_warn "Using an older version of Kindle (1.16.44025) to work around https://bugs.winehq.org/show_bug.cgi?id=43508"
-    fi
-
-    w_download https://s3.amazonaws.com/kindleforpc/44025/KindleForPC-installer-1.16.44025.exe
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
-
-    if w_workaround_wine_bug 35041 && [ ! -z "$W_TASKSET" ] ; then
-        w_warn "You may need to run with $W_TASKSET to avoid a libX11 crash."
-    fi
-
-    if w_workaround_wine_bug 29045; then
-        w_call corefonts
-    fi
-
-    w_warn "If kindle does not load for you, try increasing your open file limit"
-}
-
-#----------------------------------------------------------------
-
 w_metadata l3codecx dlls \
     title="MPEG Layer-3 Audio Codec for Microsoft DirectShow" \
     publisher="Microsoft" \
@@ -8461,24 +8406,6 @@ load_mfc40()
 
     helper_win7sp1 x86_microsoft-windows-mfc40u_31bf3856ad364e35_6.1.7601.17514_none_f51a7bf0b3d25294/mfc40u.dll
     w_try cp "$W_TMP/x86_microsoft-windows-mfc40u_31bf3856ad364e35_6.1.7601.17514_none_f51a7bf0b3d25294/mfc40u.dll" "$W_SYSTEM32_DLLS/mfc40u.dll"
-}
-
-#----------------------------------------------------------------
-
-w_metadata mozillabuild apps \
-    title="Mozilla build environment" \
-    publisher="Mozilla Foundation" \
-    year="2015" \
-    media="download" \
-    file1="MozillaBuildSetup-2.0.0.exe" \
-    installed_file1="c:/mozilla-build/moztools/bin/nsinstall.exe" \
-    homepage="https://wiki.mozilla.org/MozillaBuild"
-
-load_mozillabuild()
-{
-    w_download https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-2.0.0.exe d5ffe52fe634fb7ed02e61041cc183c3af92039ee74e794f7ae83a408e4cf3f5
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" MozillaBuildSetup-2.0.0.exe $W_UNATTENDED_SLASH_S
 }
 
 #----------------------------------------------------------------
@@ -8829,107 +8756,6 @@ load_ole32()
 
 #----------------------------------------------------------------
 
-w_metadata ollydbg110 apps \
-    title="OllyDbg" \
-    publisher="ollydbg.de" \
-    year="2004" \
-    media="download" \
-    file1="odbg110.zip" \
-    installed_file1="c:/ollydbg110/OLLYDBG.EXE" \
-    homepage="http://ollydbg.de"
-
-load_ollydbg110()
-{
-    # The GUI is unreadable without having corefonts installed.
-    w_call corefonts
-
-    w_download http://www.ollydbg.de/odbg110.zip 73b1770f28893dab22196eb58d45ede8ddf5444009960ccc0107d09881a7cd1e
-    w_try_unzip "$W_DRIVE_C/ollydbg110" "$W_CACHE/$W_PACKAGE"/odbg110.zip
-}
-
-#----------------------------------------------------------------
-
-w_metadata ollydbg200 apps \
-    title="OllyDbg" \
-    publisher="ollydbg.de" \
-    year="2010" \
-    media="download" \
-    file1="odbg200.zip" \
-    installed_file1="c:/ollydbg200/ollydbg.exe" \
-    homepage="http://ollydbg.de"
-
-load_ollydbg200()
-{
-    # The GUI is unreadable without having corefonts installed.
-    w_call corefonts
-
-    w_download http://www.ollydbg.de/odbg200.zip 93dfd6348323db33f2005fc1fb8ff795256ae91d464dd186adc29c4314ed647c
-    w_try_unzip "$W_DRIVE_C/ollydbg200" "$W_CACHE/$W_PACKAGE"/odbg200.zip
-}
-
-#----------------------------------------------------------------
-
-w_metadata ollydbg201 apps \
-    title="OllyDbg" \
-    publisher="ollydbg.de" \
-    year="2013" \
-    media="download" \
-    file1="odbg201.zip" \
-    installed_file1="c:/ollydbg201/ollydbg.exe" \
-    homepage="http://ollydbg.de"
-
-load_ollydbg201()
-{
-    # The GUI is unreadable without having corefonts installed.
-    w_call corefonts
-
-    w_download http://www.ollydbg.de/odbg201.zip 29244e551be31f347db00503c512058086f55b43c93c1ae93729b15ce6e087a5
-    w_try_unzip "$W_DRIVE_C/ollydbg201" "$W_CACHE/$W_PACKAGE"/odbg201.zip
-
-    # ollydbg201 is affected by Wine bug 36012 if debug symbols are available.
-    # As a workaround native 'dbghelp' can be installed. We don't do this automatically
-    # because for some people it might work even without additional workarounds.
-    # Older versions of OllyDbg were not affected by this bug.
-}
-
-#----------------------------------------------------------------
-
-w_metadata openwatcom apps \
-    title="Open Watcom C/C++ compiler (can compile win16 code!)" \
-    publisher="Watcom" \
-    year="2010" \
-    media="download" \
-    file1="open-watcom-c-win32-1.9.exe" \
-    installed_file1="c:/WATCOM/owsetenv.bat" \
-    homepage="http://www.openwatcom.org"
-
-load_openwatcom()
-{
-    # 2016/03/11: upstream http://www.openwatcom.org appears to be dead (404)
-    w_download "http://openwatcom.mirror.fr/open-watcom-c-win32-1.9.exe" 040c910aba304fdb5f39b8fe508cd3c772b1da1f91a58179fa0895e0b2bf190b
-
-    if [ $W_UNATTENDED_SLASH_Q ]; then
-        # Options documented at http://bugzilla.openwatcom.org/show_bug.cgi?id=898
-        # But they don't seem to work on Wine, so jam them into setup.inf
-        # Pick smallest installation that supports 16-bit C and C++
-        w_try_cd "$W_TMP"
-        cp "$W_CACHE"/openwatcom/open-watcom-c-win32-1.9.exe .
-        w_try_unzip . open-watcom-c-win32-1.9.exe setup.inf
-        sed -i 's/tools16=.*/tools16=true/' setup.inf
-        w_try zip -f open-watcom-c-win32-1.9.exe
-        w_try "$WINE" open-watcom-c-win32-1.9.exe -s
-    else
-        w_try_cd "$W_CACHE/$W_PACKAGE"
-        w_try "$WINE" open-watcom-c-win32-1.9.exe
-    fi
-
-    if test ! -f "$W_DRIVE_C"/WATCOM/binnt/wcc.exe; then
-        w_warn "c:/watcom/binnt/wcc.exe not found; you probably didn't select 16-bit tools, and won't be able to build win16test."
-    fi
-}
-
-#----------------------------------------------------------------
-
 w_metadata pdh dlls \
     title="MS pdh.dll (Performance Data Helper)" \
     publisher="Microsoft" \
@@ -8986,6 +8812,41 @@ load_pngfilt()
     helper_winxpsp3 i386/pngfilt.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/pngfilt.dl_
     w_try_regsvr pngfilt.dll
+}
+
+#----------------------------------------------------------------
+
+w_metadata python26 dlls \
+    title="Python interpreter 2.6.2" \
+    publisher="Python Software Foundaton" \
+    year="2009" \
+    media="download" \
+    file1="python-2.6.2.msi" \
+    installed_exe1="c:/Python26/python.exe"
+
+load_python26()
+{
+    w_download https://www.python.org/ftp/python/2.6.2/python-2.6.2.msi c2276b398864b822c25a7c240cb12ddb178962afd2e12d602f1a961e31ad52ff
+    w_download $WINETRICKS_SOURCEFORGE/project/pywin32/pywin32/Build%20214/pywin32-214.win32-py2.6.exe dc311bbdc5868e3dd139dfc46136221b7f55c5613a98a5a48fa725a6c681cd40
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" msiexec /i python-2.6.2.msi ALLUSERS=1 $W_UNATTENDED_SLASH_Q
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run pywin32-214.win32-py2.6.exe
+        WinWait, Setup, Wizard will install pywin32
+        if ( w_opt_unattended > 0 ) {
+             ControlClick Button2   ; next
+             WinWait, Setup, Python 2.6 is required
+             ControlClick Button3   ; next
+             WinWait, Setup, Click Next to begin
+             ControlClick Button3   ; next
+             WinWait, Setup, finished
+             ControlClick Button4   ; Finish
+        }
+        WinWaitClose
+        "
 }
 
 #----------------------------------------------------------------
@@ -11257,8 +11118,10 @@ load_allfonts()
     done
 }
 
-#----------------------------------------------------------------
-# Apps
+#######################
+# apps
+#######################
+
 #----------------------------------------------------------------
 
 w_metadata 3m_library apps \
@@ -12034,6 +11897,61 @@ _EOF_
 
 #----------------------------------------------------------------
 
+w_metadata kde apps \
+    title="KDE on Windows" \
+    publisher="various" \
+    year="2013" \
+    media="download" \
+    file1="kdewin-installer-gui-1.0.0.exe" \
+    installed_exe1="$W_PROGRAMS_WIN/kde/etc/installer.ini" \
+    homepage="https://community.kde.org/Windows" \
+    unattended="no"
+
+load_kde()
+{
+    w_download http://mirrors.mit.edu/kde/stable/kdewin/installer/kdewin-installer-gui-1.0.0.exe 6bc5e0cc9e3418c08b6545300f68de0652ac297cbcdc81fd0ebe04f5934006f5
+    mkdir -p "$W_PROGRAMS_UNIX/kde"
+    w_try cp "$W_CACHE/kde/${file1}" "$W_PROGRAMS_UNIX/kde"
+    w_try_cd "$W_PROGRAMS_UNIX/kde"
+    # There's no unattended option, probably because there are so many choices,
+    # it's like Cygwin
+    w_try "$WINE" "${file1}"
+}
+
+#----------------------------------------------------------------
+
+w_metadata kindle apps \
+    title="Amazon Kindle" \
+    publisher="Amazon" \
+    year="2017" \
+    media="download" \
+    file1="KindleForPC-installer-1.16.44025.exe" \
+    installed_exe1="$W_PROGRAMS_WIN/Amazon/Kindle/Kindle.exe" \
+    homepage="https://www.amazon.com/kindle-dbs/fd/kcp"
+
+load_kindle()
+{
+    if w_workaround_wine_bug 43508; then
+        w_warn "Using an older version of Kindle (1.16.44025) to work around https://bugs.winehq.org/show_bug.cgi?id=43508"
+    fi
+
+    w_download https://s3.amazonaws.com/kindleforpc/44025/KindleForPC-installer-1.16.44025.exe
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ /S}
+
+    if w_workaround_wine_bug 35041 && [ ! -z "$W_TASKSET" ] ; then
+        w_warn "You may need to run with $W_TASKSET to avoid a libX11 crash."
+    fi
+
+    if w_workaround_wine_bug 29045; then
+        w_call corefonts
+    fi
+
+    w_warn "If kindle does not load for you, try increasing your open file limit"
+}
+
+#----------------------------------------------------------------
+
 w_metadata kobo apps \
     title="Kobo e-book reader" \
     publisher="Kobo" \
@@ -12071,6 +11989,24 @@ load_mingw()
     w_append_path 'C:\MinGW\bin'
     w_try "$WINE" mingw-get update
     w_try "$WINE" mingw-get install gcc msys-base
+}
+
+#----------------------------------------------------------------
+
+w_metadata mozillabuild apps \
+    title="Mozilla build environment" \
+    publisher="Mozilla Foundation" \
+    year="2015" \
+    media="download" \
+    file1="MozillaBuildSetup-2.0.0.exe" \
+    installed_file1="c:/mozilla-build/moztools/bin/nsinstall.exe" \
+    homepage="https://wiki.mozilla.org/MozillaBuild"
+
+load_mozillabuild()
+{
+    w_download https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-2.0.0.exe d5ffe52fe634fb7ed02e61041cc183c3af92039ee74e794f7ae83a408e4cf3f5
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" MozillaBuildSetup-2.0.0.exe $W_UNATTENDED_SLASH_S
 }
 
 #----------------------------------------------------------------
@@ -12147,6 +12083,76 @@ load_mt4()
         Process, Wait, terminal.exe
         Process, Close, terminal.exe
     "
+}
+
+#----------------------------------------------------------------
+
+w_metadata njcwp_trial apps \
+    title="NJStar Chinese Word Processor trial" \
+    publisher="NJStar" \
+    year="2015" \
+    media="download" \
+    file1="njcwp610sw15918.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Chinese WP6/NJStar.exe" \
+    homepage="https://www.njstar.com/cms/njstar-chinese-word-processor"
+
+load_njcwp_trial()
+{
+    w_download http://ftp.njstar.com/sw/njcwp610sw15918.exe 7afa6dfc431f058d1397ac7100d5650b97347e1f37f81a2e2d2ee5dfdff4660b
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    if test "$W_OPT_UNATTENDED"; then
+        w_ahk_do "
+        SetTitleMatchMode, 2
+        run $file1
+        WinWait, Setup, Welcome
+        ControlClick Button2 ; next
+        WinWait, Setup, License
+        ControlClick Button2 ; agree
+        WinWait, Setup, Install
+        ControlClick Button2 ; install
+        WinWait, Setup, Completing
+        ControlClick Button4 ; do not launch
+        ControlClick Button2 ; finish
+        WinWaitClose
+        "
+    else
+        w_try "$WINE" "$file1"
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata njjwp_trial apps \
+    title="NJStar Japanese Word Processor trial" \
+    publisher="NJStar" \
+    year="2009" \
+    media="download" \
+    file1="njjwp610sw15918.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Japanese WP6/NJStarJ.exe" \
+    homepage="https://www.njstar.com/cms/njstar-japanese-word-processor"
+
+load_njjwp_trial()
+{
+    w_download http://ftp.njstar.com/sw/njjwp610sw15918.exe 7f36138c3d19539cb73d757cd42a6f7afebdaf9cfed0cf9bc483c33e519e2a26
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    if test "$W_OPT_UNATTENDED"; then
+        w_ahk_do "
+        SetTitleMatchMode, 2
+        run $file1
+        WinWait, Setup, Welcome
+        ControlClick Button2 ; next
+        WinWait, Setup, License
+        ControlClick Button2 ; agree
+        WinWait, Setup, Install
+        ControlClick Button2 ; install
+        WinWait, Setup, Completing
+        ControlClick Button4 ; do not launch
+        ControlClick Button2 ; finish
+        WinWaitClose
+        "
+    else
+        w_try "$WINE" "$file1"
+    fi
 }
 
 #----------------------------------------------------------------
@@ -12365,6 +12371,107 @@ _EOF_
 
 #----------------------------------------------------------------
 
+w_metadata ollydbg110 apps \
+    title="OllyDbg" \
+    publisher="ollydbg.de" \
+    year="2004" \
+    media="download" \
+    file1="odbg110.zip" \
+    installed_file1="c:/ollydbg110/OLLYDBG.EXE" \
+    homepage="http://ollydbg.de"
+
+load_ollydbg110()
+{
+    # The GUI is unreadable without having corefonts installed.
+    w_call corefonts
+
+    w_download http://www.ollydbg.de/odbg110.zip 73b1770f28893dab22196eb58d45ede8ddf5444009960ccc0107d09881a7cd1e
+    w_try_unzip "$W_DRIVE_C/ollydbg110" "$W_CACHE/$W_PACKAGE"/odbg110.zip
+}
+
+#----------------------------------------------------------------
+
+w_metadata ollydbg200 apps \
+    title="OllyDbg" \
+    publisher="ollydbg.de" \
+    year="2010" \
+    media="download" \
+    file1="odbg200.zip" \
+    installed_file1="c:/ollydbg200/ollydbg.exe" \
+    homepage="http://ollydbg.de"
+
+load_ollydbg200()
+{
+    # The GUI is unreadable without having corefonts installed.
+    w_call corefonts
+
+    w_download http://www.ollydbg.de/odbg200.zip 93dfd6348323db33f2005fc1fb8ff795256ae91d464dd186adc29c4314ed647c
+    w_try_unzip "$W_DRIVE_C/ollydbg200" "$W_CACHE/$W_PACKAGE"/odbg200.zip
+}
+
+#----------------------------------------------------------------
+
+w_metadata ollydbg201 apps \
+    title="OllyDbg" \
+    publisher="ollydbg.de" \
+    year="2013" \
+    media="download" \
+    file1="odbg201.zip" \
+    installed_file1="c:/ollydbg201/ollydbg.exe" \
+    homepage="http://ollydbg.de"
+
+load_ollydbg201()
+{
+    # The GUI is unreadable without having corefonts installed.
+    w_call corefonts
+
+    w_download http://www.ollydbg.de/odbg201.zip 29244e551be31f347db00503c512058086f55b43c93c1ae93729b15ce6e087a5
+    w_try_unzip "$W_DRIVE_C/ollydbg201" "$W_CACHE/$W_PACKAGE"/odbg201.zip
+
+    # ollydbg201 is affected by Wine bug 36012 if debug symbols are available.
+    # As a workaround native 'dbghelp' can be installed. We don't do this automatically
+    # because for some people it might work even without additional workarounds.
+    # Older versions of OllyDbg were not affected by this bug.
+}
+
+#----------------------------------------------------------------
+
+w_metadata openwatcom apps \
+    title="Open Watcom C/C++ compiler (can compile win16 code!)" \
+    publisher="Watcom" \
+    year="2010" \
+    media="download" \
+    file1="open-watcom-c-win32-1.9.exe" \
+    installed_file1="c:/WATCOM/owsetenv.bat" \
+    homepage="http://www.openwatcom.org"
+
+load_openwatcom()
+{
+    # 2016/03/11: upstream http://www.openwatcom.org appears to be dead (404)
+    w_download "http://openwatcom.mirror.fr/open-watcom-c-win32-1.9.exe" 040c910aba304fdb5f39b8fe508cd3c772b1da1f91a58179fa0895e0b2bf190b
+
+    if [ $W_UNATTENDED_SLASH_Q ]; then
+        # Options documented at http://bugzilla.openwatcom.org/show_bug.cgi?id=898
+        # But they don't seem to work on Wine, so jam them into setup.inf
+        # Pick smallest installation that supports 16-bit C and C++
+        w_try_cd "$W_TMP"
+        cp "$W_CACHE"/openwatcom/open-watcom-c-win32-1.9.exe .
+        w_try_unzip . open-watcom-c-win32-1.9.exe setup.inf
+        sed -i 's/tools16=.*/tools16=true/' setup.inf
+        w_try zip -f open-watcom-c-win32-1.9.exe
+        w_try "$WINE" open-watcom-c-win32-1.9.exe -s
+    else
+        w_try_cd "$W_CACHE/$W_PACKAGE"
+        w_try "$WINE" open-watcom-c-win32-1.9.exe
+    fi
+
+    if test ! -f "$W_DRIVE_C"/WATCOM/binnt/wcc.exe; then
+        w_warn "c:/watcom/binnt/wcc.exe not found; you probably didn't select 16-bit tools, and won't be able to build win16test."
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata protectionid apps \
     title="Protection ID" \
     publisher="CDKiLLER & TippeX" \
@@ -12526,37 +12633,93 @@ _EOF_
 
 #----------------------------------------------------------------
 
-w_metadata python26 dlls \
-    title="Python interpreter 2.6.2" \
-    publisher="Python Software Foundaton" \
-    year="2009" \
-    media="download" \
-    file1="python-2.6.2.msi" \
-    installed_exe1="c:/Python26/python.exe"
+w_metadata qq apps \
+ title="QQ 8.9.1(Chinese chat app)" \
+ publisher="Tencent" \
+ year="2017" \
+ media="download" \
+ file1="QQ8.9.1.exe" \
+ file2="QQ.tar.gz"\
+ installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQScLauncher.exe" \
+ homepage="http://www.qq.com" \
+ unattended="no"
 
-load_python26()
+load_qq()
 {
-    w_download https://www.python.org/ftp/python/2.6.2/python-2.6.2.msi c2276b398864b822c25a7c240cb12ddb178962afd2e12d602f1a961e31ad52ff
-    w_download $WINETRICKS_SOURCEFORGE/project/pywin32/pywin32/Build%20214/pywin32-214.win32-py2.6.exe dc311bbdc5868e3dd139dfc46136221b7f55c5613a98a5a48fa725a6c681cd40
+    w_download https://dldir1.qq.com/qqfile/qq/QQ8.9.1/20437/QQ8.9.1.exe 8e0d3ff5264da2d77e2fc011c21048edeebcf082f55f68a301f763c3a15c0d3f
+    w_download http://hillwoodhome.net/wine/QQ.tar.gz eb5cd6371eb75ec9e2fc0271199df05cbb9f38a60c2e81d5d8ac7daeb40aba62
+
+    if w_workaround_wine_bug 5162 "Installing native riched20 to work around can't input username."; then
+        w_call riched20
+    fi
+
+    # Make sure chinese fonts are available
+    w_call fakechinese
+
+    # uses mfc42u.dll
+    w_call mfc42
+
+    if w_workaround_wine_bug 38171 "Installing desktop file to work around bug"; then
+        w_try_cd "$W_TMP/"
+        tar -zxf "$W_CACHE/qq/QQ.tar.gz"
+        mkdir -p "$HOME/.local/share/applications/wine/Programs/腾讯软件/QQ"
+        mkdir -p "$HOME/.local/share/icons/hicolor/48x48/apps"
+        mkdir -p "$HOME/.local/share/icons/hicolor/256x256/apps"
+        w_try mv QQ/腾讯QQ.desktop ~/.local/share/applications/wine/Programs/腾讯软件/QQ
+        w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
+        w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
+        # shellcheck disable=SC1001
+        echo Exec=env WINEPREFIX="$WINEPREFIX" "$WINE" "$W_PROGRAMS_X86_WIN"\/Tencent\/QQ\/bin\/QQScLauncher.exe >> "$HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop"
+    fi
+
+    if w_workaround_wine_bug 39657 "Disable ntoskrnl.exe to work around can't be started bug"; then
+        w_override_dlls disabled ntoskrnl.exe
+    fi
+
+    if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"; then
+        w_override_dlls disabled txplatform.exe
+    fi
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec /i python-2.6.2.msi ALLUSERS=1 $W_UNATTENDED_SLASH_Q
+    w_try "$WINE" "$file1"
+}
 
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run pywin32-214.win32-py2.6.exe
-        WinWait, Setup, Wizard will install pywin32
-        if ( w_opt_unattended > 0 ) {
-             ControlClick Button2   ; next
-             WinWait, Setup, Python 2.6 is required
-             ControlClick Button3   ; next
-             WinWait, Setup, Click Next to begin
-             ControlClick Button3   ; next
-             WinWait, Setup, finished
-             ControlClick Button4   ; Finish
-        }
-        WinWaitClose
-        "
+#----------------------------------------------------------------
+
+w_metadata qqintl apps \
+    title="QQ International Instant Messenger 2.11" \
+    publisher="Tencent" \
+    year="2014" \
+    media="download" \
+    file1="QQIntl2.11.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQIntl/Bin/QQ.exe" \
+    homepage="http://www.imqq.com" \
+    unattended="no"
+
+load_qqintl()
+{
+    w_download https://dldir1.qq.com/qqfile/QQIntl/QQi_PC/QQIntl2.11.exe a08e5d8432ad41745cfe92479a9a0c3328a546c27f05486392ca7b77b1cb02a8
+
+    if w_workaround_wine_bug 33086 "Installing native riched20 to allow typing in username"; then
+        w_call riched20
+    fi
+
+    if w_workaround_wine_bug 37617 "Installing native wininet to work around crash"; then
+        w_call wininet
+    fi
+
+    if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"; then
+        w_override_dlls disabled txplatform.exe
+    fi
+
+    # Make sure chinese fonts are available
+    w_call fakechinese
+
+    # wants mfc80u.dll
+    w_call vcrun2005
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" "$file1"
 }
 
 #----------------------------------------------------------------
@@ -16615,76 +16778,6 @@ load_nfsshift_demo()
 
 #----------------------------------------------------------------
 
-w_metadata njcwp_trial apps \
-    title="NJStar Chinese Word Processor trial" \
-    publisher="NJStar" \
-    year="2015" \
-    media="download" \
-    file1="njcwp610sw15918.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Chinese WP6/NJStar.exe" \
-    homepage="https://www.njstar.com/cms/njstar-chinese-word-processor"
-
-load_njcwp_trial()
-{
-    w_download http://ftp.njstar.com/sw/njcwp610sw15918.exe 7afa6dfc431f058d1397ac7100d5650b97347e1f37f81a2e2d2ee5dfdff4660b
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    if test "$W_OPT_UNATTENDED"; then
-        w_ahk_do "
-        SetTitleMatchMode, 2
-        run $file1
-        WinWait, Setup, Welcome
-        ControlClick Button2 ; next
-        WinWait, Setup, License
-        ControlClick Button2 ; agree
-        WinWait, Setup, Install
-        ControlClick Button2 ; install
-        WinWait, Setup, Completing
-        ControlClick Button4 ; do not launch
-        ControlClick Button2 ; finish
-        WinWaitClose
-        "
-    else
-        w_try "$WINE" "$file1"
-    fi
-}
-
-#----------------------------------------------------------------
-
-w_metadata njjwp_trial apps \
-    title="NJStar Japanese Word Processor trial" \
-    publisher="NJStar" \
-    year="2009" \
-    media="download" \
-    file1="njjwp610sw15918.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/NJStar Japanese WP6/NJStarJ.exe" \
-    homepage="https://www.njstar.com/cms/njstar-japanese-word-processor"
-
-load_njjwp_trial()
-{
-    w_download http://ftp.njstar.com/sw/njjwp610sw15918.exe 7f36138c3d19539cb73d757cd42a6f7afebdaf9cfed0cf9bc483c33e519e2a26
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    if test "$W_OPT_UNATTENDED"; then
-        w_ahk_do "
-        SetTitleMatchMode, 2
-        run $file1
-        WinWait, Setup, Welcome
-        ControlClick Button2 ; next
-        WinWait, Setup, License
-        ControlClick Button2 ; agree
-        WinWait, Setup, Install
-        ControlClick Button2 ; install
-        WinWait, Setup, Completing
-        ControlClick Button4 ; do not launch
-        ControlClick Button2 ; finish
-        WinWaitClose
-        "
-    else
-        w_try "$WINE" "$file1"
-    fi
-}
-
-#----------------------------------------------------------------
-
 w_metadata oblivion games \
     title="Elder Scrolls: Oblivion" \
     publisher="Bethesda Game Studios" \
@@ -16804,98 +16897,7 @@ load_popfs()
         }
     "
 }
-
-#----------------------------------------------------------------
-
-w_metadata qq apps \
- title="QQ 8.9.1(Chinese chat app)" \
- publisher="Tencent" \
- year="2017" \
- media="download" \
- file1="QQ8.9.1.exe" \
- file2="QQ.tar.gz"\
- installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQScLauncher.exe" \
- homepage="http://www.qq.com" \
- unattended="no"
-
-load_qq()
-{
-    w_download https://dldir1.qq.com/qqfile/qq/QQ8.9.1/20437/QQ8.9.1.exe 8e0d3ff5264da2d77e2fc011c21048edeebcf082f55f68a301f763c3a15c0d3f
-    w_download http://hillwoodhome.net/wine/QQ.tar.gz eb5cd6371eb75ec9e2fc0271199df05cbb9f38a60c2e81d5d8ac7daeb40aba62
-
-    if w_workaround_wine_bug 5162 "Installing native riched20 to work around can't input username."; then
-        w_call riched20
-    fi
-
-    # Make sure chinese fonts are available
-    w_call fakechinese
-
-    # uses mfc42u.dll
-    w_call mfc42
-
-    if w_workaround_wine_bug 38171 "Installing desktop file to work around bug"; then
-        w_try_cd "$W_TMP/"
-        tar -zxf "$W_CACHE/qq/QQ.tar.gz"
-        mkdir -p "$HOME/.local/share/applications/wine/Programs/腾讯软件/QQ"
-        mkdir -p "$HOME/.local/share/icons/hicolor/48x48/apps"
-        mkdir -p "$HOME/.local/share/icons/hicolor/256x256/apps"
-        w_try mv QQ/腾讯QQ.desktop ~/.local/share/applications/wine/Programs/腾讯软件/QQ
-        w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
-        w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
-        # shellcheck disable=SC1001
-        echo Exec=env WINEPREFIX="$WINEPREFIX" "$WINE" "$W_PROGRAMS_X86_WIN"\/Tencent\/QQ\/bin\/QQScLauncher.exe >> "$HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop"
-    fi
-
-    if w_workaround_wine_bug 39657 "Disable ntoskrnl.exe to work around can't be started bug"; then
-        w_override_dlls disabled ntoskrnl.exe
-    fi
-
-    if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"; then
-        w_override_dlls disabled txplatform.exe
-    fi
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1"
-}
-
-#----------------------------------------------------------------
-
-w_metadata qqintl apps \
-    title="QQ International Instant Messenger 2.11" \
-    publisher="Tencent" \
-    year="2014" \
-    media="download" \
-    file1="QQIntl2.11.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQIntl/Bin/QQ.exe" \
-    homepage="http://www.imqq.com" \
-    unattended="no"
-
-load_qqintl()
-{
-    w_download https://dldir1.qq.com/qqfile/QQIntl/QQi_PC/QQIntl2.11.exe a08e5d8432ad41745cfe92479a9a0c3328a546c27f05486392ca7b77b1cb02a8
-
-    if w_workaround_wine_bug 33086 "Installing native riched20 to allow typing in username"; then
-        w_call riched20
-    fi
-
-    if w_workaround_wine_bug 37617 "Installing native wininet to work around crash"; then
-        w_call wininet
-    fi
-
-    if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"; then
-        w_override_dlls disabled txplatform.exe
-    fi
-
-    # Make sure chinese fonts are available
-    w_call fakechinese
-
-    # wants mfc80u.dll
-    w_call vcrun2005
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1"
-}
-
+s
 #----------------------------------------------------------------
 
 w_metadata rct3deluxe games \
