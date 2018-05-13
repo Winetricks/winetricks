@@ -13492,6 +13492,66 @@ load_3dmark06()
 
 #----------------------------------------------------------------
 
+w_metadata stalker_pripyat_bench benchmarks \
+    title="S.T.A.L.K.E.R.: Call of Pripyat benchmark" \
+    publisher="GSC Game World" \
+    year="2009" \
+    media="manual_download" \
+    file1="stkcop-bench-setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Call Of Pripyat Benchmark/Benchmark.exe"
+
+load_stalker_pripyat_bench()
+{
+    # Much faster
+    w_download_manual http://www.bigdownload.com/games/stalker-call-of-pripyat/pc/stalker-call-of-pripyat-benchmark stkcop-bench-setup.exe 8c810fba1bbb9c58fc01f4f602479886680c9f4b491dd0afe935e27083f54845
+    #w_download http://files.gsc-game.com/st/bench/stkcop-bench-setup.exe 8c810fba1bbb9c58fc01f4f602479886680c9f4b491dd0afe935e27083f54845
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+
+    # FIXME: a bit fragile, if you're browsing the web while installing, it sometimes gets stuck.
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run $file1
+        WinWait,Setup - Call Of Pripyat Benchmark
+        if ( w_opt_unattended > 0 ) {
+            sleep 1000
+            ControlClick TNewButton1 ; Next
+            WinWait,Setup - Call Of Pripyat Benchmark,License
+            sleep 1000
+            ControlClick TNewRadioButton1 ; accept
+            sleep 1000
+            ControlClick TNewButton2 ; Next
+            WinWait,Setup - Call Of Pripyat Benchmark,Destination
+            sleep 1000
+            ControlClick TNewButton3 ; Next
+            WinWait,Setup - Call Of Pripyat Benchmark,shortcuts
+            sleep 1000
+            ControlClick TNewButton4 ; Next
+            WinWait,Setup - Call Of Pripyat Benchmark,performed
+            sleep 1000
+            ControlClick TNewButton4 ; Next
+            WinWait,Setup - Call Of Pripyat Benchmark,ready
+            sleep 1000
+            ControlClick, TNewButton4 ; Next  (nah, who reads doc?)
+        }
+        WinWait,Setup - Call Of Pripyat Benchmark,finished
+        if ( w_opt_unattended > 0 ) {
+            sleep 1000
+            Send {Space}  ; uncheck launch
+            sleep 1000
+            ControlClick TNewButton4 ; Finish
+        }
+        WinWaitClose,Setup - Call Of Pripyat Benchmark,finished
+    "
+
+    if w_workaround_wine_bug 24868; then
+        w_call d3dx9_31
+        w_call d3dx9_42
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata unigine_heaven benchmarks \
     title="Unigen Heaven 2.1 Benchmark" \
     publisher="Unigen" \
@@ -13533,6 +13593,24 @@ load_unigine_heaven()
         }
         winwaitclose
     "
+}
+
+#----------------------------------------------------------------
+
+w_metadata wglgears benchmarks \
+    title="wglgears" \
+    publisher="Clinton L. Jeffery" \
+    year="2005" \
+    media="download" \
+    file1="wglgears.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/misc/wglgears.exe"
+
+load_wglgears()
+{
+    w_download http://www2.cs.uidaho.edu/~jeffery/win32/wglgears.exe 858ba95ea3c9af4ded1f4100e59b6e8e57024f3efef56304dbd48106e8f2f6f7
+    mkdir -p "$W_PROGRAMS_X86_UNIX/misc"
+    cp "$W_CACHE"/wglgears/wglgears.exe "$W_PROGRAMS_X86_UNIX/misc"
+    chmod +x "$W_PROGRAMS_X86_UNIX/misc/wglgears.exe"
 }
 
 #----------------------------------------------------------------
@@ -17828,84 +17906,6 @@ load_singularity()
     # Clean up crap left over in c:\ when the installer runs the vc 2008 redistributable installer
     w_try_cd "$W_DRIVE_C"
     rm -f VC_RED.* eula.*.txt globdata.ini install.exe install.ini install.res.*.dll vcredist.bmp
-}
-
-#----------------------------------------------------------------
-
-w_metadata wglgears benchmarks \
-    title="wglgears" \
-    publisher="Clinton L. Jeffery" \
-    year="2005" \
-    media="download" \
-    file1="wglgears.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/misc/wglgears.exe"
-
-load_wglgears()
-{
-    w_download http://www2.cs.uidaho.edu/~jeffery/win32/wglgears.exe 858ba95ea3c9af4ded1f4100e59b6e8e57024f3efef56304dbd48106e8f2f6f7
-    mkdir -p "$W_PROGRAMS_X86_UNIX/misc"
-    cp "$W_CACHE"/wglgears/wglgears.exe "$W_PROGRAMS_X86_UNIX/misc"
-    chmod +x "$W_PROGRAMS_X86_UNIX/misc/wglgears.exe"
-}
-
-#----------------------------------------------------------------
-
-w_metadata stalker_pripyat_bench benchmarks \
-    title="S.T.A.L.K.E.R.: Call of Pripyat benchmark" \
-    publisher="GSC Game World" \
-    year="2009" \
-    media="manual_download" \
-    file1="stkcop-bench-setup.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Call Of Pripyat Benchmark/Benchmark.exe"
-
-load_stalker_pripyat_bench()
-{
-    # Much faster
-    w_download_manual http://www.bigdownload.com/games/stalker-call-of-pripyat/pc/stalker-call-of-pripyat-benchmark stkcop-bench-setup.exe 8c810fba1bbb9c58fc01f4f602479886680c9f4b491dd0afe935e27083f54845
-    #w_download http://files.gsc-game.com/st/bench/stkcop-bench-setup.exe 8c810fba1bbb9c58fc01f4f602479886680c9f4b491dd0afe935e27083f54845
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-
-    # FIXME: a bit fragile, if you're browsing the web while installing, it sometimes gets stuck.
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run $file1
-        WinWait,Setup - Call Of Pripyat Benchmark
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            ControlClick TNewButton1 ; Next
-            WinWait,Setup - Call Of Pripyat Benchmark,License
-            sleep 1000
-            ControlClick TNewRadioButton1 ; accept
-            sleep 1000
-            ControlClick TNewButton2 ; Next
-            WinWait,Setup - Call Of Pripyat Benchmark,Destination
-            sleep 1000
-            ControlClick TNewButton3 ; Next
-            WinWait,Setup - Call Of Pripyat Benchmark,shortcuts
-            sleep 1000
-            ControlClick TNewButton4 ; Next
-            WinWait,Setup - Call Of Pripyat Benchmark,performed
-            sleep 1000
-            ControlClick TNewButton4 ; Next
-            WinWait,Setup - Call Of Pripyat Benchmark,ready
-            sleep 1000
-            ControlClick, TNewButton4 ; Next  (nah, who reads doc?)
-        }
-        WinWait,Setup - Call Of Pripyat Benchmark,finished
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            Send {Space}  ; uncheck launch
-            sleep 1000
-            ControlClick TNewButton4 ; Finish
-        }
-        WinWaitClose,Setup - Call Of Pripyat Benchmark,finished
-    "
-
-    if w_workaround_wine_bug 24868; then
-        w_call d3dx9_31
-        w_call d3dx9_42
-    fi
 }
 
 #----------------------------------------------------------------
