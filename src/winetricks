@@ -5381,6 +5381,10 @@ helper_win7sp1_x64()
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win7sp1/windows6.1-KB976932-X64.exe
 }
 
+#######################
+# dlls
+#######################
+
 #---------------------------------------------------------
 
 w_metadata adobeair dlls \
@@ -10424,9 +10428,9 @@ load_xvid()
     w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ --mode unattended --decode_divx 1 --decode_3ivx 1 --decode_other 1}
 }
 
-#----------------------------------------------------------------
-# Fonts
-#----------------------------------------------------------------
+#######################
+# fonts
+#######################
 
 w_metadata baekmuk fonts \
     title="Baekmuk Korean fonts" \
@@ -18418,9 +18422,10 @@ load_wormsreloaded_demo_steam()
     w_steam_install_game 22690 "Worms Reloaded Demo"
 }
 
-#----------------------------------------------------------------
-# Settings
-#----------------------------------------------------------------
+#######################
+# settings
+#######################
+
 # Direct3D settings
 
 winetricks_set_wined3d_var()
