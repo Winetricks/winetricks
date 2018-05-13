@@ -71,7 +71,10 @@ before_install:
 
 # shell-checks is quick and works, no display or compiles needed
 
-script: time sh ./tests/shell-checks
+script:
+    - time sh ./tests/shell-checks
+    # Also check for trailing whitespace. Not doing in shell-checks because it depends on a clean tree (uses git diff):
+    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then time sh ./tests/whitespace-check; fi
 
 # OS X doesn't allow writing to /usr/bin, skip non-PREFIX make install test there
 install:

@@ -1,0 +1,38 @@
+#!/bin/sh
+
+set -x
+
+# Invoked by travis to check for trailing whitespace
+# Only in travis since local tree may have other diffs applied:
+make cleanup
+
+# Git diff doesn't show the trailing whitespace as of 2018/05/13.
+# Tried various color/diff settings with no luck.
+# The workaround is cat, but commands aren't standard on Linux/OS X
+git diff --exit-code > whitespace.diff
+ret="$?"
+
+if [ "$ret" = 0 ]; then
+    echo "No trailing whitespace found."
+    exit 0
+else
+    echo "There is trailing whitespace that needs to be fixed:"
+
+    if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+        cat -A whitespace.diff
+    elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        # Currently unimpemented on OSX.
+        # sed will need to be fixed as well:
+        # sed --in-place 's,[ \t]\+$,,' $(find Makefile src tests -type f)
+        # sed: illegal option -- -
+        # usage: sed script [-Ealn] [-i extension] [file ...]
+        #        sed [-Ealn] [-i extension] [-e script] ... [-f script_file] ... [file ...]
+        # make: *** [cleanup] Error 1
+        # cat -etv whitespace.diff
+        echo "Not fully implemented on osx yet"
+    else
+        echo "Unknown OS!"
+    fi
+
+    exit 1
+fi
