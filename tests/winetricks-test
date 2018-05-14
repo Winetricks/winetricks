@@ -310,8 +310,9 @@ test_app()
         esac
 
         # Cleanup..
-        echo "test app df-daemon"
+        echo "rm ${outputdir}/df-daemon"
         rm "${outputdir}/df-daemon"
+
         # Total max disk usage = max df change plus any initial blocks in cache
         DF_MIN=$(awk '{ if (min == "" || $1 < min) min=$1; } END {printf "%d\n", min}' < "${outputdir}/df-during.log" )
         DF_DIFF=$((DF_START - DF_MIN))
