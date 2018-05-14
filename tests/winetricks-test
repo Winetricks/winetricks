@@ -346,9 +346,6 @@ test_command()
     $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@"
     return=$?
 
-    echo "test command df-daemon"
-    rm "${outputdir}/df-daemon"
-
     if [ "$EXPECT_FAIL" = "yes" ] ; then
         # A success is failure:
         if [ "$return" = "0" ] ; then
