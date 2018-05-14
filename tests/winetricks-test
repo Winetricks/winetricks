@@ -321,6 +321,15 @@ test_app()
         TOTAL_MB=$((TOTAL / 1024))
         mkdir -p "${outputdir}/measurements"
         echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> "${outputdir}/measurements/$app.dat"
+
+        # Cleanup the prefix, unless $W_OPT_NOCLEAN is set to 1 (to match winetricks):
+        if [ "$W_OPT_NOCLEAN" = "1" ]; then
+            echo "W_OPT_NOCLEAN set to 1, not removing wineprefix $WINEPREFIX"
+        else
+            echo "Removing wineprefix $WINEPREFIX"
+            # FIXME: for some reason, steam doesn't clean up. $WINESERVER -k doesn't help either
+            rm -rf "$WINEPREFIX"
+        fi
     fi
 }
 
