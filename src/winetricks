@@ -7900,17 +7900,15 @@ w_metadata gmdls dlls \
     publisher="Microsoft / Roland" \
     year="1999" \
     media="download" \
-    file1="../directx8/DX81Redist.exe" \
+    file1="../directx9/directx_apr2006_redist.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/drivers/gm.dls"
 
 load_gmdls()
 {
-    # Originally at https://download.microsoft.com/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe
-    # Only archive.org seems to have it now
-    w_download_to directx8 https://web.archive.org/web/20070105100243if_/download.microsoft.com/download/whistler/Update/8.1/W982KMeXP/EN-US/DX81Redist.exe 5ddc1a8e204381254dc5d65f406584787155983adf245a75000dcd0d2efb04c6
+    w_download_to directx9 https://download.microsoft.com/download/3/9/7/3972f80c-5711-4e14-9483-959d48a2d03b/directx_apr2006_redist.exe dd8c3d401efe4561b67bd88475201b2f62f43cd23e4acc947bb34a659fa74952
 
-    w_try_unzip "$W_TMP" "$W_CACHE"/directx8/DX81Redist.exe "*/*/DirectX.cab"
-    w_try_cabextract -d "$W_TMP" -F gm16.dls "$W_TMP"/*/*/DirectX.cab
+    w_try_cabextract -d "$W_TMP" -F DirectX.cab "$W_CACHE"/directx9/directx_apr2006_redist.exe
+    w_try_cabextract -d "$W_TMP" -F gm16.dls "$W_TMP"/DirectX.cab
     w_try mv "$W_TMP"/gm16.dls "$W_SYSTEM32_DLLS"/drivers/gm.dls
     if test "$W_ARCH" = "win64"; then
         w_try_cd "$W_SYSTEM64_DLLS"/drivers
