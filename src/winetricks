@@ -12777,7 +12777,8 @@ w_metadata steam apps \
 load_steam()
 {
     # 2016/10/28: 029f918a29b2b311711788e8a477c8de529c11d7dba3caf99cbbde5a983efdad
-    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 029f918a29b2b311711788e8a477c8de529c11d7dba3caf99cbbde5a983efdad
+    # 2018/06/01: 3bc6942fe09f10ed3447bccdcf4a70ed369366fef6b2c7f43b541f1a3c5d1c51
+    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 3bc6942fe09f10ed3447bccdcf4a70ed369366fef6b2c7f43b541f1a3c5d1c51
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     # Should be fixed in newer steam versions, since 2012. Commenting out for a while before removing in case users need to revert locally
