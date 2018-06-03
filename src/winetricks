@@ -15760,7 +15760,7 @@ load_fifa11_demo()
 w_metadata hon games \
     title="Heroes of Newerth" \
     publisher="S2 Games" \
-    year="2013" \
+    year="2018" \
     media="download" \
     file1="HoNClient.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Heroes of Newerth/hon.exe"
@@ -15768,7 +15768,8 @@ w_metadata hon games \
 load_hon()
 {
     # 2017/03/28: 0f3c3431a88964647fc4d9540490e43afedc2e48573c260892882ecf48172317
-    w_download http://dl.heroesofnewerth.com/installers/win32/HoNClient.exe 0f3c3431a88964647fc4d9540490e43afedc2e48573c260892882ecf48172317
+    # 2018/06/03: d4c82a3c5fdaee193675838e2fe6ade6b9fcdc4bdaf57848300c0eb09e71a945
+    w_download http://dl.heroesofnewerth.com/installers/win32/HoNClient.exe d4c82a3c5fdaee193675838e2fe6ade6b9fcdc4bdaf57848300c0eb09e71a945
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
