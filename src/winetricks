@@ -15548,9 +15548,12 @@ load_eve()
     # https://community.eveonline.com/support/download/
     w_download https://binaries.eveonline.com/EveLauncher-1104888.exe d1d66ea0a0e4a476a926307dcdb3d7b5e777d7cff7feb172ce7779dac9fdae8f
 
+    if test "$W_OPT_UNATTENDED"; then
+        w_warn "Quiet mode doesn't work with latest eve update, button names don't appear in AHK."
+    fi
+
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
-        # FIXME: doesn't work with latest update, button names don't appear in AHK?
         run, $file1
         WinWait, EVE Online
         if ( w_opt_unattended > 0 ) {
