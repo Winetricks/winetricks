@@ -8116,7 +8116,7 @@ load_icodecs()
         # arguments easily accessible, we'd have to just kill all explorer.exe processes.
         #
         # So instead, use system kill
-        inode_pid="$(pgrep -f 'explorer.exe C:\\Program Files\\Ligos\\Indeo')"
+        inode_pid="$(pgrep -f "explorer.exe.*Indeo")"
         kill -HUP "$inode_pid"
 }
 
