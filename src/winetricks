@@ -10057,9 +10057,10 @@ load_wmi()
     # WMI for NT4.0 need validation: https://www.microsoft.com/en-us/download/details.aspx?id=7665
     # See also https://www.microsoft.com/en-us/download/details.aspx?id=16510
     # Originally at: https://download.microsoft.com/download/platformsdk/wmi9x/1.5/W9X/EN-US/wmi9x.exe
-    # 2017/10/14: ftp://59.124.141.94 is dead
-    # Mirror list: http://www.filewatcher.com/_/?q=wmi9x.exe
-    w_download ftp://82.162.138.211/pub/Install/Microsoft/Win9x/Update/wmi9x.exe 1d5d94050354b164c6a19531df151e0703d5eb39cebf4357ee2cfc340c2509d0
+    # Mirror list: https://filemare.com/en-us/search/wmi9x.exe/761569271
+    # 2017/10/14: ftp://59.124.141.94 is dead, using ftp://82.162.138.211
+    # 2018/06/03: ftp://82.162.138.211 is dead, moved to ftp://ftp.espe.edu.ec
+    w_download ftp://ftp.espe.edu.ec/Drivers/Drivers%20SHARP/DISC%201/Sharpdesk/Redist/Esp/WMI/wmi9x.exe 1d5d94050354b164c6a19531df151e0703d5eb39cebf4357ee2cfc340c2509d0
 
     w_set_winver win98
     w_override_dlls native,builtin wbemprox wmiutils
