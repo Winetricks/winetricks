@@ -6476,6 +6476,34 @@ load_dxsdk_jun2010()
 
 #----------------------------------------------------------------
 
+w_metadata dxvk dlls \
+    title="Vulkan-based D3D11 implementation for Linux / Wine" \
+    publisher="Philip Rebohle" \
+    year="2018" \
+    media="download" \
+    file1="dxvk-0.54.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_dxvk()
+{
+    _W_dxvk_dir="${file1%.tar.gz}"
+
+    # https://github.com/doitsujin/dxvk
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v0.54/dxvk-0.54.tar.gz" 1c2f186baaa01d2de7b832f6f05021bdd29eccb65fc197c8b15adfd4e08f9640
+    w_try_cd "$W_TMP"
+    w_try tar -zxf "$W_CACHE/$W_PACKAGE/$file1"
+    w_try mv "$W_TMP/$_W_dxvk_dir/x32/d3d11.dll" "$W_SYSTEM32_DLLS/"
+    w_try mv "$W_TMP/$_W_dxvk_dir/x32/dxgi.dll" "$W_SYSTEM32_DLLS/"
+    if test "$W_ARCH" = "win64"; then
+        w_try mv "$W_TMP/$_W_dxvk_dir/x64/d3d11.dll" "$W_SYSTEM64_DLLS/"
+        w_try mv "$W_TMP/$_W_dxvk_dir/x64/dxgi.dll" "$W_SYSTEM64_DLLS/"
+    fi
+    w_override_dlls native d3d11.dll dxgi.dll
+}
+
+#----------------------------------------------------------------
+
 w_metadata dmusic32 dlls \
     title="MS dmusic32.dll from DirectX user redistributable" \
     publisher="Microsoft" \
