@@ -4821,10 +4821,16 @@ winetricks_set_wineprefix()
         # WINE64 = wine64, available on 64-bit prefixes
         # WINE_ARCH = the native wine for the prefix (wine for 32-bit, wine64 for 64-bit)
         # WINE_MULTI = generic wine, new name
-        case "$WINE" in
-            *64) WINE64="${WINE}" ;;
-            *) WINE64="${WINE}64" ;;
-        esac
+        if [ "${WINE%??}64" = "$WINE" ]; then
+            WINE64="${WINE}"
+        elif which "${WINE}64" >/dev/null 2>&1; then
+            WINE64="${WINE}64"
+        else
+            # Handle case where wine binaries (or binary wrappers) have a suffix
+            WINE64="$(dirname "$WINE")/"
+            [ "$WINE64" = "./" ] && WINE64=""
+            WINE64="${WINE64}$(basename "$WINE" | sed 's/^wine/wine64/')"
+        fi
         WINE_ARCH="${WINE64}"
         WINE_MULTI="${WINE}"
 
