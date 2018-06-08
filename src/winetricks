@@ -9949,14 +9949,36 @@ w_metadata vulkansdk dlls \
     year="2018" \
     media="download" \
     file1="VulkanSDK-1.1.73.0-Installer.exe" \
-    installed_file1="C:/VulkanSDK/1.1.73.0/Vulkan.ico"
+    installed_file1="C:/VulkanSDK/1.1.73.0/Vulkan.ico" \
+    installed_file2="C:/windows/winevulkan.json"
 
 load_vulkansdk()
 {
+    _W_vulkan_version="${file1%-*.exe}"
+    _W_vulkan_version="${_W_vulkan_version#*-}"
     # https://vulkan.lunarg.com/sdk/home
     w_download "https://sdk.lunarg.com/sdk/download/1.1.73.0/windows/VulkanSDK-1.1.73.0-Installer.exe?Human=true;u=" a5d193f97db4de97e6b4fdd81f00ff6a603f66bb17dc3cf8ac0fe9aec58497c7 VulkanSDK-1.1.73.0-Installer.exe
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_S
+    echo "Creating C:\\windows\\winevulkan.json winevulkan json file"
+    cat > "$W_WINDIR_UNIX"/winevulkan.json <<_EOF_
+{
+    "file_format_version": "1.0.0",
+    "ICD": {
+        "library_path": "c:\\\\windows\\\\system32\\\\winevulkan.dll",
+        "api_version": "$_W_vulkan_version"
+    }
+}
+_EOF_
+    echo "Creating winevulkan registry settings"
+    cat > "$W_TMP"/winevulkan.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\\SOFTWARE\\Khronos\\Vulkan\\Drivers\\]
+"C:\\\\Windows\\\\winevulkan.json"=dword:00000000
+
+_EOF_
+    w_try_regedit "$W_TMP_WIN"\\winevulkan.reg
 }
 
 #----------------------------------------------------------------
