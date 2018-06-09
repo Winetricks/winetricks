@@ -13020,6 +13020,15 @@ load_steam()
     if w_workaround_wine_bug 22053 "Disabling gameoverlayrenderer to prevent game crashes on some machines."; then
         w_override_dlls disabled gameoverlayrenderer
     fi
+    if w_workaround_wine_bug 39403 "Force Steam/Steamwebhelper Client to Windows XP compatibility, to workaround store/web no longer working."; then
+        if [ "$W_ARCH" = "win64" ]; then
+            w_set_app_winver steam.exe winxp64
+            w_set_app_winver steamwebhelper.exe winxp64
+        else
+            w_set_app_winver steam.exe winxp
+            w_set_app_winver steamwebhelper.exe winxp
+        fi
+    fi
 }
 
 #----------------------------------------------------------------
