@@ -19375,6 +19375,34 @@ load_hosts()
 
 #----------------------------------------------------------------
 
+w_metadata isolate_home settings \
+    title_uk="Видалити посилання на вино преміум на \$HOME" \
+    title="Remove wineprefix links to \$HOME"
+
+load_isolate_home()
+{
+    w_skip_windows isolate_home && return
+
+    _olddir="$(pwd)"
+    w_try_cd "$WINEPREFIX/drive_c/users/$USER"
+    for x in *
+    do
+        if test -h "$x" && test -d "$x"; then
+            rm -f "$x"
+            mkdir -p "$x"
+        fi
+    done
+    w_try_cd "$_olddir"
+    unset _olddir
+
+    # Workaround for:
+    # https://bugs.winehq.org/show_bug.cgi?id=22450 (sandbox verb)
+    # https://bugs.winehq.org/show_bug.cgi?id=22974 (isolate_home, sandbox verbs)
+    echo disable > "$WINEPREFIX/.update-timestamp"
+}
+
+#----------------------------------------------------------------
+
 w_metadata native_mdac settings \
     title_uk="Перевизначити odbc32, odbccp32 та oledb32" \
     title="Override odbc32, odbccp32 and oledb32"
@@ -19440,25 +19468,12 @@ load_sandbox()
     # Unmap drive Z
     rm -f "$WINEPREFIX/dosdevices/z:"
 
-    _olddir="$(pwd)"
-    w_try_cd "$WINEPREFIX/drive_c/users/$USER"
-    for x in *
-    do
-        if test -h "$x" && test -d "$x"; then
-            rm -f "$x"
-            mkdir -p "$x"
-        fi
-    done
-    w_try_cd "$_olddir"
-    unset _olddir
-
     # Disable unixfs
     # Unfortunately, when you run with a different version of Wine, Wine will recreate this key.
     # See https://bugs.winehq.org/show_bug.cgi?id=22450
     "$WINE" regedit /d 'HKEY_LOCAL_MACHINE\\Software\\Microsoft\Windows\CurrentVersion\Explorer\Desktop\Namespace\{9D20AAE8-0625-44B0-9CA7-71889C2254D9}'
 
-    # Disable recreation of the above key - or any updating of the registry - when running with a newer version of Wine.
-    echo disable > "$WINEPREFIX/.update-timestamp"
+    w_call isolate_home
 }
 
 ####
