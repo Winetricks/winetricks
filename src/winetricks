@@ -926,6 +926,7 @@ winetricks_check_update_availability()
     fi
 
     # Checks read/write permissions on update directories
+    # shellcheck disable=SC2235
     if ! (test -r "$0" && test -w "$0" && test -w "${0%/*}" && test -x "${0%/*}"); then
         w_warn "You don't have the proper permissions to run this command. Try again with sudo or as root."
         exit;
