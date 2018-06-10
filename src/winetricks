@@ -3760,7 +3760,7 @@ winetricks_settings_menu()
                     ;;
             esac > "$WINETRICKS_WORKDIR"/zenity.sh
 
-            for metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
+            for metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars
             do
                 code=$(winetricks_metadata_basename "$metadatafile")
                 (
@@ -3991,7 +3991,7 @@ winetricks_showmenu()
 
             true > "$WINETRICKS_WORKDIR"/installed.txt
 
-            for metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
+            for metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars
             do
                 code=$(winetricks_metadata_basename "$metadatafile")
                 (
@@ -4221,7 +4221,7 @@ winetricks_list_all()
         *)   _W_cached="cached"   ; _W_download="downloadable"  ;;
     esac
 
-    for _W_metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
+    for _W_metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars
     do
         # Use a subshell to avoid putting metadata in global space
         # If this is too slow, we can unset known metadata by hand
