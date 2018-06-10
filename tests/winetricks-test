@@ -301,11 +301,19 @@ test_app()
         case "$app" in
             allcodecs) ;;
             *)
+                # if test was skipped because of wrong arch, don't check for it:
+                if [ "$archskip" = "1" ]; then
+                    skip "$app was skipped because of wrong prefix arch!"
+                    return
+                fi
+
                 # no xvfb needed
                 ./winetricks -q list-installed > "${outputdir}/list-installed.out"
+
                 if ! grep -w "$app" "${outputdir}/list-installed.out"; then
                     fail "test app $app not installed after install?"
                 fi
+
                 ;;
         esac
 
@@ -335,6 +343,8 @@ test_app()
 
 test_command()
 {
+    archskip=0
+
     command="$*"
     _command_dash="$(echo "$command" | tr " " "-")"
 
@@ -361,8 +371,10 @@ test_command()
             fail "$command succeeded, should have failed"
         elif [ "$return" = "32" ] && [ "$WINEARCH" != "win32" ]; then
             skip "$command is not supported on $WINEARCH, requires win32"
+            archskip=1
         elif [ "$return" = "64" ] && [ "$WINEARCH" != "win64" ]; then
             skip "$command is not supported on $WINEARCH, requires win64"
+            archskip=1
         else
             fail "test_command $command failed!"
             return
