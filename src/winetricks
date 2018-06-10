@@ -6628,6 +6628,8 @@ load_dxvk()
         w_try mv "$W_TMP/$_W_dxvk_dir/x64/dxgi.dll" "$W_SYSTEM64_DLLS/"
     fi
     w_override_dlls native d3d11 dxgi
+
+    unset _W_dxvk_dir
 }
 
 #----------------------------------------------------------------
