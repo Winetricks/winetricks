@@ -99,6 +99,9 @@ BLACKLIST="$BLACKLIST|xmllite"
 BLACKLIST="$BLACKLIST|allcodecs"
 # FIXME: (wine/winetricks bug?) usually hangs in winetricks-test:
 BLACKLIST="$BLACKLIST|dotnet30sp1|dotnet35|dotnet35sp1|dotnet45"
+# dotnet46 has endless critical section timeouts: https://bugs.winehq.org/show_bug.cgi?id=42470
+# FIXME: test Dmitry's patch
+BLACKLIST="$BLACKLIST|dotnet46"
 # https://bugs.winehq.org/show_bug.cgi?id=40460
 BLACKLIST="$BLACKLIST|dotnet20sp2|xna31"
 # https://bugs.winehq.org/show_bug.cgi?id=16876
