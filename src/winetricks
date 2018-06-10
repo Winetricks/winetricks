@@ -12995,16 +12995,16 @@ load_steam()
             run, SteamSetup.exe
             SetTitleMatchMode, 2
             WinWait, Steam, Using Steam
-            ControlClick, Button2
-            WinWait, Steam, Please review
-            ControlClick, Button4
             sleep 1000
             ControlClick, Button2
             WinWait, Steam, Select the language
+            sleep 1000
             ControlClick, Button2
             WinWait, Steam, Choose the folder
+            sleep 1000
             ControlClick, Button2
             WinWait, Steam, Steam has been installed
+            sleep 1000
             ControlClick, Button4
             sleep 1000
             ControlClick, Button2
