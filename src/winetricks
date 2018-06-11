@@ -5464,8 +5464,9 @@ helper_win2ksp4()
 
     # Originally at https://www.microsoft.com/en-us/download/details.aspx?id=4127
     # Mirror list at http://www.filewatcher.com/m/w2ksp4_en.exe.135477136-0.html
-    # The rename from w2ksp4_en.exe to W2KSP4_EN.EXE avoids users having to redownload for a file rename
-    w_download_to win2ksp4 ftp://ftp.twaren.net/pub/cpatch/msupdate/win2000/en/w2ksp4_en.exe 167bb78d4adc957cc39fb4902517e1f32b1e62092353be5f8fb9ee647642de7e W2KSP4_EN.EXE
+    # This URL doesn't need rename from w2ksp4_en.exe to W2KSP4_EN.EXE
+    # to avoid users having to redownload for a file rename
+    w_download_to win2ksp4 https://ftp.gnome.org/mirror/archive/ftp.sunet.se/pub/security/vendor/microsoft/win2000/Service_Packs/usa/W2KSP4_EN.EXE 167bb78d4adc957cc39fb4902517e1f32b1e62092353be5f8fb9ee647642de7e
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win2ksp4/W2KSP4_EN.EXE
 }
 
@@ -5486,7 +5487,7 @@ helper_winxpsp3()
     # https://download.microsoft.com/download/d/3/0/d30e32d8-418a-469d-b600-f32ce3edf42d/WindowsXP-KB936929-SP3-x86-ENU.exe
     # Mirror list: http://www.filewatcher.com/m/WindowsXP-KB936929-SP3-x86-ENU.exe.331805736-0.html
     # 2018/04/04: http://www.download.windowsupdate.com/msdownload/update/software/dflt/2008/04/windowsxp-kb936929-sp3-x86-enu_c81472f7eeea2eca421e116cd4c03e2300ebfde4.exe
-    w_download_to winxpsp3 ftp://ftp.emacinc.com/LegacyProducts/SBC/drivers/vdx/WINXP/WindowsXP-KB936929-SP3-x86-ENU.exe 62e524a552db9f6fd22d469010ea4d7e28ee06fa615a1c34362129f808916654
+    w_download_to winxpsp3 https://ftp.gnome.org/mirror/archive/ftp.sunet.se/pub/security/vendor/microsoft/winxp/Service_Packs/WindowsXP-KB936929-SP3-x86-ENU.exe 62e524a552db9f6fd22d469010ea4d7e28ee06fa615a1c34362129f808916654
 
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe
 }
@@ -5638,7 +5639,7 @@ load_cabinet()
     # https://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
     # Originally at: https://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe
     # Mirror list: http://www.filewatcher.com/m/MDAC_TYP.EXE.5389224-0.html (5.14 MB MDAC_TYP.EXE)
-    w_download ftp://ftp.gunadarma.ac.id/pub/driver/itegno/USB%20Software/MDAC/MDAC_TYP.EXE 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
+    w_download http://ftp.gunadarma.ac.id/pub/driver/itegno/USB%20Software/MDAC/MDAC_TYP.EXE 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
 
     w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
     w_try cp "${W_TMP}/cabinet.dll" "${W_SYSTEM32_DLLS}/cabinet.dll"
@@ -5660,7 +5661,7 @@ load_cmd()
 {
     # Originally at: https://download.microsoft.com/download/8/d/c/8dc79965-dfbc-4b25-9546-e23bc4b791c6/Q811493_W2K_SP4_X86_EN.exe
     # Mirror list: http://www.filewatcher.com/_/?q=Q811493_W2K_SP4_X86_EN.exe
-    w_download ftp://ftp.fu-berlin.de/pc/security/ms-patches/win2000/Security_Bulletins/Q811493_W2K_SP4_X86_EN.exe b5574b3516a724c2cba0d864162a3d1d684db1cf30de8db4b0e0ea6a1f6f1480
+    w_download https://ftp.gnome.org/mirror/archive/ftp.sunet.se/pub/security/vendor/microsoft/win2000/Security_Bulletins/Q811493_W2K_SP4_X86_EN.exe b5574b3516a724c2cba0d864162a3d1d684db1cf30de8db4b0e0ea6a1f6f1480
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_CACHE/$W_PACKAGE/$file1" -F cmd.exe
 
     w_override_dlls native,builtin cmd.exe
@@ -7225,7 +7226,7 @@ load_dotnet30()
     # No longer on microsoft.com, and archive.org is unreliablel. Choose amongst the oldest/most reliable looking from
     # http://www.filewatcher.com/m/dotnetfx3.exe.52770576-0.html
     # (and verify sha256sum, of course ;))
-    w_download ftp://ftp.softlab-nsk.com/pub/ForwardTxSoftware/DotNetFX123/DotNet_v3/dotnetfx3.exe 6cf8921e00f52bbd888aa7a520a7bac47e818e2a850bcc44494c64d6cbfafdac
+    w_download http://descargas.udenar.edu.co/Framework.net/dotnetfx3.exe 6cf8921e00f52bbd888aa7a520a7bac47e818e2a850bcc44494c64d6cbfafdac
 
     w_call remove_mono
 
@@ -8415,7 +8416,7 @@ load_mdac27()
     # https://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
     # Originally at: https://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe
     # Mirror list: http://www.filewatcher.com/m/MDAC_TYP.EXE.5389224-0.html (5.14 MB MDAC_TYP.EXE)
-    w_download ftp://ftp.gunadarma.ac.id/pub/driver/itegno/USB%20Software/MDAC/MDAC_TYP.EXE 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
+    w_download http://ftp.gunadarma.ac.id/pub/driver/itegno/USB%20Software/MDAC/MDAC_TYP.EXE 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
 
     load_native_mdac
     w_set_winver nt40
@@ -8734,7 +8735,7 @@ load_msls31()
     # Needed by native RichEdit and Internet Explorer
     # Originally at https://download.microsoft.com/download/WindowsInstaller/Install/2.0/NT45/EN-US/InstMsiW.exe
     # Mirror list at http://www.filewatcher.com/m/InstMsiW.exe.1822848-0.html
-    w_download ftp://ftp.hp.com/pub/softlib/software/msi/InstMsiW.exe 4c3516c0b5c2b76b88209b22e3bf1cb82d8e2de7116125e97e128952372eed6b InstMsiW.exe
+    w_download http://ftp.hp.com/pub/softlib/software/msi/InstMsiW.exe 4c3516c0b5c2b76b88209b22e3bf1cb82d8e2de7116125e97e128952372eed6b InstMsiW.exe
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msls31/InstMsiW.exe
     w_try cp -f "$W_TMP"/msls31.dll "$W_SYSTEM32_DLLS"
@@ -8798,7 +8799,7 @@ load_msxml3()
     # Known bad sites (2017/06/11):
     # ftp://support.danbit.dk/D/DVD-RW-USB2B/Driver/Installation/Data/Redist/msxml3.msi
     # ftp://94.79.56.169/common/Client/MSXML%204.0%20Service%20Pack%202/msxml3.msi
-    w_download "ftp://176.9.43.153/MS%20XML%20Parser/msxml3.msi" f9c678f8217e9d4f9647e8a1f6d89a7c26a57b9e9e00d39f7487493dd7b4e36c
+    w_download https://media.codeweavers.com/pub/other/msxml3.msi f9c678f8217e9d4f9647e8a1f6d89a7c26a57b9e9e00d39f7487493dd7b4e36c
 
     # It won't install on top of Wine's msxml3, which has a pretty high version number, so delete Wine's fake DLL
     rm "$W_SYSTEM32_DLLS"/msxml3.dll
@@ -9203,7 +9204,7 @@ load_riched30()
     # with sha256sum 536e4c8385d7d250fd5702a6868d1ed004692136eefad22252d0dac15f02563a
     # Mirror list at http://www.filewatcher.com/m/InstMsiA.Exe.1707856-0.html
     # But they all have a different sha256sum, 5ab8b82f578f09dbccf797754155e531b5996b532c1f19c531596ec07cc4b46d
-    w_download ftp://ftp.vim.org/vol/2/linux-asp/i386/beta/cpe/b29/Changed_Components/win/InstMsiA.Exe 5ab8b82f578f09dbccf797754155e531b5996b532c1f19c531596ec07cc4b46d InstMsiA.exe
+    w_download http://ftp.tw.vim.org/cpatch/msupdate/msi/source/instmsia.exe 5ab8b82f578f09dbccf797754155e531b5996b532c1f19c531596ec07cc4b46d InstMsiA.exe
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/riched30/InstMsiA.exe
     w_try cp -f "$W_TMP"/riched20.dll "$W_SYSTEM32_DLLS"
@@ -10242,7 +10243,7 @@ load_wmi()
     # Mirror list: https://filemare.com/en-us/search/wmi9x.exe/761569271
     # 2017/10/14: ftp://59.124.141.94 is dead, using ftp://82.162.138.211
     # 2018/06/03: ftp://82.162.138.211 is dead, moved to ftp://ftp.espe.edu.ec
-    w_download ftp://ftp.espe.edu.ec/Drivers/Drivers%20SHARP/DISC%201/Sharpdesk/Redist/Esp/WMI/wmi9x.exe 1d5d94050354b164c6a19531df151e0703d5eb39cebf4357ee2cfc340c2509d0
+    w_download http://alesi.com.mx/soporte/Sharpdesk/Redist/Esp/WMI/wmi9x.exe 1d5d94050354b164c6a19531df151e0703d5eb39cebf4357ee2cfc340c2509d0
 
     w_set_winver win98
     w_override_dlls native,builtin wbemprox wmiutils
@@ -11112,7 +11113,7 @@ load_tahoma()
 {
     # Formerly at https://download.microsoft.com/download/office97pro/fonts/1/w95/en-us/tahoma32.exe
     # Mirror list: http://www.filewatcher.com/_/?q=tahoma32.exe
-    w_download "ftp://ftp.uevora.pt/pub/windows/Microsoft/Euro/Euro-Compatible%20Tahoma%20Font/tahoma32.exe" 57496fb91d1629d2b6f313aaa6ebcdbcfd09c269b6462fe490420c786c089a40
+    w_download https://www.encodage-video.com/devprog/win/tahoma32.exe 57496fb91d1629d2b6f313aaa6ebcdbcfd09c269b6462fe490420c786c089a40
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "*.TTF"
@@ -12205,7 +12206,7 @@ load_mspaint()
 
     # Originally at: https://download.microsoft.com/download/0/A/4/0A40DF5C-2BAE-4C63-802A-84C33B34AC98/WindowsXP-KB978706-x86-ENU.exe
     # Mirror list: http://www.filewatcher.com/_/?q=WindowsXP-KB978706-x86-ENU.exe
-    w_download ftp://cbvk.cz/programy_pro_knihovny/update-pack/Windows%20XP%20x86%20ENU/Security%20Updates/WindowsXP-KB978706-x86-ENU.exe 93ed34ab6c0d01a323ce10992d1c1ca27d1996fef82f0864d83e7f5ac6f9b24b
+    w_download http://cbvk.cz/programy_pro_knihovny/update-pack/Windows%20XP%20x86%20ENU/Security%20Updates/WindowsXP-KB978706-x86-ENU.exe 93ed34ab6c0d01a323ce10992d1c1ca27d1996fef82f0864d83e7f5ac6f9b24b
     w_try $WINE "$W_CACHE"/mspaint/WindowsXP-KB978706-x86-ENU.exe /q /x:"$W_TMP"/WindowsXP-KB978706-x86-ENU
     w_try cp -f "$W_TMP"/WindowsXP-KB978706-x86-ENU/SP3GDR/mspaint.exe "$W_WINDIR_UNIX"/mspaint.exe
 }
@@ -13369,7 +13370,7 @@ load_wme9()
     # See also https://www.microsoft.com/en-us/download/details.aspx?id=17792
     # Formerly at: https://download.microsoft.com/download/8/1/f/81f9402f-efdd-439d-b2a4-089563199d47/WMEncoder.exe
     # Mirror list: http://www.filewatcher.com/_/?q=WMEncoder.exe
-    w_download ftp://ftp.upmost.com.tw/pub/UPMOST/CD-ISO/V30I/Extra/WMEncoder/Media%20Encoder%209/ENG/WMEncoder.exe 19d1610d12b51c969f64703c4d3a76aae30dee526bae715381b5f3369f717d76
+    w_download https://people.ok.ubc.ca/mberger/MiscSW/WMEncoder.exe 19d1610d12b51c969f64703c4d3a76aae30dee526bae715381b5f3369f717d76
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" WMEncoder.exe $W_UNATTENDED_SLASH_Q
