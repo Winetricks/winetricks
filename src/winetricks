@@ -19441,6 +19441,40 @@ load_sandbox()
     echo disable > "$WINEPREFIX/.update-timestamp"
 }
 
+####
+# settings->sound
+
+#----------------------------------------------------------------
+
+w_metadata sound=alsa settings \
+    title_uk="Встановити звуковий драйвер ALSA" \
+    title="Set sound driver to ALSA"
+w_metadata sound=coreaudio settings \
+    title_uk="Встановити звуковий драйвер Mac CoreAudio" \
+    title="Set sound driver to Mac CoreAudio"
+w_metadata sound=disabled settings \
+    title_uk="Вимкнути звуковий драйвер" \
+    title="Set sound driver to disabled"
+w_metadata sound=oss settings \
+    title_uk="Встановити звуковий драйвер OSS" \
+    title="Set sound driver to OSS"
+w_metadata sound=pulse settings \
+    title_uk="Встановити звуковий драйвер PulseAudio" \
+    title="Set sound driver to PulseAudio"
+
+load_sound()
+{
+    echo "Setting sound driver to $1"
+    cat > "$W_TMP"/set-sound.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Wine\\Drivers]
+"Audio"="$1"
+
+_EOF_
+    w_try_regedit "$W_TMP_WIN"\\set-sound.reg
+}
+
 # settings->winversions
 #----------------------------------------------------------------
 
