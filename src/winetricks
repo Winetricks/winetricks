@@ -7770,6 +7770,26 @@ load_dotnet_verifier()
 
 #----------------------------------------------------------------
 
+w_metadata dx8vb dlls \
+    title="MS dx8vb.dll from DirectX 8.1 runtime" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="DX81NTger.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dx8vb.dll"
+
+load_dx8vb()
+{
+    # https://www.microsoft.com/de-de/download/details.aspx?id=10968
+    w_download https://download.microsoft.com/download/win2000pro/dx/8.1/NT5/DE/DX81NTger.exe 31513966a29dc100165072891d21b5c5e0dd2632abf3409a843cefb3a9886f13
+
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -F dx8vb.dll "$W_CACHE/$W_PACKAGE"/DX81NTger.exe
+
+    w_override_dlls native dx8vb
+}
+
+#----------------------------------------------------------------
+
 w_metadata dxdiagn dlls \
     title="DirectX Diagnostic Library" \
     publisher="Microsoft" \
