@@ -6605,23 +6605,28 @@ load_dxsdk_jun2010()
 
 #----------------------------------------------------------------
 
-w_metadata dxvk dlls \
-    title="Vulkan-based D3D11 implementation for Linux / Wine" \
-    publisher="Philip Rebohle" \
-    year="2018" \
-    media="download" \
-    file1="dxvk-0.54.tar.gz" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
-
-load_dxvk()
+# $1 - dxvk archive name (required)
+# $2 - minimum Wine version (optional)
+# $3 - minimum Vulkan API version (optional, requires $2 be set)
+helper_dxvk()
 {
-    _W_dxvk_dir="${file1%.tar.gz}"
+    _W_dxvk_archive="${1}"
+    _W_min_wine_version="${2}"
+    _W_min_vulkan_version="${3}"
 
-    # https://github.com/doitsujin/dxvk
-    w_download "https://github.com/doitsujin/dxvk/releases/download/v0.54/dxvk-0.54.tar.gz" 1c2f186baaa01d2de7b832f6f05021bdd29eccb65fc197c8b15adfd4e08f9640
+    _W_dxvk_dir="${_W_dxvk_archive%.tar.gz}"
+    _W_dxvk_version="${_W_dxvk_dir#*-}"
+
+    w_warn "Please refer to dxvk version ${_W_dxvk_version} release notes... See: https://github.com/doitsujin/dxvk/releases/tag/v${_W_dxvk_version}"
+    if [ ! -z "$_W_min_wine_version" ] && ! w_wine_version_in ",${_W_min_wine_version}" ; then
+        [ -z "$_W_min_vulkan_version" ] || _W_vulkan_info=" The base requirement is Vulkan $_W_min_vulkan_version API support."
+        w_warn "dxvk ${_W_dxvk_version} does not support wine version ${_wine_version_stripped}. dxvk ${_W_dxvk_version} requires wine version ${_W_min_wine_version} (or newer).${_W_vulkan_info}"
+        unset _W_vulkan_info
+    fi
+    w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support"
+
     w_try_cd "$W_TMP"
-    w_try tar -zxf "$W_CACHE/$W_PACKAGE/$file1"
+    w_try tar -zxf "$W_CACHE/$W_PACKAGE/$_W_dxvk_archive"
     w_try mv "$W_TMP/$_W_dxvk_dir/x32/d3d11.dll" "$W_SYSTEM32_DLLS/"
     w_try mv "$W_TMP/$_W_dxvk_dir/x32/dxgi.dll" "$W_SYSTEM32_DLLS/"
     if test "$W_ARCH" = "win64"; then
@@ -6630,7 +6635,59 @@ load_dxvk()
     fi
     w_override_dlls native d3d11 dxgi
 
-    unset _W_dxvk_dir
+    unset _W_dxvk_archive _W_dxvk_dir _W_dxvk_version _W_min_vulkan_version _W_min_wine_version
+}
+
+#----------------------------------------------------------------
+
+w_metadata dxvk54 dlls \
+    title="Vulkan-based D3D11 implementation for Linux / Wine (0.54)" \
+    publisher="Philip Rebohle" \
+    year="2018" \
+    media="download" \
+    file1="dxvk-0.54.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_dxvk54()
+{
+    # https://github.com/doitsujin/dxvk
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v0.54/dxvk-0.54.tar.gz" 1c2f186baaa01d2de7b832f6f05021bdd29eccb65fc197c8b15adfd4e08f9640
+    helper_dxvk "$file1"
+}
+
+#----------------------------------------------------------------
+
+w_metadata dxvk60 dlls \
+    title="Vulkan-based D3D11 implementation for Linux / Wine (0.60)" \
+    publisher="Philip Rebohle" \
+    year="2018" \
+    media="download" \
+    file1="dxvk-0.60.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_dxvk60()
+{
+    # https://github.com/doitsujin/dxvk
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v0.60/dxvk-0.60.tar.gz" ece9286ebe75aab4c585b8aeb5040b36982db3c54f5d59be76b2e89e8edde10e
+    helper_dxvk "$file1" "3.10" "1.0.76"
+}
+
+#----------------------------------------------------------------
+
+w_metadata dxvk dlls \
+    title="Vulkan-based D3D11 implementation for Linux / Wine (latest)" \
+    publisher="Philip Rebohle" \
+    year="2018" \
+    media="download" \
+    file1="dxvk-0.60.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_dxvk()
+{
+    w_call dxvk60
 }
 
 #----------------------------------------------------------------
