@@ -8486,6 +8486,27 @@ load_icodecs()
 
 #----------------------------------------------------------------
 
+w_metadata itircl dlls \
+    title="MS itircl.dll" \
+    publisher="Microsoft" \
+    year="1999" \
+    media="download" \
+    file1="../hhw/htmlhelp.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/itircl.dll"
+
+load_itircl()
+{
+    # https://msdn.microsoft.com/en-us/library/windows/desktop/ms669985(v=vs.85).aspx
+    w_download_to hhw https://download.microsoft.com/download/0/A/9/0A939EF6-E31C-430F-A3DF-DFAE7960D564/htmlhelp.exe b2b3140d42a818870c1ab13c1c7b8d4536f22bd994fa90aade89729a6009a3ae
+
+    w_try_cabextract -d "$W_TMP" -F hhupd.exe "$W_CACHE"/hhw/htmlhelp.exe
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -F itircl.dll "$W_TMP"/hhupd.exe
+    w_try_regsvr itircl.dll
+    w_override_dlls native itircl
+}
+
+#----------------------------------------------------------------
+
 w_metadata cinepak dlls \
     title="Cinepak Codec" \
     publisher="Radius" \
