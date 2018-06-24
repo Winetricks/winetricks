@@ -7939,20 +7939,26 @@ load_esent()
 # FIXME: update winetricks_is_installed to look at installed_file2..n
 # https://github.com/Winetricks/winetricks/issues/988
 w_metadata flash dlls \
-    title="Flash Player 14" \
+    title="Flash Player 29" \
     publisher="Adobe" \
-    year="2014" \
+    year="2018" \
     media="download" \
-    file1="install_flash_player.exe" \
-    file2="install_flash_player_ax.exe" \
-    file3="flashplayer_14_sa.exe" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_14_0_0_179_Plugin.exe" \
-    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_14_0_0_176_ActiveX.exe" \
-    installed_file3="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/flashplayer_14_sa.exe" \
+    file1="fp_29.0.0.171_archive.zip" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_29_0_0_171_Plugin.exe" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/FlashUtil32_29_0_0_171_ActiveX.exe" \
+    installed_file3="$W_SYSTEM32_DLLS_WIN/Macromed/Flash/flashplayer29_0r0_171_win_sa.exe" \
     homepage="https://www.adobe.com/products/flashplayer/"
 
 load_flash()
 {
+    _W_ver_major=29
+    _W_ver_minor=0
+    _W_ver_rel=0
+    _W_ver_build=171
+    _W_dirname="${_W_ver_major}_${_W_ver_minor}_r${_W_ver_rel}_${_W_ver_build}"
+    _W_archive="fp_${_W_ver_major}.${_W_ver_minor}.${_W_ver_rel}.${_W_ver_build}_archive.zip"
+    _W_fileprefix="flashplayer${_W_ver_major}_${_W_ver_minor}r${_W_ver_rel}_${_W_ver_build}"
+
     # 2013/07/09: Adobe Flash 10 is no longer supported.
     # 2013/06/24: Adobe Flash 10.3 won't even install for me, it tells you to go get a newer version!
     # See
@@ -7961,27 +7967,30 @@ load_flash()
     # Now, we install older versions by using zipfiles at
     # https://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html
 
+    # 2018/06/24: d4b6f9a5e42cc9f2c7cbd1fd72059d4c1bead91b076afa2ca042d28f0fd7bedb
+    w_download "https://fpdownload.macromedia.com/pub/flashplayer/installers/archive/$_W_archive" d4b6f9a5e42cc9f2c7cbd1fd72059d4c1bead91b076afa2ca042d28f0fd7bedb
+
+    # If OS version is Vista or newer:
+    #   1. NPAPI plugin doesn't work
+    #   2. In win64 prefix, "File not found." dialog appears when installing:
+    #      'wine: cannot find L"C:\\windows\\system32\\Macromed\\Temp\\{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}\\InstallFlashPlayer.exe"'
+    w_set_winver winxp
+
     # ActiveX plugin
     # 2014/10/02: 3958827058648cfe05fc6ee510685e8d93f995d3428c3eedbd6814704765672a
-    w_download https://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.176_archive.zip 3958827058648cfe05fc6ee510685e8d93f995d3428c3eedbd6814704765672a
-
-    w_try_unzip "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.176_archive.zip fp_14.0.0.176_archive/14_0_r0_176/flashplayer14_0r0_176_winax.exe
-    w_try_cd "$W_TMP"/fp_14.0.0.176_archive/14_0_r0_176
-    w_try "$WINE" flashplayer14_0r0_176_winax.exe ${W_OPT_UNATTENDED:+ /install}
+    w_try_unzip "$W_TMP" "$W_CACHE/flash/$_W_archive" "$_W_dirname/${_W_fileprefix}_winax.exe"
+    w_try_cd "$W_TMP/$_W_dirname"
+    w_try "$WINE" "${_W_fileprefix}_winax.exe" ${W_OPT_UNATTENDED:+ /install}
 
     # Mozilla / Firefox (NPAPI) plugin
     # 2014/10/02: 17496fd3c863c180aead953d7d4499dd36f997a9570abc2b92f55e4ea1d55d73
-    w_download https://download.macromedia.com/pub/flashplayer/installers/archive/fp_14.0.0.179_archive.zip 17496fd3c863c180aead953d7d4499dd36f997a9570abc2b92f55e4ea1d55d73
-
-    w_try_unzip "$W_TMP" "$W_CACHE"/flash/fp_14.0.0.179_archive.zip fp_14.0.0.179_archive/14_0_r0_179/flashplayer14_0r0_179_win.exe
-    w_try_cd "$W_TMP"/fp_14.0.0.179_archive/14_0_r0_179
-    w_try "$WINE" flashplayer14_0r0_179_win.exe ${W_OPT_UNATTENDED:+ /install}
+    w_try_unzip "$W_TMP" "$W_CACHE/flash/$_W_archive" "$_W_dirname/${_W_fileprefix}_win.exe"
+    w_try "$WINE" "${_W_fileprefix}_win.exe" ${W_OPT_UNATTENDED:+ /install}
 
     # Projector (standalone player)
-    # 2015/07/06:
-    w_download https://download.macromedia.com/pub/flashplayer/updaters/14/flashplayer_14_sa.exe 8640c42e73dc44125045e17abd32412c48f3808a8393c94fc8281cf4b0d87bdc
-    # shellcheck disable=SC2154
-    w_try cp "${W_CACHE}/${W_PACKAGE}/${file3}" "$W_SYSTEM32_DLLS/Macromed/Flash"
+    # 2015/07/06: 8640c42e73dc44125045e17abd32412c48f3808a8393c94fc8281cf4b0d87bdc
+    w_try_unzip "$W_TMP" "$W_CACHE/flash/$_W_archive" "$_W_dirname/${_W_fileprefix}_win_sa.exe"
+    w_try mv "${_W_fileprefix}_win_sa.exe" "$W_SYSTEM32_DLLS/Macromed/Flash"
 
     # After updating the above, you should carry the following steps out by
     # hand to verify that plugin works.
@@ -8002,6 +8011,8 @@ load_flash()
     #    wine firefox.exe https://www.adobe.com/software/flash/about
     # Verify that the version of Flash shows up and that you're not prompted
     # to install Flash again
+
+    unset _W_ver_major _W_ver_minor _W_ver_rel _W_ver_build _W_dirname _W_archive _W_fileprefix
 }
 
 #----------------------------------------------------------------
