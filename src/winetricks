@@ -7459,8 +7459,7 @@ load_dotnet20()
     w_call remove_mono
     w_call fontfix
 
-    # Recipe from https://bugs.winehq.org/show_bug.cgi?id=10467#c57
-    # and https://bugs.winehq.org/show_bug.cgi?id=30845#c10
+    # Needed for https://bugs.winehq.org/show_bug.cgi?id=12401
     w_set_winver win2k
 
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
@@ -7574,16 +7573,11 @@ load_dotnet20sp1()
 
     w_call remove_mono
 
-    w_call dotnet20
-
     WINEDLLOVERRIDES=
     w_warn "Setting windows version so installer works"
-    # Stop services
-    # Recipe from https://bugs.winehq.org/show_bug.cgi?id=16956
-    w_wineserver -k
-    # Fight a race condition, see bug 16956 comment 43
+
     w_set_winver win2k
-    w_wineserver -w
+
     WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b
     export WINEDLLOVERRIDES
 
@@ -7640,30 +7634,10 @@ load_dotnet20sp2()
 
     w_call remove_mono
 
-    w_call dotnet20
-    w_wineserver -w
+    w_set_winver winxp
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run, NetFx20SP2_x86.exe ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
-
-        Loop
-        {
-            sleep 1000
-            ifwinexist,, cannot be uninstalled
-            {
-                WinClose,, cannot be uninstalled
-                continue
-            }
-            Process, exist, NetFx20SP2_x86.exe
-            dotnet_pid = %ErrorLevel%
-            if dotnet_pid = 0
-            {
-                break
-            }
-        }
-    "
+    w_try "$WINE" NetFx20SP2_x86.exe ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
     status=$?
 
     case $status in
@@ -7721,8 +7695,6 @@ load_dotnet30()
             esac
             ;;
     esac
-
-    w_call dotnet20
 
     # AF's workaround to avoid long pause
     LANGPACKS_BASE_PATH="${W_WINDIR_UNIX}/SYSMSICache/Framework/v3.0"
@@ -7829,8 +7801,7 @@ load_dotnet35()
 
     w_call remove_mono
 
-    w_call dotnet30sp1
-    w_wineserver -w
+    w_set_winver winxp
 
     # See also https://blogs.msdn.microsoft.com/astebner/2008/07/17/scenarios-where-net-framework-3-5-setup-tries-to-connect-to-the-internet-and-how-to-avoid-them/
     w_try_cd "$W_TMP"
@@ -7874,36 +7845,10 @@ load_dotnet35sp1()
 
     w_call remove_mono
 
-    w_call dotnet35
-    w_wineserver -w
-    w_call dotnet20sp2
-    w_wineserver -w
-
-    # Work around hang in https://bugs.winehq.org/show_bug.cgi?id=25060#c19
-    WINEDLLOVERRIDES=ngen.exe,mscorsvw.exe=b
-    export WINEDLLOVERRIDES
+    w_set_winver winxp
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run, dotnetfx35.exe /lang:ENU $W_UNATTENDED_SLASH_Q
-
-        Loop
-        {
-            sleep 1000
-            ifwinexist,, cannot be uninstalled
-            {
-                WinClose,, cannot be uninstalled
-                continue
-            }
-            Process, exist, dotnetfx35.exe
-            dotnet_pid = %ErrorLevel%
-            if dotnet_pid = 0
-            {
-                break
-            }
-        }
-    "
+    "$WINE" dotnetfx35.exe /lang:ENU $W_UNATTENDED_SLASH_Q
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
