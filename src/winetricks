@@ -12323,7 +12323,7 @@ w_metadata mt4 apps \
 
 load_mt4()
 {
-    w_download https://download.mql5.com/cdn/web/metaquotes.software.corp/mt4/mt4setup.exe
+    w_download https://web.archive.org/web/20160112133258/https://download.mql5.com/cdn/web/metaquotes.software.corp/mt4/mt4setup.exe?utm_campaign=www.metatrader4.com 96c82266e18cc4ada1bbc0cd0ada74c3a31d18914fb1a36626f4596c8bacb6f0 mt4setup.exe
 
     if w_workaround_wine_bug 7156 "${title} needs wingdings.ttf, installing opensymbol"; then
         w_call opensymbol
