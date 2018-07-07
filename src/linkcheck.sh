@@ -46,9 +46,14 @@ w_download() {
 
 # Extract list of URLs from winetricks
 extract_all() {
+    # w_linkcheck_ignore=1 is a stupid hack to tell linkcheck.sh to ignore a URL (e.g., because it contains a variable)
+    # Ideally, avoid using the variable, but we can't e.g., for dxvk
+    # Should not be used for https://example.com/${file1}, as otherwise we can't easily check if the URL is down
+
     # https://github.com/koalaman/shellcheck/issues/861
     # shellcheck disable=SC1003
-    grep '^ *w_download ' winetricks | grep -E 'ftp|http|WINETRICKS_SOURCEFORGE' | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+    grep '^ *w_download ' winetricks | grep -E 'ftp|http|WINETRICKS_SOURCEFORGE' | grep -v "w_linkcheck_ignore=1" | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+
     # shellcheck disable=SC1091
     . ./url-script-fragment.tmp
 }
