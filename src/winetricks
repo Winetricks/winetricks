@@ -6700,13 +6700,18 @@ w_metadata dxvk dlls \
     publisher="Philip Rebohle" \
     year="2018" \
     media="download" \
-    file1="dxvk-0.61.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
 load_dxvk()
 {
-    w_call dxvk61
+    # https://github.com/doitsujin/dxvk
+    # There's no stable exe URL, but they do provide a RELEASE file that lets us build one:
+    w_download_to "$W_TMP" "https://raw.githubusercontent.com/doitsujin/dxvk/master/RELEASE"
+    dxvk_version="$(cat "${W_TMP}/RELEASE")"
+    w_linkcheck=1_ignore w_download "https://github.com/doitsujin/dxvk/releases/download/v${dxvk_version}/dxvk-${dxvk_version}.tar.gz"
+    helper_dxvk "dxvk-${dxvk_version}.tar.gz" "3.10" "1.0.76"
+    unset dxvk_version
 }
 
 #----------------------------------------------------------------
