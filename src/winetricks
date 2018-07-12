@@ -10809,6 +10809,7 @@ w_metadata corefonts fonts \
 
 load_corefonts()
 {
+    w_download "https://mirrors.kernel.org/gentoo/distfiles/andale32.exe" 0524fe42951adc3a7eb870e32f0920313c71f170c859b5f770d82b4ee111e970
     w_download "https://mirrors.kernel.org/gentoo/distfiles/arial32.exe" 85297a4d146e9c87ac6f74822734bdee5f4b2a722d7eaa584b7f2cbf76f478f6
     w_download "https://mirrors.kernel.org/gentoo/distfiles/arialb32.exe" a425f0ffb6a1a5ede5b979ed6177f4f4f4fdef6ae7c302a7b7720ef332fec0a8
     w_download "https://mirrors.kernel.org/gentoo/distfiles/comic32.exe" 9c6df3feefde26d4e41d4a4fe5db2a89f9123a772594d7f59afd062625cd204e
@@ -10824,6 +10825,10 @@ load_corefonts()
     # to exit silently. Because there are apps out there that depend on the
     # files being present in the Windows font directory we use cabextract
     # to obtain the files and register the fonts by hand.
+
+    w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/andale32.exe
+    w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "AndaleMo.TTF"
+    w_register_font andalemo.ttf "Andale Mono"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/arial32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Arial*.TTF"
