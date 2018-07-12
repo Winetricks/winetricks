@@ -10819,6 +10819,7 @@ load_corefonts()
     w_download "https://mirrors.kernel.org/gentoo/distfiles/trebuc32.exe" 5a690d9bb8510be1b8b4fe49f1f2319651fe51bbe54775ddddd8ef0bd07fdac9
     w_download "https://mirrors.kernel.org/gentoo/distfiles/verdan32.exe" c1cb61255e363166794e47664e2f21af8e3a26cb6346eb8d2ae2fa85dd5aad96
     w_download "https://mirrors.kernel.org/gentoo/distfiles/webdin32.exe" 64595b5abc1080fba8610c5c34fab5863408e806aafe84653ca8575bed17d75a
+    w_download "https://mirrors.kernel.org/gentoo/distfiles/andale32.exe" 0524fe42951adc3a7eb870e32f0920313c71f170c859b5f770d82b4ee111e970
 
     # Natively installed versions of these fonts will cause the installers
     # to exit silently. Because there are apps out there that depend on the
@@ -10883,6 +10884,10 @@ load_corefonts()
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/webdin32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Webdings.TTF"
     w_register_font webdings.ttf "Webdings"
+    
+    w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/andale32.exe
+    w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "AndaleMo.TTF"
+    w_register_font andalemo.ttf "Andale Mono"
 }
 
 #----------------------------------------------------------------
