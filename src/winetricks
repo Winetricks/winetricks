@@ -8147,7 +8147,7 @@ w_metadata glut dlls \
 
 load_glut()
 {
-    w_download http://press.liacs.nl/researchdownloads/glut.win32/glut-3.7.6-bin.zip 788e97653bfd527afbdc69e1b7c6bcf9cb45f33d13ddf9d676dc070da92f80d4
+    w_download https://press.liacs.nl/researchdownloads/glut.win32/glut-3.7.6-bin.zip 788e97653bfd527afbdc69e1b7c6bcf9cb45f33d13ddf9d676dc070da92f80d4
     # FreeBSD unzip rm -rf's inside the target directory before extracting:
     w_try_unzip "$W_TMP" "$W_CACHE"/glut/glut-3.7.6-bin.zip
     w_try mv "$W_TMP/glut-3.7.6-bin" "$W_DRIVE_C"
@@ -8744,7 +8744,7 @@ load_msdxmocx()
     # 2017/09/28: define.fi is down, these sites have mpfull.exe with the original sha256:
     # http://hell.pl/agnus/windows95/
     # http://zerosky.oldos.org/win9x.html
-    # http://sdfox7.com/win95/
+    # https://sdfox7.com/win95/
 
     w_download http://hell.pl/agnus/windows95/mpfull.exe a39b2b9735cedd513fcb78f8634695d35073e9d7e865e536a0da6db38c7225e4
 
@@ -8836,7 +8836,7 @@ load_msls31()
     # Needed by native RichEdit and Internet Explorer
     # Originally at https://download.microsoft.com/download/WindowsInstaller/Install/2.0/NT45/EN-US/InstMsiW.exe
     # Mirror list at http://www.filewatcher.com/m/InstMsiW.exe.1822848-0.html
-    w_download http://ftp.hp.com/pub/softlib/software/msi/InstMsiW.exe 4c3516c0b5c2b76b88209b22e3bf1cb82d8e2de7116125e97e128952372eed6b InstMsiW.exe
+    w_download https://ftp.hp.com/pub/softlib/software/msi/InstMsiW.exe 4c3516c0b5c2b76b88209b22e3bf1cb82d8e2de7116125e97e128952372eed6b InstMsiW.exe
 
     w_try_cabextract --directory="$W_TMP" "$W_CACHE"/msls31/InstMsiW.exe
     w_try cp -f "$W_TMP"/msls31.dll "$W_SYSTEM32_DLLS"
@@ -11394,7 +11394,7 @@ w_metadata 3m_library apps \
     media="download" \
     file1="cloudLibrary-2.1.1702011951-Setup.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/cloudLibrary/cloudLibrary.exe" \
-    homepage="http://www.yourcloudlibrary.com/index.php/en-us/"
+    homepage="https://www.yourcloudlibrary.com/index.php/en-us/"
 
 load_3m_library()
 {
@@ -11787,7 +11787,7 @@ w_metadata irfanview apps \
     media="download" \
     file1="iview444_setup.exe" \
     installed_file1="$W_PROGRAMS_X86_WIN/IrfanView/i_view32.exe" \
-    homepage="http://www.irfanview.com/"
+    homepage="https://www.irfanview.com/"
 
 load_irfanview()
 {
@@ -12308,7 +12308,7 @@ load_mspaint()
 
     # Originally at: https://download.microsoft.com/download/0/A/4/0A40DF5C-2BAE-4C63-802A-84C33B34AC98/WindowsXP-KB978706-x86-ENU.exe
     # Mirror list: http://www.filewatcher.com/_/?q=WindowsXP-KB978706-x86-ENU.exe
-    w_download http://cbvk.cz/programy_pro_knihovny/update-pack/Windows%20XP%20x86%20ENU/Security%20Updates/WindowsXP-KB978706-x86-ENU.exe 93ed34ab6c0d01a323ce10992d1c1ca27d1996fef82f0864d83e7f5ac6f9b24b
+    w_download https://cbvk.cz/programy_pro_knihovny/update-pack/Windows%20XP%20x86%20ENU/Security%20Updates/WindowsXP-KB978706-x86-ENU.exe 93ed34ab6c0d01a323ce10992d1c1ca27d1996fef82f0864d83e7f5ac6f9b24b
     w_try $WINE "$W_CACHE"/mspaint/WindowsXP-KB978706-x86-ENU.exe /q /x:"$W_TMP"/WindowsXP-KB978706-x86-ENU
     w_try cp -f "$W_TMP"/WindowsXP-KB978706-x86-ENU/SP3GDR/mspaint.exe "$W_WINDIR_UNIX"/mspaint.exe
 }
@@ -12928,7 +12928,7 @@ w_metadata qq apps \
 load_qq()
 {
     w_download https://dldir1.qq.com/qqfile/qq/QQ8.9.1/20437/QQ8.9.1.exe 8e0d3ff5264da2d77e2fc011c21048edeebcf082f55f68a301f763c3a15c0d3f
-    w_download http://hillwoodhome.net/wine/QQ.tar.gz eb5cd6371eb75ec9e2fc0271199df05cbb9f38a60c2e81d5d8ac7daeb40aba62
+    w_download https://hillwoodhome.net/wine/QQ.tar.gz eb5cd6371eb75ec9e2fc0271199df05cbb9f38a60c2e81d5d8ac7daeb40aba62
 
     if w_workaround_wine_bug 5162 "Installing native riched20 to work around can't input username."; then
         w_call riched20
@@ -13690,7 +13690,7 @@ w_metadata 3dmark03 benchmarks \
 
 load_3dmark03()
 {
-    # http://www.futuremark.com/benchmarks/3dmark03/download/
+    # https://www.futuremark.com/benchmarks/3dmark03/download/
     if ! test -f "$W_CACHE/$W_PACKAGE/3DMark03_v360_1901.exe"; then
         w_download_manual https://www.futuremark.com/download/3dmark03/ 3DMark03_v360_1901.exe 86d7f73747944c553e47e6ab5a74138e8bbca07fab8216ae70a61ac7f9a1c468
     fi
@@ -14017,7 +14017,7 @@ w_metadata amnesia_tdd_demo games \
 
 load_amnesia_tdd_demo()
 {
-    w_download_manual http://download.cnet.com/Amnesia-The-Dark-Descent-Demo/3000-2097_4-75312743.html amnesia_tdd_demo_1.0.1.exe ee4c07b40bfa59b506d2cee258c5c7a16028e11fc3a2bd243258c6bec8532dbc
+    w_download_manual https://download.cnet.com/Amnesia-The-Dark-Descent-Demo/3000-2097_4-75312743.html amnesia_tdd_demo_1.0.1.exe ee4c07b40bfa59b506d2cee258c5c7a16028e11fc3a2bd243258c6bec8532dbc
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
@@ -14189,7 +14189,7 @@ w_metadata atmosphir games \
 
 load_atmosphir()
 {
-    w_download_manual http://download.cnet.com/Atmosphir/3000-7492_4-75335647.html atmosphir-installer-v1.0.2.exe a6b2c82a98d750014874f8ab445b38ebb127450e5a7a9350832cf3a8d3a
+    w_download_manual https://download.cnet.com/Atmosphir/3000-7492_4-75335647.html atmosphir-installer-v1.0.2.exe a6b2c82a98d750014874f8ab445b38ebb127450e5a7a9350832cf3a8d3a
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -14659,7 +14659,7 @@ w_metadata cod_demo games \
 
 load_cod_demo()
 {
-    w_download_manual http://www.gamefront.com/files/968870/call_of_duty_demo_exe Call_Of_Duty_Demo.exe a7773f1ddb0c9928f738a2be34614d52bc07ecc42c0fe704ab5a596da5421b08
+    w_download_manual https://www.gamefront.com/files/968870/call_of_duty_demo_exe Call_Of_Duty_Demo.exe a7773f1ddb0c9928f738a2be34614d52bc07ecc42c0fe704ab5a596da5421b08
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -14800,7 +14800,7 @@ w_metadata cod4mw_demo games \
 load_cod4mw_demo()
 {
     # 2017/03/28: Also at https://www.fileplanet.com/213663/210000/fileinfo/LEGO-Harry-Potter:-Years-1-4-Demo
-    w_download_manual http://download.cnet.com/Call-of-Duty-4-Modern-Warfare/3000-7441_4-11277584.html CoD4MWDemoSetup_v2.exe 715710678394e9b0edda5dd3a560c9711557297aa2849c83e5c109db9830fbbb
+    w_download_manual https://download.cnet.com/Call-of-Duty-4-Modern-Warfare/3000-7441_4-11277584.html CoD4MWDemoSetup_v2.exe 715710678394e9b0edda5dd3a560c9711557297aa2849c83e5c109db9830fbbb
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
@@ -14915,7 +14915,7 @@ w_metadata civ4_demo games \
 
 load_civ4_demo()
 {
-    w_download_manual http://download.cnet.com/Civilization-IV-demo/3000-7489_4-10465206.html Civilization4_Demo.zip aaafc7fcbf0fc16c9b28c2422400721a40818b867e9291268877c5d3841122a2
+    w_download_manual https://download.cnet.com/Civilization-IV-demo/3000-7489_4-10465206.html Civilization4_Demo.zip aaafc7fcbf0fc16c9b28c2422400721a40818b867e9291268877c5d3841122a2
 
     w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE"/Civilization4_Demo.zip
     w_try_cd "$W_TMP/$W_PACKAGE"
@@ -17046,7 +17046,7 @@ w_metadata myth2_demo games \
     media="download" \
     file1="Myth2_Demo_180.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Myth II Demo/Myth II Demo.exe" \
-    homepage="http://projectmagma.net/"
+    homepage="https://projectmagma.net/"
 
 load_myth2_demo()
 {
@@ -17054,7 +17054,7 @@ load_myth2_demo()
     # source code to Project Magma for further development.
 
     # 2017/03/27: 1a5e11be25c43491e2b4da5291b646ffe5330a6289bef236f404906e3b4f5e96
-    w_download http://tain.totalcodex.net/items/download/myth-ii-demo-windows 1a5e11be25c43491e2b4da5291b646ffe5330a6289bef236f404906e3b4f5e96 "${file1}"
+    w_download https://tain.totalcodex.net/items/download/myth-ii-demo-windows 1a5e11be25c43491e2b4da5291b646ffe5330a6289bef236f404906e3b4f5e96 "${file1}"
 
     w_try_cd "${W_TMP}"
     w_try unzip "${W_CACHE}/${W_PACKAGE}/${file1}"
@@ -17339,7 +17339,7 @@ w_metadata riseofnations_demo games \
 
 load_riseofnations_demo()
 {
-    w_download_manual http://download.cnet.com/Rise-of-Nations-Trial-Version/3000-7562_4-10730812.html RiseOfNationsTrial.exe f0bd8be3999164e669aad33583e372ca0f530b1a2ac0194a4c13b265e9cdf744
+    w_download_manual https://download.cnet.com/Rise-of-Nations-Trial-Version/3000-7562_4-10730812.html RiseOfNationsTrial.exe f0bd8be3999164e669aad33583e372ca0f530b1a2ac0194a4c13b265e9cdf744
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
