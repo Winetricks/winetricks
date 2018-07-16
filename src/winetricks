@@ -11211,16 +11211,15 @@ load_opensymbol()
 w_metadata tahoma fonts \
     title="MS Tahoma font (not part of corefonts)" \
     publisher="Microsoft" \
-    year="2007" \
+    year="1999" \
     media="download" \
-    file1="tahoma32.exe" \
+    file1="IELPKTH.CAB" \
     installed_file1="$W_FONTSDIR_WIN/tahoma.ttf"
 
 load_tahoma()
 {
-    # Formerly at https://download.microsoft.com/download/office97pro/fonts/1/w95/en-us/tahoma32.exe
-    # Mirror list: http://www.filewatcher.com/_/?q=tahoma32.exe
-    w_download https://www.encodage-video.com/devprog/win/tahoma32.exe 57496fb91d1629d2b6f313aaa6ebcdbcfd09c269b6462fe490420c786c089a40
+    # Formerly at http://download.microsoft.com:80/download/ie55sp2/Install/5.5_SP2/WIN98Me/EN-US/IELPKTH.CAB
+    w_download http://downloads.sourceforge.net/corefonts/OldFiles/IELPKTH.CAB c1be3fb8f0042570be76ec6daa03a99142c88367c1bc810240b85827c715961a
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "*.TTF"
