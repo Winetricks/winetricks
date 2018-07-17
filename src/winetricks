@@ -13304,19 +13304,26 @@ load_vc2005trial()
         winwait, Visual Studio, Setup is loading
         if ( w_opt_unattended > 0 ) {
             winwait, Visual Studio, Loading completed
+            sleep 1000
             controlclick, button2
             winwait, Visual Studio, Select features
+            sleep 1000
             controlclick, button38
+            sleep 1000
             controlclick, button40
             winwait, Visual Studio, You have chosen
+            sleep 1000
             controlclick, button1
             winwait, Visual Studio, Select features
+            sleep 1000
             controlclick, button11
         }
-        ;this can take a while
+        ; this can take a while
         winwait, Finish Page
-        if ( w_opt_unattended > 0 )
+        if ( w_opt_unattended > 0 ) {
+            sleep 1000
             controlclick, button2
+        }
         winwaitclose, Finish Page
     "
 }
