@@ -922,13 +922,13 @@ winetricks_check_update_availability()
     # Prevents the development file overwrite:
     if test -d "../.git"; then
         w_warn "You're running in a dev environment. Please make a copy of the file before running this command."
-        exit;
+        exit
     fi
 
     # Checks read/write permissions on update directories
-    if ! (test -r "$0" && test -w "$0" && test -w "${0%/*}" && test -x "${0%/*}"); then
+    if ! { test -r "$0" && test -w "$0" && test -w "${0%/*}" && test -x "${0%/*}"; }; then
         w_warn "You don't have the proper permissions to run this command. Try again with sudo or as root."
-        exit;
+        exit
     fi
 }
 
