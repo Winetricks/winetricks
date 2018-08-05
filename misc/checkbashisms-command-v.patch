@@ -1,0 +1,18 @@
+From https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511
+
+With edited filename to make it easier to apply
+diff --git a/checkbashisms b/checkbashisms
+index 045328c..fe64a6b 100755
+--- a/checkbashisms
++++ b/checkbashisms
+@@ -644,7 +644,7 @@ sub init_hashes {
+ 	qr';;?&' =>  q<;;& and ;& special case operators>,
+ 	$LEADIN . qr'jobs\s' =>  q<jobs>,
+ #	$LEADIN . qr'jobs\s+-[^lp]\s' =>  q<'jobs' with option other than -l or -p>,
+-	$LEADIN . qr'command\s+-[^p]\s' =>  q<'command' with option other than -p>,
++	$LEADIN . qr'command\s+-[^pvV]\s' =>  q<'command' with option other than -p/-v/-V>,
+ 	$LEADIN . qr'setvar\s' =>  q<setvar 'foo' 'bar' should be eval 'foo="'"$bar"'"'>,
+ 	$LEADIN . qr'trap\s+["\']?.*["\']?\s+.*(?:ERR|DEBUG|RETURN)' => q<trap with ERR|DEBUG|RETURN>,
+ 	$LEADIN . qr'(?:exit|return)\s+-\d' => q<exit|return with negative status code>,
+-- 
+2.6.2
