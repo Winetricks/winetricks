@@ -34,7 +34,7 @@ DEB_BASHATE=$UBUNTU_POOL/universe/p/python-bashate/python-bashate_0.5.1-1_all.de
 DEB_PBR=$UBUNTU_POOL/main/p/python-pbr/python-pbr_3.1.1-3ubuntu3_all.deb
 DEB_SIX=$UBUNTU_POOL/main/s/six/python-six_1.11.0-2_all.deb
 
-if which bashate >/dev/null; then
+if command -v bashate >/dev/null; then
     echo "bashate is already installed."
     exit 1
 fi
