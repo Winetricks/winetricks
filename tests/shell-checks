@@ -12,6 +12,10 @@
 set -e
 set -x
 
+temp="$(mktemp -d)"
+
+trap 'rm -fr "$temp"' EXIT
+
 w_die() {
     echo "$* failed"
     exit 1
@@ -25,9 +29,13 @@ w_try() {
     fi
 }
 
-command bashate --help > /dev/null || w_die "bashate must be installed!"
-command checkbashisms --help > /dev/null || w_die "checkbashisms must be installed!"
-command shellcheck --version > /dev/null || w_die "shellcheck must be installed!"
+bashate="$(command -v bashate)"
+checkbashisms="$(command -v checkbashisms)"
+shellcheck="$(command -v shellcheck)"
+
+"$bashate" --help > /dev/null || w_die "bashate must be installed!"
+"$checkbashisms" --help > /dev/null || w_die "checkbashisms must be installed!"
+"$shellcheck" --version > /dev/null || w_die "shellcheck must be installed!"
 
 if [ ! -f Makefile ] ; then
     w_die "$0 should be run from the top of the source tree"
@@ -37,16 +45,29 @@ fi
 
 #echo "======================== Begin bashate version info ==========================="
 ## bashate doesn't have a --version option (as of bashate-0.3.1)
-#bashate --version
+#"$bashate" --version
 #echo "======================== End checkbashisms version info ==========================="
 
 echo "======================== Begin checkbashisms version info ==========================="
-checkbashisms --version
+"$checkbashisms" --version
 echo "======================== End checkbashisms version info ==========================="
 
 echo "======================== Begin shellcheck version info ==========================="
-shellcheck --version
+"$shellcheck" --version
 echo "======================== End shellcheck version info ==========================="
+
+# Check if checkbashisms supports `command -v`. If not, warn, or if on travis, patch it:
+cat > "${temp}/test.sh" <<_EOF
+#!/bin/sh
+command -v grep
+_EOF
+
+if ! "$checkbashisms" --posix "${temp}/test.sh"; then
+    echo "checkbashisms fails on command -v, using patch from https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511 on a copy in ${temp} to work around"
+    # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
+    ( cd "$(dirname "$checkbashisms")" && patch -p1 -o "${temp}/checkbashisms.patched" < "$OLDPWD/misc/checkbashisms-command-v.patch" && chmod +x "${temp}/checkbashisms.patched" )
+    checkbashisms="${temp}/checkbashisms.patched"
+fi
 
 # Use git ls-files if available, this prevents 'finding' scripts that aren't checked into git.
 # E.g., if patching foo fails, then foo.orig would also be 'found'.
@@ -60,16 +81,16 @@ fi
 
 for shellscript in $files_to_check; do
     echo "Checking ${shellscript} for bashisms:"
-    w_try checkbashisms --posix "${shellscript}"
+    w_try "$checkbashisms" --posix "${shellscript}"
 
     echo "Checking ${shellscript} with shellcheck:"
-    w_try shellcheck -s sh "${shellscript}"
+    w_try "$shellcheck" -s sh "${shellscript}"
 
     echo "Checking ${shellscript} with bashate:"
 
     # Can't ignore individual things for now, filed bug:
     # https://bugs.launchpad.net/bash8/+bug/1698088
     # E006=line length check
-    # E010=do/while same line (in some perl in winetricks)
-    w_try bashate -i E006,E010 "${shellscript}"
+    # E010=do/while same line (in some embedded perl in winetricks)
+    w_try "$bashate" -i E006,E010 "${shellscript}"
 done

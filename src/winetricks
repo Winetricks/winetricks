@@ -172,7 +172,7 @@ W_COUNTRY=""
 W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
 
 # For temp files before $WINEPREFIX is available:
-if [ -x "$(which mktemp 2>/dev/null)" ] ; then
+if [ -x "$(command -v mktemp 2>/dev/null)" ] ; then
     W_TMP_EARLY="$(mktemp -d "${TMPDIR:-/tmp}/winetricks.XXXXXXXX")"
 elif [ -w "$TMPDIR" ] ; then
     W_TMP_EARLY="$TMPDIR"
@@ -391,7 +391,7 @@ w_try_7z()
     shift 2
 
     # Not always installed, use Windows 7-Zip as a fallback:
-    if test -x "$(which 7z 2>/dev/null)"; then
+    if test -x "$(command -v 7z 2>/dev/null)"; then
         w_try 7z x "$filename" -o"$destdir" "$@"
     else
         w_warn "Cannot find 7z.  Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip-plugins')."
@@ -407,7 +407,7 @@ w_try_ar()
     # $2 - file to extract (optional)
 
     # Not always installed, use Windows 7-zip as a fallback:
-    if test -x "$(which ar 2>/dev/null)"; then
+    if test -x "$(command -v ar 2>/dev/null)"; then
         w_try ar x "$@"
     else
         w_warn "Cannot find ar.  Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
@@ -422,7 +422,7 @@ w_try_ar()
 w_try_cabextract()
 {
     # Not always installed, but shouldn't be fatal unless it's being used
-    if test ! -x "$(which cabextract 2>/dev/null)"; then
+    if test ! -x "$(command -v cabextract 2>/dev/null)"; then
         w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt-get install cabextract' or 'sudo yum install cabextract')."
     fi
 
@@ -540,7 +540,7 @@ w_try_unrar()
     # $1 - zipfile to extract (keeping internal paths, in cwd)
 
     # Not always installed, use Windows 7-Zip as a fallback:
-    if test -x "$(which unrar 2>/dev/null)"; then
+    if test -x "$(command -v unrar 2>/dev/null)"; then
         w_try unrar x "$@"
     else
         w_warn "Cannot find unrar.  Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt-get install unrar' or 'sudo yum install unrar')."
@@ -560,7 +560,7 @@ w_try_unzip()
     shift 2
 
     # Not always installed, use Windows 7-Zip as a fallback:
-    if test -x "$(which unzip 2>/dev/null)"; then
+    if test -x "$(command -v unzip 2>/dev/null)"; then
         # FreeBSD ships unzip, but it doesn't support self-compressed executables
         # If it fails, fall back to 7-Zip:
         unzip -o -q -d"$destdir" "$zipfile" "$@"
@@ -922,13 +922,13 @@ winetricks_check_update_availability()
     # Prevents the development file overwrite:
     if test -d "../.git"; then
         w_warn "You're running in a dev environment. Please make a copy of the file before running this command."
-        exit;
+        exit
     fi
 
     # Checks read/write permissions on update directories
-    if ! (test -r "$0" && test -w "$0" && test -w "${0%/*}" && test -x "${0%/*}"); then
+    if ! { test -r "$0" && test -w "$0" && test -w "${0%/*}" && test -x "${0%/*}"; }; then
         w_warn "You don't have the proper permissions to run this command. Try again with sudo or as root."
-        exit;
+        exit
     fi
 }
 
@@ -1179,7 +1179,7 @@ w_download_to()
             # Need to decompress .exe's that are compressed, else Cygwin fails
             # Also affects ttf files on github
             # FIXME: gzip hack below may no longer be needed, but need to investigate before removing
-            _W_filetype=$(which file 2>/dev/null)
+            _W_filetype=$(command -v file 2>/dev/null)
             case $_W_filetype-$_W_file in
                 /*-*.exe|/*-*.ttf|/*-*.zip)
                     case $(file "$_W_file") in
@@ -1215,7 +1215,7 @@ w_download_to()
 w_open_folder()
 {
     for _W_cmd in xdg-open open cygstart true ; do
-        _W_cmdpath=$(which $_W_cmd)
+        _W_cmdpath=$(command -v $_W_cmd)
         if test -n "$_W_cmdpath" ; then
             break
         fi
@@ -1230,7 +1230,7 @@ w_open_webpage()
 {
     # See https://www.dwheeler.com/essays/open-files-urls.html
     for _W_cmd in xdg-open sdtwebclient cygstart open firefox true ; do
-        _W_cmdpath=$(which $_W_cmd)
+        _W_cmdpath=$(command -v $_W_cmd)
         if test -n "$_W_cmdpath" ; then
             break
         fi
@@ -2966,13 +2966,13 @@ winetricks_download_setup()
     # shellcheck disable=SC2104
     case "${WINETRICKS_DOWNLOADER}" in
         aria2c|curl|wget|fetch) : ;;
-        "") if [ -x "$(which aria2c 2>/dev/null)" ] ; then
+        "") if [ -x "$(command -v aria2c 2>/dev/null)" ] ; then
                 WINETRICKS_DOWNLOADER="aria2c"
-            elif [ -x "$(which wget 2>/dev/null)" ] ; then
+            elif [ -x "$(command -v wget 2>/dev/null)" ] ; then
                 WINETRICKS_DOWNLOADER="wget"
-            elif [ -x "$(which curl 2>/dev/null)" ] ; then
+            elif [ -x "$(command -v curl 2>/dev/null)" ] ; then
                 WINETRICKS_DOWNLOADER="curl"
-            elif [ -x "$(which fetch 2>/dev/null)" ] ; then
+            elif [ -x "$(command -v fetch 2>/dev/null)" ] ; then
                 WINETRICKS_DOWNLOADER="fetch"
             else
                 w_die "Please install wget or aria2c (or, if those aren't available, curl)"
@@ -2991,7 +2991,7 @@ winetricks_download_setup()
         1) torify=torify
             # torify needs --async-dns=false, see https://github.com/tatsuhiro-t/aria2/issues/613
             aria2c_torify_opts="--async-dns=false"
-            if [ ! -x "$(which torify 2>/dev/null)" ]; then
+            if [ ! -x "$(command -v torify 2>/dev/null)" ]; then
                 w_die "--torify was used, but torify is not installed, please install it." ; exit 1
             fi ;;
         *) torify=
@@ -3072,16 +3072,16 @@ winetricks_dl_warning() {
 
 winetricks_get_sha1sum_prog() {
     # Linux/Solaris:
-    if [ -x "$(which sha1sum 2>/dev/null)" ] ; then
+    if [ -x "$(command -v sha1sum 2>/dev/null)" ] ; then
         WINETRICKS_SHA1SUM="sha1sum"
     # FreeBSD/NetBSD:
-    elif [ -x "$(which sha1 2>/dev/null)" ] ; then
+    elif [ -x "$(command -v sha1 2>/dev/null)" ] ; then
         WINETRICKS_SHA1SUM="sha1"
     # OSX 10.6+:
-    elif [ -x "$(which shasum 2>/dev/null)" ] ; then
+    elif [ -x "$(command -v shasum 2>/dev/null)" ] ; then
         WINETRICKS_SHA1SUM="shasum -a 1"
     # OSX 10.5:
-    elif [ -x "$(which openssl 2>/dev/null)" ] ; then
+    elif [ -x "$(command -v openssl 2>/dev/null)" ] ; then
         WINETRICKS_SHA1SUM="openssl dgst -sha1"
     else
         w_die "No sha1sum utility available."
@@ -3090,13 +3090,13 @@ winetricks_get_sha1sum_prog() {
 
 winetricks_get_sha256sum_prog() {
     # Linux/Solaris:
-    if [ -x "$(which sha256sum 2>/dev/null)" ] ; then
+    if [ -x "$(command -v sha256sum 2>/dev/null)" ] ; then
         WINETRICKS_SHA256SUM="sha256sum"
     # FreeBSD/NetBSD:
-    elif [ -x "$(which sha256 2>/dev/null)" ] ; then
+    elif [ -x "$(command -v sha256 2>/dev/null)" ] ; then
         WINETRICKS_SHA256SUM="sha256"
     # OSX (10.6+), 10.5 doesn't support at all: https://stackoverflow.com/questions/7500691/rvm-sha256sum-nor-shasum-found
-    elif [ -x "$(which shasum 2>/dev/null)" ] ; then
+    elif [ -x "$(command -v shasum 2>/dev/null)" ] ; then
         WINETRICKS_SHA256SUM="shasum -a 256"
     else
         w_die "No sha256um utility available."
@@ -3191,12 +3191,12 @@ winetricks_early_wine()
 
 winetricks_detect_gui()
 {
-    if test -x "$(which zenity 2>/dev/null)"; then
+    if test -x "$(command -v zenity 2>/dev/null)"; then
         WINETRICKS_GUI=zenity
         WINETRICKS_GUI_VERSION="$(zenity --version)"
         WINETRICKS_MENU_HEIGHT=500
         WINETRICKS_MENU_WIDTH=1010
-    elif test -x "$(which kdialog 2>/dev/null)"; then
+    elif test -x "$(command -v kdialog 2>/dev/null)"; then
         echo "Zenity not found!  Using kdialog as poor substitute."
         WINETRICKS_GUI=kdialog
         WINETRICKS_GUI_VERSION="$(kdialog --version)"
@@ -3224,27 +3224,27 @@ winetricks_detect_sudo()
     if test x"$DISPLAY" != x""; then
         # This should be the default option because some of GUI sudo programs are unmaintained
         # See https://github.com/Winetricks/winetricks/issues/912
-        if test -x "$(which pkexec 2>/dev/null)"; then
+        if test -x "$(command -v pkexec 2>/dev/null)"; then
             # Maintained and recommended, part of Polkit, desktop-independent
             # Usage: pkexec command ...
             WINETRICKS_SUDO=pkexec
         # Austin said "gksu*/kdesu* should stay (at least for a while)" in Feb 2018
         # See https://github.com/Winetricks/winetricks/pull/915#issuecomment-362984379
-        elif test -x "$(which gksudo 2>/dev/null)"; then
+        elif test -x "$(command -v gksudo 2>/dev/null)"; then
             # Unmaintained [2009], part of gksu
             # Usage: gksudo "command ..."
             WINETRICKS_SUDO=gksudo
-        elif test -x "$(which kdesudo 2>/dev/null)"; then
+        elif test -x "$(command -v kdesudo 2>/dev/null)"; then
             # Unmaintained [2015] (latest is for KDE4, no KF5 version available)
             # https://cgit.kde.org/kdesudo.git/
             # Usage: kdesudo "command ..."
             WINETRICKS_SUDO=kdesudo
         # fall back to the su versions if sudo isn't available (Fedora, etc.):
-        elif test -x "$(which gksu 2>/dev/null)"; then
+        elif test -x "$(command -v gksu 2>/dev/null)"; then
             # Unmaintained [2009]
             # Usage: gksu "command ..."
             WINETRICKS_SUDO=gksu
-        elif test -x "$(which kdesu 2>/dev/null)"; then
+        elif test -x "$(command -v kdesu 2>/dev/null)"; then
             # Maintained, KF5 version available
             # https://cgit.kde.org/kdesu.git/
             # Usage: kdesu -c "command ..."
@@ -3256,17 +3256,17 @@ winetricks_detect_sudo()
 # Detect which iso mount tool to use
 winetricks_detect_iso_mount()
 {
-    if test -x "$(which fuseiso 2>/dev/null)"; then
+    if test -x "$(command -v fuseiso 2>/dev/null)"; then
         # File/dir names are converted to lowercase
         WINETRICKS_ISO_MOUNT=fuseiso
-    elif test -x "$(which archivemount 2>/dev/null)"; then
+    elif test -x "$(command -v archivemount 2>/dev/null)"; then
         # File/dir names may be uppercase and we may need
         # case-insensitive operations
         #   e.g. w_try "$WINE" cmd /c "copy $W_ISO_MOUNT_LETTER:\\DOC.PDF C:\\doc.pdf"
         # This tool had path issue in 0.8.8 or older versions
         #   e.g. office2013pro works in 0.8.9 or later but doesn't work in 0.8.8
         WINETRICKS_ISO_MOUNT=archivemount
-    elif test -x "$(which hdiutil 2>/dev/null)"; then
+    elif test -x "$(command -v hdiutil 2>/dev/null)"; then
         # File/dir names may be uppercase (same as archivemount)
         WINETRICKS_ISO_MOUNT=hdiutil
     else
@@ -3760,7 +3760,7 @@ winetricks_settings_menu()
                     ;;
             esac > "$WINETRICKS_WORKDIR"/zenity.sh
 
-            for metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
+            for metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars
             do
                 code=$(winetricks_metadata_basename "$metadatafile")
                 (
@@ -3991,7 +3991,7 @@ winetricks_showmenu()
 
             true > "$WINETRICKS_WORKDIR"/installed.txt
 
-            for metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
+            for metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars
             do
                 code=$(winetricks_metadata_basename "$metadatafile")
                 (
@@ -4221,7 +4221,7 @@ winetricks_list_all()
         *)   _W_cached="cached"   ; _W_download="downloadable"  ;;
     esac
 
-    for _W_metadatafile in "$WINETRICKS_METADATA"/$WINETRICKS_CURMENU/*.vars
+    for _W_metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars
     do
         # Use a subshell to avoid putting metadata in global space
         # If this is too slow, we can unset known metadata by hand
@@ -4470,7 +4470,7 @@ winetricks_cache_iso()
           WINETRICKS_DD_PID=$!
           ;;
         ddrescue)
-          if [ ! -x "$(which ddrescue)" ]; then
+          if [ ! -x "$(command -v ddrescue)" ]; then
               w_die "Please install ddrescue first."
           fi
           $WINETRICKS_OPT_DD -v -b 2048 $WINETRICKS_DEV "$W_CACHE"/temp.iso &
@@ -4944,7 +4944,7 @@ winetricks_set_wineprefix()
         # WINE_MULTI = generic wine, new name
         if [ "${WINE%??}64" = "$WINE" ]; then
             WINE64="${WINE}"
-        elif which "${WINE}64" >/dev/null 2>&1; then
+        elif command -v "${WINE}64" >/dev/null 2>&1; then
             WINE64="${WINE}64"
         else
             # Handle case where wine binaries (or binary wrappers) have a suffix
@@ -5101,9 +5101,9 @@ winetricks_init()
     # OSX: doesn't have a utility for this
     # Solaris: no access, PR welcome
 
-    if [ -x "$(which taskset 2>/dev/null)" ]; then
+    if [ -x "$(command -v taskset 2>/dev/null)" ]; then
         W_TASKSET="taskset -c 0"
-    elif [ -x "$(which cpuset 2>/dev/null)" ]; then
+    elif [ -x "$(command -v cpuset 2>/dev/null)" ]; then
         W_TASKSET="cpuset -l 0"
     else
         # not using w_warn so we don't annoy everyone running via GUI, but still printed to terminal:
@@ -5128,7 +5128,7 @@ winetricks_init()
             for x in \
                 "$WINESERVER" \
                 "${WINE}server" \
-                "$(which wineserver 2> /dev/null)" \
+                "$(command -v wineserver 2> /dev/null)" \
                 "$(dirname $WINE)/server/wineserver" \
                 /usr/bin/wineserver-development \
                 /usr/lib/wine/wineserver \
@@ -5167,7 +5167,7 @@ winetricks_init()
                 else
                     WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
                 fi
-                _abswine="$(which "$WINE" 2>/dev/null)"
+                _abswine="$(command -v "$WINE" 2>/dev/null)"
                 if ! test -x "$_abswine" || ! test -f "$_abswine"; then
                     w_die "WINE is $WINE, which is neither on the path nor an executable file"
                 fi
@@ -11245,16 +11245,15 @@ load_opensymbol()
 w_metadata tahoma fonts \
     title="MS Tahoma font (not part of corefonts)" \
     publisher="Microsoft" \
-    year="2007" \
+    year="1999" \
     media="download" \
-    file1="tahoma32.exe" \
+    file1="IELPKTH.CAB" \
     installed_file1="$W_FONTSDIR_WIN/tahoma.ttf"
 
 load_tahoma()
 {
-    # Formerly at https://download.microsoft.com/download/office97pro/fonts/1/w95/en-us/tahoma32.exe
-    # Mirror list: http://www.filewatcher.com/_/?q=tahoma32.exe
-    w_download https://www.encodage-video.com/devprog/win/tahoma32.exe 57496fb91d1629d2b6f313aaa6ebcdbcfd09c269b6462fe490420c786c089a40
+    # Formerly at http://download.microsoft.com:80/download/ie55sp2/Install/5.5_SP2/WIN98Me/EN-US/IELPKTH.CAB
+    w_download http://downloads.sourceforge.net/corefonts/OldFiles/IELPKTH.CAB c1be3fb8f0042570be76ec6daa03a99142c88367c1bc810240b85827c715961a
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "*.TTF"
@@ -11512,7 +11511,7 @@ load_adobe_diged4()
     if w_workaround_wine_bug 32323; then
         w_call corefonts
     fi
-    if [ ! -x "$(which winbindd 2>/dev/null)" ]; then
+    if [ ! -x "$(command -v winbindd 2>/dev/null)" ]; then
         w_warn "Adobe Digital Editions 4.5 requires winbind (part of Samba) to be installed, but winbind was not detected."
     fi
 
@@ -12623,7 +12622,7 @@ load_office2013pro()
 {
     w_package_unsupported_win64
 
-    if [ ! -x "$(which ntlm_auth 2>/dev/null)" ]; then
+    if [ ! -x "$(command -v ntlm_auth 2>/dev/null)" ]; then
         w_die "winbind (part of samba) is required for the installation"
     fi
 
@@ -18821,7 +18820,7 @@ load_fontfix()
     # SDKSetup encountered an error: The type initializer for 'Microsoft.WizardFramework.WizardSettings' threw an exception
     # and WINEDEBUG=+relay,+seh shows an exception very quickly after
     # Call KERNEL32.CreateFileW(0c83b36c L"Z:\\USR\\SHARE\\FONTS\\TRUETYPE\\TTF-ORIYA-FONTS\\SAMYAK-ORIYA.TTF",80000000,00000001,00000000,00000003,00000080,00000000) ret=70d44091
-    if [ -x "$(which xlsfonts 2>/dev/null)" ] ; then
+    if [ -x "$(command -v xlsfonts 2>/dev/null)" ] ; then
         if xlsfonts 2>/dev/null | grep -E -i "samyak.*oriya" ; then
             w_die "Please uninstall the Samyak/Oriya font, e.g. 'sudo dpkg -r ttf-oriya-fonts', then log out and log in again.  That font causes strange crashes in .net programs."
         fi
@@ -19953,7 +19952,7 @@ winetricks_shell()
             *)
                 for term in gnome-terminal konsole Terminal xterm
                 do
-                    if test "$(which $term 2>/dev/null)"; then
+                    if test "$(command -v $term 2>/dev/null)"; then
                         $term
                         break
                     fi
