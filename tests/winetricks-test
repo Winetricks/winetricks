@@ -139,7 +139,7 @@ skips=0
 # middle of a two day run.
 check_deps() {
     for tool in time cabextract; do
-        which $tool
+        command -v "$tool"
         ret=$?
 
         if [ ! $ret -eq 0 ] ; then
@@ -210,7 +210,7 @@ case "$OS" in
         for x in \
             "$WINESERVER" \
             "${WINE}server" \
-            "$(which wineserver 2> /dev/null)" \
+            "$(command -v wineserver 2> /dev/null)" \
             "$(dirname $WINE)/server/wineserver" \
             /usr/lib/wine/wineserver \
             /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
@@ -689,7 +689,7 @@ test_full() {
 }
 
 test_xvfb() {
-    if [ ! "$(which xvfb-run 2>/dev/null)" ] ; then
+    if [ ! "$(command -v xvfb-run 2>/dev/null)" ] ; then
         w_die "Please install xvfb-run for xvfb tests"
     fi
 
