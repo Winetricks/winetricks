@@ -15,7 +15,7 @@ passes=0
 errors=0
 
 check_deps() {
-    if ! test -x "$(which curl 2>/dev/null)"; then
+    if ! test -x "$(command -v curl 2>/dev/null)"; then
         echo "Please install curl"
         exit 1
     fi
