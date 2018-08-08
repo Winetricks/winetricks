@@ -10323,7 +10323,8 @@ load_windowscodecs()
     # AF says in AppDB entry for .NET 3.0 that windowscodecs has to be native only
     w_override_dlls native windowscodecs windowscodecsext
 
-    w_set_winver winxp
+    # Previously this was winxp, but that didn't work for 64-bit, see https://github.com/Winetricks/winetricks/issues/970
+    w_set_winver win2k3
 
     # Always run the WIC installer in passive mode.
     # See https://bugs.winehq.org/show_bug.cgi?id=16876 and
