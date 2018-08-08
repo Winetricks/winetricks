@@ -2445,10 +2445,22 @@ _EOF_
             csdversion_hex=dword:00000400
             ;;
         winxp)
-            csdversion="Service Pack 3"
-            currentbuildnumber="2600"
-            currentversion="5.1"
-            csdversion_hex=dword:00000300
+            # Special case, afaik it's the only Windows version that has different version numbers for 32/64-bit
+            # So ensure we set the arch appropriate version:
+            if [ "$W_ARCH" = "win32" ]; then
+                csdversion="Service Pack 3"
+                currentbuildnumber="2600"
+                currentversion="5.1"
+                csdversion_hex=dword:00000300
+            elif [ "$W_ARCH" = "win64" ]; then
+                csdversion="Service Pack 2"
+                currentbuildnumber="3790"
+                currentversion="5.2"
+                csdversion_hex=dword:00000200
+                "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
+            else
+                w_die "Invalid W_ARCH $W_ARCH"
+            fi
             ;;
         win2k3)
             csdversion="Service Pack 2"
