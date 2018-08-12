@@ -25,14 +25,17 @@ cache="$XDG_CACHE_HOME/winetricks"
 #set -e
 set -x
 
-# FIXME: currently this requires running from src (linkcheck.sh might too), which is ugly.
-# IMO it should run from top, and/or have the logic to find src and cd there itself
-# Once this is fixed, check outputdir logic below:
-if [ -f README.md ] ; then
+if [ -f src/winetricks ] ; then
     TOP="$PWD"
-elif [ -f ../README.md ] ; then
+    shwinetricks="${PWD}/src/winetricks"
+elif [ -f ../src/winetricks ] ; then
     # realpath isn't available on OSX, use a subshell instead:
     TOP="$(cd .. && echo "$PWD")"
+    shwinetricks="${TOP}/src/winetricks"
+elif [ -f ../../src/winetricks ] ; then
+    # realpath isn't available on OSX, use a subshell instead:
+    TOP="$(cd ../.. && echo "$PWD")"
+    shwinetricks="${TOP}/src/winetricks"
 else
     echo "Running from unknown directory. Exiting"
     exit 1
@@ -66,11 +69,11 @@ elif [ ! -z "$WINETRICKS_ENABLE_KCOV" ] ; then
     # https://github.com/SimonKagstrom/kcov/issues/165
 
     # Previously, winetricks-test used `$WINETRICKS`. That fails for kcov, which
-    # then tracks bash itself and not winetricks. `./winetricks` works fine.
-    WINETRICKS="kcov --configure=bash-use-basic-parser=1 $KCOV_RESULTS ./winetricks"
-    #WINETRICKS="kcov --configure=bash-use-basic-parser=1 $KCOV_RESULTS-$(date +%k-%M-%S) ./winetricks"
+    # then tracks bash itself and not winetricks. `${shwinetricks}` works fine.
+    WINETRICKS="kcov --configure=bash-use-basic-parser=1 $KCOV_RESULTS \"${shwinetricks}\""
+    #WINETRICKS="kcov --configure=bash-use-basic-parser=1 $KCOV_RESULTS-$(date +%k-%M-%S) \"${shwinetricks}\""
 else
-    WINETRICKS="./winetricks"
+    WINETRICKS="${shwinetricks}"
 fi
 
 # Disable winetricks update checks:
@@ -311,7 +314,7 @@ test_app()
                 fi
 
                 # no xvfb needed
-                ./winetricks -q list-installed > "${outputdir}/list-installed.out"
+                "${shwinetricks}" -q list-installed > "${outputdir}/list-installed.out"
 
                 if ! grep -w "$app" "${outputdir}/list-installed.out"; then
                     fail "test app $app not installed after install?"
@@ -360,6 +363,7 @@ test_command()
     fi
 
     # Isolate us from the user's home directory
+    # shellcheck disable=SC2086
     $XVFB $WINETRICKS sandbox
 
     echo "Installing $command"
@@ -563,8 +567,8 @@ _EOF
 test_dlls()
 {
     # no xvfb needed, kcov breaks
-    ./winetricks list-manual-download > "${outputdir}/manual.log"
-    ./winetricks dlls list | awk '{print $1}' > "${outputdir}/dlls.log"
+    "${shwinetricks}" list-manual-download > "${outputdir}/manual.log"
+    "${shwinetricks}" dlls list | awk '{print $1}' > "${outputdir}/dlls.log"
     if grep .------------------- "${outputdir}/dlls.log" ; then
         fail "output of dlls list contained garbage"
         exit 1
@@ -615,7 +619,7 @@ test_dotnet()
 test_install_cached_or_download()
 {
     # no xvfb needed, kcov breaks
-    ./winetricks list-cached list-download > "${outputdir}/ticd.log"
+    "${shwinetricks}" list-cached list-download > "${outputdir}/ticd.log"
     if grep .------------------- ticd.log ; then
         fail "output of list-cached list-download contained garbage"
         exit 1
@@ -638,7 +642,7 @@ test_install_cached_or_download()
     done
 
     # no xvfb needed, kcov breaks
-    ./winetricks list-cached | sort > cached.txt
+    "${shwinetricks}" list-cached | sort > cached.txt
 
     # Verbs that are just wrappers around others don't detect cache/install state yet.
     # Verbs that are just informative placeholders don't ever download (gecko).
