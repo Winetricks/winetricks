@@ -2353,6 +2353,7 @@ w_set_winver()
 {
     w_skip_windows w_set_winver && return
     # FIXME: This should really be done with winecfg, but it has no CLI options.
+    # Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45616
 
     # First, delete any lingering version info, otherwise it may conflict:
     (
