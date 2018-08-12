@@ -350,11 +350,11 @@ test_app()
 test_command()
 {
     archskip=0
-
     command="$*"
-    _command_dash="$(echo "$command" | tr " " "-")"
 
-    export WINEPREFIX="$WINE_PREFIXES/$_command_dash"
+    # This previously changed spaces to hyphens. Going back to spaces so we test WINEPREFIXes
+    # with special characters, to prevent issues like https://github.com/Winetricks/winetricks/issues/995
+    export WINEPREFIX="$WINE_PREFIXES/${command}"
     #DRIVE_C="$WINEPREFIX/dosdevices/c:"
 
     # always use a clean $WINEPREFIX
