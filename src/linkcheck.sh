@@ -1,7 +1,8 @@
 #!/bin/sh
 # Link checker for winetricks.
 #
-# Copyright (C) 2011,2012,2013 Dan Kegel.
+# Copyright (C) 2011-2013 Dan Kegel
+# Copyright (C) 2016-2018 Austin English
 #
 # This software comes with ABSOLUTELY NO WARRANTY.
 #
@@ -21,10 +22,17 @@ check_deps() {
     fi
 }
 
-if [ -f README.md ] ; then
+if [ -f src/winetricks ] ; then
     TOP="$PWD"
-elif [ -f ../README.md ] ; then
-    TOP=".."
+    shwinetricks="${PWD}/src/winetricks"
+elif [ -f ../src/winetricks ] ; then
+    # realpath isn't available on OSX, use a subshell instead:
+    TOP="$(cd .. && echo "$PWD")"
+    shwinetricks="${TOP}/src/winetricks"
+elif [ -f ../../src/winetricks ] ; then
+    # realpath isn't available on OSX, use a subshell instead:
+    TOP="$(cd ../.. && echo "$PWD")"
+    shwinetricks="${TOP}/src/winetricks"
 else
     echo "Dude, where's my car?!"
     exit 1
@@ -52,7 +60,7 @@ extract_all() {
 
     # https://github.com/koalaman/shellcheck/issues/861
     # shellcheck disable=SC1003
-    grep '^ *w_download ' winetricks | grep -E 'ftp|http|WINETRICKS_SOURCEFORGE' | grep -v "w_linkcheck_ignore=1" | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+    grep '^ *w_download ' "${shwinetricks}" | grep -E 'ftp|http|WINETRICKS_SOURCEFORGE' | grep -v "w_linkcheck_ignore=1" | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
 
     # shellcheck disable=SC1091
     . ./url-script-fragment.tmp
