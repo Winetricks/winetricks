@@ -462,22 +462,32 @@ w_try_cp_font_files()
         _W_pattern="*.ttf"
     fi
 
-    _W_src_files=$(find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern")
+# POSIX sh doesn't have a good way to handle this, but putting into a separate script
+# and running with sh avoids it.
+#
+# See https://github.com/Winetricks/winetricks/issues/995 for details
 
-    for _W_src_file in $_W_src_files; do
-        # Extract the file name and lower case it
-        _W_file_name=$(basename "$_W_src_file" | tr "[:upper:]" "[:lower:]")
+cat > "$WINETRICKS_WORKDIR/cp_font_files.sh" <<_EOF_
+#!/bin/sh
+    _W_src_file="\$@"
 
-        # Remove any existing font files that might have the same name, but with different case characters
-        find "$_W_dest_dir" -maxdepth 1 -type f -iname "$_W_file_name" -exec rm '{}' ';'
+    # Extract the file name and lower case it
+    _W_file_name="\$(basename "\$_W_src_file" | tr "[:upper:]" "[:lower:]")"
 
-        w_try cp -f "$_W_src_file" "$_W_dest_dir/$_W_file_name"
-    done
+    # Remove any existing font files that might have the same name, but with different case characters
+    find "$_W_dest_dir" -maxdepth 1 -type f -iname "\$_W_file_name" -exec rm '{}' ';'
+
+    # FIXME: w_try() isn't available, need some better error handling:
+    cp -f "\$_W_src_file" "$_W_dest_dir/\$_W_file_name"
+_EOF_
+    chmod +x "$WINETRICKS_WORKDIR/cp_font_files.sh"
+
+    find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern" -exec "$WINETRICKS_WORKDIR/cp_font_files.sh" {} \;
 
     # Wait for Wine to add the new font to the registry under HKCU\Software\Wine\Fonts\Cache
     w_wineserver -w
 
-    unset _W_src_files _W_dest_dir _W_src_file _W_file_name
+    unset _W_dest_dir
 }
 
 w_try_msiexec64()
