@@ -2964,8 +2964,9 @@ w_append_path()
 {
     # Prepend $1 to the Windows path in the registry.
     # Use printf %s to avoid interpreting backslashes.
-    _W_NEW_PATH="$(printf %s "$1" | sed 's,\\\\,\\\\\\\\,g')"
-    _W_WIN_PATH="$(w_expand_env PATH | sed 's,\\\\,\\\\\\\\,g')"
+    # 2/4 backslashes, not 4/8, see https://github.com/Winetricks/winetricks/issues/932
+    _W_NEW_PATH="$(printf %s "$1" | sed 's,\\,\\\\,g')"
+    _W_WIN_PATH="$(w_expand_env PATH | sed 's,\\,\\\\,g')"
 
     # FIXME: OS X? https://github.com/Winetricks/winetricks/issues/697
     sed 's/$/\r/' > "$W_TMP"/path.reg <<_EOF_
