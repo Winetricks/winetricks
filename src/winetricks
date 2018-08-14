@@ -12340,8 +12340,36 @@ load_mingw()
 {
     w_download "$WINETRICKS_SOURCEFORGE/mingw/files/mingw-get-setup.exe" aab27bd5547d35dc159288f3b5b8760f21b0cfec86e8f0032b49dd0410f232bc
 
-    w_try_cd "$W_CACHE/mingw"
-    w_try "$WINE" "$file1"
+    if test "$W_OPT_UNATTENDED"; then
+        w_info "FYI: Quiet mode will install these mingw packages: 'gcc msys-base'"
+    fi
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_ahk_do "
+        run, $file1
+        WinWait, MinGW Installation Manager Setup Tool
+        if ( w_opt_unattended > 0 ) {
+            WinActivate
+            Sleep, 1000
+            ControlClick, Button1  ; Install
+            ; Window title is blank
+            WinWait, , Step 1: Specify Installation Preferences
+            Sleep, 1000
+            ControlClick, Button10  ; Continue
+            Sleep, 1000
+            WinWait, , Step 2: Download and Set Up MinGW Installation Manager
+            ; This takes a while
+            WinWait, , Catalogue update completed
+            Sleep, 1000
+            ControlClick, Button4  ; Continue
+            ; This window appears in background, but isn't active because of another popup
+            ; We may need to wait for that to disappear first
+            WinWait, MinGW Installation Manager
+            Sleep, 1000
+            WinClose, MinGW Installation Manager
+        }
+        WinWaitClose, MinGW Installation Manager
+    "
 
     w_append_path 'C:\MinGW\bin'
     w_try "$WINE" mingw-get update
