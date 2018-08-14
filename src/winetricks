@@ -6767,6 +6767,22 @@ load_dxvk64()
     helper_dxvk "$file1" "3.10" "1.0.76"
 }
 
+w_metadata dxvk65 dlls \
+    title="Vulkan-based D3D11 implementation for Linux / Wine (0.65)" \
+    publisher="Philip Rebohle" \
+    year="2018" \
+    media="download" \
+    file1="dxvk-0.65.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_dxvk65()
+{
+    # https://github.com/doitsujin/dxvk
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v0.65/dxvk-0.65.tar.gz" 7b4eb42e693f925d0aff90bae261b20c50428602382ee94a3e3860b2ad1ebad0
+    helper_dxvk "$file1" "3.10" "1.0.76"
+}
+
 
 #----------------------------------------------------------------
 
