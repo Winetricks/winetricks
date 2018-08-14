@@ -884,6 +884,7 @@ w_dotnet_verify()
         dotnet46) version="4.6" ;;
         dotnet461) version="4.6.1" ;;
         dotnet462) version="4.6.2" ;;
+        dotnet472) version="4.7.2" ;;
         *) echo error ; exit 1 ;;
     esac
             w_call dotnet_verifier
@@ -7827,7 +7828,7 @@ w_metadata dotnet461 dlls \
     media="download" \
     file1="NDP461-KB3102436-x86-x64-AllOS-ENU.exe" \
     conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet35sp1 dotnet40 dotnet46 vjrun20" \
-    installed_file1="c:/users/$LOGNAME/Temp/dd_NDP461-KB3102436-x86-x64-AllOS-ENU_decompression_log.txt"
+    installed_file1="c:/windows/dotnet461.installed.workaround"
 
 load_dotnet461()
 {
@@ -7843,7 +7844,7 @@ load_dotnet461()
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /norestart}
+    WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" /sfxlang:1027 ${W_OPT_UNATTENDED:+/q /norestart}
     status=$?
 
     echo "exit status: $status"
@@ -7856,6 +7857,9 @@ load_dotnet461()
     esac
 
     w_override_dlls native mscoree
+
+    # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
+    w_try touch "${W_WINDIR_UNIX}/dotnet461.installed.workaround"
 }
 
 verify_dotnet461()
@@ -7886,7 +7890,7 @@ load_dotnet462()
         # Official version. See https://www.microsoft.com/en-us/download/details.aspx?id=53344
         w_download https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe 28886593e3b32f018241a4c0b745e564526dbb3295cb2635944e3a393f4278d4
         file_package="NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
-        unattended_args="/q /norestart"
+        unattended_args="/sfxlang:1027 /q /norestart"
     fi
 
     w_call remove_mono
@@ -7903,6 +7907,8 @@ load_dotnet462()
 
     case $status in
         0) ;;
+        105) echo "exit status $status - normal, user selected 'restart now'" ;;
+        194) echo "exit status $status - normal, user selected 'restart later'" ;;
         5) w_die "exit status $status - user selected 'Cancel'" ;;
         *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
     esac
@@ -7917,6 +7923,64 @@ load_dotnet462()
 verify_dotnet462()
 {
     w_dotnet_verify dotnet462
+}
+
+
+#----------------------------------------------------------------
+
+w_metadata dotnet472 dlls \
+    title="MS .NET 4.7.2" \
+    publisher="Microsoft" \
+    year="2018" \
+    media="download" \
+    conflicts="dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet35sp1 dotnet40 dotnet46 dotnet461 dotnet462 vjrun20" \
+    installed_file1="c:/windows/dotnet472.installed.workaround"
+
+load_dotnet472()
+{
+    w_package_warn_win64
+
+    if w_workaround_wine_bug 42170 "Running un-official repacked .NET 4.7.2 setup until the official version is fixed."; then
+        # Un-official slim version. See https://repacks.net/forum/viewtopic.php?t=7
+        file_package="dotNetFx472_Full_x86_x64_Slim.exe"
+        w_download "https://drive.google.com/uc?export=download&id=1aLBCH0Yt2-6ROpWRBxZ01kqGMyhc_8hM&confirm" a36da041b8f46079f8e16647312d642953cde520f4a600ad5b3f4f90a23495a7 $file_package
+        unattended_args="/ai /gm2"
+    else
+        # Official version. See https://www.microsoft.com/en-us/download/details.aspx?id=53344
+        w_download https://download.microsoft.com/download/6/E/4/6E48E8AB-DC00-419E-9704-06DD46E5F81D/NDP472-KB4054530-x86-x64-AllOS-ENU.exe c908f0a5bea4be282e35acba307d0061b71b8b66ca9894943d3cbb53cad019bc
+        file_package="NDP472-KB4054530-x86-x64-AllOS-ENU.exe"
+        unattended_args="/sfxlang:1027 /q /norestart"
+    fi
+
+    w_call remove_mono
+
+    w_call dotnet462
+    w_set_winver win7
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+
+    WINEDLLOVERRIDES=fusion=b "$WINE" "$file_package" ${W_OPT_UNATTENDED:+$unattended_args}
+    status=$?
+
+    echo "exit status: $status"
+
+    case $status in
+        0) ;;
+        105) echo "exit status $status - normal, user selected 'restart now'" ;;
+        194) echo "exit status $status - normal, user selected 'restart later'" ;;
+        5) w_die "exit status $status - user selected 'Cancel'" ;;
+        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
+
+    w_override_dlls native mscoree
+
+    # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
+    w_try touch "${W_WINDIR_UNIX}/dotnet472.installed.workaround"
+}
+
+verify_dotnet472()
+{
+    w_dotnet_verify dotnet472
 }
 
 #----------------------------------------------------------------
