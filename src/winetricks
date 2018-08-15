@@ -11914,6 +11914,44 @@ load_foobar2000()
 
 #----------------------------------------------------------------
 
+w_metadata hhw apps \
+    title="HTML Help Workshop" \
+    publisher="Microsoft" \
+    year="2000" \
+    media="download" \
+    file1="htmlhelp.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/HTML Help Workshop/hhw.exe"
+
+load_hhw()
+{
+    w_call mfc40
+
+    # https://msdn.microsoft.com/en-us/library/windows/desktop/ms669985(v=vs.85).aspx
+    w_download https://download.microsoft.com/download/0/A/9/0A939EF6-E31C-430F-A3DF-DFAE7960D564/htmlhelp.exe b2b3140d42a818870c1ab13c1c7b8d4536f22bd994fa90aade89729a6009a3ae
+
+    # htmlhelp.exe automatically runs hhupd.exe. It shows a dialog that says
+    # "This computer already has a newer version of HTML Help."
+    # because of Wine's built-in hhctrl.ocx and it copys files only when
+    # Windows version is "Windows 98", "Windows 95", "Windows NT 4.0",
+    # or "Windows NT 3.51". 64-bit prefixes can't use any of them.
+    #
+    # So we need the following steps:
+    #   1. Run htmlhelp.exe to unpack its contents
+    #   2. Edit htmlhelp.inf not to run hhupd.exe
+    #   3. Run setup.exe
+    w_try "$WINE" "$W_CACHE/$W_PACKAGE"/htmlhelp.exe /C "/T:$W_TMP_WIN" $W_UNATTENDED_SLASH_Q
+    w_try_cd "$W_TMP"
+    sed -i "s/RunPostSetupCommands=HHUpdate//" htmlhelp.inf
+    w_try "$WINE" setup.exe
+
+    if w_workaround_wine_bug 7517; then
+        w_call itircl
+        w_call itss
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata iceweasel apps \
     title="GNU Icecat 31.7.0" \
     publisher="GNU Foundation" \
