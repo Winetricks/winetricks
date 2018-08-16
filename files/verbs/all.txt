@@ -1,4 +1,4 @@
-Using winetricks 20180603 - sha256sum: cad4e699f55c297afe5b177d68dccf1ef54e9dd23518a6f6343caa0ab7636615 with wine-3.0 (Debian 3.0-1) and WINEARCH=win32
+Using winetricks 20180815 - sha256sum: 9343f9174146c0fa4d34e18e05269ae772a45ba78e3d8786829fa21895f6f7f4 with wine-3.0.2 (Debian 3.0.2-1) and WINEARCH=win32
 ===== apps =====
 3m_library               3M Cloud Library (3M Company, 2015) [downloadable]
 7zip                     7-Zip 16.02 (Igor Pavlov, 2016) [downloadable]
@@ -15,7 +15,7 @@ emu8086                  emu8086 (emu8086.com, 2015) [downloadable]
 ev3                      Lego Mindstorms EV3 Home Edition (Lego, 2014) [downloadable]
 firefox                  Firefox 51.0 (Mozilla, 2017) [downloadable]
 fontxplorer              Font Xplorer 1.2.2 (Moon Software, 2001) [downloadable]
-foobar2000               foobar2000 v1.3.14 (Peter Pawlowski, 2016)
+foobar2000               foobar2000 v1.4 (Peter Pawlowski, 2018)
 iceweasel                GNU Icecat 31.7.0 (GNU Foundation, 2015) [downloadable]
 irfanview                Irfanview (Irfan Skiljan, 2016) [downloadable]
 kde                      KDE on Windows (various, 2013) [downloadable]
@@ -147,14 +147,23 @@ dpvoice                  Microsoft dpvoice dpvvox dpvacm Audio dlls (Microsoft, 
 dsdmo                    MS dsdmo.dll (Microsoft, 2010) [downloadable]
 dsound                   MS DirectSound from DirectX user redistributable (Microsoft, 2010) [downloadable]
 dswave                   MS dswave.dll from DirectX user redistributable (Microsoft, 2010) [downloadable]
+dx8vb                    MS dx8vb.dll from DirectX 8.1 runtime (Microsoft, 2001) [downloadable]
 dxdiag                   DirectX Diagnostic Tool (Microsoft, 2010) [downloadable]
 dxdiagn                  DirectX Diagnostic Library (Microsoft, 2011) [downloadable]
 dxdiagn_feb2010          DirectX Diagnostic Library (February 2010) (Microsoft, 2010) [downloadable]
 dxsdk_jun2010            MS DirectX SDK, June 2010 (developers only) (Microsoft, 2010) [downloadable]
 dxsdk_nov2006            MS DirectX SDK, November 2006 (developers only) (Microsoft, 2006) [downloadable]
+dxvk                     Vulkan-based D3D11 implementation for Linux / Wine (latest) (Philip Rebohle, 2018) [downloadable]
+dxvk54                   Vulkan-based D3D11 implementation for Linux / Wine (0.54) (Philip Rebohle, 2018) [downloadable]
+dxvk60                   Vulkan-based D3D11 implementation for Linux / Wine (0.60) (Philip Rebohle, 2018) [downloadable]
+dxvk61                   Vulkan-based D3D11 implementation for Linux / Wine (0.61) (Philip Rebohle, 2018) [downloadable]
+dxvk62                   Vulkan-based D3D11 implementation for Linux / Wine (0.62) (Philip Rebohle, 2018) [downloadable]
+dxvk63                   Vulkan-based D3D11 implementation for Linux / Wine (0.63) (Philip Rebohle, 2018) [downloadable]
+dxvk64                   Vulkan-based D3D11 implementation for Linux / Wine (0.64) (Philip Rebohle, 2018) [downloadable]
+dxvk65                   Vulkan-based D3D11 implementation for Linux / Wine (0.65) (Philip Rebohle, 2018) [downloadable]
 esent                    MS Extensible Storage Engine (Microsoft, 2011) [downloadable]
 ffdshow                  ffdshow video codecs (doom9 folks, 2010) [downloadable]
-flash                    Flash Player 14 (Adobe, 2014) [downloadable]
+flash                    Flash Player 29 (Adobe, 2018) [downloadable]
 gdiplus                  MS GDI+ (Microsoft, 2011) [downloadable]
 gdiplus_winxp            MS GDI+ (Microsoft, 2004)
 gfw                      MS Games For Windows Live (xlive.dll) (Microsoft, 2008) [downloadable]
@@ -270,7 +279,7 @@ lucida                   MS Lucida Console font (Microsoft, 1998) [downloadable]
 meiryo                   MS Meiryo font (Microsoft, 2009) [downloadable]
 opensymbol               OpenSymbol fonts (replacement for Wingdings) (OpenOffice.org, 2017) [downloadable]
 pptfonts                 All MS PowerPoint Viewer fonts (various, ) [downloadable]
-tahoma                   MS Tahoma font (not part of corefonts) (Microsoft, 2007) [downloadable]
+tahoma                   MS Tahoma font (not part of corefonts) (Microsoft, 1999) [downloadable]
 takao                    Takao Japanese fonts (Jun Kobayashi, 2010) [downloadable]
 uff                      Ubuntu Font Family (Ubuntu, 2010) [downloadable]
 unifont                  Unifont alternative to Arial Unicode MS (Roman Czyborra / GNU, 2008) [downloadable]
@@ -322,7 +331,7 @@ eve                      EVE Online Tyrannis (CCP Games, 2017) [downloadable]
 fable_tlc                Fable: The Lost Chapters (Microsoft, 2005)
 fifa11_demo              FIFA 11 Demo (EA Sports, 2010) [downloadable]
 gta_vc                   Grand Theft Auto: Vice City (Rockstar, 2003)
-hon                      Heroes of Newerth (S2 Games, 2013) [downloadable]
+hon                      Heroes of Newerth (S2 Games, 2018) [downloadable]
 hordesoforcs2_demo       Hordes of Orcs 2 Demo (Freeverse, 2010)
 hphbp_demo               Harry Potter and the Half-Blood Prince Demo (EA, 2009) [downloadable]
 kotor1                   Star Wars: Knights of the Old Republic (LucasArts, 2003)
@@ -413,6 +422,7 @@ heapcheck                Enable heap checking with GlobalFlag
 hidewineexports=disable  Disable hiding Wine exports from applications (wine-staging)
 hidewineexports=enable   Enable hiding Wine exports from applications (wine-staging)
 hosts                    Add empty C:\windows\system32\driverstc\{hosts,services} files
+isolate_home             Remove wineprefix links to /home/austin
 macdriver=mac            Enable the Mac native Quartz driver (default)
 macdriver=x11            Disable the Mac native Quartz driver, use X11 instead
 multisampling=disabled   Disable Direct3D multisampling
@@ -439,6 +449,11 @@ rtlm=readtex             Set RenderTargetLockMode to readtex
 rtlm=texdraw             Set RenderTargetLockMode to texdraw
 rtlm=textex              Set RenderTargetLockMode to textex
 sandbox                  Sandbox the wineprefix - remove links to /home/austin
+sound=alsa               Set sound driver to ALSA
+sound=coreaudio          Set sound driver to Mac CoreAudio
+sound=disabled           Set sound driver to disabled
+sound=oss                Set sound driver to OSS
+sound=pulse              Set sound driver to PulseAudio
 strictdrawordering=disabled Disable StrictDrawOrdering (default)
 strictdrawordering=enabled Enable StrictDrawOrdering
 vd=1024x768              Enable virtual desktop, set size to 1024x768
