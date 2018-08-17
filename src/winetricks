@@ -11941,7 +11941,7 @@ load_hhw()
     #   3. Run setup.exe
     w_try "$WINE" "$W_CACHE/$W_PACKAGE"/htmlhelp.exe /C "/T:$W_TMP_WIN" $W_UNATTENDED_SLASH_Q
     w_try_cd "$W_TMP"
-    sed -i "s/RunPostSetupCommands=HHUpdate//" htmlhelp.inf
+    w_try sed -i "s/RunPostSetupCommands=HHUpdate//" htmlhelp.inf
     w_try "$WINE" setup.exe
 
     if w_workaround_wine_bug 7517; then
