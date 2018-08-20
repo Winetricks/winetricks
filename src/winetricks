@@ -2750,13 +2750,16 @@ w_declare_exe()
 }
 
 # Checks that a conflicting verb is not already installed in the prefix
-# Usage: w_conflicts verb_to_install conflicts
+# Usage: w_conflicts verb_to_install conflicting_verbs
 w_conflicts()
 {
-    for x in $2
+    verb="$1"
+    conflicting_verbs="$2"
+
+    for x in $conflicting_verbs
     do
         if grep -qw "$x" "$WINEPREFIX/winetricks.log" 2>/dev/null; then
-            w_die "error: $1 conflicts with $x, which is already installed."
+            w_die "error: $verb conflicts with $x, which is already installed. You can run \`$0 --force $verb\` to ignore this check and attempt installation."
         fi
     done
 }
