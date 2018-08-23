@@ -4847,6 +4847,18 @@ winetricks_set_unattended()
     esac
 }
 
+# Usage: winetricks_print_wineprefix_info
+# Print some useful info about $WINEPREFIX if things fail in winetricks_set_wineprefix()
+winetricks_print_wineprefix_info()
+{
+    printf "WINEPREFIX INFO:\\n"
+    printf "Drive C: %s\\n\\n" "$(ls -al1 "${WINEPREFIX}/drive_c")"
+    printf "Registry info:\\n"
+    for regfile in "${WINEPREFIX}"/*.reg; do
+        printf "%s:%s\\n" "${regfile}" "$(grep '#arch=' "${regfile}")"
+    done
+}
+
 # Usage: winetricks_set_wineprefix [bottlename]
 # Bottlename must not contain spaces, slashes, or other special characters
 # If bottlename is omitted, the default bottle (~/.wine) is used.
@@ -4866,9 +4878,9 @@ winetricks_set_wineprefix()
     # The folder-name is localized!
     W_PROGRAMS_WIN="$(w_expand_env ProgramFiles)"
     case "$W_PROGRAMS_WIN" in
-        "") w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string, error message \"$(cat $W_TMP_EARLY/early_wine.err.txt)\" ";;
-        %*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string '$W_PROGRAMS_WIN' ... this can be caused by a corrupt wineprefix, by an old wine, or by not owning $WINEPREFIX" ;;
-        *unknown*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
+        "") w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string, error message \"$(cat $W_TMP_EARLY/early_wine.err.txt)\" ";;
+        %*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string '$W_PROGRAMS_WIN' ... this can be caused by a corrupt wineprefix, by an old wine, or by not owning $WINEPREFIX" ;;
+        *unknown*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
     esac
 
     case "$W_PLATFORM" in
