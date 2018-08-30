@@ -11019,6 +11019,50 @@ load_corbel()
 
 #----------------------------------------------------------------
 
+w_metadata dejavu fonts \
+    title="DejavVu fonts" \
+    publisher="DejaVu authors" \
+    homepage="https://dejavu-fonts.github.io" \
+    year="2016" \
+    media="download" \
+    file1="dejavu-fonts-ttf-2.37.tar.bz2" \
+    installed_file1="$W_FONTSDIR_WIN/dejavusans.ttf"
+
+load_dejavu()
+{
+    # Similar to liberation, can replace several MS fonts
+    w_download http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2 fa9ca4d13871dd122f61258a80d01751d603b4d3ee14095d65453b4e846e17d7
+
+    w_try_cd "${W_TMP}"
+    w_try tar -jxf "${W_CACHE}/${W_PACKAGE}/${file1}" "${file1%.tar.bz2}/ttf"
+    w_try_cp_font_files "${file1%.tar.bz2}/ttf" "${W_FONTSDIR_UNIX}"
+
+    w_register_font dejavumathtexgyre.ttf "DejaVuMathTeXGyre-Regular"
+    w_register_font dejavusans-boldoblique.ttf "DejaVu Sans Bold Oblique"
+    w_register_font dejavusans-bold.ttf "DejaVu Sans Bold"
+    w_register_font dejavusanscondensed-boldoblique.ttf "DejaVu Sans Condensed Bold Oblique"
+    w_register_font dejavusanscondensed-bold.ttf "DejaVu Sans Condensed Bold"
+    w_register_font dejavusanscondensed-oblique.ttf "DejaVu Sans Condensed Oblique"
+    w_register_font dejavusanscondensed.ttf "DejaVu Sans Condensed"
+    w_register_font dejavusans-extralight.ttf "DejaVu Sans ExtraLight"
+    w_register_font dejavusansmono-boldoblique.ttf "DejaVu Sans Mono Bold Oblique"
+    w_register_font dejavusansmono-bold.ttf "DejaVu Sans Mono Bold"
+    w_register_font dejavusansmono-oblique.ttf "DejaVu Sans Mono Oblique"
+    w_register_font dejavusansmono.ttf "DejaVu Sans Mono"
+    w_register_font dejavusans-oblique.ttf "DejaVu Sans Oblique"
+    w_register_font dejavusans.ttf "DejaVu Sans"
+    w_register_font dejavuserif-bolditalic.ttf "DejaVu Serif Bold Italic"
+    w_register_font dejavuserif-bold.ttf "DejaVu Serif Bold"
+    w_register_font dejavuserifcondensed-bolditalic.ttf "DejaVu Serif Condensed Bold Italic"
+    w_register_font dejavuserifcondensed-bold.ttf "DejaVu Serif Condensed Bold"
+    w_register_font dejavuserifcondensed-italic.ttf "DejaVu Serif Condensed Italic"
+    w_register_font dejavuserifcondensed.ttf "DejaVu Serif Condensed"
+    w_register_font dejavuserif-italic.ttf "DejaVu Serif Italic"
+    w_register_font dejavuserif.ttf "DejaVu Serif"
+}
+
+#----------------------------------------------------------------
+
 w_metadata meiryo fonts \
     title="MS Meiryo font" \
     publisher="Microsoft" \
