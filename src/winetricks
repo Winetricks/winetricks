@@ -3328,6 +3328,7 @@ winetricks_prefixmenu()
              _W_msg_games='Установить игру'
              _W_msg_benchmarks='Установить приложение для оценки производительности'
              _W_msg_default="Выберите путь для wine по умолчанию"
+             _W_msg_mkprefix="Создать новый путь wine"
              _W_msg_unattended0="Отключить автоматическую установку"
              _W_msg_unattended1="Включить автоматическую установку"
              _W_msg_showbroken0="Спрятать нерабочие программы (например, использующие DRM)"
@@ -3340,6 +3341,7 @@ winetricks_prefixmenu()
              _W_msg_games='Встановити гру'
              _W_msg_benchmarks='Встановити benchmark'
              _W_msg_default="Вибрати wineprefix за замовчуванням"
+             _W_msg_mkprefix="створити новий wineprefix"
              _W_msg_unattended0="Вимкнути автоматичне встановлення"
              _W_msg_unattended1="Увімкнути автоматичне встановлення"
              _W_msg_showbroken0="Сховати нестабільні додатки (наприклад з проблемами з DRM)"
@@ -3352,6 +3354,7 @@ winetricks_prefixmenu()
              _W_msg_games='安装一个游戏'
              _W_msg_benchmarks='安装一个基准测试软件'
              _W_msg_default="选择默认的 wine 容器"
+             _W_msg_mkprefix="创建新的 wine 容器"
              _W_msg_unattended0="禁用静默安装"
              _W_msg_unattended1="启用静默安装"
              _W_msg_showbroken0="隐藏有问题的程序 (例如那些有数字版权问题)"
@@ -3364,6 +3367,7 @@ winetricks_prefixmenu()
              _W_msg_games='安裝一個遊戲'
              _W_msg_benchmarks='安裝一個基准測試軟體'
              _W_msg_default="選取預設的 wine 容器"
+             _W_msg_mkprefix="创建新的 wine 容器"
              _W_msg_unattended0="禁用靜默安裝"
              _W_msg_unattended1="啟用靜默安裝"
              _W_msg_showbroken0="隱藏有問題的程式 (例如那些有數字版權問題)"
@@ -3376,6 +3380,7 @@ winetricks_prefixmenu()
              _W_msg_games='Ein Spiel installieren'
              _W_msg_benchmarks='Einen Benchmark-Test installieren'
              _W_msg_default="Standard wineprefix auswählen"
+             _W_msg_mkprefix="Neuen wineprefix erstellen"
              _W_msg_unattended0="Automatische Installation deaktivieren"
              _W_msg_unattended1="Automatische Installation aktivieren"
              _W_msg_showbroken0="Defekte Programme nicht anzeigen (z.B. solche mit DRM Problemen)"
@@ -3388,6 +3393,7 @@ winetricks_prefixmenu()
              _W_msg_games='Zainstalować grę'
              _W_msg_benchmarks='Zainstalować program sprawdzający wydajność komputera'
              _W_msg_default="Wybrać domyślny prefiks Wine"
+             _W_msg_mkprefix="Stwórz nowy prefiks Wine"
              _W_msg_unattended0="Wyłącz cichą instalację"
              _W_msg_unattended1="Włącz cichą instalację"
              _W_msg_showbroken0="Ukrywaj uszkodzone aplikacje (np. z problemami z DRM)"
@@ -3400,6 +3406,7 @@ winetricks_prefixmenu()
              _W_msg_games='Install a game'
              _W_msg_benchmarks='Install a benchmark'
              _W_msg_default="Select the default wineprefix"
+             _W_msg_mkprefix="Create new wineprefix"
              _W_msg_unattended0="Disable silent install"
              _W_msg_unattended1="Enable silent install"
              _W_msg_showbroken0="Hide broken apps (e.g. those with DRM problems)"
@@ -3434,6 +3441,7 @@ winetricks_prefixmenu()
                 FALSE benchmarks '$_W_msg_benchmarks' \
                 FALSE games      '$_W_msg_games' \
                 TRUE  main       '$_W_msg_default' \
+                FALSE mkprefix   '$_W_msg_mkprefix' \
                 " \
                 > "$WINETRICKS_WORKDIR"/zenity.sh
 
@@ -3474,6 +3482,7 @@ winetricks_prefixmenu()
                 benchmarks '$_W_msg_benchmarks' off \
                 apps       '$_W_msg_apps'       off \
                 main       '$_W_msg_default'    on  \
+                mkprefix   '$_W_msg_mkprefix'   off \
                 "
             if ls -d "$W_PREFIXES_ROOT"/*/dosdevices > /dev/null 2>&1; then
                 for prefix in "$W_PREFIXES_ROOT"/*/dosdevices
@@ -3495,6 +3504,41 @@ winetricks_prefixmenu()
             ;;
     esac
     unset _W_msg_help _W_msg_body _W_msg_title _W_msg_new _W_msg_default _W_msg_name
+}
+
+# Graphically create new custom wineprefix.
+# This returns two verbs: arch and prefix, e.g. "arch=32 prefix=test".
+winetricks_mkprefixmenu()
+{
+    case $LANG in
+        # TODO: translate to other languages
+        de)  _W_msg_title="Winetricks - Neues Wineprefix erstellen"
+             _W_msg_name="Name"
+             _W_msg_arch="Architektur"
+             ;;
+        *)   _W_msg_title="Winetricks - create new wineprefix"
+             _W_msg_name="Name"
+             _W_msg_arch="Architecture"
+             ;;
+    esac
+
+    case $WINETRICKS_GUI in
+        zenity)
+            zenity --forms --text="" --title "$_W_msg_title" \
+                --add-combo="$_W_msg_arch" --combo-values=32\|64 \
+                --add-entry="$_W_msg_name" \
+                | sed -e 's/^\s*|/64|/' -e 's/^/arch=/' -e 's/|/ prefix=/'
+            ;;
+        kdialog)
+            kdialog --title="$_W_msg_title" \
+                --radiolist="$_W_msg_arch" 32 32bit off 64 64bit on \
+                | sed -e 's/^$/64/' -e 's/^/arch=/'
+            kdialog --title="$_W_msg_title" --inputbox="$_W_msg_name" \
+                | sed -e 's/^/prefix=/'
+            ;;
+    esac
+
+    unset _W_msg_title _W_msg_name _W_msg_arch
 }
 
 # Display main menu, get which submenu the user wants
@@ -4248,7 +4292,7 @@ winetricks_list_all()
 {
     # Note: doh123 relies on 'winetricks list' to list main menu categories
     case $WINETRICKS_CURMENU in
-        prefix|main) echo "$WINETRICKS_CATEGORIES" | tr ' ' '\012' ; return;;
+        prefix|main|mkprefix) echo "$WINETRICKS_CATEGORIES" | sed 's/ mkprefix//' | tr ' ' '\012' ; return;;
     esac
 
     case $LANG in
@@ -5101,7 +5145,7 @@ winetricks_init()
     WINETRICKS_METADATA="$WINETRICKS_WORKDIR/metadata"
 
     # The list of categories is also hardcoded in winetricks_mainmenu() :-(
-    WINETRICKS_CATEGORIES="apps benchmarks dlls fonts games settings"
+    WINETRICKS_CATEGORIES="apps benchmarks dlls fonts games settings mkprefix"
     for _W_cat in $WINETRICKS_CATEGORIES
     do
         mkdir -p "$WINETRICKS_METADATA/$_W_cat"
@@ -20754,6 +20798,7 @@ then
                             unattended) winetricks_set_unattended 1 ; continue;;
                         esac
                         ;;
+                    mkprefix) verbs=$(winetricks_mkprefixmenu) ;;
                     settings) verbs=$(winetricks_settings_menu) ;;
                     *) verbs="$(winetricks_showmenu)" ;;
                 esac
@@ -20771,10 +20816,16 @@ then
                     winetricks_stats_init
                     # Otherwise user picked one or more real verbs.
                     case "$verbs" in
-                        prefix=*)
+                        prefix=*|arch=*)
                             # prefix menu is special, it only returns one verb, and the
-                            # verb can contain spaces
-                            execute_command "$verbs"
+                            # verb can contain spaces. If a 32bit wineprefix is created via
+                            # the GUI, this may have an "arch=* " prefix
+                            _W_arch=$(echo "$verbs" | grep -o 'arch=.*' | cut -d' ' -f1)
+                            _W_prefix=$(echo "$verbs" | grep -o 'prefix=.*')
+                            if [ -n "$_W_arch" ]; then
+                                execute_command "$_W_arch"
+                            fi
+                            execute_command "$_W_prefix"
                             # after picking a prefix, want to land in main.
                             WINETRICKS_CURMENU=main ;;
                         *)
