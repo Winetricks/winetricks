@@ -3501,7 +3501,7 @@ winetricks_prefixmenu()
 winetricks_mainmenu()
 {
     case $LANG in
-        da*) _W_msg_title='Vælg en pakke-kategori'
+        da*) _W_msg_title="Vælg en pakke-kategori - Nuværende præfiks er \"$WINEPREFIX\""
              _W_msg_body='Hvad ønsker du at gøre?'
              _W_msg_dlls="Install a Windows DLL"
              _W_msg_fonts='Install a font'
@@ -3514,7 +3514,7 @@ winetricks_mainmenu()
              _W_msg_folder='Browse files'
              _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
              ;;
-        de*) _W_msg_title='Pakettyp auswählen'
+        de*) _W_msg_title="Pakettyp auswählen - Aktueller Präfix ist \"$WINEPREFIX\""
              _W_msg_body='Was möchten Sie tun?'
              _W_msg_dlls="Windows-DLL installieren"
              _W_msg_fonts='Schriftart installieren'
@@ -3664,10 +3664,10 @@ winetricks_settings_menu()
 {
     # FIXME: these translations should really be centralized/reused:
     case $LANG in
-        da*) _W_msg_title='Vælg en pakke'
+        da*) _W_msg_title="Vælg en pakke - Nuværende præfiks er \"$WINEPREFIX\""
              _W_msg_body='Which settings would you like to change?'
              ;;
-        de*) _W_msg_title="Winetricks - Aktueller Prefix ist \"$WINEPREFIX\""
+        de*) _W_msg_title="Winetricks - Aktueller Präfix ist \"$WINEPREFIX\""
              _W_msg_body='Welche Einstellungen möchten Sie ändern?'
              ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"$WINEPREFIX\""
