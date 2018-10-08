@@ -3473,7 +3473,8 @@ winetricks_prefixmenu()
                 games      '$_W_msg_games'      off \
                 benchmarks '$_W_msg_benchmarks' off \
                 apps       '$_W_msg_apps'       off \
-                main       '$_W_msg_default'    on "
+                main       '$_W_msg_default'    on  \
+                "
             if ls -d "$W_PREFIXES_ROOT"/*/dosdevices > /dev/null 2>&1; then
                 for prefix in "$W_PREFIXES_ROOT"/*/dosdevices
                 do
@@ -3487,6 +3488,8 @@ winetricks_prefixmenu()
                     printf %s "prefix='$p' 'Select $_W_msg_name' off "
                 done
             fi
+            printf %s " $_W_cmd_unattended '$_W_msg_unattended' off"
+            printf %s " $_W_cmd_showbroken '$_W_msg_showbroken' off"
             ) > "$WINETRICKS_WORKDIR"/kdialog.sh
             sh "$WINETRICKS_WORKDIR"/kdialog.sh
             ;;
