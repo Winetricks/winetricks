@@ -1,0 +1,15 @@
+Based on the patch in https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511
+
+For devscripts 2.18.6
+
+--- a/checkbashisms
++++ b/checkbashisms
+@@ -699,7 +699,7 @@
+         $LEADIN . qr'jobs\s'   => q<jobs>,
+  #	$LEADIN . qr'jobs\s+-[^lp]\s' =>  q<'jobs' with option other than -l or -p>,
+         $LEADIN
+-          . qr'command\s+-[^p]\s' => q<'command' with option other than -p>,
++          . qr'command\s+-[^pvV]\s' =>  q<'command' with option other than -p/-v/-V>,
+         $LEADIN
+           . qr'setvar\s' =>
+           q<setvar 'foo' 'bar' should be eval 'foo="'"$bar"'"'>,

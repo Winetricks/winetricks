@@ -65,7 +65,7 @@ _EOF
 if ! "$checkbashisms" --posix "${temp}/test.sh"; then
     echo "checkbashisms fails on command -v, using patch from https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511 on a copy in ${temp} to work around"
     # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
-    ( cd "$(dirname "$checkbashisms")" && patch -p1 -o "${temp}/checkbashisms.patched" < "$OLDPWD/misc/checkbashisms-command-v.patch" && chmod +x "${temp}/checkbashisms.patched" )
+    ( cd "$(dirname "$checkbashisms")" && patch -p1 -o "${temp}/checkbashisms.patched" < "$OLDPWD/misc/checkbashisms-command-v-${TRAVIS_OS_NAME}.patch" && chmod +x "${temp}/checkbashisms.patched" )
     checkbashisms="${temp}/checkbashisms.patched"
 fi
 
