@@ -63,9 +63,13 @@ command -v grep
 _EOF
 
 if ! "$checkbashisms" --posix "${temp}/test.sh"; then
-    echo "checkbashisms fails on command -v, using patch from https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511 on a copy in ${temp} to work around"
+    echo "Use a sed expression, to add checkbashisms support for 'command -v', based on the patch from https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511"
+    echo "Creating a copy of the checkbashisms script, in ${temp}, to workaround this issue"
     # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
-    ( cd "$(dirname "$checkbashisms")" && patch -p1 -o "${temp}/checkbashisms.patched" < "$OLDPWD/misc/checkbashisms-command-v.patch" && chmod +x "${temp}/checkbashisms.patched" )
+    (
+        sed -e '/qr'\''command\\s+\-\[\^p\]\\s'\''/ { ' -e 's|\[\^p\]|[^pvV]|' -e 's| \-p>| -p/-v/-V>|' -e '}' "$checkbashisms" > "${temp}/checkbashisms.patched" && \
+        chmod +x "${temp}/checkbashisms.patched"
+    )
     checkbashisms="${temp}/checkbashisms.patched"
 fi
 
