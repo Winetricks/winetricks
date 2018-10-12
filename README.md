@@ -14,36 +14,90 @@ Tagged releases are accessible here:
 https://github.com/Winetricks/winetricks/releases
 
 # Installing
-The ```winetricks``` package should be used if it is available and up to date. The package is available in most distributions:
+The ```winetricks``` package should be used if it is available and up to date. The package is available in most mainstream (Unix-like) Operating Systems:
 
 * Arch: https://www.archlinux.org/packages/community/any/winetricks/
 * Debian: https://packages.debian.org/sid/winetricks
 * Fedora: https://fedoraproject.org/wiki/Wine#Packages
+* FreeBSD: https://www.freebsd.org/cgi/ports.cgi?query=winetricks&stype=all
 * Gentoo: https://packages.gentoo.org/packages/app-emulation/winetricks
 * Homebrew (OSX): http://brewformulas.org/Winetricks
 * MacPorts (OSX): https://www.macports.org/ports.php?by=name&substr=winetricks
 * Slackbuilds (Slackware): http://slackbuilds.org/repository/14.2/system/winetricks/?search=winetricks
-* Ubuntu: https://packages.ubuntu.com/search?keywords=winetricks Note: Ubuntu LTS versions are years out of date, a manual installation should be done instead.
+* Ubuntu: https://packages.ubuntu.com/search?keywords=winetricks
 
-If the package is unavailable, outdated (e.g., Ubuntu LTSs), or the latest version is desired, a manual installation of winetricks can be done:
+Note: packaged Debian / Ubuntu winetricks versions are typically outdated, so a manual installation is recommended.
+
+If the package is unavailable, outdated, or the latest version is desired, a manual installation of winetricks can be done. E.g.:
+
 ```
+sudo -- sh -c '
+cat > /usr/local/bin/update_winetricks.sh <<_EOF_SCRIPT
+#!/usr/bin/sh
+
+cd "${HOME}" # change to a path writeable by current user
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 chmod +x winetricks
 sudo mv winetricks /usr/local/bin
-```
-curl can be used instead of wget:
+wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks.bash-completion
+sudo mv winetricks.bash-completion /usr/share/bash-completion/completions/winetricks
+_EOF_SCRIPT
+chmod +x /usr/local/bin/update_winetricks.sh
+'
 
 ```
-curl -O https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
-chmod +x winetricks
-sudo mv winetricks /usr/local/bin
-```
-Note: /usr/local/bin must be in your $PATH for this to work.
 
-Winetricks can be updated by doing:
+To use ```curl``` instead of ```wget```: subsitute all ```wget``` calls with ```curl -O```, in the winetricks update script.
+
+Note: the path ```/usr/local/bin``` must be in your ```PATH``` (env variable) for this to work.
+
+# Updating
+This winetricks update scripts can easily automated, via (where available) a systemd timer unit...
+```
+sudo -- sh -c '
+cat > /etc/systemd/system/winetricks_update.timer <<_EOF_TIMER
+[Unit]
+Description=Run winetricks update script weekly (Saturday)
+
+[Timer]
+OnCalendar=Sat
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+_EOF_TIMER
+
+sudo cat > /etc/systemd/system/winetricks_update.service <<_EOF_SERVICE
+[Unit]
+Description=Run winetricks update script
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/update_winetricks.sh
+Type=oneshot
+_EOF_SERVICE
+'
+```
+To start and enable the winetricks update timer:
+```
+sudo systemctl daemon-reload
+sudo systemctl enable winetricks_update.timer
+sudo systemctl start winetricks_update.timer
+```
+Or using the more tradional Unix crontab...
+```
+sudo cp "/usr/local/bin/update_winetricks.sh" "/etc/cron.weekly/"
+```
+
+The core winetricks script can also be updated by simply doing:
 ```
 winetricks --self-update
 ```
+or:
+```
+sudo winetricks --self-update
+```
+for a system-wide winetricks installation.
 
 # Custom .verb files
 New dll/settings/programs can be added to Winetricks by passing a custom .verb (format below)
