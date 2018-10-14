@@ -5381,6 +5381,10 @@ winetricks_handle_option()
     return 0
 }
 
+# Test whether temporary directory is valid - before initialising script
+[ -d "$W_TMP_EARLY" ] || w_die "temporary directory: '$W_TMP_EARLY' ; does not exist"
+[ -w "$W_TMP_EARLY" ] || w_die "temporary directory: '$W_TMP_EARLY' ; is not user writeable"
+
 # Must initialize variables before calling w_metadata
 if ! test "$WINETRICKS_LIB"
 then
