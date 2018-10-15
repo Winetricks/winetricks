@@ -33,7 +33,7 @@ If the package is unavailable, outdated, or the latest version is desired, a man
 ```
 sudo -- sh -c '
 cat > /usr/local/bin/update_winetricks.sh <<_EOF_SCRIPT
-#!/usr/bin/sh
+#!/bin/sh
 
 cd "${HOME}" # change to a path writeable by current user
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
