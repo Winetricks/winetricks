@@ -5863,6 +5863,33 @@ load_d3dcompiler_43()
 
 #----------------------------------------------------------------
 
+w_metadata d3dcompiler_47 dlls \
+    title="MS d3dcompiler_47.dll" \
+    publisher="Microsoft" \
+    year="FIXME" \
+    media="download" \
+    file1="FirefoxSetup62.0.3-win32.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dcompiler_47.dll"
+
+load_d3dcompiler_47()
+{
+    # FIXME: would be awesome to find a small download that has both 32/64bit dlls, but this works for now:
+
+    w_download https://download-installer.cdn.mozilla.net/pub/firefox/releases/62.0.3/win32/ach/Firefox%20Setup%2062.0.3.exe "d6edb4ff0a713f417ebd19baedfe07527c6e45e84a6c73ed8c66a33377cc0aca" "FirefoxSetup62.0.3-win32.exe"
+    w_try_7z "$W_TMP/win32" "$W_CACHE/d3dcompiler_47/FirefoxSetup62.0.3-win32.exe" "core/d3dcompiler_47.dll"
+    w_try cp "$W_TMP/win32/core/d3dcompiler_47.dll" "$W_SYSTEM32_DLLS/d3dcompiler_47.dll"
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://download-installer.cdn.mozilla.net/pub/firefox/releases/62.0.3/win64/ach/Firefox%20Setup%2062.0.3.exe "721977f36c008af2b637aedd3f1b529f3cfed6feb10f68ebe17469acb1934986" "FirefoxSetup62.0.3-win64.exe"
+        w_try_7z "$W_TMP/win64" "$W_CACHE/d3dcompiler_47/FirefoxSetup62.0.3-win64.exe" "core/d3dcompiler_47.dll"
+        w_try cp "$W_TMP/win64/core/d3dcompiler_47.dll" "$W_SYSTEM64_DLLS/d3dcompiler_47.dll"
+    fi
+
+    w_override_dlls native d3dcompiler_47
+}
+
+#----------------------------------------------------------------
+
 w_metadata d3drm dlls \
     title="MS d3drm.dll" \
     publisher="Microsoft" \
