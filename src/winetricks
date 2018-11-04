@@ -8184,17 +8184,10 @@ load_dotnet462()
 {
     w_package_warn_win64
 
-    if w_workaround_wine_bug 42170 "Running un-official repacked .NET 4.6.2 setup until the official version is fixed."; then
-        # Un-official slim version. See https://repacks.net/forum/viewtopic.php?t=7
-        file_package="dotNetFx462_Full_x86_x64_Slim.exe"
-        w_download https://www.dropbox.com/s/1bdocgbate8hc8z/dotNetFx462_Full_x86_x64_Slim.exe?dl=1 8f03c8a9b2f4666c3707abe2d70145f200cb2f0f3b792626e64d167d1ad0565f $file_package
-        unattended_args="/ai /gm2"
-    else
-        # Official version. See https://www.microsoft.com/en-us/download/details.aspx?id=53344
-        w_download https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe 28886593e3b32f018241a4c0b745e564526dbb3295cb2635944e3a393f4278d4
-        file_package="NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
-        unattended_args="/sfxlang:1027 /q /norestart"
-    fi
+    # Official version. See https://www.microsoft.com/en-us/download/details.aspx?id=53344
+    w_download https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe 28886593e3b32f018241a4c0b745e564526dbb3295cb2635944e3a393f4278d4
+    file_package="NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
+    unattended_args="/sfxlang:1027 /q /norestart"
 
     w_call remove_mono
 
