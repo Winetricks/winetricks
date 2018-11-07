@@ -9612,6 +9612,28 @@ load_python26()
 
 #----------------------------------------------------------------
 
+w_metadata qasf dlls \
+    title="qasf.dll (from Directx 9 user redistributable)" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/qasf.dll"
+
+load_qasf()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F qasf.dll "$W_TMP/dxnt.cab"
+
+    w_try_regsvr qasf.dll
+
+    w_override_dlls native qasf
+}
+
+#----------------------------------------------------------------
+
 w_metadata qdvd dlls \
     title="qdvd.dll" \
     publisher="Microsoft" \
