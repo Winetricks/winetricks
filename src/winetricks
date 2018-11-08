@@ -10854,15 +10854,44 @@ load_winhttp()
 w_metadata wininet dlls \
     title="MS Windows Internet API" \
     publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/wininet.dll"
+
+load_wininet()
+{
+    helper_win7sp1 x86_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_1eaaa4a07717236e/wininet.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_1eaaa4a07717236e/wininet.dll" "$W_SYSTEM32_DLLS/wininet.dll"
+    helper_win7sp1 x86_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_64655b7c61c841cb/iertutil.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_64655b7c61c841cb/iertutil.dll" "$W_SYSTEM32_DLLS/iertutil.dll"
+
+    if [ "$W_ARCH" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_7ac940242f7494a4/wininet.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_7ac940242f7494a4/wininet.dll" "$W_SYSTEM64_DLLS/wininet.dll"
+        helper_win7sp1_x64 amd64_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_c083f7001a25b301/iertutil.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_c083f7001a25b301/iertutil.dll" "$W_SYSTEM64_DLLS/iertutil.dll"
+    fi
+
+    w_override_dlls native,builtin wininet
+    w_override_dlls native,builtin iertutil
+}
+
+#----------------------------------------------------------------
+
+w_metadata wininet_win2k dlls \
+    title="MS Windows Internet API" \
+    publisher="Microsoft" \
     year="2008" \
     media="download" \
     file1="../win2ksp4/W2KSP4_EN.EXE" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/wininet.dll"
 
-load_wininet()
+load_wininet_win2k()
 {
     helper_win2ksp4 i386/wininet.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/wininet.dl_
+
     w_override_dlls native,builtin wininet
 }
 
