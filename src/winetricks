@@ -4877,7 +4877,6 @@ winetricks_set_unattended()
         1)
             W_OPT_UNATTENDED=1
             # Might want to trim our stable of variables here a bit...
-            W_UNATTENDED_DASH_Q="-q"
             W_UNATTENDED_SLASH_Q="/q"
             W_UNATTENDED_SLASH_QB="/qb"
             W_UNATTENDED_SLASH_QN="/qn"
@@ -4890,7 +4889,6 @@ winetricks_set_unattended()
             ;;
         *)
             W_OPT_UNATTENDED=""
-            W_UNATTENDED_DASH_Q=""
             W_UNATTENDED_SLASH_Q=""
             W_UNATTENDED_SLASH_QB=""
             W_UNATTENDED_SLASH_QN=""
@@ -7811,7 +7809,9 @@ w_metadata dotnet35 dlls \
 
 load_dotnet35()
 {
-    w_package_unsupported_win64
+    if [ "$W_ARCH" = "win64" ] && w_workaround_wine_bug 45680 "Upgrade to 3.18 for win64 support" ,3.18 ; then
+        w_package_unsupported_win64
+    fi
 
     case "$W_PLATFORM" in
         windows_cmd) ;;
@@ -7827,11 +7827,11 @@ load_dotnet35()
 
     w_set_winver winxp
 
-    # See also https://blogs.msdn.microsoft.com/astebner/2008/07/17/scenarios-where-net-framework-3-5-setup-tries-to-connect-to-the-internet-and-how-to-avoid-them/
-    w_try_cd "$W_TMP"
-    w_try_cabextract $W_UNATTENDED_DASH_Q "$W_CACHE"/dotnet35/dotnetfx35.exe
-    w_try_cd wcu/dotNetFramework
-    "$WINE" dotNetFx35setup.exe /lang:ENU $W_UNATTENDED_SLASH_Q
+    w_override_dlls native mscoree
+    w_wineserver -w
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    "$WINE" "${file1}" /lang:ENU $W_UNATTENDED_SLASH_Q
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
