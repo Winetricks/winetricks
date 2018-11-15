@@ -10057,7 +10057,8 @@ load_vb2run()
     # See ftp://ftp.microsoft.com/Softlib/index.txt
     # 2014/05/31: Microsoft FTP is down ftp://$ftp_microsoft_com/Softlib/MSLFILES/VBRUN200.EXE
     # 2015/08/10: chatnfiles is down, conradshome.com is up (and has a LOT of old MS installers archived!)
-    w_download https://www.conradshome.com/win31/archive/softlib/vbrun200.exe 4b0811d8fdcac1fd9411786c9119dc8d98d0540948211bdbc1ac682fbe5c0228
+    # 2018/11/15: now conradshome is down ,but quaddicted.com also has it (and a lot more)
+    w_download https://www.quaddicted.com/files/mirrors/ftp.planetquake.com/aoe/downloads/VBRUN200.EXE 4b0811d8fdcac1fd9411786c9119dc8d98d0540948211bdbc1ac682fbe5c0228
     w_try_unzip "$W_TMP" "$W_CACHE"/vb2run/VBRUN200.EXE
     w_try cp -f "$W_TMP/VBRUN200.DLL" "$W_SYSTEM32_DLLS"
 }
