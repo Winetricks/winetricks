@@ -15293,49 +15293,6 @@ load_bfbc2()
 
 #----------------------------------------------------------------
 
-w_metadata cnc3_demo games \
-    title="Command & Conquer 3 Demo" \
-    publisher="EA" \
-    year="2007" \
-    media="download" \
-    file1="CnC3Demo.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Electronic Arts/Command & Conquer 3 Tiberium Wars Demo/CNC3Demo.exe"
-
-load_cnc3_demo()
-{
-    w_download "http://largedownloads.ea.com/pub/demos/CommandandConquer3/CnC3Demo.exe" 1e2499f441ef1fc3cbe447ac16361ad4247a02b9b8ec05f504161e7b5b1254e5
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run, CnC3Demo.exe
-        winwait, Conquer 3, free space to install
-        if ( w_opt_unattended > 0 ) {
-            controlclick, button1
-            winwait, WinZip, After installation
-            controlclick, button1
-            winwait, Conquer 3, InstallShield
-            controlclick, button1
-            winwait, Conquer 3, license
-            controlclick, button3
-            controlclick, button5
-            winwait, Conquer 3, setup type
-            controlclick, button5
-            winwait, Conquer 3, EA Link
-            controlclick, button1
-            winwait, Conquer 3, GameSpy
-            controlclick, button1
-        }
-        winwait, Conquer 3, Launch the program
-        if ( w_opt_unattended > 0 )
-            controlclick, button1
-
-        winwaitclose, Conquer 3, Launch the program
-    "
-}
-
-#----------------------------------------------------------------
-
 w_metadata cnc_redalert3_demo games \
     title="Command & Conquer Red Alert 3 Demo" \
     publisher="EA" \
