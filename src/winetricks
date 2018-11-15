@@ -15293,26 +15293,6 @@ load_bfbc2()
 
 #----------------------------------------------------------------
 
-w_metadata cnc_tiberian_sun games \
-    title="Command & Conquer: Tiberian Sun (2010 edition)" \
-    publisher="EA" \
-    year="1999" \
-    media="download" \
-    file1="OfficialCnCTiberianSun.rar" \
-    installed_exe1="$W_PROGRAMS_X86_WIN\\EA Games\\Command & Conquer The First Decade\\Command & Conquer(tm) Tiberian Sun(tm)\\SUN\\Game.exe"
-
-load_cnc_tiberian_sun()
-{
-    w_download http://download.fileplanet.com/ftp1/022010/OfficialCnCTiberianSun.rar b04219e715511de9baa2feb9827013c8e106f8d6b9b563936b8a2f650305dec5
-
-    w_try_cd "$W_PROGRAMS_X86_UNIX"
-    # FIXME: we need a progress indicator when unpacking large archives
-    w_info "Unpacking rar file.  This will take a minute."
-    w_try_unrar "$W_CACHE/$W_PACKAGE/$file1"
-}
-
-#----------------------------------------------------------------
-
 w_metadata cnc3_demo games \
     title="Command & Conquer 3 Demo" \
     publisher="EA" \
