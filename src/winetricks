@@ -7364,7 +7364,7 @@ w_metadata dotnet11 dlls \
 
 load_dotnet11()
 {
-    w_package_unsupported_win64
+    #w_package_unsupported_win64
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=26
     w_download https://download.microsoft.com/download/a/a/c/aac39226-8825-44ce-90e3-bf8203e74006/dotnetfx.exe ba0e58ec93f2ffd54fc7c627eeca9502e11ab3c6fc85dcbeff113bd61d995bce
@@ -7420,7 +7420,7 @@ w_metadata dotnet11sp1 dlls \
 
 load_dotnet11sp1()
 {
-    w_package_unsupported_win64
+    #w_package_unsupported_win64
 
     w_download https://download.microsoft.com/download/8/b/4/8b4addd8-e957-4dea-bdb8-c4e00af5b94b/NDP1.1sp1-KB867460-X86.exe 2c0a35409ff0873cfa28b70b8224e9aca2362241c1f0ed6f622fef8d4722fd9a
 
@@ -7475,7 +7475,7 @@ w_metadata dotnet20 dlls \
 
 load_dotnet20()
 {
-    w_package_unsupported_win64
+    #w_package_unsupported_win64
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=19
     w_download https://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe 46693d9b74d12454d117cc61ff2e9481cabb100b4d74eb5367d3cf88b89a0e71
@@ -7590,7 +7590,7 @@ w_metadata dotnet20sp1 dlls \
 
 load_dotnet20sp1()
 {
-    w_package_unsupported_win64
+    #w_package_unsupported_win64
 
     # FIXME: URL?
     w_download https://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe c36c3a1d074de32d53f371c665243196a7608652a2fc6be9520312d5ce560871
@@ -7651,7 +7651,7 @@ w_metadata dotnet20sp2 dlls \
 
 load_dotnet20sp2()
 {
-    w_package_unsupported_win64
+    #w_package_unsupported_win64
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=1639
     w_download https://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 6e3f363366e7d0219b7cb269625a75d410a5c80d763cc3d73cf20841084e851f
@@ -7694,7 +7694,7 @@ w_metadata dotnet30 dlls \
 
 load_dotnet30()
 {
-    w_package_unsupported_win64
+    #w_package_unsupported_win64
 
     # Originally at https://msdn.microsoft.com/en-us/netframework/bb264589.aspx
     # No longer on microsoft.com, and archive.org is unreliablel. Choose amongst the oldest/most reliable looking from
@@ -7764,7 +7764,7 @@ w_metadata dotnet30sp1 dlls \
 
 load_dotnet30sp1()
 {
-    w_package_unsupported_win64
+    #w_package_unsupported_win64
 
     # FIXME: URL?
     w_download https://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 3100df4d4db3965ead9520c887a534115cf6fc7ba100abde45226958b865695b
@@ -7855,7 +7855,7 @@ w_metadata dotnet35sp1 dlls \
 
 load_dotnet35sp1()
 {
-    w_package_unsupported_win64
+    #w_package_unsupported_win64
 
     case "$W_PLATFORM" in
         windows_cmd) ;;
@@ -7977,6 +7977,7 @@ load_dotnet45()
     w_override_dlls native mscoree
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
+    # FIXME: not needed now?
     w_set_winver win2k3
 }
 
@@ -8029,6 +8030,7 @@ load_dotnet452()
     w_override_dlls native mscoree
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
+    # FIXME: not needed now?
     w_set_winver win2k3
 }
 
