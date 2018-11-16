@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/sh
+
 # shellcheck disable=SC2030,SC2031
 # SC2030: Modification of WINE is local (to subshell caused by (..) group).
 # SC2031: WINE was modified in a subshell. That change might be lost
@@ -7,7 +8,20 @@
 # Name of this version of winetricks (YYYYMMDD)
 # (This doesn't change often, use the sha256sum of the file when reporting problems)
 WINETRICKS_VERSION=20180815-next
-
+# added correct install message on any other systems from Ubuntu
+if [ -f /etc/blackPanther-release ];then
+    INSTALLCMD="installing"
+    GUIINSTALLCMD="app-helper"
+elif [ -f /etc/fedora-release -o  -f /etc/redhat-release ];then
+    INSTALLCMD="dnf install"
+    GUIINSTALLCMD="pkcon install"
+elif [ -f /etc/mandrake-release -o -f /etc/mandriva-release -o -f /etc/mangeia-release -o -f /etc/rosa-release ];then
+    INSTALLCMD="urpmi"
+    GUIINSTALLCMD="gurpmi2"
+else 
+    INSTALLCMD="sudo apt-get install"
+    GUIINSTALLCMD="gnome-software"
+fi
 # This is a UTF-8 file
 # You should see an o with two dots over it here [ö]
 # You should see a micro (u with a tail) here [µ]
@@ -195,7 +209,7 @@ w_askpermission()
 
     case $WINETRICKS_GUI in
         zenity) $WINETRICKS_GUI "$_W_timeout" --question --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
-        kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
+        pydialog|kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
         none)
             if [ -n "$_W_timeout" ]; then
                 # -t / TMOUT don't seem to be portable, so just assume yes in unattended mode
@@ -233,7 +247,7 @@ w_info()
 
     case $WINETRICKS_GUI in
         zenity) $WINETRICKS_GUI "$_W_timeout" --info --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
-        kdialog) $WINETRICKS_GUI --title winetricks --msgbox "$@" ;;
+        pydialog|kdialog) $WINETRICKS_GUI --title winetricks --msgbox "$@" ;;
         none) ;;
     esac
 
@@ -256,8 +270,10 @@ w_warn()
 
     case $WINETRICKS_GUI in
         zenity) $WINETRICKS_GUI "$_W_timeout" --error --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
-        kdialog) $WINETRICKS_GUI --title winetricks --error "$@" ;;
-        none) ;;
+        pydialog|kdialog) $WINETRICKS_GUI --title winetricks --error "$@" ;;
+        none) 
+        [ -x $(which notify-send) ]&& notify-send  "Winetricks Warn"  "$@"
+        ;;
     esac
 
     unset _W_timeout
@@ -279,8 +295,10 @@ w_warn_cancel()
     # Zenity has no cancel button, but will set status to 1 if you click the go-away X
     case $WINETRICKS_GUI in
         zenity) $WINETRICKS_GUI "$_W_timeout" --error --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
-        kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
-        none) ;;
+        pydialog|kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
+        none)
+        [ -x $(which notify-send) ]&& notify-send  "Winetricks Warn"  "$@"
+        ;;
     esac
 
     # can't unset, it clears status
@@ -394,7 +412,7 @@ w_try_7z()
     if test -x "$(command -v 7z 2>/dev/null)"; then
         w_try 7z x "$filename" -o"$destdir" "$@"
     else
-        w_warn "Cannot find 7z.  Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip-plugins')."
+        w_warn "Cannot find 7z.  Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. '$INSTALLCMD p7zip-full  or $GUIINSTALLCMD p7zip-plugins')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
         # errors out if there is a space between -o and path
         w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$filename")" -o"$(w_pathconv -w "$destdir")" "$@"
@@ -410,7 +428,7 @@ w_try_ar()
     if test -x "$(command -v ar 2>/dev/null)"; then
         w_try ar x "$@"
     else
-        w_warn "Cannot find ar.  Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
+        w_warn "Cannot find ar.  Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. '$INSTALLCMD binutils  or $GUIINSTALLCMD binutils')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
 
         # -t* prevents 7-zip from decompressing .tar.xz to .tar, see
@@ -423,7 +441,7 @@ w_try_cabextract()
 {
     # Not always installed, but shouldn't be fatal unless it's being used
     if test ! -x "$(command -v cabextract 2>/dev/null)"; then
-        w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt-get install cabextract' or 'sudo yum install cabextract')."
+        w_die "Cannot find cabextract.  Please install it (e.g. '$INSTALLCMD cabextract  or $GUIINSTALLCMD cabextract')."
     fi
 
     w_try cabextract -q "$@"
@@ -553,7 +571,7 @@ w_try_unrar()
     if test -x "$(command -v unrar 2>/dev/null)"; then
         w_try unrar x "$@"
     else
-        w_warn "Cannot find unrar.  Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt-get install unrar' or 'sudo yum install unrar')."
+        w_warn "Cannot find unrar.  Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. '$INSTALLCMD unrar  or $GUIINSTALLCMD unrar')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
         w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$1")"
     fi
@@ -580,7 +598,7 @@ w_try_unzip()
             1|*) w_warn "Unzip failed, trying Windows 7-Zip instead." ;;
         esac
     else
-        w_warn "Cannot find unzip.  Using Windows 7-Zip instead. (You can avoid this by installing unzip, e.g. 'sudo apt-get install unzip' or 'sudo yum install unzip')."
+        w_warn "Cannot find unzip.  Using Windows 7-Zip instead. (You can avoid this by installing unzip, e.g. '$INSTALLCMD unzip  or $GUIINSTALLCMD unzip')."
     fi
 
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
@@ -636,9 +654,12 @@ w_read_key()
 
         case $WINETRICKS_GUI in
             *zenity) W_KEY=$(zenity --entry --text "$_W_keymsg") ;;
-            *kdialog) W_KEY=$(kdialog --inputbox "$_W_keymsg") ;;
+            *pydialog|*kdialog) W_KEY=$(kdialog --inputbox "$_W_keymsg") ;;
             *xmessage) w_die "sorry, can't read key from GUI with xmessage" ;;
-            none) printf %s "$_W_keymsg": ; read -r W_KEY ;;
+            none) 
+            [ -x $(which notify-send) ]&& notify-send  "Winetricks Warn"  "$@"
+            printf %s "$_W_keymsg": ; read -r W_KEY 
+            ;;
         esac
 
         if test "$W_KEY" = ""; then
@@ -1103,6 +1124,7 @@ w_download_to()
         w_try_cd "$_W_cache"
         # Mac folks tend to have curl rather than wget
         # On Mac, 'which' doesn't return good exit status
+        [ -x $(which notify-send 2>/dev/null) ]&& notify-send -i wine -u low "Downloading" "$_W_url to $_W_cache"
         echo "Downloading $_W_url to $_W_cache"
 
         # For sites that prefer Mozilla in the user-agent header, set W_BROWSERAGENT=1
@@ -1466,7 +1488,7 @@ w_question()
 {
     case $WINETRICKS_GUI in
         *zenity) $WINETRICKS_GUI --entry --text "$1" ;;
-        *kdialog) $WINETRICKS_GUI --inputbox "$1" ;;
+        *pydialog|*kdialog) $WINETRICKS_GUI --inputbox "$1" ;;
         *xmessage) w_die "sorry, can't ask question with xmessage" ;;
         none)
             # Using printf instead of echo because we don't want a newline
@@ -3224,6 +3246,10 @@ winetricks_detect_gui()
         WINETRICKS_GUI_VERSION="$(zenity --version)"
         WINETRICKS_MENU_HEIGHT=500
         WINETRICKS_MENU_WIDTH=1010
+    elif test -x "$(command -v pydialog 2>/dev/null)"; then
+        echo "Zenity not found, using PyDialog"
+        WINETRICKS_GUI=pydialog
+        WINETRICKS_GUI_VERSION="$(pydialog --version)"
     elif test -x "$(command -v kdialog 2>/dev/null)"; then
         echo "Zenity not found!  Using kdialog as poor substitute."
         WINETRICKS_GUI=kdialog
@@ -3470,9 +3496,44 @@ winetricks_prefixmenu()
             sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
             ;;
 
+        pydialog)
+            (
+            ICON=$(locate wine.png | grep /wine | head -n 1)
+            [ -n "$ICON" ]&&WINEICON="<img src=\"$ICON\" height=\"48\">"
+                printf %s "$WINETRICKS_GUI \
+                --geometry 600x400+100+100 \
+                --title '$_W_msg_title' \
+                --separate-output \
+                --radiolist '$WINEICON $_W_msg_body' \
+                help       '$_W_msg_help'       off \
+                games      '$_W_msg_games'      off \
+                benchmarks '$_W_msg_benchmarks' off \
+                apps       '$_W_msg_apps'       off \
+                main       '$_W_msg_default'    on  \
+                mkprefix   '$_W_msg_mkprefix'   off \
+                "
+            if ls -d "$W_PREFIXES_ROOT"/*/dosdevices > /dev/null 2>&1; then
+                for prefix in "$W_PREFIXES_ROOT"/*/dosdevices
+                do
+                    q="${prefix%%/dosdevices}"
+                    p="${q##*/}"
+                    if test -f "$W_PREFIXES_ROOT/$p/wrapper.cfg"; then
+                        _W_msg_name="$p ($(winetricks_get_prefix_var name))"
+                    else
+                        _W_msg_name="$p"
+                    fi
+                    printf %s "prefix='$p' 'Select $_W_msg_name' off "
+                done
+            fi
+            printf %s " $_W_cmd_unattended '$_W_msg_unattended' off"
+            printf %s " $_W_cmd_showbroken '$_W_msg_showbroken' off"
+            ) > "$WINETRICKS_WORKDIR"/$WINETRICKS_GUI.sh
+            sh "$WINETRICKS_WORKDIR"/$WINETRICKS_GUI.sh
+            ;;
+
         kdialog)
             (
-            printf %s "kdialog \
+            printf %s "$WINETRICKS_GUI \
                 --geometry 600x400+100+100 \
                 --title '$_W_msg_title' \
                 --separate-output \
@@ -3499,8 +3560,8 @@ winetricks_prefixmenu()
             fi
             printf %s " $_W_cmd_unattended '$_W_msg_unattended' off"
             printf %s " $_W_cmd_showbroken '$_W_msg_showbroken' off"
-            ) > "$WINETRICKS_WORKDIR"/kdialog.sh
-            sh "$WINETRICKS_WORKDIR"/kdialog.sh
+            ) > "$WINETRICKS_WORKDIR"/$WINETRICKS_GUI.sh
+            sh "$WINETRICKS_WORKDIR"/$WINETRICKS_GUI.sh
             ;;
     esac
     unset _W_msg_help _W_msg_body _W_msg_title _W_msg_new _W_msg_default _W_msg_name
@@ -3529,11 +3590,11 @@ winetricks_mkprefixmenu()
                 --add-entry="$_W_msg_name" \
                 | sed -e 's/^\s*|/64|/' -e 's/^/arch=/' -e 's/|/ prefix=/'
             ;;
-        kdialog)
-            kdialog --title="$_W_msg_title" \
+        pydialog|kdialog)
+            $WINETRICKS_GUI --title="$_W_msg_title" \
                 --radiolist="$_W_msg_arch" 32 32bit off 64 64bit on \
                 | sed -e 's/^$/64/' -e 's/^/arch=/'
-            kdialog --title="$_W_msg_title" --inputbox="$_W_msg_name" \
+            $WINETRICKS_GUI --title="$_W_msg_title" --inputbox="$_W_msg_name" \
                 | sed -e 's/^/prefix=/'
             ;;
     esac
@@ -3690,6 +3751,27 @@ winetricks_mainmenu()
             sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
             ;;
 
+        pydialog)
+            $WINETRICKS_GUI --geometry 600x400+100+100 \
+                    --title "$_W_msg_title" \
+                    --separate-output \
+                    --radiolist \
+                    "$_W_msg_body"\
+                    dlls        "$_W_msg_dlls" off \
+                    fonts       "$_W_msg_fonts" off \
+                    settings    "$_W_msg_settings" off \
+                    winecfg     "$_W_msg_winecfg" off \
+                    regedit     "$_W_msg_regedit" off \
+                    taskmgr     "$_W_msg_taskmgr" off \
+                    explorer    "$_W_msg_explorer" off \
+                    uninstaller "$_W_msg_uninstaller" off \
+                    shell       "$_W_msg_shell" off \
+                    folder      "$_W_msg_folder" off \
+                    annihilate  "$_W_msg_annihilate" off \
+                    $_W_cmd_unattended "$_W_msg_unattended" off \
+
+            ;;
+
         kdialog)
             $WINETRICKS_GUI --geometry 600x400+100+100 \
                     --title "$_W_msg_title" \
@@ -3710,6 +3792,7 @@ winetricks_mainmenu()
                     $_W_cmd_unattended "$_W_msg_unattended" off \
 
             ;;
+
     esac
     unset _W_msg_body _W_msg_title _W_msg_apps _W_msg_benchmarks _W_msg_dlls _W_msg_games _W_msg_settings
 }
@@ -3873,14 +3956,15 @@ winetricks_settings_menu()
             sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
             ;;
 
-        kdialog)
+        pydialog|kdialog)
             (
-                printf %s "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --checklist '$_W_msg_body' "
+                printf %s "$WINETRICKS_GUI --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --checklist '$_W_msg_body' "
                 winetricks_list_all | sed 's/\([^ ]*\)  *\(.*\)/\1 "\1 - \2" off /' | tr '\012' ' '
-            ) > "$WINETRICKS_WORKDIR"/kdialog.sh
+            ) > "$WINETRICKS_WORKDIR"/$WINETRICKS_GUI.sh
 
-            sh "$WINETRICKS_WORKDIR"/kdialog.sh
+            sh "$WINETRICKS_WORKDIR"/$WINETRICKS_GUI.sh
             ;;
+
     esac
 
     unset _W_msg_body _W_msg_title
@@ -4114,14 +4198,15 @@ winetricks_showmenu()
                 tr '\012' ' '
             ;;
 
-        kdialog)
+        pydialog|kdialog)
             (
-                printf %s "kdialog --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --checklist '$_W_msg_body' "
+                printf %s "$WINETRICKS_GUI --geometry 600x400+100+100 --title '$_W_msg_title' --separate-output --checklist '$_W_msg_body' "
                 winetricks_list_all | sed 's/\([^ ]*\)  *\(.*\)/\1 "\1 - \2" off /' | tr '\012' ' '
-            ) > "$WINETRICKS_WORKDIR"/kdialog.sh
+            ) > "$WINETRICKS_WORKDIR"/$WINETRICKS_GUI.sh
 
-            sh "$WINETRICKS_WORKDIR"/kdialog.sh
+            sh "$WINETRICKS_WORKDIR"/$WINETRICKS_GUI.sh
             ;;
+
     esac
 
     unset _W_msg_body _W_msg_title
@@ -4568,7 +4653,7 @@ winetricks_cache_iso()
     # Note: if user presses ^C, winetricks_cleanup will call winetricks_iso_cleanup
     # FIXME: add progress bar for kde, too
     case $WINETRICKS_GUI in
-        none|kdialog)
+        none|pydialog|kdialog)
             while ps -p "$WINETRICKS_DD_PID" > /dev/null 2>&1
             do
                 sleep 5
@@ -5238,7 +5323,9 @@ winetricks_init()
             W_DRIVE_C="C:/"
             ;;
         *)
-            WINE="${WINE:-wine}"
+            #WINE="${WINE:-wine}"
+            WINE="$(which wine 2>/dev/null||which wine32 2>/dev/null|| which wine64 2>/dev/null| sed 's|.*/||')"
+            echo "Binary: $WINE"
             # Find wineserver.
             # Some distributions (Debian before wine 1.8-2) don't have it on the path.
             for x in \
