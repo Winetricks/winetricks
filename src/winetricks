@@ -7004,7 +7004,10 @@ w_metadata dxvk80 dlls \
 load_dxvk80()
 {
     # https://github.com/doitsujin/dxvk
-    w_download "https://github.com/doitsujin/dxvk/releases/download/v0.80/dxvk-0.80.tar.gz" f9e736cdbf1e83e45ca748652a94a3a189fc5accde1eac549b2ba5af8f7acacb
+    # 2018/09/23: f9e736cdbf1e83e45ca748652a94a3a189fc5accde1eac549b2ba5af8f7acacb
+    # 2018/11/17: 7058a834bb006cad5462933110449b434df561e67d83f68d3965ecc74e2e1cbc
+    # See: https://github.com/doitsujin/dxvk/issues/773
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v0.80/dxvk-0.80.tar.gz" 7058a834bb006cad5462933110449b434df561e67d83f68d3965ecc74e2e1cbc
     helper_dxvk "$file1" "d3d10_enabled" "3.10" "1.0.76"
 }
 
