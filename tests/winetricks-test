@@ -383,7 +383,7 @@ test_command()
             skip "$command is not supported on $WINEARCH, requires win64"
             archskip=1
         else
-            fail "test_command $command failed!"
+            pass "test_command $command expected to fail, and did fail!"
             return
         fi
     else
