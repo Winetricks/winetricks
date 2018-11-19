@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
 # shellcheck disable=SC2030,SC2031
 # SC2030: Modification of WINE is local (to subshell caused by (..) group).
@@ -8,14 +8,15 @@
 # Name of this version of winetricks (YYYYMMDD)
 # (This doesn't change often, use the sha256sum of the file when reporting problems)
 WINETRICKS_VERSION=20180815-next
-# added correct install message on any other systems from Ubuntu
+
+# added correct install message on any other systems what different from Deb/Ubuntu
 if [ -f /etc/blackPanther-release ];then
     INSTALLCMD="installing"
     GUIINSTALLCMD="app-helper"
-elif [ -f /etc/fedora-release -o  -f /etc/redhat-release ];then
+elif [ -f /etc/fedora-release ]||[ -f /etc/redhat-release ];then
     INSTALLCMD="dnf install"
     GUIINSTALLCMD="pkcon install"
-elif [ -f /etc/mandrake-release -o -f /etc/mandriva-release -o -f /etc/mangeia-release -o -f /etc/rosa-release ];then
+elif [ -f /etc/mandrake-release ]||[ -f /etc/mandriva-release ]||[ -f /etc/mangeia-release ]||[ -f /etc/rosa-release ];then
     INSTALLCMD="urpmi"
     GUIINSTALLCMD="gurpmi2"
 else 
@@ -296,9 +297,7 @@ w_warn_cancel()
     case $WINETRICKS_GUI in
         zenity) $WINETRICKS_GUI "$_W_timeout" --error --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
         pydialog|kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
-        none)
-        [ -x $(which notify-send) ]&& notify-send  "Winetricks Warn"  "$@"
-        ;;
+        none) [ -x $(which notify-send 2>/dev/null) ]&& notify-send  "Winetricks Warn"  "$@" ;;
     esac
 
     # can't unset, it clears status
