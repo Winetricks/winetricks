@@ -7596,27 +7596,29 @@ w_metadata dotnet20sp1 dlls \
 
 load_dotnet20sp1()
 {
-    #w_package_unsupported_win64
-
-    # FIXME: URL?
-    w_download https://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe c36c3a1d074de32d53f371c665243196a7608652a2fc6be9520312d5ce560871
-
     w_call remove_mono
-
-    WINEDLLOVERRIDES=
-    w_warn "Setting windows version so installer works"
-
-    w_set_winver win2k
 
     WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b
     export WINEDLLOVERRIDES
 
-    # FIXME: still needed?
-    # Workaround Wine/Mono integration:
-    "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v2.0.50727" /v Version /t REG_SZ /d "2.0.50727" /f
+    if [ "$W_ARCH" = "win32" ]; then
+        # https://www.microsoft.com/en-us/download/details.aspx?id=16614
+        w_download https://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe c36c3a1d074de32d53f371c665243196a7608652a2fc6be9520312d5ce560871
+        exe="NetFx20SP1_x86.exe"
+
+        w_warn "Setting windows version so installer works"
+        w_set_winver win2k
+    elif [ "$W_ARCH" = "win64" ]; then
+        # https://www.microsoft.com/en-us/download/details.aspx?id=6041
+        w_download https://download.microsoft.com/download/9/8/6/98610406-c2b7-45a4-bdc3-9db1b1c5f7e2/NetFx20SP1_x64.exe 1731e53de5f48baae0963677257660df1329549e81c48b4d7db7f7f3f2329aab
+        exe="NetFx20SP1_x64.exe"
+
+        w_warn "Setting windows version so installer works"
+        w_set_winver winxp
+    fi
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    "$WINE" NetFx20SP1_x86.exe ${W_OPT_UNATTENDED:+/q}
+    "$WINE" "$exe" ${W_OPT_UNATTENDED:+/q}
     status=$?
 
     case $status in
@@ -7626,13 +7628,16 @@ load_dotnet20sp1()
         *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
     esac
 
-    # We can't stop installing dotnet20sp1 in win2k mode until Wine supports
-    # reparse/junction points
-    # (see https://bugs.winehq.org/show_bug.cgi?id=10467#c57 )
-    # so for now just remove the bogus msvc*80.dll files it installs.
-    # See also https://bugs.winehq.org/show_bug.cgi?id=16577
-    # This affects Victoria 2 demo, see https://forum.paradoxplaza.com/forum/showthread.php?p=11523967
-    rm -f "$W_SYSTEM32_DLLS"/msvc?80.dll
+    if [ "$W_ARCH" = "win32" ]; then
+        # We can't stop installing dotnet20sp1 in win2k mode until Wine supports
+        # reparse/junction points
+        # (see https://bugs.winehq.org/show_bug.cgi?id=10467#c57 )
+        # so for now just remove the bogus msvc*80.dll files it installs.
+        # See also https://bugs.winehq.org/show_bug.cgi?id=16577
+        # This affects Victoria 2 demo, see https://forum.paradoxplaza.com/forum/showthread.php?p=11523967
+        rm -f "$W_SYSTEM32_DLLS"/msvc?80.dll
+
+    fi
 
     w_unset_winver
 
