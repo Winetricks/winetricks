@@ -5667,8 +5667,9 @@ load_adobeair()
 
     # See https://bugs.winehq.org/show_bug.cgi?id=43506
     # and https://github.com/Winetricks/winetricks/issues/821
+    # Note: must be -silent, not /silent. /silent gives error 'too many arguments'
     if w_workaround_wine_bug 43506 "Forcing quiet install"; then
-        w_try "$WINE" AdobeAIRInstaller.exe -silent
+        w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
     else
         w_try "$WINE" AdobeAIRInstaller.exe $W_UNATTENDED_DASH_SILENT
     fi
