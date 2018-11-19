@@ -5314,7 +5314,8 @@ winetricks_init()
     _wine_version_stripped="$(echo "$WINETRICKS_WINE_VERSION" | cut -d ' ' -f1 | sed -e 's/wine-//' -e 's/-rc.*//')"
 
     # If WINE is < 3.0, warn user:
-    if w_wine_version_in 3.0, ; then
+    # 3.0 doesn't do what I thought it would
+    if w_wine_version_in 2.99, ; then
         w_warn "Your version of wine $_wine_version_stripped is no longer supported upstream. You should upgrade to 3.x"
     fi
 
