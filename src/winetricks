@@ -7362,6 +7362,7 @@ w_metadata dotnet11 dlls \
 
 load_dotnet11()
 {
+    # The installer itself doesn't support 64-bit
     w_package_unsupported_win64
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=26
