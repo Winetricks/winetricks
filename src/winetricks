@@ -7662,17 +7662,26 @@ w_metadata dotnet20sp2 dlls \
 
 load_dotnet20sp2()
 {
-    #w_package_unsupported_win64
-
-    # https://www.microsoft.com/en-us/download/details.aspx?id=1639
-    w_download https://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 6e3f363366e7d0219b7cb269625a75d410a5c80d763cc3d73cf20841084e851f
-
     w_call remove_mono
 
+    WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b
+    export WINEDLLOVERRIDES
+
+    w_warn "Setting windows version so installer works"
     w_set_winver winxp
 
+    if [ "$W_ARCH" = "win32" ]; then
+        # https://www.microsoft.com/en-us/download/details.aspx?id=1639
+        w_download https://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x86.exe 6e3f363366e7d0219b7cb269625a75d410a5c80d763cc3d73cf20841084e851f
+        exe="NetFx20SP2_x86.exe"
+    elif [ "$W_ARCH" = "win64" ]; then
+        # https://www.microsoft.com/en-us/download/details.aspx?id=1639
+        w_download https://download.microsoft.com/download/c/6/e/c6e88215-0178-4c6c-b5f3-158ff77b1f38/NetFx20SP2_x64.exe
+        exe="NetFx20SP2_x64.exe"
+    fi
+
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" NetFx20SP2_x86.exe ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
+    "$WINE" "$exe" ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
     status=$?
 
     case $status in
@@ -7681,6 +7690,16 @@ load_dotnet20sp2()
         194) echo "exit status $status - normal, user selected 'restart later'" ;;
         *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
     esac
+
+    if [ "$W_ARCH" = "win32" ]; then
+        # We can't stop installing dotnet20sp1 in win2k mode until Wine supports
+        # reparse/junction points
+        # (see https://bugs.winehq.org/show_bug.cgi?id=10467#c57 )
+        # so for now just remove the bogus msvc*80.dll files it installs.
+        # See also https://bugs.winehq.org/show_bug.cgi?id=16577
+        # This affects Victoria 2 demo, see https://forum.paradoxplaza.com/forum/showthread.php?p=11523967
+        rm -f "$W_SYSTEM32_DLLS"/msvc?80.dll
+    fi
 
     w_unset_winver
 
