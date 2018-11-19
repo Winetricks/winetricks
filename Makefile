@@ -10,7 +10,7 @@
 # Public License version 2.1 (or later), as published by the Free
 # Software Foundation. Please see the file COPYING for details.
 #
-# Web Page: http://winetricks.org
+# Web Page: https://github.com/Winetricks/winetricks
 #
 # Maintainers:
 # Austin English <austinenglish!gmail.com>
