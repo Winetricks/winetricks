@@ -7724,7 +7724,8 @@ w_metadata dotnet30 dlls \
 
 load_dotnet30()
 {
-    #w_package_unsupported_win64
+    # I can't find a 64-bit installer anywhere
+    w_package_unsupported_win64
 
     # Originally at https://msdn.microsoft.com/en-us/netframework/bb264589.aspx
     # No longer on microsoft.com, and archive.org is unreliablel. Choose amongst the oldest/most reliable looking from
