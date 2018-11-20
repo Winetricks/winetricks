@@ -12810,6 +12810,9 @@ w_metadata ie8 dlls \
 
 load_ie8()
 {
+    # Installer itself bails out
+    w_package_unsupported_win64
+
     # Bundled in Windows 7, so refuses to install. Works with XP:
     w_set_winver winxp
 
