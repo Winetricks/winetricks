@@ -365,16 +365,18 @@ test_command()
     $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@"
     return=$?
 
+    if [ "$return" = "32" ] && [ "$WINEARCH" != "win32" ]; then
+        skip "$command is not supported on $WINEARCH, requires win32"
+        archskip=1
+    elif [ "$return" = "64" ] && [ "$WINEARCH" != "win64" ]; then
+        skip "$command is not supported on $WINEARCH, requires win64"
+        archskip=1
+    fi
+
     if [ "$EXPECT_FAIL" = "yes" ] ; then
         # A success is failure:
         if [ "$return" = "0" ] ; then
             fail "$command succeeded, should have failed"
-        elif [ "$return" = "32" ] && [ "$WINEARCH" != "win32" ]; then
-            skip "$command is not supported on $WINEARCH, requires win32"
-            archskip=1
-        elif [ "$return" = "64" ] && [ "$WINEARCH" != "win64" ]; then
-            skip "$command is not supported on $WINEARCH, requires win64"
-            archskip=1
         else
             pass "test_command $command expected to fail, and did fail!"
             return
