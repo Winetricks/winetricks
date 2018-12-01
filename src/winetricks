@@ -545,6 +545,12 @@ w_try_regsvr()
     w_try "$WINE" regsvr32 $W_UNATTENDED_SLASH_S "$@"
 }
 
+w_try_regsvr64()
+{
+    # shellcheck disable=SC2086
+    w_try "$WINE64" regsvr32 $W_UNATTENDED_SLASH_S "$@"
+}
+
 w_try_unrar()
 {
     # $1 - zipfile to extract (keeping internal paths, in cwd)
