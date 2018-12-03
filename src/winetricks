@@ -9718,23 +9718,26 @@ load_qedit()
 #----------------------------------------------------------------
 
 w_metadata quartz dlls \
-    title="quartz.dll (from Directx 9 user redistributable)" \
+    title="quartz.dll" \
     publisher="Microsoft" \
-    year="2010" \
+    year="2011" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/quartz.dll"
 
 load_quartz()
 {
-    helper_directx_dl
-
-    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F quartz.dll "$W_TMP/dxnt.cab"
-
+    helper_win7sp1 x86_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_a877a1cc4c284497/quartz.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_a877a1cc4c284497/quartz.dll" "$W_SYSTEM32_DLLS/quartz.dll"
     w_try_regsvr quartz.dll
 
-    w_override_dlls native quartz
+    if [ "$W_ARCH" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_04963d500485b5cd/quartz.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_04963d500485b5cd/quartz.dll" "$W_SYSTEM64_DLLS/quartz.dll"
+        w_try_regsvr64 quartz.dll
+    fi
+
+    w_override_dlls native,builtin quartz
 }
 
 #----------------------------------------------------------------
