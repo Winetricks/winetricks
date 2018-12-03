@@ -9051,6 +9051,11 @@ w_metadata mdac28 dlls \
 
 load_mdac28()
 {
+    # Not a blocker, depends on gcc version
+    if w_workaround_wine_bug 45627 "Depending on your compiler, you may see crashes before wine-3.21. See https://bugs.winehq.org/show_bug.cgi?id=45627" ,3.21; then
+        true
+    fi
+
     # https://www.microsoft.com/en-us/download/details.aspx?id=5793
     w_download https://download.microsoft.com/download/4/a/a/4aafff19-9d21-4d35-ae81-02c48dcbbbff/MDAC_TYP.EXE 157ebae46932cb9047b58aa849ac1885e8cbd2f218810cb83e57613b49c679d6
     load_native_mdac
