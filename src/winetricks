@@ -6788,7 +6788,7 @@ helper_dxvk()
     _W_dxvk_version="${_W_dxvk_dir#*-}"
 
     w_warn "Please refer to dxvk version ${_W_dxvk_version} release notes... See: https://github.com/doitsujin/dxvk/releases/tag/v${_W_dxvk_version}"
-    if [ ! -z "$_W_min_wine_version" ] && ! w_wine_version_in ",${_W_min_wine_version}" ; then
+    if [ -n "$_W_min_wine_version" ] && ! w_wine_version_in ",${_W_min_wine_version}" ; then
         [ -z "$_W_min_vulkan_version" ] || _W_vulkan_info=" The base requirement is Vulkan $_W_min_vulkan_version API support."
         w_warn "dxvk ${_W_dxvk_version} does not support wine version ${_wine_version_stripped}. dxvk ${_W_dxvk_version} requires wine version ${_W_min_wine_version} (or newer).${_W_vulkan_info}"
         unset _W_vulkan_info
