@@ -58,7 +58,7 @@ if [ "$1" = "check-deps" ] ; then
 
 # Using an environmental variable rather than a CLI option
 # so it doesn't need extra handling/targets in Makefile
-elif [ ! -z "$WINETRICKS_ENABLE_KCOV" ] ; then
+elif [ -n "$WINETRICKS_ENABLE_KCOV" ] ; then
     KCOV_RESULTS="${outputdir}/kcov-results"
     rm -rf "$KCOV_RESULTS"
     mkdir -p "$KCOV_RESULTS"
