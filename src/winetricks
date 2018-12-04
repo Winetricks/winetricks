@@ -9424,7 +9424,14 @@ load_msxml3()
     rm "$W_SYSTEM32_DLLS"/msxml3.dll
     w_override_dlls native msxml3
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec /i msxml3.msi $W_UNATTENDED_SLASH_Q
+
+    # See https://github.com/Winetricks/winetricks/issues/1086
+    # and https://bugs.winehq.org/show_bug.cgi?id=26925
+    if w_workaround_wine_bug 26925 "Forcing quiet install"; then
+        w_try "$WINE" msiexec /i msxml3.msi /q
+    else
+        w_try "$WINE" msiexec /i msxml3.msi $W_UNATTENDED_SLASH_Q
+    fi
 }
 
 #----------------------------------------------------------------
