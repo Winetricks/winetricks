@@ -22,13 +22,13 @@
 
 ##### Define Global constants / variables #####
 WINETRICKS_PATH="$(command -v winetricks)"
+# https://pkgstore.datahub.io/core/country-list/data_csv/data/d7c9d7cfb42cb69f4422dec222dbbaa8/data_csv.csv
 COUNTRY_CODES="AF AX AL DZ AS AD AO AI AQ AG AR AM AW AU AT AZ BS BH BD BB BY BE BZ BJ BM BT BA BW BV BR IO BN BG BF BI \
 KH CM CA CV KY CF TD CL CN CX CC CO KM CG CK CR CI HR CU CW CY CZ DK DJ DM DO EC EG SV GQ ER EE ET FK FO FJ FI FR \
 GF PF TF GA GM GE DE GH GI GR GL GD GP GU GT GG GN GW GY HT HM VA HN HK HU IS IN ID IQ IE IM IL IT JM JP JE JO KZ KE KI KW KG \
 LA LV LB LS LR LY LI LT LU MO MG MW MY MV ML MT MH MQ MR MU YT MX MC MN ME MS MA MZ MM NA NR NP NL NC NZ NI NE NG NU NF MP NO \
 OM PK PW PA PG PY PE PH PN PL PT PR QA RE RO RU RW BL KN LC MF PM VC WS SM ST SA SN RS SC SL SG SX SK SI SB SO ZA GS SS ES LK \
 SD SR SJ SZ SE CH SY TJ TH TL TG TK TO TT TN TR TM TC TV UG UA AE GB US UM UY UZ VU VN WF EH YE ZM ZW"
-COUNTRY_CODE_URL="https://pkgstore.datahub.io/core/country-list/data_csv/data/d7c9d7cfb42cb69f4422dec222dbbaa8/data_csv.csv"
 INVERTIBLE_OPTS="isolate opt"
 TERMINATING_OPTS="help update version"
 TERMINATING_LIST_COMMAND="list"
@@ -249,32 +249,6 @@ _scrape_all_categories_and_verbs()
 
 
 ##### Define general BASH helper functions #####
-
-
-# _store_country_codes()
-#   (> COUNTRY_CODE_URL)
-#   (< COUNTRY_CODES)
-#
-# Download a string of 2 ASCII uppercase character Global Country Codes.
-# Only update global variable COUNTRY_CODES, if the list download is successful...
-# Otherwise fallback to the local copy of the Country Codes list.
-#
-_fetch_country_codes()
-{
-    local country_codes
-
-    # Use some aggressive timeouts here... We can fallback to a local copy of these codes.
-    # shellcheck disable=SC2016
-    country_codes="$(wget -t 3 -T 10 -O - -q "${COUNTRY_CODE_URL}" 2>/dev/null | ${AWK} -F ',' \
-        '{
-            if ($2 ~ "^[[:upper:]][[:upper:]]") {
-                printf("%s%s", not_first ? " " : "", substr($2,1,2))
-                not_first=1;
-            }
-        }' 2>/dev/null
-    )"
-    [[ -z "${country_codes}" ]] || COUNTRY_CODES="${country_codes}"
-}
 
 
 # _list_remove_items()
@@ -801,7 +775,6 @@ _winetricks()
 [[ -z "${AWK}" ]] && return 1
 
 # Setup various Global variables (when this script is initially source'd)...
-_fetch_country_codes
 CATEGORIES_VERBS_LIST="$(_scrape_all_categories_and_verbs)"
 RAW_OPTIONS="$(_scrape_options)"
 COMMANDS="$(_scrape_commands)"
