@@ -3530,16 +3530,16 @@ winetricks_mkprefixmenu()
 
     case $WINETRICKS_GUI in
         zenity)
-            zenity --forms --text="" --title "$_W_msg_title" \
+            $WINETRICKS_GUI --forms --text="" --title "$_W_msg_title" \
                 --add-combo="$_W_msg_arch" --combo-values=32\|64 \
                 --add-entry="$_W_msg_name" \
                 | sed -e 's/^\s*|/64|/' -e 's/^/arch=/' -e 's/|/ prefix=/'
             ;;
         kdialog)
-            kdialog --title="$_W_msg_title" \
+            $WINETRICKS_GUI --title="$_W_msg_title" \
                 --radiolist="$_W_msg_arch" 32 32bit off 64 64bit on \
                 | sed -e 's/^$/64/' -e 's/^/arch=/'
-            kdialog --title="$_W_msg_title" --inputbox="$_W_msg_name" \
+            $WINETRICKS_GUI --title="$_W_msg_title" --inputbox="$_W_msg_name" \
                 | sed -e 's/^/prefix=/'
             ;;
     esac
