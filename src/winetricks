@@ -2951,13 +2951,16 @@ _EOF_
     unset W_file W_font
 }
 
+# Note: we use UTF-16 (little endian) in .reg file for native (non-English) font names.
 w_register_font_replacement()
 {
     _W_alias=$1
     shift
     _W_font=$1
+    # UTF-16 BOM (U+FEFF, "0xEF 0xBB 0xBF" in UTF-8)
+    printf "\357\273\277" | iconv -f UTF-8 -t UTF-16LE > "$W_TMP"/_register-font-replacements.reg
     # Kludge: use _r to avoid \r expansion in w_try
-    cat > "$W_TMP"/_register-font-replacements.reg <<_EOF_
+    iconv -f UTF-8 -t UTF-16LE >> "$W_TMP"/_register-font-replacements.reg <<_EOF_
 REGEDIT4
 
 [HKEY_CURRENT_USER\\Software\\Wine\\Fonts\\Replacements]
@@ -11789,20 +11792,15 @@ load_fakejapanese_ipamona()
     # MS Mincho (ＭＳ 明朝) --> IPAMonaMincho
     # MS PMincho (ＭＳ Ｐ明朝) --> IPAMonaPMincho
 
-    jpname_msgothic="$(echo "ＭＳ ゴシック" | iconv -f utf8 -t cp932)"
-    jpname_mspgothic="$(echo "ＭＳ Ｐゴシック" | iconv -f utf8 -t cp932)"
-    jpname_msmincho="$(echo "ＭＳ 明朝" | iconv -f utf8 -t cp932)"
-    jpname_mspmincho="$(echo "ＭＳ Ｐ明朝" | iconv -f utf8 -t cp932)"
-
     w_register_font_replacement "MS UI Gothic" "IPAMonaUIGothic"
     w_register_font_replacement "MS Gothic" "IPAMonaGothic"
     w_register_font_replacement "MS PGothic" "IPAMonaPGothic"
     w_register_font_replacement "MS Mincho" "IPAMonaMincho"
     w_register_font_replacement "MS PMincho" "IPAMonaPMincho"
-    w_register_font_replacement "$jpname_msgothic" "IPAMonaGothic"
-    w_register_font_replacement "$jpname_mspgothic" "IPAMonaPGothic"
-    w_register_font_replacement "$jpname_msmincho" "IPAMonaMincho"
-    w_register_font_replacement "$jpname_mspmincho" "IPAMonaPMincho"
+    w_register_font_replacement "ＭＳ ゴシック" "IPAMonaGothic"
+    w_register_font_replacement "ＭＳ Ｐゴシック" "IPAMonaPGothic"
+    w_register_font_replacement "ＭＳ 明朝" "IPAMonaMincho"
+    w_register_font_replacement "ＭＳ Ｐ明朝" "IPAMonaPMincho"
 }
 
 #----------------------------------------------------------------
@@ -11821,11 +11819,9 @@ load_fakejapanese_vlgothic()
     # Meiryo UI --> VL Gothic
     # Meiryo (メイリオ) --> VL Gothic
 
-    jpname_meiryo="$(echo "メイリオ" | iconv -f utf8 -t cp932)"
-
     w_register_font_replacement "Meiryo UI" "VL Gothic"
     w_register_font_replacement "Meiryo" "VL Gothic"
-    w_register_font_replacement "$jpname_meiryo" "VL Gothic"
+    w_register_font_replacement "メイリオ" "VL Gothic"
 }
 
 #----------------------------------------------------------------
