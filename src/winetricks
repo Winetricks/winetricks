@@ -13582,19 +13582,28 @@ load_fakekorean()
     w_call baekmuk
     # Loads Baekmuk fonts and sets as an alias for Gulim, Dotum, and Batang for Korean language support
     # Aliases to set:
-    # Gulim --> Baekmuk Gulim
-    # GulimChe --> Baekmuk Gulim
-    # Batang --> Baekmuk Batang
-    # BatangChe --> Baekmuk Batang
-    # Dotum --> Baekmuk Dotum
-    # DotumChe --> Baekmuk Dotum
+    # Malgun Gothic (맑은 고딕) --> Baekmuk Gulim
+    # Gulim (굴림) --> Baekmuk Gulim
+    # GulimChe (굴림체) --> Baekmuk Gulim
+    # Batang (바탕) --> Baekmuk Batang
+    # BatangChe (바탕체) --> Baekmuk Batang
+    # Dotum (돋움) --> Baekmuk Dotum
+    # DotumChe (돋움체) --> Baekmuk Dotum
 
+    w_register_font_replacement "Malgun Gothic" "Baekmuk Gulim"
     w_register_font_replacement "Gulim" "Baekmuk Gulim"
     w_register_font_replacement "GulimChe" "Baekmuk Gulim"
     w_register_font_replacement "Batang" "Baekmuk Batang"
     w_register_font_replacement "BatangChe" "Baekmuk Batang"
     w_register_font_replacement "Dotum" "Baekmuk Dotum"
     w_register_font_replacement "DotumChe" "Baekmuk Dotum"
+    w_register_font_replacement "맑은 고딕" "Baekmuk Gulim"
+    w_register_font_replacement "굴림" "Baekmuk Gulim"
+    w_register_font_replacement "굴림체" "Baekmuk Gulim"
+    w_register_font_replacement "바탕" "Baekmuk Batang"
+    w_register_font_replacement "바탕체" "Baekmuk Batang"
+    w_register_font_replacement "돋움" "Baekmuk Dotum"
+    w_register_font_replacement "돋움체" "Baekmuk Dotum"
 }
 
 #----------------------------------------------------------------
