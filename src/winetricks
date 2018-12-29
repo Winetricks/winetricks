@@ -301,6 +301,16 @@ w_killall()
     kill -s KILL $(pgrep $1)
 }
 
+# Some packages don't support win32, die with an appropriate message
+# Returns 64 (for tests/winetricks-test)
+w_package_unsupported_win32()
+{
+    if [ "$W_ARCH" = "win32" ] ; then
+        w_warn "This package ($W_PACKAGE) does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64."
+        exit 64
+    fi
+}
+
 # Warn user if package is broken. Optionally provide a link to the bug report.
 w_package_broken_win64()
 {
@@ -11219,7 +11229,7 @@ load_wsh57()
 #----------------------------------------------------------------
 
 w_metadata xact dlls \
-    title="MS XACT Engine" \
+    title="MS XACT Engine (32-bit only)" \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
@@ -11242,7 +11252,7 @@ load_xact()
         w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xapofx*.dll' "$x"
     done
 
-    # Don't install 64-bit xact DLLs. They are broken in Wine, see:
+    # Don't install 64-bit xact DLLs by default. They are broken in Wine, see:
     # https://bugs.winehq.org/show_bug.cgi?id=41618#c5
 
     w_override_dlls native,builtin xaudio2_0 xaudio2_1 xaudio2_2 xaudio2_3 xaudio2_4 xaudio2_5 xaudio2_6 xaudio2_7
@@ -11257,6 +11267,52 @@ load_xact()
     # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
     for x in 0 1 2 3 4 5 6 7 ; do
         w_try_regsvr "$(basename "$W_SYSTEM32_DLLS/xaudio2_${x}")"
+    done
+}
+
+#----------------------------------------------------------------
+
+w_metadata xact_x64 dlls \
+    title="MS XACT Engine (64-bit only)" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
+    installed_file1="${W_SYSTEM64_DLLS_WIN64:-does_not_exist}/xactengine2_0.dll"
+
+load_xact_x64()
+{
+    w_package_unsupported_win32
+    if w_workaround_wine_bug 41618; then
+        w_warn "While this helps some games, it completely breaks others. You've been warned."
+    fi
+
+    helper_directx_Jun2010
+
+    # Extract xactengine?_?.dll, X3DAudio?_?.dll, xaudio?_?.dll, xapofx?_?.dll
+    w_try_cabextract -d "$W_TMP" -L -F '*_xact_*x64*' "$W_CACHE/directx9/$DIRECTX_NAME"
+    w_try_cabextract -d "$W_TMP" -L -F '*_x3daudio_*x64*' "$W_CACHE/directx9/$DIRECTX_NAME"
+    w_try_cabextract -d "$W_TMP" -L -F '*_xaudio_*x64*' "$W_CACHE/directx9/$DIRECTX_NAME"
+
+    for x in "$W_TMP"/*.cab ; do
+        w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xactengine*.dll' "$x"
+        w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xaudio*.dll' "$x"
+        w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'x3daudio*.dll' "$x"
+        w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xapofx*.dll' "$x"
+    done
+
+    w_override_dlls native,builtin xaudio2_0 xaudio2_1 xaudio2_2 xaudio2_3 xaudio2_4 xaudio2_5 xaudio2_6 xaudio2_7
+    w_override_dlls native,builtin x3daudio1_0 x3daudio1_1 x3daudio1_2 x3daudio1_3 x3daudio1_4 x3daudio1_5 x3daudio1_6 x3daudio1_7
+    w_override_dlls native,builtin xapofx1_1 xapofx1_2 xapofx1_3 xapofx1_4 xapofx1_5
+
+    # Register xactengine?_?.dll
+    for x in "$W_SYSTEM64_DLLS"/xactengine* ; do
+        w_try_regsvr64 "$(basename "$x")"
+    done
+
+    # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
+    for x in 0 1 2 3 4 5 6 7 ; do
+        w_try_regsvr64 "$(basename "$W_SYSTEM64_DLLS/xaudio2_${x}")"
     done
 }
 
