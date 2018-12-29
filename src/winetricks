@@ -5803,6 +5803,26 @@ load_cmd()
 
 #----------------------------------------------------------------
 
+w_metadata cnc_ddraw dlls \
+    title="Reimplentation of ddraw for CnC games" \
+    homepage="https://github.com/CnCNet/cnc-ddraw" \
+    publisher="CnCNet" \
+    year="2018" \
+    media="download" \
+    file1="cnc-ddraw.zip" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/Shaders/readme.txt"
+
+load_cnc_ddraw()
+{
+    # Note: only works if ddraw.ini contains settings for the executable
+    w_download https://github.com/CnCNet/cnc-ddraw/releases/download/1.3.4.0/cnc-ddraw.zip c1f85053223ab04a573cc482b43b93a58077e928a401f3364c9dc5542ad090ae
+    w_try_unzip "$W_SYSTEM32_DLLS" "$W_CACHE/$W_PACKAGE/$file1"
+
+    w_override_dlls native,builtin ddraw
+}
+
+#----------------------------------------------------------------
+
 w_metadata comctl32 dlls \
     title="MS common controls 5.80" \
     publisher="Microsoft" \
