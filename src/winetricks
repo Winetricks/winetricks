@@ -3169,6 +3169,9 @@ winetricks_latest_version_check()
             ru*) w_warn "Отсутствует подключение к Github? версия '${latest_version}' может быть неактуальной" ;;
             *) w_warn "Github down? version '${latest_version}' doesn't appear to be a valid version" ;;
         esac
+
+        # If we can't get the latest version, no reason to go further:
+        return
     fi
 
     if [ ! "$WINETRICKS_VERSION" = "${latest_version}" ] && [ ! "$WINETRICKS_VERSION" = "${latest_version}-next" ]; then
