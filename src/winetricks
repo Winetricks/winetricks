@@ -1998,6 +1998,7 @@ w_override_all_dlls()
     #   -e '/^.*\/dbghelp$/ d' \
     #   -e '/^.*\/ddraw$/ d' \
     #   -e '/^.*\/dlls$/ d' \
+    #   -e '/^.*\/dmoguids$/ d' \
     #   -e '/^.*\/dxerr8$/ d' \
     #   -e '/^.*\/dxerr9$/ d' \
     #   -e '/^.*\/dxguid$/ d' \
@@ -2012,6 +2013,7 @@ w_override_all_dlls()
     #   -e '/^.*\/mswsock$/ d' \
     #   -e '/^.*\/ntdll$/ d' \
     #   -e '/^.*\/opengl32$/ d' \
+    #   -e '/^.*\/secur32$/ d' \
     #   -e '/^.*\/strmbase$/ d' \
     #   -e '/^.*\/strmiids$/ d' \
     #   -e '/^.*\/twain_32$/ d' \
@@ -2026,13 +2028,14 @@ w_override_all_dlls()
     #   -e '/^.*\/wineqtdecoder$/ d' \
     #   -e '/^.*\/winmm$/ d' \
     #   -e '/^.*\/wintab32$/ d' \
+    #   -e '/^.*\/wmcodecdspuuid$/ d' \
     #   -e '/^.*\/wnaspi32$/ d' \
     #   -e '/^.*\/wow32$/ d' \
     #   -e '/^.*\/ws2_32$/ d' \
     #   -e '/^.*\/wsock32$/ d' \
     #   -e 's,.*/,        ,' | sort | fmt -63 | sed 's/$/ \\/'
     #
-    # 2018-02-18: Last list update (wine-3.2)
+    # 2018-12-10: Last list update (wine-4.0-rc1)
     w_override_dlls builtin \
         acledit aclui activeds actxprxy adsldp adsldpc advpack \
         amstream api-ms-win-appmodel-identity-l1-1-0 \
@@ -2043,7 +2046,7 @@ w_override_all_dlls()
         api-ms-win-core-appinit-l1-1-0 \
         api-ms-win-core-atoms-l1-1-0 \
         api-ms-win-core-bem-l1-1-0 api-ms-win-core-com-l1-1-0 \
-        api-ms-win-core-com-l1-1-1 \
+        api-ms-win-core-com-l1-1-1 api-ms-win-core-comm-l1-1-0 \
         api-ms-win-core-com-private-l1-1-0 \
         api-ms-win-core-console-l1-1-0 \
         api-ms-win-core-console-l2-1-0 \
@@ -2079,6 +2082,7 @@ w_override_all_dlls()
         api-ms-win-core-kernel32-legacy-l1-1-0 \
         api-ms-win-core-kernel32-legacy-l1-1-1 \
         api-ms-win-core-kernel32-private-l1-1-1 \
+        api-ms-win-core-largeinteger-l1-1-0 \
         api-ms-win-core-libraryloader-l1-1-0 \
         api-ms-win-core-libraryloader-l1-1-1 \
         api-ms-win-core-libraryloader-l1-2-0 \
@@ -2108,6 +2112,7 @@ w_override_all_dlls()
         api-ms-win-core-processthreads-l1-1-0 \
         api-ms-win-core-processthreads-l1-1-1 \
         api-ms-win-core-processthreads-l1-1-2 \
+        api-ms-win-core-processthreads-l1-1-3 \
         api-ms-win-core-processtopology-obsolete-l1-1-0 \
         api-ms-win-core-profile-l1-1-0 \
         api-ms-win-core-psapi-ansi-l1-1-0 \
@@ -2128,6 +2133,7 @@ w_override_all_dlls()
         api-ms-win-core-stringansi-l1-1-0 \
         api-ms-win-core-string-l1-1-0 \
         api-ms-win-core-string-l2-1-0 \
+        api-ms-win-core-stringloader-l1-1-1 \
         api-ms-win-core-string-obsolete-l1-1-0 \
         api-ms-win-core-synch-ansi-l1-1-0 \
         api-ms-win-core-synch-l1-1-0 \
@@ -2155,6 +2161,7 @@ w_override_all_dlls()
         api-ms-win-core-winrt-registration-l1-1-0 \
         api-ms-win-core-winrt-roparameterizediid-l1-1-0 \
         api-ms-win-core-winrt-string-l1-1-0 \
+        api-ms-win-core-winrt-string-l1-1-1 \
         api-ms-win-core-wow64-l1-1-0 \
         api-ms-win-core-wow64-l1-1-1 \
         api-ms-win-core-xstate-l1-1-0 \
@@ -2174,6 +2181,7 @@ w_override_all_dlls()
         api-ms-win-crt-string-l1-1-0 \
         api-ms-win-crt-time-l1-1-0 \
         api-ms-win-crt-utility-l1-1-0 \
+        api-ms-win-devices-config-l1-1-0 \
         api-ms-win-devices-config-l1-1-1 \
         api-ms-win-devices-query-l1-1-1 \
         api-ms-win-downlevel-advapi32-l1-1-0 \
@@ -2192,21 +2200,30 @@ w_override_all_dlls()
         api-ms-win-eventing-legacy-l1-1-0 \
         api-ms-win-eventing-provider-l1-1-0 \
         api-ms-win-eventlog-legacy-l1-1-0 \
+        api-ms-win-gdi-dpiinfo-l1-1-0 \
         api-ms-win-mm-joystick-l1-1-0 \
         api-ms-win-mm-misc-l1-1-1 api-ms-win-mm-mme-l1-1-0 \
         api-ms-win-mm-time-l1-1-0 \
         api-ms-win-ntuser-dc-access-l1-1-0 \
         api-ms-win-ntuser-rectangle-l1-1-0 \
+        api-ms-win-ntuser-sysparams-l1-1-0 \
         api-ms-win-perf-legacy-l1-1-0 \
         api-ms-win-power-base-l1-1-0 \
         api-ms-win-power-setting-l1-1-0 \
+        api-ms-win-rtcore-ntuser-draw-l1-1-0 \
         api-ms-win-rtcore-ntuser-private-l1-1-0 \
+        api-ms-win-rtcore-ntuser-private-l1-1-4 \
+        api-ms-win-rtcore-ntuser-window-l1-1-0 \
+        api-ms-win-rtcore-ntuser-winevent-l1-1-0 \
+        api-ms-win-rtcore-ntuser-wmpointer-l1-1-0 \
+        api-ms-win-rtcore-ntuser-wmpointer-l1-1-3 \
         api-ms-win-security-activedirectoryclient-l1-1-0 \
         api-ms-win-security-audit-l1-1-1 \
         api-ms-win-security-base-l1-1-0 \
         api-ms-win-security-base-l1-2-0 \
         api-ms-win-security-base-private-l1-1-1 \
         api-ms-win-security-credentials-l1-1-0 \
+        api-ms-win-security-cryptoapi-l1-1-0 \
         api-ms-win-security-grouppolicy-l1-1-0 \
         api-ms-win-security-lsalookup-l1-1-0 \
         api-ms-win-security-lsalookup-l1-1-1 \
@@ -2223,16 +2240,19 @@ w_override_all_dlls()
         api-ms-win-service-private-l1-1-1 \
         api-ms-win-service-winsvc-l1-1-0 \
         api-ms-win-service-winsvc-l1-2-0 \
+        api-ms-win-shcore-obsolete-l1-1-0 \
         api-ms-win-shcore-scaling-l1-1-1 \
+        api-ms-win-shcore-stream-l1-1-0 \
+        api-ms-win-shcore-thread-l1-1-0 \
         api-ms-win-shell-shellcom-l1-1-0 \
         api-ms-win-shell-shellfolders-l1-1-0 apphelp \
-        appwiz.cpl atl atl100 atl110 atl80 atl90 authz \
-        avicap32 avifil32 avrt bcrypt bluetoothapis browseui \
-        bthprops.cpl cabinet cards cdosys cfgmgr32 clusapi \
-        combase comcat comctl32 comdlg32 compstui comsvcs \
-        concrt140 connect credui crtdll crypt32 cryptdlg \
-        cryptdll cryptext cryptnet cryptui ctapi32 ctl3d32 \
-        d2d1 d3d10 d3d10_1 d3d10core d3d11 d3d12 d3d8 \
+        appwiz.cpl atl atl100 atl110 atl80 atl90 atmlib \
+        authz avicap32 avifil32 avrt bcrypt bluetoothapis \
+        browseui bthprops.cpl cabinet cards cdosys cfgmgr32 \
+        clusapi combase comcat comctl32 comdlg32 compstui \
+        comsvcs concrt140 connect credui crtdll crypt32 \
+        cryptdlg cryptdll cryptext cryptnet cryptui ctapi32 \
+        ctl3d32 d2d1 d3d10 d3d10_1 d3d10core d3d11 d3d12 d3d8 \
         d3d9 d3dcompiler_33 d3dcompiler_34 d3dcompiler_35 \
         d3dcompiler_36 d3dcompiler_37 d3dcompiler_38 \
         d3dcompiler_39 d3dcompiler_40 d3dcompiler_41 \
@@ -2252,69 +2272,87 @@ w_override_all_dlls()
         dswave dwmapi dwrite dx8vb dxdiagn dxgi dxva2 esent \
         evr explorerframe ext-ms-win-authz-context-l1-1-0 \
         ext-ms-win-domainjoin-netjoin-l1-1-0 \
+        ext-ms-win-dwmapi-ext-l1-1-0 \
         ext-ms-win-gdi-dc-create-l1-1-1 \
         ext-ms-win-gdi-dc-l1-2-0 ext-ms-win-gdi-devcaps-l1-1-0 \
         ext-ms-win-gdi-draw-l1-1-1 \
         ext-ms-win-gdi-render-l1-1-0 \
         ext-ms-win-kernel32-package-current-l1-1-0 \
         ext-ms-win-kernel32-package-l1-1-1 \
+        ext-ms-win-ntuser-draw-l1-1-0 \
+        ext-ms-win-ntuser-gui-l1-3-0 \
+        ext-ms-win-ntuser-keyboard-l1-3-0 \
         ext-ms-win-ntuser-message-l1-1-1 \
+        ext-ms-win-ntuser-misc-l1-2-0 \
+        ext-ms-win-ntuser-misc-l1-5-1 \
+        ext-ms-win-ntuser-mouse-l1-1-0 \
         ext-ms-win-ntuser-private-l1-1-1 \
+        ext-ms-win-ntuser-private-l1-3-1 \
         ext-ms-win-ntuser-rectangle-ext-l1-1-0 \
         ext-ms-win-ntuser-uicontext-ext-l1-1-0 \
         ext-ms-win-ntuser-windowclass-l1-1-1 \
         ext-ms-win-ntuser-window-l1-1-1 \
+        ext-ms-win-ntuser-window-l1-1-4 \
+        ext-ms-win-oleacc-l1-1-0 \
         ext-ms-win-ras-rasapi32-l1-1-0 \
+        ext-ms-win-rtcore-gdi-devcaps-l1-1-0 \
         ext-ms-win-rtcore-gdi-object-l1-1-0 \
         ext-ms-win-rtcore-gdi-rgn-l1-1-0 \
+        ext-ms-win-rtcore-ntuser-cursor-l1-1-0 \
         ext-ms-win-rtcore-ntuser-dc-access-l1-1-0 \
         ext-ms-win-rtcore-ntuser-dpi-l1-1-0 \
+        ext-ms-win-rtcore-ntuser-dpi-l1-2-0 \
+        ext-ms-win-rtcore-ntuser-rawinput-l1-1-0 \
+        ext-ms-win-rtcore-ntuser-syscolors-l1-1-0 \
         ext-ms-win-rtcore-ntuser-sysparams-l1-1-0 \
         ext-ms-win-security-credui-l1-1-0 \
-        ext-ms-win-security-cryptui-l1-1-0 faultrep fltlib \
-        fltmgr.sys fntcache fontsub fusion fwpuclnt gameux \
-        gdiplus gpkcsp hal hhctrl.ocx hid hidclass.sys hlink \
-        hnetcfg httpapi iccvid ieframe ieproxy imaadp32.acm \
-        imagehlp imm32 inetcomm inetcpl.cpl inetmib1 infosoft \
-        initpki inkobj inseng iprop irprops.cpl itircl itss \
-        joy.cpl jscript jsproxy kerberos kernelbase ksuser \
-        ktmw32 loadperf localspl localui lz32 mapi32 mapistub \
-        mciavi32 mcicda mciqtz32 mciseq mciwave mf mf3216 \
-        mfplat mfreadwrite mgmtapi midimap mlang mmcndmgr \
-        mmdevapi mpr mprapi msacm32 msadp32.acm msasn1 \
-        mscat32 mscms mscoree msctf msctfp msdaps msdelta \
-        msdmo msdrm msftedit msg711.acm msgsm32.acm mshtml \
-        msi msident msimg32 msimsg msimtf msisip msisys.ocx \
-        msls31 msnet32 mspatcha msports msrle32 msscript.ocx \
-        mssign32 mssip32 mstask msvcirt msvcm80 msvcm90 \
-        msvcp100 msvcp110 msvcp120 msvcp120_app msvcp140 \
-        msvcp60 msvcp70 msvcp71 msvcp80 msvcp90 msvcr100 \
-        msvcr110 msvcr120 msvcr120_app msvcr70 msvcr71 msvcr80 \
+        ext-ms-win-security-cryptui-l1-1-0 \
+        ext-ms-win-uxtheme-themes-l1-1-0 faultrep feclient \
+        fltlib fltmgr.sys fntcache fontsub fusion fwpuclnt \
+        gameux gdiplus gpkcsp hal hhctrl.ocx hid hidclass.sys \
+        hlink hnetcfg httpapi iccvid ieframe ieproxy \
+        imaadp32.acm imagehlp imm32 inetcomm inetcpl.cpl \
+        inetmib1 infosoft initpki inkobj inseng iprop \
+        irprops.cpl itircl itss joy.cpl jscript jsproxy \
+        kerberos kernelbase ksuser ktmw32 loadperf localspl \
+        localui lz32 mapi32 mapistub mciavi32 mcicda mciqtz32 \
+        mciseq mciwave mf mf3216 mfplat mfreadwrite mgmtapi \
+        midimap mlang mmcndmgr mmdevapi mp3dmod mpr mprapi \
+        msacm32 msadp32.acm msasn1 mscat32 mscms mscoree \
+        msctf msctfp msdaps msdelta msdmo msdrm msftedit \
+        msg711.acm msgsm32.acm mshtml msi msident msimg32 \
+        msimsg msimtf msisip msisys.ocx msls31 msnet32 \
+        mspatcha msports msrle32 msscript.ocx mssign32 \
+        mssip32 mstask msvcirt msvcm80 msvcm90 msvcp100 \
+        msvcp110 msvcp120 msvcp120_app msvcp140 msvcp60 \
+        msvcp70 msvcp71 msvcp80 msvcp90 msvcr100 msvcr110 \
+        msvcr120 msvcr120_app msvcr70 msvcr71 msvcr80 \
         msvcr90 msvcrt msvcrt20 msvcrt40 msvcrtd msvfw32 \
         msvidc32 msxml msxml2 msxml3 msxml4 msxml6 mtxdm \
         ncrypt nddeapi ndis.sys netapi32 netcfgx netprofm \
-        newdev normaliz npmshtml npptools ntdsapi ntprint \
-        objsel odbc32 odbccp32 odbccu32 ole32 oleacc oleaut32 \
-        olecli32 oledb32 oledlg olepro32 olesvr32 olethk32 \
-        openal32 opencl packager pdh photometadatahandler \
-        pidgen powrprof printui prntvpt propsys psapi \
-        pstorec qcap qedit qmgr qmgrprxy quartz query \
-        rasapi32 rasdlg regapi resutils riched20 riched32 \
-        rpcrt4 rsabase rsaenh rstrtmgr rtutils samlib sapi \
-        scarddlg sccbase schannel schedsvc scrobj scrrun \
-        scsiport.sys secur32 security sensapi serialui \
-        setupapi sfc sfc_os shcore shdoclc shdocvw shell32 \
-        shfolder shlwapi slbcsp slc snmpapi softpub spoolss \
-        sspicli sti svrapi sxs t2embed tapi32 taskschd tdh \
-        tdi.sys traffic ucrtbase uiautomationcore uiribbon \
-        updspapi url urlmon usbd.sys userenv usp10 uxtheme \
-        vbscript vcomp vcomp100 vcomp110 vcomp120 vcomp140 \
-        vcomp90 vcruntime140 version virtdisk vssapi wbemdisp \
+        newdev ninput normaliz npmshtml npptools ntdsapi \
+        ntprint objsel odbc32 odbccp32 odbccu32 ole32 oleacc \
+        oleaut32 olecli32 oledb32 oledlg olepro32 olesvr32 \
+        olethk32 opcservices openal32 opencl packager pdh \
+        photometadatahandler pidgen powrprof printui prntvpt \
+        propsys psapi pstorec qcap qedit qmgr qmgrprxy \
+        quartz query qwave rasapi32 rasdlg regapi resutils \
+        riched20 riched32 rpcrt4 rsabase rsaenh rstrtmgr \
+        rtutils samlib sapi sas scarddlg sccbase schannel \
+        schedsvc scrobj scrrun scsiport.sys security sensapi \
+        serialui setupapi sfc sfc_os shcore shdoclc shdocvw \
+        shell32 shfolder shlwapi slbcsp slc snmpapi softpub \
+        spoolss srclient sspicli sti strmdll svrapi sxs \
+        t2embed tapi32 taskschd tdh tdi.sys traffic tzres \
+        ucrtbase uiautomationcore uiribbon updspapi url \
+        urlmon usbd.sys userenv usp10 uxtheme vbscript \
+        vcomp vcomp100 vcomp110 vcomp120 vcomp140 vcomp90 \
+        vcruntime140 version virtdisk vssapi vulkan-1 wbemdisp \
         wbemprox wdscore webservices wer wevtapi wiaservc \
         wimgapi windowscodecs windowscodecsext winebus.sys \
-        winegstreamer winehid.sys winemapi wing32 winhttp \
-        wininet winnls32 winscard winsta wintrust winusb \
-        wlanapi wldap32 wmasf wmi wmiutils wmp wmphoto \
+        winegstreamer winehid.sys winemapi winevulkan wing32 \
+        winhttp wininet winnls32 winscard winsta wintrust \
+        winusb wlanapi wldap32 wmasf wmi wmiutils wmp wmphoto \
         wmvcore wpc wpcap wsdapi wshom.ocx wsnmp32 wtsapi32 \
         wuapi wuaueng x3daudio1_0 x3daudio1_1 x3daudio1_2 \
         x3daudio1_3 x3daudio1_4 x3daudio1_5 x3daudio1_6 \
