@@ -19812,6 +19812,33 @@ _EOF_
     w_try_regedit "$W_TMP_WIN"/vd.reg
 }
 
+#----------------------------------------------------------------
+# MIME-type file associations settings
+
+w_metadata mimeassoc=on settings \
+    title="Enable exporting MIME-type file associations to the native desktop (default)"
+w_metadata mimeassoc=off settings \
+    title="Disable exporting MIME-type file associations to the native desktop"
+
+load_mimeassoc()
+{
+    case "$1" in
+        off) arg=N;;
+        on)  arg=Y;;
+        *) w_die "illegal value $1 for mimeassoc";;
+    esac
+
+    echo "Setting mimeassoc to $arg"
+    cat > "$W_TMP"/set-mimeassoc.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Wine\\FileOpenAssociations]
+"Enable"="$arg"
+
+_EOF_
+    w_try_regedit "$W_TMP"/set-mimeassoc.reg
+}
+
 ####
 # settings->direct3d
 
