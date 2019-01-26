@@ -8547,6 +8547,48 @@ load_esent()
 
 #----------------------------------------------------------------
 
+w_metadata faudio dlls \
+    title="FAudio (xaudio reimplemntation, with xna support) builds for win32" \
+    publisher="Kron4ek" \
+    year="2019" \
+    media="download" \
+    file1="faudio-git-a756af4.tar.xz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/FAudio.dll"
+
+load_faudio()
+{
+    # FIXME: they have a LATEST file that may be useful in the future
+    # Not sure if we want to have multiple versions like dxvk
+    # Especially when some are prefixed with 'git-'!
+    # https://raw.githubusercontent.com/Kron4ek/FAudio-Builds/master/LATEST
+    faudio_version="$(basename "${file1}" .tar.xz)"
+
+    # 2018/01/26: b491e9a1eb2052f62d6639be86639203ec1c7e803101db86ef8817a07baaf0a8
+    w_download https://github.com/Kron4ek/FAudio-Builds/releases/download/git-a756af4/faudio-git-a756af4.tar.xz b491e9a1eb2052f62d6639be86639203ec1c7e803101db86ef8817a07baaf0a8
+
+    w_try_cd "$W_TMP"
+    w_try tar -Jxf "${W_CACHE}/${W_PACKAGE}/${file1}"
+
+    # They ship an installation script, but it's bash (and we have all needed functionality already)
+    # Unless they add something more complex, this should suffice:
+    for dll in "${faudio_version}/x32/"*.dll; do
+        shortdll="$(basename "${dll}" .dll)"
+        w_try cp "${dll}" "$W_SYSTEM32_DLLS"
+        w_override_dlls native "$shortdll"
+    done
+
+    if [ "$W_ARCH" = "win64" ]; then
+        for dll in "${faudio_version}/x64/"*.dll; do
+            # Note: 'libgcc_s_sjlj-1.dll' is not included in the 64-bit build
+            shortdll="$(basename "${dll}" .dll)"
+            w_try cp "${dll}" "$W_SYSTEM64_DLLS"
+            w_override_dlls native "$shortdll"
+        done
+    fi
+}
+
+#----------------------------------------------------------------
+
 # FIXME: update winetricks_is_installed to look at installed_file2..n
 # https://github.com/Winetricks/winetricks/issues/988
 w_metadata flash dlls \
