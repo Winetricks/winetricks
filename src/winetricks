@@ -8670,6 +8670,33 @@ load_flash()
 
 #----------------------------------------------------------------
 
+w_metadata galliumnine02 dlls \
+    title="Gallium Nine Standalone (v0.2)" \
+    publisher="Gallium Nine Team" \
+    year="2019" \
+    media="download" \
+    file1="gallium-nine-standalone-v0.2.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d9-nine.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/ninewinecfg.exe" \
+    homepage="https://github.com/iXit/wine-nine-standalone"
+
+load_galliumnine02()
+{
+    w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.2/gallium-nine-standalone-v0.2.tar.gz"
+    w_try_cd "$W_TMP"
+    w_try tar -zxf "$W_CACHE/$W_PACKAGE/$file1"
+    w_try mv "$W_TMP/gallium-nine-standalone/lib32/d3d9-nine.dll.so" "$W_SYSTEM32_DLLS/d3d9-nine.dll"
+    w_try mv "$W_TMP/gallium-nine-standalone/bin32/ninewinecfg.exe.so" "$W_SYSTEM32_DLLS/ninewinecfg.exe"
+    if test "$W_ARCH" = "win64"; then
+        w_try mv "$W_TMP/gallium-nine-standalone/lib64/d3d9-nine.dll.so" "$W_SYSTEM64_DLLS/d3d9-nine.dll"
+        w_try mv "$W_TMP/gallium-nine-standalone/bin64/ninewinecfg.exe.so" "$W_SYSTEM64_DLLS/ninewinecfg.exe"
+    fi
+    # use ninewinecfg to enable gallium nine
+    WINEDEBUG=-all w_try "$WINE_MULTI" ninewinecfg -e
+}
+
+#----------------------------------------------------------------
+
 w_metadata gdiplus dlls \
     title="MS GDI+" \
     publisher="Microsoft" \
