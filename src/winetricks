@@ -6716,8 +6716,13 @@ load_directx9()
 
     # How many of these do we really need?
     # We should probably remove most of these...?
-    w_call devenum
-    w_call quartz
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_warn "Not installing native devenum/quartz (can't find a 64-bit devenum)."
+    else
+        w_call devenum
+        w_call quartz
+    fi
 
     w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "msdmo.dll" "$W_TMP/dxnt.cab"
