@@ -8670,6 +8670,28 @@ load_flash()
 
 #----------------------------------------------------------------
 
+# $1 - gallium nine standalone archive name (required)
+helper_galliumnine()
+{
+    _W_galliumnine_archive="${1}"
+    _W_galliumnine_tmp="$W_TMP/galliumnine"
+
+    w_try rm -rf "$_W_galliumnine_tmp"
+    w_try mkdir -p "$_W_galliumnine_tmp"
+    w_try tar -C "$_W_galliumnine_tmp" --strip-components=1 -zxf "$W_CACHE/$W_PACKAGE/$_W_galliumnine_archive"
+    w_try mv "$_W_galliumnine_tmp/lib32/d3d9-nine.dll.so" "$W_SYSTEM32_DLLS/d3d9-nine.dll"
+    w_try mv "$_W_galliumnine_tmp/bin32/ninewinecfg.exe.so" "$W_SYSTEM32_DLLS/ninewinecfg.exe"
+    if test "$W_ARCH" = "win64"; then
+        w_try mv "$_W_galliumnine_tmp/lib64/d3d9-nine.dll.so" "$W_SYSTEM64_DLLS/d3d9-nine.dll"
+        w_try mv "$_W_galliumnine_tmp/bin64/ninewinecfg.exe.so" "$W_SYSTEM64_DLLS/ninewinecfg.exe"
+    fi
+    w_try rm -rf "$_W_galliumnine_tmp"
+    # use ninewinecfg to enable gallium nine
+    WINEDEBUG=-all w_try "$WINE_MULTI" ninewinecfg -e
+
+    unset _W_galliumnine_tmp _W_galliumnine_archive
+}
+
 w_metadata galliumnine02 dlls \
     title="Gallium Nine Standalone (v0.2)" \
     publisher="Gallium Nine Team" \
@@ -8682,17 +8704,8 @@ w_metadata galliumnine02 dlls \
 
 load_galliumnine02()
 {
-    w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.2/gallium-nine-standalone-v0.2.tar.gz"
-    w_try_cd "$W_TMP"
-    w_try tar -zxf "$W_CACHE/$W_PACKAGE/$file1"
-    w_try mv "$W_TMP/gallium-nine-standalone/lib32/d3d9-nine.dll.so" "$W_SYSTEM32_DLLS/d3d9-nine.dll"
-    w_try mv "$W_TMP/gallium-nine-standalone/bin32/ninewinecfg.exe.so" "$W_SYSTEM32_DLLS/ninewinecfg.exe"
-    if test "$W_ARCH" = "win64"; then
-        w_try mv "$W_TMP/gallium-nine-standalone/lib64/d3d9-nine.dll.so" "$W_SYSTEM64_DLLS/d3d9-nine.dll"
-        w_try mv "$W_TMP/gallium-nine-standalone/bin64/ninewinecfg.exe.so" "$W_SYSTEM64_DLLS/ninewinecfg.exe"
-    fi
-    # use ninewinecfg to enable gallium nine
-    WINEDEBUG=-all w_try "$WINE_MULTI" ninewinecfg -e
+    w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.2/gallium-nine-standalone-v0.2.tar.gz" 6818fe890e343aa32d3d53179bfeb63df40977797bd7b6263e85e2bb57559313
+    helper_galliumnine "$file1"
 }
 
 #----------------------------------------------------------------
