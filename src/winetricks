@@ -14369,6 +14369,11 @@ load_vc2010express()
     w_try_7z "$W_TMP" "$W_CACHE"/vc2010express/VS2010Express1.iso
     w_try_cd "$W_TMP"/VCExpress
 
+    # Uninstall wine-mono, installer doesn't attempt to install native .Net if mono is installed,
+    # Then the installer throws and exception and fails
+    # See https://github.com/Winetricks/winetricks/issues/1165
+    w_call remove_mono
+
     # dotnet40 leaves winver at win2k, which causes vc2010 to abort on
     # start because it looks for c:\users\$LOGNAME\Application Data
     w_set_winver winxp
