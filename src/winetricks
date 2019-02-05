@@ -20444,7 +20444,9 @@ load_remove_mono()
     if test "$mono_uuid"; then
          "${WINE_ARCH}" uninstaller --remove "$mono_uuid"
     else
+        # Bail out if mono isn't installed, so we don't break .Net setups
         w_warn "Mono does not appear to be installed."
+        return
     fi
 
     # FIXME: verify on pristine Windows XP:
