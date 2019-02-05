@@ -4995,7 +4995,7 @@ winetricks_set_wineprefix()
     W_PROGRAMS_WIN="$(w_expand_env ProgramFiles)"
     case "$W_PROGRAMS_WIN" in
         "") w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string, error message \"$(cat $W_TMP_EARLY/early_wine.err.txt)\" ";;
-        %*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string '$W_PROGRAMS_WIN' ... this can be caused by a corrupt wineprefix, by an old wine, or by not owning $WINEPREFIX" ;;
+        %*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string '$W_PROGRAMS_WIN' ... this can be caused by a corrupt wineprefix (\`wineboot -u\` may help), by an old wine, or by not owning $WINEPREFIX" ;;
         *unknown*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
     esac
 
