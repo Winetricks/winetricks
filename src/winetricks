@@ -3395,30 +3395,30 @@ winetricks_prefixmenu()
              _W_msg_showbroken1="Показати нестабільні додатки (наприклад з проблемами з DRM)"
              _W_msg_help="Переглянути довідку"
              ;;
-        zh_CN*)   _W_msg_title="Windows 应用安装向导 - 选择一个 wine 容器"
-             _W_msg_body='君欲何为？'
-             _W_msg_apps='安装一个 windows 应用'
+        zh_CN*)   _W_msg_title="Winetricks - 选择一个 wine 容器"
+             _W_msg_body='您想要做什么？'
+             _W_msg_apps='安装一个 Windows 应用'
              _W_msg_games='安装一个游戏'
              _W_msg_benchmarks='安装一个基准测试软件'
-             _W_msg_default="选择默认的 wine 容器"
-             _W_msg_mkprefix="创建新的 wine 容器"
+             _W_msg_default="选择默认的 Wine 容器"
+             _W_msg_mkprefix="创建新的 Wine 容器"
              _W_msg_unattended0="禁用静默安装"
              _W_msg_unattended1="启用静默安装"
-             _W_msg_showbroken0="隐藏有问题的程序 (例如那些有数字版权问题)"
-             _W_msg_showbroken1="有问题的程序 (例如那些有数字版权问题)"
+             _W_msg_showbroken0="隐藏有问题的程序 (比如存在版权问题的程序)"
+             _W_msg_showbroken1="有问题的程序 (比如存在版权问题的程序)"
              _W_msg_help="查看帮助"
              ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Windows 應用安裝向導 - 選取一個 wine 容器"
-             _W_msg_body='君欲何為？'
-             _W_msg_apps='安裝一個 windows 應用'
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 選取一個 Wine 容器"
+             _W_msg_body='您想要做什麼？'
+             _W_msg_apps='安裝一個 Windows 應用'
              _W_msg_games='安裝一個遊戲'
              _W_msg_benchmarks='安裝一個基准測試軟體'
-             _W_msg_default="選取預設的 wine 容器"
-             _W_msg_mkprefix="创建新的 wine 容器"
+             _W_msg_default="選取預設的 Wine 容器"
+             _W_msg_mkprefix="创建新的 Wine 容器"
              _W_msg_unattended0="禁用靜默安裝"
              _W_msg_unattended1="啟用靜默安裝"
-             _W_msg_showbroken0="隱藏有問題的程式 (例如那些有數字版權問題)"
-             _W_msg_showbroken1="有問題的程式 (例如那些有數字版權問題)"
+             _W_msg_showbroken0="隱藏有問題的程式 (比如存在著作權問題的程式)"
+             _W_msg_showbroken1="有問題的程式 (比如存在著作權問題的程式)"
              _W_msg_help="檢視輔助說明"
              ;;
         de*) _W_msg_title="Winetricks - wineprefix auswählen"
@@ -3662,7 +3662,7 @@ winetricks_mainmenu()
              _W_msg_folder='Перегляд файлів'
              _W_msg_annihilate="Видалити УСІ ДАНІ ТА ПРОГРАМИ З ЦЬОГО WINEPREFIX"
              ;;
-        zh_CN*)   _W_msg_title="Windows 应用安装向导 - 当前容器路径是 \"$WINEPREFIX\""
+        zh_CN*)   _W_msg_title="Winetricks - 当前容器路径是 \"$WINEPREFIX\""
              _W_msg_body='管理当前容器'
              _W_msg_dlls="安装 Windows DLL 或组件"
              _W_msg_fonts='安装字体'
@@ -3676,7 +3676,7 @@ winetricks_mainmenu()
              _W_msg_folder='浏览容器中的文件'
              _W_msg_annihilate="删除当前容器所有相关文件，包括启动器，完全卸载"
              ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"$WINEPREFIX\""
              _W_msg_body='管理目前容器'
              _W_msg_dlls="裝載 Windows DLL 或套件"
              _W_msg_fonts='裝載字型'
@@ -3780,11 +3780,11 @@ winetricks_settings_menu()
         uk*) _W_msg_title="Winetricks - поточний prefix \"$WINEPREFIX\""
              _W_msg_body='Які налаштування Ви хочете змінити?'
              ;;
-        zh_CN*)   _W_msg_title="Windows 应用安装向导 - 当前容器路径是 \"$WINEPREFIX\""
-             _W_msg_body='君欲更改哪项设置？'
+        zh_CN*)   _W_msg_title="Winetricks - 当前容器路径是 \"$WINEPREFIX\""
+             _W_msg_body='您想要更改哪项设置？'
              ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
-             _W_msg_body='君欲變更哪項設定？'
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"$WINEPREFIX\""
+             _W_msg_body='您想要變更哪項設定？'
              ;;
         *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
              _W_msg_body='Which settings would you like to change?'
@@ -3957,12 +3957,12 @@ winetricks_showmenu()
              _W_msg_body='Які пакунки Ви хочете встановити?'
              _W_cached="кешовано"
              ;;
-        zh_CN*)   _W_msg_title="Windows 应用安装向导 - 当前容器路径是 \"$WINEPREFIX\""
-             _W_msg_body='君欲安装何种应用？'
+        zh_CN*)   _W_msg_title="Winetricks - 当前容器路径是 \"$WINEPREFIX\""
+             _W_msg_body='您想要安装什么应用程序？'
              _W_cached="已缓存"
              ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Windows 應用裝載向導 - 目前容器路徑是 \"$WINEPREFIX\""
-             _W_msg_body='君欲裝載何種應用？'
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"$WINEPREFIX\""
+             _W_msg_body='您想要安裝什麼應用程式？'
              _W_cached="已緩存"
              ;;
         *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
