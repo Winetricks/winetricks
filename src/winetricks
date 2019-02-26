@@ -7230,6 +7230,25 @@ load_dxvk96()
     helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
 }
 
+w_metadata dxvk100 dlls \
+    title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.0)" \
+    publisher="Philip Rebohle" \
+    year="2018" \
+    media="download" \
+    file1="dxvk-1.0.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/d3d10_1.dll" \
+    installed_file3="$W_SYSTEM32_DLLS_WIN/d3d10core.dll" \
+    installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_dxvk100()
+{
+    # https://github.com/doitsujin/dxvk
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0/dxvk-1.0.tar.gz" 8c8d26544609532201c10e6f5309bf5e913b5ca5b985932928ef9ab238de6dc2
+    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+}
+
 
 #----------------------------------------------------------------
 
