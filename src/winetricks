@@ -3674,7 +3674,7 @@ winetricks_mainmenu()
              _W_msg_uninstaller='运行卸载程序'
              _W_msg_shell='运行命令提示窗口 (作为调试)'
              _W_msg_folder='浏览容器中的文件'
-             _W_msg_annihilate="删除当前容器所有相关文件，包括启动器，完全卸载"
+             _W_msg_annihilate="删除容器中所有数据和应用程序"
              ;;
         zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"$WINEPREFIX\""
              _W_msg_body='管理目前容器'
@@ -3686,9 +3686,9 @@ winetricks_mainmenu()
              _W_msg_taskmgr='執行工作管理員'
              _W_msg_explorer='執行檔案總管'
              _W_msg_uninstaller='執行解除安裝程式'
-             _W_msg_shell='執行指令輔助說明視窗 (作為除錯)'
+             _W_msg_shell='執行命令提示視窗 (作為偵錯)'
              _W_msg_folder='瀏覽容器中的檔案'
-             _W_msg_annihilate="移除目前容器所有相依檔案，包括啟動器，完全卸載"
+             _W_msg_annihilate="刪除容器中所有資料和應用程式"
              ;;
         *)   _W_msg_title="Winetricks - current prefix is \"$WINEPREFIX\""
              _W_msg_body='What would you like to do to this wineprefix?'
