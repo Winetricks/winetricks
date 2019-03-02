@@ -3405,7 +3405,7 @@ winetricks_prefixmenu()
              _W_msg_unattended0="禁用静默安装"
              _W_msg_unattended1="启用静默安装"
              _W_msg_showbroken0="隐藏有争议的程序 (比如存在版权问题的程序)"
-             _W_msg_showbroken1="有争议的程序 (比如存在版权问题的程序)"
+             _W_msg_showbroken1="显示有争议的程序 (比如存在版权问题的程序)"
              _W_msg_help="查看帮助"
              ;;
         zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 選取一個 Wine 容器"
@@ -3418,7 +3418,7 @@ winetricks_prefixmenu()
              _W_msg_unattended0="禁用靜默安裝"
              _W_msg_unattended1="啟用靜默安裝"
              _W_msg_showbroken0="隱藏有爭議的程式 (比如存在著作權問題的程式)"
-             _W_msg_showbroken1="有爭議的程式 (比如存在著作權問題的程式)"
+             _W_msg_showbroken1="顯示有爭議的程式 (比如存在著作權問題的程式)"
              _W_msg_help="檢視輔助說明"
              ;;
         de*) _W_msg_title="Winetricks - wineprefix auswählen"
@@ -3667,7 +3667,7 @@ winetricks_mainmenu()
              _W_msg_dlls="安装 Windows DLL 或组件"
              _W_msg_fonts='安装字体'
              _W_msg_settings='修改设置'
-             _W_msg_winecfg='运行 winecfg'
+             _W_msg_winecfg='运行 Wine 配置程序'
              _W_msg_regedit='运行注册表'
              _W_msg_taskmgr='运行任务管理器'
              _W_msg_explorer='运行资源管理器'
@@ -3678,14 +3678,14 @@ winetricks_mainmenu()
              ;;
         zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"$WINEPREFIX\""
              _W_msg_body='管理目前容器'
-             _W_msg_dlls="裝載 Windows DLL 或套件"
-             _W_msg_fonts='裝載字型'
+             _W_msg_dlls="安裝 Windows DLL 或套件"
+             _W_msg_fonts='安裝字型'
              _W_msg_settings='修改設定'
-             _W_msg_winecfg='執行 winecfg'
-             _W_msg_regedit='執行註冊表'
-             _W_msg_taskmgr='執行工作管理者'
-             _W_msg_explorer='執行資源經理'
-             _W_msg_uninstaller='執行反安裝程式'
+             _W_msg_winecfg='執行 Wine 設定程式'
+             _W_msg_regedit='執行登錄編輯程式'
+             _W_msg_taskmgr='執行工作管理員'
+             _W_msg_explorer='執行檔案總管'
+             _W_msg_uninstaller='執行解除安裝程式'
              _W_msg_shell='執行指令輔助說明視窗 (作為除錯)'
              _W_msg_folder='瀏覽容器中的檔案'
              _W_msg_annihilate="移除目前容器所有相依檔案，包括啟動器，完全卸載"
