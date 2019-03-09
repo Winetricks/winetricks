@@ -17685,11 +17685,6 @@ load_masseffect2()
     w_mount MassEffect2
     w_read_key
 
-    # FIXME: only do this for Nvidia graphics cards
-    if w_workaround_wine_bug 23151 "Disabling glsl"; then
-        w_call glsl=disabled
-    fi
-
     w_ahk_do "
         SetTitleMatchMode, 2
         run, ${W_ISO_MOUNT_LETTER}:Setup.exe
@@ -17753,11 +17748,6 @@ w_metadata masseffect2_demo games \
 load_masseffect2_demo()
 {
     w_download http://static.cdn.ea.com/bioware/u/f/eagames/bioware/masseffect2/ME2_DEMO/MassEffect2DemoEN.exe 4ec5ce1dc90c10512324d24cba2b5b9ba1e1872ed4c23e3ede0fc0accc7d2ff2
-
-    # FIXME: only do this for Nvidia graphics cards
-    if w_workaround_wine_bug 23151 "Disabling glsl"; then
-        w_call glsl=disabled
-    fi
 
     # Don't let self-extractor write into $W_CACHE
     case "$W_PLATFORM" in
