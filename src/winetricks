@@ -3987,8 +3987,6 @@ winetricks_showmenu()
                         --column År \
                         --column Medie \
                         --column Status \
-                        --column 'Size (MB)' \
-                        --column 'Time (sec)' \
                         --height $WINETRICKS_MENU_HEIGHT \
                         --width $WINETRICKS_MENU_WIDTH \
                         "
@@ -4005,8 +4003,6 @@ winetricks_showmenu()
                         --column Jahr \
                         --column Media \
                         --column Status \
-                        --column 'Größe (MB)' \
-                        --column 'Zeit (sec)' \
                         --height $WINETRICKS_MENU_HEIGHT \
                         --width $WINETRICKS_MENU_WIDTH \
                         "
@@ -4023,8 +4019,6 @@ winetricks_showmenu()
                         --column Rok \
                         --column Media \
                         --column Status \
-                        --column 'Rozmiar (MB)' \
-                        --column 'Czas (sek)' \
                         --height $WINETRICKS_MENU_HEIGHT \
                         --width $WINETRICKS_MENU_WIDTH \
                         "
@@ -4041,8 +4035,6 @@ winetricks_showmenu()
                         --column Год \
                         --column Источник \
                         --column Статус \
-                        --column 'Размер (МБ)' \
-                        --column 'Время (сек)' \
                         --height $WINETRICKS_MENU_HEIGHT \
                         --width $WINETRICKS_MENU_WIDTH \
                         "
@@ -4059,8 +4051,6 @@ winetricks_showmenu()
                         --column Рік \
                         --column Медіа \
                         --column Статус \
-                        --column 'Розмір (МБ)' \
-                        --column 'Час (сек)' \
                         --height $WINETRICKS_MENU_HEIGHT \
                         --width $WINETRICKS_MENU_WIDTH \
                         "
@@ -4077,8 +4067,6 @@ winetricks_showmenu()
                         --column 发行年 \
                         --column 媒介 \
                         --column 状态 \
-                        --column '文件大小 (MB)' \
-                        --column '时间 (秒)' \
                         --height $WINETRICKS_MENU_HEIGHT \
                         --width $WINETRICKS_MENU_WIDTH \
                         "
@@ -4095,8 +4083,6 @@ winetricks_showmenu()
                         --column 發行年 \
                         --column 媒介 \
                         --column 狀態 \
-                        --column '檔案大小 (MB)' \
-                        --column '時間 (秒)' \
                         --height $WINETRICKS_MENU_HEIGHT \
                         --width $WINETRICKS_MENU_WIDTH \
                         "
@@ -4113,8 +4099,6 @@ winetricks_showmenu()
                         --column Year \
                         --column Media \
                         --column Status \
-                        --column 'Size (MB)' \
-                        --column 'Time (sec)' \
                         --height $WINETRICKS_MENU_HEIGHT \
                         --width $WINETRICKS_MENU_WIDTH \
                         "
@@ -4130,7 +4114,6 @@ winetricks_showmenu()
                     title='?'
                     # shellcheck disable=SC1090
                     . "$metadatafile"
-                    # shellcheck disable=SC2154
                     if test "$W_OPT_SHOWBROKEN" = 1 || test "$wine_showstoppers" = ""; then
                         # Compute cached and downloadable flags
                         flags=""
@@ -4147,8 +4130,6 @@ winetricks_showmenu()
                             \"$year\" \
                             \"$media\" \
                             \"$flags\" \
-                            \"$size_MB\" \
-                            \"$time_sec\" \
                         "
                     fi
                 )
