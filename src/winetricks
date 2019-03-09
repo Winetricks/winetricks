@@ -3378,8 +3378,6 @@ winetricks_prefixmenu()
              _W_msg_mkprefix="Создать новый путь wine"
              _W_msg_unattended0="Отключить автоматическую установку"
              _W_msg_unattended1="Включить автоматическую установку"
-             _W_msg_showbroken0="Спрятать нерабочие программы (например, использующие DRM)"
-             _W_msg_showbroken1="Отобразить нерабочие программы (например, использующие DRM)"
              _W_msg_help="Просмотр справки (в веб-браузере)"
              ;;
         uk*) _W_msg_title="Winetricks - виберіть wineprefix"
@@ -3391,8 +3389,6 @@ winetricks_prefixmenu()
              _W_msg_mkprefix="створити новий wineprefix"
              _W_msg_unattended0="Вимкнути автоматичне встановлення"
              _W_msg_unattended1="Увімкнути автоматичне встановлення"
-             _W_msg_showbroken0="Сховати нестабільні додатки (наприклад з проблемами з DRM)"
-             _W_msg_showbroken1="Показати нестабільні додатки (наприклад з проблемами з DRM)"
              _W_msg_help="Переглянути довідку"
              ;;
         zh_CN*)   _W_msg_title="Winetricks - 选择一个 Wine 容器"
@@ -3404,8 +3400,6 @@ winetricks_prefixmenu()
              _W_msg_mkprefix="创建新的 Wine 容器"
              _W_msg_unattended0="禁用静默安装"
              _W_msg_unattended1="启用静默安装"
-             _W_msg_showbroken0="隐藏有争议的程序 (比如存在版权问题的程序)"
-             _W_msg_showbroken1="有争议的程序 (比如存在版权问题的程序)"
              _W_msg_help="查看帮助"
              ;;
         zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 選取一個 Wine 容器"
@@ -3417,8 +3411,6 @@ winetricks_prefixmenu()
              _W_msg_mkprefix="建立新的 Wine 容器"
              _W_msg_unattended0="禁用靜默安裝"
              _W_msg_unattended1="啟用靜默安裝"
-             _W_msg_showbroken0="隱藏有爭議的程式 (比如存在著作權問題的程式)"
-             _W_msg_showbroken1="有爭議的程式 (比如存在著作權問題的程式)"
              _W_msg_help="檢視輔助說明"
              ;;
         de*) _W_msg_title="Winetricks - wineprefix auswählen"
@@ -3430,8 +3422,6 @@ winetricks_prefixmenu()
              _W_msg_mkprefix="Neuen wineprefix erstellen"
              _W_msg_unattended0="Automatische Installation deaktivieren"
              _W_msg_unattended1="Automatische Installation aktivieren"
-             _W_msg_showbroken0="Defekte Programme nicht anzeigen (z.B. solche mit DRM Problemen)"
-             _W_msg_showbroken1="Defekte Programme anzeigen (z.B. solche mit DRM Problemen)"
              _W_msg_help="Hilfe anzeigen"
              ;;
         pl*) _W_msg_title="Winetricks - wybierz prefiks Wine"
@@ -3443,8 +3433,6 @@ winetricks_prefixmenu()
              _W_msg_mkprefix="Stwórz nowy prefiks Wine"
              _W_msg_unattended0="Wyłącz cichą instalację"
              _W_msg_unattended1="Włącz cichą instalację"
-             _W_msg_showbroken0="Ukrywaj uszkodzone aplikacje (np. z problemami z DRM)"
-             _W_msg_showbroken1="Pokazuj uszkodzone aplikacje (np. z problemami z DRM)"
              _W_msg_help="Wyświetl pomoc"
              ;;
         *)   _W_msg_title="Winetricks - choose a wineprefix"
@@ -3456,18 +3444,12 @@ winetricks_prefixmenu()
              _W_msg_mkprefix="Create new wineprefix"
              _W_msg_unattended0="Disable silent install"
              _W_msg_unattended1="Enable silent install"
-             _W_msg_showbroken0="Hide broken apps (e.g. those with DRM problems)"
-             _W_msg_showbroken1="Show broken apps (e.g. those with DRM problems)"
              _W_msg_help="View help"
              ;;
     esac
     case "$W_OPT_UNATTENDED" in
         1) _W_cmd_unattended=attended; _W_msg_unattended="$_W_msg_unattended0" ;;
         *) _W_cmd_unattended=unattended; _W_msg_unattended="$_W_msg_unattended1" ;;
-    esac
-    case "$W_OPT_SHOWBROKEN" in
-        1) _W_cmd_showbroken=hidebroken; _W_msg_showbroken="$_W_msg_showbroken0" ;;
-        *) _W_cmd_showbroken=showbroken; _W_msg_showbroken="$_W_msg_showbroken1" ;;
     esac
 
     case $WINETRICKS_GUI in
@@ -3512,7 +3494,6 @@ winetricks_prefixmenu()
                 done >> "$WINETRICKS_WORKDIR"/zenity.sh
             fi
             printf %s " FALSE $_W_cmd_unattended '$_W_msg_unattended'" >> "$WINETRICKS_WORKDIR"/zenity.sh
-            printf %s " FALSE $_W_cmd_showbroken '$_W_msg_showbroken'" >> "$WINETRICKS_WORKDIR"/zenity.sh
 
             sh "$WINETRICKS_WORKDIR"/zenity.sh | tr '|' ' '
             ;;
@@ -3545,7 +3526,6 @@ winetricks_prefixmenu()
                 done
             fi
             printf %s " $_W_cmd_unattended '$_W_msg_unattended' off"
-            printf %s " $_W_cmd_showbroken '$_W_msg_showbroken' off"
             ) > "$WINETRICKS_WORKDIR"/kdialog.sh
             sh "$WINETRICKS_WORKDIR"/kdialog.sh
             ;;
@@ -4114,24 +4094,22 @@ winetricks_showmenu()
                     title='?'
                     # shellcheck disable=SC1090
                     . "$metadatafile"
-                    if test "$W_OPT_SHOWBROKEN" = 1 || test "$wine_showstoppers" = ""; then
-                        # Compute cached and downloadable flags
-                        flags=""
-                        winetricks_is_cached "$code" && flags="$_W_cached"
-                        installed=FALSE
-                        if winetricks_is_installed "$code"; then
-                            installed=TRUE
-                            echo "$code" >> "$WINETRICKS_WORKDIR"/installed.txt
-                        fi
-                        printf %s " $installed \
-                            $code \
-                            \"$title\" \
-                            \"$publisher\" \
-                            \"$year\" \
-                            \"$media\" \
-                            \"$flags\" \
-                        "
+                    # Compute cached and downloadable flags
+                    flags=""
+                    winetricks_is_cached "$code" && flags="$_W_cached"
+                    installed=FALSE
+                    if winetricks_is_installed "$code"; then
+                        installed=TRUE
+                        echo "$code" >> "$WINETRICKS_WORKDIR"/installed.txt
                     fi
+                    printf %s " $installed \
+                        $code \
+                        \"$title\" \
+                        \"$publisher\" \
+                        \"$year\" \
+                        \"$media\" \
+                        \"$flags\" \
+                    "
                 )
             done >> "$WINETRICKS_WORKDIR"/zenity.sh
 
@@ -5390,7 +5368,6 @@ Optionen:
     --no-clean        Temp Verzeichnisse nicht löschen (nützlich beim debuggen)
 -q, --unattended      Keine Fragen stellen, alles automatisch installieren
 -r, --ddrescue        Alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
-    --showbroken      Auch Verben anzeigen die momentan in Wine nicht funktionieren
 -t  --torify          Run downloads under torify, if available
     --verify          Wenn Möglisch automatische GUI Tests für Verben starten
 -v, --verbose         Alle ausgeführten Kommandos anzeigen
@@ -5432,7 +5409,6 @@ Options:
     --no-clean        Don't delete temp directories (useful during debugging)
 -q, --unattended      Don't ask any questions, just install automatically
 -r, --ddrescue        Retry hard when caching scratched discs
-    --showbroken      Even show verbs that are currently broken in wine
 -t  --torify          Run downloads under torify, if available
     --verify          Run (automated) GUI tests for verbs, if available
 -v, --verbose         Echo all commands as they are executed
@@ -5477,7 +5453,6 @@ winetricks_handle_option()
         -q|--unattended) winetricks_set_unattended 1 ;;
         -r|--ddrescue) WINETRICKS_OPT_DD=ddrescue ;;
         --self-update) winetricks_selfupdate;;
-        --showbroken) W_OPT_SHOWBROKEN=1 ;;
         -t|--torify)  WINETRICKS_OPT_TORIFY=1 ;;
         --update-rollback) winetricks_selfupdate_rollback;;
         -v|--verbose) WINETRICKS_OPT_VERBOSE=1 ; set -x;;
@@ -20921,8 +20896,6 @@ execute_command()
             ;;
         unattended) winetricks_set_unattended 1 ;;
         attended) winetricks_set_unattended 0 ;;
-        showbroken) W_OPT_SHOWBROKEN=1 ;;
-        hidebroken) W_OPT_SHOWBROKEN=0 ;;
         arch=*) winetricks_set_winearch "$arg" ;;
         prefix=*) winetricks_set_wineprefix "$arg" ;;
         annihilate) winetricks_annihilate_wineprefix ;;
