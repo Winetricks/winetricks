@@ -17249,13 +17249,10 @@ w_metadata mfsx_demo games \
     year="2006" \
     media="download" \
     file1="FSXDemo.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Microsoft Flight Simulator X Demo/fsx.exe" \
-    wine_showstoppers="26411"
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Microsoft Flight Simulator X Demo/fsx.exe"
 
 load_mfsx_demo()
 {
-    w_workaround_wine_bug 26411 "Game hangs on first screen for me"
-
     if w_workaround_wine_bug 25139 "Setting virtual desktop so license screen shows up on first run"; then
         w_call vd=1024x768
     fi
