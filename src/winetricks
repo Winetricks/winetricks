@@ -18233,11 +18233,14 @@ w_metadata rct3deluxe games \
     year="2004" \
     media="cd" \
     file1="RCT3.iso" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Atari/RollerCoaster Tycoon 3/RCT3.EXE"\
-    wine_showstoppers="21448"
+    installed_exe1="$W_PROGRAMS_X86_WIN/Atari/RollerCoaster Tycoon 3/RCT3.EXE"
 
 load_rct3deluxe()
 {
+    if w_workaround_wine_bug 21448; then
+        w_warn "DRM doesn't work, see https://bugs.winehq.org/show_bug.cgi?id=21448"
+    fi
+
     w_mount RCT3
 
     # FIXME: make videos and music work
