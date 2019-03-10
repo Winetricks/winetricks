@@ -1,4 +1,4 @@
-Using winetricks 20181203 - sha256sum: 2e32c987b5dd0ddd3e0836290d9561e7f251ca080248f53050cc84c27d4bbd18 with wine-3.19-116-gb78de971f6 and WINEARCH=win32
+Using winetricks 20190310 - sha256sum: cf44b3cbf4134adb9f9dd7eec0d50b45d34ae65c5432d72edc24bcd1841888ba with wine-3.21-243-g0cc6233e20 and WINEARCH=win32
 alldlls=builtin          Override most common DLLs to builtin
 alldlls=default          Remove all DLL overrides
 ao=disabled              Disable AlwaysOffscreen (default)
@@ -34,6 +34,8 @@ hosts                    Add empty C:\windows\system32\drivers\etc\{hosts,servic
 isolate_home             Remove wineprefix links to /home/austin
 macdriver=mac            Enable the Mac native Quartz driver (default)
 macdriver=x11            Disable the Mac native Quartz driver, use X11 instead
+mimeassoc=off            Disable exporting MIME-type file associations to the native desktop
+mimeassoc=on             Enable exporting MIME-type file associations to the native desktop (default)
 multisampling=disabled   Disable Direct3D multisampling
 multisampling=enabled    Enable Direct3D multisampling
 mwo=disable              Set DirectInput MouseWarpOverride to disable
