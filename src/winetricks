@@ -14451,7 +14451,7 @@ load_vc2010express()
     w_try_cd "$W_TMP"/VCExpress
 
     # Uninstall wine-mono, installer doesn't attempt to install native .Net if mono is installed,
-    # Then the installer throws and exception and fails
+    # Then the installer throws an exception and fails
     # See https://github.com/Winetricks/winetricks/issues/1165
     w_call remove_mono
 
