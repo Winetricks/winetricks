@@ -12484,6 +12484,7 @@ load_adobe_diged4()
     if w_workaround_wine_bug 32323; then
         w_call corefonts
     fi
+
     if [ ! -x "$(command -v winbindd 2>/dev/null)" ]; then
         w_warn "Adobe Digital Editions 4.5 requires winbind (part of Samba) to be installed, but winbind was not detected."
     fi
@@ -12492,13 +12493,17 @@ load_adobe_diged4()
 
     #w_call win7
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run, ${file1} ${W_OPT_UNATTENDED:+ /S}
-        winwait, Installing Adobe Digital Editions
-        ControlClick, Button1 ; Don't install Norton Internet Security
-        ControlClick, Static19 ; Next
-    "
+    if w_workaround_wine_bug 46019 "Installer fails under wine, manually unpacking it instead"; then
+        w_try_7z "${W_PROGRAMS_X86_UNIX}/Adobe/Adobe Digital Editions 4.5" "${file1}" -y
+    else
+        w_ahk_do "
+            SetTitleMatchMode, 2
+            run, ${file1} ${W_OPT_UNATTENDED:+ /S}
+            winwait, Installing Adobe Digital Editions
+            ControlClick, Button1 ; Don't install Norton Internet Security
+            ControlClick, Static19 ; Next
+        "
+    fi
 }
 
 #----------------------------------------------------------------
