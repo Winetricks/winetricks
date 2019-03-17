@@ -10891,6 +10891,10 @@ w_metadata vcrun2017 dlls \
 # FIXME: There's a conflict with vcrun2015 because the dll's version number for 2017 and 2015 are the same. Correct behavior should be compared to native Windows.
 load_vcrun2017()
 {
+    # https://go.microsoft.com/fwlink/?LinkId=746571
+    # 2017/10/02: 2da11e22a276be85970eaed255daf3d92af84e94142ec04252326a882e57303e
+    # w_download https://download.visualstudio.microsoft.com/download/pr/11100229/78c1e864d806e36f6035d80a0e80399e/VC_redist.x86.exe 2da11e22a276be85970eaed255daf3d92af84e94142ec04252326a882e57303e
+
     # https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads
     # 2019/03/17: 7355962b95d6a5441c304cd2b86baf37bc206f63349f4a02289bcfb69ef142d3
     w_download https://aka.ms/vs/15/release/vc_redist.x86.exe 7355962b95d6a5441c304cd2b86baf37bc206f63349f4a02289bcfb69ef142d3
@@ -10909,6 +10913,10 @@ load_vcrun2017()
     case "$W_ARCH" in
         win64)
             # Also install the 64-bit version
+            # https://go.microsoft.com/fwlink/?LinkId=746572
+            # 2017/10/02: 7434bf559290cccc3dd3624f10c9e6422cce9927d2231d294114b2f929f0e465
+            # w_download https://download.visualstudio.microsoft.com/download/pr/11100230/15ccb3f02745c7b206ad10373cbca89b/VC_redist.x64.exe 7434bf559290cccc3dd3624f10c9e6422cce9927d2231d294114b2f929f0e465            # https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads
+
             # https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads
             # 2019/03/17: b192e143d55257a0a2f76be42e44ff8ee14014f3b1b196c6e59829b6b3ec453c
             w_download https://aka.ms/vs/15/release/vc_redist.x64.exe b192e143d55257a0a2f76be42e44ff8ee14014f3b1b196c6e59829b6b3ec453c
