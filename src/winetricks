@@ -10885,15 +10885,16 @@ w_metadata vcrun2017 dlls \
     year="2017" \
     media="download" \
     conflicts="vcrun2015" \
-    file1="VC_redist.x86.exe" \
+    file1="vc_redist.x86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mfc140.dll"
 
 # FIXME: There's a conflict with vcrun2015 because the dll's version number for 2017 and 2015 are the same. Correct behavior should be compared to native Windows.
 load_vcrun2017()
 {
-    # https://go.microsoft.com/fwlink/?LinkId=746571
+    # https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads
     # 2017/10/02: 2da11e22a276be85970eaed255daf3d92af84e94142ec04252326a882e57303e
-    w_download https://download.visualstudio.microsoft.com/download/pr/11100229/78c1e864d806e36f6035d80a0e80399e/VC_redist.x86.exe 2da11e22a276be85970eaed255daf3d92af84e94142ec04252326a882e57303e
+    # 2019/03/17: 7355962b95d6a5441c304cd2b86baf37bc206f63349f4a02289bcfb69ef142d3
+    w_download https://aka.ms/vs/15/release/vc_redist.x86.exe 7355962b95d6a5441c304cd2b86baf37bc206f63349f4a02289bcfb69ef142d3
 
     if w_workaround_wine_bug 37781; then
         w_warn "This may fail in non-XP mode, see https://bugs.winehq.org/show_bug.cgi?id=37781"
@@ -10904,17 +10905,18 @@ load_vcrun2017()
     w_set_winver winxp
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" VC_redist.x86.exe $W_UNATTENDED_SLASH_Q
+    w_try "$WINE" vc_redist.x86.exe $W_UNATTENDED_SLASH_Q
 
     case "$W_ARCH" in
         win64)
             # Also install the 64-bit version
-            # https://go.microsoft.com/fwlink/?LinkId=746572
+            # https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads
             # 2017/10/02: 7434bf559290cccc3dd3624f10c9e6422cce9927d2231d294114b2f929f0e465
-            w_download https://download.visualstudio.microsoft.com/download/pr/11100230/15ccb3f02745c7b206ad10373cbca89b/VC_redist.x64.exe 7434bf559290cccc3dd3624f10c9e6422cce9927d2231d294114b2f929f0e465
+            # 2019/03/17: b192e143d55257a0a2f76be42e44ff8ee14014f3b1b196c6e59829b6b3ec453c
+            w_download https://aka.ms/vs/15/release/vc_redist.x64.exe b192e143d55257a0a2f76be42e44ff8ee14014f3b1b196c6e59829b6b3ec453c
             if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls"; then
                 rm -f "$W_TMP"/*  # Avoid permission error
-                w_try_cabextract --directory="$W_TMP" VC_redist.x64.exe
+                w_try_cabextract --directory="$W_TMP" vc_redist.x64.exe
                 w_try_cabextract --directory="$W_TMP" "$W_TMP/a10"
                 w_try_cabextract --directory="$W_TMP" "$W_TMP/a11"
                 cp "$W_TMP"/concrt140.dll "$W_SYSTEM64_DLLS"/concrt140.dll
@@ -10936,7 +10938,7 @@ load_vcrun2017()
                 cp "$W_TMP"/api_ms_win_crt_stdio_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-stdio-l1-1-0.dll
                 cp "$W_TMP"/ucrtbase.dll "$W_SYSTEM64_DLLS"/ucrtbase.dll
             else
-                w_try "$WINE" VC_redist.x64.exe $W_UNATTENDED_SLASH_Q
+                w_try "$WINE" vc_redist.x64.exe $W_UNATTENDED_SLASH_Q
             fi
             ;;
     esac
