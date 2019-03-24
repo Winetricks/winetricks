@@ -12271,7 +12271,7 @@ w_metadata ipamona fonts \
 
 load_ipamona()
 {
-    w_download "http://www.geocities.jp/ipa_mona/opfc-ModuleHP-1.1.1_withIPAMonaFonts-1.0.8.tar.gz" ab77beea3b051abf606cd8cd3badf6cb24141ef145c60f508fcfef1e3852bb9d
+    w_download "https://web.archive.org/web/20190309175311/http://www.geocities.jp/ipa_mona/opfc-ModuleHP-1.1.1_withIPAMonaFonts-1.0.8.tar.gz" ab77beea3b051abf606cd8cd3badf6cb24141ef145c60f508fcfef1e3852bb9d
 
     w_try_cd "$W_TMP"
     w_try tar -zxf "$W_CACHE/$W_PACKAGE/$file1" "${file1%.tar.gz}/fonts"
