@@ -357,7 +357,7 @@ test_command()
 
     # Isolate us from the user's home directory
     # shellcheck disable=SC2086
-    $XVFB $WINETRICKS sandbox
+    $XVFB $WINETRICKS sandbox || fail "\'$XVFB $WINETRICKS sandbox\' failed"
 
     echo "Installing $command"
 
