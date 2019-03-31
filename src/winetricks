@@ -223,7 +223,7 @@ w_askpermission()
 w_info()
 {
     # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
-    if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
+    if [ -z "$WINETRICKS_SUPER_QUIET" ] ; then
         echo "------------------------------------------------------"
         echo "$@"
         echo "------------------------------------------------------"
@@ -244,7 +244,7 @@ w_info()
 w_warn()
 {
     # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
-    if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
+    if [ -z "$WINETRICKS_SUPER_QUIET" ] ; then
         echo "------------------------------------------------------"
         echo "$@"
         echo "------------------------------------------------------"
@@ -3293,7 +3293,7 @@ winetricks_detect_gui()
     fi
 
     # Print zenity/dialog version info for debugging:
-    if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
+    if [ -z "$WINETRICKS_SUPER_QUIET" ] ; then
        echo "winetricks GUI enabled, using $WINETRICKS_GUI $WINETRICKS_GUI_VERSION"
     fi
 }
@@ -5333,7 +5333,7 @@ winetricks_init()
         w_warn "Your version of wine $_wine_version_stripped is no longer supported upstream. You should upgrade to 3.x"
     fi
 
-    if [ ! "$WINETRICKS_SUPER_QUIET" ] ; then
+    if [ -z "$WINETRICKS_SUPER_QUIET" ] ; then
         echo "Using winetricks $(winetricks_print_version) with ${WINETRICKS_ORIG_WINE_VERSION} and WINEARCH=${W_ARCH}"
     fi
 
@@ -9224,7 +9224,7 @@ load_ie8_kb2936068()
 
     w_download https://download.microsoft.com/download/3/8/C/38CE0ABB-01FD-4C0A-A569-BC5E82C34A17/IE8-WindowsXP-KB2936068-x86-ENU.exe 8bda23c78cdcd9d01c364a01c6d639dfb2d11550a5521b8a81c808c1a2b1824e
 
-    if [ $W_UNATTENDED_SLASH_Q ]; then
+    if [ -n "$W_UNATTENDED_SLASH_Q" ]; then
         quiet="$W_UNATTENDED_SLASH_QUIET /forcerestart"
     else
         quiet=""
@@ -12727,7 +12727,7 @@ load_ev3()
 
     w_download http://esd.lego.com.edgesuite.net/digitaldelivery/mindstorms/6ecda7c2-1189-4816-b2dd-440e22d65814/public/LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
 
-    if [ $W_UNATTENDED_SLASH_Q ]; then
+    if [ -n "$W_UNATTENDED_SLASH_Q" ]; then
         quiet="$W_UNATTENDED_SLASH_QB /AcceptLicenses yes"
     else
         quiet=""
@@ -12975,7 +12975,7 @@ load_ie6()
     w_override_dlls native inseng
 
     w_try_cd "$W_TMP/IE 6.0 Full"
-    if [ $W_UNATTENDED_SLASH_Q ]; then
+    if [ -n "$W_UNATTENDED_SLASH_Q" ]; then
         "$WINE" IE6SETUP.EXE /q:a /r:n /c:"ie6wzd /S:""#e"" /q:a /r:n"
     else
         "$WINE" IE6SETUP.EXE
@@ -13174,7 +13174,7 @@ load_ie8()
     w_try cp -f "$W_CACHE"/ie8/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
     w_download https://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe 5a2c6c82774bfe99b175f50a05b05bcd1fac7e9d0e54db2534049209f50cd6ef
-    if [ $W_UNATTENDED_SLASH_QUIET ]; then
+    if [ -n "$W_UNATTENDED_SLASH_QUIET" ]; then
         quiet="$W_UNATTENDED_SLASH_QUIET /forcerestart"
     else
         quiet=""
@@ -13843,7 +13843,7 @@ load_openwatcom()
     # 2016/03/11: upstream http://www.openwatcom.org appears to be dead (404)
     w_download "http://openwatcom.mirror.fr/open-watcom-c-win32-1.9.exe" 040c910aba304fdb5f39b8fe508cd3c772b1da1f91a58179fa0895e0b2bf190b
 
-    if [ $W_UNATTENDED_SLASH_Q ]; then
+    if [ -n "$W_UNATTENDED_SLASH_Q" ]; then
         # Options documented at http://bugzilla.openwatcom.org/show_bug.cgi?id=898
         # But they don't seem to work on Wine, so jam them into setup.inf
         # Pick smallest installation that supports 16-bit C and C++
@@ -14328,7 +14328,7 @@ load_vc2005express()
     w_try_7z "$W_TMP" "$W_CACHE"/vc2005express/VC.iso
 
     w_try_cd "$W_TMP"
-    if [ $W_UNATTENDED_SLASH_Q ]; then
+    if [ -n "$W_UNATTENDED_SLASH_Q" ]; then
         chmod +x Ixpvc.exe
         # Add /qn after ReallySuppress for a really silent install (but then you won't see any errors)
 
