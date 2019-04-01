@@ -368,9 +368,11 @@ test_command()
     if [ "$return" = "32" ] && [ "$WINEARCH" != "win32" ]; then
         skip "$command is not supported on $WINEARCH, requires win32"
         archskip=1
+        return
     elif [ "$return" = "64" ] && [ "$WINEARCH" != "win64" ]; then
         skip "$command is not supported on $WINEARCH, requires win64"
         archskip=1
+        return
     fi
 
     if [ "$EXPECT_FAIL" = "yes" ] ; then
