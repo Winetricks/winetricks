@@ -688,7 +688,7 @@ test_full() {
 }
 
 test_xvfb() {
-    if [ ! "$(command -v xvfb-run 2>/dev/null)" ] ; then
+    if ! command -v xvfb-run 2>/dev/null; then
         w_die "Please install xvfb-run for xvfb tests"
     fi
 
