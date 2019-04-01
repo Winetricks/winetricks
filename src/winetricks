@@ -9907,6 +9907,28 @@ load_pdh()
 
 #----------------------------------------------------------------
 
+w_metadata peverify dlls \
+    title="MS peverify (from .NET 2.0 SDK)" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="../dotnet20sdk/setup.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/peverify.exe"
+
+load_peverify()
+{
+    w_download_to dotnet20sdk https://download.microsoft.com/download/c/4/b/c4b15d7d-6f37-4d5a-b9c6-8f07e7d46635/setup.exe 1d7337bfbb2c65f43c82d188688ce152af403bcb67a2cc2a3cc68a580ecd8200
+
+    # Seems to require dotnet20; at least doesn't work if dotnet40 is installed instead
+    w_call dotnet20
+
+    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/dotnet20sdk/setup.exe" -F netfxsd1.cab
+    w_try_cabextract --directory="${W_TMP}" "${W_TMP}/netfxsd1.cab" -F FL_PEVerify_exe_____X86.3643236F_FC70_11D3_A536_0090278A1BB8
+    w_try mv "${W_TMP}/FL_PEVerify_exe_____X86.3643236F_FC70_11D3_A536_0090278A1BB8" "${W_SYSTEM32_DLLS}/peverify.exe"
+}
+
+#----------------------------------------------------------------
+
 w_metadata physx dlls \
     title="PhysX" \
     publisher="Nvidia" \
