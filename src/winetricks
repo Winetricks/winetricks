@@ -1061,6 +1061,8 @@ w_download_to()
     # Try download twice
     checksum_ok=""
     tries=0
+    # Set olddir before entering the loop, otherwise second try will overwrite
+    _W_dl_olddir=$(pwd)
     while test $tries -lt 2 ; do
         # Warn on a second try
         test "$tries" -eq 1 && winetricks_dl_warning
@@ -1115,7 +1117,6 @@ w_download_to()
             rm "$_W_cache/$_W_file"
         fi
 
-        _W_dl_olddir=$(pwd)
         w_try_cd "$_W_cache"
         # Mac folks tend to have curl rather than wget
         # On Mac, 'which' doesn't return good exit status
