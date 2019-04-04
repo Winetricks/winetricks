@@ -365,6 +365,12 @@ test_command()
     $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@"
     return=$?
 
+    if [ -d "$WINEPREFIX/drive_c/windows/syswow64" ]; then
+        WINEARCH="win64"
+    else
+        WINEARCH="win32"
+    fi
+
     if [ "$return" = "32" ] && [ "$WINEARCH" != "win32" ]; then
         skip "$command is not supported on $WINEARCH, requires win32"
         archskip=1
