@@ -7276,7 +7276,7 @@ load_dxvk()
     w_download_to "${W_TMP_EARLY}" "https://raw.githubusercontent.com/doitsujin/dxvk/latest-release/RELEASE"
     dxvk_version="$(cat "${W_TMP_EARLY}/RELEASE")"
     w_linkcheck_ignore=1 w_download "https://github.com/doitsujin/dxvk/releases/download/v${dxvk_version}/dxvk-${dxvk_version}.tar.gz"
-    helper_dxvk "dxvk-${dxvk_version}.tar.gz" "d3d10_enabled" "4.5" "1.1.88"
+    helper_dxvk "dxvk-${dxvk_version}.tar.gz" "d3d10_enabled" "3.19" "1.1.88"
     unset dxvk_version
 }
 
