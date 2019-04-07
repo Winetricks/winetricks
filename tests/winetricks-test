@@ -404,11 +404,6 @@ test_command()
 
     echo "test_app: ${app}: install_time $seconds seconds."
 
-    # Arcania-Gothic4, et al
-    if pgrep notepad.exe ; then
-        killall notepad.exe
-    fi
-
     echo "Checking for dangling processes!"
     # shellcheck disable=SC2009
     ps augxw | grep \\.exe
