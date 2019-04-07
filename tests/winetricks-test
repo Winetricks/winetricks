@@ -419,13 +419,6 @@ test_command()
                     killall Launcher.exe
                 fi
                 ;;
-            wmi)
-                # wmi starts a service
-                # FIXME: this should this be in the verb
-                if pgrep WinMgmt ; then
-                    killall WinMgmt.exe
-                fi
-                ;;
         esac
     done
 
