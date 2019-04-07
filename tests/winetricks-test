@@ -389,7 +389,11 @@ test_command()
             pass "test_command $command expected to fail, and did fail!"
         fi
     else
-        echo "winetricks $* completed"
+        if [ "$return" = "0" ] ; then
+            pass "$@"
+        else
+            fail "$@"
+        fi
     fi
 
     if [ ! -f time.log ] ; then
@@ -442,8 +446,6 @@ test_command()
     ps augxw | grep \\.exe
     "$WINESERVER" -w
     echo "Wineserver done."
-
-    pass "$@"
 }
 
 test_custom_verbs()
