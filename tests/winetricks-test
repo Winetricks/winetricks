@@ -404,18 +404,6 @@ test_command()
 
     echo "test_app: ${app}: install_time $seconds seconds."
 
-    # Cleanup:
-    for x in $command; do
-        case $x in
-            dotnet*)
-                # bug in wine?  the wineconsoles are for the langpacks, and seem empty.
-                if pgrep wineconsole; then
-                    killall wineconsole
-                fi
-                ;;
-        esac
-    done
-
     # Arcania-Gothic4, et al
     if pgrep notepad.exe ; then
         killall notepad.exe
