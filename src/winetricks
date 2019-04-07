@@ -15084,7 +15084,8 @@ w_metadata wglgears benchmarks \
 
 load_wglgears()
 {
-    w_download http://www2.cs.uidaho.edu/~jeffery/win32/wglgears.exe 858ba95ea3c9af4ded1f4100e59b6e8e57024f3efef56304dbd48106e8f2f6f7
+    # Original site http://www2.cs.uidaho.edu/~jeffery/win32/wglgears.exe is 403 as of 2019/04/07
+    w_download https://web.archive.org/web/20091001002702/http://www2.cs.uidaho.edu/~jeffery/win32/wglgears.exe 858ba95ea3c9af4ded1f4100e59b6e8e57024f3efef56304dbd48106e8f2f6f7
     mkdir -p "$W_PROGRAMS_X86_UNIX/misc"
     cp "$W_CACHE"/wglgears/wglgears.exe "$W_PROGRAMS_X86_UNIX/misc"
     chmod +x "$W_PROGRAMS_X86_UNIX/misc/wglgears.exe"
