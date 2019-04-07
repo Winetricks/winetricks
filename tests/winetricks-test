@@ -413,12 +413,6 @@ test_command()
                     killall wineconsole
                 fi
                 ;;
-            hegemony*)
-                # FIXME: this should this be in the verb
-                if pgrep Launcher ; then
-                    killall Launcher.exe
-                fi
-                ;;
         esac
     done
 
