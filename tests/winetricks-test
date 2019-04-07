@@ -387,7 +387,6 @@ test_command()
             fail "$command succeeded, should have failed"
         else
             pass "test_command $command expected to fail, and did fail!"
-            return
         fi
     else
         echo "winetricks $* completed"
