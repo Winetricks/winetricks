@@ -12795,6 +12795,7 @@ load_fontxplorer()
 
     w_try_cd "$W_CACHE/fontxplorer"
     w_try "$WINE" Font_Xplorer_122_Free.exe $W_UNATTENDED_SLASH_S
+    w_killall "explorer.exe"
 }
 
 #----------------------------------------------------------------

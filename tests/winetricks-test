@@ -413,13 +413,6 @@ test_command()
                     killall wineconsole
                 fi
                 ;;
-            fontxplorer)
-                # a number of apps open a folder on the desktop
-                # FIXME: this should this be in the verb
-                if pgrep winefile ; then
-                    killall winefile.exe
-                fi
-                ;;
             hegemony*)
                 # FIXME: this should this be in the verb
                 if pgrep Launcher ; then
