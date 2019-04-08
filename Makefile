@@ -63,7 +63,13 @@ install:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/bash-completion/completions
 	$(INSTALL_DATA) src/winetricks.bash-completion $(DESTDIR)$(PREFIX)/share/bash-completion/completions/winetricks
 
+# FIXME: need a _check or something along those lines
+
 check:
+	# FIXME: eventually make this a wrapper around check32/check64 (and make check32)
+	echo foo
+
+check32:
 	echo 'This verifies that most DLL verbs, plus flash, install ok.'
 	echo 'It should take about an hour to run with a fast connection.'
 	echo 'If you want to test a particular version of wine, do e.g.'
@@ -91,7 +97,41 @@ check:
 	sh ./src/linkcheck.sh check-deps || exit 1
 	sh ./tests/winetricks-test check-deps || exit 1
 	echo "Running tests"
-	cd src; if test -z "$(WINEARCH)" ; then export WINEARCH=win32 ; fi ; sh ../tests/winetricks-test quick
+	# FIXME: can we share check32/check64 (and just have them set WINEARCH, then call the real function)?
+	cd src; export WINEARCH=win32 ; sh ../tests/winetricks-test quick
+
+check64:
+	# FIXME: verify this works
+	# FIXME: can we share check32/check64 (and just have them set WINEARCH, then call the real function)?
+
+	echo 'This verifies that most DLL verbs, plus flash, install ok.'
+	echo 'It should take about an hour to run with a fast connection.'
+	echo 'If you want to test a particular version of wine, do e.g.'
+	echo 'export WINE=$$HOME/wine-git/wine first.'
+	echo 'Winetricks does not work completely in non-English locales.'
+	echo ''
+	echo 'Current Environment:'
+	echo 'DISPLAY is currently "$(DISPLAY)".'
+	echo 'LANG is currently "$(LANG)".'
+	echo 'WINEARCH is currently "$(WINEARCH)".'
+	echo 'WINE is currently "$(WINE)".'
+	echo 'XAUTHORITY is currently "$(XAUTHORITY)".'
+	echo ''
+	echo 'If running this as part of debuild, you might need to use'
+	echo 'debuild --preserve-envvar=LANG --preserve-envvar=WINE --preserve-envvar=WINEARCH --preserve-envvar=DISPLAY --preserve-envvar=XAUTHORITY'
+	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
+	echo ''
+	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
+	# Check for checkbashisms/shellcheck issues first:
+	echo "Running checkbashisms/shellcheck:"
+	sh ./tests/shell-checks || exit 1
+	# Check all script dependencies before starting tests:
+	echo "Checking dependencies.."
+	sh ./src/linkcheck.sh check-deps || exit 1
+	sh ./tests/winetricks-test check-deps || exit 1
+	echo "Running tests"
+	# FIXME: can we share check32/check64 (and just have them set WINEARCH, then call the real function)?
+	cd src; export WINEARCH=win64 ; sh ../tests/winetricks-test quick
 
 check-coverage:
 	WINETRICKS_ENABLE_KCOV=1 $(MAKE) check
@@ -101,6 +141,7 @@ shell-checks:
 	echo "This is relatively fast and doesn't download anything."
 	sh ./tests/shell-checks || exit 1
 
+# FIXME: test32/test64
 test:
 	echo 'This verifies that most DLL verbs, plus flash and dotnet, install ok.'
 	echo 'It also makes sure that all URLs in winetricks work, so a fast uncapped internet connection is needed.'
