@@ -8337,7 +8337,11 @@ load_dotnet461()
 
 verify_dotnet461()
 {
-    w_dotnet_verify dotnet461
+    if [ "$W_ARCH" = "win64" ]; then
+        echo "FIXME: fails with 4.5, see https://bugs.winehq.org/show_bug.cgi?id=46981, skipping"
+    else
+        w_dotnet_verify dotnet461
+    fi
 }
 
 #----------------------------------------------------------------
@@ -8388,7 +8392,11 @@ load_dotnet462()
 
 verify_dotnet462()
 {
-    w_dotnet_verify dotnet462
+    if [ "$W_ARCH" = "win64" ]; then
+        echo "FIXME: fails with 4.5, see https://bugs.winehq.org/show_bug.cgi?id=46981, skipping"
+    else
+        w_dotnet_verify dotnet462
+    fi
 }
 
 
@@ -8446,7 +8454,11 @@ load_dotnet472()
 
 verify_dotnet472()
 {
-    w_dotnet_verify dotnet472
+    if [ "$W_ARCH" = "win64" ]; then
+        echo "FIXME: fails with 4.5, see https://bugs.winehq.org/show_bug.cgi?id=46981, skipping"
+    else
+        w_dotnet_verify dotnet472
+    fi
 }
 
 #----------------------------------------------------------------
