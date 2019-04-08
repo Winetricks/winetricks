@@ -6599,11 +6599,10 @@ w_metadata directmusic dlls \
 
 load_directmusic()
 {
-# Untested. Based off https://bugs.winehq.org/show_bug.cgi?id=4805 and https://bugs.winehq.org/show_bug.cgi?id=24911
+    # Untested. Based off https://bugs.winehq.org/show_bug.cgi?id=4805 and https://bugs.winehq.org/show_bug.cgi?id=24911
 
     w_warn "You can specify individual DirectMusic verbs instead. e.g. 'winetricks dmsynth dmusic'"
 
-    w_call devenum
     w_call dmband
     w_call dmcompos
     w_call dmime
@@ -6615,7 +6614,16 @@ load_directmusic()
     w_call dmusic32
     w_call dsound
     w_call dswave
-    w_call quartz
+
+    if test "$W_ARCH" = "win32"; then
+        # FIXME: do we need devenum/quartz on win64?
+        # Native windows has 32bit versions of above and seem to work
+        # https://github.com/Winetricks/winetricks/issues/1172
+        #
+        # Note: both are in dxnt.cab
+        w_call devenum
+        w_call quartz
+    fi
 
     # FIXME: dxnt.cab doesn't contain this DLL. Is this really needed?
     w_override_dlls native streamci
