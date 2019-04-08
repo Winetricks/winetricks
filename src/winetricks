@@ -6693,8 +6693,15 @@ load_directx9()
 
     # How many of these do we really need?
     # We should probably remove most of these...?
-    w_call devenum
-    w_call quartz
+    if test "$W_ARCH" = "win32"; then
+        # FIXME: do we need devenum/quartz on win64?
+        # Native windows has 32bit versions of above and seem to work
+        # https://github.com/Winetricks/winetricks/issues/1172
+        #
+        # Note: both are in dxnt.cab
+        w_call devenum
+        w_call quartz
+    fi
 
     w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "msdmo.dll" "$W_TMP/dxnt.cab"
