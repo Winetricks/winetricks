@@ -12469,7 +12469,7 @@ w_metadata 7zip apps \
 
 load_7zip()
 {
-    w_download https://downloads.sourceforge.net/sevenzip/7z1602.exe 629ce3c424bd884e74aed6b7d87d8f0d75274fb87143b8d6360c5eec41d5f865
+    w_download https://sourceforge.net/projects/sevenzip/files/7-Zip/16.02/7z1602.exe 629ce3c424bd884e74aed6b7d87d8f0d75274fb87143b8d6360c5eec41d5f865
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "${file1}" $W_UNATTENDED_SLASH_S
 }
