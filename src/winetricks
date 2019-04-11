@@ -8573,27 +8573,14 @@ load_esent()
 
 #----------------------------------------------------------------
 
-w_metadata faudio dlls \
-    title="FAudio (xaudio reimplemntation, with xna support) builds for win32" \
-    publisher="Kron4ek" \
-    year="2019" \
-    media="download" \
-    file1="faudio-git-a756af4.tar.xz" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/FAudio.dll"
-
-load_faudio()
+# $1 - faudio archive name (required)
+helper_faudio()
 {
-    # FIXME: they have a LATEST file that may be useful in the future
-    # Not sure if we want to have multiple versions like dxvk
-    # Especially when some are prefixed with 'git-'!
-    # https://raw.githubusercontent.com/Kron4ek/FAudio-Builds/master/LATEST
-    faudio_version="$(basename "${file1}" .tar.xz)"
-
-    # 2018/01/26: b491e9a1eb2052f62d6639be86639203ec1c7e803101db86ef8817a07baaf0a8
-    w_download https://github.com/Kron4ek/FAudio-Builds/releases/download/git-a756af4/faudio-git-a756af4.tar.xz b491e9a1eb2052f62d6639be86639203ec1c7e803101db86ef8817a07baaf0a8
+    faudio_archive="$1"
+    faudio_version="$(basename "${faudio_archive}" .tar.xz)"
 
     w_try_cd "$W_TMP"
-    w_try tar -Jxf "${W_CACHE}/${W_PACKAGE}/${file1}"
+    w_try tar -Jxf "${W_CACHE}/${W_PACKAGE}/${faudio_archive}"
 
     # They ship an installation script, but it's bash (and we have all needed functionality already)
     # Unless they add something more complex, this should suffice:
@@ -8611,6 +8598,88 @@ load_faudio()
             w_override_dlls native "$shortdll"
         done
     fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata faudio1901 dlls \
+    title="FAudio (xaudio reimplementation, with xna support) builds for win32 (19.01)" \
+    publisher="Kron4ek" \
+    year="2019" \
+    media="download" \
+    file1="faudio-19.01.tar.xz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/FAudio.dll"
+
+load_faudio1901()
+{
+    w_download https://github.com/Kron4ek/FAudio-Builds/releases/download/19.01/faudio-19.01.tar.xz f3439090ba36061ee47ebda93e409ae4b2d8886c780c86a197c66ff08b9b573f
+    helper_faudio "$file1"
+}
+
+#----------------------------------------------------------------
+
+w_metadata faudio1902 dlls \
+    title="FAudio (xaudio reimplementation, with xna support) builds for win32 (19.02)" \
+    publisher="Kron4ek" \
+    year="2019" \
+    media="download" \
+    file1="faudio-19.02.tar.xz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/FAudio.dll"
+
+load_faudio1902()
+{
+    w_download https://github.com/Kron4ek/FAudio-Builds/releases/download/19.02/faudio-19.02.tar.xz 849fec35482748a2b441d8dd7e9a171c7c5c2207d1037c7ffd0265e65f2a4b2b
+    helper_faudio "$file1"
+}
+
+#----------------------------------------------------------------
+
+w_metadata faudio1903 dlls \
+    title="FAudio (xaudio reimplementation, with xna support) builds for win32 (19.03)" \
+    publisher="Kron4ek" \
+    year="2019" \
+    media="download" \
+    file1="faudio-19.03.tar.xz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/FAudio.dll"
+
+load_faudio1903()
+{
+    w_download https://github.com/Kron4ek/FAudio-Builds/releases/download/19.03/faudio-19.03.tar.xz d5c62437fd5b185e82f464f6a82334af5d666cb506aba218358ea7a3697fdf63
+    helper_faudio "$file1"
+}
+
+#----------------------------------------------------------------
+
+w_metadata faudio1904 dlls \
+    title="FAudio (xaudio reimplementation, with xna support) builds for win32 (19.04)" \
+    publisher="Kron4ek" \
+    year="2019" \
+    media="download" \
+    file1="faudio-19.04.tar.xz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/FAudio.dll"
+
+load_faudio1904()
+{
+    w_download https://github.com/Kron4ek/FAudio-Builds/releases/download/19.04/faudio-19.04.tar.xz c364db1a18bfb6f6c0f375c641672ca40140b8e5db69dc2c8c9b41d79d0fc56f
+    helper_faudio "$file1"
+}
+
+#----------------------------------------------------------------
+
+w_metadata faudio dlls \
+    title="FAudio (xaudio reimplementation, with xna support) builds for win32 (latest)" \
+    publisher="Kron4ek" \
+    year="2019" \
+    media="download" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/FAudio.dll"
+
+load_faudio()
+{
+    set -x
+    w_download_to "${W_TMP_EARLY}" "https://raw.githubusercontent.com/Kron4ek/FAudio-Builds/master/LATEST"
+    faudio_version="$(cat "${W_TMP_EARLY}/LATEST")"
+    w_linkcheck_ignore=1 w_download "https://github.com/Kron4ek/FAudio-Builds/releases/download/${faudio_version}/faudio-${faudio_version}.tar.xz"
+    helper_faudio "faudio-${faudio_version}.tar.xz"
 }
 
 #----------------------------------------------------------------
