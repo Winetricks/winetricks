@@ -8928,6 +8928,40 @@ verify_dotnet40()
 
 #----------------------------------------------------------------
 
+w_metadata dotnet40_kb2468871 dlls \
+    title="MS .NET 4.0 KB2468871" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    conflicts="dotnet20sdk" \
+    file1="NDP40-KB2468871-v2-x86.exe"
+
+load_dotnet40_kb2468871()
+{
+    w_call dotnet40
+
+    # Install KB2468871:
+    if [ "$W_ARCH" = "win32" ]; then
+        w_download https://download.microsoft.com/download/2/B/F/2BF4D7D1-E781-4EE0-9E4F-FDD44A2F8934/NDP40-KB2468871-v2-x86.exe 8822672fc864544e0766c80b635973bd9459d719b1af75f51483ff36cfb26f03
+        w_try_7z "$W_TMP" "${W_CACHE}/${W_PACKAGE}/NDP40-KB2468871-v2-x86.exe" NDP40-KB2468871.msp
+    elif [ "$W_ARCH" = "win64" ]; then
+        w_download https://download.microsoft.com/download/2/B/F/2BF4D7D1-E781-4EE0-9E4F-FDD44A2F8934/NDP40-KB2468871-v2-x64.exe b1b53c3953377b111fe394dd57592d342cfc8a3261a5575253b211c1c2e48ff8
+        w_try_7z "$W_TMP" "${W_CACHE}/${W_PACKAGE}/NDP40-KB2468871-v2-x64.exe" NDP40-KB2468871.msp
+    fi
+
+    w_try_cd "$W_TMP"
+    w_try "$WINE" msiexec /p NDP40-KB2468871.msp
+
+    w_set_winver 'default'
+}
+
+verify_dotnet40_kb2468871()
+{
+    w_dotnet_verify dotnet40
+}
+
+#----------------------------------------------------------------
+
 w_metadata dotnet45 dlls \
     title="MS .NET 4.5" \
     publisher="Microsoft" \
