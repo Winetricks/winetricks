@@ -12726,18 +12726,21 @@ load_controlpad()
 #----------------------------------------------------------------
 
 w_metadata controlspy apps \
-    title="Control Spy 2.0 " \
+    title="Control Spy 6 " \
     publisher="Microsoft" \
     year="2005" \
     media="download" \
-    file1="ControlSpy.msi" \
+    file1="ControlSpyV6.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft/ControlSpy/ControlSpyV6.exe"
 
 load_controlspy()
 {
-    w_download https://download.microsoft.com/download/a/3/1/a315b133-03a8-4845-b428-ec585369b285/ControlSpy.msi d9127634dd47580be93c768263ddf37a3a75fd65a545e87ddb9602906a035845
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec /i ControlSpy.msi ${W_UNATTENDED_SLASH_QB}
+    # Originally at https://download.microsoft.com/download/a/3/1/a315b133-03a8-4845-b428-ec585369b285/ControlSpy.msi
+    # 2019/04/11: changed to https://github.com/pywinauto/pywinauto/blob/master/apps/ControlSpy_20/ControlSpyV6.exe
+    # Unfortunately that means no V5 of ControlSpy :/
+    w_download https://github.com/pywinauto/pywinauto/blob/master/apps/ControlSpy_20/ControlSpyV6.exe
+    w_try mkdir -p "${W_PROGRAMS_X86_UNIX}/Microsoft/ControlSpy"
+    w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_PROGRAMS_X86_UNIX}/Microsoft/ControlSpy"
 }
 
 #----------------------------------------------------------------
