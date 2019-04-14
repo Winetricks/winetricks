@@ -6623,6 +6623,27 @@ load_directmusic()
 
 #----------------------------------------------------------------
 
+w_metadata directshow dlls \
+    title="DirectShow runtime DLLs (amstream, qasf, qcap, qdvd, qedit, quartz)" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe"
+
+load_directshow()
+{
+    w_warn "You can specify individual DirectShow verbs instead. e.g. 'winetricks quartz'"
+
+    w_call amstream
+    w_call qasf
+    w_call qcap
+    w_call qdvd
+    w_call qedit
+    w_call quartz
+}
+
+#----------------------------------------------------------------
+
 w_metadata directplay dlls \
     title="MS DirectPlay from DirectX user redistributable" \
     publisher="Microsoft" \
