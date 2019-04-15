@@ -13,7 +13,7 @@ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 Tagged releases are accessible here:
 https://github.com/Winetricks/winetricks/releases
 
-# Installing
+# Installing (Package)
 The ```winetricks``` package should be used if it is available and up to date. The package is available in most mainstream (Unix-like) Operating Systems:
 
 * Arch: https://www.archlinux.org/packages/community/any/winetricks/
@@ -28,151 +28,84 @@ The ```winetricks``` package should be used if it is available and up to date. T
 
 Note: packaged Debian / Ubuntu winetricks versions are typically outdated, so a manual installation is recommended.
 
-If the package is unavailable, outdated, or the latest version is desired, a manual installation of winetricks can be done.
+# Automating Installation & Updating
+
+If the winetricks package is unavailable, outdated, or the latest version is desired, a manual auto-updating setup is recommended.
 It is _highly_ recommended to uninstall any previously installed version of winetricks first.
 
-**_If you don't uninstall a previously installed, packaged version of winetricks... Well then you get to pick up the pieces!_**
-
-E.g. for Debian / Ubuntu:
+**_If you don't uninstall a previously installed, packaged version of winetricks... Well then you get to pick up the pieces!_** ... E.g. for Debian / Ubuntu:
 ```
 sudo apt-get purge winetricks
 ```
 
-Then, for Ubuntu, use a shell script to download the current winetricks script(s).
-E.g.:
+<hr />
 
-```
-# Create and switch to a temporary directory writeable by current user. See:
-#   https://www.tldp.org/LDP/abs/html/subshells.html
-cd "$(mktemp -d)"
+Steps to setup a winetricks auto-updater script, which pulls from the winetricks Git Master, running on a weekly basis...
 
-# Use a BASH "here document" to create an updater shell script file.
-# See:
-#   https://www.tldp.org/LDP/abs/html/here-docs.html
-# >  outputs stdout to a file, overwriting any pre-existing file
-# << takes input, directly from the script itself, till the second '_EOF_SCRIPT' marker, as stdin
-# the cat command hooks these 2 streams up (stdin and stdout)
-###### create update_winetricks START ########
-cat > update_winetricks <<_EOF_SCRIPT
-#!/bin/sh
+1. Shell script to download and install the current winetricks script(s):
+    ```
+    cat <<_EOF_SCRIPT | sudo install /dev/stdin /usr/bin/update_winetricks
+    #!/bin/sh
 
-# Create and switch to a temporary directory writeable by current user. See:
-#   https://www.tldp.org/LDP/abs/html/subshells.html
-cd "$(mktemp -d)"
+    curl -sL https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
+    | sudo install /dev/stdin /usr/bin/winetricks
+    curl -sL https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks.bash-completion \
+    | sudo install /dev/stdin /usr/share/bash-completion/completions/winetricks
+    _EOF_SCRIPT
+    ```
 
-# Download the latest winetricks script (master="latest version") from Github.
-wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+2. Automate running the winetricks updater (**update_winetricks**) script - see step _1._ above.
+    
+    Use only **one** of the **two** service options:
+   
+   * Option _i._ [Cron](https://en.wikipedia.org/wiki/Cron)-based.
+   
+   * Option _ii._ [systemd](https://en.wikipedia.org/wiki/Systemd)-based (**Linux -only**).
+    
+    <hr />
+    
+    1. Use Cron to auto-update winetricks (weekly):
+    
+    ```
+    sudo ln -s "/usr/bin/update_winetricks" "/etc/cron.weekly/update_winetricks"
+    ```
+    
+    <hr />
+    
+    2. Use a **systemd timer unit** and **systemd service unit** to auto-update winetricks (weekly).
+    
+    **systemd timer unit** (calls the **systemd service unit** at a specified interval):
+    ```
+    cat <<_EOF_TIMER_UNIT | sudo install /dev/stdin /etc/systemd/system/winetricks_update.timer
+    [Unit]
+    Description=Run winetricks update script weekly (Saturday)
 
-# Mark the winetricks script (we've just downloaded) as executable. See:
-#   https://www.tldp.org/LDP/GNU-Linux-Tools-Summary/html/x9543.htm
-chmod +x winetricks
+    [Timer]
+    OnCalendar=Sat
+    Persistent=true
 
-# Move the winetricks script to a location which will be in the standard user PATH. See:
-#   https://www.tldp.org/LDP/abs/html/internalvariables.html
-sudo mv winetricks /usr/bin
+    [Install]
+    WantedBy=timers.target
+    _EOF_TIMER_UNIT
+    ```
+    **systemd service unit** (this service unit file does the work - it is called automatically, at a specified interval, by the **systemd timer unit**):
+    ```
+    cat << _EOF_SERVICE_UNIT | sudo install /dev/stdin /etc/systemd/system/winetricks_update.service
+    [Unit]
+    Description=Run winetricks update script
+    After=network.target
 
-# Download the latest winetricks BASH completion script (master="latest version") from Github.
-wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks.bash-completion
-
-# Move the winetricks BASH completion script to a standard location for BASH completion modules. See:
-#   https://www.tldp.org/LDP/abs/html/tabexpansion.html
-sudo mv winetricks.bash-completion /usr/share/bash-completion/completions/winetricks
-_EOF_SCRIPT 
-###### create update_winetricks FINISH ########
-
-# Mark the update_winetricks script (we've just written out) as executable. See:
-#   https://www.tldp.org/LDP/GNU-Linux-Tools-Summary/html/x9543.htm
-chmod +x update_winetricks
-
-# We must escalate privileges to root, as regular Linux users do not have write access to '/usr/bin'.
-sudo mv update_winetricks /usr/bin/
-```
-
-See the manpages for the individual functions, if you are not clear how they are being used, e.g.
-```
-man mktemp
-man mv
-man wget
-man sudo
-...
-```
-
-An alternative updater script implementation, using **su** in place of **sudo**, is also possible:
-
-```
-cd "$(mktemp -d)"
-cat > update_winetricks <<_EOF_SCRIPT
-#!/bin/sh
-
-cd "$(mktemp -d)"
-wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
-wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks.bash-completion
-chmod +x winetricks
-su root sh -c 'mv winetricks /usr/bin ; mv winetricks.bash-completion /usr/share/bash-completion/completions/winetricks'
-_EOF_SCRIPT
-
-chmod +x update_winetricks
-su root sh -c 'mv update_winetricks /usr/bin/'
-```
-
-To use ```curl``` instead of ```wget```: subsitute all ```wget``` calls with ```curl -O```, in the winetricks update script.
-
-
-# Updating
-Using the traditional Unix crontab...
-```
-sudo ln "/usr/bin/update_winetricks" "/etc/cron.weekly/update_winetricks"
-```
-Note: ensure you have a cron utility installed and enabled, on systems utilizing **systemd** by default.
-
-The update script can be automated, to run on a set schedule, via (where available) **systemd** units.
-E.g. to create a scheduled winetricks updater **systemd** **timer** unit, and an associated **systemd** **service** unit:
-```
-cd "$(mktemp -d)"
-cat > winetricks_update.timer <<_EOF_TIMER_UNIT
-[Unit]
-Description=Run winetricks update script weekly (Saturday)
-
-[Timer]
-OnCalendar=Sat
-Persistent=true
-
-[Install]
-WantedBy=timers.target
-_EOF_TIMER_UNIT
-
-cat > winetricks_update.service <<_EOF_SERVICE_UNIT
-[Unit]
-Description=Run winetricks update script
-After=network.target
-
-[Service]
-ExecStart=/usr/bin/update_winetricks
-Type=oneshot
-_EOF_SERVICE_UNIT
-
-sudo mv winetricks_update.timer winetricks_update.service /etc/systemd/system/
-```
-See:
-* [freedesktop.org: systemd service unit](https://www.freedesktop.org/software/systemd/man/systemd.service.html)
-* [freedesktop.org: systemd timer unit](https://www.freedesktop.org/software/systemd/man/systemd.timer.html)
-
-To start and enable the winetricks update timer:
-```
-sudo systemctl daemon-reload
-sudo systemctl enable winetricks_update.timer
-sudo systemctl start winetricks_update.timer
-```
-
-The core winetricks script can also be updated by simply doing:
-```
-winetricks --self-update
-```
-or:
-```
-sudo winetricks --self-update
-```
-for a system-wide winetricks installation.
+    [Service]
+    ExecStart=/usr/bin/update_winetricks
+    Type=oneshot
+    _EOF_SERVICE_UNIT
+    ```
+    Enable and start the **systemd timer unit**:
+    ```
+    sudo systemctl daemon-reload
+    sudo systemctl enable winetricks_update.timer
+    sudo systemctl start winetricks_update.timer
+    ```
 
 # Custom .verb files
 New dll/settings/programs can be added to Winetricks by passing a custom .verb (format below)
