@@ -20669,7 +20669,7 @@ w_metadata remove_mono settings \
 
 load_remove_mono()
 {
-    mono_uuid="$("${WINE_ARCH}" uninstaller --list | grep 'Wine Mono' | cut -f1 -d\|)"
+    mono_uuid="$("${WINE_ARCH}" uninstaller --list | grep 'Wine Mono Runtime' | cut -f1 -d\|)"
     if test "$mono_uuid"; then
          "${WINE_ARCH}" uninstaller --remove "$mono_uuid"
     else
