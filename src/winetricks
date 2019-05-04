@@ -8101,6 +8101,14 @@ load_dotnet35sp1()
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     "$WINE" dotnetfx35.exe /lang:ENU $W_UNATTENDED_SLASH_Q
+    status=$?
+
+    case $status in
+        0) ;;
+        105) echo "exit status $status - normal, user selected 'restart now'" ;;
+        194) echo "exit status $status - normal, user selected 'restart later'" ;;
+        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
