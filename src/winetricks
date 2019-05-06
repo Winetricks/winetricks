@@ -7799,7 +7799,16 @@ load_dotnet20()
         w_set_winver win2k
 
         w_try_cd "$W_CACHE"/"$W_PACKAGE"
-        w_try "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+        "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+        status=$?
+
+        case $status in
+            0) ;;
+            105) echo "exit status $status - normal, user selected 'restart now'" ;;
+            194) echo "exit status $status - normal, user selected 'restart later'" ;;
+            *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+        esac
+
         w_unset_winver
 
         # We can't stop installing dotnet20 in win2k mode until Wine supports
