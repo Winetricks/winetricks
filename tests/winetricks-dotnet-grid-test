@@ -1,0 +1,48 @@
+#!/bin/sh
+# Test different dotnet installation combinations
+#
+# Copyright (C) 2019 Austin English
+#
+# This software comes with ABSOLUTELY NO WARRANTY.
+#
+# This is free software, placed under the terms of the GNU Lesser
+# Public License version 2.1 (or later), as published by the Free
+# Software Foundation. Please see the file COPYING for details.
+
+set -x
+
+# FIXME: put logs in $SRCDIR/out/; and use the tempdir for prefixes
+# FIXME: prefixes removed by default, but add an option to keep them
+# FIXME: make --force optional
+outdir="$(mktemp -d "${TMPDIR:-/tmp}/winetricks-test.XXXXXXXX")"
+
+# Note: skips dotnet20sdk, which is broken AF
+# FIXME: Before commiting upstream, automatically generate dotnet list
+#dotnet_verbs="dotnet11sp1 dotnet11 dotnet20sp1 dotnet20sp2 dotnet20 dotnet30sp1 dotnet30 dotnet35sp1 dotnet35 dotnet40 dotnet452 dotnet45 dotnet461 dotnet462 dotnet46 dotnet472"
+dotnet_verbs="$(./src/winetricks dlls list | grep ^dotnet | grep -v -e sdk -e verifier | cut -d ' ' -f1)"
+
+for verb1 in $dotnet_verbs; do
+    for verb2 in $dotnet_verbs; do
+        if [ "$verb1" = "$verb2" ]; then
+                continue
+        fi
+
+        combo="${verb1}-${verb2}"
+        case "$combo" in
+            dotnet11*-dotnet20|dotnet11*-dotnet30*|dotnet11*-dotnet35*)
+                echo "Skipping, has a popup that needs to be automated away in -q mode (but fails anyway, so not worth it)";
+                echo "${combo} skipped" | tee -a "${outdir}/statuslog.txt";
+                continue;;
+        esac
+
+        export WINEPREFIX="${outdir}/prefix-${combo}"
+        wineserver -k
+
+        ./src/winetricks -q --force "$verb1" "$verb2" 2>&1 | tee -a "${outdir}/${combo}.txt"
+        status="$?"
+        echo "$combo exited $status" 2>&1 | tee -a "${outdir}/${combo}.txt"
+        echo "$combo exited $status" 2>&1 | tee -a "${outdir}/statuslog.txt"
+
+        rm -rf "$WINEPREFIX"
+    done
+done
