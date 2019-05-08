@@ -13657,18 +13657,20 @@ load_mt4()
     WINEDLLOVERRIDES="winebrowser.exe="
     export WINEDLLOVERRIDES
 
-    # No documented silent install option, unfortunately..
+    # No documented silent install option, unfortunately.
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         Run, ${file1}
-        WinWait, MetaTrader Setup, license agreement
+        SetTitleMatchMode, RegEx
+        WinWaitActive, 4 Setup
+        Sleep, 200
         ControlClick, Button1
-        Sleep 100
+        Sleep, 200
         ControlClick, Button3
-        WinWait, MetaTrader Setup, Installation successfully completed
-        ControlClick, Button4
-        Process, Wait, terminal.exe
-        Process, Close, terminal.exe
+        WinWaitClose ; Wait for installer to finish
+        Process, Wait, Terminal.exe
+        WinWaitActive, ahk_class #32770
+        Process, Close, Terminal.exe
     "
 }
 
