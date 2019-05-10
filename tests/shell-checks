@@ -96,5 +96,6 @@ for shellscript in $files_to_check; do
     # https://bugs.launchpad.net/bash8/+bug/1698088
     # E006=line length check
     # E010=do/while same line (in some embedded perl in winetricks)
-    w_try "$bashate" -i E006,E010 "${shellscript}"
+    # E044=Use [[ for non-POSIX comparisions
+    w_try "$bashate" -i E006,E010,E044 "${shellscript}"
 done
