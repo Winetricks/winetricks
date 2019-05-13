@@ -6925,6 +6925,29 @@ load_d9vk010()
 
 #----------------------------------------------------------------
 
+w_metadata d9vk_master dlls \
+    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (master)" \
+    publisher="Joshua Ashton" \
+    year="2019" \
+    media="download" \
+    file1="d9vk_master.zip" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d9.dll" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/d3d10_1.dll" \
+    installed_file3="$W_SYSTEM32_DLLS_WIN/d3d10core.dll" \
+    installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_d9vk_master()
+{
+    # https://git.froggi.es/joshua/d9vk
+    w_linkcheck_ignore=1 w_download_to "${W_CACHE}/${W_PACKAGE}" "https://git.froggi.es/joshua/d9vk/-/jobs/artifacts/master/download?job=d9vk" "" "d9vk_master.zip"
+    helper_dxvk_d9vk "$file1" "4.5" "1.1.104" "dxgi,d3d9,d3d10,d3d11"
+}
+
+
+#----------------------------------------------------------------
+
 w_metadata dxvk054 dlls \
     title="Vulkan-based D3D11 implementation for Linux / Wine (0.54)" \
     publisher="Philip Rebohle" \
