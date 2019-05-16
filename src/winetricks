@@ -6846,173 +6846,247 @@ load_dxsdk_jun2010()
 #----------------------------------------------------------------
 
 # $1 - dxvk archive name (required)
-# $2 - dxvk d3d10_enabled / d3d10_disabled (required)
-# $3 - minimum Wine version (optional)
-# $4 - minimum Vulkan API version (optional, requires $3 be set)
-helper_dxvk()
+# $2 - minimum Wine version (required)
+# $3 - minimum Vulkan API version (required)
+# $4 - [dxgi,][d3d9,][d3d10,]d3d11 [d3d9=dvk9 d3d10/d3d11=dxvk] (required)
+helper_dxvk_d9vk()
 {
-    _W_dxvk_archive="${1}"
-    _W_dxvk_d3d10="${2}"
-    _W_min_wine_version="${3}"
-    _W_min_vulkan_version="${4}"
+    _W_package_archive="${1}"
+    _W_min_wine_version="${2}"
+    _W_min_vulkan_version="${3}"
+    _W_dll_overrides="$(echo "${4}" | sed 's/,/ /g')"
 
-    case $_W_dxvk_d3d10 in
-        d3d10_enabled) _W_dll_overrides="d3d10 d3d10_1 d3d10core d3d11 dxgi";;
-        d3d10_disabled) _W_dll_overrides="d3d11 dxgi";;
-        *) w_die "parameter unsupported: $_W_dxvk_d3d10 ; supported parameters: d3d10_enabled d3d10_disabled"
+    _W_supported_overrides="dxgi d3d9 d3d10 d3d11"
+    _W_valid_overrides_regex="$(echo " ${_W_supported_overrides}" | sed 's/ /\\|/g')"
+    _W_invalid_overrides="$(echo "${_W_dll_overrides}" | sed "s/ ${_W_valid_overrides_regex}//g")"
+    if [ "${_W_invalid_overrides}" != "" ]; then
+        w_die "parameter (4) unsupported dll override: ${_W_invalid_overrides} ; supported dll overrides: ${_W_supported_overrides}"
+    fi
+
+    _W_dll_overrides="$(echo "${_W_dll_overrides}" | sed 's/d3d10/& d3d10_1 d3d10core/')"
+
+    case "${_W_package_archive}" in
+        *master*)
+            _W_package_dir="build/dxvk-release"
+            _W_package_version="master"
+            ;;
+        *)
+            _W_package_dir="${_W_package_archive%.tar.gz}"
+            _W_package_version="${_W_package_dir#*-}"
+            ;;
     esac
 
-    _W_dxvk_dir="${_W_dxvk_archive%.tar.gz}"
-    _W_dxvk_version="${_W_dxvk_dir#*-}"
-
-    w_warn "Please refer to dxvk version ${_W_dxvk_version} release notes... See: https://github.com/doitsujin/dxvk/releases/tag/v${_W_dxvk_version}"
-    if [ -n "$_W_min_wine_version" ] && ! w_wine_version_in ",${_W_min_wine_version}" ; then
-        [ -z "$_W_min_vulkan_version" ] || _W_vulkan_info=" The base requirement is Vulkan $_W_min_vulkan_version API support."
-        w_warn "dxvk ${_W_dxvk_version} does not support wine version ${_wine_version_stripped}. dxvk ${_W_dxvk_version} requires wine version ${_W_min_wine_version} (or newer).${_W_vulkan_info}"
-        unset _W_vulkan_info
+    case "${_W_dll_overrides}" in
+        *d3d9*)
+            # dvk9 repository, for d3d9 support
+            _W_repository="Joshua-Ashton/d9vk"
+            if [ "${_W_package_version}" != "master" ]; then
+                w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"
+            fi
+            ;;
+        *)
+            # dxvk repository, for d3d10/d3d11 support
+            _W_repository="doitsujin/dxvk"
+            w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/v${_W_package_version}"
+            w_warn "Please refer to current ${_W_repository#*/} base graphics driver requirements... See: https://github.com/${_W_repository}/wiki/Driver-support"
+            ;;
+    esac
+    if ! w_wine_version_in ",${_W_min_wine_version}" ; then
+        w_warn "${_W_repository#*/} ${_W_package_version} does not support wine version ${_wine_version_stripped}. ${_W_repository#*/} ${_W_package_version} requires wine version ${_W_min_wine_version} (or newer). Vulkan ${_W_min_vulkan_version} API (or newer) support is recommended."
     fi
-    w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support"
 
-    w_try_cd "$W_TMP"
-    w_try tar -zxf "$W_CACHE/$W_PACKAGE/$_W_dxvk_archive"
-    for _W_dll in $_W_dll_overrides; do
-        w_try mv "$W_TMP/$_W_dxvk_dir/x32/$_W_dll.dll" "$W_SYSTEM32_DLLS/"
+    if [ "${_W_package_version}" = "master" ]; then
+        w_try_unzip "$W_TMP" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    else
+        w_try_cd "${W_TMP}"
+        w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    fi
+    for _W_dll in ${_W_dll_overrides}; do
+        w_try mv "${W_TMP}/${_W_package_dir}/x32/${_W_dll}.dll" "${W_SYSTEM32_DLLS}/"
     done
-    if test "$W_ARCH" = "win64"; then
-        for _W_dll in $_W_dll_overrides; do
-            w_try mv "$W_TMP/$_W_dxvk_dir/x64/$_W_dll.dll" "$W_SYSTEM64_DLLS/"
+    if test "${W_ARCH}" = "win64"; then
+        for _W_dll in ${_W_dll_overrides}; do
+            w_try mv "${W_TMP}/${_W_package_dir}/x64/${_W_dll}.dll" "${W_SYSTEM64_DLLS}/"
         done
     fi
     # shellcheck disable=SC2086
-    w_override_dlls native $_W_dll_overrides
+    w_override_dlls native ${_W_dll_overrides}
 
-    unset _W_dll _W_dll_overrides _W_dxvk_archive _W_dxvk_d3d10 _W_dxvk_dir _W_dxvk_version _W_min_vulkan_version _W_min_wine_version
+    if [ "${_W_repository#*/}" = "d9vk" ]; then
+        w_call d3dcompiler_43
+        w_call d3dx9
+    fi
+
+    unset _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
+        _W_package_archive _W_package_dir _W_package_version \
+        _W_repository _W_supported_overrides _W_valid_overrides_regex
 }
+
 
 #----------------------------------------------------------------
 
-w_metadata dxvk54 dlls \
+w_metadata d9vk010 dlls \
+    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (0.10)" \
+    publisher="Joshua Ashton" \
+    year="2019" \
+    media="download" \
+    file1="d9vk-0.10.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d9.dll" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/d3d10_1.dll" \
+    installed_file3="$W_SYSTEM32_DLLS_WIN/d3d10core.dll" \
+    installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_d9vk010()
+{
+    # https://github.com/Joshua-Ashton/d9vk
+    w_download "https://github.com/Joshua-Ashton/d9vk/releases/download/0.10/d9vk-0.10.tar.gz" 9e50f2609aafaa7dd24c327f6af83c821c2259ca4967656029782faa71398ae2
+    helper_dxvk_d9vk "$file1" "4.5" "1.1.104" "dxgi,d3d9,d3d10,d3d11"
+}
+
+
+#----------------------------------------------------------------
+
+w_metadata d9vk_master dlls \
+    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (master)" \
+    publisher="Joshua Ashton" \
+    year="2019" \
+    media="download" \
+    file1="d9vk_master.zip" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d9.dll" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/d3d10_1.dll" \
+    installed_file3="$W_SYSTEM32_DLLS_WIN/d3d10core.dll" \
+    installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_d9vk_master()
+{
+    # https://git.froggi.es/joshua/d9vk
+    w_linkcheck_ignore=1 w_download_to "${W_CACHE}/${W_PACKAGE}" "https://git.froggi.es/joshua/d9vk/-/jobs/artifacts/master/download?job=d9vk" "" "d9vk_master.zip"
+    helper_dxvk_d9vk "$file1" "4.5" "1.1.104" "dxgi,d3d9,d3d10,d3d11"
+}
+
+
+#----------------------------------------------------------------
+
+w_metadata dxvk054 dlls \
     title="Vulkan-based D3D11 implementation for Linux / Wine (0.54)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.54.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk54()
+load_dxvk054()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.54/dxvk-0.54.tar.gz" 1c2f186baaa01d2de7b832f6f05021bdd29eccb65fc197c8b15adfd4e08f9640
-    helper_dxvk "$file1" "d3d10_disabled" "3.6"
+    helper_dxvk_d9vk "$file1" "3.10" "1.1.72" "dxgi,d3d11"
 }
 
-#----------------------------------------------------------------
-
-w_metadata dxvk60 dlls \
+w_metadata dxvk060 dlls \
     title="Vulkan-based D3D11 implementation for Linux / Wine (0.60)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.60.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk60()
+load_dxvk060()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.60/dxvk-0.60.tar.gz" 27d6f700241d3ec3b6c002c3d739bb0e3f210ec916ecb5a62d9204e9e50f2c4a
-    helper_dxvk "$file1" "d3d10_disabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1" "3.10" "1.1.72" "dxgi,d3d11"
 }
 
-#----------------------------------------------------------------
-
-w_metadata dxvk61 dlls \
+w_metadata dxvk061 dlls \
     title="Vulkan-based D3D11 implementation for Linux / Wine (0.61)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.61.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk61()
+load_dxvk061()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.61/dxvk-0.61.tar.gz" d04388f026dc0d8b276b08f7db74fb3556cbbc8f762401eb5ef52629ee39ded1
-    helper_dxvk "$file1" "d3d10_disabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1"  "3.10" "1.1.72" "dxgi,d3d11"
 }
 
-#----------------------------------------------------------------
-
-w_metadata dxvk62 dlls \
+w_metadata dxvk062 dlls \
     title="Vulkan-based D3D11 implementation for Linux / Wine (0.62)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.62.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk62()
+load_dxvk062()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.62/dxvk-0.62.tar.gz" b9dbb57908e24b094b68f665ad729b6ee277eecc8ba04a6e6e4f8a4d2dfd94e3
-    helper_dxvk "$file1" "d3d10_disabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1"  "3.10" "1.1.72" "dxgi,d3d11"
 }
 
-w_metadata dxvk63 dlls \
+w_metadata dxvk063 dlls \
     title="Vulkan-based D3D11 implementation for Linux / Wine (0.63)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.63.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk63()
+load_dxvk063()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.63/dxvk-0.63.tar.gz" 696df816bd9640770dee14f932bc641a16261fccf76be7c28d812a64ca6040fa
-    helper_dxvk "$file1" "d3d10_disabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1"  "3.18" "1.1.80" "dxgi,d3d11"
 }
 
-w_metadata dxvk64 dlls \
+w_metadata dxvk064 dlls \
     title="Vulkan-based D3D11 implementation for Linux / Wine (0.64)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.64.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk64()
+load_dxvk064()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.64/dxvk-0.64.tar.gz" 2e03e40ff0a9d36f96a06137f3fa9110ebaea230d0bf6c22cf6399e16e97fb9c
-    helper_dxvk "$file1" "d3d10_disabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1" "3.18" "1.1.80" "dxgi,d3d11"
 }
 
-w_metadata dxvk65 dlls \
+w_metadata dxvk065 dlls \
     title="Vulkan-based D3D11 implementation for Linux / Wine (0.65)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.65.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk65()
+load_dxvk065()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.65/dxvk-0.65.tar.gz" 7b4eb42e693f925d0aff90bae261b20c50428602382ee94a3e3860b2ad1ebad0
-    helper_dxvk "$file1" "d3d10_disabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1" "3.18" "1.1.80" "dxgi,d3d11"
 }
 
-w_metadata dxvk70 dlls \
+w_metadata dxvk070 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.70)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.70.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7021,17 +7095,17 @@ w_metadata dxvk70 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk70()
+load_dxvk070()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.70/dxvk-0.70.tar.gz" 310546d530be494a35cae49b707fef4b073269d811aac25bdf72899ed1df4e9f
-    helper_dxvk "$file1" "d3d10_enabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1" "3.18" "1.1.80" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk71 dlls \
+w_metadata dxvk071 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.71)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.71.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7040,17 +7114,17 @@ w_metadata dxvk71 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk71()
+load_dxvk071()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.71/dxvk-0.71.tar.gz" fbe66337d1450f366961a7699253cd7a96c12a88c2fcda64b79be1cbb13d37d5
-    helper_dxvk "$file1" "d3d10_enabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1" "3.18" "1.1.80" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk72 dlls \
+w_metadata dxvk072 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.72)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.72.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7059,17 +7133,17 @@ w_metadata dxvk72 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk72()
+load_dxvk072()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.72/dxvk-0.72.tar.gz" bc84f48f99cf5add3c8919a43d7a9c0bf208c994dc58326a636b56b8db650c52
-    helper_dxvk "$file1" "d3d10_enabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1" "3.18" "1.1.84" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk80 dlls \
+w_metadata dxvk080 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.80)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.80.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7078,20 +7152,20 @@ w_metadata dxvk80 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk80()
+load_dxvk080()
 {
     # https://github.com/doitsujin/dxvk
-    # 2018/09/23: f9e736cdbf1e83e45ca748652a94a3a189fc5accde1eac549b2ba5af8f7acacb
-    # 2018/11/17: 7058a834bb006cad5462933110449b434df561e67d83f68d3965ecc74e2e1cbc
+    # 2017/09/23: f9e736cdbf1e83e45ca748652a94a3a189fc5accde1eac549b2ba5af8f7acacb
+    # 2017/11/17: 7058a834bb006cad5462933110449b434df561e67d83f68d3965ecc74e2e1cbc
     # See: https://github.com/doitsujin/dxvk/issues/773
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.80/dxvk-0.80.tar.gz" 7058a834bb006cad5462933110449b434df561e67d83f68d3965ecc74e2e1cbc
-    helper_dxvk "$file1" "d3d10_enabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1" "3.18" "1.1.84" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk81 dlls \
+w_metadata dxvk081 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.81)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.81.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7100,17 +7174,17 @@ w_metadata dxvk81 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk81()
+load_dxvk081()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.81/dxvk-0.81.tar.gz" 9bf6eda9ae4ee74b509e07dfe9cc003dfa4bba192b519dacdd542a57f6a43869
-    helper_dxvk "$file1" "d3d10_enabled" "3.10" "1.0.76"
+    helper_dxvk_d9vk "$file1" "3.18" "1.1.84" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk90 dlls \
+w_metadata dxvk090 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.90)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.90.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7119,17 +7193,17 @@ w_metadata dxvk90 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk90()
+load_dxvk090()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.90/dxvk-0.90.tar.gz" 15bce7b282065054ff9233b33738bf1d2c74b16829361cbd6843bc2f5dfe4509
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "3.19" "1.1.87" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk91 dlls \
+w_metadata dxvk091 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.91)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.91.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7138,17 +7212,17 @@ w_metadata dxvk91 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk91()
+load_dxvk091()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.91/dxvk-0.91.tar.gz" 5296106ac3a8c631d7f26fa46dbff4be1332cda14fa493fd89ccf97e050c4855
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "3.19" "1.1.87" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk92 dlls \
+w_metadata dxvk092 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.92)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.92.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7157,17 +7231,17 @@ w_metadata dxvk92 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk92()
+load_dxvk092()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.92/dxvk-0.92.tar.gz" e22c0ae4693aac88562c7a9a97b3316e086b9048c9f8f9e128923ac1611a5c49
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "3.19" "1.1.87" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk93 dlls \
+w_metadata dxvk093 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.93)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.93.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7176,17 +7250,17 @@ w_metadata dxvk93 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk93()
+load_dxvk093()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.93/dxvk-0.93.tar.gz" 4d964e4e10e67ba7705312496e472ae9859520a78d8742d6d377886318c95e53
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "4.0" "1.1.93" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk94 dlls \
+w_metadata dxvk094 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.94)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.94.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7195,17 +7269,17 @@ w_metadata dxvk94 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk94()
+load_dxvk094()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.94/dxvk-0.94.tar.gz" 1f06bfac5b435b62b972806fb3bbd86f7ccae2399b4451e85ae414e03d3712a3
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "4.0" "1.1.93" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk95 dlls \
+w_metadata dxvk095 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.95)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.95.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7214,17 +7288,17 @@ w_metadata dxvk95 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk95()
+load_dxvk095()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.95/dxvk-0.95.tar.gz" 1eea48149f6e94c3c74ecddd92df4f9daa67ab28d0fca548bde5cd40f0e486bf
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "4.0" "1.1.93" "dxgi,d3d10,d3d11"
 }
 
-w_metadata dxvk96 dlls \
+w_metadata dxvk096 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (0.96)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-0.96.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7233,17 +7307,17 @@ w_metadata dxvk96 dlls \
     installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
     installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
 
-load_dxvk96()
+load_dxvk096()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.96/dxvk-0.96.tar.gz" 9d054c1e7a4f59825c651b14d3cfbf0d8c724763f485b3d59c89f1d7194b2206
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "4.0" "1.1.93" "dxgi,d3d10,d3d11"
 }
 
 w_metadata dxvk100 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.0)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-1.0.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7256,13 +7330,13 @@ load_dxvk100()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0/dxvk-1.0.tar.gz" 8c8d26544609532201c10e6f5309bf5e913b5ca5b985932928ef9ab238de6dc2
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "4.5" "1.1.101" "dxgi,d3d10,d3d11"
 }
 
 w_metadata dxvk101 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.0.1)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-1.0.1.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7275,13 +7349,13 @@ load_dxvk101()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0.1/dxvk-1.0.1.tar.gz" 739847cdd14b302dac600c66bc6617d7814945df6d4d7b6c91fecfa910e3b1b1
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "4.5" "1.1.101" "dxgi,d3d10,d3d11"
 }
 
 w_metadata dxvk102 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.0.2)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-1.0.2.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7294,13 +7368,13 @@ load_dxvk102()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0.2/dxvk-1.0.2.tar.gz" f9504b188488d1102cba7e82c28681708f39e151af1c1ef7ebeac82d729c01ac
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "4.5" "1.1.101" "dxgi,d3d10,d3d11"
 }
 
 w_metadata dxvk103 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.0.3)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     file1="dxvk-1.0.3.tar.gz" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
@@ -7313,7 +7387,45 @@ load_dxvk103()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0.3/dxvk-1.0.3.tar.gz" 984d28ab3a112be207d6339da19113d1117e56731ed413d0e202e6fd1391a6ae
-    helper_dxvk "$file1" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "$file1" "4.5" "1.1.101" "dxgi,d3d10,d3d11"
+}
+
+w_metadata dxvk111 dlls \
+    title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.1.1)" \
+    publisher="Philip Rebohle" \
+    year="2017" \
+    media="download" \
+    file1="dxvk-1.1.1.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/d3d10_1.dll" \
+    installed_file3="$W_SYSTEM32_DLLS_WIN/d3d10core.dll" \
+    installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_dxvk111()
+{
+    # https://github.com/doitsujin/dxvk
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v1.1.1/dxvk-1.1.1.tar.gz" 346c523953f72ac5885071c4384039faf01f6f43a88d5b0c12d94bfaa9598c1d
+    helper_dxvk_d9vk "$file1" "4.5" "1.1.104" "dxgi,d3d10,d3d11"
+}
+
+w_metadata dxvk120 dlls \
+    title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.2)" \
+    publisher="Philip Rebohle" \
+    year="2017" \
+    media="download" \
+    file1="dxvk-1.2.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/d3d10_1.dll" \
+    installed_file3="$W_SYSTEM32_DLLS_WIN/d3d10core.dll" \
+    installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_dxvk120()
+{
+    # https://github.com/doitsujin/dxvk
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v1.2/dxvk-1.2.tar.gz" 414751a810143ced34d1f4f0eb2a40e79b4c9726318994b244b70d1b3a6f8b32
+    helper_dxvk_d9vk "$file1" "4.5" "1.1.104" "dxgi,d3d10,d3d11"
 }
 
 
@@ -7322,7 +7434,7 @@ load_dxvk103()
 w_metadata dxvk dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (latest)" \
     publisher="Philip Rebohle" \
-    year="2018" \
+    year="2017" \
     media="download" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/d3d10_1.dll" \
@@ -7337,7 +7449,7 @@ load_dxvk()
     w_download_to "${W_TMP_EARLY}" "https://raw.githubusercontent.com/doitsujin/dxvk/latest-release/RELEASE"
     dxvk_version="$(cat "${W_TMP_EARLY}/RELEASE")"
     w_linkcheck_ignore=1 w_download "https://github.com/doitsujin/dxvk/releases/download/v${dxvk_version}/dxvk-${dxvk_version}.tar.gz"
-    helper_dxvk "dxvk-${dxvk_version}.tar.gz" "d3d10_enabled" "3.19" "1.1.88"
+    helper_dxvk_d9vk "dxvk-${dxvk_version}.tar.gz" "4.5" "1.1.104" "dxgi,d3d10,d3d11"
     unset dxvk_version
 }
 
@@ -21252,6 +21364,25 @@ execute_command()
         comdlg32.ocx) w_warn "Calling comdlg32.ocx is deprecated, please use comdlg32ocx instead" ; w_call comdlg32ocx ;;
         dotnet1) w_warn "Calling dotnet1 is deprecated, please use dotnet11 instead" ; w_call dotnet11 ;;
         dotnet2) w_warn "Calling dotnet2 is deprecated, please use dotnet20 instead" ; w_call dotnet20 ;;
+        dxvk54) w_warn "Calling dxvk54 is deprecated, please use dxvk054 instead" ; w_call dxvk054 ;;
+        dxvk60) w_warn "Calling dxvk60 is deprecated, please use dxvk060 instead" ; w_call dxvk060 ;;
+        dxvk61) w_warn "Calling dxvk61 is deprecated, please use dxvk061 instead" ; w_call dxvk061 ;;
+        dxvk62) w_warn "Calling dxvk62 is deprecated, please use dxvk062 instead" ; w_call dxvk062 ;;
+        dxvk63) w_warn "Calling dxvk63 is deprecated, please use dxvk063 instead" ; w_call dxvk063 ;;
+        dxvk64) w_warn "Calling dxvk64 is deprecated, please use dxvk064 instead" ; w_call dxvk064 ;;
+        dxvk65) w_warn "Calling dxvk65 is deprecated, please use dxvk065 instead" ; w_call dxvk065 ;;
+        dxvk70) w_warn "Calling dxvk70 is deprecated, please use dxvk070 instead" ; w_call dxvk070 ;;
+        dxvk71) w_warn "Calling dxvk71 is deprecated, please use dxvk071 instead" ; w_call dxvk071 ;;
+        dxvk72) w_warn "Calling dxvk72 is deprecated, please use dxvk072 instead" ; w_call dxvk072 ;;
+        dxvk80) w_warn "Calling dxvk80 is deprecated, please use dxvk080 instead" ; w_call dxvk080 ;;
+        dxvk81) w_warn "Calling dxvk81 is deprecated, please use dxvk081 instead" ; w_call dxvk081 ;;
+        dxvk90) w_warn "Calling dxvk90 is deprecated, please use dxvk090 instead" ; w_call dxvk090 ;;
+        dxvk91) w_warn "Calling dxvk91 is deprecated, please use dxvk091 instead" ; w_call dxvk091 ;;
+        dxvk92) w_warn "Calling dxvk92 is deprecated, please use dxvk092 instead" ; w_call dxvk092 ;;
+        dxvk93) w_warn "Calling dxvk93 is deprecated, please use dxvk093 instead" ; w_call dxvk093 ;;
+        dxvk94) w_warn "Calling dxvk94 is deprecated, please use dxvk094 instead" ; w_call dxvk094 ;;
+        dxvk95) w_warn "Calling dxvk95 is deprecated, please use dxvk095 instead" ; w_call dxvk095 ;;
+        dxvk96) w_warn "Calling dxvk96 is deprecated, please use dxvk096 instead" ; w_call dxvk096 ;;
         flash11) w_warn "Calling flash11 is deprecated, please use flash instead" ; w_call flash ;;
         # art2kmin also comes with fm20.dll
         fm20) w_warn "Calling fm20 is deprecated, please use controlpad instead" ; w_call controlpad ;;
