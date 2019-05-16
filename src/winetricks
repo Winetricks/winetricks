@@ -9651,6 +9651,29 @@ load_msctf()
 
 #----------------------------------------------------------------
 
+w_metadata msdelta dlls \
+    title="MSDelta differential compression library" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msdelta.dll"
+
+load_msdelta()
+{
+    helper_win7sp1 x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/msdelta.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/msdelta.dll" "$W_SYSTEM32_DLLS/msdelta.dll"
+
+    if [ "$W_ARCH" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_678566b7ddea04a5/msdelta.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_678566b7ddea04a5/msdelta.dll" "$W_SYSTEM64_DLLS/msdelta.dll"
+    fi
+
+    w_override_dlls native,builtin msdelta
+}
+
+#----------------------------------------------------------------
+
 w_metadata msdxmocx dlls \
     title="MS Windows Media Player 2 ActiveX control for VB6" \
     publisher="Microsoft" \
