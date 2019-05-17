@@ -10125,6 +10125,29 @@ load_ole32()
 
 #----------------------------------------------------------------
 
+w_metadata oleaut32 dlls \
+    title="MS oleaut32.dll" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/oleaut32.dll"
+
+load_oleaut32()
+{
+    helper_win7sp1 x86_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_bf07947959bc4c33/oleaut32.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_bf07947959bc4c33/oleaut32.dll" "$W_SYSTEM32_DLLS/oleaut32.dll"
+
+    if [ "$W_ARCH" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_1b262ffd1219bd69/oleaut32.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_1b262ffd1219bd69/oleaut32.dll" "$W_SYSTEM64_DLLS/oleaut32.dll"
+    fi
+
+    w_override_dlls native,builtin oleaut32
+}
+
+#----------------------------------------------------------------
+
 w_metadata pdh dlls \
     title="MS pdh.dll (Performance Data Helper)" \
     publisher="Microsoft" \
