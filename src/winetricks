@@ -10167,13 +10167,13 @@ w_metadata mfc40 dlls \
 
 load_mfc40()
 {
-    w_warn "mfc40 no longer installs msvcrt40.dll, only mfc40.dll/mfc40u.dll. Please file a bug if you have an application that needs native msvcrt40.dll."
-
     helper_win7sp1 x86_microsoft-windows-mfc40_31bf3856ad364e35_6.1.7601.17514_none_5c06580240091047/mfc40.dll
     w_try cp "$W_TMP/x86_microsoft-windows-mfc40_31bf3856ad364e35_6.1.7601.17514_none_5c06580240091047/mfc40.dll" "$W_SYSTEM32_DLLS/mfc40.dll"
 
     helper_win7sp1 x86_microsoft-windows-mfc40u_31bf3856ad364e35_6.1.7601.17514_none_f51a7bf0b3d25294/mfc40u.dll
     w_try cp "$W_TMP/x86_microsoft-windows-mfc40u_31bf3856ad364e35_6.1.7601.17514_none_f51a7bf0b3d25294/mfc40u.dll" "$W_SYSTEM32_DLLS/mfc40u.dll"
+
+    w_call msvcrt40
 }
 
 #----------------------------------------------------------------
@@ -10407,6 +10407,24 @@ load_msftedit()
     fi
 
     w_override_dlls native,builtin msftedit
+}
+
+#----------------------------------------------------------------
+
+w_metadata msvcrt40 dlls \
+    title="fixme" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/msvcrt40.dll"
+
+load_msvcrt40()
+{
+    helper_winxpsp3 i386/msvcrt40.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/msvcrt40.dl_
+
+    w_override_dlls native,builtin msvcrt40
 }
 
 #----------------------------------------------------------------
