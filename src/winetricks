@@ -8888,6 +8888,21 @@ load_faudio()
 
 #----------------------------------------------------------------
 
+w_metadata filever dlls \
+    title="Microsoft's filever, for dumping file version info" \
+    publisher="Microsoft" \
+    year="20??" \
+    media="download" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/filever.exe"
+
+load_filever()
+{
+    helper_winxpsp2_support_tools filever.exe
+    w_try cp "$W_TMP/filever.exe" "$W_SYSTEM32_DLLS/filever.exe"
+}
+
+#----------------------------------------------------------------
+
 # FIXME: update winetricks_is_installed to look at installed_file2..n
 # https://github.com/Winetricks/winetricks/issues/988
 w_metadata flash dlls \
