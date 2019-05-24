@@ -9417,26 +9417,11 @@ load_icodecs()
     # 2014/04/11: http://www.cucusoft.com/codecdownload/codinstl.exe (linked from http://www.cucusoft.com/codec.asp)
     w_download "http://www.cucusoft.com/codecdownload/codinstl.exe" 0979d43568111cadf0b3bf43cd8d746ac3de505759c14f381592b4f8439f6c95
 
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run codinstl.exe
-        winwait, Welcome
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            controlclick, Button1  ; Next
-            winwait, Software License Agreement
-            sleep 1000
-            controlclick, Button2  ; Yes
-        }
-        winwait, Setup Complete
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            controlclick, Button4  ; Finish
-        }
-        winwaitclose
-    "
+    # Extract the installer so that we can use the included Install Shield
+    # response file for unattended installations
+    w_try_cabextract -d "$W_TMP/codinstl/" "$W_CACHE/$W_PACKAGE/codinstl.exe"
+    w_try_cd "$W_TMP/codinstl/"
+    w_try "$WINE" "setup.exe" ${W_OPT_UNATTENDED:+/s}
 
     # Work around bug in codec's installer?
     # https://support.britannica.com/other/touchthesky/win/issues/TSTUw_150.htm
@@ -9447,60 +9432,83 @@ load_icodecs()
     # Download at https://www.moviecodec.com/download-codec-packs/indeo-codecs-legacy-package-31/
     w_download https://s3.amazonaws.com/moviecodec/files/iv5setup.exe 51bec25488b5b94eb3ce49b0a117618c9526161fd0753817a7a724ce25ff0cad
 
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run iv5setup.exe
-        winwait, InstallShield Wizard
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            controlclick, Button2  ; Next
-            winwait, Welcome
-            controlclick, Button1  ; Next
-            winwait, Software License Agreement
-            sleep 1000
-            controlclick, Button2  ; Yes
-            winwait, Choose Destination
-            sleep 1000
-            controlclick, Button1  ; Next
-            winwait, Setup Type
-            sleep 1000
-            controlclick, ListBox1  ; Next
-            sleep 1000
-            Send C ; Custom
-            sleep 1000
-            controlclick, Button2  ; Next
-            winwait, Select Components
-            controlclick, ISAVIEWCMPTCLASS1 ; Component Selection
-            Send {Home}
-            Send {Down}  ;
-            Send {Down}  ; IV5 Directshow plugin (gives error about missing Ivfsrc.ax)
-            Send {Space} ; Disable it (directshow plugin)
-            Send {End}   ; Web browser (Netscape) plugin
-            sleep 1000
-            Send {Space} ; Disable it (web plugin)
-            sleep 1000
-            controlclick, Button3  ; Next
-            winwait, Question
-            sleep 1000
-            controlclick, Button2  ; No
-            winwait, Start Copying Files
-            sleep 1000
-            controlclick, Button1  ; No
-        }
-        winwait, Setup Complete
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            controlclick, Button4  ; Finish
-        }
-        winwaitclose
-    "
-        # Note, this leaves a dangling explorer window. The window name changed at some point
-        # because of a fixed wine bug that I'm too lazy to find. Since AHK doesn't make command line
-        # arguments easily accessible, we'd have to just kill all explorer.exe processes.
-        #
-        # So instead, use system kill
-        inode_pid="$(pgrep -f "explorer.exe.*Indeo")"
-        kill -HUP "$inode_pid"
+    # Extract the installer so that we can create and use a pre-recorded
+    # Install Shield response file for unattended installations
+    w_try_cabextract -d "$W_TMP/iv5setup/" "$W_CACHE/$W_PACKAGE/iv5setup.exe"
+
+    # Create the response file with the following excluded components
+    # - IV5 Directshow plugin (gives error about missing Ivfsrc.ax)
+    # - Web browser (Netscape) plugin
+    # http://www.silentinstall.org/InstallShield
+    cat > "$W_TMP/iv5setup/setup.iss" <<_EOF_
+[InstallShield Silent]
+Version=v5.00.000
+File=Response File
+[File Transfer]
+OverwriteReadOnly=NoToAll
+[DlgOrder]
+Dlg0=SdWelcome-0
+Count=8
+Dlg1=SdLicense-0
+Dlg2=SdAskDestPath-0
+Dlg3=SdSetupTypeEx-0
+Dlg4=SdComponentDialog2-0
+Dlg5=AskYesNo-0
+Dlg6=SdStartCopy-0
+Dlg7=SdFinish-0
+[SdWelcome-0]
+Result=1
+[SdLicense-0]
+Result=1
+[SdAskDestPath-0]
+szDir=C:\Program Files\Ligos\Indeo
+Result=1
+[SdSetupTypeEx-0]
+Result=Custom
+[SdComponentDialog2-0]
+Indeo Audio Codec-type=string
+Indeo Audio Codec-count=1
+Indeo Audio Codec-0=Indeo Audio Codec\Indeo Audio Encoder
+Component-type=string
+Component-count=12
+Component-0=Indeo Video 5 Quick Compressors
+Component-1=Indeo® Video 5 Codec
+Component-2=Indeo Video 4 Codec
+Component-3=Indeo Video 3.2 Codec
+Component-4=Indeo Audio Codec
+Component-5=Indeo Video Raw (YVU9) Codec
+Component-6=Indeo Video 4 Quick Compressors
+Component-7=Indeo Video 5 Compressor Help Files
+Component-8=Indeo Video 4 Compressor Help Files
+Component-9=Indeo Software Release Notes
+Component-10=Indeo Software Installation Source Code
+Component-11=Indeo Software Uninstallation
+Result=1
+[AskYesNo-0]
+Result=0
+[SdStartCopy-0]
+Result=1
+[Application]
+Name=Indeo® Software
+Version=1.00.000
+Company=Ligos
+Lang=0009
+[SdFinish-0]
+Result=1
+bOpt1=0
+bOpt2=0
+_EOF_
+
+    w_try_cd "$W_TMP/iv5setup/"
+    w_try "$WINE" "setup.exe" ${W_OPT_UNATTENDED:+/s}
+
+    # Note, this leaves a dangling explorer window.
+    # Wait for it to appear and kill it
+    while ! inode_pid=$(pgrep -f "explorer.exe.*Indeo")
+    do
+        sleep 1
+    done
+    kill -HUP "$inode_pid"
 }
 
 #----------------------------------------------------------------
