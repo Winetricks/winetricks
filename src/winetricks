@@ -5981,6 +5981,38 @@ load_binkw32()
 
 #----------------------------------------------------------------
 
+w_metadata d3dcompiler_42 dlls \
+    title="MS d3dcompiler_42.dll" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3dcompiler_42.dll"
+
+load_d3dcompiler_42()
+{
+    dllname=d3dcompiler_42
+
+    helper_directx_Jun2010
+
+    w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
+    for x in "$W_TMP"/*.cab
+    do
+      w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
+    done
+    if test "$W_ARCH" = "win64"; then
+        w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
+        for x in "$W_TMP"/*x64.cab
+        do
+            w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
+        done
+    fi
+
+    w_override_dlls native $dllname
+}
+
+#----------------------------------------------------------------
+
 w_metadata d3dcompiler_43 dlls \
     title="MS d3dcompiler_43.dll" \
     publisher="Microsoft" \
