@@ -6620,8 +6620,10 @@ load_dinput8()
 
     w_try_cabextract -d "$W_TMP" -L -F 'dxnt.cab' "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dinput8.dll' "$W_TMP/dxnt.cab"
-    w_override_dlls native dinput8
+
+    # Don't try to register native dinput8; it doesn't export DllRegisterServer().
     w_try_regsvr dinput8
+    w_override_dlls native dinput8
 }
 
 #----------------------------------------------------------------
@@ -8807,8 +8809,9 @@ load_dsound()
     w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dsound.dll' "$W_TMP/dxnt.cab"
 
-    w_override_dlls native dsound
+    # Don't try to register native dsound; it doesn't export DllRegisterServer().
     w_try_regsvr dsound.dll
+    w_override_dlls native dsound
 }
 
 #----------------------------------------------------------------
