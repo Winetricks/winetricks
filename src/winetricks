@@ -32,9 +32,7 @@ WINETRICKS_VERSION=20190615-next
 # - perl is used to munge steam config files.
 # - pkexec, sudo, or kdesu (gksu/gksudo/kdesudo are deprecated upstream but also still supported)
 #   are used to mount .iso images if the user cached them with -k option.
-# - sha256sum, sha256, or shasum (OSX 10.5 does not support these, 10.6+ is required):
-#   note: some legacy verbs may still use sha1sum, sha1, or shasum, but this is
-#   deprecated and will be removed in a future release.
+# - sha256sum, sha256, or shasum (OSX 10.5 does not support these, 10.6+ is required)
 # - torify is used with option "--torify" if sites are blocked in single countries.
 # - xdg-open (if present) or open (for OS X) is used to open download pages
 #   for the user when downloads cannot be fully automated.
@@ -741,26 +739,6 @@ w_get_github_latest_release()
     echo "$latest_version"
 }
 
-# get sha1sum string and set $_W_gotsha1um to it
-w_get_sha1sum()
-{
-    _W_sha1_file="$1"
-
-    # See https://github.com/Winetricks/winetricks/issues/645
-    # User is running winetricks from /dev/stdin
-    if [ -f "$_W_sha1_file" ] || [ -h "$_W_sha1_file" ] ; then
-        _W_gotsha1sum=$($WINETRICKS_SHA1SUM < "$_W_sha1_file" | sed 's/(stdin)= //;s/ .*//')
-        w_get_sha256sum "$_W_sha1_file"
-    else
-        w_warn "$_W_sha1_file is not a regular file, not checking sha1sum"
-        return
-    fi
-
-    w_warn "sha1sum is considered deprecated and should no longer be used. This package (${W_PACKAGE}) still uses it. This is a bug."
-    w_warn "See https://github.com/Winetricks/winetricks/issues/737 and https://shattered.io/"
-    w_warn "Please report the following to https://github.com/Winetricks/winetricks/: file:${_W_sha1_file} sha1: ${_W_gotsha1sum} sha256:${_W_gotsha256sum}"
-}
-
 # get sha256sum string and set $_W_gotsha256sum to it
 w_get_sha256sum()
 {
@@ -784,29 +762,10 @@ w_get_shatype() {
     _W_sum_length="$(echo "$_W_sum" | tr -d "\\n" | wc -c | tr -d " ")"
     case "$_W_sum_length" in
         0) _W_shatype="none" ;;
-        40) _W_shatype="sha1" ;;
         64) _W_shatype="sha256" ;;
         # 128) sha512..
         *) w_die "unsupported shasum..bug" ;;
     esac
-}
-
-# FIXME: remove 2018/04/01 (or 03/31 or 4/2, to avoid April Fools comments), along with any remaining unfixed verbs
-# verify a sha1sum
-w_verify_sha1sum()
-{
-    _W_vs_wantsum=$1
-    _W_vs_file=$2
-
-    w_get_sha1sum "$_W_vs_file"
-    if [ "$_W_gotsha1sum"x != "$_W_vs_wantsum"x ] ; then
-        case $LANG in
-            pl*) w_die "Niezgodność sumy sha1sum! Zmień nazwę $_W_vs_file i spróbuj ponownie." ;;
-            ru*) w_die "Контрольная сумма sha1sum не совпадает! Переименуйте файл $_W_vs_file и попробуйте еще раз." ;;
-            *) w_die "sha1sum mismatch! Rename $_W_vs_file and try again." ;;
-        esac
-    fi
-    unset _W_vs_wantsum _W_vs_file _W_gotsha1sum
 }
 
 # verify a sha256sum
@@ -836,7 +795,6 @@ w_verify_shasum()
 
     case "$_W_shatype" in
         none) w_warn "No checksum provided, not verifying" ;;
-        sha1) w_verify_sha1sum "$_W_sum" "$_W_vs_file" ;;
         sha256) w_verify_sha256sum "$_W_sum" "$_W_vs_file" ;;
         # 128) sha512..
         *) w_die "unsupported shasum..bug" ;;
@@ -1111,13 +1069,6 @@ w_download_to()
                 case "$_W_shatype" in
                     none)
                         w_warn "No checksum provided, not verifying"
-                        ;;
-                    sha1)
-                        w_get_sha1sum "$_W_cache/$_W_file"
-                        if [ "$_W_gotsha1sum"x = "$_W_sum"x ] ; then
-                            checksum_ok=1
-                            break
-                        fi
                         ;;
                     sha256)
                         w_get_sha256sum "$_W_cache/$_W_file"
@@ -1403,7 +1354,7 @@ w_download_manual_to()
         w_verify_shasum "$_W_shasum" "$W_CACHE/$_W_packagename/$_W_file"
     fi
 
-    unset _W_dlmsg _W_file _W_sha1sum _W_sha256sum _W_url
+    unset _W_dlmsg _W_file _W_sha256sum _W_url
 }
 
 w_download_manual()
@@ -3057,24 +3008,6 @@ winetricks_dl_warning() {
         "RU") w_warn "$_W_countrymsg" ;;
         *) : ;;
     esac
-}
-
-winetricks_get_sha1sum_prog() {
-    # Linux/Solaris:
-    if [ -x "$(command -v sha1sum 2>/dev/null)" ] ; then
-        WINETRICKS_SHA1SUM="sha1sum"
-    # FreeBSD/NetBSD:
-    elif [ -x "$(command -v sha1 2>/dev/null)" ] ; then
-        WINETRICKS_SHA1SUM="sha1"
-    # OSX 10.6+:
-    elif [ -x "$(command -v shasum 2>/dev/null)" ] ; then
-        WINETRICKS_SHA1SUM="shasum -a 1"
-    # OSX 10.5:
-    elif [ -x "$(command -v openssl 2>/dev/null)" ] ; then
-        WINETRICKS_SHA1SUM="openssl dgst -sha1"
-    else
-        w_die "No sha1sum utility available."
-    fi
 }
 
 winetricks_get_sha256sum_prog() {
@@ -5090,7 +5023,6 @@ winetricks_init()
 
     WINETRICKS_SOURCEFORGE=https://downloads.sourceforge.net
 
-    winetricks_get_sha1sum_prog
     winetricks_get_sha256sum_prog
 
     winetricks_get_platform
@@ -14792,7 +14724,7 @@ w_metadata utorrent apps \
 load_utorrent()
 {
     # BitTorrent client supported on Windows, OS X, Linux through Wine
-    # 2012/03/07: sha1sum ec2c086ff784b06e4ff05243164ddb768b81ee32096afed6d5e574ff350b619e
+    # 2012/03/07: sha256sum ec2c086ff784b06e4ff05243164ddb768b81ee32096afed6d5e574ff350b619e
     w_download_manual "https://www.oldapps.com/utorrent.php?old_utorrent=38" utorrent_2.2.1.exe ec2c086ff784b06e4ff05243164ddb768b81ee32096afed6d5e574ff350b619e
 
     w_try cp -f "$W_CACHE/utorrent/$file1" "$W_WINDIR_UNIX"/utorrent.exe
