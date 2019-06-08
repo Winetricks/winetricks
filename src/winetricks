@@ -15802,56 +15802,6 @@ load_acreedbro()
 
 #----------------------------------------------------------------
 
-w_metadata atmosphir games \
-    title="Atmosphir" \
-    publisher="Minor Studios" \
-    year="2011" \
-    media="manual_download" \
-    file1="Atmosphir Installer v1.0.0 fixed.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Minor Studios/Atmosphir/Atmosphir.exe" \
-    homepage="http://www.atmosphir.com"
-
-load_atmosphir()
-{
-    w_download_manual https://download.cnet.com/Atmosphir/3000-7492_4-75335647.html atmosphir-installer-v1.0.2.exe a6b2c82a98d750014874f8ab445b38ebb127450e5a7a9350832cf3a8d3a
-
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_ahk_do "
-        run Atmosphir Installer v1.0.0 fixed.exe
-        winwait, Atmosphir Setup, Welcome
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            ControlClick Button2
-            winwait, Atmosphir Setup, License Agreement
-            sleep 1000
-            ControlClick Button2
-            winwait, Atmosphir Setup, Choose Install Location
-            sleep 1000
-            ControlClick Button2
-            winwait, Atmosphir Setup, Choose Start Menu Folder
-            sleep 1000
-            ControlClick Button2
-        }
-        winwait, Atmosphir Setup, Installation complete
-        if ( w_opt_unattended > 0 ) {
-            sleep 1000
-            send {Space}  ; ControlClick Button4    # start
-            sleep 1000
-            ControlClick Button2
-            ; Let the launcher do the initial full download
-            winwait, Atmosphir Launcher
-            winwaitclose
-            ; then kill the game when it starts
-            winwait, Atmosphir
-            ;winkill          ; doesn't work, game traps it
-            winclose
-        }
-        winwaitclose
-    "
-}
-
-#----------------------------------------------------------------
-
 w_metadata avatar_demo games \
     title="James Camerons Avatar: The Game Demo" \
     publisher="Ubisoft" \
