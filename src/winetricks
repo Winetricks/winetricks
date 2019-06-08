@@ -28,21 +28,23 @@ WINETRICKS_VERSION=20190310-next
 # - wine is used to execute Win32 apps except on Cygwin.
 # - ar, cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - aria2c, wget, curl, or fetch is needed for downloading.
+# - fuseiso, archivemount (Linux), or hdiutil (macOS) is used to mount .iso images.
+# - perl is used to munge steam config files.
+# - pkexec, sudo, or kdesu (gksu/gksudo/kdesudo are deprecated upstream but also still supported)
+#   are used to mount .iso images if the user cached them with -k option.
 # - sha256sum, sha256, or shasum (OSX 10.5 does not support these, 10.6+ is required):
 #   note: some legacy verbs may still use sha1sum, sha1, or shasum, but this is
 #   deprecated and will be removed in a future release.
-# - zenity is needed by the GUI, though it can limp along somewhat with kdialog/xmessage.
+# - torify is used with option "--torify" if sites are blocked in single countries.
 # - xdg-open (if present) or open (for OS X) is used to open download pages
 #   for the user when downloads cannot be fully automated.
-# - pkexec, sudo, or kdesu (gksu/gksudo/kdesudo are deprecated upstream but also still supported)
-#   are used to mount .iso images if the user cached them with -k option.
-# - fuseiso, archivemount (Linux), or hdiutil (macOS) is used to mount .iso images.
-# - perl is used to munge steam config files.
-# - torify is used with option "--torify" if sites are blocked in single countries.
+# - zenity is needed by the GUI, though it can limp along somewhat with kdialog/xmessage.
+#
 # On Ubuntu, the following lines can be used to install all the prerequisites:
 #    sudo add-apt-repository ppa:ubuntu-wine/ppa
 #    sudo apt-get update
 #    sudo apt-get install binutils cabextract p7zip-full unrar unzip wget wine zenity
+#
 # On Fedora, these commands can be used (RPM Fusion is used to install unrar):
 #    sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 #    sudo dnf install binutils cabextract p7zip-plugins unrar unzip wget wine zenity
