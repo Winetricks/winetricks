@@ -8693,7 +8693,7 @@ load_dotnet472()
 {
     w_package_warn_win64
 
-    if w_workaround_wine_bug 42170 "Running un-official repacked .NET 4.7.2 setup until the official version is fixed."; then
+    if w_workaround_wine_bug 42170 "Running un-official repacked .NET 4.7.2 setup until the official version is fixed.", 3.1; then
         # Un-official slim version. See https://repacks.net/forum/viewtopic.php?t=7
         file_package="dotNetFx472_Full_x86_x64_Slim.exe"
         w_download "https://drive.google.com/uc?export=download&id=1aLBCH0Yt2-6ROpWRBxZ01kqGMyhc_8hM&confirm" a36da041b8f46079f8e16647312d642953cde520f4a600ad5b3f4f90a23495a7 $file_package
