@@ -8392,8 +8392,8 @@ load_dotnet40()
         *) w_warn "dotnet40 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
-    if [ "$W_ARCH" = "win64" ] && w_workaround_wine_bug 42701; then
-        w_warn "On 64-bit, you'll run into https://bugs.winehq.org/show_bug.cgi?id=42701 (missing api-ms-win-core-winrt-roparameterizediid-l1-1-0.dll.RoGetParameterizedTypeInstanceIID"
+    if [ "$W_ARCH" = "win64" ]; then
+        w_workaround_wine_bug 42701 "On 64-bit, you'll run into https://bugs.winehq.org/show_bug.cgi?id=42701 (missing api-ms-win-core-winrt-roparameterizediid-l1-1-0.dll.RoGetParameterizedTypeInstanceIID", 2.22
     fi
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=17718
