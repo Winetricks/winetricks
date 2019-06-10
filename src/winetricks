@@ -18067,12 +18067,12 @@ load_lhp_demo()
             ;;
     esac
 
-    w_download_manual "https://www.fileplanet.com/213663/210000/fileinfo/LEGO-Harry-Potter:-Years-1-4-Demo" 01d8e88511d71f5dd1492034ea4b00eacdbbf891ef23cffa31413d232eee3647
+    w_download_manual "https://www.fileplanet.com/213663/210000/fileinfo/LEGO-Harry-Potter:-Years-1-4-Demo" "$file1" 01d8e88511d71f5dd1492034ea4b00eacdbbf891ef23cffa31413d232eee3647
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_ahk_do "
         SetTitleMatchMode, 2
-        run, LEGOHarryPotterDEMO.exe
+        run, $file1
         winwait, LEGO, language
         if ( w_opt_unattended > 0 ) {
             controlclick, Button1
