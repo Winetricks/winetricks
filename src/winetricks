@@ -8050,9 +8050,9 @@ w_metadata dotnet20sp1 dlls \
     publisher="Microsoft" \
     year="2008" \
     media="download" \
-    conflicts="dotnet11 dotnet20sp2 dotnet35sp1" \
+    conflicts="dotnet20sp2" \
     file1="NetFx20SP1_x86.exe" \
-    installed_file1="c:/windows/winsxs/manifests/x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.1433_x-ww_5cf844d2.cat"
+    installed_file1="c:/windows/dotnet20sp1.installed.workaround"
 
 load_dotnet20sp1()
 {
@@ -8102,6 +8102,9 @@ load_dotnet20sp1()
     w_unset_winver
 
     W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
+
+    # Installs the same file(name)s as dotnet35sp1, let users install dotnet35sp1 after dotnet20sp1
+    w_try touch "${W_WINDIR_UNIX}/dotnet20sp1.installed.workaround"
 }
 
 verify_dotnet20sp1()
