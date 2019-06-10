@@ -589,7 +589,7 @@ test_dotnet()
     done
 
     # combinations that should break:
-    for fail_combo in "dotnet11 dotnet20" "dotnet20sp2 dotnet20sp1"; do
+    for fail_combo in "dotnet20sp2 dotnet20sp1"; do
         # shellcheck disable=SC2086
         EXPECT_FAIL=yes test_command $fail_combo
     done
