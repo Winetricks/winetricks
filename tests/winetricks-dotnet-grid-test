@@ -36,7 +36,7 @@ for verb1 in $dotnet_verbs; do
         export WINEPREFIX="${outdir}/prefix-${combo}"
         wineserver -k
 
-        ./src/winetricks -q --force "$verb1" "$verb2" 2>&1 | tee -a "${outdir}/${combo}.txt"
+        ./src/winetricks -q --force --verify "$verb1" "$verb2" 2>&1 | tee -a "${outdir}/${combo}.txt"
         status="$?"
         echo "$combo exited $status" 2>&1 | tee -a "${outdir}/${combo}.txt"
         echo "$combo exited $status" 2>&1 | tee -a "${outdir}/statuslog.txt"
