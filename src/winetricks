@@ -5714,7 +5714,8 @@ load_adobeair()
     # 2018/06/08: 30.0.0.107 (strings 'Adobe AIR.dll' | grep -E "^30\..+\..+" ) sha256sum bcc36174f6f70baba27e5ed1c0df67e55c306ac7bc86b1d280eff4db8c314985
     # 2018/09/12: 31.0.0.96 (strings 'Adobe AIR.dll' | grep -E "^31\..+\..+" ) sha256sum dc82421f135627802b21619bdb7e4b9b0ec16d351120485c575aa6c16cd2737e
     # 2018/12/22: 32.0.0.89 (strings 'Adobe AIR.dll' | grep -E "^32\..+\..+" ) sha256sum 24532d41ef2588c0daac4b6f8b7f863ee3c1a1b1e90b2d8d8b3eb4faa657e5e3
-    w_download https://airdownload.adobe.com/air/win/download/latest/AdobeAIRInstaller.exe 24532d41ef2588c0daac4b6f8b7f863ee3c1a1b1e90b2d8d8b3eb4faa657e5e3
+    # 2019/06/11: 32.0.0.125 (strings 'Adobe AIR.dll' | grep -E "^32\..+\..+" ) sha256sum 6718308e10a45176155d0ecc8458bd3606308925b91f26a7d08c148cf52c9db3
+    w_download https://airdownload.adobe.com/air/win/download/latest/AdobeAIRInstaller.exe 6718308e10a45176155d0ecc8458bd3606308925b91f26a7d08c148cf52c9db3
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     # See https://bugs.winehq.org/show_bug.cgi?id=43506
