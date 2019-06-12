@@ -10502,6 +10502,41 @@ load_python26()
 
 #----------------------------------------------------------------
 
+w_metadata python27 dlls \
+    title="Python interpreter 2.7.16" \
+    publisher="Python Software Foundaton" \
+    year="2019" \
+    media="download" \
+    file1="python-2.7.16.msi" \
+    installed_exe1="c:/Python27/python.exe"
+
+load_python27()
+{
+    w_download https://www.python.org/ftp/python/2.7.16/python-2.7.16.msi d57dc3e1ba490aee856c28b4915d09e3f49442461e46e481bc6b2d18207831d7
+    w_download https://github.com/mhammond/pywin32/releases/download/b224/pywin32-224.win32-py2.7.exe 03bb02aff0ec604d1d5fefc699581ab599fff618eaddc8a721f2fa22e5572dd4
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try "$WINE" msiexec /i python-2.7.16.msi ALLUSERS=1 $W_UNATTENDED_SLASH_Q
+
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        run pywin32-224.win32-py2.7.exe
+        WinWait, Setup, Wizard will install pywin32
+        if ( w_opt_unattended > 0 ) {
+             ControlClick Button2   ; next
+             WinWait, Setup, Python 2.7 is required
+             ControlClick Button3   ; next
+             WinWait, Setup, Click Next to begin
+             ControlClick Button3   ; next
+             WinWait, Setup, finished
+             ControlClick Button4   ; Finish
+        }
+        WinWaitClose
+        "
+}
+
+#----------------------------------------------------------------
+
 w_metadata qasf dlls \
     title="qasf.dll" \
     publisher="Microsoft" \
