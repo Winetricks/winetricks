@@ -10692,16 +10692,16 @@ load_richtx32()
 w_metadata sdl dlls \
     title="Simple DirectMedia Layer" \
     publisher="Sam Lantinga" \
-    year="2009" \
+    year="2012" \
     media="download" \
-    file1="SDL-1.2.14-win32.zip" \
+    file1="SDL-1.2.15-win32.zip" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/SDL.dll"
 
 load_sdl()
 {
     # https://www.libsdl.org/download-1.2.php
-    w_download https://www.libsdl.org/release/SDL-1.2.14-win32.zip ce77838902891bf2e4378d4a910afef88aaaae4f833a49cfc9bb8dde11ff89a7
-    w_try_unzip "$W_SYSTEM32_DLLS" "$W_CACHE"/sdl/SDL-1.2.14-win32.zip SDL.dll
+    w_download https://www.libsdl.org/release/SDL-1.2.15-win32.zip a28bbe38714ef7817b1c1e8082a48f391f15e4043402444b783952fca939edc1
+    w_try_unzip "$W_SYSTEM32_DLLS" "$W_CACHE"/sdl/SDL-1.2.15-win32.zip SDL.dll
 }
 
 #----------------------------------------------------------------
