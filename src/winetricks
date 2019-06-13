@@ -928,6 +928,7 @@ w_dotnet_verify()
         dotnet462) version="4.6.2" ;;
         dotnet471) version="4.7.1" ;;
         dotnet472) version="4.7.2" ;;
+        dotnet48) version="4.8" ;;
         *) echo error ; exit 1 ;;
     esac
             w_call dotnet_verifier
@@ -8785,6 +8786,56 @@ load_dotnet472()
 verify_dotnet472()
 {
     w_dotnet_verify dotnet472
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet48 dlls \
+    title="MS .NET 4.8" \
+    publisher="Microsoft" \
+    year="2019" \
+    media="download" \
+    file1="ndp48-x86-x64-allos-enu.exe" \
+    conflicts="dotnet20sdk" \
+    installed_file1="c:/windows/dotnet48.installed.workaround"
+
+load_dotnet48()
+{
+    w_package_warn_win64
+
+    # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net48
+    w_download https://download.visualstudio.microsoft.com/download/pr/7afca223-55d2-470a-8edc-6a1739ae3252/abd170b4b0ec15ad0222a809b761a036/ndp48-x86-x64-allos-enu.exe 95889d6de3f2070c07790ad6cf2000d33d9a1bdfc6a381725ab82ab1c314fd53
+    unattended_args="/sfxlang:1027 /q /norestart"
+
+    w_call remove_mono
+
+    w_call dotnet40
+    w_set_winver win7
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+
+    WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+$unattended_args}
+    status=$?
+
+    echo "exit status: $status"
+
+    case $status in
+        0) ;;
+        5) w_die "exit status $status - user selected 'Cancel'" ;;
+        105) echo "exit status $status - normal, user selected 'restart now'" ;;
+        194) echo "exit status $status - normal, user selected 'restart later'" ;;
+        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
+    esac
+
+    w_override_dlls native mscoree
+
+    # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
+    w_try touch "${W_WINDIR_UNIX}/dotnet48.installed.workaround"
+}
+
+verify_dotnet48()
+{
+    w_dotnet_verify dotnet48
 }
 
 #----------------------------------------------------------------
