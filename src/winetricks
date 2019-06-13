@@ -11007,30 +11007,32 @@ load_msxml4()
 #----------------------------------------------------------------
 
 w_metadata msxml6 dlls \
-    title="MS XML Core Services 6.0 sp1" \
+    title="MS XML Core Services 6.0 sp2" \
     publisher="Microsoft" \
-    year="2007" \
+    year="2009" \
     media="download" \
-    file1="msxml6_x86.msi" \
+    file1="msxml6-KB973686-enu-amd64.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/msxml6.dll"
 
 load_msxml6()
 {
-    # Service Pack 1
-    # https://www.microsoft.com/en-us/download/details.aspx?id=6276
-    if [ $W_ARCH = win64 ]; then
-        w_download https://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x64.msi 945d8c535758d5178d4de9063cfcba7dfa96987eaa478e0c03ba646cc7ca772f
-    else
-        w_download https://download.microsoft.com/download/e/a/f/eafb8ee7-667d-4e30-bb39-4694b5b3006f/msxml6_x86.msi efa48f8cab5a89b8e667ed3e10dfb71bddc02923d0f3757bd93ffabe6fb6c598
+    # Service Pack 2
+    # https://www.microsoft.com/en-us/download/details.aspx?id=9774
+
+    # 64bit exe also includes 32bit dlls
+    w_download https://download.microsoft.com/download/1/5/8/158F681A-E595-472B-B15E-62B649B1B6FF/msxml6-KB973686-enu-amd64.exe 0e5c4af488e88e8defb59de80271671d8283d5744b2eebdb351bbd4950fb0883
+
+    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}"/msxml6/msxml6-KB973686-enu-amd64.exe
+    w_try_cabextract --directory="${W_TMP}" "${W_TMP}"/msxml6.msi
+    w_try cp -f "${W_TMP}"/msxml6.dll.86F857F6_A743_463D_B2FE_98CB5F727E09 "$W_SYSTEM32_DLLS"/msxml6.dll
+    w_try cp -f "${W_TMP}"/msxml6r.dll.86F857F6_A743_463D_B2FE_98CB5F727E09 "$W_SYSTEM32_DLLS"/msxml6r.dll
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_try cp -f "${W_TMP}"/msxml6.dll.1ECC0691_D2EB_4A33_9CBF_5487E5CB17DB "$W_SYSTEM64_DLLS"/msxml6.dll
+        w_try cp -f "${W_TMP}"/msxml6r.dll.1ECC0691_D2EB_4A33_9CBF_5487E5CB17DB "$W_SYSTEM64_DLLS"/msxml6r.dll
     fi
+
     w_override_dlls native,builtin msxml6
-    rm -f "$W_SYSTEM32_DLLS/msxml6.dll"
-    if [ $W_ARCH = win64 ]; then
-        rm -f "$W_SYSTEM64_DLLS/msxml6.dll"
-        w_try_msiexec64 /i "$W_CACHE"/msxml6/msxml6_x64.msi
-    else
-        w_try "$WINE" msiexec /i "$W_CACHE"/msxml6/msxml6_x86.msi $W_UNATTENDED_SLASH_Q
-    fi
 }
 
 #----------------------------------------------------------------
