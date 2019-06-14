@@ -14412,14 +14412,14 @@ load_openwatcom()
         # But they don't seem to work on Wine, so jam them into setup.inf
         # Pick smallest installation that supports 16-bit C and C++
         w_try_cd "$W_TMP"
-        cp "$W_CACHE"/openwatcom/open-watcom-c-win32-1.9.exe .
-        w_try_unzip . open-watcom-c-win32-1.9.exe setup.inf
+        cp "$W_CACHE/${W_PACKAGE}/${file1}" .
+        w_try_unzip . "${file1}" setup.inf
         sed -i 's/tools16=.*/tools16=true/' setup.inf
-        w_try zip -f open-watcom-c-win32-1.9.exe
-        w_try "$WINE" open-watcom-c-win32-1.9.exe -s
+        w_try zip -f "${file1}"
+        w_try "$WINE" "${file1}" -s
     else
         w_try_cd "$W_CACHE/$W_PACKAGE"
-        w_try "$WINE" open-watcom-c-win32-1.9.exe
+        w_try "$WINE" "${file1}"
     fi
 
     if test ! -f "$W_DRIVE_C"/WATCOM/binnt/wcc.exe; then
