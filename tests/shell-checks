@@ -57,12 +57,12 @@ echo "======================== Begin shellcheck version info ===================
 echo "======================== End shellcheck version info ==========================="
 
 # Check if checkbashisms supports `command -v`. If not, warn, or if on travis, patch it:
-cat > "${temp}/test.sh" <<_EOF
+cat > "${temp}/command.sh" <<_EOF
 #!/bin/sh
 command -v grep
 _EOF
 
-if ! "$checkbashisms" --posix "${temp}/test.sh"; then
+if ! "$checkbashisms" --posix "${temp}/command.sh"; then
     echo "Use a sed expression, to add checkbashisms support for 'command -v', based on the patch from https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511"
     echo "Creating a copy of the checkbashisms script, in ${temp}, to workaround this issue"
     # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
@@ -71,6 +71,25 @@ if ! "$checkbashisms" --posix "${temp}/test.sh"; then
         chmod +x "${temp}/checkbashisms.patched"
     )
     checkbashisms="${temp}/checkbashisms.patched"
+fi
+
+# FIXME: if we add a third, clean this up
+# Check if checkbashisms supports `command -v`. If not, warn, or if on travis, patch it:
+cat > "${temp}/kill.sh" <<_EOF
+#!/bin/sh
+sleep 5 & spid="$!"
+kill -HUP \$spid
+_EOF
+
+if ! "$checkbashisms" --posix "${temp}/kill.sh"; then
+    echo "Disabling the kill -signal warning"
+    echo "Creating a copy of the checkbashisms script, in ${temp}, to workaround this issue"
+    # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
+    (
+        sed -e '/bashisms.*kill/d' "$checkbashisms" >  "${temp}/checkbashisms.patched.kill" && \
+        chmod +x "${temp}/checkbashisms.patched.kill"
+    )
+    checkbashisms="${temp}/checkbashisms.patched.kill"
 fi
 
 # Use git ls-files if available, this prevents 'finding' scripts that aren't checked into git.
