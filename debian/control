@@ -10,19 +10,24 @@ Homepage: https://github.com/Winetricks/winetricks
 
 Package: winetricks
 Architecture: all
+Multi-Arch: foreign
 Depends:
+ aria2 | wget | curl,
  binutils,
  cabextract,
- p7zip,
+ p7zip-full,
  unzip,
- wget,
 Recommends:
  fuseiso | archivemount,
  policykit-1 | gksu | kde-cli-tools | kdesudo,
  sudo,
  wine,
  xdg-utils,
- zenity | kdebase-bin,
+ xz-utils,
+ zenity | kdialog | x11-utils,
+Suggests:
+ tor,
+ unrar-free | unrar,
 Description: simple tool to work around common problems in Wine
  Winetricks has a menu of supported games/apps for which it can do all the
  workarounds automatically. It also lets you install missing DLLs or
