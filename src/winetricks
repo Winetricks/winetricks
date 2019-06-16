@@ -4892,15 +4892,17 @@ winetricks_set_wineprefix()
     # e.g., spool/drivers/color
     if test -d "$W_DRIVE_C/windows/syswow64"; then
         W_ARCH=win64
+
+        # Common variable for 32-bit dlls on win32/win64:
+        W_32BIT_DLLS="$W_WINDIR_UNIX/syswow64"
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
+
         W_SYSTEM64_DLLS="$W_WINDIR_UNIX/system32"
         # shellcheck disable=SC2034
         W_SYSTEM64_DLLS_WIN32="C:\\windows\\sysnative" # path to access 64-bit dlls from 32-bit apps
         # shellcheck disable=SC2034
         W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
-        # Common variable for 32-bit dlls on win32/win64:
-        W_32BIT_DLLS="$W_WINDIR_UNIX/syswow64"
 
         # Probably need fancier handling/checking, but for a basic start:
         # Note 'wine' may be named 'wine-stable'/'wine-staging'/etc.):
@@ -4927,10 +4929,17 @@ winetricks_set_wineprefix()
         esac
     else
         W_ARCH=win32
-        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
-        W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
+
         # Common variable for 32-bit dlls on win32/win64:
         W_32BIT_DLLS="$W_WINDIR_UNIX/system32"
+        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
+        W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
+
+        # These don't exist on win32, but are defined in case they are used on 32-bit.
+        # W_SYSTEM64_DLLS_WIN64 in particular is needed by w_metadata()
+        W_SYSTEM64_DLLS="/dev/null"
+        W_SYSTEM64_DLLS_WIN32="C:\\does-not-exist-on-win32" # path to access 64-bit dlls from 32-bit apps
+        W_SYSTEM64_DLLS_WIN64="C:\\does-not-exist-on-win32"  # path to access 64-bit dlls from 64-bit apps
 
         WINE64="false"
         WINE_ARCH="${WINE}"
