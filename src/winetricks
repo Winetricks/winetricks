@@ -8907,6 +8907,22 @@ load_faudio1905()
 
 #----------------------------------------------------------------
 
+w_metadata faudio1906 dlls \
+    title="FAudio (xaudio reimplementation, with xna support) builds for win32 (19.06)" \
+    publisher="Kron4ek" \
+    year="2019" \
+    media="download" \
+    file1="faudio-19.06.tar.xz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/FAudio.dll"
+
+load_faudio1906()
+{
+    w_download https://github.com/Kron4ek/FAudio-Builds/releases/download/19.06/faudio-19.06.tar.xz 87639e30f9e913685829e05b925809598409e54c4c51e3d74b977cedd658aaf3
+    helper_faudio "$file1"
+}
+
+#----------------------------------------------------------------
+
 w_metadata faudio dlls \
     title="FAudio (xaudio reimplementation, with xna support) builds for win32 (latest)" \
     publisher="Kron4ek" \
