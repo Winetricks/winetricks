@@ -4964,6 +4964,9 @@ winetricks_set_wineprefix()
         W_SYSTEM64_DLLS_WIN32="C:\\does-not-exist-on-win32" # path to access 64-bit dlls from 32-bit apps
         W_SYSTEM64_DLLS_WIN64="C:\\does-not-exist-on-win32"  # path to access 64-bit dlls from 64-bit apps
 
+        # Doesn't exist on win32, but needed to keep w_metadata happy:
+        W_SYSTEM64_DLLS_WIN64="C:\\doesnt-exist-on-win32"  # path to access 64-bit dlls from 64-bit apps
+
         WINE64="false"
         WINE_ARCH="${WINE}"
         WINE_MULTI="${WINE}"
