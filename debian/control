@@ -3,24 +3,27 @@ Section: contrib/otherosfs
 Priority: optional
 Maintainer: Austin English <austinenglish@gmail.com>
 Standards-Version: 3.8.1
-Build-Depends: debhelper,
-        devscripts
+Build-Depends:
+ debhelper,
+ devscripts,
 
 Package: winetricks
 Section: contrib/otherosfs
 Architecture: all
 Homepage: https://github.com/Winetricks/winetricks
-Depends: binutils,
-        cabextract,
-        p7zip,
-        unzip,
-        wget
-Recommends: zenity | kdebase-bin,
-        xdg-utils,
-        policykit-1 | gksu | kde-cli-tools | kdesudo,
-        sudo,
-        fuseiso | archivemount,
-        wine
+Depends:
+ binutils,
+ cabextract,
+ p7zip,
+ unzip,
+ wget,
+Recommends:
+ fuseiso | archivemount,
+ policykit-1 | gksu | kde-cli-tools | kdesudo,
+ sudo,
+ wine,
+ xdg-utils,
+ zenity | kdebase-bin,
 Description: Simple tool to work around common problems in Wine.
  Winetricks has a menu of supported games/apps for which it can do all the
  workarounds automatically. It also lets you install missing DLLs or
