@@ -39,10 +39,8 @@ WINETRICKS_VERSION=20190615-next
 # - xz is used by some verbs to decompress tar archives.
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog/xmessage.
 #
-# On Ubuntu, the following lines can be used to install all the prerequisites:
-#    sudo add-apt-repository ppa:ubuntu-wine/ppa
-#    sudo apt-get update
-#    sudo apt-get install binutils cabextract fuseiso p7zip-full policykit tor unrar unzip wget wine xdg-utils xz-utils zenity
+# On Ubuntu, the following line can be used to install all the prerequisites:
+#    sudo apt install aria2 binutils cabextract fuseiso p7zip-full policykit-1 tor unrar unzip wine xdg-utils xz-utils zenity
 #
 # On Fedora, these commands can be used (RPM Fusion is used to install unrar):
 #    sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
