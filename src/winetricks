@@ -8807,13 +8807,17 @@ helper_faudio()
     w_try_cd "$W_TMP"
     w_try tar -Jxf "${W_CACHE}/${W_PACKAGE}/${faudio_archive}"
 
-    # They ship an installation script, but it's bash (and we have all needed functionality already)
-    # Unless they add something more complex, this should suffice:
-    for dll in "${faudio_version}/x32/"*.dll; do
-        shortdll="$(basename "${dll}" .dll)"
-        w_try cp "${dll}" "$W_SYSTEM32_DLLS"
-        w_override_dlls native "$shortdll"
-    done
+    if [ -d "${faudio_version}/x32" ]; then
+        w_info "Installing 32-bit binaries since present; upstreams says they may be broken"
+
+        # They ship an installation script, but it's bash (and we have all needed functionality already)
+        # Unless they add something more complex, this should suffice:
+        for dll in "${faudio_version}/x32/"*.dll; do
+            shortdll="$(basename "${dll}" .dll)"
+            w_try cp "${dll}" "$W_SYSTEM32_DLLS"
+            w_override_dlls native "$shortdll"
+        done
+    fi
 
     if [ "$W_ARCH" = "win64" ]; then
         for dll in "${faudio_version}/x64/"*.dll; do
@@ -8928,11 +8932,13 @@ w_metadata faudio dlls \
     publisher="Kron4ek" \
     year="2019" \
     media="download" \
-    installed_file1="$W_SYSTEM32_DLLS_WIN/FAudio.dll"
+    installed_file1="$W_SYSTEM64_DLLS_WIN64/FAudio.dll"
 
 load_faudio()
 {
-    set -x
+    # Starting in 19.06.07; before that ships them, but they're supposedly broken
+    w_package_unsupported_win32
+
     w_download_to "${W_TMP_EARLY}" "https://raw.githubusercontent.com/Kron4ek/FAudio-Builds/master/LATEST"
     faudio_version="$(cat "${W_TMP_EARLY}/LATEST")"
     w_linkcheck_ignore=1 w_download "https://github.com/Kron4ek/FAudio-Builds/releases/download/${faudio_version}/faudio-${faudio_version}.tar.xz"
