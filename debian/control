@@ -6,11 +6,10 @@ Standards-Version: 3.8.1
 Build-Depends:
  debhelper,
  devscripts,
+Homepage: https://github.com/Winetricks/winetricks
 
 Package: winetricks
-Section: contrib/otherosfs
 Architecture: all
-Homepage: https://github.com/Winetricks/winetricks
 Depends:
  binutils,
  cabextract,
@@ -24,10 +23,11 @@ Recommends:
  wine,
  xdg-utils,
  zenity | kdebase-bin,
-Description: Simple tool to work around common problems in Wine.
+Description: simple tool to work around common problems in Wine
  Winetricks has a menu of supported games/apps for which it can do all the
  workarounds automatically. It also lets you install missing DLLs or
  tweak various Wine settings individually.
+ .
  It can be used via GUI or command line, whichever you prefer; the
  command-line mode is particularly useful as a building block in fancier
  wine frontends and in automated regression testing.
