@@ -10842,6 +10842,31 @@ load_updspapi()
 
 #----------------------------------------------------------------
 
+w_metadata urlmon dlls \
+    title="MS urlmon" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/urlmon.dll"
+
+load_urlmon()
+{
+    helper_win7sp1 x86_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_d1a4c8feac0dfcdb/urlmon.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_d1a4c8feac0dfcdb/urlmon.dll" "$W_SYSTEM32_DLLS/urlmon.dll"
+
+    if [ "$W_ARCH" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_2dc36482646b6e11/urlmon.dll
+        w_try cp "$W_TMP/amd64_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_2dc36482646b6e11/urlmon.dll" "$W_SYSTEM64_DLLS/urlmon.dll"
+    fi
+
+    w_override_dlls native,builtin urlmon
+
+    w_call iertutil
+}
+
+#----------------------------------------------------------------
+
 w_metadata usp10 dlls \
     title="Uniscribe" \
     publisher="Microsoft" \
