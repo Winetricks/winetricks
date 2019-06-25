@@ -13164,20 +13164,17 @@ load_wenquanyi()
 w_metadata unifont fonts \
     title="Unifont alternative to Arial Unicode MS" \
     publisher="Roman Czyborra / GNU" \
-    year="2008" \
+    year="2019" \
     media="download" \
-    file1="unifont-5.1.20080907.zip" \
+    file1="unifont-12.1.02.ttf" \
     installed_file1="$W_FONTSDIR_WIN/unifont.ttf"
 
 load_unifont()
 {
     # The GNU Unifont provides glyphs for just about everything in common language.  It is intended for multilingual usage.
     # See http://unifoundry.com/unifont.html for project page
-    w_download "http://unifoundry.com/unifont-5.1.20080907.zip" 6ec1176f83769072b09de2bc1fff68ec5d802183304756a372e2419236f5b5ba
-    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE/unifont-5.1.20080907.zip"
-
-    w_try mv -f "$W_TMP/unifont-5.1.20080907.ttf" "$W_TMP/unifont.ttf"
-
+    w_download "http://unifoundry.com/pub/unifont/unifont-12.1.02/font-builds/unifont-12.1.02.ttf" da4961540b9d02e01fb8755924db730db233c360b20ee321fda8ab7d0b9ca549
+    w_try cp "$W_CACHE/$W_PACKAGE/$file1" "$W_TMP/unifont.ttf"
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX"
 
     w_register_font unifont.ttf "Unifont"
