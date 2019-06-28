@@ -8296,9 +8296,6 @@ load_dotnet45()
 
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
 
-    # Seems unneeded in wine-2.0
-    # w_call dotnet35
-    w_call dotnet40
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -8348,9 +8345,6 @@ load_dotnet452()
 
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
 
-    # Seems unneeded in wine-2.0
-    # w_call dotnet35
-    w_call dotnet40
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -8395,8 +8389,6 @@ load_dotnet46()
     w_download https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe b21d33135e67e3486b154b11f7961d8e1cfd7a603267fb60febb4a6feab5cf87
 
     w_call remove_mono
-
-    w_call dotnet45
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -8450,7 +8442,6 @@ load_dotnet461()
 
     w_call remove_mono
 
-    w_call dotnet46
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -8499,7 +8490,7 @@ load_dotnet462()
 
     w_call remove_mono
 
-    w_call dotnet461
+    
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -8550,7 +8541,6 @@ load_dotnet471()
 
     w_call remove_mono
 
-    w_call dotnet462
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -8607,8 +8597,7 @@ load_dotnet472()
 
     w_call remove_mono
 
-    w_call dotnet462
-    w_set_winver win7
+   w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
@@ -8657,7 +8646,6 @@ load_dotnet48()
 
     w_call remove_mono
 
-    w_call dotnet40
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
