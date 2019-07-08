@@ -7876,9 +7876,6 @@ load_dotnet20sp1()
 {
     w_call remove_mono
 
-    WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b
-    export WINEDLLOVERRIDES
-
     if [ "$W_ARCH" = "win32" ]; then
         # https://www.microsoft.com/en-us/download/details.aspx?id=16614
         w_download https://download.microsoft.com/download/0/8/c/08c19fa4-4c4f-4ffb-9d6c-150906578c9e/NetFx20SP1_x86.exe c36c3a1d074de32d53f371c665243196a7608652a2fc6be9520312d5ce560871
@@ -7944,9 +7941,6 @@ w_metadata dotnet20sp2 dlls \
 load_dotnet20sp2()
 {
     w_call remove_mono
-
-    WINEDLLOVERRIDES=ngen.exe,regsvcs.exe,mscorsvw.exe=b
-    export WINEDLLOVERRIDES
 
     w_warn "Setting windows version so installer works"
     w_set_winver winxp
@@ -8047,8 +8041,6 @@ load_dotnet30()
     # Delete FontCache 3.0 service, it's in Wine for Mono, breaks native .NET
     # OK if this fails, that just means you have an older Wine.
     "$WINE" sc delete "FontCache3.0.0.0"
-
-    WINEDLLOVERRIDES="ngen.exe,mscorsvw.exe=b;$WINEDLLOVERRIDES"
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_warn "Installing .NET 3.0 runtime silently, as otherwise it gets hidden behind taskbar. Installation usually takes about 3 minutes."
