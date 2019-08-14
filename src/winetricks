@@ -14024,6 +14024,124 @@ load_mpc()
 
 #----------------------------------------------------------------
 
+w_metadata msmoney_2005uk apps \
+    title="MS Money 2005 UK QFE2" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    conflicts="ie6 ie7 ie8" \
+    file1="Money2005-UK-QFE2.exe" \
+    installed_file1="$W_PROGRAMS_X86_WIN/Microsoft Money 2005/MNYCoreFiles/Works/MNYUKEN.xtr" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Money 2005/MNYCoreFiles/msmoney.exe"
+
+load_msmoney_2005uk()
+{
+
+    w_wine_version_in "1.7.44,"
+    _W_status=$?
+    if test "$_W_status" = "0"; then
+        w_die "Please upgrade Wine to version 1.7.44 or newer."
+    fi
+    unset _W_status
+
+    msmoney_version="14.0"
+
+    # ======================================================================
+    # Workarounds for MS Money 2005 and newer versions.
+
+    # download ie7 for these dlls:
+    # shdocvw, shlwapi, browseui, jscript, mshtml, urlmon, iertutil
+    w_download_to "ie7" http://download.microsoft.com/download/3/8/8/38889DC1-848C-4BF2-8335-86C573AD86D9/IE7-WindowsXP-x86-enu.exe bf5c325bbe3f4174869b2a8ff75f92833e7f7debe64777ed0faf293c7725cbef
+
+    # Workaround for Bug 32880 File -> Open
+    # ie7: shdocvw and shlwapi
+    if w_workaround_wine_bug 32880 "Money 2005-2007 crash when 'File' menu is selected"; then
+        w_override_dlls native,builtin shdocvw shlwapi
+        cd "$W_CACHE"/ie7 || exit
+        for dll in shdocvw shlwapi; do
+            mv -f "$W_SYSTEM32_DLLS/$dll.dll" "$W_SYSTEM32_DLLS/$dll.dll.bak" 2> /dev/null
+            w_try_cabextract -L -F "$dll.dll" IE7-WindowsXP-x86-enu.exe -d "$W_SYSTEM32_DLLS"
+        done
+        "$WINE" regsvr32 /i shdocvw.dll 2> /dev/null
+    fi
+
+    # Workaround for Bug 36083 Left side panel -> Portfolio Manager
+    # ie7: shdocvw, shlwapi, jscript, mshtml, urlmon, iertutil
+    # native: msxml3, msxml4, msls32
+    if w_workaround_wine_bug 36083 "Money 2005 Crash On Selecting \"Portfolio Manager\""; then
+        # Install msxml3 and msxml4 quietly
+        SAVE_UNATTENDED_SLASH_Q="$W_UNATTENDED_SLASH_Q"
+        winetricks_set_unattended 1
+        w_call msxml3
+        w_call msxml4
+        ! test "$SAVE_UNATTENDED_SLASH_Q" && winetricks_set_unattended 0
+        # Install msls31
+        w_call msls31
+        w_override_dlls native,builtin msxml3 jscript mshtml urlmon
+        # Install jscript mshtml urlmon iertutil from ie7
+        cd "$W_CACHE"/ie7 || exit
+        for dll in jscript mshtml urlmon iertutil; do
+            mv -f "$W_SYSTEM32_DLLS/$dll.dll" "$W_SYSTEM32_DLLS/$dll.dll.bak" 2> /dev/null
+            w_try_cabextract -L -F "$dll.dll" IE7-WindowsXP-x86-enu.exe -d "$W_SYSTEM32_DLLS"
+        done
+    fi
+
+    # Workaround for Navigation bar -> drop-down combo box
+    # ie7: browseui
+    if w_workaround_wine_bug 32589 "Money 2005 Crash on Selecting Dropdown Box"; then
+        w_override_dlls native,builtin browseui
+        cd "$W_CACHE"/ie7 || exit
+        mv -f "$W_SYSTEM32_DLLS/browseui.dll" "$W_SYSTEM32_DLLS/browseui.dll.bak" 2> /dev/null
+        w_try_cabextract -L -F "browseui.dll" IE7-WindowsXP-x86-enu.exe -d "$W_SYSTEM32_DLLS"
+       "$WINE" regsvr32 /i browseui.dll
+    fi
+
+    # Workaround for cheque setup crash (Bug 32880, comment 6)
+    # win2ksp4: comdlg32
+    if w_workaround_wine_bug 32880 "File -> Print Setup -> Cheque Setup..."; then
+        w_override_dlls native,builtin comdlg32
+        helper_win2ksp4 i386/comdlg32.dl_
+        mv -f "$W_SYSTEM32_DLLS/comdlg32.dll" "$W_SYSTEM32_DLLS/comdlg32.dll.bak" 2> /dev/null
+        w_try_cabextract  -L -d "$W_SYSTEM32_DLLS" "$W_TMP"/i386/comdlg32.dl_
+    fi
+
+    # Partial workaround for Bug 32590 hang on exit
+    # Disable server-side includes (SSI)
+    if w_workaround_wine_bug 32590 "Money 2005 does not terminate properly on exit"; then
+        "$WINE" reg add "HKCU\\Software\\Microsoft\\Money\\$msmoney_version\\SSI\\ManifestUrl" /ve /t REG_SZ /d "http://localhost" /f
+    fi
+
+    # Tahoma looks more like native font
+    # win2ksp4: tahoma.ttf, tahomabd.ttf
+    # Possibly related: Bug 36082 Cannot Read Text In "Question" Boxes ...
+    if w_workaround_wine_bug 36082 "Cannot Read Text In \"Question\" Boxes"; then
+        for fon in tahoma tahomabd; do
+            helper_win2ksp4 i386/"$fon".tt_
+            mv -f "$W_FONTSDIR_UNIX/$fon.ttf" "$W_FONTSDIR_UNIX/$fon.ttf.bak" 2> /dev/null
+            w_try_cabextract  -L -d "$W_FONTSDIR_UNIX" "$W_TMP"/i386/"$fon".tt_
+        done
+    fi
+
+    # Workaround for blocking popup when user selects File -> New -> New File.
+    # Message says: "You cannot perform the operation at the moment. There
+    # is an online operation in progreas. Please try again later."
+    w_warn "Working around wine bug -- Cannot create new file. Online operation in progress"
+    w_override_dlls native,builtin wininet
+    cd "$W_CACHE"/ie7 || exit
+    mv -f "$W_SYSTEM32_DLLS/wininet.dll" "$W_SYSTEM32_DLLS/wininet.dll.bak" 2> /dev/null
+    w_try_cabextract -L -F "wininet.dll" IE7-WindowsXP-x86-enu.exe -d "$W_SYSTEM32_DLLS"
+
+    # ======================================================================
+    # MS Money 2005 UK Version
+
+    w_download_to money_2005 http://download.microsoft.com/download/8/5/8/858EDC2F-1806-4D2D-85E3-0FBB08CB720A/Money2005-UK-QFE2.exe.exe 79ee8aeb63b57065ad56789e06ca794a6a1adf74623ad34dcdc1559ff3d7ac62
+    cd "$W_CACHE"/money_2005 || exit
+   "$WINE" Money2005-UK-QFE2.exe.exe /q
+    w_warn "To open the sample database, enter the following command, then click 0K -> Next -> Finish: $WINE '${W_PROGRAMS_WIN}\\Microsoft Money 2005\\MNYCoreFiles\\msmoney.exe' '${W_PROGRAMS_WIN}\\Microsoft Money 2005\\sample.mny'"
+}
+
+#----------------------------------------------------------------
+
 w_metadata mspaint apps \
     title="MS Paint" \
     publisher="Microsoft" \
