@@ -3026,12 +3026,15 @@ winetricks_get_sha256sum_prog() {
 winetricks_get_platform()
 {
     if [ "${OS}" = "Windows_NT" ]; then
-        if [ ! -v "${WINELOADERNOEXEC}" ]; then
+        if [ -n "${WINELOADERNOEXEC}" ]; then
+            # Windows/Cygwin
             export W_PLATFORM="windows_cmd"
         else
+            # wineconsole/cmd under wine
             export W_PLATFORM="wine_cmd"
         fi
     else
+        # Normal Unix shell
         export W_PLATFORM="wine"
     fi
 }
