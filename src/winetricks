@@ -1850,7 +1850,7 @@ w_override_no_dlls()
 {
     w_skip_windows override && return
 
-    "$WINE" regedit /d 'HKEY_CURRENT_USER\\Software\\Wine\\DllOverrides'
+    w_try_regedit /d "HKEY_CURRENT_USER\\Software\\Wine\\DllOverrides"
 }
 
 w_override_all_dlls()
