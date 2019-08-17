@@ -11795,6 +11795,8 @@ load_windowscodecs()
     else
         w_try "$WINE" "$EXE" /passive
     fi
+
+    w_unset_winver
 }
 
 #----------------------------------------------------------------
