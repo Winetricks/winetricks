@@ -492,9 +492,10 @@ cat > "$WINETRICKS_WORKDIR/cp_font_files.sh" <<_EOF_
     # FIXME: w_try() isn't available, need some better error handling:
     cp -f "\$_W_src_file" "$_W_dest_dir/\$_W_file_name"
 _EOF_
-    chmod +x "$WINETRICKS_WORKDIR/cp_font_files.sh"
 
-    find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern" -exec "$WINETRICKS_WORKDIR/cp_font_files.sh" {} \;
+    # Use -exec "sh .." to avoid issues with noexec
+    # Gross quoting is to avoid SC2156
+    find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern" -exec sh -c 'sh '"$WINETRICKS_WORKDIR/cp_font_files.sh"' "$1"' _ {} \;
 
     # Wait for Wine to add the new font to the registry under HKCU\Software\Wine\Fonts\Cache
     w_wineserver -w
