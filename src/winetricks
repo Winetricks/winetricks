@@ -8116,10 +8116,12 @@ load_dotnet30()
     w_package_unsupported_win64
 
     # Originally at https://msdn.microsoft.com/en-us/netframework/bb264589.aspx
-    # No longer on microsoft.com, and archive.org is unreliablel. Choose amongst the oldest/most reliable looking from
+    # No longer on microsoft.com, and archive.org is unreliable. Choose amongst the oldest/most reliable looking from
     # http://www.filewatcher.com/m/dotnetfx3.exe.52770576-0.html
     # (and verify sha256sum, of course ;))
-    w_download http://descargas.udenar.edu.co/Framework.net/dotnetfx3.exe 6cf8921e00f52bbd888aa7a520a7bac47e818e2a850bcc44494c64d6cbfafdac
+    # 2017/04/20: http://descargas.udenar.edu.co/Framework.net/dotnetfx3.exe
+    # 2019/08/18: ftp://support.danbit.dk/I/IPP15-C2D/Net%20Framework%203.0/dotnetfx3.exe
+    w_download ftp://support.danbit.dk/I/IPP15-C2D/Net%20Framework%203.0/dotnetfx3.exe 6cf8921e00f52bbd888aa7a520a7bac47e818e2a850bcc44494c64d6cbfafdac
 
     w_call remove_mono
 
