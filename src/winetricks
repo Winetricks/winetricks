@@ -8199,6 +8199,10 @@ load_dotnet30sp1()
     w_call dotnet20sp1
     w_wineserver -w
 
+    if w_workaround_wine_bug 47436 "Installing native prntvpt" 4.11, ; then
+        w_call prntvpt
+    fi
+
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     "$WINE" reg add "HKLM\\Software\\Microsoft\\Net Framework Setup\\NDP\\v3.0" /v Version /t REG_SZ /d "3.0" /f
