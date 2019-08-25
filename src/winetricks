@@ -8584,15 +8584,13 @@ load_dotnet46()
         w_warn "If you see heap timeouts like: 'err:ntdll:RtlpWaitForCriticalSection section 0x110060 \"heap.c: main process heap section\" wait timed out in thread 0064, blocked by 0000, retrying (60 sec)', try the patch from https://bugs.winehq.org/show_bug.cgi?id=42470"
     fi
 
-    if w_workaround_wine_bug 38959 ; then
-        echo "This installer will fail unless run in quiet mode."
-        echo "See: https://bugs.winehq.org/show_bug.cgi?id=38959"
-
+    if w_workaround_wine_bug 38959 "This installer will fail unless run in quiet mode. See: https://bugs.winehq.org/show_bug.cgi?id=38959" ,3.6; then
         WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" /q /c:"install.exe /q"
-        # Once bug is fixed, use:
-        #WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
-        status=$?
+    else
+        WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
     fi
+
+    status=$?
 
     case $status in
         0) ;;
