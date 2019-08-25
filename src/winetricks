@@ -21125,8 +21125,14 @@ w_metadata remove_mono settings \
 
 load_remove_mono()
 {
-    # wine-4.6 comes with two installers, removing "Wine Mono Runtime" will also remove "Wine Mono Windows Support"
-    mono_uuid="$("${WINE_ARCH}" uninstaller --list | grep 'Wine Mono' | grep -v 'Wine Mono Windows Support' | cut -f1 -d\|)"
+    # Wine before 4.6 installs 'Wine Mono'
+    # Beginning in 4.6, if using a shared install (i.e., a distro mono package or a tarball manually
+    # extracted to /usr/share/wine/mono, or equivalent), only 'Wine Mono Windows Support' will be installed.
+    # If using the old .msi installer, *both* tarballs are installed.
+    #
+    # So, we uninstall anything that has 'Wine Mono' in the name to handle both cases.
+    # If wine uninstaller can't find the application it will return 0 anyway.
+    mono_uuid="$("${WINE_ARCH}" uninstaller --list | grep 'Wine Mono' | cut -f1 -d\|)"
     if test "$mono_uuid"; then
         for uuid in $mono_uuid;
 	    do "${WINE_ARCH}" uninstaller --remove "$uuid"
