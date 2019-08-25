@@ -492,9 +492,10 @@ cat > "$WINETRICKS_WORKDIR/cp_font_files.sh" <<_EOF_
     # FIXME: w_try() isn't available, need some better error handling:
     cp -f "\$_W_src_file" "$_W_dest_dir/\$_W_file_name"
 _EOF_
-    chmod +x "$WINETRICKS_WORKDIR/cp_font_files.sh"
 
-    find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern" -exec "$WINETRICKS_WORKDIR/cp_font_files.sh" {} \;
+    # Use -exec "sh .." to avoid issues with noexec
+    # Gross quoting is to avoid SC2156
+    find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern" -exec sh -c 'sh '"$WINETRICKS_WORKDIR/cp_font_files.sh"' "$1"' _ {} \;
 
     # Wait for Wine to add the new font to the registry under HKCU\Software\Wine\Fonts\Cache
     w_wineserver -w
@@ -8199,6 +8200,10 @@ load_dotnet30sp1()
     w_call dotnet20sp1
     w_wineserver -w
 
+    if w_workaround_wine_bug 47436 "Installing native prntvpt" 4.11, ; then
+        w_call prntvpt
+    fi
+
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     "$WINE" reg add "HKLM\\Software\\Microsoft\\Net Framework Setup\\NDP\\v3.0" /v Version /t REG_SZ /d "3.0" /f
@@ -10469,6 +10474,32 @@ load_pngfilt()
     helper_winxpsp3 i386/pngfilt.dl_
     w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/pngfilt.dl_
     w_try_regsvr pngfilt.dll
+}
+
+#----------------------------------------------------------------
+
+w_metadata prntvpt dlls \
+    title="prntvpt.dll" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/prntvpt.dll"
+
+load_prntvpt()
+{
+
+    helper_win7sp1 x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll
+    w_try cp "$W_TMP/x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll" "$W_SYSTEM32_DLLS/prntvpt.dll"
+
+    w_override_dlls native,builtin prntvpt
+    w_try_regsvr prntvpt.dll
+
+    if [ "$W_ARCH" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_7180ae1eb5ce8062/prntvpt.dll
+        w_try cp "$W_TMP/x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll" "$W_SYSTEM64_DLLS/prntvpt.dll"
+        w_try_regsvr64 prntvpt.dll
+    fi
 }
 
 #----------------------------------------------------------------
