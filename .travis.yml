@@ -69,10 +69,10 @@ before_install:
 # Linux: currently can't get 1.8.x / 1.9.x installed :/
 # OS X: 38 minutes
 
-# shell-checks is quick and works, no display or compiles needed
-
 script:
+    # shell-checks is quick and works, no display or compiles needed
     - time sh ./tests/shell-checks
+
     # Also check for trailing whitespace. Not doing in shell-checks because it depends on a clean tree (uses git diff):
     - if [ "$TRAVIS_OS_NAME" = "linux" ]; then time sh ./tests/whitespace-check; fi
 
