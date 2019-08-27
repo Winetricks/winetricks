@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# Tests for --self-update functionality
+#
+# FIXME: add tests for sudo, rollback, etc.
+#
+# Copyright (C) 2019 Austin English
+#
+# This software comes with ABSOLUTELY NO WARRANTY.
+#
+# This is free software, placed under the terms of the GNU Lesser
+# Public License version 2.1 (or later), as published by the Free
+# Software Foundation. Please see the file COPYING for details.
+
+set -e
+set -x
+
+tmpdir="$(mktemp -d)"
+wt="${tmpdir}/winetricks"
+
+git show "HEAD^1":src/winetricks > "${tmpdir}/winetricks"
+
+# Make sure the update does something:
+current_wt_version="$(sh "${wt}" --version)"
+
+sh "${wt}" --self-update
+
+new_wt_version="$(sh "${wt}" --version)"
+
+# Did the update work?
+if [ "${current_wt_version}" = "${new_wt_version}" ]; then
+    echo "--self-update failed, version info is the same"
+    exit 1
+else
+    echo "--self-update returned success!"
+    echo "before: ${current_wt_version}"
+    echo "after:  ${new_wt_version}"
+fi

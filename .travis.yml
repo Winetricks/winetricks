@@ -76,6 +76,9 @@ script:
     # Also check for trailing whitespace. Not doing in shell-checks because it depends on a clean tree (uses git diff):
     - if [ "$TRAVIS_OS_NAME" = "linux" ]; then time sh ./tests/whitespace-check; fi
 
+    # Keep updates working
+    - time sh ./tests/self-update-test
+
 # OS X doesn't allow writing to /usr/bin, skip non-PREFIX make install test there
 install:
     - if [[ "$TRAVIS_OS_NAME" != "osx" ]] ; then time sudo make install ; fi
