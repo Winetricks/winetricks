@@ -18,7 +18,10 @@ set -x
 tmpdir="$(mktemp -d)"
 wt="${tmpdir}/winetricks"
 
-git show "HEAD^1":src/winetricks > "${tmpdir}/winetricks"
+# Tried getting an old version via git, but that wasn't reliable.
+# Instead we're using a hardcoded old version. It shouldn't matter
+# which version is used unless an API change is made.
+curl --output "${wt}" https://raw.githubusercontent.com/Winetricks/winetricks/20190310/src/winetricks
 
 # Make sure the update does something:
 current_wt_version="$(sh "${wt}" --version)"
