@@ -8250,6 +8250,8 @@ load_dotnet30sp1()
     "$WINE" reg add "HKLM\\Software\\Microsoft\\Net Framework Setup\\NDP\\v3.0" /v Version /t REG_SZ /d "3.0" /f
     "$WINE" reg add "HKLM\\Software\\Microsoft-\\Net Framework Setup\\NDP\\v3.0" /v SP /t REG_DWORD /d 0001 /f
 
+    w_set_winver winxp
+
     w_try "$WINE" msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_UNATTENDED_SLASH_QB}
     "$WINE" sc delete FontCache3.0.0.0
 
@@ -8262,6 +8264,8 @@ load_dotnet30sp1()
         194) echo "exit status $status - normal, user selected 'restart later'" ;;
         *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
     esac
+
+    w_unset_winver
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
