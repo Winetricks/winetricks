@@ -9825,6 +9825,8 @@ load_ie8_kb2936068()
         quiet=""
     fi
 
+    w_set_winver winxp
+
     w_try_cd "$W_CACHE/$W_PACKAGE"
     "$WINE" IE8-WindowsXP-KB2936068-x86-ENU.exe $quiet
     status=$?
@@ -9832,6 +9834,8 @@ load_ie8_kb2936068()
         0|194) ;;
         *) w_die "$W_PACKAGE installation failed"
     esac
+
+    w_unset_winver
 }
 
 #----------------------------------------------------------------
