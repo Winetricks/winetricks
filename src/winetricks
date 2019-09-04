@@ -14358,14 +14358,14 @@ load_nook()
 w_metadata npp apps \
     title="Notepad++" \
     publisher="Don Ho" \
-    year="2015" \
+    year="2003" \
     media="download" \
-    file1="npp.6.7.9.2.Installer.exe" \
+    file1="npp.7.7.1.Installer.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Notepad++/notepad++.exe"
 
 load_npp()
 {
-    w_download https://notepad-plus-plus.org/repository/6.x/6.7.9.2/npp.6.7.9.2.Installer.exe cecc981d56d759233b804fa77e70ed62e411aaee58dcb1e53b91909c99d29096
+    w_download https://notepad-plus-plus.org/repository/7.x/7.7.1/npp.7.7.1.Installer.exe 6787c524b0ac30a698237ffb035f932d7132343671b8fe8f0388ed380d19a51c
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "${file1}" $W_UNATTENDED_SLASH_S
 }
