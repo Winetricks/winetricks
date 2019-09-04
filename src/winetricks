@@ -14913,6 +14913,24 @@ load_qqintl()
 
 #----------------------------------------------------------------
 
+w_metadata reshacker apps \
+    title="Resource Hacker" \
+    publisher="Angus Johnson" \
+    year="2009" \
+    media="download" \
+    file1="reshacker_setup.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Resource Hacker/ResourceHacker.exe" \
+    homepage="http://www.angusj.com/resourcehacker"
+
+load_reshacker()
+{
+    w_download http://www.angusj.com/resourcehacker/reshacker_setup.exe 46431ddf68fd664b0f58dfb1625a52936af3ba48ee340cc05d89346024dd6601
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try $WINE $file1 ${W_OPT_UNATTENDED:+ /S}
+}
+
+#----------------------------------------------------------------
+
 w_metadata safari apps \
     title="Safari" \
     publisher="Apple" \
