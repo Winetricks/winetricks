@@ -14693,7 +14693,7 @@ w_metadata protectionid apps \
 
 load_protectionid()
 {
-    w_download_manual "https://pid.gamecopyworld.com/" ProtectionId.685.December.2016.rar 27a84d740c9fb96cc866438a2b5cd4afc350affc8b7a0122c28c651af3559aea
+    w_download "https://web.archive.org/web/20181209123344/https://pid.wiretarget.com/?f=ProtectionId.685.December.2016.rar" 27a84d740c9fb96cc866438a2b5cd4afc350affc8b7a0122c28c651af3559aea ProtectionId.685.December.2016.rar
     w_try_cd "$W_SYSTEM32_DLLS"
     w_try_unrar "${W_CACHE}/${W_PACKAGE}/${file1}"
 
