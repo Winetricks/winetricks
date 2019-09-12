@@ -8722,7 +8722,7 @@ load_dotnet471()
     w_package_warn_win64
 
     # https://www.microsoft.com/en-US/download/details.aspx?id=56116
-    w_download http://download.microsoft.com/download/9/E/6/9E63300C-0941-4B45-A0EC-0008F96DD480/NDP471-KB4033342-x86-x64-AllOS-ENU.exe 63dc850df091f3f137b5d4392f47917f847f8926dc8af1da9bfba6422e495805
+    w_download https://download.microsoft.com/download/9/E/6/9E63300C-0941-4B45-A0EC-0008F96DD480/NDP471-KB4033342-x86-x64-AllOS-ENU.exe 63dc850df091f3f137b5d4392f47917f847f8926dc8af1da9bfba6422e495805
     unattended_args="/sfxlang:1027 /q /norestart"
 
     w_call remove_mono
@@ -14065,7 +14065,7 @@ w_metadata kde apps \
 
 load_kde()
 {
-    w_download http://mirrors.mit.edu/kde/stable/kdewin/installer/kdewin-installer-gui-1.0.0.exe 6bc5e0cc9e3418c08b6545300f68de0652ac297cbcdc81fd0ebe04f5934006f5
+    w_download https://mirrors.mit.edu/kde/stable/kdewin/installer/kdewin-installer-gui-1.0.0.exe 6bc5e0cc9e3418c08b6545300f68de0652ac297cbcdc81fd0ebe04f5934006f5
     mkdir -p "$W_PROGRAMS_UNIX/kde"
     w_try cp "$W_CACHE/kde/${file1}" "$W_PROGRAMS_UNIX/kde"
     w_try_cd "$W_PROGRAMS_UNIX/kde"
@@ -14899,7 +14899,7 @@ w_metadata qqintl apps \
     media="download" \
     file1="QQIntl2.11.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQIntl/Bin/QQ.exe" \
-    homepage="http://www.imqq.com" \
+    homepage="https://www.imqq.com/" \
     unattended="no"
 
 load_qqintl()
@@ -15445,7 +15445,7 @@ load_wmp9()
     w_set_winver win2k
 
     # See also https://support.microsoft.com/en-us/help/18612/windows-media-player
-    w_download https://web.archive.org/web/20180404022333if_/http://download.microsoft.com/download/1/b/c/1bc0b1a3-c839-4b36-8f3c-19847ba09299/MPSetup.exe 678c102847c18a92abf13c3fae404c3473a0770c871a046b45efe623c9938fc0
+    w_download https://web.archive.org/web/20180404022333if_/download.microsoft.com/download/1/b/c/1bc0b1a3-c839-4b36-8f3c-19847ba09299/MPSetup.exe 678c102847c18a92abf13c3fae404c3473a0770c871a046b45efe623c9938fc0
 
     # remove builtin placeholders to allow update
     rm -f "$W_SYSTEM32_DLLS"/wmvcore.dll "$W_SYSTEM32_DLLS"/wmp.dll
