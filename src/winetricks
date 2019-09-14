@@ -15058,16 +15058,31 @@ w_metadata uplay apps \
     year="2013" \
     media="download" \
     file1="UplayInstaller.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Ubisoft Game Launcher/Uplay.exe"
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Ubisoft/Ubisoft Game Launcher/Uplay.exe"
 
 load_uplay()
 {
     # Changes too frequently, don't check anymore
-    w_download https://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe
-    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_download 'https://ubistatic3-a.akamaihd.net/orbit/releases/winxp/installer/UplayInstaller.exe'
+    # New installer has issues with rendering on wine <4.15
+    #w_download https://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe
+
+    # Get workarounds
+    w_call 'corefonts'
+    # Required for client to open #1249 (winetricks)
+    w_set_app_winver 'upc.exe' 'winvista'
+    w_set_app_winver 'UbisoftGameLauncher.exe' 'winvista'
+    w_set_app_winver 'UbisoftGameLauncher64.exe' 'winvista'
+    w_set_app_winver 'Uplay.exe' 'winvista'
+    w_set_app_winver 'UplayService.exe' 'winvista'
+    w_set_app_winver 'UplayWebCore.exe' 'winvista'
+    w_set_app_winver 'UWebCore.exe' 'winvista'
+    w_set_app_winver 'Ubisoft Game Launcupc.exe' 'winvista'
+
+    w_warn "Launcher will output critical error which is non-fatal, press \"OK\" and ignore it."
 
     # NSIS installer
-    w_try "$WINE" UplayInstaller.exe ${W_OPT_UNATTENDED:+ /S}
+    w_try "${WINE}" "${W_CACHE}/uplay/UplayInstaller.exe" "${W_OPT_UNATTENDED:+ /S}"
 }
 
 #----------------------------------------------------------------
