@@ -20179,6 +20179,49 @@ load_wog()
 }
 
 #----------------------------------------------------------------
+# Origin Games
+#----------------------------------------------------------------
+
+# https://appdb.winehq.org/appview.php?iVersionId=4242
+
+# Help-wanted: Dunno how to make metadata for this
+w_metadata cnc_redalert2yr_origin games \
+    title="Command & Conquer Red Alert 2 and Yuri\'s Revenge" \
+    publisher="EA Games" \
+    year="2001" \
+    media="download" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/RA2Launcher.exe"
+
+load_cnc_redalert2yr_origin()
+{
+    w_origin_install_game "OFB-EAST:52019"
+
+    # WINSOCK.dll
+    ## Sanity for directory in W_CACHE
+    [ ! -e "${W_CACHE}/cnc_redalert2yr_origin" ] && (mkdir "${W_CACHE}/cnc_redalert2yr_origin" || w_die "Unable to make a new directory in \'${W_CACHE}/cnc_redalert2yr_origin\'")
+
+    ## Fetch
+    if [ ! -e '/tmp/winetricks/ts_ra2_lanpatch_1_00 UDP no IPX win 7.zip' ]; then
+      wget 'https://www.sevenforums.com/attachments/gaming/88684d1280671096-command-conquer-red-alert-2-yuris-revenge-lan-ts_ra2_lanpatch_1_00-udp-no-ipx-win-7.zip' -O '/tmp/winetricks/ts_ra2_lanpatch_1_00 UDP no IPX win 7.zip' || w_die "Unable to download required libraries"
+    fi
+
+    ## Unzip to W_CACHE
+    [ ! -e "${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll" ] && (unzip '/tmp/winetricks/ts_ra2_lanpatch_1_00 UDP no IPX win 7.zip' -d "${W_CACHE}/cnc_redalert2yr_origin/" || w_die "Unable to extract required files in \'${W_CACHE}/cnc_redalert2yr_origin/\' from '/tmp/winetricks/ts_ra2_lanpatch_1_00 UDP no IPX win 7.zip'")
+
+    ## Export of library
+    if [ -d "${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/" ] && [ -e "${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll" ]; then
+      cp "${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll" "${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/" || w_die "Unable to copy \'${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll\' to \'${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/\' to use required library for game"
+    elif [ ! -d "${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/" ]; then
+      w_die "Unable to export required libraries, because game is not installed"
+    elif [ -e "${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll" ]; then
+      w_warn "wsock.dll is alredy extracted, skipping..."
+    fi
+
+    # winetricks/1319#issuecomment-531471436
+    w_warn 'IPX network protocol is now disabled'
+}
+
+#----------------------------------------------------------------
 # Steam Games
 #----------------------------------------------------------------
 
