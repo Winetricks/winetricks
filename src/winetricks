@@ -6694,10 +6694,9 @@ helper_dxvk_d9vk()
     _W_dll_overrides="$(echo "${4}" | sed 's/,/ /g')"
 
     _W_supported_overrides="dxgi d3d9 d3d10 d3d11"
-    _W_valid_overrides_regex="$(echo " ${_W_supported_overrides}" | sed 's/ /\\|/g')"
-    _W_invalid_overrides="$(echo "${_W_dll_overrides}" | sed "s/ ${_W_valid_overrides_regex}//g")"
+    _W_invalid_overrides="$(echo "${_W_dll_overrides}" | awk -vvalid_overrides_regex="$(echo "${_W_supported_overrides}" | sed 's/ /|/g')" '{ gsub(valid_overrides_regex,""); sub("[ ]*",""); print $0 }')"
     if [ "${_W_invalid_overrides}" != "" ]; then
-        w_die "parameter (4) unsupported dll override: ${_W_invalid_overrides} ; supported dll overrides: ${_W_supported_overrides}"
+        w_die "parameter (4) unsupported dll override: '${_W_invalid_overrides}' ; supported dll overrides: ${_W_supported_overrides}"
     fi
 
     _W_dll_overrides="$(echo "${_W_dll_overrides}" | sed 's/d3d10/& d3d10_1 d3d10core/')"
@@ -6756,7 +6755,7 @@ helper_dxvk_d9vk()
 
     unset _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
         _W_package_archive _W_package_dir _W_package_version \
-        _W_repository _W_supported_overrides _W_valid_overrides_regex
+        _W_repository _W_supported_overrides
 }
 
 
