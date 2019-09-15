@@ -1500,6 +1500,33 @@ w_steam_getid()
     fi
 }
 
+# Usage: w_origin_install_game [prefix:ID]
+w_origin_install_game()
+{
+    # Install the origin client
+    ## TODO: Triggers origin install even when origin is installed
+    w_call 'origin'
+
+    # STUB: This doesn't work because reasons (launches wrong titles)
+    #"$WINE" 'start' "origin://launchgame/${1}&autoDownload=1"
+
+    # Check for login since origin won't launch expected title if end-user is not logged
+    ## reverse-engineered stages: winetricks/1320#issuecomment-531577914
+    if [ ! -d "${WINEPREFIX}/drive_c/users/${USER}/Application Data/Origin/CommonTitles" ]; then
+      w_warn "Please log-in origin to continue.."
+      w_warn "HELP_WANTED: Expected to not hang untill wineserver finishes so that we can push Action below, HOTFIX: Kill wineserver once logged in"
+      w_try "$WINE" 'start' 'origin://kreyren'
+
+      while [ ! -e "${WINEPREFIX}/drive_c/users/${USER}/Application Data/Origin/CatalogCache" ]; do
+        # Wait untill end-user is logged in
+        sleep 5
+      done
+    fi
+
+    # Action to download and launch
+    w_try "$WINE" 'start' "origin2://game/launch?offerIds=${1}&autoDownload=1"
+}
+
 # Usage:
 # w_steam_install_game steamidnum windowtitle
 w_steam_install_game()
