@@ -15102,7 +15102,6 @@ load_origin() {
     w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d10core'
     w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d11'
     w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'dxgi'
-
   fi
 
   # Logic for installer
@@ -15110,22 +15109,6 @@ load_origin() {
 
     # legacy download
     w_download 'https://origin-a.akamaihd.net/Origin-Client-Download/origin/legacy/OriginThinSetup.exe' '' 'OriginThinSetupLegacy.exe'
-
-    # Set environment on winxp for required apps
-    ## Using winvista is mandatory https://github.com/Winetricks/winetricks/pull/1318#issuecomment-531562386
-    if [ "$(uname)" = 'FreeBSD' ]; then w_set_app_winver 'Origin.exe' 'winxp'; else w_set_app_winver 'Origin.exe' 'winvista' ; fi
-    w_set_app_winver 'OriginClientService.exe' 'winxp'
-    w_set_app_winver 'Setup.exe' 'winvista'
-    w_set_app_winver 'UpdateTool.exe' 'winvista'
-    w_set_app_winver 'OriginUninstall.exe' 'winvista'
-    w_set_app_winver 'OriginCrashReporter.exe' 'winvista'
-    w_set_app_winver 'OriginClient.exe' 'winvista'
-    w_set_app_winver 'IGOProxy.exe' 'winvista'
-    w_set_app_winver 'IGOProxy64.exe' 'winvista'
-    w_set_app_winver 'OriginFR.exe' 'winvista'
-    w_set_app_winver 'GetGameToken32.exe' 'winvista'
-    w_set_app_winver 'GetGameToken64.exe' 'winvista'
-    w_set_app_winver 'EAProxyInstaller.exe' 'winvista'
 
     # winxp is required for the installation
     # https://bugs.winehq.org/show_bug.cgi?id=47772
