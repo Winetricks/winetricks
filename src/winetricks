@@ -15133,7 +15133,7 @@ load_origin() {
     w_warn "You should *uncheck* sharing hardware info"
 
     # Installer
-    w_try "$WINE" "${W_CACHE}/origin/OriginThinSetupLegacy.exe"
+    WINEDEBUG='fixme-all' w_try "$WINE" "${W_CACHE}/origin/OriginThinSetupLegacy.exe"
 
     # Switch back to default environment
     w_unset_winver
@@ -15145,7 +15145,7 @@ load_origin() {
 
     w_warn "You should *uncheck* sharing hardware info"
 
-    w_try "$WINE" "${W_CACHE}/origin/OriginThinSetup.exe"
+    WINEDEBUG='fixme-all' w_try "$WINE" "${W_CACHE}/origin/OriginThinSetup.exe"
   fi
 
   # Wait untill origin is installed
