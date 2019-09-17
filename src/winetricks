@@ -15073,11 +15073,13 @@ load_origin() {
 
     # Installer fails without overrides to OriginClientService assuming missing function in WINE
     # TODO: File a winebug
-    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10'
-    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10_1'
-    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10core'
-    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d11'
-    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'dxgi'
+    if [ -n "$WINETRICKS_USE_LEGACY_ORIGIN" ]; then
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10'
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10_1'
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10core'
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d11'
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'dxgi'
+    fi
 
   elif [ -z "$WINETRICKS_ORIGIN_USE_DXVK" ]; then
     w_info "DXVK was disabled for origin client, to enable set WINETRICKS_ORIGIN_USE_DXVK variable to non-zero"
@@ -15105,6 +15107,7 @@ load_origin() {
 
   # Logic for installer
   if [ -n "$WINETRICKS_USE_LEGACY_ORIGIN" ]; then
+
     # legacy download
     w_download 'https://origin-a.akamaihd.net/Origin-Client-Download/origin/legacy/OriginThinSetup.exe' '' 'OriginThinSetupLegacy.exe'
 
@@ -15137,6 +15140,7 @@ load_origin() {
     w_unset_winver
 
   elif [ -z "$WINETRICKS_USE_LEGACY_ORIGIN" ]; then
+
     w_warn "winbind is required for this wineapp to work"
 
     w_download 'https://origin-a.akamaihd.net/Origin-Client-Download/origin/live/OriginThinSetup.exe'
