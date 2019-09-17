@@ -15067,8 +15067,6 @@ load_origin() {
   ## Since this supports multiple versions of origin we are unable to use winetricks's function
   [ -e "${WINEPREFIX}/drive_c/Program Files (x86)/Origin/Origin.exe" ] && return 0
 
-  e_info "Disabling fixme is recommended"
-
   # Logic for DXVK
   if [ -n "$WINETRICKS_ORIGIN_USE_DXVK" ]; then
     w_call 'dxvk'
