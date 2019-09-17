@@ -15072,7 +15072,7 @@ load_origin() {
     w_call 'dxvk'
 
     # Installer fails without overrides to OriginClientService assuming missing function in WINE
-    # TODO: File a winebug
+    # https://bugs.winehq.org/show_bug.cgi?id=47773
     if [ -n "$WINETRICKS_USE_LEGACY_ORIGIN" ]; then
       w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10'
       w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10_1'
