@@ -15070,7 +15070,7 @@ load_origin() {
   # Logic for DXVK
   if [ -n "$WINETRICKS_ORIGIN_USE_DXVK" ]; then
 
-    # https://github.com/Winetricks/winetricks/pull/1318#issuecomment-532252570
+    # https://github.com/KhronosGroup/MoltenVK/issues/203
     [ "$(uname)" = 'Darwin' ] && w_die "DXVK is not supported on MacOS due to the missing extension on MoltenVK"
 
     w_call 'dxvk'
