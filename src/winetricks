@@ -15051,6 +15051,118 @@ load_steam()
 
 #----------------------------------------------------------------
 
+w_metadata origin apps \
+    title="Origin" \
+    publisher="Electronic Arts" \
+    year="2011" \
+    media="download" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Origin/Origin.exe"
+
+load_origin() {
+  # NOTICE: Qt5Svg.dll is required for C:\\Program Files (x86)\\Origin\\imageformats\\qsvg.dll
+  # NOTICE: Both legacy and non-legacy are using dx11 and dxgi libs, but doesn't depend on them
+  # NOTICE: CTRL+V doesn't work in non-legacy
+
+  # Sanitization for client already installed
+  ## Since this supports multiple versions of origin we are unable to use winetricks's function
+  [ -e "${WINEPREFIX}/drive_c/Program Files (x86)/Origin/Origin.exe" ] && return 0
+
+  e_info "Disabling fixme is recommended"
+
+  # Logic for DXVK
+  if [ -n "$WINETRICKS_ORIGIN_USE_DXVK" ]; then
+    w_call 'dxvk'
+
+    # Installer fails without overrides to OriginClientService assuming missing function in WINE
+    # TODO: File a winebug
+    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10'
+    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10_1'
+    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10core'
+    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d11'
+    w_override_app_dlls 'OriginClientService.exe' 'disabled' 'dxgi'
+
+  elif [ -z "$WINETRICKS_ORIGIN_USE_DXVK" ]; then
+    w_info "DXVK was disabled for origin client, to enable set WINETRICKS_ORIGIN_USE_DXVK variable to non-zero"
+
+    # Disable dxvk libraries if variable above is not set
+    w_override_app_dlls 'Origin.exe' 'disabled' 'd3d10'
+    w_override_app_dlls 'Origin.exe' 'disabled' 'd3d10_1'
+    w_override_app_dlls 'Origin.exe' 'disabled' 'd3d10core'
+    w_override_app_dlls 'Origin.exe' 'disabled' 'd3d11'
+    w_override_app_dlls 'Origin.exe' 'disabled' 'dxgi'
+
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'd3d10'
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'd3d10_1'
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'd3d10core'
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'd3d11'
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'dxgi'
+
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d10'
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d10_1'
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d10core'
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d11'
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'dxgi'
+
+  fi
+
+  # Logic for installer
+  if [ -n "$WINETRICKS_USE_LEGACY_ORIGIN" ]; then
+    # legacy download
+    w_download 'https://origin-a.akamaihd.net/Origin-Client-Download/origin/legacy/OriginThinSetup.exe' '' 'OriginThinSetupLegacy.exe'
+
+    # Set environment on winxp for required apps
+    ## Using winvista is mandatory https://github.com/Winetricks/winetricks/pull/1318#issuecomment-531562386
+    if [ "$(uname)" = 'FreeBSD' ]; then w_set_app_winver 'Origin.exe' 'winxp'; else w_set_app_winver 'Origin.exe' 'winvista' ; fi
+    w_set_app_winver 'OriginClientService.exe' 'winxp'
+    w_set_app_winver 'Setup.exe' 'winvista'
+    w_set_app_winver 'UpdateTool.exe' 'winvista'
+    w_set_app_winver 'OriginUninstall.exe' 'winvista'
+    w_set_app_winver 'OriginCrashReporter.exe' 'winvista'
+    w_set_app_winver 'OriginClient.exe' 'winvista'
+    w_set_app_winver 'IGOProxy.exe' 'winvista'
+    w_set_app_winver 'IGOProxy64.exe' 'winvista'
+    w_set_app_winver 'OriginFR.exe' 'winvista'
+    w_set_app_winver 'GetGameToken32.exe' 'winvista'
+    w_set_app_winver 'GetGameToken64.exe' 'winvista'
+    w_set_app_winver 'EAProxyInstaller.exe' 'winvista'
+
+    # winxp is required for the installation
+    # https://bugs.winehq.org/show_bug.cgi?id=47772
+    w_set_winver 'winxp'
+
+    w_warn "You should *uncheck* sharing hardware info"
+
+    # Installer
+    w_try "$WINE" "${W_CACHE}/origin/OriginThinSetupLegacy.exe"
+
+    # Switch back to default environment
+    w_unset_winver
+
+  elif [ -z "$WINETRICKS_USE_LEGACY_ORIGIN" ]; then
+    w_warn "winbind is required for this wineapp to work"
+
+    w_download 'https://origin-a.akamaihd.net/Origin-Client-Download/origin/live/OriginThinSetup.exe'
+
+    w_warn "You should *uncheck* sharing hardware info"
+
+    w_try "$WINE" "${W_CACHE}/origin/OriginThinSetup.exe"
+  fi
+
+  # Wait untill origin is installed
+  ## Reverse-engineered stages https://github.com/Winetricks/winetricks/pull/1320#issuecomment-531577914
+  while [ ! -e "${WINEPREFIX}/drive_c/Program Files (x86)/Origin/3RDPARTYLICENSES.HTML" ]; do
+    sleep 5
+  done
+
+  # Fixing directory for game download https://github.com/Winetricks/winetricks/pull/1318#issuecomment-531460777
+  [ -n "$WINETRICKS_USE_LEGACY_ORIGIN" ] && (if grep -qF "DownloadInPlaceDir" "${WINEPREFIX}/drive_c/users/${USER}/Application Data/Origin/local.xml.old" 2>/dev/null; then
+    sed -i 's@<Setting type="10" key="DownloadInPlaceDir" value=.*@<Setting type="10" key="DownloadInPlaceDir" value="C:\\Program Files (x86)\\Origin Games\\"/>@' "${WINEPREFIX}/drive_c/users/${USER}/Application Data/Origin/local.xml.old" || w_warn 'Workaround for Download path was not applied, because expected setting is not used.'
+  else true ; fi)
+
+}
+
+#----------------------------------------------------------------
+
 w_metadata uplay apps \
     title="Uplay" \
     publisher="Ubisoft" \
