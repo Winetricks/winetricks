@@ -20262,6 +20262,22 @@ load_civ5_demo_steam()
 
 #----------------------------------------------------------------
 
+w_metadata mafia2_steam games \
+    title="Mafia II (Steam, non-free)" \
+    publisher="2K Games" \
+    year="2009" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/Mafia II/launcher.exe"
+
+load_mafia2_steam()
+{
+    w_call 'vcrun2012'
+    w_call 'dxvk'
+    w_steam_install_game 50130 "Mafia II"
+}
+
+#----------------------------------------------------------------
+
 w_metadata ruse_demo_steam games \
     title="Ruse Demo (Steam)" \
     publisher="Ubisoft" \
