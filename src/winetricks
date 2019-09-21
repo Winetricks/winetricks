@@ -2399,7 +2399,7 @@ _EOF_
             csdversion_hex=dword:00000200
             "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
             ;;
-        win7)
+        win7|default)
             csdversion="Service Pack 1"
             currentbuildnumber="7601"
             currentversion="6.1"
@@ -2460,8 +2460,8 @@ _EOF_
 
 w_unset_winver()
 {
-    # FIXME: update when wine bumps default version
-    w_set_winver win7
+  w_warn "w_unset_winver() is deprecated, use \'w_set_winver default\' instead"
+  w_set_winver default
 }
 
 # Present app $1 with the Windows personality $2
@@ -7933,7 +7933,7 @@ load_dotnet20()
             *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
         esac
 
-        w_unset_winver
+        w_set_winver 'default'
 
         # We can't stop installing dotnet20 in win2k mode until Wine supports
         # reparse/junction points
@@ -8085,7 +8085,7 @@ load_dotnet20sp1()
 
     fi
 
-    w_unset_winver
+    w_set_winver 'default'
 
     W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 
@@ -8150,7 +8150,7 @@ load_dotnet20sp2()
         rm -f "$W_SYSTEM32_DLLS"/msvc?80.dll
     fi
 
-    w_unset_winver
+    w_set_winver 'default'
 
     W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
@@ -8284,7 +8284,7 @@ load_dotnet30sp1()
         *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
     esac
 
-    w_unset_winver
+    w_set_winver 'default'
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
@@ -8442,7 +8442,7 @@ load_dotnet40()
 
     W_NGEN_CMD="$WINE $WINEPREFIX/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/ngen.exe executequeueditems"
 
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 verify_dotnet40()
@@ -9856,7 +9856,7 @@ load_ie8_kb2936068()
         *) w_die "$W_PACKAGE installation failed"
     esac
 
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
@@ -9907,7 +9907,7 @@ load_mdac27()
     w_set_winver nt40
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "$WINE" "${file1}" ${W_OPT_UNATTENDED:+ /q /C:"setup $W_UNATTENDED_SLASH_QNT"}
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
@@ -9933,7 +9933,7 @@ load_mdac28()
     w_set_winver nt40
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
     w_try "$WINE" mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup $W_UNATTENDED_SLASH_QNT"}
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
@@ -11027,7 +11027,7 @@ load_speechsdk()
 
     w_override_dlls native sapi
 
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
@@ -11893,7 +11893,7 @@ load_windowscodecs()
         w_try "$WINE" "$EXE" /passive
     fi
 
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
@@ -11990,7 +11990,7 @@ load_wmi()
     w_try "$WINE" wmi9x.exe $W_UNATTENDED_SLASH_S
     w_killall "WinMgmt.exe"
 
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
@@ -13809,7 +13809,7 @@ load_ie6()
     done
 
     # Set windows version back to user's default. Leave at win2k for better rendering (is there a bug for that?)
-    w_unset_winver
+    w_set_winver 'default'
 
     # the ie6 we use these days lacks pngfilt, so grab that
     w_call pngfilt
@@ -14047,7 +14047,7 @@ _EOF_
             ;;
     esac
 
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
@@ -15462,7 +15462,7 @@ load_wmp9()
 
     load_wm9codecs
 
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
@@ -15506,7 +15506,7 @@ load_wmp10()
 
     load_wm9codecs
 
-    w_unset_winver
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
