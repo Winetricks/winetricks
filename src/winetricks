@@ -14073,29 +14073,6 @@ _EOF_
 
 #----------------------------------------------------------------
 
-w_metadata kde apps \
-    title="KDE on Windows" \
-    publisher="various" \
-    year="2013" \
-    media="download" \
-    file1="kdewin-installer-gui-1.0.0.exe" \
-    installed_exe1="$W_PROGRAMS_WIN/kde/etc/installer.ini" \
-    homepage="https://community.kde.org/Windows" \
-    unattended="no"
-
-load_kde()
-{
-    w_download https://mirrors.mit.edu/kde/stable/kdewin/installer/kdewin-installer-gui-1.0.0.exe 6bc5e0cc9e3418c08b6545300f68de0652ac297cbcdc81fd0ebe04f5934006f5
-    mkdir -p "$W_PROGRAMS_UNIX/kde"
-    w_try cp "$W_CACHE/kde/${file1}" "$W_PROGRAMS_UNIX/kde"
-    w_try_cd "$W_PROGRAMS_UNIX/kde"
-    # There's no unattended option, probably because there are so many choices,
-    # it's like Cygwin
-    w_try "$WINE" "${file1}"
-}
-
-#----------------------------------------------------------------
-
 w_metadata kindle apps \
     title="Amazon Kindle" \
     publisher="Amazon" \
