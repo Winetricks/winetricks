@@ -20178,6 +20178,22 @@ load_wog()
 }
 
 #----------------------------------------------------------------
+# Uplay Games
+#----------------------------------------------------------------
+
+w_metadata tcscbl_uplay games \
+    title="Tom Clancy Splinter Cell: Blacklist (Uplay)" \
+    publisher="Ubisoft" \
+    year="2013" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/alien swarm/swarm.exe"
+
+load_tcscbl_uplay()
+{
+    w_uplay_install_game '91'
+}
+
+#----------------------------------------------------------------
 # Steam Games
 #----------------------------------------------------------------
 
