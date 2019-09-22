@@ -1500,6 +1500,14 @@ w_steam_getid()
     fi
 }
 
+# Usage: w_uplay_install_game [GAME_ID]
+## Relevant: https://github.com/Haoose/UPLAY_GAME_ID
+w_uplay_install_game()
+{
+    w_call 'uplay'
+    w_try "$WINE" 'start' "uplay://launch/$1"
+}
+
 # Usage:
 # w_steam_install_game steamidnum windowtitle
 w_steam_install_game()
