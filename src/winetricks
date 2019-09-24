@@ -18431,11 +18431,14 @@ load_leagueoflegends()
     # shellcheck disable=SC2154
     case "$1" in
       arch)
-        [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage'
+        # 24/09/2019: continous (sha256sum wine-staging-i386_lol-patched_x86_64-archlinux.AppImage) sha256sum 279e00ce270d4eac3a57a5441787dfd3c78ec26fedf5a9e2f29c5362f74aa75f
+        # 279e00ce270d4eac3a57a5441787dfd3c78ec26fedf5a9e2f29c5362f74aa75f  Downloads/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage
+        [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage' '279e00ce270d4eac3a57a5441787dfd3c78ec26fedf5a9e2f29c5362f74aa75f'
         export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage"
       ;;
       bionic) # Prefer bionic since that seems to be more reliable
-        [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-bionic.AppImage'
+        # 24/09/2019: continous (sha256sum wine-staging-i386_lol-patched_x86_64-bionic.AppImage) sha256sum 01bcd44d10ba275336953347baa9578daca5830644ac67b2ab73564a46c2d70c
+        [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-bionic.AppImage' '01bcd44d10ba275336953347baa9578daca5830644ac67b2ab73564a46c2d70c'
         export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
       ;;
       *) w_die "Function leagueoflegends_workaround_47198 was called, but nothing was parsed"
