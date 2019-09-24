@@ -18426,6 +18426,7 @@ load_leagueoflegends()
   leagueoflegends_workaround_47198()
   {
     w_info "Applying workaround to winebug 47198 using precompiled WINE binary by mmtrt, skip this by using WINETRICKS_BLACKLIST variable if needed"
+    
     w_info "You can overwrite 'leagueoflegends_workaround_47198' variable to use different precompiled wine"
     [ -z "$leagueoflegends_workaround_47198" ] && export leagueoflegends_workaround_47198="$1"
 
