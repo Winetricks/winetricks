@@ -18416,6 +18416,7 @@ load_leagueoflegends()
     done
 
     ## Actual fetch
+    ## TODO: Checksum https://boards.na.leagueoflegends.com/en/c/general-discussion/tZ4uPccJ-checksum-for-league-of-legends-installer
     [ ! -e "${W_CACHE}/leagueoflegends/League%20of%20Legends%20installer%20${leagueoflegends_region}.exe" ] && w_download "https://riotgamespatcher-a.akamaihd.net/releases/live/installer/deploy/League%20of%20Legends%20installer%20${leagueoflegends_region}.exe"
   }
 
@@ -18426,7 +18427,7 @@ load_leagueoflegends()
   leagueoflegends_workaround_47198()
   {
     w_info "Applying workaround to winebug 47198 using precompiled WINE binary by mmtrt, skip this by using WINETRICKS_BLACKLIST variable if needed"
-    
+
     w_info "You can overwrite 'leagueoflegends_workaround_47198' variable to use different precompiled wine"
     [ -z "$leagueoflegends_workaround_47198" ] && export leagueoflegends_workaround_47198="$1"
 
