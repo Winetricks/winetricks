@@ -2546,10 +2546,12 @@ w_wine_version_in()
 # the environment variable WINETRICKS_BLACKLIST to disable it.
 w_workaround_wine_bug()
 {
-    if test "$WINE" = ""; then
-        echo "No need to work around wine bug $1 on Windows"
+    case "$(uname -r)" in
+      *-Microsoft)
+        w_info "No need to work around wine bug $1 on Windows"
         return 1
-    fi
+    esac
+
     case "$2" in
         [0-9]*) w_die "bug: want message in w_workaround_wine_bug arg 2, got $2" ;;
         "") _W_msg="";;
