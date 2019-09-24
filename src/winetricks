@@ -18378,6 +18378,95 @@ load_lswcs()
 
 #----------------------------------------------------------------
 
+# https://appdb.winehq.org/objectManager.php?sClass=application&iId=10436
+
+w_metadata leagueoflegends games \
+    title='League of Legends' \
+    publisher='Riot Games, Inc.' \
+    year='2009' \
+    media='download' \
+    file1="${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe"
+
+load_leagueoflegends()
+{
+  # Fetch installer
+  leagueoflegends_fetch()
+  {
+    # Game has multiple regions and this logic allows end-user to choose it's preffered
+    ## TODO: Add Logic for region selection if $W_OPT_UNATTENDED is parsed
+    [ -n "$W_OPT_UNATTENDED" ] && [ -n "$leagueoflegends_region" ] && w_warn "hotfixed, using EUNE region for download" && export leagueoflegends_region="EUNE"
+
+    until case "$leagueoflegends_region" in ( EUNE | EUW | NA | BR | LAN | LAS | OCE | RU | JP | SEA ) :;; ( * ) ! :; esac; do
+      printf "%s\n" \
+        'Select your region for League Of Legends installer:' \
+        'EUNE  - Europe Nordic and East' \
+        'NA    - North America' \
+        'EUW   - Europe West' \
+        'BR    - Brazil' \
+        'AN    - Latin America North' \
+        'LAS   - Latin America South' \
+        'OCE   - Oceania' \
+        'RU    - Russia' \
+        'TR    - Turkey' \
+        'JP    - Japan' \
+        'SEA   - South East Asia' \
+        '' \
+        "Note that this can be overwritten by 'leagueoflegends_region' variable"
+      read -r leagueoflegends_region
+    done
+
+    ## Actual fetch
+    [ ! -e "${W_CACHE}/leagueoflegends/League%20of%20Legends%20installer%20${leagueoflegends_region}.exe" ] && w_download "https://riotgamespatcher-a.akamaihd.net/releases/live/installer/deploy/League%20of%20Legends%20installer%20${leagueoflegends_region}.exe"
+  }
+
+  # Workaround for pakman violation after champion select using WINE precompiled binary
+  # https://bugs.winehq.org/show_bug.cgi?id=47198
+  # TODO: Use AHK to install the game automatically
+  # TODO: Login using AHK
+  leagueoflegends_workaround_47198()
+  {
+    w_info "Applying workaround to winebug 47198 using precompiled WINE binary by mmtrt, skip this by using WINETRICKS_BLACKLIST variable if needed"
+
+    ## Logic for WINE binary executable
+    # shellcheck disable=SC2154
+    case "$1" in
+      arch)
+        [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage'
+        export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage"
+      ;;
+      bionic) # Prefer bionic since that seems to be more reliable
+        [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-bionic.AppImage'
+        export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
+      ;;
+      *) w_die "Function leagueoflegends_workaround_47198 was called, but nothing was parsed"
+      ;;
+    esac
+
+    # Sanity check for executable permissions
+    [ ! -x "$WINE" ] && chmod +x "$WINE"
+  }
+
+  # Game won't launch due https://bugs.winehq.org/show_bug.cgi?id=47198
+  if w_workaround_wine_bug 47198 "Using patched wine binary" ; then leagueoflegends_workaround_47198 bionic ; fi
+
+  # Install
+  if [ ! -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ]; then
+     leagueoflegends_fetch
+     (
+        [ -z "$WINEDEBUG" ] && export WINEDEBUG="fixme-all"
+        w_try "$WINE" "${W_CACHE}/leagueoflegends/League%20of%20Legends%20installer%20${leagueoflegends_region}.exe"
+     )
+     return 0
+
+  # Run if already installed
+  elif [ -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ]; then
+    w_info "League Of Legends is already installed in $WINEPREFIX, executing.."
+    w_try "$WINE" "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe"
+  fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata lemonysnicket games \
     title="Lemony Snicket: A Series of Unfortunate Events" \
     publisher="Activision" \
