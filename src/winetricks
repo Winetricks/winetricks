@@ -18426,14 +18426,20 @@ load_leagueoflegends()
   leagueoflegends_workaround_47198()
   {
     w_info "Applying workaround to winebug 47198 using precompiled WINE binary by mmtrt, skip this by using WINETRICKS_BLACKLIST variable if needed"
+    w_info "You can overwrite 'leagueoflegends_workaround_47198' variable to use different precompiled wine"
+    [ -z "$leagueoflegends_workaround_47198" ] && export leagueoflegends_workaround_47198="$1"
 
     ## Logic for WINE binary executable
     # shellcheck disable=SC2154
-    case "$1" in
+    case "$leagueoflegends_workaround_47198" in
       arch)
         # 24/09/2019: continous (sha256sum wine-staging-i386_lol-patched_x86_64-archlinux.AppImage) sha256sum 279e00ce270d4eac3a57a5441787dfd3c78ec26fedf5a9e2f29c5362f74aa75f
-        # 279e00ce270d4eac3a57a5441787dfd3c78ec26fedf5a9e2f29c5362f74aa75f  Downloads/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage
         [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage' '279e00ce270d4eac3a57a5441787dfd3c78ec26fedf5a9e2f29c5362f74aa75f'
+        export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage"
+      ;;
+      arch-zsync)
+        # 24/09/2019: continous (sha256sum wine-staging-i386_lol-patched_x86_64-archlinux.AppImage.zsync) sha256sum 8b74b6394e7db313375357c56195ba4680e47770d8253413eb641ff3db3cf6b9
+        [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage.zsync" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage.zsync' '8b74b6394e7db313375357c56195ba4680e47770d8253413eb641ff3db3cf6b9'
         export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage"
       ;;
       bionic) # Prefer bionic since that seems to be more reliable
@@ -18441,8 +18447,12 @@ load_leagueoflegends()
         [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-bionic.AppImage' '01bcd44d10ba275336953347baa9578daca5830644ac67b2ab73564a46c2d70c'
         export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
       ;;
-      *) w_die "Function leagueoflegends_workaround_47198 was called, but nothing was parsed"
+      bionic-zsync) # Prefer bionic since that seems to be more reliable
+        # 24/09/2019: continous (sha256sum wine-staging-i386_lol-patched_x86_64-bionic.AppImage.zsync) sha256sum 8b74b6394e7db313375357c56195ba4680e47770d8253413eb641ff3db3cf6b9
+        [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage.zsync" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-bionic.AppImage.zsync' '8b74b6394e7db313375357c56195ba4680e47770d8253413eb641ff3db3cf6b9'
+        export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
       ;;
+      *) w_die "Unexpected argument '$leagueoflegends_workaround_47198' in function 'leagueoflegends_workaround_47198'"
     esac
 
     # Sanity check for executable permissions
