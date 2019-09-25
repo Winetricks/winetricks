@@ -18397,7 +18397,7 @@ load_leagueoflegends()
       [ -n "$W_OPT_UNATTENDED" ] && [ -n "$leagueoflegends_region" ] && w_warn "hotfixed, using EUNE region for download" && export leagueoflegends_region="EUNE"
 
       until case "$leagueoflegends_region" in ( EUNE | EUW | NA | BR | LAN | LAS | OCE | RU | JP | SEA ) :;; ( * ) ! :; esac; do
-        printf "%s\n" \
+        printf '%s\n' \
           'Select your region for League Of Legends installer:' \
           'EUNE  - Europe Nordic and East' \
           'NA    - North America' \
@@ -18412,7 +18412,7 @@ load_leagueoflegends()
           'SEA   - South East Asia' \
           '' \
           "Note that this can be overwritten by 'leagueoflegends_region' variable"
-        read -r leagueoflegends_region
+        read -r 'leagueoflegends_region'
       done
 
       ## Actual fetch
@@ -18454,6 +18454,9 @@ load_leagueoflegends()
           [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage.zsync" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-bionic.AppImage.zsync' '8b74b6394e7db313375357c56195ba4680e47770d8253413eb641ff3db3cf6b9'
           export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
         ;;
+        none)
+          w_info "workaround to winebug 47198 has been disabled by end-user"
+        ;;
         *) w_die "Unexpected argument '$leagueoflegends_workaround_47198' in function 'leagueoflegends_workaround_47198'"
       esac
 
@@ -18461,22 +18464,71 @@ load_leagueoflegends()
       [ ! -x "$WINE" ] && chmod +x "$WINE"
     }
 
+    # Default WINEPREFIX
+    ## Expecting game to be configured in ${HOME}/.local/share/wineprefixes/leagueoflegends-$leagueoflegends_region if WINEPREFIX is not set instead of ${HOME}/.wine
+    leagueoflegends_default_wineprefix()
+    {
+      leagueoflegends_fetch # Get variables
+      [ -z "$leagueoflegends_region" ] && w_warn "Variable leagueoflegends_region was parsed as blank which is unexpected"
+      [ "$WINEPREFIX" = "${HOME}/.wine" ] || [ -z "$WINEPREFIX" ] && export WINEPREFIX="${HOME}/.local/share/wineprefixes/leagueoflegends-$leagueoflegends_region"
+    }; leagueoflegends_default_wineprefix
+
     # Game won't launch due https://bugs.winehq.org/show_bug.cgi?id=47198
     if w_workaround_wine_bug 47198 "Using patched wine binary" ; then leagueoflegends_workaround_47198 bionic ; fi
+
+    # Vulkan/DX11/DX10 wrapper
+    leagueoflegends_3D_wrapper()
+    {
+      case "$1" in
+        dxvk)
+          w_call 'dxvk'
+        ;;
+        dxv9)
+          w_call 'dxv9'
+        ;;
+        dxvk-dgwoodo)
+          w_call 'dxvk'
+          # TODO: export dgwoodo wrapper
+        ;;
+        none)
+          w_info "Disabled 3D wrapper"
+        ;;
+        *) w_die "Unexpected argument "$1" in function leagueoflegends_3D_wrapper"
+      esac
+    }
 
     # Install
     if [ ! -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ]; then
        leagueoflegends_fetch
        (
+          leagueoflegends_default_wineprefix
           [ -z "$WINEDEBUG" ] && export WINEDEBUG="fixme-all"
+          if w_workaround_wine_bug '47198'; then
+            leagueoflegends_workaround_47198 # get WINE
+            # HOTFIX: winetricks is creating 64-bit wineprefix by default
+            export WINEARCH="win32"
+            [ -e "$WINEPREFIX" ] && [ ! -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ] && mv "$WINEPREFIX" "/tmp/winetricks/$WINEPREFIX"
+          fi
+          leagueoflegends_3D_wrapper 'dxvk'
           w_try "$WINE" "${W_CACHE}/leagueoflegends/League%20of%20Legends%20installer%20${leagueoflegends_region}.exe"
+          return 0 # Stop here since leagueoflegends starts itself after installation
        )
-       return 0
 
     # Run if already installed
     elif [ -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ]; then
       w_info "League Of Legends is already installed in $WINEPREFIX, executing.."
-      w_try "$WINE" "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe"
+      (
+        leagueoflegends_default_wineprefix
+        [ -z "$WINEDEBUG" ] && export WINEDEBUG="fixme-all"
+        if w_workaround_wine_bug '47198'; then
+          leagueoflegends_workaround_47198 # get WINE
+          # HOTFIX: winetricks is creating 64-bit wineprefix by default
+          export WINEARCH="win32"
+          [ -e "$WINEPREFIX" ] && [ ! -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ] && mv "$WINEPREFIX" "/tmp/winetricks/$WINEPREFIX"
+        fi
+        leagueoflegends_3D_wrapper 'dxvk'
+        w_try "$WINE" "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe"
+      )
     fi
 }
 
