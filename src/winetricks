@@ -18490,6 +18490,10 @@ load_leagueoflegends()
           w_call 'dxvk'
           # TODO: export dgwoodo wrapper
         ;;
+        gallium9|galliumnine)
+          # NOTE: might be worth combining with wrapper for DX10/11/Vulkan
+          w_call 'galliumnine'
+        ;;
         none)
           w_info "Disabled 3D wrapper"
         ;;
