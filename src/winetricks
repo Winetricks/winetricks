@@ -9337,6 +9337,22 @@ load_galliumnine03()
     helper_galliumnine "$file1"
 }
 
+w_metadata galliumnine04 dlls \
+    title="Gallium Nine Standalone (v0.4)" \
+    publisher="Gallium Nine Team" \
+    year="2019" \
+    media="download" \
+    file1="gallium-nine-standalone-v0.4.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d9-nine.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/ninewinecfg.exe" \
+    homepage="https://github.com/iXit/wine-nine-standalone"
+
+load_galliumnine04()
+{
+    w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.4/gallium-nine-standalone-v0.4.tar.gz" 4423c32d46419830c8e68fea86d28e740f17f182c365250c379b5493176e19ab
+    helper_galliumnine "$file1"
+}
+
 w_metadata galliumnine dlls \
     title="Gallium Nine Standalone (latest)" \
     publisher="Gallium Nine Team" \
