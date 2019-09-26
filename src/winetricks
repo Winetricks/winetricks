@@ -18507,6 +18507,9 @@ load_leagueoflegends()
       [ "$WINEPREFIX" = "${HOME}/.wine" ] || [ -z "$WINEPREFIX" ] && w_warn "Default WINEPREFIX is used where recommended prefix is '${HOME}/.local/share/wineprefixes/leagueoflegends-$leagueoflegends_region'"
     }
 
+    # Grabbed from Kreypi since [ -x $(command -v name) ] is unreliable for false
+    w_check_exec() { if ! command -v "$1" >/dev/null; then w_die "Command '$1' is not executable on this system"; fi ; }
+
     # Vulkan/DX11/DX10 wrapper
     leagueoflegends_d3d9_wrapper()
     {
@@ -18519,10 +18522,106 @@ load_leagueoflegends()
           w_die "FIXME: '$1' is not implemented for this game"
           w_call 'dxv9'
         ;;
-        dxvk-dgwoodo)
-          w_die "FIXME: '$1' is not implemented for this game"
+        dxvk-dgvoodoo2)
+          # Credit: http://www.dege.freeweb.hu/
+
+          # Starting with version 2.6, dynamic shader compiling is available for Glide API components. DirectX components have their own internal shader code generator. To enable that, you need D3DCompiler_43.dll. Starting with 2.53 an updated compiler version, _47, is also supported. (http://www.dege.freeweb.hu/dgVoodoo2/dgVoodoo2.html)
+
+          # Fetch
+          [ ! -e "${W_CACHE}/leagueoflegends/dgVoodoo2_62.zip" ] && w_download 'http://www.dege.freeweb.hu/dgVoodoo2/dgVoodoo2_62.zip' 'dcb00b795e138af71f712bf6c276795786ef373165f28589b44f27b14b4c62c7'
+          #[ ! -e "${W_CACHE}/leagueoflegends/D3DCompiler_47.zip" ] && w_download 'http://www.dege.freeweb.hu/dgVoodoo2/D3DCompiler_47.zip' '41ab9a8c7519cd47142fd2edf9b08e222516a058d49885b74fb889838490ae59'
+          [ ! -e "${W_CACHE}/leagueoflegends/D3DCompiler_43.zip" ] && w_download 'http://www.dege.freeweb.hu/dgVoodoo2/D3DCompiler_43.zip' 'ae2ecaf368d3238ec1f027e36916a8415afe834df2d1fa813f0b4c3de3fd1159'
+
+          # Check for unzip
+          w_check_exec 'unzip'
+
+          chmod +w "${W_DRIVE_C}/Riot Games/League of Legends/Game/D3DCompiler_43.dll"
+          chmod +w "${W_DRIVE_C}/Riot Games/League of Legends/d3dcompiler_43.dll"
+          chmod +w "${W_DRIVE_C}/Riot Games/League of Legends/d3d9.dll"
+          chmod +w "${W_DRIVE_C}/Riot Games/League of Legends/Game/d3d9.dll"
+
+          # Unzip dgVoodoo2_62 and export in GAMEDIR
+          [ ! -e "${W_CACHE}/leagueoflegends/dgVoodoo2_62" ] && w_try unzip -n -d "${W_CACHE}/leagueoflegends/dgVoodoo2_62" "${W_CACHE}/leagueoflegends/dgVoodoo2_62.zip"
+          [ ! -e "${W_CACHE}/leagueoflegends/D3DCompiler_43" ] && w_try unzip -n -d "${W_CACHE}/leagueoflegends/D3DCompiler_43" "${W_CACHE}/leagueoflegends/D3DCompiler_43.zip"
+          w_try cp "${W_CACHE}/leagueoflegends/dgVoodoo2_62/MS/x86/D3D9.dll" "${W_DRIVE_C}/Riot Games/League of Legends/d3d9.dll"
+          w_try cp "${W_CACHE}/leagueoflegends/dgVoodoo2_62/MS/x86/DDraw.dll" "${W_DRIVE_C}/Riot Games/League of Legends/ddraw.dll"
+          w_try cp "${W_CACHE}/leagueoflegends/dgVoodoo2_62/MS/x86/D3DImm.dll" "${W_DRIVE_C}/Riot Games/League of Legends/d3dimm.dll"
+          w_try cp "${W_CACHE}/leagueoflegends/D3DCompiler_43/D3DCompiler_43.dll" "${W_DRIVE_C}/Riot Games/League of Legends/d3dcompiler_43.dll"
+
+
+          # Get them for Game itself to be used as builtin
+          w_try cp "${W_CACHE}/leagueoflegends/dgVoodoo2_62/MS/x86/D3D9.dll" "${W_DRIVE_C}/Riot Games/League of Legends/Game/d3d9.dll"
+          w_try cp "${W_CACHE}/leagueoflegends/dgVoodoo2_62/MS/x86/DDraw.dll" "${W_DRIVE_C}/Riot Games/League of Legends/Game/ddraw.dll"
+          w_try cp "${W_CACHE}/leagueoflegends/dgVoodoo2_62/MS/x86/D3DImm.dll" "${W_DRIVE_C}/Riot Games/League of Legends/Game/d3dimm.dll"
+          w_try cp "${W_CACHE}/leagueoflegends/D3DCompiler_43/D3DCompiler_43.dll" "${W_DRIVE_C}/Riot Games/League of Legends/Game/D3DCompiler_43.dll"
+
+          # Attempt to bite RiotUpdater's hand everytime it tries to touch my previous libraries
+          ## TODO: Spam Rioters untill they add shasum of dege's libs in whitelist
+          w_try chmod -w "${W_DRIVE_C}/Riot Games/League of Legends/Game/D3DCompiler_43.dll"
+          w_try chmod -w "${W_DRIVE_C}/Riot Games/League of Legends/d3dcompiler_43.dll"
+          w_try chmod -w "${W_DRIVE_C}/Riot Games/League of Legends/d3d9.dll"
+          w_try chmod -w "${W_DRIVE_C}/Riot Games/League of Legends/Game/d3d9.dll"
+
+
+          # Get DXVK
           w_call 'dxvk'
-          # TODO: export dgwoodoo wrapper
+
+          w_override_dlls 'native' 'dxgi'
+          w_override_dlls 'native' 'd3d10'
+          w_override_dlls 'native' 'd3d10_1'
+          w_override_dlls 'native' 'd3d10core'
+          w_override_dlls 'native' 'd3d11'
+
+          # Reference
+          # .wine/drive_c/Riot Games/League of Legends/jpatch.exe
+          # .wine/drive_c/Riot Games/League of Legends/BsSndRpt.exe
+          # .wine/drive_c/Riot Games/League of Legends/LeagueClient.exe
+          # .wine/drive_c/Riot Games/League of Legends/LeagueClientUx.exe
+          # .wine/drive_c/Riot Games/League of Legends/LeagueClientUxRender.exe
+          # .wine/drive_c/Riot Games/League of Legends/Uninstall League of Legends.exe
+          # .wine/drive_c/Riot Games/League of Legends/Game/BsSndRpt.exe
+          # .wine/drive_c/Riot Games/League of Legends/Game/League of Legends.exe
+          # .wine/drive_c/Riot Games/League of Legends/Game/LeagueCrashHandler.exe
+
+          # Dll overrites to use dgVoodoo2
+          w_override_app_dlls 'League of Legends.exe' 'builtin' 'd3d9.dll'
+          w_override_app_dlls 'League of Legends.exe' 'builtin' 'ddraw.dll'
+          w_override_app_dlls 'League of Legends.exe' 'builtin' 'd3dimm.dll'
+          w_override_app_dlls 'League of Legends.exe' 'builtin' 'D3DCompiler_43.dll'
+          w_override_app_dlls 'League of Legends.exe' 'native' 'dxgi.dll'
+          w_override_app_dlls 'League of Legends.exe' 'native' 'd3d10.dll'
+          w_override_app_dlls 'League of Legends.exe' 'native' 'd3d10_1.dll'
+          w_override_app_dlls 'League of Legends.exe' 'native' 'd3d10core.dll'
+          w_override_app_dlls 'League of Legends.exe' 'native' 'd3d11.dll'
+
+          w_override_app_dlls 'LeagueClient.exe' 'builtin' 'd3d9.dll'
+          w_override_app_dlls 'LeagueClient.exe' 'builtin' 'ddraw.dll'
+          w_override_app_dlls 'LeagueClient.exe' 'builtin' 'd3dimm.dll'
+          w_override_app_dlls 'LeagueClient.exe' 'native' 'd3d10.dll'
+          w_override_app_dlls 'LeagueClient.exe' 'native' 'd3d10_1.dll'
+          w_override_app_dlls 'LeagueClient.exe' 'native' 'd3d10core.dll'
+          w_override_app_dlls 'LeagueClient.exe' 'native' 'd3d11.dll'
+          w_override_app_dlls 'LeagueClient.exe' 'native' 'dxgi.dll'
+
+          w_override_app_dlls 'LeagueClientUx.exe' 'builtin' 'd3d9.dll'
+          w_override_app_dlls 'LeagueClientUx.exe' 'builtin' 'ddraw.dll'
+          w_override_app_dlls 'LeagueClientUx.exe' 'builtin' 'd3dimm.dll'
+          w_override_app_dlls 'LeagueClientUx.exe' 'builtin' 'd3d9.dll'
+          w_override_app_dlls 'LeagueClientUx.exe' 'disabled' 'd3d10.dll'
+          w_override_app_dlls 'LeagueClientUx.exe' 'disabled' 'd3d10_1.dll'
+          w_override_app_dlls 'LeagueClientUx.exe' 'disabled' 'd3d10core.dll'
+          w_override_app_dlls 'LeagueClientUx.exe' 'disabled' 'd3d11.dll'
+          w_override_app_dlls 'LeagueClientUx.exe' 'disabled' 'dxgi.dll'
+
+          w_override_app_dlls 'LeagueClientUxRender.exe' 'builtin' 'd3d9.dll'
+          w_override_app_dlls 'LeagueClientUxRender.exe' 'builtin' 'ddraw.dll'
+          w_override_app_dlls 'LeagueClientUxRender.exe' 'builtin' 'd3dimm.dll'
+          w_override_app_dlls 'LeagueClientUxRender.exe' 'builtin' 'd3d9.dll'
+          w_override_app_dlls 'LeagueClientUxRender.exe' 'disabled' 'd3d10.dll'
+          w_override_app_dlls 'LeagueClientUxRender.exe' 'disabled' 'd3d10_1.dll'
+          w_override_app_dlls 'LeagueClientUxRender.exe' 'disabled' 'd3d10core.dll'
+          w_override_app_dlls 'LeagueClientUxRender.exe' 'disabled' 'd3d11.dll'
+          w_override_app_dlls 'LeagueClientUxRender.exe' 'disabled' 'dxgi.dll'
         ;;
         gallium9|galliumnine)
           w_die "FIXME: '$1' is not implemented for this game"
