@@ -18429,7 +18429,7 @@ load_leagueoflegends()
           'SEA   - South East Asia' \
           '' \
           "Note that this can be overwritten by 'leagueoflegends_region' variable"
-        read -r 'leagueoflegends_region'
+        read -r leagueoflegends_region
       done
 
       ## Actual fetch
@@ -18524,7 +18524,7 @@ load_leagueoflegends()
         ;;
         dgvoodoo2)
         # Get dgVoodoo2 only to wrap dxd9 to dxd10/11
-        [ -z "$leagueoflegends_force_dgvoodoo2" ] && case "$(winetricks_get_platform)" in; nix_*) w_die "Verb '$1' is not supported on '$(winetricks_get_platform)' since dxd10/11 is not supported without DXVK, use 'leagueoflegends_force_dgvoodoo2' variable set on non-zero to overwrite" ; esac
+        [ -z "$leagueoflegends_force_dgvoodoo2" ] && case "$(winetricks_get_platform)" in nix_*) w_die "Verb '$1' is not supported on '$(winetricks_get_platform)' since dxd10/11 is not supported without DXVK, use 'leagueoflegends_force_dgvoodoo2' variable set on non-zero to overwrite" ; esac
 
         # TODO: START - Fix duplicates
         [ ! -e "${W_CACHE}/leagueoflegends/dgVoodoo2_62.zip" ] && w_download 'http://www.dege.freeweb.hu/dgVoodoo2/dgVoodoo2_62.zip' 'dcb00b795e138af71f712bf6c276795786ef373165f28589b44f27b14b4c62c7'
