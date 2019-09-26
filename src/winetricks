@@ -18380,15 +18380,32 @@ load_lswcs()
 
 # https://appdb.winehq.org/objectManager.php?sClass=application&iId=10436
 
+# TODO: Fetch this from wikipedia
 w_metadata leagueoflegends games \
     title='League of Legends' \
     publisher='Riot Games, Inc.' \
+    developer='Riot Games, Inc.' \
+    director='Tom Cadwell' \
     year='2009' \
-    media='download' \
-    file1="${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe"
+    media='download'
+
+    # file1="League%20of%20Legends%20installer%20EUNE.exe" \
+    # file2="League%20of%20Legends%20installer%20EUW.exe" \
+    # file3="League%20of%20Legends%20installer%20NA.exe" \
+    # file4="League%20of%20Legends%20installer%20BR.exe" \
+    # file5="League%20of%20Legends%20installer%20AN.exe" \
+    # file6="League%20of%20Legends%20installer%20LAS.exe" \
+    # file7="League%20of%20Legends%20installer%20OCE.exe" \
+    # file8="League%20of%20Legends%20installer%20RU.exe" \
+    # file9="League%20of%20Legends%20installer%20TR.exe" \
+    # file10="League%20of%20Legends%20installer%20JP.exe" \
+    # file11="League%20of%20Legends%20installer%20SEA.exe" \
+    # installed_exe1="${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe"
 
 load_leagueoflegends()
 {
+    # FUNCTIONS
+
     # Fetch installer
     leagueoflegends_fetch()
     {
@@ -18431,28 +18448,40 @@ load_leagueoflegends()
       w_info "You can overwrite 'leagueoflegends_workaround_47198' variable to use different precompiled wine"
       [ -z "$leagueoflegends_workaround_47198" ] && export leagueoflegends_workaround_47198="$1"
 
+      # Patch is meant to be used on win32
+      w_package_unsupported_win64
+
       ## Logic for WINE binary executable
       # shellcheck disable=SC2154
       case "$leagueoflegends_workaround_47198" in
         arch)
           # 24/09/2019: continous (sha256sum wine-staging-i386_lol-patched_x86_64-archlinux.AppImage) sha256sum 279e00ce270d4eac3a57a5441787dfd3c78ec26fedf5a9e2f29c5362f74aa75f
           [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage' '279e00ce270d4eac3a57a5441787dfd3c78ec26fedf5a9e2f29c5362f74aa75f'
-          export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage"
+          # FIX-ME: Winetricks doesn't allow seting this prior to making wineprefix
+          #export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage"
+          export used_wine="wine-staging-i386_lol-patched_x86_64-archlinux.AppImage"
         ;;
         arch-zsync)
           # 24/09/2019: continous (sha256sum wine-staging-i386_lol-patched_x86_64-archlinux.AppImage.zsync) sha256sum 8b74b6394e7db313375357c56195ba4680e47770d8253413eb641ff3db3cf6b9
           [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage.zsync" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage.zsync' '8b74b6394e7db313375357c56195ba4680e47770d8253413eb641ff3db3cf6b9'
-          export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage"
+          # FIX-ME: Winetricks doesn't allow seting this prior to making wineprefix
+          #export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-archlinux.AppImage"
+          export used_wine="wine-staging-i386_lol-patched_x86_64-archlinux.AppImage.zsync"
         ;;
         bionic) # Prefer bionic since that seems to be more reliable
           # 24/09/2019: continous (sha256sum wine-staging-i386_lol-patched_x86_64-bionic.AppImage) sha256sum 01bcd44d10ba275336953347baa9578daca5830644ac67b2ab73564a46c2d70c
           [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-bionic.AppImage' '01bcd44d10ba275336953347baa9578daca5830644ac67b2ab73564a46c2d70c'
-          export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
+          # FIX-ME: Winetricks doesn't allow seting this prior to making wineprefix
+          #export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
+          export used_wine="wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
         ;;
         bionic-zsync) # Prefer bionic since that seems to be more reliable
           # 24/09/2019: continous (sha256sum wine-staging-i386_lol-patched_x86_64-bionic.AppImage.zsync) sha256sum 8b74b6394e7db313375357c56195ba4680e47770d8253413eb641ff3db3cf6b9
           [ ! -e "${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage.zsync" ] && w_download 'https://github.com/mmtrt/Wine_Appimage/releases/download/continuous/wine-staging-i386_lol-patched_x86_64-bionic.AppImage.zsync' '8b74b6394e7db313375357c56195ba4680e47770d8253413eb641ff3db3cf6b9'
-          export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
+          used_wine="wine-staging-i386_lol-patched_x86_64-bionic.AppImage.zsync"
+          # FIX-ME: Winetricks doesn't allow seting this prior to making wineprefix
+          #export WINE="${W_CACHE}/leagueoflegends/wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
+          export used_wine="wine-staging-i386_lol-patched_x86_64-bionic.AppImage"
         ;;
         none)
           w_info "workaround to winebug 47198 has been disabled by end-user"
@@ -18461,7 +18490,10 @@ load_leagueoflegends()
       esac
 
       # Sanity check for executable permissions
-      [ ! -x "$WINE" ] && chmod +x "$WINE"
+      [ ! -x "$used_wine" ] && chmod +x "$used_wine"
+
+      # HOTFIX: winetricks is unable to use different wine on startup
+      [ "$WINE" != "${W_CACHE}/leagueoflegends/$used_wine" ] && w_die "This installer requires patched wine, remove your current WINEPREFIX ($WINEPREFIX) if it was created using 64-bit wine and set WINE variable on '${W_CACHE}/leagueoflegends/$used_wine' and start again. (fix-me: allow winetricks to use different wine by default)"
     }
 
     # Default WINEPREFIX
@@ -18469,37 +18501,46 @@ load_leagueoflegends()
     leagueoflegends_default_wineprefix()
     {
       leagueoflegends_fetch # Get variables
-      [ -z "$leagueoflegends_region" ] && w_warn "Variable leagueoflegends_region was parsed as blank which is unexpected"
-      [ "$WINEPREFIX" = "${HOME}/.wine" ] || [ -z "$WINEPREFIX" ] && export WINEPREFIX="${HOME}/.local/share/wineprefixes/leagueoflegends-$leagueoflegends_region"
-    }; leagueoflegends_default_wineprefix
 
-    # Game won't launch due https://bugs.winehq.org/show_bug.cgi?id=47198
-    if w_workaround_wine_bug 47198 "Using patched wine binary" ; then leagueoflegends_workaround_47198 bionic ; fi
+      [ -z "$leagueoflegends_region" ] && w_die "Variable leagueoflegends_region was parsed as blank which is unexpected"
+
+      [ "$WINEPREFIX" = "${HOME}/.wine" ] || [ -z "$WINEPREFIX" ] && w_warn "Default WINEPREFIX is used where recommended prefix is '${HOME}/.local/share/wineprefixes/leagueoflegends-$leagueoflegends_region'"
+    }
 
     # Vulkan/DX11/DX10 wrapper
-    leagueoflegends_3D_wrapper()
+    leagueoflegends_d3d9_wrapper()
     {
       case "$1" in
         dxvk)
+          w_die "FIXME: '$1' is not implemented for this game"
           w_call 'dxvk'
         ;;
         dxv9)
+          w_die "FIXME: '$1' is not implemented for this game"
           w_call 'dxv9'
         ;;
         dxvk-dgwoodo)
+          w_die "FIXME: '$1' is not implemented for this game"
           w_call 'dxvk'
-          # TODO: export dgwoodo wrapper
+          # TODO: export dgwoodoo wrapper
         ;;
         gallium9|galliumnine)
+          w_die "FIXME: '$1' is not implemented for this game"
           # NOTE: might be worth combining with wrapper for DX10/11/Vulkan
           w_call 'galliumnine'
         ;;
-        none)
-          w_info "Disabled 3D wrapper"
+        ""|none)
+          w_info "DirectX 9 wrapper is not used, use leagueoflegends_d3d9_wrapper variable to overwrite"
         ;;
-        *) w_die "Unexpected argument "$1" in function leagueoflegends_3D_wrapper"
+        *) w_die "Unexpected argument '$1' in function leagueoflegends_3D_wrapper"
       esac
     }
+
+    # ACTION
+    leagueoflegends_default_wineprefix
+
+    # Game won't launch due https://bugs.winehq.org/show_bug.cgi?id=47198
+    if w_workaround_wine_bug 47198 "Using patched wine binary" ; then leagueoflegends_workaround_47198 bionic ; fi
 
     # Install
     if [ ! -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ]; then
@@ -18513,7 +18554,8 @@ load_leagueoflegends()
             export WINEARCH="win32"
             [ -e "$WINEPREFIX" ] && [ ! -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ] && mv "$WINEPREFIX" "/tmp/winetricks/$WINEPREFIX"
           fi
-          leagueoflegends_3D_wrapper 'dxvk'
+          # shellcheck disable=SC2154
+          leagueoflegends_d3d9_wrapper "$leagueoflegends_d3d9_wrapper"
           w_try "$WINE" "${W_CACHE}/leagueoflegends/League%20of%20Legends%20installer%20${leagueoflegends_region}.exe"
           return 0 # Stop here since leagueoflegends starts itself after installation
        )
@@ -18526,11 +18568,8 @@ load_leagueoflegends()
         [ -z "$WINEDEBUG" ] && export WINEDEBUG="fixme-all"
         if w_workaround_wine_bug '47198'; then
           leagueoflegends_workaround_47198 # get WINE
-          # HOTFIX: winetricks is creating 64-bit wineprefix by default
-          export WINEARCH="win32"
-          [ -e "$WINEPREFIX" ] && [ ! -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ] && mv "$WINEPREFIX" "/tmp/winetricks/$WINEPREFIX"
         fi
-        leagueoflegends_3D_wrapper 'dxvk'
+        leagueoflegends_d3d9_wrapper "$leagueoflegends_d3d9_wrapper"
         w_try "$WINE" "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe"
       )
     fi
