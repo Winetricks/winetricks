@@ -14105,33 +14105,31 @@ _EOF_
 
 #----------------------------------------------------------------
 
-w_metadata igorpro8 apps \
+w_metadata igorpro apps \
 title="Igor Pro 8" \
 publisher="WaveMetrics" \
 year="2018" \
 media="download" \
 file1="setupIgor8.exe" \
-installed_exe1="C:/Program Files/WaveMetrics/Igor Pro 8 Folder/IgorBinaries_x64/Igor64.exe"
+installed_exe1="C:/Program Files/WaveMetrics/Igor Pro 8 Folder/IgorBinaries_Win32/Igor.exe"
 
-load_igorpro8()
+load_igorpro()
 {
-        if test "$W_ARCH" = "win64"; then
-            w_warn "Installation is recommended to be done on a 32bit wine prefix."
-        fi
+    # Installer does not support 64bit
+    #w_package_unsupported_win64
 
-	w_set_winver win7
+    w_call corefonts
+    w_call tahoma # menu font
+    w_call droid  # replacement for lucida
+    w_call fontsmooth=rgb
 
-	w_call corefonts
-	w_call tahoma # menu font
-	w_call droid  # replacement for lucida
-	w_call fontsmooth=rgb
+    w_download "http://www.wavemetrics.net/Downloads/Win/${file1}"
 
-	w_download http://www.wavemetrics.net/Downloads/Win/${file1}
+    w_call vcrun2017
 
-	IGORPRO_LOGFILE=$(mktemp --dry-run --tmpdir ${file1%.*}XXX.log)
-	w_try "$WINE" "${W_CACHE}/${W_PACKAGE}/${file1}" /install "/log:$IGORPRO_LOGFILE" $W_UNATTENDED_SLASH_Q
-
-	w_call vcrun2017
+    w_set_winver default
+    IGORPRO_LOGFILE=$(mktemp --dry-run --tmpdir "${file1%.*}"XXX.log)
+    w_try "$WINE" "${W_CACHE}/${W_PACKAGE}/${file1}" /install "/log:$IGORPRO_LOGFILE" "$W_UNATTENDED_SLASH_Q"
 }
 
 #----------------------------------------------------------------
