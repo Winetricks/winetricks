@@ -18511,11 +18511,12 @@ load_leagueoflegends()
     w_check_exec() { if ! command -v "$1" >/dev/null; then w_die "Command '$1' is not executable on this system"; fi ; }
 
     # Vulkan/DX11/DX10 wrapper
+    # shellcheck disable=SC2154
     leagueoflegends_d3d9_wrapper()
     {
       case "$1" in
         dxvk)
-          [ -z $leagueoflegends_do_not_die_on_dxvk ] && w_die "'$1' is not implemented for this game (uses dxd9), set 'leagueoflegends_do_not_die_on_dxvk' variable to non-zero to overwrite"
+          [ -z "$leagueoflegends_do_not_die_on_dxvk" ] && w_die "'$1' is not implemented for this game (uses dxd9), set 'leagueoflegends_do_not_die_on_dxvk' variable to non-zero to overwrite"
           w_call 'dxvk'
         ;;
         dxv9)
