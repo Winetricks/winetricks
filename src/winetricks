@@ -5261,7 +5261,7 @@ Executes given verbs.  Each verb installs an application or changes a setting.
 
 Options:
     --country=CC      Set country code to CC and don't detect your IP address
-    --force           Don't check whether packages were already installed
+-f,  --force           Don't check whether packages were already installed
     --gui             Show gui diagnostics even when driven by commandline
     --isolate         Install each app or game in its own bottle (WINEPREFIX)
     --self-update     Update this application to the last version
@@ -5302,7 +5302,7 @@ winetricks_handle_option()
 {
     case "$1" in
         --country=*) W_COUNTRY="${1##--country=}" ;;
-        --force) WINETRICKS_FORCE=1;;
+        --force|-f) WINETRICKS_FORCE=1;;
         --gui) winetricks_detect_gui;;
         -h|--help) winetricks_usage ; exit 0 ;;
         --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
