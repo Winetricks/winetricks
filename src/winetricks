@@ -6881,6 +6881,19 @@ load_d9vk020()
     helper_dxvk_d9vk "$file1" "4.5" "1.1.104" "dxgi,d3d9,d3d10,d3d11"
 }
 
+#----------------------------------------------------------------
+
+w_metadata d9vk dlls \
+  title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine" \
+  publisher="Joshua Ashton" \
+  year="2019" \
+  media="download"
+
+load_d9vk()
+{
+  # Always use latest release
+  w_call d9vk020
+}
 
 #----------------------------------------------------------------
 
