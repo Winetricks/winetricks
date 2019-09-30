@@ -721,11 +721,11 @@ w_expand_env()
 # Get the latest tagged release from github.com API
 w_get_github_latest_release()
 {
-    # $1 - github organization
-    # $2 - github repository
     # FIXME: can we get releases that aren't on master branch?
+    org="$1"
+    repo="$2"
 
-    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://api.github.com/repos/$1/$2/releases/latest" "" "release.json" >/dev/null 2>&1
+    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://api.github.com/repos/${org}/${repo}/releases/latest" "" "release.json" >/dev/null 2>&1
 
     # aria2c condenses the json (https://github.com/aria2/aria2/issues/1389)
     # but curl/wget don't, so handle both cases:
@@ -733,6 +733,26 @@ w_get_github_latest_release()
     case "$json_length" in
         0*) latest_version="$(sed -e "s/\",\"/|/g" "${W_TMP_EARLY}/release.json" | tr '|' '\n' | grep tag_name | sed 's@.*"@@')";;
         *) latest_version="$(grep -w tag_name "${W_TMP_EARLY}/release.json" | cut -d '"' -f 4)";;
+    esac
+
+    echo "$latest_version"
+}
+
+# Get the latest tagged prerelease from github.com API
+w_get_github_latest_prerelease()
+{
+    # FIXME: can we get releases that aren't on master branch?
+    org="$1"
+    repo="$2"
+
+    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://api.github.com/repos/${org}/${repo}/releases" "" "release.json" >/dev/null 2>&1
+
+    # aria2c condenses the json (https://github.com/aria2/aria2/issues/1389)
+    # but curl/wget don't, so handle both cases:
+    json_length="$(wc -l "${W_TMP_EARLY}/release.json")"
+    case "$json_length" in
+        0*) latest_version="$(sed -e "s/\",\"/|/g" "${W_TMP_EARLY}/release.json" | tr '|' '\n' | grep tag_name -m 1 | sed 's@.*"@@')";;
+        *) latest_version="$(grep -m 1 -w tag_name "${W_TMP_EARLY}/release.json" | cut -d '"' -f 4)";;
     esac
 
     echo "$latest_version"
@@ -6879,6 +6899,31 @@ load_d9vk020()
     # https://github.com/Joshua-Ashton/d9vk
     w_download "https://github.com/Joshua-Ashton/d9vk/releases/download/0.20/d9vk-0.20.tar.gz" bd53c17eafeffcf2251d3911b7814b92c8f7e4c6b7364217da38645093a1db35
     helper_dxvk_d9vk "$file1" "4.5" "1.1.104" "dxgi,d3d9,d3d10,d3d11"
+}
+
+
+#----------------------------------------------------------------
+
+w_metadata d9vk dlls \
+    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (latest)" \
+    publisher="Joshua Ashton" \
+    year="2019" \
+    media="download" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d9.dll" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/d3d10_1.dll" \
+    installed_file3="$W_SYSTEM32_DLLS_WIN/d3d10core.dll" \
+    installed_file4="$W_SYSTEM32_DLLS_WIN/d3d11.dll" \
+    installed_file5="$W_SYSTEM32_DLLS_WIN/dxgi.dll"
+
+load_d9vk()
+{
+    # https://github.com/Joshua-Ashton/d9vk
+    _W_d9vk_version="$(w_get_github_latest_prerelease Joshua-Ashton d9vk)"
+    _W_d9vk_version="${_W_d9vk_version#v}"
+    w_linkcheck_ignore=1 w_download "https://github.com/Joshua-Ashton/d9vk/releases/download/${_W_d9vk_version}/d9vk-${_W_d9vk_version}.tar.gz"
+    helper_dxvk_d9vk "d9vk-${_W_d9vk_version}.tar.gz" "4.5" "1.1.104" "dxgi,d3d9,d3d10,d3d11"
+    unset _W_d9vk_version
 }
 
 
