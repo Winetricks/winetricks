@@ -18002,12 +18002,31 @@ load_mtg_arena()
     w_warn "Affected by https://bugs.winehq.org/show_bug.cgi?id=45898"
   fi
 
+  # https://bugs.winehq.org/show_bug.cgi?id=45546
   if w_workaround_wine_bug 45546; then
-    w_download "https://github.com/Kreyren/kreytricks/releases/download/7f230d2/MTGA.AppImage"
-    [ "$WINE" != "$W_CACHE/$W_PACKAGE/MTGA.AppImage" ] && w_die "This installer requires patched wine from '$W_CACHE/$W_PACKAGE/MTGA.AppImage' provide this path to the WINE variable and execute the script again."
+    if [ -n "$WINETRICKS_BUILD_WINE" ]; then
+      w_warn "We are about to build a wine from source and package it in AppImage"
+      wineappimagebuilder_patches() {
+        w_download "https://bugs.winehq.org/attachment.cgi?id=62956" '' "$W_CACHE/$W_PACKAGE/62956.diff"
+
+        if ! grep -qF "for (i = 0; i < 2000; i++)" "$wineappimagebuilder_workdir/wine-4.17/dlls/ntdll/thread.c"; then
+          patch "$wineappimagebuilder_workdir/wine-4.17/dlls/ntdll/thread.c" "$W_CACHE/$W_PACKAGE/62956.diff" || w_die "Failed to apply patch in '$wineappimagebuilder_workdir/wine-4.17/dlls/ntdll/thread.c'"
+        elif grep -qF "for (i = 0; i < 2000; i++)" "$wineappimagebuilder_workdir/wine-4.17/dlls/ntdll/thread.c"; then
+          w_debug "Patch for 45546 is already applied"
+        else w_die "Unexpected output in wineappimagebuilder_patches function"
+        fi
+      }
+      load_wineappimagebuilder
+    elif [ -z "$WINETRICKS_BUILD_WINE" ]; then
+      w_download "https://github.com/Kreyren/kreytricks/releases/download/7f230d2/MTGA.AppImage"
+    fi
+
+    # Sanitycheck for applied patches
+    [ "$WINE" != "$W_CACHE/$W_PACKAGE/MTGA.AppImage" ] && [ "$WINE" != "$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage" ] && w_die "This installer requires patched wine named MTGA.AppImage' or '$W_PACKAGE.AppImage' from '$W_CACHE/$W_PACKAGE/' provide this path to the WINE variable and execute the script again. (You can also blacklist winebug 45546)"
   fi
 
-  (WINEDEBUG="fixme-all" w_try "$WINE" msiexec /i "${W_CACHE}/${W_PACKAGE}/${file1}")
+  w_warn "It may take few seconds for installer to launch (max 50sec)"
+  (WINEDEBUG="fixme-all" w_try "$WINE" msiexec /i "$W_CACHE/$W_PACKAGE/$file1")
 }
 
 #----------------------------------------------------------------
