@@ -738,8 +738,8 @@ w_get_github_latest_release()
     echo "$latest_version"
 }
 
-# Get the latest tagged release from github.com API using /releases, not /releases/latest
-w_get_github_latest_release_from_all_releases()
+# Get the latest tagged prerelease from github.com API
+w_get_github_latest_prerelease()
 {
     # $1 - github organization
     # $2 - github repository
@@ -6919,7 +6919,7 @@ w_metadata d9vk dlls \
 load_d9vk()
 {
     # https://github.com/Joshua-Ashton/d9vk
-    _W_d9vk_version="$(w_get_github_latest_release_from_all_releases Joshua-Ashton d9vk)"
+    _W_d9vk_version="$(w_get_github_latest_prerelease Joshua-Ashton d9vk)"
     _W_d9vk_version="${_W_d9vk_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/Joshua-Ashton/d9vk/releases/download/${_W_d9vk_version}/d9vk-${_W_d9vk_version}.tar.gz"
     helper_dxvk_d9vk "d9vk-${_W_d9vk_version}.tar.gz" "4.5" "1.1.104" "dxgi,d3d9,d3d10,d3d11"
