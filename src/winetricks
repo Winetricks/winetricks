@@ -5156,8 +5156,6 @@ winetricks_init()
                 ;;
     esac
 
-    winetricks_set_wineprefix "$1"
-
     # Whether to automate installs (0=no, 1=yes)
     winetricks_set_unattended ${W_OPT_UNATTENDED:-0}
 
@@ -5346,14 +5344,6 @@ then
     do
         shift
     done
-
-    # Workaround for https://github.com/Winetricks/winetricks/issues/599
-    # If --isolate is used, pass verb to winetricks_init, so it can set the wineprefix using winetricks_set_wineprefix()
-    # Otherwise, an arch mismatch between ${WINEPREFIX:-$HOME/.wine} and the prefix to be made for the isolated app would cause it to fail
-    case $WINETRICKS_OPT_SHAREDPREFIX in
-        0) winetricks_init "$1" ;;
-        *) winetricks_init ;;
-    esac
 fi
 
 winetricks_install_app()
