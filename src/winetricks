@@ -19068,17 +19068,6 @@ load_leagueoflegends()
           w_override_dlls 'native' 'd3d10core'
           w_override_dlls 'native' 'd3d11'
 
-          # Reference
-          # .wine/drive_c/Riot Games/League of Legends/jpatch.exe
-          # .wine/drive_c/Riot Games/League of Legends/BsSndRpt.exe
-          # .wine/drive_c/Riot Games/League of Legends/LeagueClient.exe
-          # .wine/drive_c/Riot Games/League of Legends/LeagueClientUx.exe
-          # .wine/drive_c/Riot Games/League of Legends/LeagueClientUxRender.exe
-          # .wine/drive_c/Riot Games/League of Legends/Uninstall League of Legends.exe
-          # .wine/drive_c/Riot Games/League of Legends/Game/BsSndRpt.exe
-          # .wine/drive_c/Riot Games/League of Legends/Game/League of Legends.exe
-          # .wine/drive_c/Riot Games/League of Legends/Game/LeagueCrashHandler.exe
-
           # Dll overrites to use dgVoodoo2
           w_override_app_dlls 'League of Legends.exe' 'builtin' 'd3d9.dll'
           w_override_app_dlls 'League of Legends.exe' 'builtin' 'ddraw.dll'
@@ -19121,7 +19110,7 @@ load_leagueoflegends()
         ;;
         gallium9|galliumnine)
           # NOTE: might be worth combining with wrapper for DX10/11/Vulkan
-          (WINETRICKS_FORCE='1' w_call 'galliumnine')
+          (WINETRICKS_FORCE=1 w_call 'galliumnine')
           w_override_dlls 'disabled' 'dxgi'
           w_override_dlls 'disabled' 'd3d10'
           w_override_dlls 'disabled' 'd3d10_1'
@@ -19131,7 +19120,7 @@ load_leagueoflegends()
         ;;
         ""|none)
           # Required to force in case other workaround is used
-          (WINETRICKS_FORCE='1' w_call "d3dx9_43")
+          (WINETRICKS_FORCE=1 w_call "d3dx9_43")
           w_override_dlls 'disabled' 'dxgi'
           w_override_dlls 'disabled' 'd3d10'
           w_override_dlls 'disabled' 'd3d10_1'
@@ -19140,32 +19129,78 @@ load_leagueoflegends()
 
           w_info "DirectX 9 wrapper is not used and other DirectX libraries has been disabled, use leagueoflegends_d3d9_wrapper variable to overwrite"
         ;;
-        *) w_die "Unexpected argument '$1' in function leagueoflegends_3D_wrapper"
+        *) w_die "Unexpected argument '$1' in function leagueoflegends_d3d9_wrapper"
       esac
     }
 
     # ACTION
     leagueoflegends_default_wineprefix
 
+    # Hotfix untill https://github.com/Winetricks/winetricks/pull/1359 is finished
+    if [ -n "$(w_workaround_wine_bug '47198')" ] && [ "$WINEARCH" != "win32" ]; then w_die "HOTFIX: This is expected to be executed with WINEARCH set on win32"; fi
+
     # Game won't launch due https://bugs.winehq.org/show_bug.cgi?id=47198
-    if w_workaround_wine_bug 47198 "Using patched wine binary" ; then leagueoflegends_workaround_47198 bionic ; fi
+    if w_workaround_wine_bug 47198; then leagueoflegends_workaround_47198 'bionic'
+    elif [ -n "$(w_workaround_wine_bug 47198)" ] && [ -n "$WINETRICKS_BUILD_WINE" ]; then
+        w_warn "FIXME: Unable to apply patches to glibc-2.27 this way to work around winebug 47198"
+            export leagueoflegends_workaround_47198_choice="sc-segment"
+        wineappimagebuilder_patches()
+        {
+            case "$leagueoflegends_workaround_47198_choice" in
+              glibc)
+                  w_die "FIXME: Unable to apply patches to glibc-2.27 this way to work around winebug 47198"
+
+                  w_warn "Using WINEHACK to workaround 47198, credit: Andrew Wessie"
+
+                  # diff --git a/dlls/ntdll/thread.c b/dlls/ntdll/thread.c
+                  w_download 'https://bugs.winehq.org/attachment.cgi?id=64481' '' '64481.diff'
+                  if ! grep -qF "// FIXME All of this code is i386 Linux-specific. It may want to live in" "$wineappimagebuilder_workdir/wine-$wineappimagebuilder_wine_version_stripped/dlls/ntdll/thread.c"; then
+                    patch "$wineappimagebuilder_workdir/wine-$wineappimagebuilder_wine_version_stripped/dlls/ntdll/thread.c" "$W_CACHE/$W_PACKAGE/64481.diff"
+                  elif grep -qF "// FIXME All of this code is i386 Linux-specific. It may want to live in" "$wineappimagebuilder_workdir/wine-$wineappimagebuilder_wine_version_stripped/dlls/ntdll/thread.c"; then
+                    w_debug "Patch 64481 is already applied"
+                  fi
+
+                  # --- glibc-2.27.orig/nptl/descr.h
+                  # +++ glibc-2.27/nptl/descr.h
+                  w_download 'https://bugs.winehq.org/attachment.cgi?id=64482' '' '64482.diff'
+
+              ;;
+              sc-segment)
+                  w_warn "Using WINEHACK to workaround 47198, credit: Andrew Wessie"
+
+                  # diff --git a/dlls/ntdll/signal_i386.c b/dlls/ntdll/signal_i386.c
+                  w_download 'https://bugs.winehq.org/attachment.cgi?id=64507' '' '64507'
+                  if ! grep -qF '/* convert from straight ASCII to Unicode without depending on the current codepage */' "$wineappimagebuilder_workdir/wine-$wineappimagebuilder_wine_version_stripped/dlls/ntdll/signal_i386.c"; then
+                    patch "$wineappimagebuilder_workdir/wine-$wineappimagebuilder_wine_version_stripped/dlls/ntdll/signal_i386.c" "$W_CACHE/$W_PACKAGE/64481.diff"
+                  elif grep -qF '/* convert from straight ASCII to Unicode without depending on the current codepage */' "$wineappimagebuilder_workdir/wine-$wineappimagebuilder_wine_version_stripped/dlls/ntdll/signal_i386.c"; then
+                    w_debug "Patch 64507 is already applied"
+                  fi
+              ;;
+              *) w_die "Wrong value ($leagueoflegends_workaround_47198_choice) was parsed in wineappimagebuilder_patches()"
+            esac
+        }
+        w_call 'wineappimagebuilder'
+    fi
 
     # Install
     if [ ! -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ]; then
        leagueoflegends_fetch
        (
-          leagueoflegends_default_wineprefix
-          [ -z "$WINEDEBUG" ] && export WINEDEBUG="fixme-all"
-          if w_workaround_wine_bug '47198'; then
-            leagueoflegends_workaround_47198 # get WINE
-            # HOTFIX: winetricks is creating 64-bit wineprefix by default
-            export WINEARCH="win32"
-            [ -e "$WINEPREFIX" ] && [ ! -e "${W_DRIVE_C}/Riot Games/League of Legends/LeagueClient.exe" ] && mv "$WINEPREFIX" "/tmp/winetricks/$WINEPREFIX"
-          fi
-          # shellcheck disable=SC2154
-          leagueoflegends_d3d9_wrapper "$leagueoflegends_d3d9_wrapper"
-          w_try "$WINE" "${W_CACHE}/leagueoflegends/League%20of%20Legends%20installer%20${leagueoflegends_region}.exe"
-          return 0 # Stop here since leagueoflegends starts itself after installation
+            leagueoflegends_default_wineprefix
+            [ -z "$WINEDEBUG" ] && export WINEDEBUG="fixme-all"
+            if w_workaround_wine_bug '47198'; then
+                leagueoflegends_workaround_47198 # get WINE
+
+                # HOTFIX: winetricks is creating 64-bit wineprefix by default on AMD64 when WINEARCH is not specified
+                case "$WINE" in
+                    "*/$used_wine") w_debug "Correct WINE is used ($used_wine)"
+                    *) w_die "Wrong WINE ($WINE) is used where expecting '$used_wine' from '$W_CACHE/$W_PACKAGE', export it manually and re-invoke"
+                esac
+            fi
+            # shellcheck disable=SC2154
+            leagueoflegends_d3d9_wrapper "$leagueoflegends_d3d9_wrapper"
+            w_try "$WINE" "${W_CACHE}/leagueoflegends/League%20of%20Legends%20installer%20${leagueoflegends_region}.exe"
+            return 0 # Stop here since leagueoflegends starts itself after installation
        )
 
     # Run if already installed
