@@ -163,22 +163,6 @@ WINETRICKS_VERSION=20190912-next
 # - Pull Requests: https://github.com/Winetricks/winetricks/pulls
 #--------------------------------------------------------------------
 
-# FIXME: XDG_CACHE_HOME is defined twice, clean this up
-XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-
-W_COUNTRY=""
-W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
-
-# For temp files before $WINEPREFIX is available:
-if [ -x "$(command -v mktemp 2>/dev/null)" ] ; then
-    W_TMP_EARLY="$(mktemp -d "${TMPDIR:-/tmp}/winetricks.XXXXXXXX")"
-elif [ -w "$TMPDIR" ] ; then
-    W_TMP_EARLY="$TMPDIR"
-else
-    W_TMP_EARLY="/tmp"
-fi
-
 #---- Public Functions ----
 
 # Ask permission to continue
@@ -260,6 +244,13 @@ w_warn()
     esac
 
     unset _W_timeout
+}
+
+# Output debug message to stdin if debug variable is non-zero
+w_debug()
+{
+    # shellcheck disable=SC2154
+    [ -n "$debug" ] && printf 'DEBUG: %s\n' "$1"
 }
 
 # Display warning message to stderr (since it is called inside redirected code)
@@ -375,14 +366,14 @@ w_try()
     # $1 would be 'wine'.
     case "$1" in
         *.exe)
-            chmod +x "$1" || true # don't care if it fails
+            [ ! -x "$1" ] && chmod +x "$1"
             cmd /c "$@"
             ;;
         *)
             "$@"
             ;;
     esac
-    status=$?
+    status="$?"
     if test $status -ne 0; then
         case $LANG in
             pl*) w_die "Informacja: poelcenie $* zwróciło status $status. Przerywam." ;;
@@ -532,8 +523,11 @@ w_try_regedit32()
 {
     # on windows, doesn't work without cmd /c
     case "$W_PLATFORM" in
-        windows_cmd|wine_cmd) cmdc="cmd /c";;
-        *) unset cmdc ;;
+        windows_cygwin|wine_cmd) cmdc="cmd /c" ;;
+        nix_linux|nix_freebsd|nix_darwin) unset cmdc ;;
+        nix_redox) w_die "Platform '$W_PLATFORM' is not implemented in w_try_regedit32()" ;;
+        windows_windows) w_die "Platform '$W_PLATFORM' is not implemented in w_try_regedit32()" ;;
+        *) w_die "Unknown platform '$W_PLATFORM' parsed in w_try_regedit32()"
     esac
 
     # shellcheck disable=SC2086
@@ -544,8 +538,11 @@ w_try_regedit64()
 {
     # on windows, doesn't work without cmd /c
     case "$W_PLATFORM" in
-        windows_cmd|wine_cmd) cmdc="cmd /c";;
-        *) unset cmdc ;;
+        windows_cygwin|wine_cmd) cmdc="cmd /c" ;;
+        nix_linux|nix_freebsd|nix_darwin) unset cmdc ;;
+        nix_redox) w_die "Platform '$W_PLATFORM' is not implemented in w_try_regedit64()" ;;
+        windows_windows) w_die "Platform '$W_PLATFORM' is not implemented in w_try_regedit64()" ;;
+        *) w_die "Unknown platform '$W_PLATFORM' parsed in w_try_regedit64()"
     esac
 
     # shellcheck disable=SC2086
@@ -699,16 +696,19 @@ winetricks_wintounix()
 w_pathconv()
 {
     case "$W_PLATFORM" in
-        windows_cmd)
+        windows_cygwin)
             # for some reason, cygpath turns some spaces into newlines?!
             cygpath "$@" | tr '\012' '\040' | sed 's/ $//'
             ;;
-        *)
+        windows_windows) w_die "FIXME: w_pathconv for $1 not implemented" ;;
+        nix_redox) w_die "FIXME: w_pathconv for $1 not implemented" ;;
+        nix_linux|nix_freebsd|nix_darwin)
             case "$@" in
                 -u?c:\\*|-u?C:\\*|-u?c:/*|-u?C:/*) winetricks_wintounix "$2" ;;
                 *) winetricks_early_wine winepath "$@" ;;
             esac
         ;;
+        *) w_die "Unknown platform in w_pathconv() : $W_PLATFORM"
     esac
 }
 
@@ -716,6 +716,15 @@ w_pathconv()
 w_expand_env()
 {
     winetricks_early_wine cmd.exe /c echo "%$1%"
+}
+
+# Check if $1 is executable (output custom message using w_debug if $2 is specified)
+w_check_exec()
+{
+  if ! command -v "$1" >/dev/null; then
+    [ -z "$2" ] && { printf "Command '%s' is not executable" "$1" && exit 1 ;} || printf '%s\n' "$2"
+  elif command -v "$1" >/dev/null; then w_debug "Command '$1' is executable"
+  fi
 }
 
 # Get the latest tagged release from github.com API
@@ -1500,6 +1509,41 @@ w_steam_getid()
     fi
 }
 
+# Usage: w_origin_install_game [prefix:ID]
+w_origin_install_game()
+{
+    # Install the origin client
+    ## TODO: Triggers origin install even when origin is installed
+    w_call 'origin'
+
+    # STUB: This doesn't work because reasons (launches wrong titles)
+    #"$WINE" 'start' "origin://launchgame/${1}&autoDownload=1"
+
+    # Check for login since origin won't launch expected title if end-user is not logged
+    ## reverse-engineered stages: winetricks/1320#issuecomment-531577914
+    if [ ! -d "${WINEPREFIX}/drive_c/users/${USER}/Application Data/Origin/CommonTitles" ]; then
+      w_warn "Please log-in origin to continue.."
+      w_warn "HELP_WANTED: Expected to not hang untill wineserver finishes so that we can push Action below, HOTFIX: Kill wineserver once logged in"
+      w_try "$WINE" 'start' 'origin://kreyren'
+
+      while [ ! -e "${WINEPREFIX}/drive_c/users/${USER}/Application Data/Origin/CatalogCache" ]; do
+        # Wait untill end-user is logged in
+        sleep 5
+      done
+    fi
+
+    # Action to download and launch
+    w_try "$WINE" 'start' "origin2://game/launch?offerIds=${1}&autoDownload=1"
+}
+
+# Usage: w_uplay_install_game [GAME_ID]
+## Relevant: https://github.com/Haoose/UPLAY_GAME_ID
+w_uplay_install_game()
+{
+    w_call 'uplay'
+    w_try "$WINE" 'start' "uplay://launch/$1"
+}
+
 # Usage:
 # w_steam_install_game steamidnum windowtitle
 w_steam_install_game()
@@ -1760,7 +1804,7 @@ _EOF_
 w_skip_windows()
 {
     case "$W_PLATFORM" in
-        windows_cmd)
+        windows_cygwin|windows_windows)
             echo "Skipping operation '$1' on Windows"
             return 0
             ;;
@@ -2546,10 +2590,10 @@ w_wine_version_in()
 # the environment variable WINETRICKS_BLACKLIST to disable it.
 w_workaround_wine_bug()
 {
-    if test "$WINE" = ""; then
-        echo "No need to work around wine bug $1 on Windows"
-        return 1
-    fi
+    case "$(winetricks_get_platform)" in
+        windows_*) echo "No need to work around wine bug $1 on Windows" ; return 1
+    esac
+
     case "$2" in
         [0-9]*) w_die "bug: want message in w_workaround_wine_bug arg 2, got $2" ;;
         "") _W_msg="";;
@@ -2595,6 +2639,25 @@ w_workaround_wine_bug()
 
 w_metadata()
 {
+  # Required to get platform variable
+  winetricks_get_platform >/dev/null
+
+  # Must initialize variables before calling w_metadata
+  if [ -z "$WINETRICKS_LIB" ]; then
+      WINETRICKS_SRCDIR="$(dirname "$0")"
+      WINETRICKS_SRCDIR="$(w_try_cd "$WINETRICKS_SRCDIR"; pwd)"
+
+      # Which GUI helper to use (none/zenity/kdialog).  See winetricks_detect_gui.
+      WINETRICKS_GUI=none
+      # Default to a shared prefix:
+      # WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-1}
+
+      # Handle options before init, to avoid starting wine for --help or --version
+      while winetricks_handle_option "$1"; do
+          shift
+      done
+  fi
+
     case $WINETRICKS_OPT_VERBOSE in
         2) set -x ;;
         *) set +x ;;
@@ -2634,16 +2697,18 @@ w_metadata()
     # If the problem described above happens, you'd see errors like this:
     # /tmp/w.dank.4650/metadata/dlls/comctl32.vars: 6: Syntax error: Unterminated quoted string
     # so check for lines that aren't properly quoted.
-
+//
     # Do sanity check unless running on Cygwin, where it's way too slow.
     case "$W_PLATFORM" in
-        windows_cmd)
-            ;;
-        *)
+        windows_cygwin) w_warn "FIXME: Sanity check for w_metadata() is too slow, skipping.." ;;
+        windows_windows) w_die "FIXME: Platform $W_PLATFORM is not implemtented in w_metadata()" ;;
+        nix_redox) w_die "FIXME: Platform $W_PLATFORM is not implemtented in w_metadata()" ;;
+        nix_linux|nix_freebsd|nix_darwin)
             if grep '[^"]$' "$file"; then
                 w_die "bug: w_metadata $_W_md_cmd corrupt, might need forward slashes?"
             fi
-            ;;
+        ;;
+        *) w_die "Unknown W_PLATFORM '$W_PLATFORM' detected in w_metadata()"
     esac
     unset _W_md_cmd
 
@@ -2729,8 +2794,8 @@ w_do_call()
 
         # If needed, set the app's wineprefix
         case "$W_PLATFORM" in
-            windows_cmd|wine_cmd) ;;
-            *)
+            windows_cygwin|windows_windows|wine_cmd) ;;
+            nix_linux|nix_freebsd|nix_darwin)
                 # shellcheck disable=SC2154
                 case "${category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
                     apps-0|benchmarks-0|games-0)
@@ -2742,6 +2807,8 @@ w_do_call()
                         ;;
                 esac
             ;;
+            nix_redox) w_die "FIXME: Platform '$W_PLATFORM' is not implemented in w_do_call()" ;;
+            *) w_die "Unknown platform detected in w_do_call() : $W_PLATFORM"
         esac
 
         test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP"
@@ -2758,12 +2825,11 @@ w_do_call()
 
         # Don't install if already installed
         if test "$WINETRICKS_FORCE" != 1 && winetricks_is_installed "$1"; then
-            echo "$1 already installed, skipping"
-            return 0
+            w_die "Verb '$1' is already installed, skipping"
         fi
 
         # We'd like to get rid of W_PACKAGE, but for now, just set it as late as possible.
-        W_PACKAGE=$1
+        W_PACKAGE="$1"
         w_try "load_$cmd" "$arg"
         winetricks_stats_log_command "$@"
 
@@ -3025,20 +3091,65 @@ winetricks_get_sha256sum_prog() {
     fi
 }
 
+# Get running platform in W_PLATFORM and return it in a form of [nix|windows]_[kernel_used]
 winetricks_get_platform()
 {
-    if [ "${OS}" = "Windows_NT" ]; then
-        if [ -n "${WINELOADERNOEXEC}" ]; then
-            # Windows/Cygwin
-            export W_PLATFORM="windows_cmd"
-        else
-            # wineconsole/cmd under wine
-            export W_PLATFORM="wine_cmd"
-        fi
-    else
-        # Normal Unix shell
-        export W_PLATFORM="wine"
-    fi
+  # Linux - `uname` returns 'GNU/Linux'
+  if [ "$(uname)" = "Linux" ]; then
+    export W_PLATFORM="nix_linux"
+    printf "%s\n" "$W_PLATFORM"
+    return 0
+
+  # FreeBSD - `uname` returns 'FreeBSD'
+  elif [ "$(uname)" = "FreeBSD" ]; then
+    export W_PLATFORM="nix_freebsd"
+    printf "%s\n" "$W_PLATFORM"
+    return 0
+
+  # Redox - `uname` returns 'Redox'
+  elif [ "$(uname)" = "Redox" ]; then
+    export W_PLATFORM="nix_redox"
+    printf "%s\n" "$W_PLATFORM"
+    return 0
+
+  # Cygwin - `uname -o` returns 'Cygwin'
+  elif [ "$(uname -o)" = "Cygwin" ]; then
+    export W_PLATFORM="windows_cygwin"
+    printf "%s\n" "$W_PLATFORM"
+    return 0
+
+  # MacOS - `uname` returns 'Darwin'
+  elif [ "$(uname)" = "Darwin" ]; then
+    export W_PLATFORM="nix_darwin"
+    printf "%s\n" "$W_PLATFORM"
+    return 0
+
+  # Windows - Impossible to get?
+  elif [ "$(uname)" = "Windows" ]; then
+    w_warn "How did you execute POSIX shell on native Windows? File an issue for compatibility"
+    export W_PLATFORM="windows_windows"
+    printf "%s\n" "$W_PLATFORM"
+    return 0
+
+  # WineCMD/CMD
+  elif [ "$OS" = "Windows_NT" ] && [ -z "$(uname)" ]; then
+    export W_PLATFORM="wine_cmd"
+    printf "%s\n" "$W_PLATFORM"
+    return 0
+
+  else
+   # WSL - `uname -r` returns `4.4.0-18362-Microsoft` where 4.4.0 is kernel version and 18362 windows build(?)
+   ## $OS is blank on WSL (10/2019)
+   case "$(uname -r)" in
+     *-Microsoft)
+      export W_PLATFORM="windows_wsl"
+      printf "%s\n" "$W_PLATFORM"
+      return 0
+   esac
+  fi
+
+  # Logic-check
+  [ -z "$W_PLATFORM" ] && w_die "Function winetricks_get_platform is unable to get W_PLATFORM variable"
 }
 
 winetricks_latest_version_check()
@@ -4050,7 +4161,7 @@ winetricks_is_installed()
     fi
 
     case "$W_PLATFORM" in
-        windows_cmd|wine_cmd)
+        windows_cygwin|windows_windows|wine_cmd)
             # On Windows, there's no wineprefix, just check if file's there
             _W_file_unix="$(w_pathconv -u "$_W_file")"
             if test -f "$_W_file_unix"; then
@@ -4058,7 +4169,7 @@ winetricks_is_installed()
                 return 0  # installed
             fi
             ;;
-        *)
+        nix_linux|nix_freebsd|nix_darwin)
             # Compute wineprefix for this app
             case "${category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
                 apps-0|benchmarks-0|games-0)
@@ -4085,6 +4196,8 @@ winetricks_is_installed()
              IFS="$_W_IFS"
             fi
             ;;
+        nix_redox) w_die "Platform '$W_PLATFORM' is not implemented in winetricks_is_installed()" ;;
+        *) w_die "Unknown platform '$W_PLATFORM' used in winetricks_is_installed"
     esac
     unset _W_file _W_prefix _W_IFS  # leak _W_file_unix for caller. Is this wise?
     return 1  # not installed
@@ -4812,10 +4925,13 @@ winetricks_set_wineprefix()
     esac
 
     case "$W_PLATFORM" in
-        windows_cmd)
+        windows_cygwin)
             W_DRIVE_C="/cygdrive/c" ;;
-        *)
+        windows_windows) w_die "FIXME: Platform '$W_PLATFORM' is not implemtented in winetricks_set_wineprefix()" ;;
+        nix_redox) w_die "FIXME: Platform '$W_PLATFORM' is not implemtented in winetricks_set_wineprefix()" ;;
+        nix_linux|nix_freebsd|nix_darwin)
             W_DRIVE_C="$WINEPREFIX/dosdevices/c:" ;;
+        *) w_die "Unknown platform '$W_PLATFORM' was used in winetricks_set_wineprefix()"
     esac
 
     # Kludge: use Temp instead of temp to avoid \t expansion in w_try
@@ -4831,8 +4947,8 @@ winetricks_set_wineprefix()
     fi
 
     case "$W_PLATFORM" in
-        "windows_cmd|wine_cmd") W_CACHE_WIN="$(w_pathconv -w "$W_CACHE")" ;;
-        *)
+        windows_cygwin|windows_windows|wine_cmd) W_CACHE_WIN="$(w_pathconv -w "$W_CACHE")" ;;
+        nix_linux|nix_freebsd|nix_darwin)
             # For case where Z: doesn't exist or / is writable (!),
             # make a drive letter for W_CACHE.  Clean it up on exit.
             test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
@@ -4847,6 +4963,8 @@ winetricks_set_wineprefix()
             done
             W_CACHE_WIN="${letter}:"
             ;;
+        nix_redox) w_die "Platform '$W_PLATFORM' is not implemented in winetricks_set_wineprefix()" ;;
+        *) w_die "Unknown platform ($W_PLATFORM) detected in winetricks_set_wineprefix()"
     esac
 
     W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles)"
@@ -5037,7 +5155,8 @@ winetricks_init()
 
     winetricks_get_sha256sum_prog
 
-    winetricks_get_platform
+    # winetricks_get_platform got updated and in addition to W_PLATFORM export it outputs the platform which seems unexpected here
+    winetricks_get_platform 2>&1 /dev/null
 
     #---- Public Variables ----
 
@@ -5094,7 +5213,7 @@ winetricks_init()
 
     # System-specific variables
     case "$W_PLATFORM" in
-        windows_cmd)
+        windows_cygwin)
             WINE=""
             WINE64=""
             WINE_ARCH=""
@@ -5102,7 +5221,8 @@ winetricks_init()
             WINESERVER=""
             W_DRIVE_C="C:/"
             ;;
-        *)
+        windows_windows) w_die "Platform '$W_PLATFORM' is not implemented in winetricks_init()" ;;
+        nix_linux|nix_freebsd|nix_darwin)
             WINE="${WINE:-wine}"
             # Find wineserver.
             # Some distributions (Debian before wine 1.8-2) don't have it on the path.
@@ -5137,7 +5257,6 @@ winetricks_init()
                     break
                 fi
             done
-
                 case "$x" in
                     file-not-found) w_die "wineserver not found!" ;;
                     *) WINESERVER="$x" ;;
@@ -5154,9 +5273,9 @@ winetricks_init()
                 fi
                 unset _abswine
                 ;;
+        nix_redox) w_die "Platform '$W_PLATFORM' is not implemented in winetricks_init()" ;;
+        *) w_die "Unknown platform '$W_PLATFORM' used in winetricks_init()"
     esac
-
-    winetricks_set_wineprefix "$1"
 
     # Whether to automate installs (0=no, 1=yes)
     winetricks_set_unattended ${W_OPT_UNATTENDED:-0}
@@ -5302,7 +5421,7 @@ winetricks_handle_option()
 {
     case "$1" in
         --country=*) W_COUNTRY="${1##--country=}" ;;
-        --force) WINETRICKS_FORCE=1;;
+        --force|-f) WINETRICKS_FORCE=1;;
         --gui) winetricks_detect_gui;;
         -h|--help) winetricks_usage ; exit 0 ;;
         --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
@@ -5325,36 +5444,6 @@ winetricks_handle_option()
     esac
     return 0
 }
-
-# Test whether temporary directory is valid - before initialising script
-[ -d "$W_TMP_EARLY" ] || w_die "temporary directory: '$W_TMP_EARLY' ; does not exist"
-[ -w "$W_TMP_EARLY" ] || w_die "temporary directory: '$W_TMP_EARLY' ; is not user writeable"
-
-# Must initialize variables before calling w_metadata
-if ! test "$WINETRICKS_LIB"
-then
-    WINETRICKS_SRCDIR=$(dirname "$0")
-    WINETRICKS_SRCDIR=$(w_try_cd "$WINETRICKS_SRCDIR"; pwd)
-
-    # Which GUI helper to use (none/zenity/kdialog).  See winetricks_detect_gui.
-    WINETRICKS_GUI=none
-    # Default to a shared prefix:
-    WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-1}
-
-    # Handle options before init, to avoid starting wine for --help or --version
-    while winetricks_handle_option "$1"
-    do
-        shift
-    done
-
-    # Workaround for https://github.com/Winetricks/winetricks/issues/599
-    # If --isolate is used, pass verb to winetricks_init, so it can set the wineprefix using winetricks_set_wineprefix()
-    # Otherwise, an arch mismatch between ${WINEPREFIX:-$HOME/.wine} and the prefix to be made for the isolated app would cause it to fail
-    case $WINETRICKS_OPT_SHAREDPREFIX in
-        0) winetricks_init "$1" ;;
-        *) winetricks_init ;;
-    esac
-fi
 
 winetricks_install_app()
 {
@@ -8193,13 +8282,15 @@ load_dotnet30()
         esac
     fi
 
+    # Compatibility for Windows
     case "$W_PLATFORM" in
-        windows_cmd)
+        windows_cygwin)
             osver=$(cmd /c ver)
             case "$osver" in
                 *Version?6*) w_die "Vista and up bundle .NET 3.0, so you can't install it like this" ;;
             esac
             ;;
+        windows_windows) w_die "Platform '$W_PLATFORM' is not implemented in load_dotnet30()"
     esac
 
     # AF's workaround to avoid long pause
@@ -8312,9 +8403,11 @@ load_dotnet35()
         w_package_unsupported_win64
     fi
 
+    # Platform compatibility
     case "$W_PLATFORM" in
-        windows_cmd) ;;
-        *) w_warn "dotnet35 does not yet fully work or install on wine.  Caveat emptor." ;;
+        windows_cygwin|windows_windows) ;;
+        nix_linux|nix_freebsd|nix_darwin|nix_redox) w_warn "dotnet35 does not yet fully work or install on wine.  Caveat emptor." ;;
+        *) w_die "Unknown platform '$W_PLATFORM' parsed in load_dotnet35()"
     esac
 
     w_verify_cabextract_available
@@ -8367,8 +8460,9 @@ load_dotnet35sp1()
     fi
 
     case "$W_PLATFORM" in
-        windows_cmd) ;;
-        *) w_warn "dotnet35sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
+        windows_cygwin|windows_windows) ;;
+        nix_linux|nix_freebsd|nix_darwin|nix_redox) w_warn "dotnet35sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
+        *) w_die "Unknown platform parsed in load_dotnet35sp1()"
     esac
 
     w_verify_cabextract_available
@@ -8416,8 +8510,9 @@ load_dotnet40()
     w_package_warn_win64
 
     case "$W_PLATFORM" in
-        windows_cmd) ;;
-        *) w_warn "dotnet40 does not yet fully work or install on wine.  Caveat emptor." ;;
+        windows_cygwin|windows_windows) ;;
+        nix_linux|nix_freebsd|nix_darwin|nix_redox) w_warn "dotnet40 does not yet fully work or install on wine.  Caveat emptor." ;;
+        *) w_die "Unknown platform '$W_PLATFORM' used in load_dotnet40()"
     esac
 
     if [ "$W_ARCH" = "win64" ]; then
@@ -13207,6 +13302,190 @@ load_allfonts()
 }
 
 #######################
+# tools
+#######################
+
+# ----------------------------------------------------------------
+
+# TODO: Add tools metadata
+w_metadata wineappimagebuilder apps \
+    title="WINE AppImage builder" \
+    publisher="Kreyren" \
+    year="2019" \
+    media="tools"
+
+load_wineappimagebuilder()
+{
+    # Get wine source
+    [ -z "$wineappimagebuilder_workdir" ] && export wineappimagebuilder_workdir="$WINETRICKS_WORKDIR"
+    [ "$wineappimagebuilder_workdir" != "$WINETRICKS_WORKDIR" ] && [ ! -e "$wineappimagebuilder_workdir" ] && { mkdir "$wineappimagebuilder_workdir" && w_debug "Directory '$wineappimagebuilder_workdir' was created to be used for wineappimagebuilder_workdir" ;} || w_debug "Directory '$wineappimagebuilder_workdir' already exist to be used for wineappimagebuilder_workdir"
+
+    # Logic to grab WINEARCH if none is specified
+    [ -z "$WINEARCH" ] && case "$(uname -m)" in
+      x86_64)
+        export WINEARCH="win64"
+      ;;
+      x86)
+        export WINEARCH="win32"
+      ;;
+      *) w_die "Unexpected output of 'uname -m' ($(uname -m)) was provided for WINEARCH logic"
+    esac
+
+    # TODO: Always use latest if none is selected
+    [ -z "$wineappimagebuilder_wine_version" ] && export wineappimagebuilder_wine_version="wine-4.17"
+
+    # Logic to fetch expected WINE version
+    export wineappimagebuilder_wine_version_stripped="${wineappimagebuilder_wine_version#?????}"
+    case "$wineappimagebuilder_wine_version" in
+      # Attempt to provide future compatibility
+      # TODO: needs improvement supports wine-[3-9].0|wine-[3-9].[0-9] only instead of wine-[3-9].[0-9]*
+      wine-[3-9].0.*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/${wineappimagebuilder_wine_version_stripped%???}.0/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-[3-9].[0-9]*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/${wineappimagebuilder_wine_version_stripped%???}.x/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      # Cherrypicked
+      wine-1.9.[0-9]|wine-1.9.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.9/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.8.[0-9]|wine-1.8.[0-9][0-9]|wine-1.8.[0-9]-rc*|wine-1.8.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.8/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.7.[0-9]|wine-1.7.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.7/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.6.[0-9]|wine-1.6.[0-9][0-9]|wine-1.6.[0-9]-rc*|wine-1.6-rc*|wine-1.6.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.6/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.5.[0-9]|wine-1.5.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.5/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.4.[0-9]|wine-1.4.[0-9][0-9]|wine-1.4.[0-9]-rc*|wine-1.4.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.4/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.3.[0-9]|wine-1.3.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.3/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.2.[0-9]|wine-1.2.[0-9][0-9]|wine-1.2.[0-9]-rc*|wine-1.2-rc*|wine-1.2.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.2/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.1.[0-9]|wine-1.1.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.1/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.0.[0-9]|wine-1.0.[0-9][0-9]|wine-1.0.[0-9]-rc*|wine-1.0-rc*|wine-1.0.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.0/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.1.[0-9]|wine-1.1.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.0/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      *) w_die "wineappimagebuilder doesn't support '$wineappimagebuilder_wine_version' in 'wineappimagebuilder_wine_version' variable"
+    esac
+
+    # Credit: https://stackoverflow.com/a/18963118
+    gcc_optimization() { gcc -### -E - -march=native 2>&1 | sed -r '/cc1/!d;s/(")|(^.* - )|( -mno-[^\ ]+)//g' ;}
+
+    # Abstract: Make compilation as fast as possible for those using it
+    export COMMON_FLAGS="$(gcc_optimization) --pipe"
+    [ -z "$CFLAGS" ] && export CFLAGS="$COMMON_FLAGS"
+    [ -z "$CXXFLAGS" ] && export CXXFLAGS="$COMMON_FLAGS"
+    [ -z "$FCFLAGS" ] && export FCLAGS="$COMMON_FLAGS"
+    [ -z "$FFLAGS" ] && export FFLAGS="$COMMON_FLAGS"
+    [ -z "$FCFLAGS" ] && export FCFLAGS="$COMMON_FLAGS"
+    [ -z "$MAKEOPTS" ] && export MAKEOPTS="$([ -n "$(nproc)" ] && printf '%s\n' "-j$(nproc)")"
+
+    # Fetch WINE source
+    # TODO: Allow fetching different versions of WINE
+    [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/4.x/$wineappimagebuilder_wine_version.tar.xz"
+
+    # shellcheck disable=SC2015
+    [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version" ] && { mkdir "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version" || w_die "failed to make a new directory in '$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version" ;} || w_debug "Directory '$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version' already exists"
+
+    [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/LICENSE" ] && tar -xf "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" -C "$wineappimagebuilder_workdir/"
+
+    # Compile WINE
+    w_check_exec 'flex'
+    w_check_exec 'bison'
+    w_check_exec 'make'
+
+    w_warn "Wine64 is built depending on WINEARCH variable"
+
+    ## We are fetching wine from official release -> no regression tests needed
+    (
+      # TODO: Avoid using cd
+      w_try_cd "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version"
+      w_warn "Generating Makefile, this could take a while.. (max 2min)"
+      [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/Makefile" ] && w_try "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/configure" --disable-tests --quiet --srcdir="$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/" "$([ "$WINEARCH" = "win64" ] && printf '%s\n' "--enable-win64")"
+    )
+    w_warn "We are about to build whole WINE from source to be packaged in AppImage, this make take a while (2h max per one thread)"
+    [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/libs/wine/libwine.so.1.0" ] && w_warn "We are about to compile whole WINE, this is going to take some time.."
+    w_try make -C "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/" "$MAKEOPTS"
+
+    # Get appimagetool
+    if [ "$WINEARCH" = 'win64' ]; then
+      [ ! -e "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" ] && w_download 'https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage'
+      [ ! -e "$wineappimagebuilder_workdir/appimagetool.AppImage" ] && [ -e "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" ] && cp -r "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" "$wineappimagebuilder_workdir"
+      # shellcheck disable=SC2015
+      [ ! -x "$wineappimagebuilder_workdir/appimagetool.AppImage" ] && { chmod +x "$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage" || w_die "Unable to set executable permissions on '$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage'" ;} || w_debug "File '$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage' is already executable"
+
+      ## Export in workdir
+      [ ! -e "$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage" ] && [ -e "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" ] && cp "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" "$wineappimagebuilder_workdir/"
+      [ ! -x "$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage" ] && chmod +x "$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage"
+
+      export wineappimagebuilder_appimagetool="appimagetool-x86_64.AppImage"
+    elif [ "$WINEARCH" = 'win32' ]; then
+      [ ! -e "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" ] && w_download 'https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-i686.AppImage'
+      [ ! -e "$wineappimagebuilder_workdir/appimagetool.AppImage" ] && [ -e "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" ] && cp -r "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" "$wineappimagebuilder_workdir"
+      [ ! -x "$wineappimagebuilder_workdir/appimagetool.AppImage" ] && { chmod +x "$wineappimagebuilder_workdir/appimagetool-i686.AppImage" || w_die "Unable to set executable permissions on '$wineappimagebuilder_workdir/appimagetool-i686.AppImage'" ;} || w_debug "File '$wineappimagebuilder_workdir/appimagetool-i686.AppImage' is already executable"
+
+      ## Export in workdir
+      [ ! -e "$wineappimagebuilder_workdir/appimagetool-i686.AppImage" ] && [ -e "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" ] && cp "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" "$wineappimagebuilder_workdir/"
+      [ ! -x "$wineappimagebuilder_workdir/appimagetool-i686.AppImage" ] && chmod +x "$wineappimagebuilder_workdir/appimagetool-i686.AppImage"
+
+      export wineappimagebuilder_appimagetool="appimagetool-i686.AppImage"
+    else w_die "Unsupported WINEARCH ($WINEARCH)"
+    fi
+
+    # Build AppImage
+    (
+      w_try_cd "$wineappimagebuilder_workdir"
+      [ ! -e "$wineappimagebuilder_workdir/squashfs-root/AppRun" ] && w_try "$wineappimagebuilder_workdir/$wineappimagebuilder_appimagetool" --appimage-extract
+    )
+
+    # Make appimage executable
+    [ ! -x "$wineappimagebuilder_workdir/squashfs-root/AppRun" ] && chmod +x "$wineappimagebuilder_workdir/squashfs-root/AppRun"
+
+    # APPLY PATCHES
+    # shellcheck disable=SC2015
+    [ -n "$(wineappimagebuilder_patches)" ] && { wineappimagebuilder_patches ;} || w_warn "No patches ware applied, define 'wineappimagebuilder_patches' in your verb to apply them"
+
+    # Configure AppImage
+    # Both .svg and .desktop are mandatory
+    [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/appimagetool.svg" ] && { cp "$wineappimagebuilder_workdir/squashfs-root/appimagetool.svg" "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/" || die "Unable to copy '$wineappimagebuilder_workdir/squashfs-root/appimagetool.svg' to '$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/'" ;}
+    printf '%s\n' \
+      '[Desktop Entry]' \
+      'Type=Application' \
+      "Name=$W_PACKAGE" \
+      'Exec=wine' \
+      'Comment=Created by winetricks' \
+      'Icon=appimagetool' \
+      'Categories=Development;' \
+      'Terminal=true' \
+    > "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/appimagetool.desktop"
+
+    (
+      [ "$WINEARCH" = "win64" ] && export ARCH='x86_64'
+      # Blind ARCH=x86
+      [ "$WINEARCH" = "win32" ] && export ARCH='x86'
+      if [ ! -e "$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage" ]; then
+        [ -e "$wineappimagebuilder_workdir/squashfs-root/AppRun" ] && w_try "$wineappimagebuilder_workdir/squashfs-root/AppRun" -u "gh-releases-zsync|$USER|Wine_Appimage|winetricks|wine-*winetricks.AppImage.zsync" "/home/kreyren/testing_wine/$wineappimagebuilder_wine_version/" "$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage"
+      fi
+    )
+}
+
+#----------------------------------------------------------------
+
+#######################
 # apps
 #######################
 
@@ -14994,6 +15273,103 @@ load_sketchup()
 
 #----------------------------------------------------------------
 
+w_metadata origin apps \
+    title="Origin" \
+    publisher="Electronic Arts" \
+    year="2011" \
+    media="download" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Origin/Origin.exe"
+
+load_origin() {
+  # NOTICE: Qt5Svg.dll is required for C:\\Program Files (x86)\\Origin\\imageformats\\qsvg.dll
+  # NOTICE: Both legacy and non-legacy are using dx11 and dxgi libs, but doesn't depend on them
+  # NOTICE: CTRL+V doesn't work in non-legacy
+
+  # Sanitization for client already installed
+  ## Since this supports multiple versions of origin we are unable to use winetricks's function
+  [ -e "${WINEPREFIX}/drive_c/Program Files (x86)/Origin/Origin.exe" ] && return 0
+
+  # Logic for DXVK
+  if [ -n "$WINETRICKS_ORIGIN_USE_DXVK" ]; then
+
+    # https://github.com/KhronosGroup/MoltenVK/issues/203
+    [ "$(uname)" = 'Darwin' ] && w_die "DXVK is not supported on MacOS due to the missing extension on MoltenVK"
+
+    w_call 'dxvk'
+
+    # Installer fails without overrides to OriginClientService assuming missing function in WINE
+    # https://bugs.winehq.org/show_bug.cgi?id=47773
+    if [ -n "$WINETRICKS_USE_LEGACY_ORIGIN" ]; then
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10'
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10_1'
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d10core'
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'd3d11'
+      w_override_app_dlls 'OriginClientService.exe' 'disabled' 'dxgi'
+    fi
+
+  elif [ -z "$WINETRICKS_ORIGIN_USE_DXVK" ]; then
+    w_info "DXVK was disabled for origin client, to enable set WINETRICKS_ORIGIN_USE_DXVK variable to non-zero"
+
+    # Disable dxvk libraries if variable above is not set
+    w_override_app_dlls 'Origin.exe' 'disabled' 'd3d10'
+    w_override_app_dlls 'Origin.exe' 'disabled' 'd3d10_1'
+    w_override_app_dlls 'Origin.exe' 'disabled' 'd3d10core'
+    w_override_app_dlls 'Origin.exe' 'disabled' 'd3d11'
+    w_override_app_dlls 'Origin.exe' 'disabled' 'dxgi'
+
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'd3d10'
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'd3d10_1'
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'd3d10core'
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'd3d11'
+    w_override_app_dlls 'IGOProxy.exe' 'disabled' 'dxgi'
+
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d10'
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d10_1'
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d10core'
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'd3d11'
+    w_override_app_dlls 'IGOProxy64.exe' 'disabled' 'dxgi'
+  fi
+
+  # Logic for installer
+  if [ -n "$WINETRICKS_USE_LEGACY_ORIGIN" ]; then
+
+    # legacy download
+    w_download 'https://origin-a.akamaihd.net/Origin-Client-Download/origin/legacy/OriginThinSetup.exe' '' 'OriginThinSetupLegacy.exe'
+
+    w_warn "You should *uncheck* sharing hardware info"
+
+    # Installer
+    WINEDEBUG='fixme-all' w_try "$WINE" "${W_CACHE}/origin/OriginThinSetupLegacy.exe"
+
+    # Switch back to default environment
+    w_unset_winver
+
+  elif [ -z "$WINETRICKS_USE_LEGACY_ORIGIN" ]; then
+
+    w_warn "winbind is required for this wineapp to work"
+
+    w_download 'https://origin-a.akamaihd.net/Origin-Client-Download/origin/live/OriginThinSetup.exe'
+
+    w_warn "You should *uncheck* sharing hardware info"
+
+    WINEDEBUG='fixme-all' w_try "$WINE" "${W_CACHE}/origin/OriginThinSetup.exe"
+  fi
+
+  # Wait untill origin is installed
+  ## Reverse-engineered stages https://github.com/Winetricks/winetricks/pull/1320#issuecomment-531577914
+  while [ ! -e "${WINEPREFIX}/drive_c/Program Files (x86)/Origin/3RDPARTYLICENSES.HTML" ]; do
+    sleep 5
+  done
+
+  # Fixing directory for game download https://github.com/Winetricks/winetricks/pull/1318#issuecomment-531460777
+  [ -n "$WINETRICKS_USE_LEGACY_ORIGIN" ] && (if grep -qF "DownloadInPlaceDir" "${WINEPREFIX}/drive_c/users/${USER}/Application Data/Origin/local.xml.old" 2>/dev/null; then
+    sed -i 's@<Setting type="10" key="DownloadInPlaceDir" value=.*@<Setting type="10" key="DownloadInPlaceDir" value="C:\\Program Files (x86)\\Origin Games\\"/>@' "${WINEPREFIX}/drive_c/users/${USER}/Application Data/Origin/local.xml.old" || w_warn 'Workaround for Download path was not applied, because expected setting is not used.'
+  else true ; fi)
+
+}
+
+#----------------------------------------------------------------
+
 w_metadata steam apps \
     title="Steam" \
     publisher="Valve" \
@@ -15057,16 +15433,31 @@ w_metadata uplay apps \
     year="2013" \
     media="download" \
     file1="UplayInstaller.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Ubisoft Game Launcher/Uplay.exe"
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Ubisoft/Ubisoft Game Launcher/Uplay.exe"
 
 load_uplay()
 {
-    # Changes too frequently, don't check anymore
-    w_download https://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe
-    w_try_cd "$W_CACHE/$W_PACKAGE"
+    # Changes too frequently, dont check anymore
+    w_download 'https://ubistatic3-a.akamaihd.net/orbit/releases/winxp/installer/UplayInstaller.exe'
+    # New installer has issues with rendering on wine <4.15
+    #w_download https://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe
+
+    # Get workarounds
+    w_call 'corefonts'
+    # Required for client to open #1249 (winetricks)
+    w_set_app_winver 'upc.exe' 'winvista'
+    w_set_app_winver 'UbisoftGameLauncher.exe' 'winvista'
+    w_set_app_winver 'UbisoftGameLauncher64.exe' 'winvista'
+    w_set_app_winver 'Uplay.exe' 'winvista'
+    w_set_app_winver 'UplayService.exe' 'winvista'
+    w_set_app_winver 'UplayWebCore.exe' 'winvista'
+    w_set_app_winver 'UWebCore.exe' 'winvista'
+    w_set_app_winver 'Ubisoft Game Launcupc.exe' 'winvista'
+
+    w_warn "Launcher will output critical error which is non-fatal, press \"OK\" and ignore it."
 
     # NSIS installer
-    w_try "$WINE" UplayInstaller.exe ${W_OPT_UNATTENDED:+ /S}
+    w_try "${WINE}" "${W_CACHE}/uplay/UplayInstaller.exe" "${W_OPT_UNATTENDED:+ /S}"
 }
 
 #----------------------------------------------------------------
@@ -17971,6 +18362,76 @@ load_hordesoforcs2_demo()
 
 #----------------------------------------------------------------
 
+# https://appdb.winehq.org/objectManager.php?sClass=version&iId=37229
+
+w_metadata mtg_arena games \
+    title="Magic: The Gathering arena" \
+    publisher="Wizards of the Coast" \
+    year="2019" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Wizards of the Coast/MTGA/MTGA.exe"
+
+load_mtg_arena()
+{
+  w_die "ping MTGA"
+  # https://bugs.winehq.org/show_bug.cgi?id=45937#c13
+  if w_workaround_wine_bug 45937; then
+    w_call 'usetakefocus=disabled'
+  fi
+
+  # https://bugs.winehq.org/show_bug.cgi?id=47820
+  if w_workaround_wine_bug 47820; then
+    # Credit: ZeroPointEnergy (https://appdb.winehq.org/objectManager.php?sClass=version&iId=37229)
+    w_warn "This may take a while to load"
+    w_download "https://mtgarena.downloads.wizards.com/Live/Windows32/versions/1790.733462/MTGAInstaller_0.1.1790.733462.msi"
+    export file1="MTGAInstaller_0.1.1790.733462.msi"
+    w_warn "Installer is going to complain about permssions set on windows, these doesn't seem to be related to WINE and doesn't affect the runtime of game"
+  elif ! w_workaround_wine_bug 47820; then
+    w_download "https://mtgarena.downloads.wizards.com/Live/Windows32/MTGAInstaller.exe"
+    export file1="MTGAInstaller.msi"
+  fi
+
+  # https://bugs.winehq.org/show_bug.cgi?id=45898
+  if w_workaround_wine_bug 45898; then
+    w_warn "Affected by https://bugs.winehq.org/show_bug.cgi?id=45898"
+  fi
+
+  # https://bugs.winehq.org/show_bug.cgi?id=45546
+  if w_workaround_wine_bug 45546; then
+    w_warn "We are using hack patch from 45546 which could cause a runtime issues, if this happends then you are encouraged to report this to winetricks"
+    if [ -n "$WINETRICKS_BUILD_WINE" ]; then
+      w_warn "We are about to build a wine from source and package it in AppImage"
+      wineappimagebuilder_patches() {
+        w_download "https://bugs.winehq.org/attachment.cgi?id=62956" '' "$W_CACHE/$W_PACKAGE/62956.diff"
+
+        if ! grep -qF "for (i = 0; i < 2000; i++)" "$wineappimagebuilder_workdir/wine-4.17/dlls/ntdll/thread.c"; then
+          patch "$wineappimagebuilder_workdir/wine-4.17/dlls/ntdll/thread.c" "$W_CACHE/$W_PACKAGE/62956.diff" || w_die "Failed to apply patch in '$wineappimagebuilder_workdir/wine-4.17/dlls/ntdll/thread.c'"
+        elif grep -qF "for (i = 0; i < 2000; i++)" "$wineappimagebuilder_workdir/wine-4.17/dlls/ntdll/thread.c"; then
+          w_debug "Patch for 45546 is already applied"
+        else w_die "Unexpected output in wineappimagebuilder_patches function"
+        fi
+      }
+      load_wineappimagebuilder
+    elif [ -z "$WINETRICKS_BUILD_WINE" ]; then
+      w_download "https://github.com/Kreyren/kreytricks/releases/download/7f230d2/MTGA.AppImage"
+
+      if [ -e "$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage" ]; then export WINE="$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage"
+      elif [ -e "$W_CACHE/$W_PACKAGE/MTGA.AppImage" ]; then export WINE="$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage"
+      elif [ ! -e "$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage" ] && [ ! -e "$W_CACHE/$W_PACKAGE/MTGA.AppImage" ]; then w_die "Precompiled WINE wasn't downloaded"
+      else w_die "Unexpected error for workaround 45546 in WINE logic"
+      fi
+    fi
+
+    # Sanitycheck for applied patches
+    [ "$WINE" != "$W_CACHE/$W_PACKAGE/MTGA.AppImage" ] && [ "$WINE" != "$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage" ] && w_die "This installer requires patched wine named MTGA.AppImage' or '$W_PACKAGE.AppImage' from '$W_CACHE/$W_PACKAGE/' provide this path to the WINE variable and execute the script again. (You can also blacklist winebug 45546)"
+  fi
+
+  w_warn "It may take few seconds for installer to launch (max 50sec)"
+  (WINEDEBUG="fixme-all" w_try "$WINE" msiexec /i "$W_CACHE/$W_PACKAGE/$file1")
+}
+
+#----------------------------------------------------------------
+
 w_metadata mfsxde games \
     title="Microsoft Flight Simulator X: Deluxe Edition" \
     publisher="Microsoft" \
@@ -18429,7 +18890,7 @@ load_leagueoflegends()
           'SEA   - South East Asia' \
           '' \
           "Note that this can be overwritten by 'leagueoflegends_region' variable"
-        read -r leagueoflegends_region
+        read -r 'leagueoflegends_region'
       done
 
       ## Actual fetch
@@ -18519,13 +18980,12 @@ load_leagueoflegends()
           [ -z "$leagueoflegends_do_not_die_on_dxvk" ] && w_die "'$1' is not implemented for this game (uses dxd9), set 'leagueoflegends_do_not_die_on_dxvk' variable to non-zero to overwrite"
           w_call 'dxvk'
         ;;
-        dxv9)
-          w_die "FIXME: '$1' is not implemented for this game"
-          w_call 'dxv9'
+        d9vk)
+          w_call 'd9vk'
         ;;
         dgvoodoo2)
         # Get dgVoodoo2 only to wrap dxd9 to dxd10/11
-        [ -z "$leagueoflegends_force_dgvoodoo2" ] && case "$(winetricks_get_platform)" in nix_*) w_die "Verb '$1' is not supported on '$(winetricks_get_platform)' since dxd10/11 is not supported without DXVK, use 'leagueoflegends_force_dgvoodoo2' variable set on non-zero to overwrite" ; esac
+        [ -z "$leagueoflegends_force_dgvoodoo2" ] && case "$(winetricks_getplatform)" in nix*) w_die "Verb '$1' is not supported on '$(winetricks_get_platform)' since dxd10/11 is not supported without DXVK, use 'leagueoflegends_force_dgvoodoo2' variable set on non-zero to overwrite" ; esac
 
         # TODO: START - Fix duplicates
         [ ! -e "${W_CACHE}/leagueoflegends/dgVoodoo2_62.zip" ] && w_download 'http://www.dege.freeweb.hu/dgVoodoo2/dgVoodoo2_62.zip' 'dcb00b795e138af71f712bf6c276795786ef373165f28589b44f27b14b4c62c7'
@@ -18897,11 +19357,14 @@ load_masseffect2_demo()
 
     # Don't let self-extractor write into $W_CACHE
     case "$W_PLATFORM" in
-        windows_cmd|wine_cmd)
+        windows_cygwin|wine_cmd)
             cp "$W_CACHE/$W_PACKAGE/MassEffect2DemoEN.exe" "$W_TMP"
-            chmod +x "$W_TMP"/MassEffect2DemoEN.exe ;;
-        *)
-            ln -sf "$W_CACHE/$W_PACKAGE/MassEffect2DemoEN.exe" "$W_TMP" ;;
+            chmod +x "$W_TMP"/MassEffect2DemoEN.exe
+        ;;
+        windows_windows) w_die "Platform '$W_PLATFORM' is not implemented in load_masseffect2_demo()" ;;
+        nix_linux|nix_freebsd|nix_darwin) ln -sf "$W_CACHE/$W_PACKAGE/MassEffect2DemoEN.exe" "$W_TMP" ;;
+        nix_redox) w_die "Platform '$W_PLATFORM' is not implemented in load_masseffect2_demo()" ;;
+        *) w_die "Unknown platform '$W_PLATFORM' parsed in load_masseffect2_demo()"
     esac
     w_try_cd "$W_TMP"
     w_ahk_do "
@@ -20112,7 +20575,7 @@ w_metadata sammax301_demo games \
     year="2010" \
     media="manual_download" \
     file1="SamMax301_PC_Setup.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Telltale Games/Sam and Max - The Devil's Playhouse/The Penal Zone/SamMax301.exe"
+    installed_exe1="$W_PROGRAMS_X86_WIN/Telltale Games/Sam and Max - The Devil\'s Playhouse/The Penal Zone/SamMax301.exe"
 
 load_sammax301_demo()
 {
@@ -20525,6 +20988,62 @@ load_wog()
 }
 
 #----------------------------------------------------------------
+# Origin Games
+#----------------------------------------------------------------
+
+# https://appdb.winehq.org/appview.php?iVersionId=4242
+
+# Help-wanted: Dunno how to make metadata for this
+w_metadata cnc_redalert2yr_origin games \
+    title="Command & Conquer Red Alert 2 and Yuris Revenge" \
+    publisher="EA Games" \
+    year="2001" \
+    media="download" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/RA2Launcher.exe"
+
+load_cnc_redalert2yr_origin()
+{
+    w_origin_install_game "OFB-EAST:52019"
+
+    # WINSOCK.dll
+    ## Sanity for directory in W_CACHE
+    [ ! -e "${W_CACHE}/cnc_redalert2yr_origin" ] && (mkdir "${W_CACHE}/cnc_redalert2yr_origin" || w_die "Unable to make a new directory in '${W_CACHE}/cnc_redalert2yr_origin'")
+
+    ## Fetch
+    if [ ! -e '/tmp/winetricks/ts_ra2_lanpatch_1_00 UDP no IPX win 7.zip' ]; then
+      wget 'https://www.sevenforums.com/attachments/gaming/88684d1280671096-command-conquer-red-alert-2-yuris-revenge-lan-ts_ra2_lanpatch_1_00-udp-no-ipx-win-7.zip' -O '/tmp/winetricks/ts_ra2_lanpatch_1_00 UDP no IPX win 7.zip' || w_die "Unable to download required libraries"
+    fi
+
+    ## Unzip to W_CACHE
+    [ ! -e "${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll" ] && (unzip '/tmp/winetricks/ts_ra2_lanpatch_1_00 UDP no IPX win 7.zip' -d "${W_CACHE}/cnc_redalert2yr_origin/" || w_die "Unable to extract required files in '${W_CACHE}/cnc_redalert2yr_origin/' from '/tmp/winetricks/ts_ra2_lanpatch_1_00 UDP no IPX win 7.zip'")
+
+    ## Export of library
+    if [ -d "${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/" ] && [ -e "${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll" ]; then
+      cp "${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll" "${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/" || w_die "Unable to copy '${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll' to '${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/' to use required library for game"
+    elif [ ! -d "${W_PROGRAMS_X86_WIN}/Origin Games/Command and Conquer Red Alert II/" ]; then
+      w_die "Unable to export required libraries, because game is not installed"
+    elif [ -e "${W_CACHE}/cnc_redalert2yr_origin/wsock32.dll" ]; then
+      w_warn "wsock.dll is alredy extracted, skipping..."
+    fi
+}
+
+#----------------------------------------------------------------
+# Uplay Games
+#----------------------------------------------------------------
+
+w_metadata splintercell_blacklist_uplay games \
+    title="Tom Clancy Splinter Cell: Blacklist (Uplay)" \
+    publisher="Ubisoft" \
+    year="2013" \
+    media="download" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Ubisoft/Ubisoft Game Launcher/games/Splinter Cell Blacklist/Blacklist_Launcher.exe"
+
+load_splintercell_blacklist_uplay() {
+    w_call dxvk
+    w_uplay_install_game '91'
+}
+
+#----------------------------------------------------------------
 # Steam Games
 #----------------------------------------------------------------
 
@@ -20605,6 +21124,22 @@ load_civ5_demo_steam()
         w_info "If you already own the full Civ 5 game on Steam, the installer won't even appear."
     w_steam_install_game 65900 "Sid Meier's Civilization V - Demo"
     kill -s HUP "$_job"   # just in case
+}
+
+#----------------------------------------------------------------
+
+w_metadata mafia2_steam games \
+    title="Mafia II (Steam, non-free)" \
+    publisher="2K Games" \
+    year="2009" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/Mafia II/launcher.exe"
+
+load_mafia2_steam()
+{
+    w_call 'vcrun2012'
+    w_call 'dxvk'
+    w_steam_install_game 50130 "Mafia II"
 }
 
 #----------------------------------------------------------------
@@ -21807,36 +22342,36 @@ winetricks_stats_init()
         case $WINETRICKS_GUI in
             zenity)
                 case $LANG in
-                de*)
-                    title="Einmalige Frage zur Hilfe an der Winetricks Entwicklung"
-                    question="Möchten Sie die Winetricks Entwicklung unterstützen indem Sie Winetricks Statistiken übermitteln lassen? Sie können die Übermittlung jederzeit mit 'winetricks --optout' ausschalten"
-                    thanks="Danke! Sie bekommen diese Frage nicht mehr gestellt. Sie können die Übermittlung jederzeit mit 'winetricks --optout' wieder ausschalten"
-                    declined="OK, Winetricks wird *keine* Statistiken übermitteln. Sie bekommen diese Frage nicht mehr gestellt."
-                    ;;
-                pl*)
-                    title="Jednorazowe pytanie dotyczące pomocy w rozwoju Winetricks"
-                    question="Czy chcesz pomóc w rozwoju Winetricks pozwalając na wysyłanie statystyk przez program? Możesz wyłączyć tą opcję w każdej chwili z użyciem komendy 'winetricks --optout'."
-                    thanks="Dziękujemy! Nie otrzymasz już tego pytania. Pamiętaj, ze możesz wyłączyć tą opcję komendą 'winetricks --optout'"
-                    declined="OK, Winetricks *nie* będzie wysyłać statystyk. Nie otrzymasz już tego pytania."
-                    ;;
-                ru*)
-                    title="Помощь в разработке Winetricks"
-                    question="Вы хотите помочь разработке winetricks, отправляя статистику? Вы можете отключить отправку статистики в любое время с помощью команды 'winetricks --optout'"
-                    thanks="Спасибо! Этот вопрос больше не появится. Помните: вы можете отключить отправку статистики в любое время с помощью команды 'winetricks --optout'"
-                    declined="OK, winetricks НЕ будет отправлять статистику. Этот вопрос больше не появится."
-                    ;;
-                uk*)
-                    title="Допомога в розробці Winetricks"
-                    question="Ви хочете допомогти в розробці Winetricks дозволивши звітувати статистику?\\nВи можете в будь-який час вимкнути цю опцію за допомогою команди 'winetricks --optout'"
-                    thanks="Дякуємо! Ви більше не отримуватиме це питання знову. Пам'ятайте, що ви можете будь-коли вимкнути звітність за допомогою команди 'winetricks --optout'"
-                    declined="Надсилання звітності Winetricks вимкнено. Ви більше не отримуватиме це питання знову."
-                    ;;
-                *)
-                    title="One-time question about helping Winetricks development"
-                    question="Would you like to help winetricks development by letting winetricks report statistics? You can turn reporting off at any time with the command 'winetricks --optout'"
-                    thanks="Thanks! You won't be asked this question again. Remember, you can turn reporting off at any time with the command 'winetricks --optout'"
-                    declined="OK, winetricks will *not* report statistics. You won't be asked this question again."
-                    ;;
+                    de*)
+                        title="Einmalige Frage zur Hilfe an der Winetricks Entwicklung"
+                        question="Möchten Sie die Winetricks Entwicklung unterstützen indem Sie Winetricks Statistiken übermitteln lassen? Sie können die Übermittlung jederzeit mit 'winetricks --optout' ausschalten"
+                        thanks="Danke! Sie bekommen diese Frage nicht mehr gestellt. Sie können die Übermittlung jederzeit mit 'winetricks --optout' wieder ausschalten"
+                        declined="OK, Winetricks wird *keine* Statistiken übermitteln. Sie bekommen diese Frage nicht mehr gestellt."
+                        ;;
+                    pl*)
+                        title="Jednorazowe pytanie dotyczące pomocy w rozwoju Winetricks"
+                        question="Czy chcesz pomóc w rozwoju Winetricks pozwalając na wysyłanie statystyk przez program? Możesz wyłączyć tą opcję w każdej chwili z użyciem komendy 'winetricks --optout'."
+                        thanks="Dziękujemy! Nie otrzymasz już tego pytania. Pamiętaj, ze możesz wyłączyć tą opcję komendą 'winetricks --optout'"
+                        declined="OK, Winetricks *nie* będzie wysyłać statystyk. Nie otrzymasz już tego pytania."
+                        ;;
+                    ru*)
+                        title="Помощь в разработке Winetricks"
+                        question="Вы хотите помочь разработке winetricks, отправляя статистику? Вы можете отключить отправку статистики в любое время с помощью команды 'winetricks --optout'"
+                        thanks="Спасибо! Этот вопрос больше не появится. Помните: вы можете отключить отправку статистики в любое время с помощью команды 'winetricks --optout'"
+                        declined="OK, winetricks НЕ будет отправлять статистику. Этот вопрос больше не появится."
+                        ;;
+                    uk*)
+                        title="Допомога в розробці Winetricks"
+                        question="Ви хочете допомогти в розробці Winetricks дозволивши звітувати статистику?\\nВи можете в будь-який час вимкнути цю опцію за допомогою команди 'winetricks --optout'"
+                        thanks="Дякуємо! Ви більше не отримуватиме це питання знову. Пам'ятайте, що ви можете будь-коли вимкнути звітність за допомогою команди 'winetricks --optout'"
+                        declined="Надсилання звітності Winetricks вимкнено. Ви більше не отримуватиме це питання знову."
+                        ;;
+                    *)
+                        title="One-time question about helping Winetricks development"
+                        question="Would you like to help winetricks development by letting winetricks report statistics? You can turn reporting off at any time with the command 'winetricks --optout'"
+                        thanks="Thanks! You won't be asked this question again. Remember, you can turn reporting off at any time with the command 'winetricks --optout'"
+                        declined="OK, winetricks will *not* report statistics. You won't be asked this question again."
+                        ;;
                 esac
                 if $WINETRICKS_GUI --question --text "$question" --title "$title"; then
                     $WINETRICKS_GUI --info --text "$thanks"
@@ -21852,14 +22387,11 @@ winetricks_stats_init()
 }
 
 # Retrieve a short string with the operating system name and version
+# Obsolete by winetricks_get_platform
 winetricks_os_description()
 {
-    (
-        case "$W_PLATFORM" in
-            windows_cmd) echo "windows" ;;
-            *)  echo "$WINETRICKS_WINE_VERSION" ;;
-        esac
-    ) | tr '\012' ' '
+    w_warn "Function 'winetricks_os_description' is obsolete by 'winetricks_get_platform'"
+    winetricks_get_platform
 }
 
 winetricks_stats_report()
@@ -21877,7 +22409,7 @@ winetricks_stats_report()
     WINETRICKS_STATS_BREADCRUMBS=$(tr '\012' ' ' < "$WINETRICKS_WORKDIR"/breadcrumbs)
     echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
 
-    report="os=$(winetricks_os_description)&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
+    report="os=$(winetricks_get_platform)&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
     report="$(echo "$report" | sed 's/ /%20/g')"
 
     # Just do a HEAD request with the raw command line.
@@ -21914,8 +22446,11 @@ winetricks_stats_log_command()
 
     # and for the user's own reference later, when figuring out what he did
     case "$W_PLATFORM" in
-        windows_cmd) _W_LOGDIR="$W_WINDIR_UNIX"/Temp ;;
-        *) _W_LOGDIR="$WINEPREFIX" ;;
+        windows_cygwin) _W_LOGDIR="$W_WINDIR_UNIX"/Temp ;;
+        windows_windows) w_die "Platform '$W_PLATFORM' is not implemented in winetricks_stats_log_command()" ;;
+        nix_linux|nix_freebsd|nix_darwin) _W_LOGDIR="$WINEPREFIX" ;;
+        nix_redox) w_die "Platform '$W_PLATFORM' is not implemented in winetricks_stats_log_command()" ;;
+        *) w_die "Unknown platform '$W_PLATFORM' parsed in winetricks_stats_log_command()"
     esac
 
     mkdir -p "$_W_LOGDIR"
@@ -22073,13 +22608,32 @@ execute_command()
             if winetricks_metadata_exists "$1"; then
                 w_call "$1"
             else
-                echo "Unknown arg $1"
                 winetricks_usage
-                exit 1
+                w_die "Unknown argument has been parsed: '$1'"
             fi
             ;;
     esac
 }
+
+# FIXME: XDG_CACHE_HOME is defined twice, clean this up
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+W_COUNTRY=""
+W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
+
+# For temp files before $WINEPREFIX is available:
+if [ -x "$(command -v mktemp 2>/dev/null)" ] ; then
+    W_TMP_EARLY="$(mktemp -d "${TMPDIR:-/tmp}/winetricks.XXXXXXXX")"
+elif [ -w "$TMPDIR" ] ; then
+    W_TMP_EARLY="$TMPDIR"
+else
+    W_TMP_EARLY="/tmp"
+fi
+
+# Test whether temporary directory is valid - before initialising script
+[ -d "$W_TMP_EARLY" ] || w_die "temporary directory: '$W_TMP_EARLY' ; does not exist"
+[ -w "$W_TMP_EARLY" ] || w_die "temporary directory: '$W_TMP_EARLY' ; is not user writeable"
 
 if ! test "$WINETRICKS_LIB"
 then
@@ -22095,6 +22649,7 @@ then
 
     case "$1" in
         die) w_die "we who are about to die salute you." ;;
+        kreyren) w_die "`winetricks_get_platform`" ;;
         volnameof=*)
             # Debug code.  Remove later?
             # Since Linux's volname command can't handle DVDs, winetricks has its own,
@@ -22108,13 +22663,13 @@ then
             ;;
         "")
             if [ -z "$DISPLAY" ]; then
-                if [ "$(uname -s)" = "Darwin" ]; then
-                    echo "Running on OSX, but DISPLAY is not set...probably using Mac Driver."
-                else
-                    echo "DISPLAY not set, not defaulting to gui"
-                    winetricks_usage
-                    exit 0
-                fi
+                case "$(winetricks_get_platform)" in
+                    nix_darwin) w_info "Running on OSX, but DISPLAY is not set...probably using Mac Driver." ;;
+                    *)
+                        w_info "DISPLAY not set, not defaulting to gui"
+                        winetricks_usage
+                        exit 0
+                esac
             fi
 
             # GUI case
@@ -22125,9 +22680,9 @@ then
             while true
             do
                 case $WINETRICKS_CURMENU in
-                    main) verbs=$(winetricks_mainmenu) ;;
+                    main) verbs="$(winetricks_mainmenu)" ;;
                     prefix)
-                        verbs=$(winetricks_prefixmenu);
+                        verbs="$(winetricks_prefixmenu)";
                         # Cheezy hack: choosing 'attended' or 'unattended' leaves you in same menu
                         case "$verbs" in
                             attended) winetricks_set_unattended 0 ; continue;;
@@ -22165,8 +22720,7 @@ then
                             # after picking a prefix, want to land in main.
                             WINETRICKS_CURMENU=main ;;
                         *)
-                            for verb in $verbs
-                            do
+                            for verb in $verbs; do
                                 execute_command "$verb"
                             done
 
