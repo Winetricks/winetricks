@@ -20271,6 +20271,10 @@ w_metadata conquerors_blade_steam games \
 load_conquerors_blade_steam()
 {
     w_steam_install_game 905370 "Conqueror's Blade"
+
+    if w_workaround_wine_bug '47890'; then
+      w_warn "FIXME: Wineapp is affected by https://github.com/Winetricks/winetricks/pull/1360 which requires MmGetPhysicalAddress which is not sufficient in <wine-4.17 (10/05/2019), execute using GAMEDIR/Conqueror\'s Blade/Conqueror\`s Blade My.Com/game/x64/Ship/client/proven_ground_client.exe"
+    fi
 }
 
 #----------------------------------------------------------------
