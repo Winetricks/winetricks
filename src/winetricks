@@ -721,11 +721,11 @@ w_expand_env()
 # Get the latest tagged release from github.com API
 w_get_github_latest_release()
 {
-    # $1 - github organization
-    # $2 - github repository
     # FIXME: can we get releases that aren't on master branch?
+    org="$1"
+    repo="$2"
 
-    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://api.github.com/repos/$1/$2/releases/latest" "" "release.json" >/dev/null 2>&1
+    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://api.github.com/repos/${org}/${repo}/releases/latest" "" "release.json" >/dev/null 2>&1
 
     # aria2c condenses the json (https://github.com/aria2/aria2/issues/1389)
     # but curl/wget don't, so handle both cases:
@@ -741,11 +741,11 @@ w_get_github_latest_release()
 # Get the latest tagged prerelease from github.com API
 w_get_github_latest_prerelease()
 {
-    # $1 - github organization
-    # $2 - github repository
     # FIXME: can we get releases that aren't on master branch?
+    org="$1"
+    repo="$2"
 
-    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://api.github.com/repos/$1/$2/releases" "" "release.json" >/dev/null 2>&1
+    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://api.github.com/repos/${org}/${repo}/releases" "" "release.json" >/dev/null 2>&1
 
     # aria2c condenses the json (https://github.com/aria2/aria2/issues/1389)
     # but curl/wget don't, so handle both cases:
