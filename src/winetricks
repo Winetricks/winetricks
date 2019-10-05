@@ -20270,6 +20270,9 @@ w_metadata conquerors_blade_steam games \
 # Downloads ConquerorsBladeSteamLoader.exe which is then executed to update using game launcher
 load_conquerors_blade_steam()
 {
+    # Required for the runtime of game
+    w_call dxvk
+
     w_steam_install_game 905370 "Conqueror's Blade"
 
     if w_workaround_wine_bug '47890'; then
