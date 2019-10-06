@@ -118,3 +118,10 @@ for shellscript in $files_to_check; do
     # E044=Use [[ for non-POSIX comparisions
     w_try "$bashate" -i E006,E010,E044 "${shellscript}"
 done
+
+# Check for uses of variables in w_download when w_linkcheck_ignore isn't set
+# Using w_download https://example.com/${file1} breaks src/linkcheck.sh
+# FIXME: technically '$' is valid in a URL, if there's actually a URL using it this will need a tweak
+if grep "^ *w_download " src/winetricks | grep -E "ftp|http" | grep -v "w_linkcheck_ignore=1" | sed "s/^ *//"  | tr -d "\\\\" | cut -d " " -f2 | grep "\\$"; then
+    w_die "Do not use variables in URLs, it breaks src/linkcheck.sh"
+fi
