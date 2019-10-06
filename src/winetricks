@@ -404,10 +404,23 @@ w_try_7z()
 
     # Not always installed, use Windows 7-Zip as a fallback:
     if [ -z "$WINETRICKS_FORCE_WIN_7Z" ] && [ -x "$(command -v 7z 2>/dev/null)" ] ; then
+        # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
+        if [ ! -r "$filename" ]; then
+          w_warn "File '$filename' is not readable, trying to use workaround"
+          "$([ $(stat -c "%U") = 'root' ] && [ -n "$UID" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+        fi
+
         w_try 7z x "$filename" -o"$destdir" "$@"
     else
         w_warn "Cannot find 7z.  Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip-plugins')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
+
+        # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
+        if [ ! -r "$filename" ]; then
+          w_warn "File '$filename' is not readable, trying to use workaround"
+          "$([ $(stat -c "%U") = 'root' ] && [ -n "$UID" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+        fi
+
         # errors out if there is a space between -o and path
         w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$filename")" -o"$(w_pathconv -w "$destdir")" "$@"
     fi
@@ -420,10 +433,21 @@ w_try_ar()
 
     # Not always installed, use Windows 7-zip as a fallback:
     if [ -z "$WINETRICKS_FORCE_WIN_7Z" ] && [ -x "$(command -v ar 2>/dev/null)" ]; then
+      # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
+      if [ ! -r "$2" ]; then
+        w_warn "File '$2' is not readable, trying to use workaround"
+        "$([ $(stat -c "%U") = 'root' ] && [ -n "$UID" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
+      fi
         w_try ar x "$@"
     else
         w_warn "Cannot find ar.  Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
+
+        # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
+        if [ ! -r "$2" ]; then
+          w_warn "File '$2' is not readable, trying to use workaround"
+          "$([ $(stat -c "%U") = 'root' ] && [ -n "$UID" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
+        fi
 
         # -t* prevents 7-zip from decompressing .tar.xz to .tar, see
         # https://sourceforge.net/p/sevenzip/discussion/45798/thread/8cd16946/?limit=25
