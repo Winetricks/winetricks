@@ -406,8 +406,11 @@ w_try_7z()
     if [ -z "$WINETRICKS_FORCE_WIN_7Z" ] && [ -x "$(command -v 7z 2>/dev/null)" ] ; then
         # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
         if [ ! -r "$filename" ]; then
-          w_warn "File '$filename' is not readable, trying to use workaround"
-          "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+            w_warn "File '$filename' is not readable, trying to use workaround"
+            if command -v 'stat' >/dev/null; then "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+            # stat is not part of POSIX sh so in case it's not present use:
+            elif ! command -v 'stat' >/dev/null; then "$([ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+            fi
         fi
 
         w_try 7z x "$filename" -o"$destdir" "$@"
@@ -417,8 +420,11 @@ w_try_7z()
 
         # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
         if [ ! -r "$filename" ]; then
-          w_warn "File '$filename' is not readable, trying to use workaround"
-          "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+            w_warn "File '$filename' is not readable, trying to use workaround"
+            if command -v 'stat' >/dev/null; then "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+            # stat is not part of POSIX sh so in case it's not present use:
+            elif ! command -v 'stat' >/dev/null; then "$([ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+            fi
         fi
 
         # errors out if there is a space between -o and path
