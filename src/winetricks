@@ -21756,6 +21756,19 @@ execute_command()
     esac
 }
 
+
+# Warn about using NTFS (https://www.howtogeek.com/fyi/microsoft-explains-why-windows-10s-october-2018-update-was-deleting-peoples-files/)
+## Relevant winetricks bug (https://github.com/Winetricks/winetricks/issues/1363)
+## Instructions to make a proper NTFS setup (https://jp-andre.pagesperso-orange.fr/permissions.html)
+[ -n "$WINETRICKS_IGNORE_NTFS" ] && case "$W_PLATFORM" in nix_*)
+    case "$(mount | grep "type ntfs")" in "/dev/??? on / type ntfs*")
+      w_warn "Winetricks detected Windows NT filesystem which is not reliable to be used on nix \
+- https://www.howtogeek.com/fyi/microsoft-explains-why-windows-10s-october-2018-update-was-deleting-peoples-files/ \
+- https://github.com/Winetricks/winetricks/issues/1363 \
+Make sure that your NTFS filesystem on root is configured correctly (https://jp-andre.pagesperso-orange.fr/permissions.html)"
+    esac
+esac
+
 if ! test "$WINETRICKS_LIB"
 then
     # If user opted out, save that preference now.
