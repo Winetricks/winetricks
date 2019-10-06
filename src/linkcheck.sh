@@ -41,13 +41,12 @@ fi
 datadir="${TOP}/output/links.d"
 mkdir -p "${datadir}"
 
-WINETRICKS_SOURCEFORGE=https://downloads.sourceforge.net
 # ftp.microsoft.com resolves to two different IP addresses, one of which is broken
 ftp_microsoft_com=64.4.17.176
 
 w_download() {
     # shellcheck disable=SC2016
-    url="$(echo "$1" | sed -e 's,$ftp_microsoft_com,'$ftp_microsoft_com',;s,$WINETRICKS_SOURCEFORGE,'$WINETRICKS_SOURCEFORGE',;s, ,%20,g')"
+    url="$(echo "$1" | sed -e 's,$ftp_microsoft_com,'$ftp_microsoft_com',;s, ,%20,g')"
     urlkey="$(echo "$url" | tr / _)"
     echo "$url" > "${datadir}/${urlkey}.url"
 }
@@ -60,7 +59,7 @@ extract_all() {
 
     # https://github.com/koalaman/shellcheck/issues/861
     # shellcheck disable=SC1003
-    grep '^ *w_download ' "${shwinetricks}" | grep -E 'ftp|http|WINETRICKS_SOURCEFORGE' | grep -v "w_linkcheck_ignore=1" | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+    grep '^ *w_download ' "${shwinetricks}" | grep -E 'ftp|http' | grep -v "w_linkcheck_ignore=1" | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
 
     # shellcheck disable=SC1091
     . ./url-script-fragment.tmp
