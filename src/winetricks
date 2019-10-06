@@ -13370,8 +13370,11 @@ w_metadata berlin_concert_grand apps \
 # Downloaded from https://support.native-instruments.com/hc/en-us/articles/360000936549-Installing-the-Classic-Piano-Collection-with-Native-Access
 load_berlin_concert_grand()
 {
-  # Check for required ISo
+  # Check for required ISO
   [ ! -e "$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso" ] && w_die "Please download the ISO from https://support.native-instruments.com/hc/en-us/articles/360000936549-Installing-the-Classic-Piano-Collection-with-Native-Access and save it in '$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso'"
+
+  # Extract the ISO
+  [ ! -e "$W_CACHE/$W_PACKAGE/Berlin Concert Grand 1.3.0 Setup PC.exe" ] && { w_try_7z "$W_CACHE/$W_PACKAGE/" "$W_CACHE/$W_PACKAGE/$file1" ;} || printf '%s\n' "File '$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso' already exists"
 
   # Fix for NTFS (https://github.com/Winetricks/winetricks/pull/1361#issuecomment-538703257)
   [ ! -r "$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso" ] && w_warn "File '$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso' is not readable, this is usually indication of NTFS-based filesystem and so we will need to correct this using 'chmod' for which we try to elevate root"
@@ -13387,9 +13390,6 @@ load_berlin_concert_grand()
   [ ! -r "$W_CACHE/$W_PACKAGE/berlin_concert_grand/Berlin Concert Grand Library Part 2.pkg" ] && { "$WINETRICKS_SUDO" chmod +r "$W_CACHE/$W_PACKAGE/berlin_concert_grand/Berlin Concert Grand Library Part 2.pkg" || w_die "Unable to set readable permission on '$W_CACHE/$W_PACKAGE/berlin_concert_grand/Berlin Concert Grand Library Part 2.pkg' set this manually, i.e; 'chmod +r path'" ;}
 
   [ ! -r "$W_CACHE/$W_PACKAGE/berlin_concert_grand/Berlin Concert Grand Library Part 3.pkg" ] && { "$WINETRICKS_SUDO" chmod +r "$W_CACHE/$W_PACKAGE/berlin_concert_grand/Berlin Concert Grand Library Part 3.pkg" || w_die "Unable to set readable permission on '$W_CACHE/$W_PACKAGE/berlin_concert_grand/Berlin Concert Grand Library Part 3.pkg' set this manually, i.e; 'chmod +r path'" ;}
-
-  # Extract the ISO
-  [ ! -e "$W_CACHE/$W_PACKAGE/Berlin Concert Grand 1.3.0 Setup PC.exe" ] && { w_try_7z "$W_CACHE/$W_PACKAGE/" "$W_CACHE/$W_PACKAGE/$file1" ;} || printf '%s\n' "File '$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso' already exists"
 
   # Execute
   w_try "$WINE" "$W_CACHE/$W_PACKAGE/Berlin Concert Grand 1.3.0 Setup PC.exe"
