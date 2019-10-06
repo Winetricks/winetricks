@@ -440,10 +440,10 @@ w_try_ar()
     # Not always installed, use Windows 7-zip as a fallback:
     if [ -z "$WINETRICKS_FORCE_WIN_7Z" ] && [ -x "$(command -v ar 2>/dev/null)" ]; then
       # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
-      if [ ! -r "$2" ]; then
-        w_warn "File '$2' is not readable, trying to use workaround"
-        "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
-      fi
+        if [ ! -r "$2" ]; then
+            w_warn "File '$2' is not readable, trying to use workaround"
+            "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
+        fi
         w_try ar x "$@"
     else
         w_warn "Cannot find ar.  Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
@@ -451,8 +451,8 @@ w_try_ar()
 
         # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
         if [ ! -r "$2" ]; then
-          w_warn "File '$2' is not readable, trying to use workaround"
-          "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
+            w_warn "File '$2' is not readable, trying to use workaround"
+            "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
         fi
 
         # -t* prevents 7-zip from decompressing .tar.xz to .tar, see
