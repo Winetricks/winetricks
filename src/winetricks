@@ -407,7 +407,7 @@ w_try_7z()
         # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
         if [ ! -r "$filename" ]; then
           w_warn "File '$filename' is not readable, trying to use workaround"
-          "$([ $(stat -c "%U") = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+          "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
         fi
 
         w_try 7z x "$filename" -o"$destdir" "$@"
@@ -418,7 +418,7 @@ w_try_7z()
         # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
         if [ ! -r "$filename" ]; then
           w_warn "File '$filename' is not readable, trying to use workaround"
-          "$([ $(stat -c "%U") = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
+          "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$filename" || w_die "Unable to set readability on '$filename'"
         fi
 
         # errors out if there is a space between -o and path
@@ -436,7 +436,7 @@ w_try_ar()
       # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
       if [ ! -r "$2" ]; then
         w_warn "File '$2' is not readable, trying to use workaround"
-        "$([ $(stat -c "%U") = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
+        "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
       fi
         w_try ar x "$@"
     else
@@ -446,7 +446,7 @@ w_try_ar()
         # Make sure that the file is readable (https://github.com/Winetricks/winetricks/issues/1363)
         if [ ! -r "$2" ]; then
           w_warn "File '$2' is not readable, trying to use workaround"
-          "$([ $(stat -c "%U") = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
+          "$([ "$(stat -c '%U')" = 'root' ] && [ -n "$(id -u)" ] && printf '%s\n' "$WINETRICKS_SUDO")" chmod +r "$2" || w_die "Unable to set readability on '$2'"
         fi
 
         # -t* prevents 7-zip from decompressing .tar.xz to .tar, see
