@@ -13374,6 +13374,8 @@ load_berlin_concert_grand()
   [ ! -e "$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso" ] && w_die "Please download the ISO from https://support.native-instruments.com/hc/en-us/articles/360000936549-Installing-the-Classic-Piano-Collection-with-Native-Access and save it in '$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso'"
 
   # Fix for NTFS (https://github.com/Winetricks/winetricks/pull/1361#issuecomment-538703257)
+  [ ! -r "$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso" ] && w_warn "File '$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso' is not readable, this is usually indication of NTFS-based filesystem and so we will need to correct this using 'chmod' for which we try to elevate root"
+
   [ ! -r "$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso" ] && { "$WINETRICKS_SUDO" chmod +r "$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso" || w_die "Unable to set readable permission on '$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso' set this manually, i.e; 'chmod +r path'" ;}
 
   [ ! -r "$W_CACHE/$W_PACKAGE/berlin_concert_grand/Berlin Concert Grand 1.3.0 Installer Mac.pkg" ] && { "$WINETRICKS_SUDO" chmod +r "$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso" || w_die "Unable to set readable permission on '$W_CACHE/$W_PACKAGE/Berlin_Concert_Grand.iso' set this manually, i.e; 'chmod +r path'" ;}
