@@ -14193,6 +14193,56 @@ load_mozillabuild()
 
 #----------------------------------------------------------------
 
+w_metadata mremoteng1771 apps \
+    title="mRemoteNG" \
+    publisher="mRemoteNG" \
+    media="download" \
+    file1="mRemoteNG-Installer-1.77.1.27654.msi" \
+    homepage="https://github.com/mRemoteNG/mRemoteNG"
+
+load_mremoteng1771()
+{
+  # 10/08/2019 sha256sum $W_CACHE/winetricks/mremoteng1771/mRemoteNG-Installer-1.77.1.27654.msi dfb42f65ae6654e316a9e069a7cfca759434cd3e450a76714162507d95200332  /home/kreyren/.cache/winetricks/mremoteng1771/mRemoteNG-Installer-1.77.1.27654.msi
+  w_download "https://github.com/mRemoteNG/mRemoteNG/releases/download/v1.77.1/mRemoteNG-Installer-1.77.1.27654.msi" 'dfb42f65ae6654e316a9e069a7cfca759434cd3e450a76714162507d95200332'
+
+  # Uses dotnet46 (https://github.com/Winetricks/winetricks/pull/1365#issue-325622599)
+  w_call 'dotnet46'
+
+  # Depends on KB2574819 on <win7 (https://github.com/Winetricks/winetricks/pull/1365#issue-325622599 )
+  w_set_winver win8
+
+  w_try "$WINE" msiexec /i "$W_CACHE/$W_PACKAGE/$file1"
+
+  w_set_winver default
+}
+
+#----------------------------------------------------------------
+
+w_metadata mremoteng17620 apps \
+    title="mRemoteNG" \
+    publisher="mRemoteNG" \
+    media="download" \
+    file1="mRemoteNG-Installer-1.76.20.24615.msi" \
+    homepage="https://github.com/mRemoteNG/mRemoteNG"
+
+load_mremoteng17620()
+{
+  # 10/09/2019 2c4d1efb90124f885215f88304c9ecc8bbeecc9cca285f6d17baae43b49f6227  $W_CACHE/winetricks/mremoteng17620/mRemoteNG-Installer-1.76.20.24615.msi
+  w_download "https://github.com/mRemoteNG/mRemoteNG/releases/download/v1.76.20/mRemoteNG-Installer-1.76.20.24615.msi" '2c4d1efb90124f885215f88304c9ecc8bbeecc9cca285f6d17baae43b49f6227'
+
+  # Uses dotnet46 (https://github.com/Winetricks/winetricks/pull/1365#issue-325622599)
+  w_call 'dotnet46'
+
+  # Depends on KB2574819 on <win7 (https://github.com/Winetricks/winetricks/pull/1365#issue-325622599 )
+  w_set_winver win8
+
+  w_try "$WINE" msiexec /i "$W_CACHE/$W_PACKAGE/$file1"
+
+  w_set_winver default
+}
+
+#----------------------------------------------------------------
+
 w_metadata mpc apps \
     title="Media Player Classic - Home Cinema" \
     publisher="doom9 folks" \
