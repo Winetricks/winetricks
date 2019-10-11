@@ -11785,24 +11785,28 @@ load_vjrun20()
 
 #----------------------------------------------------------------
 
+# File changes https://github.com/Winetricks/winetricks/pull/1370#issuecomment-540879256
+
 w_metadata vulkanrt dlls \
     title="Vulkan Runtime Latest" \
     publisher="LunarG" \
+    homepage="https://vulkan.lunarg.com/sdk/home" \
     year="2018" \
     media="download" \
     file1="vulkan-runtime.exe" \
-    installed_exe1="$W_SYSTEM32_DLLS_WIN/vulkaninfo.exe" \
-    installed_exe2="$W_SYSTEM32_DLLS_WIN/vulkaninfo-1-999-0-0-0.exe" \
-    installed_exe3="$W_SYSTEM32_DLLS_WIN/vulkaninfo-1-999-0-0-0.exe" \
-    installed_exe4="C:/windows/syswow64/vulkaninfo.exe"
+    installed_file1="C:\windows\system32\vulkan-1-999-0-0-0.dll" \
+    installed_file2="C:\windows\syswow64\vulkan-1-999-0-0-0.dll" \
+    installed_file3="C:\windows\syswow64\vulkaninfo-1-999-0-0-0.dll" \
+    installed_exe1="C:\windows\system32\vulkaninfo-1-999-0-0-0.exe" \
+    installed_exe2="C:\windows\system32\vulkaninfo.exe" \
+    installed_exe3="C:\windows\syswow64\vulkaninfo.exe"
 
 load_vulkanrt()
 {
-    # https://vulkan.lunarg.com/sdk/home
-    # https://github.com/Winetricks/winetricks/issues/1368#issue-505379537
+    # vulkanrt is no longer present in vulkansdk (https://github.com/Winetricks/winetricks/issues/1368#issue-505379537)
     # TODO: Checksum
     w_download "https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-runtime.exe?u=" '' 'vulkan-runtime.exe'
-    w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" $W_UNATTENDED_SLASH_S
+    w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" "$W_UNATTENDED_SLASH_S"
 }
 
 #----------------------------------------------------------------
@@ -11810,6 +11814,7 @@ load_vulkanrt()
 w_metadata vulkansdk dlls \
     title="Vulkan SDK 1.1.73.0 (developers only)" \
     publisher="LunarG" \
+    homepage="https://vulkan.lunarg.com/sdk/home" \
     year="2018" \
     media="download" \
     file1="VulkanSDK-1.1.73.0-Installer.exe" \
@@ -11818,10 +11823,11 @@ w_metadata vulkansdk dlls \
 
 load_vulkansdk()
 {
+    # Vulkan runtime is no longer provided with vulkansdk (https://github.com/Winetricks/winetricks/issues/1368#issue-505379537)
     w_load 'vulkanrt'
+
     _W_vulkan_version="${file1%-*.exe}"
     _W_vulkan_version="${_W_vulkan_version#*-}"
-    # https://vulkan.lunarg.com/sdk/home
     w_download "https://sdk.lunarg.com/sdk/download/1.1.73.0/windows/VulkanSDK-1.1.73.0-Installer.exe?Human=true;u=" a5d193f97db4de97e6b4fdd81f00ff6a603f66bb17dc3cf8ac0fe9aec58497c7 VulkanSDK-1.1.73.0-Installer.exe
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_S
