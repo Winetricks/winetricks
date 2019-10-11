@@ -718,6 +718,26 @@ w_expand_env()
     winetricks_early_wine cmd.exe /c echo "%$1%"
 }
 
+# Check if $1 is executable (output custom message using w_debug if $2 is specified)
+w_check_exec()
+{
+    local w_executable="$1"
+    local w_message="$2"
+
+    if ! command -v "$w_executable" >/dev/null; then
+        if [ -n "$w_message" ]; then
+            printf '%s\n' "$w_message"
+            return 1
+        elif [ -z "$w_message" ]; then
+            printf "Command '%s' is not executable\n" "$w_executable"
+            return 1
+        fi
+    elif command -v "$w_executable" >/dev/null; then
+        w_debug "Command '$w_executable' is executable"
+        return 0
+    fi
+}
+
 # Get the latest tagged release from github.com API
 w_get_github_latest_release()
 {
