@@ -11786,18 +11786,22 @@ load_vjrun20()
 #----------------------------------------------------------------
 
 w_metadata vulkanrt dlls \
-    title="Vulkan Runtime 1.1.73.0" \
+    title="Vulkan Runtime Latest" \
     publisher="LunarG" \
     year="2018" \
     media="download" \
-    file1="vulkan-runtime.exe"
-    #installed_exe1="$W_SYSTEM32_DLLS_WIN/vulkaninfo.exe"
+    file1="vulkan-runtime.exe" \
+    installed_exe1="$W_SYSTEM32_DLLS_WIN/vulkaninfo.exe" \
+    installed_exe2="$W_SYSTEM32_DLLS_WIN/vulkaninfo-1-999-0-0-0.exe" \
+    installed_exe3="$W_SYSTEM32_DLLS_WIN/vulkaninfo-1-999-0-0-0.exe" \
+    installed_exe4="C:/windows/syswow64/vulkaninfo.exe"
 
 load_vulkanrt()
 {
     # https://vulkan.lunarg.com/sdk/home
     # https://github.com/Winetricks/winetricks/issues/1368#issue-505379537
-    w_download "https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-runtime.exe?u="
+    # TODO: Checksum
+    w_download "https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-runtime.exe?u=" '' 'vulkan-runtime.exe'
     w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" $W_UNATTENDED_SLASH_S
 }
 
@@ -11814,6 +11818,7 @@ w_metadata vulkansdk dlls \
 
 load_vulkansdk()
 {
+    w_load 'vulkanrt'
     _W_vulkan_version="${file1%-*.exe}"
     _W_vulkan_version="${_W_vulkan_version#*-}"
     # https://vulkan.lunarg.com/sdk/home
