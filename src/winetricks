@@ -11797,7 +11797,7 @@ load_vulkanrt()
 {
     # https://vulkan.lunarg.com/sdk/home
     # https://github.com/Winetricks/winetricks/issues/1368#issue-505379537
-    w_download "https://vulkan.lunarg.com/sdk/home#sdk/downloadConfirm/latest/windows/vulkan-runtime.exe"
+    w_download "https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-runtime.exe?u="
     w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" $W_UNATTENDED_SLASH_S
 }
 
