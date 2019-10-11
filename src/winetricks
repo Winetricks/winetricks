@@ -11790,15 +11790,15 @@ w_metadata vulkanrt dlls \
     publisher="LunarG" \
     year="2018" \
     media="download" \
-    file1="VulkanRT-1.1.73.0-Installer.exe" \
-    installed_exe1="$W_SYSTEM32_DLLS_WIN/vulkaninfo.exe"
+    file1="vulkan-runtime.exe"
+    #installed_exe1="$W_SYSTEM32_DLLS_WIN/vulkaninfo.exe"
 
 load_vulkanrt()
 {
     # https://vulkan.lunarg.com/sdk/home
-    w_download "https://sdk.lunarg.com/sdk/download/1.1.73.0/windows/VulkanRT-1.1.73.0-Installer.exe?Human=true;u=" cfec461b17aff521cf06b727aa612d654d4e72de8e3c21bd219e77b87f56f20a VulkanRT-1.1.73.0-Installer.exe
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_S
+    # https://github.com/Winetricks/winetricks/issues/1368#issue-505379537
+    w_download "https://vulkan.lunarg.com/sdk/home#sdk/downloadConfirm/latest/windows/vulkan-runtime.exe"
+    w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" $W_UNATTENDED_SLASH_S
 }
 
 #----------------------------------------------------------------
