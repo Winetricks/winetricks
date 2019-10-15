@@ -7965,7 +7965,7 @@ load_dotnet11()
     w_call corefonts
     w_call fontfix
 
-    w_try w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try_cd "$W_CACHE/$W_PACKAGE"
     # Use builtin regsvcs.exe to work around https://bugs.winehq.org/show_bug.cgi?id=25120
     if test $W_OPT_UNATTENDED; then
         WINEDLLOVERRIDES="regsvcs.exe=b" w_ahk_do "
@@ -8020,7 +8020,7 @@ load_dotnet11sp1()
     w_call remove_mono
     w_call dotnet11
 
-    w_try w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try_cd "$W_CACHE/$W_PACKAGE"
     # Use builtin regsvcs.exe to work around https://bugs.winehq.org/show_bug.cgi?id=25120
     if test $W_OPT_UNATTENDED; then
         WINEDLLOVERRIDES="regsvcs.exe=b" w_ahk_do "
