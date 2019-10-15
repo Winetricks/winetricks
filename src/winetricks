@@ -947,6 +947,63 @@ w_dotnet_verify()
     "
     dn_status="$?"
     w_info ".Net Verifier returned $dn_status"
+
+    ## Also try a hello world dotnet binary (compiled with mcs (mono), see tests/dotnet_exes/build.sh)
+
+    # C# version to .Net version info can be found at:
+    # https://www.guru99.com/c-sharp-dot-net-version-history.html
+    case "$W_PACKAGE" in
+        dotnet11|dotnet11sp1) echo "mcs doesn't support building .Net 1.x binaries"; return;;
+        dotnet20|dotnet20sp1|dotnet20sp2)
+            binary="2.0";
+            x64_sha256="c21d06dc9e2ff0d5774dae132e0f6e8f17b5c823ef886b758c9f1b848c707d8d";
+            x86_sha256="0e58e1b303820b847def25be1521a91fab3d09ce0f5977fe95ee5a79d4136071";;
+        dotnet30|dotnet30sp1|dotnet35|dotnet35sp1)
+            binary="3.0";
+            x64_sha256="0e3aa0bf259465d069da797ae3b4db091e6e2c0c0141b2b27eedb0bda81260a0";
+            x86_sha256="64739300dc496595129b8048674cedfe9932e1dba91f89975fe0acb5e23bde47";;
+        dotnet40)
+            binary="4.0";
+            x64_sha256="66855d2ebb9366ee25c1769be7762afcc8c0367d2e0dfb125406b176e38d3112";
+            x86_sha256="0f5f1b30efba502918ea61031ac004a0037d50f9a877c523474557801ea4492c";;
+        dotnet45|dotnet452)
+            binary="4.5";
+            x64_sha256="9c1ea79d5df544f68c1d34aed559432e788eb21b27e67d82e6e08b8ccd53cd0a";
+            x86_sha256="1ef538790858af501df00b30da6da635ab03878a7870ac8c7a0f79658538912a";;
+        dotnet46|dotnet461|dotnet462)
+            binary="4.6";
+            x64_sha256="0457098c582fc4dc093771acd9ac1fb2b7bbd5d83584d8c69434702c2019704d";
+            x86_sha256="09f99f31e8e9ca388f7b8d8a6a2d41baafcdca920e5538f98bbd9bb47965451a";;
+        dotnet471|dotnet472)
+            binary="4.7";
+            x64_sha256="fcbfc7b84e86bbc1a73ea0b391c5cf7403132641ee4a3fd3a4ea6ef6bf65d692";
+            x86_sha256="d61b8399305707f7d6b6ab48b97a9d0ea86dd19c1d96630739186e3073781085";;
+        dotnet48) echo "mcs doesn't support .Net 4.8 yet, no binary available"; return;;
+        *) w_die "unknown .Net version";;
+    esac
+
+    w_download_to dotnet_tests https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/${binary}-x86.exe "${x86_sha256}"
+    w_try_cd "${W_CACHE}/dotnet_tests"
+
+    echo "Executing ${WINE} ${binary}-x86.exe"
+    ret="$(WINEDEBUG=-all "${WINE}" "${binary}-x86.exe")"
+    if [ "$ret" = "Hello World!" ]; then
+        echo "${WINE} ${binary}-x86.exe passed"
+    else
+        echo "${WINE} ${binary}-x86.exe failed, got \'${ret}\', expected \'Hello World!\'"
+    fi
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download_to dotnet_tests https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/${binary}-x64.exe "${x64_sha256}"
+        # This is known to fail; see https://bugs.winehq.org/show_bug.cgi?id=46981, et al
+        echo "Executing ${WINE} ${binary}-x64.exe (errors are non-fatal):"
+        ret="$(WINEDEBUG=-all "${WINE}" "${binary}-x64.exe")"
+        if [ "$ret" = "Hello World!" ]; then
+            echo "${WINE} ${binary}-x64.exe passed"
+        else
+            echo "${WINE} ${binary}-x64.exe failed, got \'${ret}\', expected \'Hello World!\'"
+        fi
+    fi
 }
 
 # Checks if the user can run the self-update/rollback commands
