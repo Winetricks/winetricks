@@ -13380,6 +13380,28 @@ load_allfonts()
 }
 
 #######################
+# tools
+#######################
+
+# Generate shortcut once verbs is generated
+w_generate_shortcut()
+{
+    if [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ]; then
+        printf '%s\n' \
+          '#!/bin/sh' \
+          "WINEPREFIX="$WINEPREFIX \" \
+          "WINEDEBUG="-all,+message" \" \
+          "WINE="$WINE" \" \
+          "wine "$WINEPREFIX/drive_c${installed_exe1#C:}"" \
+        > "$WINEPREFIX/${W_PACKAGE}_shortcut.sh"
+    elif [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && [ -z "$installed_exe1" ]; then
+        w_debug "Unable to generate a shortcut, because installed_exe1 variable '$installed_exe1' is blank"
+    elif [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && [ -z "$WINEPREFIX" ]; then
+        w_debug "Unable to generate a shortcut, because WINEPREFIX variable '$WINEPREFIX' is blank"
+    fi
+}
+
+#######################
 # apps
 #######################
 
@@ -22009,6 +22031,9 @@ then
                         ;;
                 esac
                 execute_command "$verb"
+
+                # Generate shortcut in $WINEPREFIX
+                [ -z "$winetricks_do_not_generate_shortcut" ] && w_generate_shortcut
             done
             ;;
     esac
