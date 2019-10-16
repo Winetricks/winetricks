@@ -2803,6 +2803,28 @@ w_do_call()
             fi
         fi
 
+        # Generate shortcut in $WINEPREFIX/${W_PACKAGE}_shortcut.sh
+        # shellcheck disable=SC2154
+        if [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && [ -z "$winetricks_do_not_generate_shortcut" ]; then
+                printf '%s\n' \
+                    '#!/bin/sh' \
+                    "WINEPREFIX=\"$WINEPREFIX\" WINEDEBUG=\"-all,+message\" $WINE \"$WINEPREFIX/drive_c${installed_exe1#C:}\"" \
+                > "$WINEPREFIX/${W_PACKAGE}_shortcut.sh"
+                # Set executable permission
+                [ ! -x "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && chmod +x "$WINEPREFIX/${W_PACKAGE}_shortcut.sh"
+            elif [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && [ -z "$installed_exe1" ]; then
+                w_debug "w_generate_shortcut: Unable to generate a shortcut, because installed_exe1 variable '$installed_exe1' is blank"
+            elif [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && [ -z "$WINEPREFIX" ]; then
+                w_debug "w_generate_shortcut: Unable to generate a shortcut, because WINEPREFIX variable '$WINEPREFIX' is blank"
+            elif [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ]; then
+                w_debug "w_generate_shortcut: File '$WINEPREFIX/${W_PACKAGE}_shortcut.sh' already exists"
+            elif [ -n "$winetricks_do_not_generate_shortcut" ]; then
+                w_debug "w_generate_shortcut: variable winetricks_do_not_generate_shortcut '$winetricks_do_not_generate_shortcut' is non-zero, skipping creation of shortcut"
+            elif [ ! -x "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ]; then
+                w_debug "w_generate_shortcut: File '$WINEPREFIX/${W_PACKAGE}_shortcut.sh' is not executable, fixing.."
+                chmod +x "$WINEPREFIX/${W_PACKAGE}_shortcut.sh"
+        fi
+
         # If the user specified --verify, also run GUI tests:
         if test "$WINETRICKS_VERIFY" = 1; then
             # command -v isn't POSIX :(
