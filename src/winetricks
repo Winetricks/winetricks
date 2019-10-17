@@ -9074,6 +9074,12 @@ load_dotnet40()
 verify_dotnet40()
 {
     w_dotnet_verify dotnet40
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.0-x86.exe 800a05e97f1ed7f3858acf70126e948c9273ba05c2775e9d38a7f610d1f6560a
+    # FIXME: 64bit
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-4.0-x86.exe
 }
 
 #----------------------------------------------------------------
