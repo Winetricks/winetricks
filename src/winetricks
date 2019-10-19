@@ -13380,6 +13380,47 @@ load_allfonts()
 }
 
 #######################
+# tools
+#######################
+
+# Logic to fetch staging patches
+wineappimagebuilder_staging_patchset()
+{
+    #### Fetch
+
+    # Fetch wine-staging
+    ## TODO: doesn't work and i already broke too many things trying to fix it
+    w_download "https://codeload.github.com/wine-staging/wine-staging/tar.gz/v$wineappimagebuilder_wine_version_major.$wineappimagebuilder_wine_version_minor" '' "wine-staging-$wineappimagebuilder_wine_version_major.$wineappimagebuilder_wine_version_minor.tar.gz"
+
+    # Export full name of wine-staging
+    export wineappimagebuilder_winestaging_full_name="wine-staging-$wineappimagebuilder_wine_version_major.$wineappimagebuilder_wine_version_minor"
+
+    #### Extract
+
+    # Sanitycheck for directory (tar is unable to make the directory itself)
+    #[ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name" ] && { mkdir "$wineappimagebuilder_winestaging_full_name" || w_die "Unable to make a new directory in '$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name'" ;} || w_debug "File '$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name' already exists"
+
+    [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name/patches/patchinstall.sh" ] && { tar -C "$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name" -xf "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_winestaging_full_name.tar.gz" || w_die "Unable to extract '$W_CACHE/$W_PACKAGE/$wineappimagebuilder_winestaging_full_name.tar.gz' in '$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name'" ;} || w_debug "File '$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name/patchespatchinstall.sh' already exists"
+
+    #### Apply patches
+    if [ -e "$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name/patches/patchinstall.sh" ]; then
+
+      # Check exec
+      [ ! -x "$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name/patches/patchinstall.sh" ] && { chmod +x "$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name/patches/patchinstall.sh" || w_die "Unable to set executable permission on '$wineappimagebuilder_winestaging_full_name/patches/patchinstall.sh'" ;} || w_debug "File '$wineappimagebuilder_winestaging_full_name/patches/patchinstall.sh' is already executable"
+
+      #w_check_exec 'patch'
+
+      # Apply patches
+      # shellcheck ignore=SC2015
+      [ -e "$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name/patches/patchinstall.sh" ] && { w_try "$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name/patches/patchinstall.sh" "DESTDIR=$wineappimagebuilder_workdir/$wineappimagebuilder_wine_full_name" --all "$([ -n "$wineappimagebuilder_exclude_staging_patches" ] && printf '%s\n' "-W $wineappimagebuilder_exclude_staging_patches")" ;} || w_die "Directory '$wineappimagebuilder_workdir/wine-$wineappimagebuilder_wine_version_major.$wineappimagebuilder_wine_version_minor' does not exists which is required to apply patches"
+    elif [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name/patches/patchinstall.sh" ]; then
+      w_die "File '$wineappimagebuilder_workdir/$wineappimagebuilder_winestaging_full_name/patchespatchinstall.sh' does not exists which is required to apply patches"
+    fi
+
+    export wineappimagebuilder_staging_used="true"
+}
+
+#######################
 # apps
 #######################
 
