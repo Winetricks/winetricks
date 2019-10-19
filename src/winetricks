@@ -20412,6 +20412,20 @@ load_civ5_demo_steam()
 
 #----------------------------------------------------------------
 
+w_metadata rocketleague_steam games \
+    title="Rocket League (Free, Steam)" \
+    publisher="Psyonix" \
+    year="2015" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/rocketleague/Binaries/Win32/RocketLeague.exe"
+
+load_rocketleague_steam()
+{
+    w_steam_install_game 252950 "Rocket League"
+}
+
+#----------------------------------------------------------------
+
 w_metadata ruse_demo_steam games \
     title="Ruse Demo (Steam)" \
     publisher="Ubisoft" \
