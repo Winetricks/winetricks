@@ -5103,57 +5103,62 @@ winetricks_init()
             W_DRIVE_C="C:/"
             ;;
         *)
-            WINE="${WINE:-wine}"
-            # Find wineserver.
-            # Some distributions (Debian before wine 1.8-2) don't have it on the path.
-            for x in \
-                "$WINESERVER" \
-                "${WINE}server" \
-                "$(command -v wineserver 2> /dev/null)" \
-                "$(dirname $WINE)/server/wineserver" \
-                /usr/bin/wineserver-development \
-                /usr/lib/wine/wineserver \
-                /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
-                /usr/lib/i386-linux-gnu/wine/wineserver \
-                /usr/lib/powerpc-linux-gnu/wine/wineserver \
-                /usr/lib/i386-kfreebsd-gnu/wine/bin/wineserver \
-                /usr/lib/i386-linux-gnu/wine/bin/wineserver \
-                /usr/lib/powerpc-linux-gnu/wine/bin/wineserver \
-                /usr/lib/x86_64-linux-gnu/wine/bin/wineserver \
-                /usr/lib/i386-kfreebsd-gnu/wine-development/wineserver \
-                /usr/lib/i386-linux-gnu/wine-development/wineserver \
-                /usr/lib/powerpc-linux-gnu/wine-development/wineserver \
-                /usr/lib/x86_64-linux-gnu/wine-development/wineserver \
-                file-not-found
-            do
-                if test -x "$x"; then
-                    case "$x" in
-                        /usr/lib/*/wine-development/wineserver|/usr/bin/wineserver-development)
-                            if test -x /usr/bin/wine-development; then
-                                WINE="/usr/bin/wine-development"
-                            fi
-                            ;;
-                    esac
-                    break
-                fi
-            done
+            case "$WINE" in
+              # No need to find a wineserver for AppImages
+              *.Appimage) ;;
+              *)
+                  WINE="${WINE:-wine}"
+                  # Find wineserver.
+                  # Some distributions (Debian before wine 1.8-2) don't have it on the path.
+                  for x in \
+                      "$WINESERVER" \
+                      "${WINE}server" \
+                      "$(command -v wineserver 2> /dev/null)" \
+                      "$(dirname $WINE)/server/wineserver" \
+                      /usr/bin/wineserver-development \
+                      /usr/lib/wine/wineserver \
+                      /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
+                      /usr/lib/i386-linux-gnu/wine/wineserver \
+                      /usr/lib/powerpc-linux-gnu/wine/wineserver \
+                      /usr/lib/i386-kfreebsd-gnu/wine/bin/wineserver \
+                      /usr/lib/i386-linux-gnu/wine/bin/wineserver \
+                      /usr/lib/powerpc-linux-gnu/wine/bin/wineserver \
+                      /usr/lib/x86_64-linux-gnu/wine/bin/wineserver \
+                      /usr/lib/i386-kfreebsd-gnu/wine-development/wineserver \
+                      /usr/lib/i386-linux-gnu/wine-development/wineserver \
+                      /usr/lib/powerpc-linux-gnu/wine-development/wineserver \
+                      /usr/lib/x86_64-linux-gnu/wine-development/wineserver \
+                      file-not-found
+                  do
+                      if test -x "$x"; then
+                          case "$x" in
+                              /usr/lib/*/wine-development/wineserver|/usr/bin/wineserver-development)
+                                  if test -x /usr/bin/wine-development; then
+                                      WINE="/usr/bin/wine-development"
+                                  fi
+                                  ;;
+                          esac
+                          break
+                      fi
+                  done
 
-                case "$x" in
-                    file-not-found) w_die "wineserver not found!" ;;
-                    *) WINESERVER="$x" ;;
-                esac
+                      case "$x" in
+                          file-not-found) w_die "wineserver not found!" ;;
+                          *) WINESERVER="$x" ;;
+                      esac
 
-                if test "$WINEPREFIX"; then
-                    WINETRICKS_ORIGINAL_WINEPREFIX="$WINEPREFIX"
-                else
-                    WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
-                fi
-                _abswine="$(command -v "$WINE" 2>/dev/null)"
-                if ! test -x "$_abswine" || ! test -f "$_abswine"; then
-                    w_die "WINE is $WINE, which is neither on the path nor an executable file"
-                fi
-                unset _abswine
-                ;;
+                      if test "$WINEPREFIX"; then
+                          WINETRICKS_ORIGINAL_WINEPREFIX="$WINEPREFIX"
+                      else
+                          WINETRICKS_ORIGINAL_WINEPREFIX="$HOME/.wine"
+                      fi
+                      _abswine="$(command -v "$WINE" 2>/dev/null)"
+                      if ! test -x "$_abswine" || ! test -f "$_abswine"; then
+                          w_die "WINE is $WINE, which is neither on the path nor an executable file"
+                      fi
+                      unset _abswine
+                      ;;
+            esac
     esac
 
     winetricks_set_wineprefix "$1"
@@ -5284,6 +5289,7 @@ benchmarks list       list verbs in category 'benchmarks'
 dlls list             list verbs in category 'dlls'
 games list            list verbs in category 'games'
 settings list         list verbs in category 'settings'
+wineappimagebuilder   Build wine from source and package it in AppImage
 list-cached           list cached-and-ready-to-install verbs
 list-download         list verbs which download automatically
 list-manual-download  list verbs which download with some help from the user
@@ -13226,6 +13232,340 @@ load_allfonts()
         esac
     done
 }
+
+#######################
+# tools
+#######################
+
+# ----------------------------------------------------------------
+
+# TODO: Add tools metadata
+w_metadata wineappimagebuilder apps \
+    title="WINE AppImage builder" \
+    publisher="Kreyren" \
+    year="2019" \
+    media="tools"
+
+load_wineappimagebuilder()
+{
+    # Sanity for W_CACHE
+    [ -z "$W_PACKAGE" ] && export W_PACKAGE="wineappimagebuilder"
+    [ ! -e "$W_CACHE" ] && mkdir "$W_CACHE"
+    [ ! -e "$W_CACHE/$W_PACKAGE" ] && mkdir "$W_CACHE/$W_PACKAGE"
+
+    ## Get wine source
+    [ -z "$wineappimagebuilder_workdir" ] && export wineappimagebuilder_workdir="$WINETRICKS_WORKDIR" && w_warn "Using '$WINETRICKS_WORKDIR' as workdir, this will remove all progress on failure"
+
+    # shellcheck disable=SC2015
+    [ "$wineappimagebuilder_workdir" != "$WINETRICKS_WORKDIR" ] && [ ! -e "$wineappimagebuilder_workdir" ] && { mkdir "$wineappimagebuilder_workdir" && w_debug "Directory '$wineappimagebuilder_workdir' was created to be used for wineappimagebuilder_workdir" ;} || w_debug "Directory '$wineappimagebuilder_workdir' already exist to be used for wineappimagebuilder_workdir"
+
+    # Logic to grab WINEARCH if none is specified
+    [ -z "$WINEARCH" ] && case "$(uname -m)" in
+      x86_64)
+        export WINEARCH="win64"
+      ;;
+      x86)
+        export WINEARCH="win32"
+      ;;
+      *) w_die "FIXME: Unexpected output of 'uname -m' ($(uname -m)) was provided for WINEARCH logic"
+    esac
+
+    # Fetch latest wine-version
+    [ -z "$wineappimagebuilder_wine_version" ] && export wineappimagebuilder_wine_version="$(curl 'https://raw.githubusercontent.com/wine-mirror/wine/master/VERSION' 2>/dev/null)" ; export wineappimagebuilder_wine_version="wine-${wineappimagebuilder_wine_version#?????????????}"
+
+    # Sanity check for used wine version
+    case "$wineappimagebuilder_wine_version" in wine-[0-9].?*|wine-[0-9][0-9].?*) w_debug "Latest wine version has been fetched successfully '$wineappimagebuilder_wine_version'" ;; *) w_die "Unable to get latest wine version, export it manually using wineappimagebuilder_wine_version variable" ; esac
+
+    # Logic to fetch expected WINE version aka krey's suffering in POSIX sh because winedevs **HAS** to use weirdass urls
+    # wine version number selftest
+    wineappimagebuilder_wine_version_major_selftest() { case "$wineappimagebuilder_wine_version_major" in [1-9]) w_debug "Value of wineappimagebuilder_wine_version_major '$wineappimagebuilder_wine_version_major' is valid" ;; *) w_die "BUG: Version of wineappimagebuilder_wine_version '$wineappimagebuilder_wine_version' is invalid" ; esac ;}
+
+    wineappimagebuilder_wine_version_minor_selftest() { case "$wineappimagebuilder_wine_version_minor" in [0-9]|[1-9][0-9]) w_debug "Value of wineappimagebuilder_wine_version_minor '$wineappimagebuilder_wine_version_minor' is valid" ;; *) w_die "BUG: Version of wineappimagebuilder_wine_version_minor '$wineappimagebuilder_wine_version_minor' is invalid" ; esac ;}
+
+    wineappimagebuilder_wine_version_subminor_selftest() { case "$wineappimagebuilder_wine_version_subminor" in [0-9]|[1-9][0-9]) w_debug "Value of wineappimagebuilder_wine_version_subminor '$wineappimagebuilder_wine_version_subminor' is valid" ;; *) w_die "BUG: Version of wineappimagebuilder_wine_version_subminor '$wineappimagebuilder_wine_version_subminor' is invalid" ; esac ;}
+
+    wineappimagebuilder_wine_version_revision_selftest() { case "$wineappimagebuilder_wine_version_revision" in rc-[0-9]|rc-[1-9][0-9]) w_debug "Value of wineappimagebuilder_wine_version_revision '$wineappimagebuilder_wine_version_revision' is valid" ;; *) w_die "BUG: Version of wineappimagebuilder_wine_version_revision '$wineappimagebuilder_wine_version_revision' is invalid" ; esac ;}
+
+    case "$wineappimagebuilder_wine_version" in
+
+      wine-[3-9].[1-9][0-9]) # i.e: wine-4.17
+        # Get major version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version="wine-4.17" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%???}" ; echo $wineappimagebuilder_wine_version_major
+        export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%???}"
+
+        # Get minor version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.17-rc12' ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%?????}" ; echo $wineappimagebuilder_wine_version_minor
+        export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%?????}"
+
+        wineappimagebuilder_wine_version_major_selftest
+        wineappimagebuilder_wine_version_minor_selftest
+
+        # Fetch
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/${wineappimagebuilder_wine_version_major}.x/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+
+      wine-[3-9].[1-9][1-9]-rc[0-9]) # i.e: wine-4.17-rc0
+        # Get major version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.17-rc0' ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%???????}" ; echo $wineappimagebuilder_wine_version_major
+        export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%???????}"
+
+        # Get minor version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.17-rc0' ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%????}" ; echo $wineappimagebuilder_wine_version_minor
+        export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%????}"
+
+        # Get revision
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.17-rc0' ; export wineappimagebuilder_wine_version_revision="${wineappimagebuilder_wine_version#??????????}" ; echo $wineappimagebuilder_wine_version_revision
+        export wineappimagebuilder_wine_version_revision="${wineappimagebuilder_wine_version#??????????}"
+
+        wineappimagebuilder_wine_version_major_selftest
+        wineappimagebuilder_wine_version_minor_selftest
+        wineappimagebuilder_wine_version_revision_selftest
+
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/${wineappimagebuilder_wine_version_major}.x/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+
+      wine-[3-9].[1-9][1-9]-rc[1-9][0-9]) # i.e: wine-4.17-rc12
+        # Get major version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.17-rc12' ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%????????}" ; echo $wineappimagebuilder_wine_version_major
+        export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%????????}"
+
+        # Get minor version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.17-rc12' ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%?????}" ; echo $wineappimagebuilder_wine_version_minor
+        export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%?????}"
+
+        wineappimagebuilder_wine_version_major_selftest
+        wineappimagebuilder_wine_version_minor_selftest
+        wineappimagebuilder_wine_version_subminor_selftest
+        wineappimagebuilder_wine_version_revision_selftest
+
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/${wineappimagebuilder_wine_version_major}.x/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+
+      wine-[3-9].0.[1-9]) # i.e: wine-4.0.1
+        # Get major version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1' ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%????}" ; echo $wineappimagebuilder_wine_version_major
+        export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%????}"
+
+        # Get minor version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1' ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%??}" ; echo $wineappimagebuilder_wine_version_minor
+        export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%??}"
+
+        # Get sub-minor version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1' ; export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version#?????????}" ;  echo $wineappimagebuilder_wine_version_subminor
+        export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version#?????????}"
+
+        wineappimagebuilder_wine_version_major_selftest
+        wineappimagebuilder_wine_version_minor_selftest
+        wineappimagebuilder_wine_version_subminor_selftest
+
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/${wineappimagebuilder_wine_version_major}.0/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+
+      wine-[3-9].0.[1-9]-rc[0-9]) # i.e: wine-4.0.1-rc0
+        # Get major version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1-rc0' ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%????????}" ; echo $wineappimagebuilder_wine_version_major
+        export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%????????}"
+
+        # Get minor version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1-rc0' ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%??????}" ; echo $wineappimagebuilder_wine_version_minor
+        export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%??????}"
+
+        # Get sub-minor version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1-rc0' ; export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version#?????????}" ; export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version_subminor%????}" ; echo $wineappimagebuilder_wine_version_subminor
+        export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version#?????????}" ; export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version_subminor%????}"
+
+        # Get revision
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1-rc0' ; export wineappimagebuilder_wine_version_revision="${wineappimagebuilder_wine_version#???????????}" ; echo $wineappimagebuilder_wine_version_revision
+        export wineappimagebuilder_wine_version_revision="${wineappimagebuilder_wine_version#???????????}"
+
+        wineappimagebuilder_wine_version_major_selftest
+        wineappimagebuilder_wine_version_minor_selftest
+        wineappimagebuilder_wine_version_subminor_selftest
+        wineappimagebuilder_wine_version_revision_selftest
+
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/${wineappimagebuilder_wine_version_major}.0/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+
+      wine-[3-9].0.[1-9]-rc[1-9][0-9]) # i.e: wine-4.0.1-rc12
+        # Get major version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1-rc12' ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%?????????}" ; echo $wineappimagebuilder_wine_version_major
+        export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version#?????}" ; export wineappimagebuilder_wine_version_major="${wineappimagebuilder_wine_version_major%?????????}"
+
+        # Get minor version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1-rc12' ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%???????}" ; echo $wineappimagebuilder_wine_version_minor
+        export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version#???????}" ; export wineappimagebuilder_wine_version_minor="${wineappimagebuilder_wine_version_minor%???????}"
+
+        # Get sub-minor version of wine
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1-rc12' ; export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version#?????????}" ; export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version_subminor%?????}" ; echo $wineappimagebuilder_wine_version_subminor
+        export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version#?????????}" ; export wineappimagebuilder_wine_version_subminor="${wineappimagebuilder_wine_version_subminor%?????}"
+
+        # Get revision
+        ## DEBUG: export wineappimagebuilder_wine_version='wine-4.0.1-rc12' ; export wineappimagebuilder_wine_version_revision="${wineappimagebuilder_wine_version#???????????}" ; echo $wineappimagebuilder_wine_version_revision
+        export wineappimagebuilder_wine_version_revision="${wineappimagebuilder_wine_version#???????????}"
+
+        wineappimagebuilder_wine_version_major_selftest
+        wineappimagebuilder_wine_version_minor_selftest
+        wineappimagebuilder_wine_version_subminor_selftest
+        wineappimagebuilder_wine_version_revision_selftest
+
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/${wineappimagebuilder_wine_version_major}.0/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+
+      # Cherrypicked
+      wine-1.9.[0-9]|wine-1.9.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.9/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.8.[0-9]|wine-1.8.[0-9][0-9]|wine-1.8.[0-9]-rc*|wine-1.8.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.8/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.7.[0-9]|wine-1.7.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.7/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.6.[0-9]|wine-1.6.[0-9][0-9]|wine-1.6.[0-9]-rc*|wine-1.6-rc*|wine-1.6.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.6/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.5.[0-9]|wine-1.5.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.5/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.4.[0-9]|wine-1.4.[0-9][0-9]|wine-1.4.[0-9]-rc*|wine-1.4.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.4/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.3.[0-9]|wine-1.3.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.3/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.2.[0-9]|wine-1.2.[0-9][0-9]|wine-1.2.[0-9]-rc*|wine-1.2-rc*|wine-1.2.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.2/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.1.[0-9]|wine-1.1.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.1/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.0.[0-9]|wine-1.0.[0-9][0-9]|wine-1.0.[0-9]-rc*|wine-1.0-rc*|wine-1.0.[0-9][0-9]-rc*)
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.0/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      wine-1.1.[0-9]|wine-1.1.[0-9][0-9])
+        [ ! -e "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" ] && w_download "https://dl.winehq.org/wine/source/1.0/$wineappimagebuilder_wine_version.tar.xz"
+      ;;
+      *) w_die "wineappimagebuilder doesn't support '$wineappimagebuilder_wine_version' in 'wineappimagebuilder_wine_version' variable"
+    esac
+
+    # Export full name of wine
+    export wineappimagebuilder_wine_full_name="wine-$wineappimagebuilder_wine_version_major.$wineappimagebuilder_wine_version_minor$([ -n "$wineappimagebuilder_wine_version_revision" ] && printf '%s\n' "$wineappimagebuilder_wine_version_revision")"
+
+    # Credit: https://stackoverflow.com/a/18963118
+    gcc_optimization() { gcc -### -E - -march=native 2>&1 | sed -r '/cc1/!d;s/(")|(^.* - )|( -mno-[^\ ]+)//g' ;}
+
+    # Abstract: Make compilation as fast as possible for those using it
+    COMMON_FLAGS="$(gcc_optimization) --pipe" ; export COMMON_FLAGS
+    [ -z "$CFLAGS" ] && export CFLAGS="$COMMON_FLAGS"
+    [ -z "$CXXFLAGS" ] && export CXXFLAGS="$COMMON_FLAGS"
+    [ -z "$FCFLAGS" ] && export FCLAGS="$COMMON_FLAGS"
+    [ -z "$FFLAGS" ] && export FFLAGS="$COMMON_FLAGS"
+    [ -z "$FCFLAGS" ] && export FCFLAGS="$COMMON_FLAGS"
+    [ -z "$MAKEOPTS" ] && MAKEOPTS="$([ -n "$(nproc)" ] && printf '%s\n' "-j$(nproc)")" ; export MAKEOPTS
+
+    # shellcheck disable=SC2015
+    [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version" ] && { mkdir "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version" || w_die "failed to make a new directory in '$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version" ;} || w_debug "Directory '$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version' already exists"
+
+    # Extract WINE source
+    [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/LICENSE" ] && tar -xf "$W_CACHE/$W_PACKAGE/$wineappimagebuilder_wine_version.tar.xz" -C "$wineappimagebuilder_workdir/"
+
+    # Compile WINE
+    w_check_exec 'flex'
+    w_check_exec 'bison'
+    w_check_exec 'make'
+
+    w_warn "Wine64 is built depending on WINEARCH variable"
+
+    # Apply patches prior to compilation
+    [ -n "$(wineappimagebuilder_patches_prior_compilation 2>/dev/null)" ] && { wineappimagebuilder_patches_prior_compilation ;} || w_info "No patches ware applied prior to compilation, define 'wineappimagebuilder_patches_prior_compilation' variable in your verb to apply them"
+
+    w_die "ping2"
+
+    (
+      # TODO: Avoid using cd
+      w_try_cd "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version"
+      w_warn "Generating Makefile, this could take a while.. (max 2min)"
+      [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/Makefile" ] && w_try "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/configure" --quiet --srcdir="$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/" "$([ "$WINEARCH" = "win64" ] && printf '%s\n' "--enable-win64")"
+    )
+    w_warn "We are about to build whole WINE from source to be packaged in AppImage, this make take a while (2h max per one thread)"
+    [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/libs/wine/libwine.so.1.0" ] && w_warn "We are about to compile whole WINE, this is going to take some time.."
+    # "$([ -n "$W_DEBUG" ] && printf ">/dev/null")"
+    w_try make -C "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/" "$MAKEOPTS"
+
+    # Get appimagetool
+    if [ "$WINEARCH" = 'win64' ]; then
+      [ ! -e "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" ] && w_download 'https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage'
+      [ ! -e "$wineappimagebuilder_workdir/appimagetool.AppImage" ] && [ -e "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" ] && cp -r "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" "$wineappimagebuilder_workdir"
+      # shellcheck disable=SC2015
+      [ ! -x "$wineappimagebuilder_workdir/appimagetool.AppImage" ] && { chmod +x "$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage" || w_die "Unable to set executable permissions on '$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage'" ;} || w_debug "File '$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage' is already executable"
+
+      ## Export in workdir
+      [ ! -e "$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage" ] && [ -e "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" ] && cp "$W_CACHE/$W_PACKAGE/appimagetool-x86_64.AppImage" "$wineappimagebuilder_workdir/"
+      [ ! -x "$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage" ] && chmod +x "$wineappimagebuilder_workdir/appimagetool-x86_64.AppImage"
+
+      export wineappimagebuilder_appimagetool="appimagetool-x86_64.AppImage"
+    elif [ "$WINEARCH" = 'win32' ]; then
+      [ ! -e "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" ] && w_download 'https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-i686.AppImage'
+      [ ! -e "$wineappimagebuilder_workdir/appimagetool.AppImage" ] && [ -e "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" ] && cp -r "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" "$wineappimagebuilder_workdir"
+      # shellcheck disable=SC2015
+      [ ! -x "$wineappimagebuilder_workdir/appimagetool.AppImage" ] && { chmod +x "$wineappimagebuilder_workdir/appimagetool-i686.AppImage" || w_die "Unable to set executable permissions on '$wineappimagebuilder_workdir/appimagetool-i686.AppImage'" ;} || w_debug "File '$wineappimagebuilder_workdir/appimagetool-i686.AppImage' is already executable"
+
+      ## Export in workdir
+      [ ! -e "$wineappimagebuilder_workdir/appimagetool-i686.AppImage" ] && [ -e "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" ] && cp "$W_CACHE/$W_PACKAGE/appimagetool-i686.AppImage" "$wineappimagebuilder_workdir/"
+      [ ! -x "$wineappimagebuilder_workdir/appimagetool-i686.AppImage" ] && chmod +x "$wineappimagebuilder_workdir/appimagetool-i686.AppImage"
+
+      export wineappimagebuilder_appimagetool="appimagetool-i686.AppImage"
+    else w_die "Unsupported WINEARCH ($WINEARCH)"
+    fi
+
+    # Build AppImage
+    (
+      w_try_cd "$wineappimagebuilder_workdir"
+      [ ! -e "$wineappimagebuilder_workdir/squashfs-root/AppRun" ] && w_try "$wineappimagebuilder_workdir/$wineappimagebuilder_appimagetool" --appimage-extract
+    )
+
+    # Make appimage executable
+    [ ! -x "$wineappimagebuilder_workdir/squashfs-root/AppRun" ] && chmod +x "$wineappimagebuilder_workdir/squashfs-root/AppRun"
+
+    # APPLY PATCHES
+    # shellcheck disable=SC2015
+    [ -n "$(wineappimagebuilder_patches 2>/dev/null)" ] && { wineappimagebuilder_patches ;} || w_warn "No patches ware applied, define 'wineappimagebuilder_patches' in your verb to apply them"
+
+    # Configure AppImage
+    # Both .svg and .desktop are mandatory
+    [ ! -e "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/appimagetool.svg" ] && { cp "$wineappimagebuilder_workdir/squashfs-root/appimagetool.svg" "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/" || die "Unable to copy '$wineappimagebuilder_workdir/squashfs-root/appimagetool.svg' to '$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/'" ;}
+    printf '%s\n' \
+      '[Desktop Entry]' \
+      'Type=Application' \
+      "Name=$W_PACKAGE" \
+      'Exec=wine' \
+      'Comment=Created by winetricks using wineappimagebuilder' \
+      'Icon=appimagetool' \
+      'Categories=Development;' \
+      'Terminal=true' \
+    > "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/appimagetool.desktop"
+
+    # Required to avoid execv() error on invoke
+    [ ! -L "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/AppRun" ] && ln -s  "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/wine" "$wineappimagebuilder_workdir/$wineappimagebuilder_wine_version/AppRun"
+
+    (
+      [ "$WINEARCH" = "win64" ] && export ARCH='x86_64'
+      # Blind ARCH=x86
+      [ "$WINEARCH" = "win32" ] && export ARCH='x86'
+      if [ ! -e "$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage" ]; then
+        # Generate AppImage
+        # shellcheck ignore=SC2154
+        #        -u "'gh-releases-zsync|$USER|winetricks|wineappimagebuilder|wine$([ -n "$wineappimagebuilder_staging_used" ] && printf "-staging")-$wineappimagebuilder_wine_version_major.$wineappimagebuilder_wine_version_minor$([ -n "$wineappimagebuilder_wine_version_revision" ] && printf '-%s\n' "-$wineappimagebuilder_wine_version_revision").AppImage.zsync'" \
+        [ -e "$wineappimagebuilder_workdir/squashfs-root/AppRun" ] && { w_try "$wineappimagebuilder_workdir/squashfs-root/AppRun""$([ -z "$wineappimagebuilder_compression" ] && case "$wineappimagebuilder_compression" in xz) printf '--comp xz\n' ;; gzip) printf '--comp gzip\n' ; esac)"\
+        $wineappimagebuilder_workdir/wine-$wineappimagebuilder_wine_version_major.$wineappimagebuilder_wine_version_minor"$([ -n ".$wineappimagebuilder_wine_version_subminor" ] && printf '%s\n' "$wineappimagebuilder_wine_version_subminor")""$([ -n "$wineappimagebuilder_wine_version_revision" ] && printf '%s\n' "-$wineappimagebuilder_wine_version_revision")" \
+        "$W_CACHE/$W_PACKAGE/wine$([ -n "$wineappimagebuilder_staging_used" ] && printf "-staging")-$wineappimagebuilder_wine_version_major.$wineappimagebuilder_wine_version_minor$([ -n "$wineappimagebuilder_wine_version_revision" ] && printf '%s\n' "-$wineappimagebuilder_wine_version_revision").AppImage" ;} || w_die "BUG: file '$wineappimagebuilder_workdir/squashfs-root/AppRun' does not exist"
+      elif [ ! -e "$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage" ]; then
+        w_debug "File '$W_CACHE/$W_PACKAGE/$W_PACKAGE.AppImage' already exists, skipping.."
+      fi
+    )
+}
+
+#----------------------------------------------------------------
 
 #######################
 # apps
@@ -21647,6 +21987,7 @@ execute_command()
         annihilate) winetricks_annihilate_wineprefix ;;
         folder) w_open_folder "$WINEPREFIX" ;;
         winecfg) "$WINE" winecfg ;;
+        wineappimagebuilder) load_wineappimagebuilder ;;
         regedit) "$WINE" regedit ;;
         taskmgr) "$WINE" taskmgr & ;;
         explorer) "$WINE" explorer & ;;
