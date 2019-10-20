@@ -14827,6 +14827,54 @@ load_openwatcom()
 
 #----------------------------------------------------------------
 
+w_metadata powershell apps \
+    title="Microsoft Powershell" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="ProtectionId.685.December.2016.rar" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/protection_id.exe"
+
+load_powershell()
+{
+	# Requires at least .NET Framework 4.5.2 (https://docs.microsoft.com/en-us/powershell/scripting/wmf/setup/install-configure?view=powershell-6)
+	w_call dotnet462
+
+	# Download 64-bit WMF (Windows Management Framework)
+	w_download "http://download.microsoft.com/download/6/F/5/6F5FF66C-6775-42B0-86C4-47D41F2DA187/Win7AndW2K8R2-KB3191566-x64.zip"
+
+	# Download 32-bit WMF (Windows Management Framework)
+	w_download "http://download.microsoft.com/download/6/F/5/6F5FF66C-6775-42B0-86C4-47D41F2DA187/Win7-KB3191566-x86.zip"
+
+	# Unzip
+	## Duplicate files, using directories
+	[ ! -d "$W_CACHE/$W_PACKAGE/WMF_32" ] && w_try mkdir "$W_CACHE/$W_PACKAGE/WMF_32"
+	[ ! -d "$W_CACHE/$W_PACKAGE/WMF_64" ] && w_try mkdir "$W_CACHE/$W_PACKAGE/WMF_64"
+
+	[ ! -e "$W_CACHE/$W_PACKAGE/WMF_32/Win7-KB3191566-x86.msu" ] && { w_try_unzip "$W_CACHE/$W_PACKAGE/WMF_32/" "$W_CACHE/$W_PACKAGE/Win7-KB3191566-x86.zip" ;} || w_debug "Archive '$W_CACHE/$W_PACKAGE/Win7-KB3191566-x86.zip' is already extracted"
+
+	[ ! -e "$W_CACHE/$W_PACKAGE/WMF_64/Win7AndW2K8R2-KB3191566-x64.msu" ] && { w_try_unzip "$W_CACHE/$W_PACKAGE/WMF_64/" "$W_CACHE/$W_PACKAGE/Win7AndW2K8R2-KB3191566-x64.zip" ;} || w_debug "Archive '$W_CACHE/$W_PACKAGE/Win7AndW2K8R2-KB3191566-x64.zip' is already extracted"
+
+	w_try "$WINE" start wusa.exe "$W_CACHE/$W_PACKAGE/WMF_32/Win7-KB3191566-x86.msu"
+
+	w_try "$WINE64" start wusa.exe "$W_CACHE/$W_PACKAGE/WMF_64/Win7AndW2K8R2-KB3191566-x64.msu"
+
+	# Doesn't work
+	w_download https://github.com/PowerShell/PowerShell/releases/download/v6.2.3/PowerShell-6.2.3-win-x86.msi
+
+	# Doesn't work
+	w_download https://github.com/PowerShell/PowerShell/releases/download/v6.2.3/PowerShell-6.2.3-win-x64.msi
+
+	# Reference for installation from M$ (https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-windows?view=powershell-6#prerequisites)
+
+	w_try "$WINE" msiexec /package "$W_CACHE/$W_PACKAGE/PowerShell-6.2.3-win-x86.msi"
+
+	w_try "$WINE" msiexec /package "$W_CACHE/$W_PACKAGE/PowerShell-6.2.3-win-x64.msi"
+
+}
+
+#----------------------------------------------------------------
+
 w_metadata protectionid apps \
     title="Protection ID" \
     publisher="CDKiLLER & TippeX" \
