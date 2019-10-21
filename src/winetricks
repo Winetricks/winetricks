@@ -20178,6 +20178,22 @@ load_wog()
 }
 
 #----------------------------------------------------------------
+# Uplay Games
+#----------------------------------------------------------------
+
+w_metadata splintercell_blacklist_uplay games \
+    title="Tom Clancy Splinter Cell: Blacklist (Uplay)" \
+    publisher="Ubisoft" \
+    year="2013" \
+    media="download" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Ubisoft/Ubisoft Game Launcher/games/Splinter Cell Blacklist/Blacklist_Launcher.exe"
+
+load_splintercell_blacklist_uplay() {
+    w_call dxvk
+    w_uplay_install_game '91'
+}
+
+#----------------------------------------------------------------
 # Steam Games
 #----------------------------------------------------------------
 
