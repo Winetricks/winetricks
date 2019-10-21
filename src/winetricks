@@ -446,6 +446,11 @@ w_try_cd()
     w_try cd "$@"
 }
 
+w_try_cp()
+{
+    cp "$1" "$2" || w_die "Unable to copy $1 in $2"
+}
+
 # Copy font files matching a glob pattern from source directory to destination directory.
 # Also remove any file in the destination directory that has the same name as
 # any of the files that we're trying to copy, but with different case letters.
