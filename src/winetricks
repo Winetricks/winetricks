@@ -11753,37 +11753,52 @@ w_metadata vcrun2012 dlls \
     file1="vcredist_x86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mfc110.dll"
 
-load_vcrun2012()
-{
-    # https://www.microsoft.com/en-us/download/details.aspx?id=30679
-    w_download https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x86.exe b924ad8062eaf4e70437c8be50fa612162795ff0839479546ce907ffa8d6e386
+		load_vcrun2012()
+		{
+		    # https://www.microsoft.com/en-us/download/details.aspx?id=30679
+		    w_download https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x86.exe b924ad8062eaf4e70437c8be50fa612162795ff0839479546ce907ffa8d6e386
 
-    w_override_dlls native,builtin atl110 msvcp110 msvcr110 vcomp110
-    w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
+		    w_override_dlls native,builtin atl110 msvcp110 msvcr110 vcomp110
 
-    case "$W_ARCH" in
-        win64)
-            # Also install the 64-bit version
-            # 2015/10/19: 681be3e5ba9fd3da02c09d7e565adfa078640ed66a0d58583efad2c1e3cc4064
-            w_download https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe 681be3e5ba9fd3da02c09d7e565adfa078640ed66a0d58583efad2c1e3cc4064
-            if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls" ,3.8; then
-                rm -f "$W_TMP"/*  # Avoid permission error
-                w_try_cabextract --directory="$W_TMP" vcredist_x64.exe
-                w_try_cabextract --directory="$W_TMP" "$W_TMP/a2"
-                w_try_cabextract --directory="$W_TMP" "$W_TMP/a3"
-                cp "$W_TMP"/F_CENTRAL_atl110_x64 "$W_SYSTEM64_DLLS"/atl110.dll
-                cp "$W_TMP"/F_CENTRAL_mfc110_x64 "$W_SYSTEM64_DLLS"/mfc110.dll
-                cp "$W_TMP"/F_CENTRAL_mfc110u_x64 "$W_SYSTEM64_DLLS"/mfc110u.dll
-                cp "$W_TMP"/F_CENTRAL_msvcp110_x64 "$W_SYSTEM64_DLLS"/msvcp110.dll
-                cp "$W_TMP"/F_CENTRAL_msvcr110_x64 "$W_SYSTEM64_DLLS"/msvcr110.dll
-                cp "$W_TMP"/F_CENTRAL_vcomp110_x64 "$W_SYSTEM64_DLLS"/vcomp110.dll
-            else
-                w_try "$WINE" vcredist_x64.exe $W_UNATTENDED_SLASH_Q
-            fi
-            ;;
-    esac
-}
+				# returns 1 on wine-4.12+ and win32 (https://github.com/Winetricks/winetricks/issues/1280)
+				if w_workaround_wine_bug 47565; then
+						# Attempt to **HOTFIX** using cabextract
+						w_info "Ignore the warnings about extra bytes"
+						w_try_cabextract --directory="$W_TMP" "$W_CACHE/$W_PACKAGE/vcredist_x86.exe"
+						w_try_cabextract --directory="$W_TMP" "$W_TMP/a2"
+						w_try_cabextract --directory="$W_TMP" "$W_TMP/a3"
+						w_try cp "$W_TMP/F_CENTRAL_atl110_x86" "$W_SYSTEM32_DLLS/atl110.dll"
+						w_try cp "$W_TMP/F_CENTRAL_mfc110_x86" "$W_SYSTEM32_DLLS/mfc110.dll"
+						w_try cp "$W_TMP/F_CENTRAL_mfc110u_x86" "$W_SYSTEM32_DLLS/mfc110u.dll"
+						w_try cp "$W_TMP/F_CENTRAL_msvcp110_x86" "$W_SYSTEM32_DLLS/msvcp110.dll"
+						w_try cp "$W_TMP/F_CENTRAL_msvcr110_x86" "$W_SYSTEM32_DLLS/msvcr110.dll"
+						w_try cp "$W_TMP/F_CENTRAL_vcomp110_x86" "$W_SYSTEM32_DLLS/vcomp110.dll"
+				elif ! w_workaround_wine_bug 47565; then
+						w_try "$WINE" "$W_CACHE/$W_PACKAGE/vcredist_x86.exe" $W_UNATTENDED_SLASH_Q
+				fi
+
+		    case "$W_ARCH" in
+		        win64)
+		            # Also install the 64-bit version
+		            # 2015/10/19: 681be3e5ba9fd3da02c09d7e565adfa078640ed66a0d58583efad2c1e3cc4064
+		            w_download https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe 681be3e5ba9fd3da02c09d7e565adfa078640ed66a0d58583efad2c1e3cc4064
+
+		            if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls" ,3.8; then
+		                rm -f "$W_TMP/*"  # Avoid permission error
+		                w_try_cabextract --directory="$W_TMP" "$W_CACHE/$W_PACKAGE/vcredist_x64.exe"
+		                w_try_cabextract --directory="$W_TMP" "$W_TMP/a2"
+		                w_try_cabextract --directory="$W_TMP" "$W_TMP/a3"
+		                w_try cp "$W_TMP/F_CENTRAL_atl110_x64" "$W_SYSTEM64_DLLS/atl110.dll"
+		                w_try cp "$W_TMP/F_CENTRAL_mfc110_x64" "$W_SYSTEM64_DLLS/mfc110.dll"
+		                w_try cp "$W_TMP/F_CENTRAL_mfc110u_x64" "$W_SYSTEM64_DLLS/mfc110u.dll"
+		                w_try cp "$W_TMP/F_CENTRAL_msvcp110_x64" "$W_SYSTEM64_DLLS/msvcp110.dll"
+		                w_try cp "$W_TMP/F_CENTRAL_msvcr110_x64" "$W_SYSTEM64_DLLS/msvcr110.dll"
+		                w_try cp "$W_TMP/F_CENTRAL_vcomp110_x64" "$W_SYSTEM64_DLLS/vcomp110.dll"
+		            else
+		                w_try "$WINE" "$W_CACHE/$W_PACKAGE/vcredist_x64.exe" $W_UNATTENDED_SLASH_Q
+		            fi
+		    esac
+		}
 
 #----------------------------------------------------------------
 
