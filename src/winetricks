@@ -20182,15 +20182,24 @@ load_wog()
 #----------------------------------------------------------------
 
 w_metadata splintercell_blacklist_uplay games \
-    title="Tom Clancy Splinter Cell: Blacklist (Uplay)" \
+    title="Tom Clancy Splinter Cell: Blacklist (Non-free, Uplay)" \
     publisher="Ubisoft" \
     year="2013" \
     media="download" \
-    installed_exe1="${W_PROGRAMS_X86_WIN}/Ubisoft/Ubisoft Game Launcher/games/Splinter Cell Blacklist/Blacklist_Launcher.exe"
+    installed_exe1="$W_PROGRAMS_X86_WIN/Ubisoft/Ubisoft Game Launcher/games/Splinter Cell Blacklist/Blacklist_Launcher.exe"
 
-load_splintercell_blacklist_uplay() {
+# shellcheck disable=SC2015
+load_splintercell_blacklist_uplay()
+{
+		# Is d3d11 wineapps
     w_call dxvk
-    w_uplay_install_game '91'
+		# has d3d9 support where wine libs are not sufficient
+		w_call d9vk
+
+		w_uplay_install_game 91
+
+		# Disable startup logos
+		[ -e "$WINEPREFIX/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/games/Splinter Cell Blsklist/src/SYSTEM/Blacklist.ini" ] && { printf '%s\n' '%s/Logo_Ubisoft.bik/Logo_Ubisoft.bik.disabled/g' w | ed -s "$WINEPREFIX/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/games/Splinter Cell Blsklist/src/SYSTEM/Blacklist.ini" || w_warn "Unable to disable intro logos" ;} || w_warn "File $WINEPREFIX/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/games/Splinter Cell Blsklist/src/SYSTEM/Blacklist.ini does not exists, can not disable intro logos"
 }
 
 #----------------------------------------------------------------
