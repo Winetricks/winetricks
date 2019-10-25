@@ -20412,6 +20412,21 @@ load_civ5_demo_steam()
 
 #----------------------------------------------------------------
 
+# https://appdb.winehq.org/objectManager.php?sClass=version&iId=26968
+
+w_metadata euro_truck_simulator2_steam games \
+    title="Euro Truck Simulator 2" \
+    publisher="SCS Software" \
+    year="2012" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/Euro Truck Simulator 2/bin/win_x86/eurotrucks2.exe"
+
+load_euro_truck_simulator2_steam()
+{
+    [ -n "$WINETRICKS_USE_D9VK" ] && w_call d9vk
+    w_steam_install_game 227300 "Euro Truck Simulator 2"
+}
+
 #----------------------------------------------------------------
 
 # https://appdb.winehq.org/objectManager.php?sClass=application&iId=7989
