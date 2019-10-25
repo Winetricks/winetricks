@@ -768,23 +768,39 @@ w_get_sha256sum()
     if [ -f "$_W_sha256_file" ] || [ -h "$_W_sha256_file" ] ; then
         _W_gotsha256sum=$($WINETRICKS_SHA256SUM < "$_W_sha256_file" | sed 's/(stdin)= //;s/ .*//')
     else
-        w_warn "$_W_sha256_file is not a regular file, not checking sha256sum"
-        return
+        w_die "file '$_W_sha286_file' is not a regular file - bug?"
     fi
 }
 
+# get sha512sum string and set $_W_gotsha512sum to it
+w_get_sha512sum()
+{
+    _W_sha512_file="$1"
+
+    # See https://github.com/Winetricks/winetricks/issues/645
+    # User is running winetricks from /dev/stdin
+    if [ -f "$_W_sha512_file" ] || [ -h "$_W_sha512_file" ] ; then
+        _W_gotsha512sum=$($WINETRICKS_SHA512SUM < "$_W_sha512_file" | sed 's/(stdin)= //;s/ .*//')
+    else
+        w_die "file '$_W_sha512_file' is not a regular file - bug?"
+    fi
+}
+
+# Export executable to check shasum
 w_get_shatype() {
     _W_sum="$1"
 
     # tr -d " " is for FreeBSD/OS X/Solaris return a leading space:
     # See https://stackoverflow.com/questions/30927590/wc-on-osx-return-includes-spaces/30927885#30927885
-    _W_sum_length="$(echo "$_W_sum" | tr -d "\\n" | wc -c | tr -d " ")"
+    _W_sum_length="$(printf '%s\n' "$_W_sum" | tr -d "\\n" | wc -c | tr -d " ")"
     case "$_W_sum_length" in
         0) _W_shatype="none" ;;
         64) _W_shatype="sha256" ;;
-        # 128) sha512..
+        128) _W_shatype="sha512" ;;
         *) w_die "unsupported shasum..bug" ;;
     esac
+
+		# Do not unset, used in other functions
 }
 
 # verify a sha256sum
@@ -1024,101 +1040,130 @@ winetricks_selfupdate_rollback()
 }
 
 # Download a file
-# Usage: w_download_to (packagename|path to download file) url [shasum [filename [cookie jar]]]
+# SYNOPSIS: w_download_to (packagename|path to download file) url [shasum256/512 [filename [cookie jar]]]
 # Caches downloads in winetrickscache/$packagename
 w_download_to()
 {
+		# Export downloader and/or torify
     winetricks_download_setup
 
-    _W_packagename="$1" # or path to download file to
+    _W_packagename="$1"
     _W_url="$2"
     _W_sum="$3"
     _W_file="$4"
     _W_cookiejar="$5"
 
+		# Sanity _W_packagename
     case $_W_packagename in
-        .) w_die "bug: please do not download packages to top of cache" ;;
+				# QA required: What is top of cache?
+        .) w_die "First argument '$_W_packagename' in 'w_download_to' function in invalid - Do not download packages to top of cache" ;;
+				"") w_die "First argument '$_W_packagename' in 'w_download_to' function is blank which is unexpected" ;;
+				[!/]*) # Pattern for absolute unix path
+						w_debug "First variable '$_W_packagename' in 'w_download_to' function is valid absolute unix path"
+						# Export path
+						if ! grep -q '^/' "$_W_packagename"; then
+		            _W_cache="$W_CACHE/$_W_packagename"
+		        else
+		            _W_cache="$_W_packagename"
+		        fi
+				;;
+				*) w_debug "First variable '$_W_packagename' in 'w_download_to' function is valid, using file name"
     esac
 
-    if echo "$_W_url" | grep ' ' ; then
-        w_die "bug: please use %20 instead of literal spaces in urls, curl rejects spaces, and they make life harder for linkcheck.sh"
-    fi
-    if [ "$_W_file"x = ""x ] ; then
-        _W_file=$(basename "$_W_url")
-    fi
+		# Sanity _W_url
+		case $_W_url in
+			# Curl rejects spaces and linkcheck.sh is not optimized on them
+			*[0-9a-zA-Z/_.:%]*) _W_url="${_W_url// /\%20}" ;;
+			*[0-9a-zA-Z/_.:]*) w_debug "Second variable '$_W_url' in 'w_download_to' function is valid" ;;
+			*) w_die "Second argument '$_W_url' in 'w_download_to' variable is blank which is unexpected"
+		esac
 
+		# Sanity _W_file
+		case $_W_file in
+			# Logic in case filename is used
+			"") _W_file=$(basename "$_W_url") ;;
+			# Pattern for absolute unix path
+			[!/]*) w_debug "Third variable '$_W_file' in 'w_download_to' function is valid" ;;
+			*) w_die "Unexpected third argument '$_W_file' was parsed in 'w_download_to' function"
+		esac
+
+		# Export executable to check shasum
     w_get_shatype "$_W_sum"
 
-    if echo "${_W_packagename}" | grep -q -e '\/-' -e '^-'; then
-            w_die "Invalid path ${_W_packagename} given"
-    else
-        if ! echo "${_W_packagename}" | grep -q '^/' ; then
-            _W_cache="$W_CACHE/$_W_packagename"
-        else
-            _W_cache="$_W_packagename"
-        fi
-    fi
-
-    if test ! -d "$_W_cache" ; then
-        w_try mkdir -p "$_W_cache"
+		# Make sure that _W_cache exists
+    if [ ! -d "$_W_cache" ]; then
+        { mkdir -p "$_W_cache" && w_debug "Created new directory in '$_W_cache'" ;} || w_die "Unable to make a new directory in '$_W_cache' which is required for caches"
     fi
 
     # Try download twice
-    checksum_ok=""
+    unset checksum_ok
     tries=0
     # Set olddir before entering the loop, otherwise second try will overwrite
-    _W_dl_olddir=$(pwd)
-    while test $tries -lt 2 ; do
+    _W_dl_olddir="$(pwd)"
+    while [ "$tries" -lt 2 ]; do
         # Warn on a second try
-        test "$tries" -eq 1 && winetricks_dl_warning
-        tries=$((tries + 1))
+        [ "$tries" -eq 1 ] && winetricks_dl_warning
+        tries="$((tries + 1))"
 
-        if test -s "$_W_cache/$_W_file" ; then
-            if test "$_W_sum" ; then
-                if test $tries = 1 ; then
+        if [ -s "$_W_cache/$_W_file" ]; then
+						# Check checksum
+            if [ -n "$_W_sum" ]; then
+                if [ "$tries" = 1 ]; then
+										# QA: Should be more sanitized, proposing using variable to skip checksum of large files
                     # The cache was full.  If the file is larger than 500 MB,
                     # don't checksum it, that just annoys the user.
                     # shellcheck disable=SC2046
-                    if test $(du -k "$_W_cache/$_W_file" | cut -f1) -gt 500000 ; then
-                        checksum_ok=1
+                    if [ $(du -k "$_W_cache/$_W_file" | cut -f1) -gt 500000 ]; then
+												w_warn "File '$_W_file' is larger then 500MB, set variable 'WINETRICKS_SKIP_LARGE_FILES' on non-zero to skip checksum of this file if needed since checksuming this file might take a long time."
                         break
+										elif [ $(du -k "$_W_cache/$_W_file" | cut -f1) -gt 500000 ] && [ -n "$WINETRICKS_SKIP_LARGE_FILES" ]; then
+												w_warn "Checksum of '$_W_file' skipped by using 'WINETRICKS_SKIP_LARGE_FILES' variables set on non-zero"
+												checksum_ok=1
                     fi
                 fi
                 # If checksum matches, declare success and exit loop
                 case "$_W_shatype" in
                     none)
-                        w_warn "No checksum provided, not verifying"
-                        ;;
+                        w_warn "Skipped checksuming since checksum for file '$_W_file' is not provided"
+                    ;;
                     sha256)
                         w_get_sha256sum "$_W_cache/$_W_file"
-                        if [ "$_W_gotsha256sum"x = "$_W_sum"x ] ; then
+                        if [ "$_W_gotsha256sum" = "$_W_sum" ]; then
                             checksum_ok=1
                             break
                         fi
-                        ;;
+										;;
+										sha512)
+												w_get_sha512sum "$_W_cache/$_W_file"
+                        if [ "$_W_gotsha256sum" = "$_W_sum" ]; then
+                            checksum_ok=1
+                            break
+                        fi
+                    ;;
                 esac
 
-                if test ! "$WINETRICKS_CONTINUE_DOWNLOAD" ; then
+                if [ -n "$WINETRICKS_CONTINUE_DOWNLOAD" ]; then
                     case $LANG in
                         pl*) w_warn "Niezgodność sum kontrolnych dla $_W_cache/$_W_file, pobieram ponownie" ;;
                         ru*) w_warn "Контрольная сумма файла $_W_cache/$_W_file не совпадает, попытка повторной загрузки" ;;
                         *) w_warn "Checksum for $_W_cache/$_W_file did not match, retrying download" ;;
                     esac
-                    mv -f "$_W_cache/$_W_file" "$_W_cache/$_W_file".bak
+                    mv -f "$_W_cache/$_W_file" "$_W_cache/$_W_file".failed_checksum
                 fi
-            else
-                # file exists, no checksum known, declare success and exit loop
+						# Skip since checksum is not used
+            elif [ -z "$_W_sum" ]; then
                 break
             fi
-        elif test -f "$_W_cache/$_W_file" ; then
+        elif [ -e "$_W_cache/$_W_file" ]; then
             # zero-length file, just delete before retrying
+						w_debug "Size of file '$_W_cache/$_W_file' is zero, removing it.."
             rm "$_W_cache/$_W_file"
         fi
 
         w_try_cd "$_W_cache"
         # Mac folks tend to have curl rather than wget
         # On Mac, 'which' doesn't return good exit status
-        echo "Downloading $_W_url to $_W_cache"
+        printf '%s\n' "Downloading $_W_url to $_W_cache"
 
         # For sites that prefer Mozilla in the user-agent header, set W_BROWSERAGENT=1
         case "$W_BROWSERAGENT" in
@@ -1126,7 +1171,8 @@ w_download_to()
             *) _W_agent="" ;;
         esac
 
-        if [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ] ; then
+				# Sanitized to allow mirrors
+        if [ "$WINETRICKS_DOWNLOADER" = aria2c ] ; then
             # Note: aria2c wants = for most options or silently fails
 
             # (Slightly fancy) aria2c support
@@ -1138,22 +1184,27 @@ w_download_to()
             # --save-session='' if the user has specified save-session in their config, their session will be
             #   ovewritten by the new aria2 process
 
+						# Check if file exists to allow mirrors, if it does not exists -> download it.
             # shellcheck disable=SC2086
-            $torify aria2c \
-                $aria2c_torify_opts \
-                --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-                --continue \
-                --daemon=false \
-                --dir="$_W_cache" \
-                --enable-rpc=false \
-                --input-file='' \
-                --max-connection-per-server=5 \
-                --max-tries="$WINETRICKS_DOWNLOADER_RETRIES" \
-                --out="$_W_file" \
-                --save-session='' \
-                --stream-piece-selector=geom \
-                "$_W_url"
-        elif [ "${WINETRICKS_DOWNLOADER}" = "wget" ] ; then
+						if [ ! -e "$_W_cache/$_W_file" ]; then
+		            $torify aria2c \
+		                $aria2c_torify_opts \
+		                --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+		                --continue \
+		                --daemon=false \
+		                --dir="$_W_cache" \
+		                --enable-rpc=false \
+		                --input-file='' \
+		                --max-connection-per-server=5 \
+		                --max-tries="$WINETRICKS_DOWNLOADER_RETRIES" \
+		                --out="$_W_file" \
+		                --save-session='' \
+		                --stream-piece-selector=geom \
+		                "$_W_url"
+						elif [ -e "$_W_cache/$_W_file" ]; then
+								w_debug "File '$_W_cache/$_W_file' already exists, skipping download.."
+						fi
+        elif [ "$WINETRICKS_DOWNLOADER" = wget ] ; then
             # Use -nd to insulate ourselves from people who set -x in WGETRC
             # [*] --retry-connrefused works around the broken sf.net mirroring
             # system when downloading corefonts
@@ -1161,47 +1212,63 @@ w_download_to()
             # close the connection unless you tell it to (control-C or closing
             # the socket)
 
+						# Check if file exists to allow mirrors, if it does not exists -> download it.
             # shellcheck disable=SC2086
-            winetricks_wget_progress \
-                -O "$_W_file" \
-                -nd \
-                -c\
-                --read-timeout 300 \
-                --retry-connrefused \
-                --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-                --tries "$WINETRICKS_DOWNLOADER_RETRIES" \
-                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
-                ${_W_agent:+--user-agent="$_W_agent"} \
-                "$_W_url"
-        elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ] ; then
+						if [ ! -e "$_W_cache/$_W_file" ]; then
+		            winetricks_wget_progress \
+		                -O "$_W_file" \
+		                -nd \
+		                -c\
+		                --read-timeout 300 \
+		                --retry-connrefused \
+		                --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+		                --tries "$WINETRICKS_DOWNLOADER_RETRIES" \
+		                ${_W_cookiejar:+--load-cookies "$_W_cookiejar"} \
+		                ${_W_agent:+--user-agent="$_W_agent"} \
+		                "$_W_url"
+						elif [ -e "$_W_cache/$_W_file" ]; then
+								w_debug "File '$_W_cache/$_W_file' already exists, skipping download.."
+						fi
+        elif [ "$WINETRICKS_DOWNLOADER" = curl ] ; then
             # Note: curl does not accept '=' when passing options
             # curl doesn't get filename from the location given by the server!
             # fortunately, we know it
 
+						# Check if file exists to allow mirrors, if it does not exists -> download it.
             # shellcheck disable=SC2086
-            $torify curl \
-                --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-                -L \
-                -o "$_W_file" \
-                -C - \
-                --retry "$WINETRICKS_DOWNLOADER_RETRIES" \
-                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
-                ${_W_agent:+--user-agent "$_W_agent"} \
-                "$_W_url"
-        elif [ "${WINETRICKS_DOWNLOADER}" = "fetch" ] ; then
+						if [ ! -e "$_W_cache/$_W_file" ]; then
+		            $torify curl \
+		                --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+		                -L \
+		                -o "$_W_file" \
+		                -C - \
+		                --retry "$WINETRICKS_DOWNLOADER_RETRIES" \
+		                ${_W_cookiejar:+--cookie "$_W_cookiejar"} \
+		                ${_W_agent:+--user-agent "$_W_agent"} \
+		                "$_W_url"
+						elif [ -e "$_W_cache/$_W_file" ]; then
+								w_debug "File '$_W_cache/$_W_file' already exists, skipping download.."
+						fi
+        elif [ "$WINETRICKS_DOWNLOADER" = fetch ] ; then
             # Note: fetch does not support configurable retry count
 
+						# Check if file exists to allow mirrors, if it does not exists -> download it.
             # shellcheck disable=SC2086
-            $torify fetch \
-                -T "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-                -o "$_W_file" \
-                ${_W_agent:+--user-agent="$_W_agent"} \
-                "$_W_url"
+						if [ ! -e "$_W_cache/$_W_file" ]; then
+		            $torify fetch \
+		                -T "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+		                -o "$_W_file" \
+		                ${_W_agent:+--user-agent="$_W_agent"} \
+		                "$_W_url"
+						elif [ -e "$_W_cache/$_W_file" ]; then
+								w_debug "File '$_W_cache/$_W_file' already exists, skipping download.."
+						fi
         else
-            w_die "Here be dragons"
+            w_die "Variable WINETRICKS_DOWNLOADER has unsupported value '$WINETRICKS_DOWNLOADER' in 'w_download_to' function, unable to download '$_W_url'"
         fi
 
-        if test $? = 0; then
+				# Compatibility for cygwin
+        if [ "$W_PLATFORM" = "windows_cygwin" ] && [ "$?" = 0 ]; then
             # Need to decompress .exe's that are compressed, else Cygwin fails
             # Also affects ttf files on github
             # FIXME: gzip hack below may no longer be needed, but need to investigate before removing
@@ -1215,7 +1282,7 @@ w_download_to()
 
             # On Cygwin, .exe's must be marked +x
             case "$_W_file" in
-                *.exe) chmod +x "$_W_file" ;;
+                *.exe) chmod +x "$_W_file"
             esac
 
             w_try_cd "$_W_dl_olddir"
@@ -1223,7 +1290,7 @@ w_download_to()
 
             # downloaded successfully, exit from loop
             break
-        elif test $tries = 2; then
+        elif [ $tries = 2 ]; then
             test -f "$_W_file" && rm "$_W_file"
             w_die "Downloading $_W_url failed"
         fi
@@ -1231,8 +1298,9 @@ w_download_to()
         _W_url="https://web.archive.org/web/2000/$_W_url"
     done
 
-    if test "$_W_sum" && test ! "$checksum_ok"; then
-        w_verify_shasum "$_W_sum" "$_W_cache/$_W_file"
+		# Verify checksum
+    if [ -n "$_W_sum" ] && [ "$checksum_ok" != 1 ]; then
+        w_verify_shasum "$_W_sum" "$_W_cache/$_W_file" || { mv "$_W_cache/$_W_file" "$_W_cache/$_W_file.broken" ; w_die "Checksum for '$_W_cache/$_W_file' is invalid, renamed on '$_W_file.broken'" ;}
     fi
 }
 
@@ -2923,22 +2991,27 @@ _EOF_
 # I.e., things common to w_download_to(), winetricks_download_to_stdout(), and winetricks_stats_report())
 winetricks_download_setup()
 {
+		# Export supported downloaders
+		supported_downloaders="aria2c,curl,wget,fetch"
+
     # shellcheck disable=SC2104
     case "${WINETRICKS_DOWNLOADER}" in
-        aria2c|curl|wget|fetch) : ;;
-        "") if [ -x "$(command -v aria2c 2>/dev/null)" ] ; then
+				# Continue if already set
+        "${supported_downloaders//,/|}") : ;;
+				# Find downloader to use
+        "") if w_check_exec aria2c; then
                 WINETRICKS_DOWNLOADER="aria2c"
-            elif [ -x "$(command -v wget 2>/dev/null)" ] ; then
+            elif w_check_exec wget; then
                 WINETRICKS_DOWNLOADER="wget"
-            elif [ -x "$(command -v curl 2>/dev/null)" ] ; then
+            elif w_check_exec curl; then
                 WINETRICKS_DOWNLOADER="curl"
-            elif [ -x "$(command -v fetch 2>/dev/null)" ] ; then
+            elif w_check_exec fetch; then
                 WINETRICKS_DOWNLOADER="fetch"
             else
-                w_die "Please install wget or aria2c (or, if those aren't available, curl)"
+                w_die "Neither of supported dowloaders ($supported_downloaders) are not executable on this system"
             fi
             ;;
-        *) w_die "Invalid value ${WINETRICKS_DOWNLOADER} given for WINETRICKS_DOWNLOADER. Possible values: aria2c, curl, wget, fetch"
+        *) w_die "bug: Invalid value '$WINETRICKS_DOWNLOADER' given for WINETRICKS_DOWNLOADER. Possible values: $supported_downloaders"
     esac
 
     # Common values for aria2c/curl/fetch/wget
@@ -2948,14 +3021,18 @@ winetricks_download_setup()
     WINETRICKS_DOWNLOADER_TIMEOUT=${WINETRICKS_DOWNLOADER_TIMEOUT:-15}
 
     case "$WINETRICKS_OPT_TORIFY" in
-        1) torify=torify
+        1)
+						export torify=torify
             # torify needs --async-dns=false, see https://github.com/tatsuhiro-t/aria2/issues/613
-            aria2c_torify_opts="--async-dns=false"
-            if [ ! -x "$(command -v torify 2>/dev/null)" ]; then
-                w_die "--torify was used, but torify is not installed, please install it." ; exit 1
-            fi ;;
-        *) torify=
-            aria2c_torify_opts="" ;;
+            [ "$WINETRICKS_DOWNLOADER" = aria2c ] && export aria2c_torify_opts="--async-dns=false"
+
+            if w_check_exec torify; then
+                w_die "requested torify is not executable on this system"
+            fi
+				;;
+        *)
+						unset torify
+            [ "$WINETRICKS_DOWNLOADER" = aria2c ] && aria2c_torify_opts="" ;;
     esac
 }
 
