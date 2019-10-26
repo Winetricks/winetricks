@@ -42,102 +42,147 @@ temp="$(mktemp -d)"
 trap 'rm -fr "$temp"' EXIT
 
 ###################################################################################################
+# Test functions
+###################################################################################################
 
-bashate="$(command -v bashate)"
-checkbashisms="$(command -v checkbashisms)"
-shellcheck="$(command -v shellcheck)"
+# tests using bashate
+test_bashate() {
+    if [ ! -x "$(command -v bashate 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        echo "On OSX and bashate not available, skipping."
+    else
+        bashate="$(command -v bashate)"
 
-"$bashate" --help > /dev/null || w_die "bashate must be installed!"
-"$checkbashisms" --help > /dev/null || w_die "checkbashisms must be installed!"
-"$shellcheck" --version > /dev/null || w_die "shellcheck must be installed!"
+        #echo "======================== Begin bashate version info ==========================="
+        "$bashate" --help > /dev/null || w_die "bashate must be installed!"
+        ## bashate doesn't have a --version option (as of bashate-0.3.1)
+        #"$bashate" --version
+        #echo "======================== End bashate version info ==========================="
 
-if [ ! -f Makefile ] ; then
-    w_die "$0 should be run from the top of the source tree"
-fi
+        # Can't ignore individual things for now, filed bug:
+        # https://bugs.launchpad.net/bash8/+bug/1698088
+        # E006=line length check
+        # E010=do/while same line (in some embedded perl in winetricks)
+        # E044=Use [[ for non-POSIX comparisions
+        echo "Checking ${shellscript} with bashate:"
+        w_try "$bashate" -i E006,E010,E044 "${shellscript}"
+    fi
+}
 
-# Different versions can give different results:
+# tests using checkbashisms
+test_checkbashisms() {
+    # Skip checkbashisms tests on OSX if it's not available (homebrew is unreliable):
 
-#echo "======================== Begin bashate version info ==========================="
-## bashate doesn't have a --version option (as of bashate-0.3.1)
-#"$bashate" --version
-#echo "======================== End checkbashisms version info ==========================="
+    # Skip checkbashisms tests on OSX if it's not available (homebrew is unreliable):
+    if [ ! -x "$(command -v checkbashisms 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        echo "On OSX and checkbashisms not available, skipping."
+    else
+        checkbashisms="$(command -v checkbashisms)"
 
-echo "======================== Begin checkbashisms version info ==========================="
-"$checkbashisms" --version
-echo "======================== End checkbashisms version info ==========================="
+        echo "======================== Begin checkbashisms version info ==========================="
+        "$checkbashisms" --help > /dev/null || w_die "checkbashisms must be installed!"
+        "$checkbashisms" --version
+        echo "======================== End checkbashisms version info ==========================="
 
-echo "======================== Begin shellcheck version info ==========================="
-"$shellcheck" --version
-echo "======================== End shellcheck version info ==========================="
-
-# Check if checkbashisms supports `command -v`. If not, warn, or if on travis, patch it:
-cat > "${temp}/command.sh" <<_EOF
+        # Check if checkbashisms supports `command -v`. If not, warn, or if on travis, patch it:
+        cat > "${temp}/command.sh" <<_EOF
 #!/bin/sh
 command -v grep
 _EOF
 
-if ! "$checkbashisms" --posix "${temp}/command.sh"; then
-    echo "Use a sed expression, to add checkbashisms support for 'command -v', based on the patch from https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511"
-    echo "Creating a copy of the checkbashisms script, in ${temp}, to workaround this issue"
-    # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
-    (
-        sed -e '/qr'\''command\\s+\-\[\^p\]\\s'\''/ { ' -e 's|\[\^p\]|[^pvV]|' -e 's| \-p>| -p/-v/-V>|' -e '}' "$checkbashisms" > "${temp}/checkbashisms.patched" && \
-        chmod +x "${temp}/checkbashisms.patched"
-    )
-    checkbashisms="${temp}/checkbashisms.patched"
-fi
+        if ! "$checkbashisms" --posix "${temp}/command.sh"; then
+            echo "Use a sed expression, to add checkbashisms support for 'command -v', based on the patch from https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511"
+            echo "Creating a copy of the checkbashisms script, in ${temp}, to workaround this issue"
+            # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
+            (
+                sed -e '/qr'\''command\\s+\-\[\^p\]\\s'\''/ { ' -e 's|\[\^p\]|[^pvV]|' -e 's| \-p>| -p/-v/-V>|' -e '}' "$checkbashisms" > "${temp}/checkbashisms.patched" && \
+                chmod +x "${temp}/checkbashisms.patched"
+            )
+            checkbashisms="${temp}/checkbashisms.patched"
+        else
+            echo "checkbashisms workaround not needed, using vanilla script"
+        fi
 
-# FIXME: if we add a third, clean this up
-# Check if checkbashisms supports `command -v`. If not, warn, or if on travis, patch it:
-cat > "${temp}/kill.sh" <<_EOF
+        # FIXME: if we add a third patch, clean this up
+        # Check if checkbashisms supports `command -v`. If not, warn, or if on travis, patch it:
+        cat > "${temp}/kill.sh" <<_EOF
 #!/bin/sh
 sleep 5 & spid="$!"
 kill -HUP \$spid
 _EOF
 
-if ! "$checkbashisms" --posix "${temp}/kill.sh"; then
-    echo "Disabling the kill -signal warning"
-    echo "Creating a copy of the checkbashisms script, in ${temp}, to workaround this issue"
-    # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
-    (
-        sed -e '/bashisms.*kill/d' "$checkbashisms" >  "${temp}/checkbashisms.patched.kill" && \
-        chmod +x "${temp}/checkbashisms.patched.kill"
-    )
-    checkbashisms="${temp}/checkbashisms.patched.kill"
-fi
+        if ! "$checkbashisms" --posix "${temp}/kill.sh"; then
+            echo "Disabling the kill -signal warning"
+            echo "Creating a copy of the checkbashisms script, in ${temp}, to workaround this issue"
+            # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
+            (
+                sed -e '/bashisms.*kill/d' "$checkbashisms" >  "${temp}/checkbashisms.patched.kill" && \
+                chmod +x "${temp}/checkbashisms.patched.kill"
+            )
+            checkbashisms="${temp}/checkbashisms.patched.kill"
+        fi
 
-# Use git ls-files if available, this prevents 'finding' scripts that aren't checked into git.
-# E.g., if patching foo fails, then foo.orig would also be 'found'.
-# The find fallback is for non git users, e.g., distros packaging winetricks or end users
-# running shell-checks from a tarball download.
-if [ -d .git ] ; then
-    files_to_check="$(git ls-files | xargs file | grep -e 'POSIX shell script' | cut -d : -f1)"
-else
-    files_to_check="$(find . -type f -exec file {} \; | grep -e 'POSIX shell script' | cut -d : -f1)"
-fi
+        echo "Checking ${shellscript} for bashisms:"
+        w_try "$checkbashisms" --posix "${shellscript}"
+    fi
+}
 
-for shellscript in $files_to_check; do
-    echo "Checking ${shellscript} for bashisms:"
-    w_try "$checkbashisms" --posix "${shellscript}"
+# tests using shellcheck
+test_shellcheck() {
+    # Skip shellcheck tests on OSX if it's not available (homebrew is unreliable):
+    if [ ! -x "$(command -v shellcheck 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        echo "On OSX and shellcheck not available, skipping."
+    else
+        shellcheck="$(command -v shellcheck)"
 
-    echo "Checking ${shellscript} with shellcheck:"
-    w_try "$shellcheck" -s sh "${shellscript}"
+        echo "======================== Begin shellcheck version info ==========================="
+        "$shellcheck" --version > /dev/null || w_die "shellcheck must be installed!"
+        "$shellcheck" --version
+        echo "======================== End shellcheck version info ==========================="
 
-    echo "Checking ${shellscript} with bashate:"
+        echo "Checking ${shellscript} with shellcheck:"
+        w_try "$shellcheck" -s sh "${shellscript}"
+    fi
+}
 
-    # Can't ignore individual things for now, filed bug:
-    # https://bugs.launchpad.net/bash8/+bug/1698088
-    # E006=line length check
-    # E010=do/while same line (in some embedded perl in winetricks)
-    # E044=Use [[ for non-POSIX comparisions
-    w_try "$bashate" -i E006,E010,E044 "${shellscript}"
-done
+# tests for linkcheck
+test_linkcheck() {
+    # Check for uses of variables in w_download when w_linkcheck_ignore isn't set
+    # Using w_download https://example.com/${file1} breaks src/linkcheck.sh
+    # FIXME: technically '$' is valid in a URL, if there's actually a URL using it this will need a tweak
+    if grep "^ *w_download " src/winetricks | grep -E "ftp|http" | grep -v "w_linkcheck_ignore=1" | sed "s/^ *//"  | tr -d "\\\\" | cut -d " " -f2 | grep "\\$"; then
+        w_die "Do not use variables in these URLs, it breaks src/linkcheck.sh"
+    else
+        echo "linkcheck checks passed"
+    fi
+}
 
-# Check for uses of variables in w_download when w_linkcheck_ignore isn't set
-# Using w_download https://example.com/${file1} breaks src/linkcheck.sh
-# FIXME: technically '$' is valid in a URL, if there's actually a URL using it this will need a tweak
-if grep "^ *w_download " src/winetricks | grep -E "ftp|http" | grep -v "w_linkcheck_ignore=1" | sed "s/^ *//"  | tr -d "\\\\" | cut -d " " -f2 | grep "\\$"; then
-    w_die "Do not use variables in URLs, it breaks src/linkcheck.sh"
-fi
+###################################################################################################
+
+# Test wrapper
+main() {
+    # Use git ls-files if available, this prevents 'finding' scripts that aren't checked into git.
+    # E.g., if patching foo fails, then foo.orig would also be 'found'.
+    # The find fallback is for non git users, e.g., distros packaging winetricks or end users
+    # running shell-checks from a tarball download.
+    if [ -d .git ] ; then
+        files_to_check="$(git ls-files | xargs file | grep -e 'POSIX shell script' | cut -d : -f1)"
+    else
+        files_to_check="$(find . -type f -exec file {} \; | grep -e 'POSIX shell script' | cut -d : -f1)"
+    fi
+
+    # Run once tests:
+
+    # really, this checks winetricks, to make sure it doesn't break linkcheck.sh:
+    test_linkcheck
+
+    # Generic shellscript checks:
+    for shellscript in $files_to_check; do
+        test_bashate
+        test_checkbashisms
+        test_shellcheck
+    done
+}
+
+main
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
