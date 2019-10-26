@@ -2796,6 +2796,40 @@ w_do_call()
             . "$postfile"
         fi
 
+				# Generate shortcut in $WINEPREFIX/${W_PACKAGE}_shortcut.sh
+        # shellcheck disable=SC2154
+        if [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && [ -z "$winetricks_do_not_generate_shortcut" ] && [ -n "$installed_exe1" ]; then
+						printf '%s\n' "Creating a new shortcut in $WINEPREFIX/$installed_exe1"
+						# Generate shortcut
+						printf '%s\n' \
+								"#!/bin/sh" \
+								'(' \
+								"	export WINEPREFIX=\"$WINEPREFIX\"" \
+								"	export WINEDEBUG=\"-all\"" \
+								"	export DXVK_HUD=\"fps\"" \
+								"	\"$WINE\" start \"$installed_exe1\"" \
+								")" \
+						> "$WINEPREFIX/${W_PACKAGE}_shortcut.sh"
+						# Set executable permission
+						[ ! -x "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && chmod +x "$WINEPREFIX/${W_PACKAGE}_shortcut.sh"
+				# If $installed_exe1 is blank
+				elif [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && [ -z "$installed_exe1" ]; then
+						w_debug "w_generate_shortcut: Unable to generate a shortcut, because installed_exe1 variable '$installed_exe1' is blank"
+				# If $WINEPREFIX is blank
+				elif [ ! -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ] && [ -z "$WINEPREFIX" ]; then
+						w_debug "w_generate_shortcut: Unable to generate a shortcut, because WINEPREFIX variable '$WINEPREFIX' is blank"
+				# If already exists
+				elif [ -e "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ]; then
+						w_debug "w_generate_shortcut: File '$WINEPREFIX/${W_PACKAGE}_shortcut.sh' already exists"
+				# If overrriden
+				elif [ -n "$winetricks_do_not_generate_shortcut" ]; then
+						w_debug "w_generate_shortcut: variable winetricks_do_not_generate_shortcut '$winetricks_do_not_generate_shortcut' is non-zero, skipping creation of shortcut"
+				# Sanitization for executable permission
+				elif [ ! -x "$WINEPREFIX/${W_PACKAGE}_shortcut.sh" ]; then
+						w_debug "w_generate_shortcut: File '$WINEPREFIX/${W_PACKAGE}_shortcut.sh' is not executable, fixing.."
+						chmod +x "$WINEPREFIX/${W_PACKAGE}_shortcut.sh"
+				fi
+
         # Verify install
         if test "$installed_exe1" || test "$installed_file1"; then
             if ! winetricks_is_installed "$1"; then
