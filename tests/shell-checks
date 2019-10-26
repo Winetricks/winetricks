@@ -125,3 +125,5 @@ done
 if grep "^ *w_download " src/winetricks | grep -E "ftp|http" | grep -v "w_linkcheck_ignore=1" | sed "s/^ *//"  | tr -d "\\\\" | cut -d " " -f2 | grep "\\$"; then
     w_die "Do not use variables in URLs, it breaks src/linkcheck.sh"
 fi
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
