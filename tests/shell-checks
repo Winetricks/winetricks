@@ -156,6 +156,21 @@ test_linkcheck() {
     fi
 }
 
+test_travis_yml() {
+    if [ ! -x "$(command -v yq 2>/dev/null)" ]; then
+        echo "warning: yq unavilable, skipping .travis.yml validation"
+    else
+        yq="$(command -v yq)"
+
+        if [ -n "$yq" ]; then
+            echo "yq available, validating .travis.yml"
+            yq . .travis.yml || true
+        else
+            echo "warning: yq not available, not validating .travis.yml"
+        fi
+    fi
+}
+
 ###################################################################################################
 
 # Test wrapper
@@ -174,6 +189,11 @@ main() {
 
     # really, this checks winetricks, to make sure it doesn't break linkcheck.sh:
     test_linkcheck
+
+    # make sure yq (if present), can validate .travis_yml.
+    # Available in brew, not ubuntu (without snap), but if .travis_yml is invalid,
+    # travis won't run anyway. Only useful when running locally.
+    test_travis_yml
 
     # Generic shellscript checks:
     for shellscript in $files_to_check; do
