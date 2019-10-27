@@ -49,7 +49,7 @@ for dir in "${CACHE_DIR}/"* ; do
     esac
 
     for file in "${dir}"/* ; do
-    	# Convert the package:
+        # Convert the package:
         echo file="${file}"
         echo "dir=$dir, package=$package, file=$file"
         sha1_file="$(sha1sum "${file}" | awk '{print $1}')"
