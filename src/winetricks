@@ -908,44 +908,45 @@ w_dotnet_verify()
         dotnet48) version="4.8" ;;
         *) echo error ; exit 1 ;;
     esac
-            w_call dotnet_verifier
 
-            # FIXME: The logfile may be useful somewhere (or at least print the location)
+    w_call dotnet_verifier
 
-            # for 'run, netfx_setupverifier.exe /q:a /c:"setupverifier2.exe"' line
-            # shellcheck disable=SC2140
-            w_ahk_do "
-                SetTitleMatchMode, 2
-                ; FIXME; this only works the first time? Check if it's already verified somehow..
+    # FIXME: The logfile may be useful somewhere (or at least print the location)
 
-                run, netfx_setupverifier.exe /q:a /c:"setupverifier2.exe"
-                winwait, Verification Utility
-                ControlClick, Button1
-                Control, ChooseString, NET Framework $version, ComboBox1
-                ControlClick, Button1 ; Verify
-                loop, 60
-                {
-                    sleep 1000
-                    process, exist, setupverifier2.exe
-                    dn_pid=%ErrorLevel%
-                    if dn_pid = 0
-                    {
-                        break
-                    }
-                    ifWinExist, Verification Utility, Product verification failed
-                    {
-                        process, close, setupverifier2.exe
-                        exit 1
-                    }
-                    ifWinExist, Verification Utility, Product verification succeeded
-                    {
-                        process, close, setupverifier2.exe
-                        break
-                    }
-                }
-            "
-            dn_status="$?"
-            w_info ".Net Verifier returned $dn_status"
+    # for 'run, netfx_setupverifier.exe /q:a /c:"setupverifier2.exe"' line
+    # shellcheck disable=SC2140
+    w_ahk_do "
+        SetTitleMatchMode, 2
+        ; FIXME; this only works the first time? Check if it's already verified somehow..
+
+        run, netfx_setupverifier.exe /q:a /c:"setupverifier2.exe"
+        winwait, Verification Utility
+        ControlClick, Button1
+        Control, ChooseString, NET Framework $version, ComboBox1
+        ControlClick, Button1 ; Verify
+        loop, 60
+        {
+            sleep 1000
+            process, exist, setupverifier2.exe
+            dn_pid=%ErrorLevel%
+            if dn_pid = 0
+            {
+                break
+            }
+            ifWinExist, Verification Utility, Product verification failed
+            {
+                process, close, setupverifier2.exe
+                exit 1
+            }
+            ifWinExist, Verification Utility, Product verification succeeded
+            {
+                process, close, setupverifier2.exe
+                break
+            }
+        }
+    "
+    dn_status="$?"
+    w_info ".Net Verifier returned $dn_status"
 }
 
 # Checks if the user can run the self-update/rollback commands
