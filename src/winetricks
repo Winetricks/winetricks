@@ -21411,7 +21411,7 @@ load_remove_mono()
     mono_uuid="$("${WINE_ARCH}" uninstaller --list | grep 'Wine Mono' | cut -f1 -d\|)"
     if test "$mono_uuid"; then
         for uuid in $mono_uuid;
-	    do "${WINE_ARCH}" uninstaller --remove "$uuid"
+            do "${WINE_ARCH}" uninstaller --remove "$uuid"
         done
     else
         # Bail out if mono isn't installed, so we don't break .Net setups
