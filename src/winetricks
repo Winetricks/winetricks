@@ -11559,7 +11559,7 @@ w_metadata vcrun2005 dlls \
     year="2011" \
     media="download" \
     file1="vcredist_x86.EXE" \
-    installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.6195_x-ww_150c9e8b/mfc80.dll|c:/windows/winsxs/x86_microsoft.vc80.mfc_1fc8b3b9a1e18e3b_8.0.50727.6195_none_deadbeef/mfc80.dll"
+    installed_file1="C:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.6195_x-ww_150c9e8b/mfc80.dll|C:/windows/winsxs/x86_microsoft.vc80.mfc_1fc8b3b9a1e18e3b_8.0.50727.6195_none_deadbeef/mfc80.dll"
 
 load_vcrun2005()
 {
@@ -11577,15 +11577,14 @@ load_vcrun2005()
     # https://bugs.winehq.org/show_bug.cgi?id=42859
     w_override_dlls native,builtin atl80 msvcm80 msvcp80 msvcr80 vcomp
 
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_Q
+    w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" $W_UNATTENDED_SLASH_Q
 
-    if [ $W_ARCH = win64 ] ;then
-        w_download https://download.microsoft.com/download/9/1/4/914851c6-9141-443b-bdb4-8bad3a57bea9/vcredist_x64.exe bb9e8606e26c2b76984252182f7db0d6e9108b204b81d2a7b036c9b618c1f9f1
+    if [ "$W_ARCH" = win64 ] ;then
+        w_download https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x64.EXE 0551a61c85b718e1fa015b0c3e3f4c4eea0637055536c00e7969286b4fa663e0
 
         if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls" ,3.8; then
             rm -f "$W_TMP"/*  # Avoid permission error
-            w_try_cabextract --directory="$W_TMP" vcredist_x64.exe
+            w_try_cabextract --directory="$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
             w_try_cabextract --directory="$W_TMP" "$W_TMP/VCREDI~2.EXE"
             w_try_cabextract --directory="$W_TMP" "$W_TMP/vcredist.msi"
 
@@ -11600,7 +11599,7 @@ load_vcrun2005()
             w_try cp "$W_TMP/msvcr80.dll.844EFBA7_1C24_93B2_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/msvcr80.dll"
             w_try cp "$W_TMP/vcomp.dll.09D44781_D142_FE32_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/vcomp80.dll"
         else
-            w_try "$WINE" vcredist_x64.exe $W_UNATTENDED_SLASH_Q
+            w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1" $W_UNATTENDED_SLASH_Q
         fi
     fi
 }
