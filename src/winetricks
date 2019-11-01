@@ -982,7 +982,7 @@ w_dotnet_verify()
         *) w_die "unknown .Net version";;
     esac
 
-    w_download_to dotnet_tests https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/${binary}-x86.exe "${x86_sha256}"
+    w_download_to dotnet_tests https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet_exes/${binary}-x86.exe "${x86_sha256}"
     w_try_cd "${W_CACHE}/dotnet_tests"
 
     echo "Executing ${WINE} ${binary}-x86.exe"
@@ -994,7 +994,7 @@ w_dotnet_verify()
     fi
 
     if [ "$W_ARCH" = "win64" ]; then
-        w_download_to dotnet_tests https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/${binary}-x64.exe "${x64_sha256}"
+        w_download_to dotnet_tests https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet_exes/${binary}-x64.exe "${x64_sha256}"
         # This is known to fail; see https://bugs.winehq.org/show_bug.cgi?id=46981, et al
         echo "Executing ${WINE} ${binary}-x64.exe (errors are non-fatal):"
         ret="$(WINEDEBUG=-all "${WINE}" "${binary}-x64.exe")"
