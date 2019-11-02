@@ -11798,29 +11798,40 @@ load_vcrun2013()
     w_download https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x86.exe 89f4e593ea5541d1c53f983923124f9fd061a1c0c967339109e375c661573c17
 
     w_override_dlls native,builtin atl120 msvcp120 msvcr120 vcomp120
-    w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" vcredist_x86.exe $W_UNATTENDED_SLASH_Q
 
+    # https://bugs.winehq.org/show_bug.cgi?id=47565
+    if w_workaround_wine_bug 47565 'Manually extracting 32-bit dlls to workaround winebug 47565'; then
+        w_try_cabextract --directory="$W_TMP" "$W_CACHE/$W_PACKAGE/vcredist_x86.exe"
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a2"
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a3"
+        w_try cp "$W_TMP/F_CENTRAL_mfc120_x86" "$W_SYSTEM32_DLLS/mfc120.dll"
+        w_try cp "$W_TMP/F_CENTRAL_mfc120u_x86" "$W_SYSTEM32_DLLS/mfc120u.dll"
+        w_try cp "$W_TMP/F_CENTRAL_msvcp120_x86" "$W_SYSTEM32_DLLS/msvcp120.dll"
+        w_try cp "$W_TMP/F_CENTRAL_msvcr120_x86" "$W_SYSTEM32_DLLS/msvcr120.dll"
+        w_try cp "$W_TMP/F_CENTRAL_vcomp120_x86" "$W_SYSTEM32_DLLS/vcomp120.dll"
+    elif ! w_workaround_wine_bug 47565; then
+        w_try "$WINE" "$W_CACHE/$W_PACKAGE/vcredist_x86.exe" "$W_UNATTENDED_SLASH_Q"
+    fi
+
+    # Also install the 64-bit version
     case "$W_ARCH" in
         win64)
-            # Also install the 64-bit version
             # 2015/10/19: e554425243e3e8ca1cd5fe550db41e6fa58a007c74fad400274b128452f38fb8
             # 2019/03/24: 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
             w_download https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
             if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls" ,3.8; then
                 rm -f "$W_TMP"/*  # Avoid permission error
-                w_try_cabextract --directory="$W_TMP" vcredist_x64.exe
+                w_try_cabextract --directory="$W_TMP" "$W_CACHE/$W_PACKAGE/vcredist_x64.exe"
                 w_try_cabextract --directory="$W_TMP" "$W_TMP/a2"
                 w_try_cabextract --directory="$W_TMP" "$W_TMP/a3"
-                cp "$W_TMP"/F_CENTRAL_mfc120_x64 "$W_SYSTEM64_DLLS"/mfc120.dll
-                cp "$W_TMP"/F_CENTRAL_mfc120u_x64 "$W_SYSTEM64_DLLS"/mfc120u.dll
-                cp "$W_TMP"/F_CENTRAL_msvcp120_x64 "$W_SYSTEM64_DLLS"/msvcp120.dll
-                cp "$W_TMP"/F_CENTRAL_msvcr120_x64 "$W_SYSTEM64_DLLS"/msvcr120.dll
-                cp "$W_TMP"/F_CENTRAL_vcomp120_x64 "$W_SYSTEM64_DLLS"/vcomp120.dll
+                w_try cp "$W_TMP/F_CENTRAL_mfc120_x64" "$W_SYSTEM64_DLLS/mfc120.dll"
+                w_try cp "$W_TMP/F_CENTRAL_mfc120u_x64" "$W_SYSTEM64_DLLS/mfc120u.dll"
+                w_try cp "$W_TMP/F_CENTRAL_msvcp120_x64" "$W_SYSTEM64_DLLS/msvcp120.dll"
+                w_try cp "$W_TMP/F_CENTRAL_msvcr120_x64" "$W_SYSTEM64_DLLS/msvcr120.dll"
+                w_try cp "$W_TMP/F_CENTRAL_vcomp120_x64" "$W_SYSTEM64_DLLS/vcomp120.dll"
             else
-                w_try "$WINE" vcredist_x64.exe $W_UNATTENDED_SLASH_Q
+                w_try "$WINE" "$W_CACHE/$W_PACKAGE/vcredist_x64.exe" $W_UNATTENDED_SLASH_Q
             fi
-            ;;
     esac
 }
 
