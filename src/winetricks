@@ -987,22 +987,22 @@ w_dotnet_verify()
 
     echo "Executing ${WINE} ${binary}-x86.exe"
     ret="$(WINEDEBUG=-all "${WINE}" "${binary}-x86.exe")"
-    if [ "$ret" = "Hello World!" ]; then
-        echo "${WINE} ${binary}-x86.exe passed"
-    else
-        echo "${WINE} ${binary}-x86.exe failed, got \'${ret}\', expected \'Hello World!\'"
-    fi
+
+    case $ret in
+        *"Hello World"*) echo "${WINE} ${binary}-x86.exe passed";;
+        *) w_die "${WINE} ${binary}-x86.exe failed, got \'${ret}\', expected \'Hello World!\'";;
+    esac
 
     if [ "$W_ARCH" = "win64" ]; then
         w_download_to dotnet_tests https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet_exes/${binary}-x64.exe "${x64_sha256}"
         # This is known to fail; see https://bugs.winehq.org/show_bug.cgi?id=46981, et al
         echo "Executing ${WINE} ${binary}-x64.exe (errors are non-fatal):"
         ret="$(WINEDEBUG=-all "${WINE}" "${binary}-x64.exe")"
-        if [ "$ret" = "Hello World!" ]; then
-            echo "${WINE} ${binary}-x64.exe passed"
-        else
-            echo "${WINE} ${binary}-x64.exe failed, got \'${ret}\', expected \'Hello World!\'"
-        fi
+
+        case $ret in
+            *"Hello World"*) echo "${WINE} ${binary}-x64.exe passed";;
+            *) echo "${WINE} ${binary}-x64.exe failed, got \'${ret}\', expected \'Hello World!\'";;
+        esac
     fi
 }
 
