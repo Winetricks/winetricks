@@ -5232,6 +5232,7 @@ winetricks_init()
                 ;;
     esac
 
+    # FIXME: avoid this for `winetricks dlls list` (or avoid init?)
     winetricks_set_wineprefix "$1"
 
     # Whether to automate installs (0=no, 1=yes)
