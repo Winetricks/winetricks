@@ -359,6 +359,8 @@ test_command()
     archskip=0
     command="$*"
 
+    # If _W_wine_not_needed is set, don't fail if wine is missing (used by test_listing())
+
     # This previously changed spaces to hyphens. Going back to spaces so we test WINEPREFIXes
     # with special characters, to prevent issues like https://github.com/Winetricks/winetricks/issues/995
     export WINEPREFIX="$WINE_PREFIXES/${command}"
@@ -371,12 +373,18 @@ test_command()
 
     # Isolate us from the user's home directory
     # shellcheck disable=SC2086
-    $XVFB $WINETRICKS sandbox || fail "\'$XVFB $WINETRICKS sandbox\' failed"
+    if [ -z "$_W_wine_not_needed" ]; then
+        $XVFB $WINETRICKS sandbox || fail "\'$XVFB $WINETRICKS sandbox\' failed"
+    fi
 
     echo "Installing $command"
 
+    if [ -z "$_W_wine_not_needed" ]; then
+        nocrashdialog="nocrashdialog"
+    fi
+
     # shellcheck disable=SC2086
-    $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@"
+    $XVFB $WINETRICKS --no-isolate -q $nocrashdialog "$@"
     return=$?
 
     if [ -d "$WINEPREFIX/drive_c/windows/syswow64" ]; then
@@ -421,8 +429,11 @@ test_command()
     echo "Checking for dangling processes!"
     # shellcheck disable=SC2009
     ps augxw | grep \\.exe
-    "$WINESERVER" -w
-    echo "Wineserver done."
+
+    if [ -z "$_W_wine_not_needed" ]; then
+        "$WINESERVER" -w
+        echo "Wineserver done."
+    fi
 }
 
 test_custom_verbs()
@@ -644,6 +655,48 @@ test_install_cached_or_download()
     fi
 }
 
+test_listing()
+{
+    export _W_wine_not_needed=1
+    W_WINE="$WINE"
+
+    # Most options should work with or without WINE available:
+    for category in $("${WINETRICKS}" list); do
+        export WINE="$W_WINE"
+        test_command "$category" list
+
+        export WINE=/dev/null
+        test_command "$category" list
+    done
+
+    for hardcoded in list list-cached list-download list-manual-download list-all; do
+        export WINE="$W_WINE"
+        test_command $hardcoded
+
+        export WINE=/dev/null
+        test_command $hardcoded
+    done
+
+    # list-installed needs the installed metadata which requires wine/wineprefix info:
+    export WINE="$W_WINE"
+    test_command list-installed
+
+    # Testing list-installed without wine is hard. A new prefix won't have anything installed
+    # and so winetricks bails out before it tries to run w_metadata
+    # So to truly test we need something installed first, then re-use that prefix with WINE=/dev/null
+    unset _W_wine_not_needed
+    export WINE="$W_WINE"
+    test_command mfc42
+
+    export WINEPREFIX="$WINE_PREFIXES/mfc42"
+    export _W_wine_not_needed=1
+    export WINE=/dev/null
+    EXPECT_FAIL=yes "$WINETRICKS" -q list-installed
+
+    unset _W_wine_not_needed
+    export WINE="$W_WINE"
+}
+
 test_quick()
 {
     echo "warning: quick test takes up around 20GB"
@@ -657,8 +710,12 @@ test_quick()
 
     # And test all the automatically-downloadable dlls
     test_dlls
+
     # And win32 7zip fallback
     test_7zip
+
+    # And listing verbs (with/without WINE available)
+    test_listing
 }
 
 test_full() {
@@ -796,6 +853,8 @@ case "$1" in
     custom-verbs) test_custom_verbs ;;
     dotnet) check_deps && test_dotnet ;;
     full)  check_deps && test_full ;;
+    # doesn't use time/cabextract, so not bothering to check deps for now:
+    listing) test_listing ;;
     quick) check_deps && test_quick ;;
     w_compare_wine_version) check_deps && test_w_compare_wine_version ;;
     xvfb-check) check_deps && XVFB=xvfb-run && export XVFB && test_xvfb ;;

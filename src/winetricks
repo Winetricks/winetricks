@@ -2638,10 +2638,26 @@ w_metadata()
     # Used to use Perl here, but that was too slow on Cygwin.
     for arg
     do
+        # If _W_wine_not_needed is set, we're a list command that isn't list-installed, and can ignore the installed_* errors:
         case "$arg" in
-            installed_exe1=/*) w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_exe1, should be a windows path";;
-            installed_file1=/*) w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_file1, should be a windows path";;
-            media=download_manual) w_die "bug: verb $_W_md_cmd has media=download_manual, should be manual_download" ;;
+            installed_exe1=/*)
+                if [ -n "$_W_wine_not_needed" ]; then
+                    # "_W_wine_not_needed set, no installed_exe1"
+                    :
+                else
+                    w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_exe1, should be a windows path"
+                fi
+                ;;
+            installed_file1=/*)
+                if [ -n "$_W_wine_not_needed" ]; then
+                    # "_W_wine_not_needed set, no installed_file1"
+                    :
+                else
+                    w_die "bug: w_metadata $_W_md_cmd has a unix path for installed_file1, should be a windows path"
+                fi
+                ;;
+            media=download_manual)
+                w_die "bug: verb $_W_md_cmd has media=download_manual, should be manual_download";;
         esac
         # Use longest match when stripping value,
         # and shortest match when stripping name,
@@ -5110,6 +5126,29 @@ winetricks_init()
         W_TASKSET=""
     fi
 
+    # Whether to automate installs (0=no, 1=yes)
+    winetricks_set_unattended ${W_OPT_UNATTENDED:-0}
+
+    winetricks_wine_setup "$@"
+}
+
+winetricks_wine_setup()
+{
+    # This used to be part of winetricks_init(), factored out because not everything needs Wine.
+    if [ -n "$_W_wine_not_needed" ]; then
+        # no-op
+        :
+        return
+    fi
+
+    winetricks_latest_version_check
+
+    # Overridden for windows
+    W_ISO_MOUNT_ROOT=/mnt/winetricks
+    W_ISO_USER_MOUNT_ROOT="$HOME"/winetricks-iso
+    W_ISO_MOUNT_LETTER=i
+
+    ######################
     # System-specific variables
     case "$W_PLATFORM" in
         windows_cmd)
@@ -5174,16 +5213,6 @@ winetricks_init()
                 ;;
     esac
 
-    winetricks_set_wineprefix "$1"
-
-    # Whether to automate installs (0=no, 1=yes)
-    winetricks_set_unattended ${W_OPT_UNATTENDED:-0}
-
-    # Overridden for windows
-    W_ISO_MOUNT_ROOT=/mnt/winetricks
-    W_ISO_USER_MOUNT_ROOT="$HOME"/winetricks-iso
-    W_ISO_MOUNT_LETTER=i
-
     WINETRICKS_WINE_VERSION=${WINETRICKS_WINE_VERSION:-$(winetricks_early_wine --version | sed 's/.*wine/wine/')}
     WINETRICKS_ORIG_WINE_VERSION="${WINETRICKS_WINE_VERSION}"
 
@@ -5202,11 +5231,11 @@ winetricks_init()
         w_warn "Your version of wine $_wine_version_stripped is no longer supported upstream. You should upgrade to 4.x"
     fi
 
+    winetricks_set_wineprefix "$1"
+
     if [ -z "$WINETRICKS_SUPER_QUIET" ] ; then
         echo "Using winetricks $(winetricks_print_version) with ${WINETRICKS_ORIG_WINE_VERSION} and WINEARCH=${W_ARCH}"
     fi
-
-    winetricks_latest_version_check
 }
 
 winetricks_usage()
@@ -5364,6 +5393,13 @@ then
     do
         shift
     done
+
+    # Super gross, but I couldn't find a cleaner way. This needs to be set for the list verbs (maybe others)
+    # while also supporting `dlls list` (etc.)
+    # This used by w_metadata() to skip checking installed files if wine isn't available/needed
+    if echo "$*" | grep -v list-installed | grep -q -w list; then
+        export _W_wine_not_needed=1
+    fi
 
     # Workaround for https://github.com/Winetricks/winetricks/issues/599
     # If --isolate is used, pass verb to winetricks_init, so it can set the wineprefix using winetricks_set_wineprefix()
