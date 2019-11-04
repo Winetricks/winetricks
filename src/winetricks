@@ -15311,6 +15311,8 @@ w_metadata rockstar_launcher apps \
 load_rockstar_launcher(){
 	w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
 
+        #Requires comdlg32.dll (https://gist.github.com/Klairm/4761cba4548c6f823d7bde251cfeb086/revisions)  
+
 	w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
 }
 #-----------------------------------------------------------------
