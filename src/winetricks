@@ -15301,6 +15301,20 @@ load_uplay()
 }
 
 #----------------------------------------------------------------
+w_metadata rockstar_launcher apps \
+	title="Rockstar Games Launcher"\
+	publisher="Rockstar Games"\
+	year="2019"\
+	media="download"\
+	file1="Rockstar-Games-Launcher.exe"
+
+load_rockstar_launcher(){
+	w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
+	w_try_cd "$W_CACHE/$W_PACKAGE"
+
+	w_try "$WINE $file1"
+}
+#-----------------------------------------------------------------
 
 w_metadata utorrent apps \
     title="µTorrent 2.2.1" \
