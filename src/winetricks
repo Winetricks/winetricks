@@ -18167,14 +18167,80 @@ w_metadata maple_legends games \
     title="Maple Legends" \
     publisher="Microsoft" \
     year="2006" \
-    media="download" \
+    media="manual_download" \
     file1="MapleLegends2019Nov3Rev4.exe" \
     installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Microsoft Flight Simulator X/fsx.exe"
 
 load_maple_legends()
 {
-    w_info "TODO: checksum"
-    w_download https://download2263.mediafire.com/hxuqc8n6ybzg/95v3yr38ym73667/MapleLegends2019Nov3Rev4.exe
+
+    # FIXME: Upstream requires used-input that generates the download link (https://maplelegends.com/download)
+    if [ ! -e "$W_CACHE/$W_PACKAGE/$file1" ]; then
+        w_die "Due to the upstream packaging which requires user-input that generates a download link we are unable to make a download using winetricks downloader, please download the file manually from https://maplelegends.com/download and paste export it in '$W_CACHE/$W_PACKAGE/$file1', then invoke winetricks again"
+    elif [ -e "$W_CACHE/$W_PACKAGE/$file1" ]; then
+        w_debug "File '$W_CACHE/$W_PACKAGE/$file1' is exported"
+    fi
+
+    # Winetricks compatibility for platform detection
+    # 05/11/2019 : Winetricks is unable to detect specific platform so kreytricks method is used (https://github.com/Winetricks/winetricks/pull/1338)
+    case $W_PLATFORM in
+      windows_cmd|wine_cmd|wine)
+          w_warn "Outdated method used for platform detection, using compatibility wrapper from kreytricks"
+          # Linux - `uname` returns 'GNU/Linux'
+          if [ "$(uname -s)" = "Linux" ]; then
+              export W_PLATFORM="nix_linux"
+
+          # FreeBSD - `uname` returns 'FreeBSD'
+          elif [ "$(uname -s)" = "FreeBSD" ]; then
+              export W_PLATFORM="nix_freebsd"
+
+          # Redox - `uname` returns 'Redox'
+          elif [ "$(uname -s)" = "Redox" ]; then
+              export W_PLATFORM="nix_redox"
+
+          # Cygwin - `uname -o` returns 'Cygwin'
+          elif [ "$(uname -o)" = "Cygwin" ]; then
+              export W_PLATFORM="windows_cygwin"
+
+          # MacOS - `uname` returns 'Darwin'
+          elif [ "$(uname -s)" = "Darwin" ]; then
+              export W_PLATFORM="nix_darwin"
+
+          # Windows - Impossible to get?
+          elif [ "$(uname)" = "Windows" ]; then
+              w_warn "How did you execute POSIX shell on native Windows? File an issue for compatibility"
+              export W_PLATFORM="windows_windows"
+
+          # WineCMD/CMD
+          elif [ "$OS" = "Windows_NT" ] && [ -z "$(uname)" ]; then
+              export W_PLATFORM="wine_cmd"
+
+          else
+              # WSL - `uname -r` returns `4.4.0-18362-Microsoft` where 4.4.0 is kernel version and 18362 windows build(?)
+              ## $OS is blank on WSL (10/2019)
+              case "$(uname -r)" in
+                  *-Microsoft)
+                  export W_PLATFORM="windows_wsl"
+              esac
+          fi
+    esac
+
+    case $W_PLATFORM in
+      nix_darwin)
+          # Requires MFC42.DLL for "C:\\users\\tsujp\\Temp\\is-I070G.tmp\\isskin.dll (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-549730179)
+          ## Required file is present in winxpsp3 (https://github.com/Winetricks/winetricks/commit/6c18a758cd99974d8a9a6fe33344c3cd67b17591#diff-a99131fb39a665ecd73a9df172046855R3282)
+          if [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
+              # Export mfc42.dll from winxpsp3
+              helper_winxpsp3 i386/asms/60/msft/vcrtl/mfc42.dll
+              w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll"
+              w_override_dlls native avifil32
+              # Self-check
+              [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ] && w_die "Winetricks was unable to extract mfc42.dll from winxpsp3"
+          elif [ -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
+              w_debug "File '$W_SYSTEM32_DLLS/mfc42.dll' already exists, skipping export.."
+          fi
+      ;;
+    esac
 
     w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
 }
