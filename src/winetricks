@@ -18174,6 +18174,9 @@ w_metadata maple_legends games \
 load_maple_legends()
 {
 
+    # TODO: Remove once resolved
+    w_debug() { printf '%s\n' "$@" ;}
+
     # FIXME: Upstream requires used-input that generates the download link (https://maplelegends.com/download)
     if [ ! -e "$W_CACHE/$W_PACKAGE/$file1" ]; then
         w_die "Due to the upstream packaging which requires user-input that generates a download link we are unable to make a download using winetricks downloader, please download the file manually from https://maplelegends.com/download and paste export it in '$W_CACHE/$W_PACKAGE/$file1', then invoke winetricks again"
@@ -18199,7 +18202,8 @@ load_maple_legends()
               export W_PLATFORM="nix_redox"
 
           # Cygwin - `uname -o` returns 'Cygwin'
-          elif [ "$(uname -o)" = "Cygwin" ]; then
+          # uname -o is not valid on MacOS -> avoids error messages (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-549769127)
+          elif [ "$(uname -o 2>/dev/null)" = "Cygwin" ]; then
               export W_PLATFORM="windows_cygwin"
 
           # MacOS - `uname` returns 'Darwin'
