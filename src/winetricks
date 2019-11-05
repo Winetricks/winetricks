@@ -18229,19 +18229,7 @@ load_maple_legends()
     esac
 
     case $W_PLATFORM in
-      nix_darwin)
-          # Requires MFC42.DLL for "C:\\users\\$USER\\Temp\\is-I070G.tmp\\isskin.dll (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-549730179)
-          ## Required library file is present in winxpsp3 (https://github.com/Winetricks/winetricks/commit/6c18a758cd99974d8a9a6fe33344c3cd67b17591#diff-a99131fb39a665ecd73a9df172046855R3282)
-          if [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
-              # Requires MFC42.DLL on C:\\users\\kreyren\\Temp\\is-GEN08.tmp\\isskin.dll in the installer (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-550009735)
-              w_call mfc42
-              # Self-check
-              [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ] && w_die "Winetricks was unable to extract mfc42.dll from winxpsp3"
-          elif [ -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
-              w_debug "File '$W_SYSTEM32_DLLS/mfc42.dll' already exists, skipping export.."
-          fi
-      ;;
-      nix_linux)
+      nix_linux|nix_darwin)
           # Requires MFC42.DLL on C:\\users\\kreyren\\Temp\\is-GEN08.tmp\\isskin.dll in the installer (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-550009735)
           w_call mfc42
           # Self-check
