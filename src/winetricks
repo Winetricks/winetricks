@@ -18169,7 +18169,7 @@ w_metadata maple_legends games \
     year="2006" \
     media="manual_download" \
     file1="MapleLegends2019Nov3Rev4.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Microsoft Flight Simulator X/fsx.exe"
+    installed_exe1="$W_DRIVE_C/MapleLegendsHD/MapleLegends.exe"
 
 load_maple_legends()
 {
@@ -18235,15 +18235,16 @@ load_maple_legends()
           ## Required file is present in winxpsp3 (https://github.com/Winetricks/winetricks/commit/6c18a758cd99974d8a9a6fe33344c3cd67b17591#diff-a99131fb39a665ecd73a9df172046855R3282)
           if [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
               # Export mfc42.dll from winxpsp3
-              helper_winxpsp3 i386/asms/60/msft/vcrtl/mfc42.dll
-              if [ -e "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" ]; then
-                  w_try cp "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" "$W_SYSTEM32_DLLS"
-              elif [ ! -e "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" ]; then
-                  w_die "Expected file '$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll' is not present to be exported in '$W_SYSTEM32_DLLS'"
-              fi
-              w_override_dlls native mfc42
-              # Stub, not tested
-              # w_call mfc42
+              # helper_winxpsp3 i386/asms/60/msft/vcrtl/mfc42.dll
+              # if [ -e "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" ]; then
+              #     w_try cp "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" "$W_SYSTEM32_DLLS"
+              # elif [ ! -e "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" ]; then
+              #     w_die "Expected file '$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll' is not present to be exported in '$W_SYSTEM32_DLLS'"
+              # fi
+              # w_override_dlls native mfc42
+
+              # Solution above makes wineapp to hangs (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-549813119)
+              w_call mfc42
               # Self-check
               [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ] && w_die "Winetricks was unable to extract mfc42.dll from winxpsp3"
           elif [ -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
