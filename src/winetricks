@@ -18233,16 +18233,7 @@ load_maple_legends()
           # Requires MFC42.DLL for "C:\\users\\$USER\\Temp\\is-I070G.tmp\\isskin.dll (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-549730179)
           ## Required library file is present in winxpsp3 (https://github.com/Winetricks/winetricks/commit/6c18a758cd99974d8a9a6fe33344c3cd67b17591#diff-a99131fb39a665ecd73a9df172046855R3282)
           if [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
-              # Export mfc42.dll from winxpsp3
-              # helper_winxpsp3 i386/asms/60/msft/vcrtl/mfc42.dll
-              # if [ -e "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" ]; then
-              #     w_try cp "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" "$W_SYSTEM32_DLLS"
-              # elif [ ! -e "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" ]; then
-              #     w_die "Expected file '$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll' is not present to be exported in '$W_SYSTEM32_DLLS'"
-              # fi
-              # w_override_dlls native mfc42
-
-              # Solution above makes wineapp to hangs (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-549813119)
+              # Requires MFC42.DLL on C:\\users\\kreyren\\Temp\\is-GEN08.tmp\\isskin.dll in the installer (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-550009735)
               w_call mfc42
               # Self-check
               [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ] && w_die "Winetricks was unable to extract mfc42.dll from winxpsp3"
@@ -18250,6 +18241,130 @@ load_maple_legends()
               w_debug "File '$W_SYSTEM32_DLLS/mfc42.dll' already exists, skipping export.."
           fi
       ;;
+			nix_linux)
+					# Requires MFC42.DLL on C:\\users\\kreyren\\Temp\\is-GEN08.tmp\\isskin.dll in the installer (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-550009735)
+					w_call mfc42
+					# Self-check
+					[ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ] && w_die "Winetricks was unable to extract mfc42.dll"
+
+					# Following libs are required for runtime (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-550009610)
+					## Ijl15.dll - "Intel® JPEG Library - Retail Version"
+					if [ ! -e "$W_SYSTEM32_DLLS/ijl15.dll" ]; then
+							# Download from mirror
+							# Virustotal: https://www.virustotal.com/gui/file/4b07461aa6473a3ee2467a7ffaa85c62b078ace30469875cbaa63de69761ffbd/detection
+							w_download_to "$W_PACKAGE" http://www.dlldownloader.com/ijl15-dll/download/478746776af86b5134f20ea9ef8db422/2ac2b6aac85d6ec7c899727350383429/ 4b07461aa6473a3ee2467a7ffaa85c62b078ace30469875cbaa63de69761ffbd ijl15.dll.zip
+
+							# Extract the file from mirror
+							if [ -e "$W_CACHE/$W_PACKAGE/ijl15.dll.zip" ]; then
+									w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE/ijl15.dll.zip" "ijl15.dll"
+									if [ -e "$W_TMP/ijl15.dll" ]; then
+											w_try cp "$W_TMP/ijl15.dll" "$W_SYSTEM32_DLLS"
+											# Self-check
+											if [ ! -e "$W_SYSTEM32_DLLS/ijl15.dll" ]; then
+													w_die "File '$W_SYSTEM32_DLLS/ijl15.dll' was not extracted which is required for runtime of maple legends"
+											elif [ -e "$W_SYSTEM32_DLLS/ijl15.dll" ]; then
+													w_debug "File '$W_SYSTEM32_DLLS/ijl15.dll' has been extracted successfully"
+											else
+													w_die "Unexpected output in $W_PACKAGE for copying of ijl15.dll in $W_SYSTEM32_DLLS"
+											fi
+									elif [ ! -e "$W_TMP/ijl15.dll" ]; then
+											w_die "File '$W_TMP/ijl15.dll' does not exists, which is required for runtime of maple legends"
+									else
+											w_die "Unexpected output in $W_PACKAGE for self-check of '$W_TMP/ijl15.dll'"
+									fi
+							elif [ ! -e "$W_CACHE/$W_PACKAGE/ijl15.dll.zip" ]; then
+									w_die "File '$W_CACHE/$W_PACKAGE/ijl15.dll.zip' does not exists, unable to extract required library for runtime of maple legends"
+							else
+									w_die "Unexpected output in $W_PACKAGE for extraction of ijl15.dll"
+							fi
+
+							# Make sure that it's being used
+							w_override_dlls native ijl15
+					elif [ -e "$W_SYSTEM32_DLLS/ijl15.dll" ]; then
+							w_debug "File '$W_SYSTEM32_DLLS/ijl15.dll' already exists, no need to extract it"
+					fi
+
+					## npkcrypt.dll - "nProtect KeyCrypt Driver Support Dll"
+					if [ ! -e "$W_SYSTEM32_DLLS/npkcrypt.dll" ]; then
+							# Download from mirror
+							# Virustotal: https://www.virustotal.com/gui/file/d0c65fec5fc82c5b0ed77e73de0ef3faf7677dcae96c8af1625402b87778a6b4/detection
+							w_download_to "$W_PACKAGE" http://www.dll-found.com/dll-8d/n/npkcrypt.dll d0c65fec5fc82c5b0ed77e73de0ef3faf7677dcae96c8af1625402b87778a6b4 npkcrypt.dll
+
+							# Export from mirror
+							if [ -e "$W_CACHE/$W_PACKAGE/npkcrypt.dll" ]; then
+									w_try cp "$W_CACHE/$W_PACKAGE/npkcrypt.dll" "$W_SYSTEM32_DLLS"
+							elif [ ! -e "$W_CACHE/$W_PACKAGE/npkcrypt.dll" ]; then
+									w_die "File '$W_CACHE/$W_PACKAGE/npkcrypt.dll' was not downloaded, cannot extract which is required for runtime of maple legends"
+							fi
+
+							# Make sure that it's being used
+							w_override_dlls native npkcrypt
+					elif [ -e "$W_SYSTEM32_DLLS/npkcrypt.dll" ]; then
+							w_debug "File '$W_SYSTEM32_DLLS/npkcrypt.dll' already exists, no need to extract it"
+					fi
+
+				## npkpdb.dll -
+				### Required by npkcrypt.dll (https://github.com/Winetricks/winetricks/pull/1415#issuecomment-550039861)
+				if [ ! -e "$W_SYSTEM32_DLLS/npkpdb.dll" ]; then
+							# Download from mirror
+							# Virustotal: https://www.virustotal.com/gui/file/47744c95349d59f82ea6fbf2d90d352bd0bdc2fc5c83b00e45a08ae8862cf849/detection
+							w_download_to "$W_PACKAGE" http://www.dll-found.com/dll-8d/n/npkpdb.dll 47744c95349d59f82ea6fbf2d90d352bd0bdc2fc5c83b00e45a08ae8862cf849 npkpdb.dll
+
+							# Export from mirror
+							if [ -e "$W_CACHE/$W_PACKAGE/npkpdb.dll" ]; then
+									w_try cp "$W_CACHE/$W_PACKAGE/npkpdb.dll" "$W_SYSTEM32_DLLS"
+							elif [ ! -e "$W_CACHE/$W_PACKAGE/npkpdb.dll" ]; then
+									w_die "File '$W_CACHE/$W_PACKAGE/npkpdb.dll' was not downloaded, cannot extract which is required for runtime of maple legends"
+							fi
+
+							# Make sure that it's being used
+							w_override_dlls native npkpdb
+					elif [ -e "$W_SYSTEM32_DLLS/npkpdb.dll" ]; then
+							w_debug "File '$W_SYSTEM32_DLLS/npkpdb.dll' already exists, no need to extract it"
+					fi
+
+
+				## wzmss.dll - Don't know what that is
+				if [ ! -e "$W_SYSTEM32_DLLS/wzmss.dll" ]; then
+							# Download from mirror
+							# Virustotal: https://www.virustotal.com/gui/file/7f99f6a1700dff5529a4d883662c0da125fb0ab7eb415e7e012304c26644ed85/detection
+							[ ! -e "$W_CACHE/$W_PACKAGE/wzmss.zip" ] && w_download_to "$W_PACKAGE" http://z3.zhaodll.com:83///2012/w/wzmss.zip 7f99f6a1700dff5529a4d883662c0da125fb0ab7eb415e7e012304c26644ed85 wzmss.zip
+							[ ! -e "$W_CACHE/$W_PACKAGE/wzmss.zip" ] && w_download_to "$W_PACKAGE" http://z2.zhaodll.com:808///2012/w/wzmss.zip 7f99f6a1700dff5529a4d883662c0da125fb0ab7eb415e7e012304c26644ed85 wzmss.zip
+							[ ! -e "$W_CACHE/$W_PACKAGE/wzmss.zip" ] && w_download_to "$W_PACKAGE" http://z1.zhaodll.com:81///2012/w/wzmss.zip 7f99f6a1700dff5529a4d883662c0da125fb0ab7eb415e7e012304c26644ed85 wzmss.zip
+							[ ! -e "$W_CACHE/$W_PACKAGE/wzmss.zip" ] && w_download_to "$W_PACKAGE" http://z4.zhaodll.com:11884///2012/w/wzmss.zip 7f99f6a1700dff5529a4d883662c0da125fb0ab7eb415e7e012304c26644ed85 wzmss.zip
+
+							# Extract the file from mirror
+							if [ -e "$W_CACHE/$W_PACKAGE/wzmss.zip" ]; then
+									w_warn "if archive asks for password parse: 'www.zhaodll.com'"
+									w_try unzip "$W_CACHE/$W_PACKAGE/wzmss.zip" wzmss/X86/WzMss.dll -d "$W_TMP"
+
+									if [ -e "$W_TMP/wzmss/X86/WzMss.dll" ]; then
+											w_try cp "$W_TMP/wzmss/X86/WzMss.dll" "$W_SYSTEM32_DLLS/wzmss.dll"
+											# Self-check
+											if [ ! -e "$W_SYSTEM32_DLLS/wzmss.dll" ]; then
+													w_die "File '$W_SYSTEM32_DLLS/wzmss.dll' was not extracted which is required for runtime of maple legends"
+											elif [ -e "$W_SYSTEM32_DLLS/wzmss.dll" ]; then
+													w_debug "File '$W_SYSTEM32_DLLS/wzmss.dll' has been extracted successfully"
+											else
+													w_die "Unexpected output in $W_PACKAGE for copying of wzmss.dll in $W_SYSTEM32_DLLS"
+											fi
+									elif [ ! -e "$W_TMP/wzmss.dll" ]; then
+											w_die "File '$W_TMP/wzmss.dll' does not exists, which is required for runtime of maple legends"
+									else
+											w_die "Unexpected output in $W_PACKAGE for self-check of '$W_TMP/wzmss.dll'"
+									fi
+							elif [ ! -e "$W_CACHE/$W_PACKAGE/wzmss.zip" ]; then
+									w_die "File '$W_CACHE/$W_PACKAGE/wzmss.zip' does not exists, unable to extract required library for runtime of maple legends"
+							else
+									w_die "Unexpected output in $W_PACKAGE for extraction of wzmss.dll"
+							fi
+
+							# Make sure that it's being used
+							w_override_dlls native wzmss
+					elif [ -e "$W_SYSTEM32_DLLS/wzmss.dll" ]; then
+							w_debug "File '$W_SYSTEM32_DLLS/wzmss.dll' already exists, no need to extract it"
+					fi
+			;;
       nix_*|windows_*) w_warn "This is not tested on '$W_PLATFORM', please submit a test result in winetricks" ;;
       *) w_die "Unexpected W_PLATFORM '$W_PLATFORM' parsed in maple_legends verb"
     esac
