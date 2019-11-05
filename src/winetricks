@@ -18175,7 +18175,7 @@ load_maple_legends()
 {
 
     # TODO: Remove once resolved
-    w_debug() { printf '%s\n' "$@" ;}
+    w_debug() { printf '%s\n' "DEBUG: $@" ;}
 
     # FIXME: Upstream requires used-input that generates the download link (https://maplelegends.com/download)
     if [ ! -e "$W_CACHE/$W_PACKAGE/$file1" ]; then
@@ -18236,7 +18236,14 @@ load_maple_legends()
           if [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
               # Export mfc42.dll from winxpsp3
               helper_winxpsp3 i386/asms/60/msft/vcrtl/mfc42.dll
+              if [ -e "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" ]; then
+                  w_try cp "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" "$W_SYSTEM32_DLLS"
+              elif [ ! -e "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll" ]; then
+                  w_die "Expected file '$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll' is not present to be exported in '$W_SYSTEM32_DLLS'"
+              fi
               w_override_dlls native mfc42
+              # Stub, not tested
+              # w_call mfc42
               # Self-check
               [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ] && w_die "Winetricks was unable to extract mfc42.dll from winxpsp3"
           elif [ -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
