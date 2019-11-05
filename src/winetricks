@@ -18237,7 +18237,7 @@ load_maple_legends()
               # Export mfc42.dll from winxpsp3
               helper_winxpsp3 i386/asms/60/msft/vcrtl/mfc42.dll
               w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP/i386/asms/60/msft/vcrtl/mfc42.dll"
-              w_override_dlls native avifil32
+              w_override_dlls native mfc42
               # Self-check
               [ ! -e "$W_SYSTEM32_DLLS/mfc42.dll" ] && w_die "Winetricks was unable to extract mfc42.dll from winxpsp3"
           elif [ -e "$W_SYSTEM32_DLLS/mfc42.dll" ]; then
