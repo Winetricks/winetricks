@@ -18161,6 +18161,26 @@ load_hordesoforcs2_demo()
 
 #----------------------------------------------------------------
 
+# TODO: Update metadata
+
+w_metadata maple_legends games \
+    title="Maple Legends" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="MapleLegends2019Nov3Rev4.exe" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Microsoft Games/Microsoft Flight Simulator X/fsx.exe"
+
+load_maple_legends()
+{
+    w_info "TODO: checksum"
+    w_download https://download2263.mediafire.com/hxuqc8n6ybzg/95v3yr38ym73667/MapleLegends2019Nov3Rev4.exe
+
+    w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
+}
+
+#----------------------------------------------------------------
+
 w_metadata mfsxde games \
     title="Microsoft Flight Simulator X: Deluxe Edition" \
     publisher="Microsoft" \
