@@ -2754,14 +2754,13 @@ w_do_call()
             *)
                 # shellcheck disable=SC2154
                 case "${category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
-                    apps-0|benchmarks-0|games-0)
-                        winetricks_set_wineprefix "$cmd"
-                        # If it's a new wineprefix, give it metadata
-                        if test ! -f "$WINEPREFIX"/wrapper.cfg; then
-                            echo ww_name=\""$title"\" > "$WINEPREFIX"/wrapper.cfg
-                        fi
-                        ;;
+                    apps-0|benchmarks-0|games-0) winetricks_set_wineprefix "$cmd";;
+                    *) winetricks_set_wineprefix;;
                 esac
+                # If it's a new wineprefix, give it metadata
+                if test ! -f "$WINEPREFIX"/wrapper.cfg; then
+                    echo ww_name=\""$title"\" > "$WINEPREFIX"/wrapper.cfg
+                fi
             ;;
         esac
 
