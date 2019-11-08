@@ -15301,6 +15301,42 @@ load_uplay()
 }
 
 #----------------------------------------------------------------
+w_metadata rockstar_launcher apps \
+    title="Rockstar Games Launcher" \
+    publisher="Rockstar Games" \
+    year="2019" \
+    media="download" \
+    file1="Rockstar-Games-Launcher.exe"
+
+load_rockstar_launcher()
+{
+        # Outputs pop-up `Your windows OS is not supported` on win32 (?)
+        w_package_unsupported_win32
+
+        w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
+        w_try mkdir -p "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/"
+
+        # TODO: FIle a winebug -> Requires comdlg32.dll where winelib is not sufficient
+
+
+        if w_workaround_wine_bug XXXXX; then
+                w_try 7z x "$W_CACHE/$W_PACKAGE/Rockstar-Games-Launcher.exe" "-o/$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher"
+               # w_try rm "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/api-ms-*.dll"
+               w_call win10
+               w_call vcrun2017
+        elif ! w_workaround_wine_bug XXXXX; then
+            w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
+        fi
+
+        #It requires Dinput8 
+        w_call dinput8
+        w_override_dlls builtin dinput8
+        w_call dxvk096
+
+}
+#-----------------------------------------------------------------
+
+
 
 w_metadata utorrent apps \
     title="µTorrent 2.2.1" \
@@ -16117,7 +16153,6 @@ load_wglgears()
 #----------------------------------------------------------------
 # Games
 #----------------------------------------------------------------
-
 w_metadata algodoo_demo games \
     title="Algodoo Demo" \
     publisher="Algoryx" \
