@@ -15316,9 +15316,6 @@ load_rockstar_launcher()
         w_call dinput8
         w_override_dlls builtin dinput8
 
-        #DXVK 
-        w_call dxvk06
-
         w_call win10
 
         w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
@@ -15327,8 +15324,15 @@ load_rockstar_launcher()
         # TODO: File a winebug -> Requires comdlg32.dll where winelib is not sufficient
         if w_workaround_wine_bug XXXXX; then
                 w_try 7z x "$W_CACHE/$W_PACKAGE/Rockstar-Games-Launcher.exe" "-o/$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher"
-               # w_try rm "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/api-ms-*.dll"
-                w_call vcrun2017
+               
+               # Checking if vcrun2017 is already installed
+               if [ -f "$W_SYSTEM32_DLLS_WIN/mfc140.dll"]; then 
+                   echo "vcrun2017 already installed"
+                else
+                    echo "vcrun2017 not found, installing"
+                   w_call vcrun2017 
+                fi
+               w_call vcrun2017
         elif ! w_workaround_wine_bug XXXXX; then
             w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
         fi
