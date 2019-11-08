@@ -15326,13 +15326,12 @@ load_rockstar_launcher()
                 w_try 7z x "$W_CACHE/$W_PACKAGE/Rockstar-Games-Launcher.exe" "-o/$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher"
                
                # Checking if vcrun2017 is already installed
-               if [ -f "$W_SYSTEM32_DLLS_WIN/mfc140.dll"]; then 
+               if [ -e "$WINEPREFIX/drive_c/windows/syswow64/mfc140.dll" ]; then 
                    echo "vcrun2017 already installed"
-                else
+               else
                     echo "vcrun2017 not found, installing"
-                   w_call vcrun2017 
+                    w_call vcrun2017 
                 fi
-               w_call vcrun2017
         elif ! w_workaround_wine_bug XXXXX; then
             w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
         fi
