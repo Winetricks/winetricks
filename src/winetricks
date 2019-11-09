@@ -15225,6 +15225,25 @@ load_sketchup()
 
 #----------------------------------------------------------------
 
+w_metadata epic_games_launcher apps \
+    title="Epic Games Launcher" \
+    publisher="Epic Games" \
+    year="2019" \
+    media="download" \
+    file1="EpicGamesLauncherInstaller.msi" \
+    #installed_exe1="$W_PROGRAMS_X86_WIN/Steam/Steam.exe"
+
+load_epic_games_launcher()
+{
+    # QA: Can we make a checksum?
+    w_download https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi
+
+    w_try "$WINE" msiexec /i "$W_CACHE/$W_PACKAGE/$file1"
+}
+
+
+#----------------------------------------------------------------
+
 w_metadata steam apps \
     title="Steam" \
     publisher="Valve" \
