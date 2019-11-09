@@ -15311,7 +15311,7 @@ w_metadata rockstar_launcher apps \
 load_rockstar_launcher()
 {
         w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
-        
+        w_set_winver win10
         if [ ! -d "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/"]; then
             echo "Launcher folder not found, creating..."
             w_try mkdir -p "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/"
@@ -15327,7 +15327,7 @@ load_rockstar_launcher()
                else
                     echo "vcrun2017 not found, installing"
                     w_call vcrun2017 
-                    w_set_winver win10
+                
                 fi
         elif ! w_workaround_wine_bug XXXXX; then
             w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
@@ -15336,9 +15336,6 @@ load_rockstar_launcher()
     }
 
 #-----------------------------------------------------------------
-
-
-
 w_metadata utorrent apps \
     title="µTorrent 2.2.1" \
     publisher="BitTorrent" \
