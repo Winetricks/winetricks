@@ -15307,20 +15307,17 @@ w_metadata rockstar_launcher apps \
     year="2019" \
     media="download" \
     file1="Rockstar-Games-Launcher.exe"
-
+    installed_exe1="$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/Launcher.exe"
 load_rockstar_launcher()
 {
-        # Outputs pop-up `Your windows OS is not supported` on win32 (?)
-        w_package_unsupported_win32
-        #dinput8.dll required
-        w_call dinput8
-        w_override_dlls builtin dinput8
-
-        #w_call win10
-
         w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
-        w_try mkdir -p "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/"
-
+        
+        if [ ! -d "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/"]; then
+            echo "Launcher folder not found, creating..."
+            w_try mkdir -p "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/"
+        elif [ -d "$WINEPREFIX/drive_c/Program Files/Rockstar/Games/Launcher/"]; then
+            echo "Launcher folder already exists,skipping..."
+        fi
         # TODO: File a winebug -> Requires comdlg32.dll where winelib is not sufficient
         if w_workaround_wine_bug XXXXX; then
                 w_try 7z x "$W_CACHE/$W_PACKAGE/Rockstar-Games-Launcher.exe" "-o/$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher"
@@ -15337,6 +15334,7 @@ load_rockstar_launcher()
         fi
 
     }
+
 #-----------------------------------------------------------------
 
 
