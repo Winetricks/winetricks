@@ -675,7 +675,7 @@ w_verify_cabextract_available()
     # If verb_a requires verb_b, then verba will fail when the dependency for verb_b is installed
     # This should be called by verb_a, to give a proper warning
 
-    w_try_cabextract -q -v
+    w_try_cabextract -q -v >/dev/null 2>&1
 }
 
 # Convert a Windows path to a Unix path quickly.
