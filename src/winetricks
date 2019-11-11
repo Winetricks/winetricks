@@ -8001,7 +8001,7 @@ load_dotnet11()
                     WinClose, Fatal error, Failed to delay load library
                     continue
                 }
-                Process, exist, dotnetfx.exe
+                Process, exist, NDP1.1sp1-KB867460-X86.exe
                 dotnet_pid = %ErrorLevel%  ; Save the value immediately since ErrorLevel is often changed.
                 if dotnet_pid = 0
                 {
