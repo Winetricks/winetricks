@@ -49,6 +49,7 @@ trap 'rm -fr "$temp"' EXIT
 test_bashate() {
     if [ ! -x "$(command -v bashate 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
         echo "On OSX and bashate not available, skipping."
+        return
     else
         bashate="$(command -v bashate)"
 
@@ -70,11 +71,9 @@ test_bashate() {
 
 # tests using checkbashisms
 test_checkbashisms() {
-    # Skip checkbashisms tests on OSX if it's not available (homebrew is unreliable):
-
-    # Skip checkbashisms tests on OSX if it's not available (homebrew is unreliable):
     if [ ! -x "$(command -v checkbashisms 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
         echo "On OSX and checkbashisms not available, skipping."
+        return
     else
         checkbashisms="$(command -v checkbashisms)"
 
@@ -128,9 +127,9 @@ _EOF
 
 # tests using shellcheck
 test_shellcheck() {
-    # Skip shellcheck tests on OSX if it's not available (homebrew is unreliable):
     if [ ! -x "$(command -v shellcheck 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
         echo "On OSX and shellcheck not available, skipping."
+        return
     else
         shellcheck="$(command -v shellcheck)"
 
