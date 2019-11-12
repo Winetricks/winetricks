@@ -15301,6 +15301,7 @@ load_uplay()
 }
 
 #----------------------------------------------------------------
+
 w_metadata rockstar_launcher apps \
     title="Rockstar Games Launcher" \
     publisher="Rockstar Games" \
@@ -15308,7 +15309,9 @@ w_metadata rockstar_launcher apps \
     media="download" \
     file1="Rockstar-Games-Launcher.exe" \
     installed_file1="C:/Program Files/Rockstar Games/Launcher/Launcher.exe"
+
 load_rockstar_launcher()
+
 {
         w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
         w_set_winver win10
@@ -15320,14 +15323,25 @@ load_rockstar_launcher()
         fi
         # TODO: File a winebug -> Requires comdlg32.dll where winelib is not sufficient
         if w_workaround_wine_bug XXXXX; then
-                w_try 7z x "$W_CACHE/$W_PACKAGE/Rockstar-Games-Launcher.exe" "-o/$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher"
+        # Checking if Rockstar-Games-Launcher.exe is already extracted    
+            for i in $(7z l $W_CACHE/$W_PACKAGE/Rockstar-Games-Launcher.exe)
+                  do
+                    if [ -e "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/$i" ]; then
+                        echo "$i Found, no need to extract, skipping..."
+                    elif [ ! -e "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/$i" ]; then
+                        echo "$i Not Found, extracting..."
+                        w_try 7z x -y  "$W_CACHE/$W_PACKAGE/Rockstar-Games-Launcher.exe" "-o/$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher"
+                        break
+                    fi
+                done 
+
                # Checking if vcrun2017 is already installed
                if [ -e "$WINEPREFIX/drive_c/windows/syswow64/mfc140.dll" ]; then 
                    echo "vcrun2017 already installed"
                else
                     echo "vcrun2017 not found, installing"
                     w_call vcrun2017 
-                
+                    
                 fi
         elif ! w_workaround_wine_bug XXXXX; then
             w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
