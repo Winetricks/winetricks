@@ -15313,8 +15313,11 @@ w_metadata rockstar_launcher apps \
 load_rockstar_launcher()
 
 {
-        w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
-        w_set_winver win10
+        
+   # The installer will be updated often so can't use checksum
+    w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
+       
+    w_set_winver win10
         if [ ! -d "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/"]; then
             echo "Launcher folder not found, creating..."
             w_try mkdir -p "$WINEPREFIX/drive_c/Program Files/Rockstar Games/Launcher/"
@@ -16165,6 +16168,7 @@ load_wglgears()
 #----------------------------------------------------------------
 # Games
 #----------------------------------------------------------------
+
 w_metadata algodoo_demo games \
     title="Algodoo Demo" \
     publisher="Algoryx" \
