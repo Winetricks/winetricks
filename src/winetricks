@@ -15324,8 +15324,8 @@ load_rockstar_launcher()
         elif [ -d "$WINEPREFIX/drive_c/Program Files/Rockstar/Games/Launcher/"]; then
             echo "Launcher folder already exists,skipping..."
         fi
-        # TODO: File a winebug -> Requires comdlg32.dll where winelib is not sufficient
-        if w_workaround_wine_bug XXXXX; then
+
+        if w_workaround_wine_bug 47912; then
         # Checking if Rockstar-Games-Launcher.exe is already extracted    
             for i in $(7z l $W_CACHE/$W_PACKAGE/Rockstar-Games-Launcher.exe)
                   do
@@ -15346,7 +15346,7 @@ load_rockstar_launcher()
                     w_call vcrun2017 
                     
                 fi
-        elif ! w_workaround_wine_bug XXXXX; then
+        elif ! w_workaround_wine_bug 47912; then
             w_try "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
         fi
 
