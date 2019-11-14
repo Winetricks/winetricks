@@ -201,10 +201,10 @@ Note that the file prefix (icecat.verb) and command name (icecat) must match. Al
 The tests need `bashate`, `checkbashisms`, and `shellcheck>=0.4.4` installed.
 Makefile supports a few test targets:
 
-* check - runs './tests/winetricks-tests quick' (without first clearing $WINETRICKS_CACHE)
-* shell-checks - runs './tests/shell-checks'
-* test - runs './tests/winetricks-tests full' (and clears $WINETRICKS_CACHE first)
-* xvfb-check - runs './tests/winetricks-tests xvfb-check' (without first clearing $WINETRICKS_CACHE first)
+* `check` - runs './tests/winetricks-tests quick' (without first clearing $WINETRICKS_CACHE)
+* `shell-checks` - runs './tests/shell-checks'
+* `test` - runs './tests/winetricks-tests full' (and clears $WINETRICKS_CACHE first)
+* `xvfb-check` - runs './tests/winetricks-tests xvfb-check' (without first clearing $WINETRICKS_CACHE first)
 
 # Support
 * Winetricks is maintained by Austin English <austinenglish@gmail.com>.
