@@ -10409,7 +10409,7 @@ load_mf()
 		[HKEY_CLASSES_ROOT\CLSID\{48e2ed0f-98c2-4a37-bed5-166312ddd83f}\InprocServer32]
 		@="mfreadwrite.dll"
 		"ThreadingModel"="Both"
-		_EOF_
+_EOF_
 
 		# Generate wmf.reg
 		cat > "$W_CACHE/$W_PACKAGE/wmf.reg" <<_EOF_
@@ -10625,7 +10625,7 @@ load_mf()
 
 		[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Media Foundation\SchemeHandlers\sdp:]
 		"{E9F4EBAB-D97B-463e-A2B1-C54EE3F9414D}"="Net Scheme Handler"
-		_EOF_
+_EOF_
 
 		w_try_regedit "$W_CACHE/$W_PACKAGE/mf.reg"
 		w_try_regedit "$W_CACHE/$W_PACKAGE/wmf.reg"
