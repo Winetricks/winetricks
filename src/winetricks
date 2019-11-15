@@ -11882,50 +11882,101 @@ load_vcrun2015()
     # 2015/10/12: fdd1e1f0dcae2d0aa0720895eff33b927d13076e64464bb7c7e5843b7667cd14
     w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe fdd1e1f0dcae2d0aa0720895eff33b927d13076e64464bb7c7e5843b7667cd14
 
-    if w_workaround_wine_bug 37781; then
-        w_warn "This may fail in non-XP mode, see https://bugs.winehq.org/show_bug.cgi?id=37781"
+    # This was resolved on wine >1.7.33 (https://bugs.winehq.org/show_bug.cgi?id=37781)
+    if w_workaround_wine_bug 37781 '' ,1.7.33; then
+        w_warn "Affected by winebug 37781, this may fail in non-XP mode om wine <1.7.33"
+        w_set_app_winver vc_redist.x86.exe winxp
+
+        # Workaround for 64-bit
+        [ "$W_ARCH" = win64 ] && w_set_app_winver vc_redist.x64.exe winxp
+    elif ! w_workaround_wine_bug 37781 '' ,1.7.33; then
+        w_debug "Verb vcrun2015 is not affected by winebug 37781 on this system"
     fi
 
-    w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcr140 ucrtbase vcomp140 vcruntime140
+    # Overrides for exported libs
+    w_override_dlls native,builtin \
+        api-ms-win-crt-private-l1-1-0 \
+        api-ms-win-crt-conio-l1-1-0 \
+        api-ms-win-crt-heap-l1-1-0 \
+        api-ms-win-crt-locale-l1-1-0 \
+        api-ms-win-crt-math-l1-1-0 \
+        api-ms-win-crt-runtime-l1-1-0 \
+        api-ms-win-crt-stdio-l1-1-0 \
+        api-ms-win-crt-time-l1-1-0 \
+        atl140 \
+        concrt140 \
+        msvcp140 \
+        msvcr140 \
+        ucrtbase \
+        vcomp140 \
+        vcruntime140
 
-    w_set_winver winxp
+    # Install 32-bit libs
+    # 15112019 - vcrun* fails to install on wine >4.12 (https://bugs.winehq.org/show_bug.cgi?id=47565)
+    # Relevant winetricks bug - https://github.com/Winetricks/winetricks/issues/1407#issuecomment-554487586
+    if w_workaround_wine_bug 47565 '' 4.12,; then
+        w_try_cabextract --directory="$W_TMP" "$W_CACHE/$W_PACKAGE/vc_redist.x86.exe"
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a10"
+        w_try_cabextract --directory="$W_TMP" "$W_TMP/a11"
+        w_try cp "$W_TMP/concrt140.dll" "$W_SYSTEM32_DLLS/concrt140.dll"
+        w_try cp "$W_TMP/mfc140.dll" "$W_SYSTEM32_DLLS/mfc140.dll"
+        w_try cp "$W_TMP/mfc140u.dll" "$W_SYSTEM32_DLLS/mfc140u.dll"
+        w_try cp "$W_TMP/mfcm140.dll" "$W_SYSTEM32_DLLS/mfcm140.dll"
+        w_try cp "$W_TMP/mfcm140u.dll" "$W_SYSTEM32_DLLS/mfcm140u.dll"
+        w_try cp "$W_TMP/msvcp140.dll" "$W_SYSTEM32_DLLS/msvcp140.dll"
+        w_try cp "$W_TMP/vcamp140.dll" "$W_SYSTEM32_DLLS/vcamp140.dll"
+        w_try cp "$W_TMP/vccorlib140.dll" "$W_SYSTEM32_DLLS/vccorlib140.dll"
+        w_try cp "$W_TMP/vcomp140.dll" "$W_SYSTEM32_DLLS/vcomp140.dll"
+        w_try cp "$W_TMP/vcruntime140.dll" "$W_SYSTEM32_DLLS/vcruntime140.dll"
 
-    w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" vc_redist.x86.exe $W_UNATTENDED_SLASH_Q
+        w_try cp "$W_TMP/api_ms_win_crt_conio_l1_1_0.dll" "$W_SYSTEM32_DLLS/api-ms-win-crt-conio-l1-1-0.dll"
+        w_try cp "$W_TMP/api_ms_win_crt_heap_l1_1_0.dll" "$W_SYSTEM32_DLLS/api-ms-win-crt-heap-l1-1-0.dll"
+        w_try cp "$W_TMP/api_ms_win_crt_locale_l1_1_0.dll" "$W_SYSTEM32_DLLS/api-ms-win-crt-locale-l1-1-0.dll"
+        w_try cp "$W_TMP/api_ms_win_crt_math_l1_1_0.dll" "$W_SYSTEM32_DLLS/api-ms-win-crt-math-l1-1-0.dll"
+        w_try cp "$W_TMP/api_ms_win_crt_runtime_l1_1_0.dll" "$W_SYSTEM32_DLLS/api-ms-win-crt-runtime-l1-1-0.dll"
+        w_try cp "$W_TMP/api_ms_win_crt_stdio_l1_1_0.dll" "$W_SYSTEM32_DLLS/api-ms-win-crt-stdio-l1-1-0.dll"
+        w_try cp "$W_TMP/ucrtbase.dll" "$W_SYSTEM32_DLLS/ucrtbase.dll"
+    elif ! w_workaround_wine_bug 47565 '' 4.12,; then
+        w_try "$WINE" "$W_CACHE/$W_PACKAGE/vc_redist.x64.exe" "$W_UNATTENDED_SLASH_Q"
+    else
+        w_die "Unexpected result in vcrun2015 in winebug 47565 logic"
+    fi
 
-    case "$W_ARCH" in
-        win64)
-            # Also install the 64-bit version
-            # 2015/10/12: 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
-            w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
-            if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls", 3.8; then
-                rm -f "$W_TMP"/*  # Avoid permission error
-                w_try_cabextract --directory="$W_TMP" vc_redist.x64.exe
-                w_try_cabextract --directory="$W_TMP" "$W_TMP/a10"
-                w_try_cabextract --directory="$W_TMP" "$W_TMP/a11"
-                cp "$W_TMP"/concrt140.dll "$W_SYSTEM64_DLLS"/concrt140.dll
-                cp "$W_TMP"/mfc140.dll "$W_SYSTEM64_DLLS"/mfc140.dll
-                cp "$W_TMP"/mfc140u.dll "$W_SYSTEM64_DLLS"/mfc140u.dll
-                cp "$W_TMP"/mfcm140.dll "$W_SYSTEM64_DLLS"/mfcm140.dll
-                cp "$W_TMP"/mfcm140u.dll "$W_SYSTEM64_DLLS"/mfcm140u.dll
-                cp "$W_TMP"/msvcp140.dll "$W_SYSTEM64_DLLS"/msvcp140.dll
-                cp "$W_TMP"/vcamp140.dll "$W_SYSTEM64_DLLS"/vcamp140.dll
-                cp "$W_TMP"/vccorlib140.dll "$W_SYSTEM64_DLLS"/vccorlib140.dll
-                cp "$W_TMP"/vcomp140.dll "$W_SYSTEM64_DLLS"/vcomp140.dll
-                cp "$W_TMP"/vcruntime140.dll "$W_SYSTEM64_DLLS"/vcruntime140.dll
+    # Install 64-bit libs
+    if [ "$W_ARCH" = win64 ]; then
+      # Also install the 64-bit version
+      # 2015/10/12: 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
+      w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
 
-                cp "$W_TMP"/api_ms_win_crt_conio_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-conio-l1-1-0.dll
-                cp "$W_TMP"/api_ms_win_crt_heap_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-heap-l1-1-0.dll
-                cp "$W_TMP"/api_ms_win_crt_locale_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-locale-l1-1-0.dll
-                cp "$W_TMP"/api_ms_win_crt_math_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-math-l1-1-0.dll
-                cp "$W_TMP"/api_ms_win_crt_runtime_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-runtime-l1-1-0.dll
-                cp "$W_TMP"/api_ms_win_crt_stdio_l1_1_0.dll "$W_SYSTEM64_DLLS"/api-ms-win-crt-stdio-l1-1-0.dll
-                cp "$W_TMP"/ucrtbase.dll "$W_SYSTEM64_DLLS"/ucrtbase.dll
-            else
-                w_try "$WINE" vc_redist.x64.exe $W_UNATTENDED_SLASH_Q
-            fi
-            ;;
-    esac
+      if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls", 3.8; then
+          rm -f "$W_TMP"/*  # Avoid permission error
+          w_try_cabextract --directory="$W_TMP" "$W_CACHE/$W_PACKAGE/vc_redist.x64.exe"
+          w_try_cabextract --directory="$W_TMP" "$W_TMP/a10"
+          w_try_cabextract --directory="$W_TMP" "$W_TMP/a11"
+          w_try cp "$W_TMP/concrt140.dll" "$W_SYSTEM64_DLLS/concrt140.dll"
+          w_try cp "$W_TMP/mfc140.dll" "$W_SYSTEM64_DLLS/mfc140.dll"
+          w_try cp "$W_TMP/mfc140u.dll" "$W_SYSTEM64_DLLS/mfc140u.dll"
+          w_try cp "$W_TMP/mfcm140.dll" "$W_SYSTEM64_DLLS/mfcm140.dll"
+          w_try cp "$W_TMP/mfcm140u.dll" "$W_SYSTEM64_DLLS/mfcm140u.dll"
+          w_try cp "$W_TMP/msvcp140.dll" "$W_SYSTEM64_DLLS/msvcp140.dll"
+          w_try cp "$W_TMP/vcamp140.dll" "$W_SYSTEM64_DLLS/vcamp140.dll"
+          w_try cp "$W_TMP/vccorlib140.dll" "$W_SYSTEM64_DLLS/vccorlib140.dll"
+          w_try cp "$W_TMP/vcomp140.dll" "$W_SYSTEM64_DLLS/vcomp140.dll"
+          w_try cp "$W_TMP/vcruntime140.dll" "$W_SYSTEM64_DLLS/vcruntime140.dll"
+
+          w_try cp "$W_TMP/api_ms_win_crt_conio_l1_1_0.dll" "$W_SYSTEM64_DLLS/api-ms-win-crt-conio-l1-1-0.dll"
+          w_try cp "$W_TMP/api_ms_win_crt_heap_l1_1_0.dll" "$W_SYSTEM64_DLLS/api-ms-win-crt-heap-l1-1-0.dll"
+          w_try cp "$W_TMP/api_ms_win_crt_locale_l1_1_0.dll" "$W_SYSTEM64_DLLS/api-ms-win-crt-locale-l1-1-0.dll"
+          w_try cp "$W_TMP/api_ms_win_crt_math_l1_1_0.dll" "$W_SYSTEM64_DLLS/api-ms-win-crt-math-l1-1-0.dll"
+          w_try cp "$W_TMP/api_ms_win_crt_runtime_l1_1_0.dll" "$W_SYSTEM64_DLLS/api-ms-win-crt-runtime-l1-1-0.dll"
+          w_try cp "$W_TMP/api_ms_win_crt_stdio_l1_1_0.dll" "$W_SYSTEM64_DLLS/api-ms-win-crt-stdio-l1-1-0.dll"
+          w_try cp "$W_TMP/ucrtbase.dll" "$W_SYSTEM64_DLLS/ucrtbase.dll"
+      elif ! w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls", 3.8; then
+          w_try "$WINE" "$W_CACHE/$W_PACKAGE/vc_redist.x64.exe" "$W_UNATTENDED_SLASH_Q"
+      else
+          w_die "Unexpected result in vcrun2015 in winebug 30713 logic"
+      fi
+    fi
 }
 
 #----------------------------------------------------------------
