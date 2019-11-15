@@ -262,6 +262,23 @@ w_warn()
     unset _W_timeout
 }
 
+# Output debug message to stdin if debug variable is non-zero
+w_debug()
+{
+    w_message="$1"
+
+    if [ -n "$w_message" ]; then
+        shift 1
+    elif [ -z "$w_message" ]; then
+        w_die "bug: w_debug was parsed without any value"
+    fi
+
+    # shellcheck disable=SC2154
+    [ -n "$W_DEBUG" ] && printf '%s\n' "DEBUG: $w_message"
+
+    unset w_message
+}
+
 # Display warning message to stderr (since it is called inside redirected code)
 # And give gui user option to cancel (for when used in a loop)
 # If user cancels, exit status is 1
