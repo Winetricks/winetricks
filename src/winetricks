@@ -10214,7 +10214,8 @@ load_mf()
 		# FIXME: mediafoundation.dll
 		# FIXME: mf_.dll
 
-		w_debug() { printf '%s\n' "DEBUG: $@" ;}
+    # REMOVE PRIOR TO MERGE!
+		w_debug() { printf '%s\n' "DEBUG: $*" ;}
 
 		# Export library from win7sp1
 		helper_win7sp1_export()
@@ -10224,22 +10225,26 @@ load_mf()
 				w_arch="$3" # 64
 
 				# Export library in wineprefix
-				case "$w_arch" in
-						64)
-								# Extract library from win7sp1
-								[ ! -e "$W_TMP/$w_package/$w_library" ] && { helper_win7sp1_x64 "$w_package/$w_library" || w_warn "Unable to extract '$w_library' from '$w_package'" ;} || w_debug "File '$W_TMP/$w_package/$w_library' already exists, skipping.."
+        if [ "$w_arch" = 64 ]; then
+            # Extract library from win7sp1
+            if [ ! -e "$W_TMP/$w_package/$w_library" ]; then
+                { helper_win7sp1_x64 "$w_package/$w_library" || w_warn "Unable to extract '$w_library' from '$w_package'" ;} || w_debug "File '$W_TMP/$w_package/$w_library' already exists, skipping.."
+            fi
 
-								{ { cp "$W_TMP/$w_package/$w_library" "$W_SYSTEM64_DLLS/$w_library" && w_debug "File '$w_library' exported in '$W_SYSTEM64_DLLS' from '$w_package'" ;} || w_warn "Unable to copy file '$W_TMP/$w_package/$w_library' in '$W_SYSTEM64_DLLS/$w_library' from '$w_package'" ;}
-						;;
-						32)
-								# Extract library from win7sp1
-								[ ! -e "$W_TMP/$w_package/$w_library" ] && { helper_win7sp1 "$w_package/$w_library" || w_warn "Unable to extract '$w_library' from '$w_package'" ;} || w_debug "File '$W_TMP/$w_package/$w_library' already exists, skipping.."
+            # Do not sanitize since this is expected to handle multiple methods of extraction
+            { { cp "$W_TMP/$w_package/$w_library" "$W_SYSTEM64_DLLS/$w_library" && w_debug "File '$w_library' exported in '$W_SYSTEM64_DLLS' from '$w_package'" ;} || w_warn "Unable to copy file '$W_TMP/$w_package/$w_library' in '$W_SYSTEM64_DLLS/$w_library' from '$w_package'" ;}
+        elif [ "$w_arch" = 32 ]; then
+            # Extract library from win7sp1
+            if [ ! -e "$W_TMP/$w_package/$w_library" ]; then
+                { helper_win7sp1 "$w_package/$w_library" || w_warn "Unable to extract '$w_library' from '$w_package'" ;} || w_debug "File '$W_TMP/$w_package/$w_library' already exists, skipping.."
+            fi
 
-								{ { cp "$W_TMP/$w_package/$w_library" "$W_SYSTEM32_DLLS/$w_library" && w_debug "File '$w_library' exported in '$W_SYSTEM64_DLLS' from '$w_package'" ;} || w_warn "Unable to copy file '$W_TMP/$w_package/$w_library' in '$W_SYSTEM32_DLLS/$w_library' from '$w_package'" ;}
-				esac
+            # Do not sanitize since this is expected to handle multiple methods of extraction
+            { { cp "$W_TMP/$w_package/$w_library" "$W_SYSTEM32_DLLS/$w_library" && w_debug "File '$w_library' exported in '$W_SYSTEM64_DLLS' from '$w_package'" ;} || w_warn "Unable to copy file '$W_TMP/$w_package/$w_library' in '$W_SYSTEM32_DLLS/$w_library' from '$w_package'" ;}
+        fi
 
 				unset w_package w_library
-		}
+    }
 
 		w_download_wrapper()
 		{
@@ -10254,21 +10259,19 @@ load_mf()
 				[ ! -e "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" ] && { w_download_to "$W_CACHE/$W_PACKAGE" "$w_link" "$w_shasum" "$w_library.$w_arch" || w_warn "Unable to download '$w_library.$w_arch' from '$w_link'" ;} || w_debug "File '$W_CACHE/$W_PACKAGE/$w_library.$w_arch' already exists"
 
 				# Export in wineprefix
-				case "$w_arch" in
-					64)
-							if [ -e "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" ]; then
-									{ cp "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" "$W_SYSTEM64_DLLS/$w_library" && w_debug "Copied '$W_CACHE/$W_PACKAGE/$w_library.$w_arch' in '$W_SYSTEM64_DLLS/$w_library' using mirror '$w_link'" ;} || w_warn "Unable to copy '$w_library' from '$w_link'"
-							elif [ ! -e "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" ]; then
-									w_debug "Library '$w_library' is already exported, not exporting"
-							fi
-					;;
-					32)
-							if [ -e "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" ]; then
-									{ cp "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" "$W_SYSTEM32_DLLS/$w_library" && w_debug "Copied '$W_CACHE/$W_PACKAGE/$w_library.$w_arch' in '$W_SYSTEM32_DLLS/$w_library' using mirror '$w_link'" ;} || w_warn "Unable to copy '$w_library' from '$w_link'"
-							elif [ ! -e "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" ]; then
-									w_debug "Library '$w_library' is already exported, not exporting"
-							fi
-				esac
+        if [ "$w_arch" = 64 ]; then
+            if [ -e "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" ]; then
+						    { cp "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" "$W_SYSTEM64_DLLS/$w_library" && w_debug "Copied '$W_CACHE/$W_PACKAGE/$w_library.$w_arch' in '$W_SYSTEM64_DLLS/$w_library' using mirror '$w_link'" ;} || w_warn "Unable to copy '$w_library' from '$w_link'"
+					  elif [ ! -e "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" ]; then
+							  w_debug "Library '$w_library' is already exported, not exporting"
+						fi
+        elif [ "$w_arch" = 32 ]; then
+            if [ -e "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" ]; then
+						    { cp "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" "$W_SYSTEM32_DLLS/$w_library" && w_debug "Copied '$W_CACHE/$W_PACKAGE/$w_library.$w_arch' in '$W_SYSTEM32_DLLS/$w_library' using mirror '$w_link'" ;} || w_warn "Unable to copy '$w_library' from '$w_link'"
+						elif [ ! -e "$W_CACHE/$W_PACKAGE/$w_library.$w_arch" ]; then
+						    w_debug "Library '$w_library' is already exported, not exporting"
+					  fi
+        fi
 
 				unset w_link w_library w_shasum w_arch
 		}
