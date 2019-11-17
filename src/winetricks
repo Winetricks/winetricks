@@ -170,6 +170,9 @@ XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 W_COUNTRY=""
 W_PREFIXES_ROOT="${WINE_PREFIXES:-$XDG_DATA_HOME/wineprefixes}"
 
+# Variable used in strings that are not translated
+[ -z "$WINETRICKS_IGNORE_TRANSLATE" ] && export untranslated="(translate_me)"
+
 # For temp files before $WINEPREFIX is available:
 if [ -x "$(command -v mktemp 2>/dev/null)" ] ; then
     W_TMP_EARLY="$(mktemp -d "${TMPDIR:-/tmp}/winetricks.XXXXXXXX")"
@@ -285,12 +288,197 @@ w_warn_cancel()
     # can't unset, it clears status
 }
 
-# Display fatal error message and terminate script
+# Display fatal error message depending on error code or first argument
 w_die()
 {
-    w_warn "$@"
-
-    exit 1
+    # Exit codes (http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF)
+    case "$1" in
+        0|true)
+            case $LANG in
+                en*)
+                    w_debug "Script returned true for '$*'" 1>&2
+                ;;
+                cz*)
+                    w_debug "Script vrátil true pro '$*'" 1>&2
+                ;;
+                *)
+                    w_debug "Script returned true for '$*'$untranslated" 1>&2
+                ;;
+            esac
+            return 0
+        ;;
+        1|false) # False
+            if [ -n "$2" ]; then
+                case $LANG in
+                    en*)
+                        printf '%s\n' "FATAL: $2" 1>&2
+                    ;;
+                    cz*)
+                        printf '%s\n' "FATÁLNÍ: $2" 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: $2$untranslated" 1>&2
+                esac
+                exit 1
+            elif [ -z "$2" ]; then
+                case $LANG in
+                    en*)
+                        printf '%s\n' "FATAL: Script returned 'false' for '$*'" 1>&2
+                    ;;
+                    cz*)
+                        printf '%s\n' "FATÁLNÍ: Script vrátil 'false' pro '$*'" 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: Script returned 'false' for '$*'$untranslated" 1>&2
+                esac
+                exit 1
+            else
+                w_die 255 "die - false"
+            fi
+        ;;
+        2) # Syntax err
+            if [ -n "$2" ]; then
+                case $LANG in
+                    en)
+                        printf '%s\n' "FATAL: $2" 1>&2 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: $2$untranslated" 1>&2
+                    ;;
+                esac
+                exit 2
+            elif [ -z "$2" ]; then
+                case $LANG in
+                    en*)
+                        printf '%s\n' "FATAL: Syntax error for '$*'" 1>&2
+                    ;;
+                    cz*)
+                        printf '%s\n' "FATAL: Syntax error for '$*'" 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: Syntax error for '$*'$untranslated" 1>&2
+                    ;;
+                esac
+                exit 2
+            else
+                w_die 255 'w_die - syntax err'
+            fi
+        ;;
+        3) # Permission issue
+            if [ -n "$2" ]; then
+                case $LANG in
+                    en*)
+                        printf '%s\n' "FATAL: $2" 1>&2
+                    ;;
+                    cz*)
+                        printf '%s\n' "FATÁLNÍ: $2" 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: $2$untranslated" 1>&2
+                esac
+                exit 3
+            elif [ -z "$2" ]; then
+                case $LANG in
+                    en*)
+                        printf '%s\n' "FATAL: Permission issue for '$*'" 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: Permission issue for '$*'$untranslated" 1>&2
+                esac
+                exit 3
+            else w_die 255 'die - permission'
+            fi
+        ;;
+        32)
+            if [ -n "$2" ]; then
+                case $LANG in
+                    en*)
+                        printf '%s\n' "FATAL: $2" 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: $2$untranslated" 1>&2
+                esac
+            elif [ -z "$2" ]; then
+                case $LANG in
+                    en*)
+                        printf '%s\n' "FATAL: 64-bit system is not supported for package '$W_PACKAGE'" 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: 64-bit system is not supported for package '$W_PACKAGE'$untranslated" 1>&2
+                esac
+            else
+                w_die 255 'w_die 32'
+            fi
+            exit 32
+        ;;
+        64)
+            if [ -n "$2" ]; then
+                case $LANG in
+                    en*)
+                        printf '%s\n' "FATAL: $2" 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: $2$untranslated" 1>&2
+                esac
+            elif [ -z "$2" ]; then
+                case $LANG in
+                    en*)
+                        printf '%s\n' "FATAL: 32-bit system is not supported for '$*'" 1>&2
+                    ;;
+                    *)
+                        printf '%s\n' "FATAL: 32-bit system is not supported for '$*'$untranslated" 1>&2
+                esac
+            else
+                w_die 255 'w_die 64'
+            fi
+            exit 64
+        ;;
+        126) # Not executable
+            case $LANG in
+                en*)
+                    printf '%s\n' "FATAL: Returned not executable for '$*'" 1>&2
+                ;;
+                *)
+                    printf '%s\n' "FATAL: Returned not executable for '$*'$untranslated" 1>&2
+            esac
+            exit 126
+        ;;
+        130) # Killed by user
+            case $LANG in
+                en*)
+                    printf '%s\n' "FATAL: Killed by user" 1>&2
+                ;;
+                *)
+                    printf '%s\n' "FATAL: Killed by user$untranslated" 1>&2
+            esac
+            exit 130
+        ;;
+        wtf|255) # Unexpected
+            case $LANG in
+                en*)
+                    printf '%s\n' "FATAL: Unexpected result in '$2'" 1>&2
+                ;;
+                *)
+                    printf '%s\n' "FATAL: Unexpected result in '$2'$untranslated" 1>&2
+            esac
+            exit 255
+        ;;
+        ping) # Ping for development
+            case $LANG in
+                en*)
+                    printf '%s\n' "Killed by ping"
+                ;;
+                *)
+                    printf '%s\n' "Killed by ping$untranslated"
+            esac
+            exit 1
+        ;;
+        fixme)
+            printf '%s\n' "FIXME: $*" 1>&2 ; exit 1
+        ;;
+        *)
+            printf '%s\n' "FATAL: $*" 1>&2 ; exit 1
+    esac
 }
 
 # Kill all instances of a process in a safe way (Solaris killall kills _everything_)
