@@ -5320,7 +5320,7 @@ winetricks_handle_option()
 {
     case "$1" in
         --country=*) W_COUNTRY="${1##--country=}" ;;
-        --force|-f) WINETRICKS_FORCE=1;;
+        -f|--force) WINETRICKS_FORCE=1;;
         --gui) winetricks_detect_gui;;
         -h|--help) winetricks_usage ; exit 0 ;;
         --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
