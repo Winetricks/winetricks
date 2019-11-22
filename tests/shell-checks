@@ -196,7 +196,7 @@ main() {
 
     # Generic shellscript checks:
     for shellscript in $files_to_check; do
-        #test_bashate
+        test_bashate
         test_checkbashisms
         test_shellcheck
     done
