@@ -10142,6 +10142,139 @@ load_ie8_kb2936068()
 
 #----------------------------------------------------------------
 
+w_metadata ie8_server2003 dlls \
+    title="Internet Explorer 8 WindowsServer2003" \
+    publisher="Microsoft" \
+    year="?" \
+    media="download" \
+    file1="IE8-WindowsServer2003-x64-ENU.exe" \
+    installed_file1="c:/windows/ie8_main.log"
+
+load_ie8_server2003()
+{
+    # See also bug https://bugs.winehq.org/show_bug.cgi?id=34048
+
+    # Installed dlls (only checked system32 / grep -r "This program cannot be run in DOS mode" *):
+    #
+    # admparse.dll  advpack.dll  advpack.dll.mui  browseui.dll  corpol.dll  dxtmsft.dll  dxtrans.dll 
+    # hmmapi.dll  html.iec  icardie.dll  idndl.dll  ie4uinit.exe  ie4uinit.exe.mui  ieakeng.dll 
+    # ieaksie.dll  ieakui.dll  ieapfltr.dat  ieapfltr.dll  iedkcs32.dll  iedkcs32.dll.mui  ieframe.dll 
+    # ieframe.dll.mui  iepeers.dll  ieproxy.dll  iernonce.dll  iertutil.dll  iesetup.dll  ieudinit.exe 
+    # ieui.dll  imgutil.dll  inetcpl.cpl  inseng.dll  jscript.dll  jsproxy.dll  licmgr10.dll 
+    # msdbg2.dll  msfeedsbs.dll  msfeeds.dll  msfeedssync.exe  mshta.exe  mshta.exe.mui  mshtml.dll 
+    # mshtmled.dll  mshtmler.dll  mshtml.tlb  msls31.dll  msrating.dll  msrating.dll.mui  mstime.dll 
+    # nlsdl.dll  normaliz.dll  occache.dll  pngfilt.dll  shdocvw.dll  shlwapi.dll  spmsg.dll 
+    # spupdsvc.exe  sqmapi.dll  tdc.ocx  url.dll  urlmon.dll  vbscript.dll  verdcbc.tmp  VGX.dll 
+    # w_try_regsvr64()webcheck.dll  wieframe.dll  WinFXDocObj.exe  wininet.dll  xmllite.dll  
+    #
+    # + bunch of mui files in en-US
+
+    # Somehow it fails for me when WINEARCH=win32 is set; I`m guessing the installer doesn`t support this (?) (Bad exe)
+    w_package_unsupported_win32
+
+    w_set_winver win2k3
+
+    # Unregister Wine IE
+    if grep -q -i "wine placeholder" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"; then
+        w_override_dlls builtin iexplore.exe
+        w_try "$WINE" iexplore -unregserver
+    fi
+
+    # FIXME: Do we need more? Or less....
+    # Change the override to the native so we are sure we use and register them
+    w_override_dlls native,builtin ieframe ieproxy jscript mshtml shdocvw shlwapi urlmon vbscript wininet xmllite
+
+    # Bundled updspapi cannot work on Wine
+    w_override_dlls builtin updspapi
+
+    #    Can we also use sed to replace iexplore.exe's version string???? No idea
+    #    Removing the fake iexplore.exe's doesn`t work. Installer still complains a newer version
+    #    of IE is installed and refuses to run. Replacing fake iexplore.exe with one that
+    #    has a lower version string works. 
+    #    Fake iexplore.exe generated with https://bugs.winehq.org/attachment.cgi?id=65708&action=diff
+    #
+    #    Get fake iexplore with low version string and copy it to approriate places
+
+    w_download https://bugs.winehq.org/attachment.cgi?id=65709  #32-bit
+    w_download https://bugs.winehq.org/attachment.cgi?id=65710  #64-bit
+
+    w_try cp -f "$W_CACHE"/ie8_server2003/'attachment.cgi?id=65710' "$W_SYSTEM64_DLLS/iexplore.exe"
+    w_try cp -f "$W_CACHE"/ie8_server2003/'attachment.cgi?id=65709' "$W_SYSTEM32_DLLS/iexplore.exe"
+
+    w_try cp -f "$W_CACHE"/ie8_server2003/'attachment.cgi?id=65710' "$W_PROGRAMS_UNIX/Internet Explorer/iexplore.exe"
+    w_try cp -f "$W_CACHE"/ie8_server2003/'attachment.cgi?id=65709' "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"   
+
+    w_download http://download.microsoft.com/download/7/5/4/754D6601-662D-4E39-9788-6F90D8E5C097/IE8-WindowsServer2003-x64-ENU.exe bcff753e92ceabf31cfefaa6def146335c7cb27a50b95cd4f4658a0c3326f499
+    if [ -n "$W_UNATTENDED_SLASH_QUIET" ]; then
+        quiet="$W_UNATTENDED_SLASH_QUIET /forcerestart"
+    else
+        quiet=""
+    fi
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
+    "$WINE" IE8-WindowsServer2003-x64-ENU.exe #$quiet I don`t like clicking buttons, even when I forgot -q so shall i add this quiet option?
+
+    # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
+    w_try_cd "$W_SYSTEM32_DLLS"
+    for i in browseui.dll corpol.dll dxtmsft.dll dxtrans.dll ieaksie.dll ieapfltr.dll \
+             iedkcs32.dll iepeers.dll ieproxy.dll jscript.dll licmgr10.dll \
+             msdbg2.dll mshtmled.dll mstime.dll shdocvw.dll tdc.ocx urlmon.dll vbscript.dll 
+    do
+        w_try_regsvr $i
+    done
+
+    w_try_cd "$W_SYSTEM64_DLLS"
+    for i in browseui.dll corpol.dll dxtmsft.dll dxtrans.dll ieaksie.dll ieapfltr.dll \
+             iedkcs32.dll iepeers.dll ieproxy.dll jscript.dll licmgr10.dll \
+             msdbg2.dll mshtmled.dll mstime.dll shdocvw.dll tdc.ocx urlmon.dll vbscript.dll
+    do
+        w_try_regsvr64 $i
+    done
+
+    # Builtin ieproxy is in system32, but ie8's lives in Program Files. Native
+    # CLSID path will get overwritten on prefix update. Setting ieproxy to
+    # native doesn't help because setupapi ignores DLL overrides. To work
+    # around this problem, copy native ieproxy to system32.
+    w_try cp -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/ieproxy.dll" "$W_SYSTEM32_DLLS"
+    w_try cp -f "${W_PROGRAMS_UNIX}/Internet Explorer/ieproxy.dll" "$W_SYSTEM64_DLLS"
+
+    w_override_dlls native iexplore.exe
+
+    # This is still needed. IE does not start without this regvalue
+    if w_workaround_wine_bug 25648 "Setting TabProcGrowth=0 to avoid hang"; then
+        cat > "$W_TMP"/set-tabprocgrowth.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main]
+"TabProcGrowth"=dword:00000000
+
+_EOF_
+        w_try_regedit "$W_TMP_WIN"\\set-tabprocgrowth.reg
+    fi
+
+    #############IE only works (a tiny bit...) setting version to win2k3!!!########## 
+    #############Issue a warning with a messagebox###################################
+
+    w_try_cd "$W_TMP"
+    cat > "$W_TMP"/warning.vbs <<__EOF__
+
+    X=MsgBox( \
+    "If you want to try Internet Explorer better set windows version to Windows 2003." & vbcrlf & \
+    "For compability reasons version is now set to win7." & vbcrlf & \
+    "This will cause Internet Explorer to NOT work at all at the moment!",0+48,"Notification!")
+ 
+__EOF__
+
+    "$WINE" cscript.exe ./warning.vbs
+
+    ###########################End of warning#######################################
+    ################################################################################
+
+    w_set_winver win7
+}
+
+#----------------------------------------------------------------
+
 w_metadata l3codecx dlls \
     title="MPEG Layer-3 Audio Codec for Microsoft DirectShow" \
     publisher="Microsoft" \
