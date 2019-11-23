@@ -21242,7 +21242,7 @@ w_metadata autostart_winedbg=disabled settings \
 load_autostart_winedbg()
 {
     case "$arg" in
-	# accidentally commited as enable/disable, so accept that, but prefer enabled/disabled
+        # accidentally commited as enable/disable, so accept that, but prefer enabled/disabled
         enable|enabled) _W_debugger_value="winedbg --auto %ld %ld";;
         disable|disabled) _W_debugger_value="false";;
         *) w_die "Unexpected argument '$arg'. Should be enable/disable";;
