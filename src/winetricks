@@ -10145,6 +10145,7 @@ load_ie8_kb2936068()
 w_metadata ie8_server2003 dlls \
     title="Internet Explorer 8 WindowsServer2003" \
     publisher="Microsoft" \
+    year="?" \
     media="download" \
     file1="IE8-WindowsServer2003-x64-ENU.exe" \
     installed_file1="c:/windows/ie8_main.log"
@@ -10194,24 +10195,30 @@ load_ie8_server2003()
     #
     #    Get fake iexplore with low version string and copy it to approriate places
 
-    w_download https://bugs.winehq.org/attachment.cgi?id=65709  #32-bit
-    w_download https://bugs.winehq.org/attachment.cgi?id=65710  #64-bit
+    # TODO: checksum
+    if w_workaround_wine_bug 34048 'Exporting fake iexplore.exe to pass the version check'; then
+        w_download_to "$W_CACHE/$W_PACKAGE" https://bugs.winehq.org/attachment.cgi?id=65709 318ca190ffcc788e822fd7e0616ce44d9388c08261a3f1c19517e65a4f5c0732 "patch-65709"  #32-bit
+        w_download_to "$W_CACHE/$W_PACKAGE" https://bugs.winehq.org/attachment.cgi?id=65710 65eaae7b2165fe4415bfb123eb179cbdd24d77ce41fe62c9ea5850f1ca83d0b6 "patch-65710" #64-bit
 
-    w_try cp -f "$W_CACHE"/ie8_server2003/'attachment.cgi?id=65710' "$W_SYSTEM64_DLLS/iexplore.exe"
-    w_try cp -f "$W_CACHE"/ie8_server2003/'attachment.cgi?id=65709' "$W_SYSTEM32_DLLS/iexplore.exe"
+        w_try cp -f "$W_CACHE/$W_PACKAGE/patch-65709" "$WINEPREFIX/drive_c/windows/syswow64/iexplore.exe"
+        w_try cp -f "$W_CACHE/$W_PACKAGE/patch-65710" "$WINEPREFIX/drive_c/windows/system32/iexplore.exe"
 
-    w_try cp -f "$W_CACHE"/ie8_server2003/'attachment.cgi?id=65710' "$W_PROGRAMS_UNIX/Internet Explorer/iexplore.exe"
-    w_try cp -f "$W_CACHE"/ie8_server2003/'attachment.cgi?id=65709' "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe"
+        w_try cp -f "$W_CACHE/$W_PACKAGE/patch-65710" "$WINEPREFIX/drive_c/Program Files/Internet Explorer/iexplore.exe"
+        w_try cp -f "$W_CACHE/$W_PACKAGE/patch-65709" "$WINEPREFIX/drive_c/Program Files (x86)/Internet Explorer/iexplore.exe"
+    fi
 
-    w_download http://download.microsoft.com/download/7/5/4/754D6601-662D-4E39-9788-6F90D8E5C097/IE8-WindowsServer2003-x64-ENU.exe bcff753e92ceabf31cfefaa6def146335c7cb27a50b95cd4f4658a0c3326f499
+    w_download "http://download.microsoft.com/download/7/5/4/754D6601-662D-4E39-9788-6F90D8E5C097/$file1" bcff753e92ceabf31cfefaa6def146335c7cb27a50b95cd4f4658a0c3326f499
     if [ -n "$W_UNATTENDED_SLASH_QUIET" ]; then
         quiet="$W_UNATTENDED_SLASH_QUIET /forcerestart"
     else
         quiet=""
     fi
 
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    "$WINE" IE8-WindowsServer2003-x64-ENU.exe #$quiet I don`t like clicking buttons, even when I forgot -q so shall i add this quiet option?
+    "$WINE" "$W_CACHE/$W_PACKAGE/$file1" $quiet
+
+    case $? in
+        *) w_warn "File $file1 returned unknown error code $?"
+    esac
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
     w_try_cd "$W_SYSTEM32_DLLS"
@@ -10234,8 +10241,8 @@ load_ie8_server2003()
     # CLSID path will get overwritten on prefix update. Setting ieproxy to
     # native doesn't help because setupapi ignores DLL overrides. To work
     # around this problem, copy native ieproxy to system32.
-    w_try cp -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/ieproxy.dll" "$W_SYSTEM32_DLLS"
-    w_try cp -f "${W_PROGRAMS_UNIX}/Internet Explorer/ieproxy.dll" "$W_SYSTEM64_DLLS"
+    w_try cp -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/ieproxy.dll" "$WINEPREFIX/drive_c/windows/syswow64/"
+    w_try cp -f "${W_PROGRAMS_UNIX}/Internet Explorer/ieproxy.dll" "$WINEPREFIX/drive_c/windows/system32/"
 
     w_override_dlls native iexplore.exe
 
