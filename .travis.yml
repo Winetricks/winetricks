@@ -82,9 +82,6 @@ script:
     # shell-checks is quick and works, no display or compiles needed
     - time sh ./tests/shell-checks
 
-    # Also check for trailing whitespace. Not doing in shell-checks because it depends on a clean tree (uses git diff):
-    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then time sh ./tests/whitespace-check; fi
-
     # Keep updates working
     - time sh ./tests/self-update-test
 

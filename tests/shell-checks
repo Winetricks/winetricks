@@ -125,6 +125,21 @@ _EOF
     fi
 }
 
+# check formatting, (no trailing whitespace, no tabs)
+test_formatting() {
+    # check for trailing spaces
+    # git diff misses some stuff? (2.18.0 / 2.22.0)
+    #w_try git diff --check --exit-code "${shellscript}"
+    if grep -n -r '[[:blank:]]$' "${shellscript}"; then
+        w_die "${shellscript} contains trailing spaces, remove them."
+    fi
+
+    # check for tabs
+    if grep -n "$(printf '\t')" "${shellscript}"; then
+        w_die "${shellscript} contains tabs, please use spaces instead."
+    fi
+}
+
 # tests using shellcheck
 test_shellcheck() {
     if [ ! -x "$(command -v shellcheck 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
@@ -196,6 +211,7 @@ main() {
 
     # Generic shellscript checks:
     for shellscript in $files_to_check; do
+        test_formatting
         test_bashate
         test_checkbashisms
         test_shellcheck
