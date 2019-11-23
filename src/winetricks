@@ -14041,8 +14041,6 @@ load_ie6()
     w_try_cd "$W_TMP"
     "$WINE" "$W_CACHE/$W_PACKAGE/$file1"
 
-    w_call msls31
-
     # Unregister Wine IE
     if [ ! -f "$W_SYSTEM32_DLLS"/plugin.ocx ]; then
         w_override_dlls builtin iexplore.exe
@@ -14112,6 +14110,8 @@ load_ie6()
 
     # the ie6 we use these days lacks pngfilt, so grab that
     w_call pngfilt
+
+    w_call msls31
 }
 
 #----------------------------------------------------------------
