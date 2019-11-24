@@ -10145,7 +10145,6 @@ load_ie8_kb2936068()
 w_metadata ie8_server2003 dlls \
     title="Internet Explorer 8 WindowsServer2003" \
     publisher="Microsoft" \
-    year="?" \
     media="download" \
     file1="IE8-WindowsServer2003-x64-ENU.exe" \
     installed_file1="c:/windows/ie8_main.log"
@@ -10153,23 +10152,9 @@ w_metadata ie8_server2003 dlls \
 load_ie8_server2003()
 {
     # See also bug https://bugs.winehq.org/show_bug.cgi?id=34048
+    # Installed dlls can be found like for example in system32, doing : grep -r "This program cannot be run in DOS mode" *:
 
-    # Installed dlls (only checked system32 / grep -r "This program cannot be run in DOS mode" *):
-    #
-    # admparse.dll  advpack.dll  advpack.dll.mui  browseui.dll  corpol.dll  dxtmsft.dll  dxtrans.dll
-    # hmmapi.dll  html.iec  icardie.dll  idndl.dll  ie4uinit.exe  ie4uinit.exe.mui  ieakeng.dll
-    # ieaksie.dll  ieakui.dll  ieapfltr.dat  ieapfltr.dll  iedkcs32.dll  iedkcs32.dll.mui  ieframe.dll
-    # ieframe.dll.mui  iepeers.dll  ieproxy.dll  iernonce.dll  iertutil.dll  iesetup.dll  ieudinit.exe
-    # ieui.dll  imgutil.dll  inetcpl.cpl  inseng.dll  jscript.dll  jsproxy.dll  licmgr10.dll
-    # msdbg2.dll  msfeedsbs.dll  msfeeds.dll  msfeedssync.exe  mshta.exe  mshta.exe.mui  mshtml.dll
-    # mshtmled.dll  mshtmler.dll  mshtml.tlb  msls31.dll  msrating.dll  msrating.dll.mui  mstime.dll
-    # nlsdl.dll  normaliz.dll  occache.dll  pngfilt.dll  shdocvw.dll  shlwapi.dll  spmsg.dll
-    # spupdsvc.exe  sqmapi.dll  tdc.ocx  url.dll  urlmon.dll  vbscript.dll  verdcbc.tmp  VGX.dll
-    # w_try_regsvr64()webcheck.dll  wieframe.dll  WinFXDocObj.exe  wininet.dll  xmllite.dll
-    #
-    # + bunch of mui files in en-US
-
-    # Somehow it fails for me when WINEARCH=win32 is set; I`m guessing the installer doesn`t support this (?) (Bad exe)
+    # Doesn't work on 32 bit
     w_package_unsupported_win32
 
     w_set_winver win2k3
@@ -10195,33 +10180,31 @@ load_ie8_server2003()
     #
     #    Get fake iexplore with low version string and copy it to approriate places
 
-    # TODO: checksum
-    if w_workaround_wine_bug 34048 'Exporting fake iexplore.exe to pass the version check'; then
-        w_download_to "$W_CACHE/$W_PACKAGE" https://bugs.winehq.org/attachment.cgi?id=65709 318ca190ffcc788e822fd7e0616ce44d9388c08261a3f1c19517e65a4f5c0732 "patch-65709"  #32-bit
-        w_download_to "$W_CACHE/$W_PACKAGE" https://bugs.winehq.org/attachment.cgi?id=65710 65eaae7b2165fe4415bfb123eb179cbdd24d77ce41fe62c9ea5850f1ca83d0b6 "patch-65710" #64-bit
+    w_download_to "$W_CACHE/$W_PACKAGE" https://bugs.winehq.org/attachment.cgi?id=65709 318ca190ffcc788e822fd7e0616ce44d9388c08261a3f1c19517e65a4f5c0732 "iexplore32.exe"  #32-bit
+    w_download_to "$W_CACHE/$W_PACKAGE" https://bugs.winehq.org/attachment.cgi?id=65710 65eaae7b2165fe4415bfb123eb179cbdd24d77ce41fe62c9ea5850f1ca83d0b6 "iexplore64.exe"  #64-bit
 
-        w_try cp -f "$W_CACHE/$W_PACKAGE/patch-65709" "$WINEPREFIX/drive_c/windows/syswow64/iexplore.exe"
-        w_try cp -f "$W_CACHE/$W_PACKAGE/patch-65710" "$WINEPREFIX/drive_c/windows/system32/iexplore.exe"
-
-        w_try cp -f "$W_CACHE/$W_PACKAGE/patch-65710" "$WINEPREFIX/drive_c/Program Files/Internet Explorer/iexplore.exe"
-        w_try cp -f "$W_CACHE/$W_PACKAGE/patch-65709" "$WINEPREFIX/drive_c/Program Files (x86)/Internet Explorer/iexplore.exe"
-    fi
+    w_try cp -f "$W_CACHE/$W_PACKAGE/iexplore64.exe" "$W_SYSTEM64_DLLS"/iexplore.exe
+    w_try cp -f "$W_CACHE/$W_PACKAGE/iexplore32.exe" "$W_SYSTEM32_DLLS"/iexplore.exe
+    
+    w_try cp -f "$W_CACHE/$W_PACKAGE/iexplore64.exe" "$WINEPREFIX/drive_c/Program Files/Internet Explorer/iexplore.exe"
+    w_try cp -f "$W_CACHE/$W_PACKAGE/iexplore32.exe" "$WINEPREFIX/drive_c/Program Files (x86)/Internet Explorer/iexplore.exe"
 
     w_download "http://download.microsoft.com/download/7/5/4/754D6601-662D-4E39-9788-6F90D8E5C097/$file1" bcff753e92ceabf31cfefaa6def146335c7cb27a50b95cd4f4658a0c3326f499
     if [ -n "$W_UNATTENDED_SLASH_QUIET" ]; then
         quiet="$W_UNATTENDED_SLASH_QUIET /forcerestart"
-    else
-        quiet=""
     fi
-
+    
+    #For some reason installer returns exit code 194 so no w_try 
     "$WINE" "$W_CACHE/$W_PACKAGE/$file1" $quiet
 
-    case $? in
-        *) w_warn "File $file1 returned unknown error code $?"
-    esac
+    # Builtin ieproxy is in system32, but ie8's lives in Program Files. Native
+    # CLSID path will get overwritten on prefix update. Setting ieproxy to
+    # native doesn't help because setupapi ignores DLL overrides. To work
+    # around this problem, copy native ieproxy to system32.
+    w_try cp -f "$WINEPREFIX/drive_c/Program Files (x86)/Internet Explorer/ieproxy.dll" "$W_SYSTEM32_DLLS"/ieproxy.dll
+    w_try cp -f "$WINEPREFIX/drive_c/Program Files/Internet Explorer/ieproxy.dll" "$W_SYSTEM64_DLLS"/ieproxy.dll
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
-    w_try_cd "$W_SYSTEM32_DLLS"
     for i in browseui.dll corpol.dll dxtmsft.dll dxtrans.dll ieaksie.dll ieapfltr.dll \
              iedkcs32.dll iepeers.dll ieproxy.dll jscript.dll licmgr10.dll \
              msdbg2.dll mshtmled.dll mstime.dll shdocvw.dll tdc.ocx urlmon.dll vbscript.dll
@@ -10229,22 +10212,12 @@ load_ie8_server2003()
         w_try_regsvr $i
     done
 
-    w_try_cd "$W_SYSTEM64_DLLS"
     for i in browseui.dll corpol.dll dxtmsft.dll dxtrans.dll ieaksie.dll ieapfltr.dll \
              iedkcs32.dll iepeers.dll ieproxy.dll jscript.dll licmgr10.dll \
              msdbg2.dll mshtmled.dll mstime.dll shdocvw.dll tdc.ocx urlmon.dll vbscript.dll
     do
         w_try_regsvr64 $i
     done
-
-    # Builtin ieproxy is in system32, but ie8's lives in Program Files. Native
-    # CLSID path will get overwritten on prefix update. Setting ieproxy to
-    # native doesn't help because setupapi ignores DLL overrides. To work
-    # around this problem, copy native ieproxy to system32.
-    w_try cp -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/ieproxy.dll" "$WINEPREFIX/drive_c/windows/syswow64/"
-    w_try cp -f "${W_PROGRAMS_UNIX}/Internet Explorer/ieproxy.dll" "$WINEPREFIX/drive_c/windows/system32/"
-
-    w_override_dlls native iexplore.exe
 
     # This is still needed. IE does not start without this regvalue
     if w_workaround_wine_bug 25648 "Setting TabProcGrowth=0 to avoid hang"; then
@@ -10258,25 +10231,10 @@ _EOF_
         w_try_regedit "$W_TMP_WIN"\\set-tabprocgrowth.reg
     fi
 
-    #############IE only works (a tiny bit...) setting version to win2k3!!!##########
-    #############Issue a warning with a messagebox###################################
+    w_set_app_winver iexplore.exe win2k3
+    w_override_dlls native iexplore.exe
 
-    w_try_cd "$W_TMP"
-    cat > "$W_TMP"/warning.vbs <<__EOF__
-
-    X=MsgBox( \
-    "If you want to try Internet Explorer better set windows version to Windows 2003." & vbcrlf & \
-    "For compability reasons version is now set to win7." & vbcrlf & \
-    "This will cause Internet Explorer to NOT work at all at the moment!",0+48,"Notification!")
-
-__EOF__
-
-    "$WINE" cscript.exe ./warning.vbs
-
-    ###########################End of warning#######################################
-    ################################################################################
-
-    w_set_winver win7
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
