@@ -220,8 +220,7 @@ case "$OS" in
             /usr/lib/i386-linux-gnu/wine-development/wineserver \
             /usr/lib/powerpc-linux-gnu/wine-development/wineserver \
             /usr/lib/x86_64-linux-gnu/wine-development/wineserver \
-            file-not-found
-    do
+            file-not-found; do
         if [ -x "$x" ] ; then
             case "$x" in
                 /usr/lib/*/wine-development/wineserver)

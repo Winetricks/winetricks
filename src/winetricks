@@ -1624,8 +1624,7 @@ fi
 
 if [ "$STEAM_DVD" = "TRUE" ]; then
     # Wait for install to finish
-    while true
-    do
+    while true; do
         grep "SetHasAllLocalContent(true) called for $_W_steamid" "$W_PROGRAMS_X86_UNIX/Steam/logs/download_log.txt" && break
         sleep 5
     done
@@ -1669,8 +1668,7 @@ w_mount()
         winetricks_mount_cached_iso
     else
         if test "$WINETRICKS_OPT_KEEPISOS" = 0 || test "$2"; then
-            while true
-            do
+            while true; do
                 winetricks_mount_real_volume "$1"
                 if test "$2" = "" || test -f "$W_ISO_MOUNT_ROOT/$2"; then
                     break
@@ -1855,8 +1853,7 @@ REGEDIT4
 
 [HKEY_CURRENT_USER\\Software\\Wine\\DllOverrides]
 _EOF_
-    while test "$1" != ""
-    do
+    while test "$1" != ""; do
         w_common_override_dll "$_W_mode" "$1"
         shift
     done
@@ -2278,8 +2275,7 @@ Usage: 'w_override_app_dlls app mode dll ...'." ;;
         echo "[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\$_W_app\\DllOverrides]"
     ) > "$W_TMP"/override-dll.reg
 
-    while test "$1" != ""
-    do
+    while test "$1" != ""; do
         w_common_override_dll "$_W_mode" "$1"
         shift
     done
@@ -2544,8 +2540,7 @@ w_compare_wine_version()
 #    val1,val2 (for >= val1 && <= val2)
 w_wine_version_in()
 {
-    for _W_range
-    do
+    for _W_range; do
         _W_val1=$(echo "$_W_range" | sed 's/,.*//')
         _W_val2=$(echo "$_W_range" | sed 's/.*,//')
         # If in this range, return true
@@ -2634,8 +2629,7 @@ w_metadata()
     shift
     # Echo arguments to file, with double quotes around the values.
     # Used to use Perl here, but that was too slow on Cygwin.
-    for arg
-    do
+    for arg; do
         # If _W_wine_not_needed is set, we're a list command that isn't list-installed, and can ignore the installed_* errors:
         case "$arg" in
             installed_exe1=/*)
@@ -2703,8 +2697,7 @@ w_conflicts()
     verb="$1"
     conflicting_verbs="$2"
 
-    for x in $conflicting_verbs
-    do
+    for x in $conflicting_verbs; do
         if grep -qw "$x" "$WINEPREFIX/winetricks.log" 2>/dev/null; then
             w_die "error: $verb conflicts with $x, which is already installed. You can run \`$0 --force $verb\` to ignore this check and attempt installation."
         fi
@@ -2784,8 +2777,7 @@ w_do_call()
         # Don't install if a conflicting verb is already installed:
         # shellcheck disable=SC2154
         if test "$WINETRICKS_FORCE" != 1 && test "$conflicts" && test -f "$WINEPREFIX/winetricks.log"; then
-            for x in $conflicts
-            do
+            for x in $conflicts; do
                 w_conflicts "$1" "$x"
             done
         fi
@@ -3362,8 +3354,7 @@ winetricks_prefixmenu()
                 > "$WINETRICKS_WORKDIR"/zenity.sh
 
             if ls -d "$W_PREFIXES_ROOT"/*/dosdevices > /dev/null 2>&1; then
-                for prefix in "$W_PREFIXES_ROOT"/*/dosdevices
-                do
+                for prefix in "$W_PREFIXES_ROOT"/*/dosdevices; do
                     q="${prefix%%/dosdevices}"
                     p="${q##*/}"
                     if test -f "$W_PREFIXES_ROOT/$p/wrapper.cfg"; then
@@ -3400,8 +3391,7 @@ winetricks_prefixmenu()
                 mkprefix   '$_W_msg_mkprefix'   off \
                 "
             if ls -d "$W_PREFIXES_ROOT"/*/dosdevices > /dev/null 2>&1; then
-                for prefix in "$W_PREFIXES_ROOT"/*/dosdevices
-                do
+                for prefix in "$W_PREFIXES_ROOT"/*/dosdevices; do
                     q="${prefix%%/dosdevices}"
                     p="${q##*/}"
                     if test -f "$W_PREFIXES_ROOT/$p/wrapper.cfg"; then
@@ -3759,8 +3749,7 @@ winetricks_settings_menu()
                     ;;
             esac > "$WINETRICKS_WORKDIR"/zenity.sh
 
-            for metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars
-            do
+            for metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars; do
                 code=$(winetricks_metadata_basename "$metadatafile")
                 (
                     title='?'
@@ -3974,8 +3963,7 @@ winetricks_showmenu()
 
             true > "$WINETRICKS_WORKDIR"/installed.txt
 
-            for metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars
-            do
+            for metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars; do
                 code=$(winetricks_metadata_basename "$metadatafile")
                 (
                     title='?'
@@ -4107,8 +4095,7 @@ winetricks_is_installed()
               # so let it specify multiple, separated by |
               _W_IFS="$IFS"
               IFS='|'
-              for _W_file_ in $_W_file
-              do
+              for _W_file_ in $_W_file; do
                 _W_file_unix="$(WINEPREFIX="$_W_prefix" w_pathconv -u "$_W_file_")"
                 if test -f "$_W_file_unix" && ! grep -q "Wine placeholder DLL" "$_W_file_unix"; then
                     IFS="$_W_IFS"
@@ -4127,8 +4114,7 @@ winetricks_is_installed()
 # List verbs which are already fully cached locally
 winetricks_list_cached()
 {
-    for _W_metadatafile in "$WINETRICKS_METADATA"/*/*.vars
-    do
+    for _W_metadatafile in "$WINETRICKS_METADATA"/*/*.vars; do
         # Use a subshell to avoid putting metadata in global space
         # If this is too slow, we can unset known metadata by hand
         (
@@ -4199,8 +4185,7 @@ winetricks_list_all()
         *)   _W_cached="cached"   ; _W_download="downloadable"  ;;
     esac
 
-    for _W_metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars
-    do
+    for _W_metadatafile in "$WINETRICKS_METADATA/$WINETRICKS_CURMENU"/*.vars; do
         # Use a subshell to avoid putting metadata in global space
         # If this is too slow, we can unset known metadata by hand
         (
@@ -4380,8 +4365,7 @@ winetricks_detect_optical_drive()
         *) return ;;
     esac
 
-    for WINETRICKS_DEV in /dev/cdrom /dev/dvd /dev/sr0
-    do
+    for WINETRICKS_DEV in /dev/cdrom /dev/dvd /dev/sr0; do
         test -b $WINETRICKS_DEV && break
     done
 
@@ -4407,12 +4391,10 @@ winetricks_cache_iso()
         esac
     fi
 
-    while true
-    do
+    while true; do
         # Wait for user to insert disc.
         # Sleep long to make it less likely to close the drive during insertion.
-        while ! dd if=$WINETRICKS_DEV of=/dev/null count=1
-        do
+        while ! dd if=$WINETRICKS_DEV of=/dev/null count=1; do
             sleep 5
         done
 
@@ -4462,15 +4444,13 @@ winetricks_cache_iso()
     # FIXME: add progress bar for kde, too
     case $WINETRICKS_GUI in
         none|kdialog)
-            while ps -p "$WINETRICKS_DD_PID" > /dev/null 2>&1
-            do
+            while ps -p "$WINETRICKS_DD_PID" > /dev/null 2>&1; do
                 sleep 5
                 ls -l "$W_CACHE"/temp.iso
             done
             ;;
         zenity)
-            while ps -p "$WINETRICKS_DD_PID" > /dev/null 2>&1
-            do
+            while ps -p "$WINETRICKS_DD_PID" > /dev/null 2>&1; do
                 echo 1
                 sleep 2
             done | $WINETRICKS_GUI --title "Copying to $_W_expected_volname.iso" --progress --pulsate --auto-kill
@@ -4531,10 +4511,8 @@ winetricks_mount_cached_iso()
         w_try vcdmount.exe /l="$letter" "$my_img_win"
 
         tries=0
-        while test $tries -lt 20
-        do
-            for W_ISO_MOUNT_LETTER in e f g h i j k
-            do
+        while test $tries -lt 20; do
+            for W_ISO_MOUNT_LETTER in e f g h i j k; do
                 # let user blacklist drive letters
                 echo "$WINETRICKS_MOUNT_LETTER_IGNORE" | grep -q "$W_ISO_MOUNT_LETTER" && continue
                 W_ISO_MOUNT_ROOT=/cygdrive/$W_ISO_MOUNT_LETTER
@@ -4669,8 +4647,7 @@ winetricks_is_mounted()
     # If that fails, read volume name the hard way for each volume
     # Have to use file to return results from implicit subshell
     rm -f "$W_TMP_EARLY/_W_tmp.$LOGNAME"
-    winetricks_list_mounts . | while true
-    do
+    winetricks_list_mounts . | while true; do
         IFS= read -r _W_tmp
 
         _W_dev=$(echo "$_W_tmp" | sed 's/ .*//')
@@ -4719,8 +4696,7 @@ winetricks_mount_real_volume()
         W_ISO_MOUNT_LETTER=$(awk '/iso/ {print $1}' < /proc/mounts | tr -d :)
         W_ISO_MOUNT_ROOT=$(awk '/iso/ {print $2}' < /proc/mounts)
     else
-        while ! winetricks_is_mounted "$_W_expected_volname"
-        do
+        while ! winetricks_is_mounted "$_W_expected_volname"; do
             w_try w_warn_cancel "$_W_mountmsg"
             # In non-gui case, give user two seconds to futz with disc drive before spamming him again
             sleep 2
@@ -4868,10 +4844,9 @@ winetricks_set_wineprefix()
         "windows_cmd|wine_cmd") W_CACHE_WIN="$(w_pathconv -w "$W_CACHE")" ;;
         *)
             # For case where Z: doesn't exist or / is writable (!),
-            # make a drive letter for W_CACHE.  Clean it up on exit.
+            # make a drive letter for W_CACHE. Clean it up on exit.
             test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
-            for letter in y x w v u t s r q p o n m
-            do
+            for letter in y x w v u t s r q p o n m; do
                 if ! test -d "$WINEPREFIX"/dosdevices/${letter}:; then
                     mkdir -p "$WINEPREFIX"/dosdevices
                     WINETRICKS_CACHE_SYMLINK="$WINEPREFIX"/dosdevices/${letter}:
@@ -5046,8 +5021,7 @@ winetricks_init()
 
     # The list of categories is also hardcoded in winetricks_mainmenu() :-(
     WINETRICKS_CATEGORIES="apps benchmarks dlls fonts games settings mkprefix"
-    for _W_cat in $WINETRICKS_CATEGORIES
-    do
+    for _W_cat in $WINETRICKS_CATEGORIES; do
         mkdir -p "$WINETRICKS_METADATA/$_W_cat"
     done
 
@@ -5179,8 +5153,8 @@ winetricks_wine_setup()
                 /usr/lib/i386-linux-gnu/wine-development/wineserver \
                 /usr/lib/powerpc-linux-gnu/wine-development/wineserver \
                 /usr/lib/x86_64-linux-gnu/wine-development/wineserver \
-                file-not-found
-            do
+                file-not-found; do
+
                 if test -x "$x"; then
                     case "$x" in
                         /usr/lib/*/wine-development/wineserver|/usr/bin/wineserver-development)
@@ -5386,8 +5360,7 @@ if ! test "$WINETRICKS_LIB"; then
     WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-1}
 
     # Handle options before init, to avoid starting wine for --help or --version
-    while winetricks_handle_option "$1"
-    do
+    while winetricks_handle_option "$1"; do
         shift
     done
 
@@ -5467,16 +5440,14 @@ helper_d3dx9_xx()
     # Even kinder, less invasive directx - only extract and override d3dx9_xx.dll
     w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
 
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
 
     if test "$W_ARCH" = "win64"; then
         w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
 
-        for x in "$W_TMP"/*x64.cab
-        do
+        for x in "$W_TMP"/*x64.cab; do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
         done
     fi
@@ -5878,14 +5849,12 @@ load_d3dcompiler_42()
     helper_directx_Jun2010
 
     w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
     if test "$W_ARCH" = "win64"; then
         w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
+        for x in "$W_TMP"/*x64.cab; do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
         done
     fi
@@ -5914,14 +5883,12 @@ load_d3dcompiler_43()
     helper_directx_Jun2010
 
     w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
     if test "$W_ARCH" = "win64"; then
         w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
+        for x in "$W_TMP"/*x64.cab; do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
         done
     fi
@@ -5992,14 +5959,12 @@ load_d3dx9()
 
     # Kinder, less invasive directx - only extract and override d3dx9_??.dll
     w_try_cabextract -d "$W_TMP" -L -F '*d3dx9*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'd3dx9*.dll' "$x"
     done
     if test "$W_ARCH" = "win64"; then
         w_try_cabextract -d "$W_TMP" -L -F '*d3dx9*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
+        for x in "$W_TMP"/*x64.cab; do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'd3dx9*.dll' "$x"
         done
     fi
@@ -6327,14 +6292,12 @@ load_d3dx11_42()
     helper_directx_Jun2010
 
     w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
     if test "$W_ARCH" = "win64"; then
         w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
+        for x in "$W_TMP"/*x64.cab; do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
         done
     fi
@@ -6359,14 +6322,12 @@ load_d3dx11_43()
     helper_directx_Jun2010
 
     w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
     if test "$W_ARCH" = "win64"; then
         w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
+        for x in "$W_TMP"/*x64.cab; do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
         done
     fi
@@ -6390,14 +6351,12 @@ load_d3dx10()
 
     # Kinder, less invasive directx10 - only extract and override d3dx10_??.dll
     w_try_cabextract -d "$W_TMP" -L -F '*d3dx10*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'd3dx10*.dll' "$x"
     done
     if test "$W_ARCH" = "win64"; then
         w_try_cabextract -d "$W_TMP" -L -F '*d3dx10*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
+        for x in "$W_TMP"/*x64.cab; do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'd3dx10*.dll' "$x"
         done
     fi
@@ -6424,14 +6383,12 @@ load_d3dx10_43()
     helper_directx_Jun2010
 
     w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x86*" "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F "$dllname.dll" "$x"
     done
     if test "$W_ARCH" = "win64"; then
         w_try_cabextract -d "$W_TMP" -L -F "*$dllname*x64*" "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
+        for x in "$W_TMP"/*x64.cab; do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F "$dllname.dll" "$x"
         done
     fi
@@ -6655,8 +6612,7 @@ load_dpvoice()
     helper_directx_dl
 
     w_try_cabextract -d "$W_TMP" -L -F 'dxnt.cab' "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dpvoice.dll' "$x"
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dpvvox.dll' "$x"
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dpvacm.dll' "$x"
@@ -8452,9 +8408,7 @@ load_dotnet30()
     LANGPACKS_BASE_PATH="${W_WINDIR_UNIX}/SYSMSICache/Framework/v3.0"
     test -d "${LANGPACKS_BASE_PATH}" || mkdir -p "${LANGPACKS_BASE_PATH}"
     # shellcheck disable=SC1010
-    for lang in ar cs da de el es fi fr he it jp ko nb nl pl pt-BR pt-PT ru \
-                sv tr zh-CHS zh-CHT
-    do
+    for lang in ar cs da de el es fi fr he it jp ko nb nl pl pt-BR pt-PT ru sv tr zh-CHS zh-CHT; do
         ln -sf "${W_SYSTEM32_DLLS}/spupdsvc.exe" "${LANGPACKS_BASE_PATH}/dotnetfx3langpack${lang}.exe"
     done
 
@@ -9967,8 +9921,7 @@ _EOF_
 
     # Note, this leaves a dangling explorer window.
     # Wait for it to appear and kill it
-    while ! inode_pid=$(pgrep -f "explorer.exe.*Indeo")
-    do
+    while ! inode_pid=$(pgrep -f "explorer.exe.*Indeo"); do
         sleep 1
     done
     kill -HUP "$inode_pid"
@@ -10235,8 +10188,7 @@ load_mdx()
 
     # Install assemblies
     w_try_cabextract -d "$W_WINDIR_UNIX/Microsoft.NET/DirectX for Managed Code/1.0.2902.0" -F "microsoft.directx*" ./*MDX1_x86.cab
-    for file in mdx_*.cab
-    do
+    for file in mdx_*.cab; do
         ver="${file%%_x86.cab}"
         ver="${ver##mdx_}"
         w_try_cabextract -d "$W_WINDIR_UNIX/Microsoft.NET/DirectX for Managed Code/$ver" -F "microsoft.directx*" "$file"
@@ -10245,12 +10197,10 @@ load_mdx()
 
     # Add them to GAC
     w_try_cd "$W_WINDIR_UNIX/Microsoft.NET/DirectX for Managed Code"
-    for ver in *
-    do
+    for ver in *; do
         (
             w_try_cd "$ver"
-            for asm in *.dll
-            do
+            for asm in *.dll; do
                 name="${asm%%.dll}"
                 w_try mkdir -p "$W_WINDIR_UNIX/assembly/GAC/$name/${ver}__31bf3856ad364e35"
                 w_try cp "$asm" "$W_WINDIR_UNIX/assembly/GAC/$name/${ver}__31bf3856ad364e35"
@@ -12445,14 +12395,12 @@ load_xinput()
     helper_directx_Jun2010
 
     w_try_cabextract -d "$W_TMP" -L -F '*_xinput_*x86*' "$W_CACHE"/directx9/$DIRECTX_NAME
-    for x in "$W_TMP"/*.cab
-    do
+    for x in "$W_TMP"/*.cab; do
       w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'xinput*.dll' "$x"
     done
     if test "$W_ARCH" = "win64"; then
         w_try_cabextract -d "$W_TMP" -L -F '*_xinput_*x64*' "$W_CACHE"/directx9/$DIRECTX_NAME
-        for x in "$W_TMP"/*x64.cab
-        do
+        for x in "$W_TMP"/*x64.cab; do
             w_try_cabextract -d "$W_SYSTEM64_DLLS" -L -F 'xinput*.dll' "$x"
         done
     fi
@@ -13487,8 +13435,7 @@ w_metadata allfonts fonts \
 load_allfonts()
 {
     # This verb uses reflection, should probably do it portably instead, but that would require keeping it up to date
-    for file in "$WINETRICKS_METADATA"/fonts/*.vars
-    do
+    for file in "$WINETRICKS_METADATA"/fonts/*.vars; do
         cmd=$(basename "$file" .vars)
         case $cmd in
             # "fake*" verbs need to be skipped because
@@ -14049,8 +13996,7 @@ load_ie6()
 
     # Remove the fake DLLs, if any
     mv "$W_PROGRAMS_UNIX/Internet Explorer/iexplore.exe" "$W_PROGRAMS_UNIX/Internet Explorer/iexplore.exe.bak"
-    for dll in itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi
-    do
+    for dll in itircl itss jscript mlang mshtml msimtf shdoclc shdocvw shlwapi; do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
         mv "$W_SYSTEM32_DLLS"/$dll.dll "$W_SYSTEM32_DLLS"/$dll.dll.bak
     done
@@ -14097,8 +14043,7 @@ load_ie6()
         rpcrt4.dll rsabase.dll rsaenh.dll scrobj.dll scrrun.dll \
         shdocvw.dll shell32.dll vbscript.dll webcheck.dll \
         wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
-        plugin.ocx proctexe.ocx tdc.ocx webcheck.dll wshom.ocx
-    do
+        plugin.ocx proctexe.ocx tdc.ocx webcheck.dll wshom.ocx; do
         "$WINE" regsvr32 /i $i > /dev/null 2>&1
     done
 
@@ -14144,8 +14089,7 @@ load_ie7()
     if [ -f "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" ]; then
         mv "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe.bak"
     fi
-    for dll in itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon
-    do
+    for dll in itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon; do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
         mv "$W_SYSTEM32_DLLS"/$dll.dll "$W_SYSTEM32_DLLS"/$dll.dll.bak
     done
@@ -14201,8 +14145,7 @@ load_ie7()
         rpcrt4.dll rsabase.dll rsaenh.dll scrobj.dll scrrun.dll \
         shdocvw.dll shell32.dll urlmon.dll vbscript.dll webcheck.dll \
         wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
-        plugin.ocx proctexe.ocx tdc.ocx webcheck.dll wshom.ocx
-    do
+        plugin.ocx proctexe.ocx tdc.ocx webcheck.dll wshom.ocx; do
         "$WINE" regsvr32 /i $i > /dev/null 2>&1
     done
 
@@ -14264,8 +14207,7 @@ load_ie8()
     if [ -f "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" ]; then
         mv "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe.bak"
     fi
-    for dll in browseui inseng itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon
-    do
+    for dll in browseui inseng itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon; do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
         mv "$W_SYSTEM32_DLLS"/$dll.dll "$W_SYSTEM32_DLLS"/$dll.dll.bak
     done
@@ -14310,8 +14252,7 @@ load_ie8()
         rpcrt4.dll rsabase.dll rsaenh.dll scrobj.dll scrrun.dll \
         shdocvw.dll shell32.dll urlmon.dll vbscript.dll webcheck.dll \
         wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
-        plugin.ocx proctexe.ocx tdc.ocx uxtheme.dll webcheck.dll wshom.ocx
-    do
+        plugin.ocx proctexe.ocx tdc.ocx uxtheme.dll webcheck.dll wshom.ocx; do
         "$WINE" regsvr32 /i $i > /dev/null 2>&1
     done
 
@@ -17794,8 +17735,7 @@ load_dragonage()
     "
     # Since the installer explodes on exit, just wait for the
     # last file it's known to create
-    while ! test -f "$W_PROGRAMS_X86_UNIX/Dragon Age/bin_ship/DAOriginsLauncher-MCE.png"
-    do
+    while ! test -f "$W_PROGRAMS_X86_UNIX/Dragon Age/bin_ship/DAOriginsLauncher-MCE.png"; do
         w_info "Waiting for installer to finish..."
         sleep 1
     done
@@ -19746,8 +19686,7 @@ load_spore_cc_demo()
             send {SPACE}{DOWN}{SPACE}{ENTER}
             winwaitclose
         "
-        while pgrep -f "$file1" > /dev/null
-        do
+        while pgrep -f "$file1" > /dev/null; do
             w_info "Waiting for installer to finish."
             sleep 2
         done
@@ -21416,8 +21355,7 @@ load_isolate_home()
 
     _olddir="$(pwd)"
     w_try_cd "$WINEPREFIX/drive_c/users/$USER"
-    for x in *
-    do
+    for x in *; do
         if test -h "$x" && test -d "$x"; then
             rm -f "$x"
             mkdir -p "$x"
@@ -21473,8 +21411,8 @@ load_remove_mono()
     # If wine uninstaller can't find the application it will return 0 anyway.
     mono_uuid="$("${WINE_ARCH}" uninstaller --list | grep 'Wine Mono' | cut -f1 -d\|)"
     if test "$mono_uuid"; then
-        for uuid in $mono_uuid;
-            do "${WINE_ARCH}" uninstaller --remove "$uuid"
+        for uuid in $mono_uuid; do
+            "${WINE_ARCH}" uninstaller --remove "$uuid"
         done
     else
         # Bail out if mono isn't installed, so we don't break .Net setups
@@ -21865,8 +21803,7 @@ winetricks_shell()
                 $SHELL
                 ;;
             *)
-                for term in gnome-terminal konsole Terminal xterm
-                do
+                for term in gnome-terminal konsole Terminal xterm; do
                     if test "$(command -v $term 2>/dev/null)"; then
                         $term
                         break
@@ -21909,8 +21846,7 @@ execute_command()
         list-installed) winetricks_list_installed ;;
         list-all)
             old_menu="$WINETRICKS_CURMENU"
-            for WINETRICKS_CURMENU in apps benchmarks dlls fonts games prefix settings
-            do
+            for WINETRICKS_CURMENU in apps benchmarks dlls fonts games prefix settings; do
                 echo "===== $WINETRICKS_CURMENU ====="
                 winetricks_list_all
             done
@@ -22048,8 +21984,7 @@ if ! test "$WINETRICKS_LIB"; then
             winetricks_detect_gui
             winetricks_detect_sudo
             test -z "$WINETRICKS_ISO_MOUNT" && winetricks_detect_iso_mount
-            while true
-            do
+            while true; do
                 case $WINETRICKS_CURMENU in
                     main) verbs=$(winetricks_mainmenu) ;;
                     prefix)
@@ -22091,8 +22026,7 @@ if ! test "$WINETRICKS_LIB"; then
                             # after picking a prefix, want to land in main.
                             WINETRICKS_CURMENU=main ;;
                         *)
-                            for verb in $verbs
-                            do
+                            for verb in $verbs; do
                                 execute_command "$verb"
                             done
 
