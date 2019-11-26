@@ -150,8 +150,7 @@ esac
 # cleanup
 rm -rf "$datadir" url-script-fragment.tmp
 echo "Test over, $errors failures, $passes successes."
-if test $errors = 0 && test $passes -gt 0
-then
+if test $errors = 0 && test $passes -gt 0; then
     echo PASS
     exit 0
 else

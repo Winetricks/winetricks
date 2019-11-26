@@ -12,8 +12,7 @@
 
 set -e
 
-if ! test "$1"
-then
+if ! test "$1"; then
     echo "Please specify a bunch of wineprefixes to grub through"
     echo "For instance, ~/winetrickstest-prefixes/dotnet20sp{,1,2}"
     exit 1
