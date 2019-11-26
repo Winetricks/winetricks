@@ -138,6 +138,16 @@ test_formatting() {
     if grep -n "$(printf '\t')" "${shellscript}"; then
         w_die "${shellscript} contains tabs, please use spaces instead."
     fi
+
+    # make sure `do` isn't on its own line:
+    if grep -n -w -e '  do$' -e '^do$' "${shellscript}"; then
+        w_die "Put 'do' on the same line as 'for/while'"
+    fi
+
+    # make sure `then` isn't on its own line:
+    if grep -n -w -e '  then$' -e '^then$' "${shellscript}"; then
+        w_die "Put 'then' on the same line as 'if'"
+    fi
 }
 
 # tests using shellcheck
