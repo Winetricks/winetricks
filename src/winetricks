@@ -20493,6 +20493,45 @@ load_civ5_demo_steam()
 
 #----------------------------------------------------------------
 
+w_metadata rocketleague_steam games \
+    title="Rocket League (Free, Steam)" \
+    publisher="Psyonix" \
+    year="2015" \
+    media="download" \
+    installed_exe1="$W_PROGRAMS_X86_WIN/Steam/steamapps/common/rocketleague/Binaries/Win32/RocketLeague.exe"
+
+load_rocketleague_steam()
+{
+    w_steam_install_game 252950 'Rocket League'
+
+    # Check if game was successfully installed
+    [ ! -e "$(w_pathconv -u "$installed_exe1")" ] && w_die "File '$(w_pathconv -u "$installed_exe1")' is not installed, assuming steam installation failed."
+
+    # Export d9vk libs in gamedir if not already present
+    if [ ! -e "$(w_pathconv -u "${installed_exe1%%RocketLeague.exe}")/dxgi.dll" ]; then
+        # https://github.com/Joshua-Ashton/d9vk
+        d9vk_version="$(w_get_github_latest_prerelease Joshua-Ashton d9vk)"
+        w_linkcheck_ignore=1 w_download "https://github.com/Joshua-Ashton/d9vk/releases/download/$d9vk_version/d9vk-${d9vk_version#v}.tar.gz"
+        d9vk_tarball="d9vk-${d9vk_version#v}.tar.gz"
+
+        [ ! -x "$(command -v tar 2>/dev/null)" ] && die "Command 'tar' is not executable on this system, unable to extract d9vk libs in gamedir"
+
+        w_try tar -C "$(w_pathconv -u "${installed_exe1%%RocketLeague.exe}")" --strip-components 2 -zxpvf "$W_CACHE/$W_PACKAGE/$d9vk_tarball" "${d9vk_tarball%%.tar.gz}/x32/d3d10.dll" "${d9vk_tarball%%.tar.gz}/x32/d3d10core.dll" "${d9vk_tarball%%.tar.gz}/x32/d3d10_1.dll" "${d9vk_tarball%%.tar.gz}/x32/d3d11.dll" "${d9vk_tarball%%.tar.gz}/x32/d3d9.dll" "${d9vk_tarball%%.tar.gz}/x32/dxgi.dll"
+
+        # Set d9vk libs as native to be injected in the game
+        w_override_app_dlls RocketLeague.exe native dgxi
+        w_override_app_dlls RocketLeague.exe native d3d9
+        w_override_app_dlls RocketLeague.exe native d3d10
+        w_override_app_dlls RocketLeague.exe native d3d10_1
+        w_override_app_dlls RocketLeague.exe native d3d10core
+        w_override_app_dlls RocketLeague.exe native d3d11
+
+        unset d9vk_version d9vk_tarball w_linkcheck_ignore
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata ruse_demo_steam games \
     title="Ruse Demo (Steam)" \
     publisher="Ubisoft" \
