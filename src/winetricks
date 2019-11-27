@@ -11654,27 +11654,8 @@ load_vcrun2005()
     w_try "$WINE" "$file1" $W_UNATTENDED_SLASH_Q
 
     if [ $W_ARCH = win64 ] ;then
-        w_download https://download.microsoft.com/download/9/1/4/914851c6-9141-443b-bdb4-8bad3a57bea9/vcredist_x64.exe bb9e8606e26c2b76984252182f7db0d6e9108b204b81d2a7b036c9b618c1f9f1
-
-        if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls" ,3.8; then
-            rm -f "$W_TMP"/*  # Avoid permission error
-            w_try_cabextract --directory="$W_TMP" vcredist_x64.exe
-            w_try_cabextract --directory="$W_TMP" "$W_TMP/VCREDI~2.EXE"
-            w_try_cabextract --directory="$W_TMP" "$W_TMP/vcredist.msi"
-
-            w_try cp "$W_TMP/ATL80.dll.837BF1EB_D770_94EB_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/atl80.dll"
-            w_try cp "$W_TMP/mfc80.dll.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/mfc80.dll"
-            w_try cp "$W_TMP/mfc80u.dll.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/mfc80u.dll"
-            w_try cp "$W_TMP/mfcm80.dll.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/mfcm80.dll"
-            w_try cp "$W_TMP/mfcm80u.dll.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/mfcm80u.dll"
-
-            w_try cp "$W_TMP/msvcm80.dll.844EFBA7_1C24_93B2_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/msvcm80.dll"
-            w_try cp "$W_TMP/msvcp80.dll.844EFBA7_1C24_93B2_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/msvcp80.dll"
-            w_try cp "$W_TMP/msvcr80.dll.844EFBA7_1C24_93B2_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/msvcr80.dll"
-            w_try cp "$W_TMP/vcomp.dll.09D44781_D142_FE32_FF1F_C8B3B9A1E18E" "$W_SYSTEM64_DLLS/vcomp80.dll"
-        else
-            w_try "$WINE" vcredist_x64.exe $W_UNATTENDED_SLASH_Q
-        fi
+        w_download https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x64.EXE 0551a61c85b718e1fa015b0c3e3f4c4eea0637055536c00e7969286b4fa663e0
+        w_try "$WINE" vcredist_x64.exe $W_UNATTENDED_SLASH_Q
     fi
 }
 
