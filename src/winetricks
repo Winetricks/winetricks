@@ -4718,20 +4718,26 @@ winetricks_mount_real_volume()
 
 winetricks_cleanup()
 {
+    set +e
+
     # We don't want to run this multiple times, so unfortunately we have to run it here:
     if test "$W_NGEN_CMD"; then
         "$W_NGEN_CMD"
     fi
 
-    set +e
     if test -f "$WINETRICKS_WORKDIR/dd-pid"; then
-        # shellcheck disable=SC2046
-        kill $(cat "$WINETRICKS_WORKDIR/dd-pid")
+        kill "$(cat "$WINETRICKS_WORKDIR/dd-pid")"
     fi
-    test "$WINETRICKS_CACHE_SYMLINK" && rm -f "$WINETRICKS_CACHE_SYMLINK"
-    test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
-    # if $W_TMP_EARLY was created by mktemp, remove it (but not if W_OPT_NOCLEAN is set to 1):
-    test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP_EARLY"
+
+    if [ -n "$WINETRICKS_CACHE_SYMLINK" ]; then
+        w_try rm -f "$WINETRICKS_CACHE_SYMLINK"
+    fi
+
+    if [ "$W_OPT_NOCLEAN" = 1 ]; then
+        w_try rm -rf "$WINEPREFIX"/wrapper.cfg
+        w_try rm -rf "$WINETRICKS_WORKDIR"
+        w_try rm -rf "$W_TMP_EARLY"
+    fi
 }
 
 winetricks_set_unattended()
