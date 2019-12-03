@@ -8293,6 +8293,8 @@ load_dotnet11()
         WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" dotnetfx.exe
     fi
 
+    w_override_dlls native mscorwks
+
     W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
 }
 
@@ -8347,6 +8349,8 @@ load_dotnet11sp1()
     else
         WINEDLLOVERRIDES="regsvcs.exe=b" w_try "$WINE" "$W_CACHE"/dotnet11sp1/NDP1.1sp1-KB867460-X86.exe
     fi
+
+    w_override_dlls native mscorwks
 
     W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
 }
@@ -8433,6 +8437,8 @@ load_dotnet20()
         w_try_cd "$W_CACHE"/"$W_PACKAGE"
         w_try "$WINE" NetFx64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
     fi
+
+    w_override_dlls native mscorwks
 
     W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
@@ -8582,6 +8588,8 @@ load_dotnet20sp1()
 
     W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 
+    w_override_dlls native mscorwks
+
     # Installs the same file(name)s as dotnet35sp1, let users install dotnet35sp1 after dotnet20sp1
     w_try touch "${W_WINDIR_UNIX}/dotnet20sp1.installed.workaround"
 }
@@ -8652,6 +8660,7 @@ load_dotnet20sp2()
     fi
 
     w_set_winver 'default'
+    w_override_dlls native mscorwks
 
     W_NGEN_CMD="w_try $WINE $W_DRIVE_C/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
 }
@@ -8733,6 +8742,8 @@ load_dotnet30()
     w_warn "Installing .NET 3.0 runtime silently, as otherwise it gets hidden behind taskbar. Installation usually takes about 3 minutes."
     w_try "$WINE" "$file1" /q /c:"install.exe /q"
 
+    w_override_dlls native mscorwks
+
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
 }
@@ -8799,6 +8810,7 @@ load_dotnet30sp1()
         *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
     esac
 
+    w_override_dlls native mscorwks
     w_set_winver 'default'
 
     # Doesn't install any ngen.exe
@@ -8841,7 +8853,7 @@ load_dotnet35()
 
     w_set_winver winxp
 
-    w_override_dlls native mscoree
+    w_override_dlls native mscoree mscorwks
     w_wineserver -w
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
