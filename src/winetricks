@@ -14982,8 +14982,7 @@ load_powershell()
     w_try_7z  "$W_SYSTEM32_DLLS"/WindowsPowerShell/v1.0/ "${W_CACHE}/${W_PACKAGE}/${file1}"
     w_try_cd "$W_SYSTEM32_DLLS"/WindowsPowerShell/v1.0
     w_try cp -f pwsh.exe powershell.exe
-    for file in *\\*
-    do
+    for file in *\\*; do
         target=$(printf '%s\n' "$file" | sed 's#\\#/#g')
         w_try mkdir -p "${target%/*}"
         w_try mv -v "$file" "$target"
