@@ -14977,7 +14977,7 @@ load_powershell()
     rm -f "$W_SYSTEM32_DLLS"/powershell.exe
 
 
-    mkdir -p "$W_SYSTEM32_DLLS"/WindowsPowerShell/v1.0
+    w_try mkdir -p "$W_SYSTEM32_DLLS"/WindowsPowerShell/v1.0
 
     w_try_7z  "$W_SYSTEM32_DLLS"/WindowsPowerShell/v1.0/ "${W_CACHE}/${W_PACKAGE}/${file1}"
     w_try_cd "$W_SYSTEM32_DLLS"/WindowsPowerShell/v1.0
