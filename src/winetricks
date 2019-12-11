@@ -15553,7 +15553,8 @@ load_winamp()
 {
     w_info "may send information while installing, see https://www.microsoft.com/security/portal/Threat/Encyclopedia/Entry.aspx?threatid=159633"
 
-    w_download https://winampplugins.co.uk/Winamp/winamp5666_full_all_redux.exe ea9a6ba81475d49876d0b8b300d93f28f7959b8e99ce4372dbde746567e14002
+    # 2019/12/11: previously at https://winampplugins.co.uk/Winamp/winamp5666_full_all_redux.exe
+    w_download http://www.meggamusic.co.uk/winamp/winamp5666_full_all_redux.exe ea9a6ba81475d49876d0b8b300d93f28f7959b8e99ce4372dbde746567e14002
     w_try_cd "$W_CACHE/$W_PACKAGE"
     if test $W_OPT_UNATTENDED; then
         w_ahk_do "
