@@ -7743,7 +7743,9 @@ w_metadata dxvk146 dlls \
 load_dxvk146()
 {
     # https://github.com/doitsujin/dxvk
-    w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.6/dxvk-1.4.6.tar.gz" 1aa069f5ea7d3d6e374bda332d12f9207f1a21e9811c4d4d82487416420ee73e
+    # Original sha256sum: 1aa069f5ea7d3d6e374bda332d12f9207f1a21e9811c4d4d82487416420ee73e
+    # Upstream later rebuilt with commit 1ae7d4b30283d2eb06b467c581aafdbbd9d36cdf: c9e3a96d8c5e693e20f69f27ac3f8b55198449fddd24205195476d6af7e8a339
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.6/dxvk-1.4.6.tar.gz" c9e3a96d8c5e693e20f69f27ac3f8b55198449fddd24205195476d6af7e8a339
     helper_dxvk_d9vk "$file1" "4.20" "1.1.113" "dxgi,d3d10,d3d11"
 }
 
