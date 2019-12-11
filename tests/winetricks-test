@@ -374,17 +374,13 @@ test_command()
     # shellcheck disable=SC2086
     if [ -z "$_W_wine_not_needed" ]; then
         $XVFB $WINETRICKS sandbox || fail "\'$XVFB $WINETRICKS sandbox\' failed"
+        echo "Installing $command"
+        $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@"
+        return=$?
+    else
+        $XVFB $WINETRICKS --no-isolate -q "$@"
+        return=$?
     fi
-
-    echo "Installing $command"
-
-    if [ -z "$_W_wine_not_needed" ]; then
-        nocrashdialog="nocrashdialog"
-    fi
-
-    # shellcheck disable=SC2086
-    $XVFB $WINETRICKS --no-isolate -q $nocrashdialog "$@"
-    return=$?
 
     if [ -d "$WINEPREFIX/drive_c/windows/syswow64" ]; then
         WINEARCH="win64"
