@@ -4732,7 +4732,7 @@ winetricks_cleanup()
     test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINETRICKS_WORKDIR"
     # if $W_TMP_EARLY was created by mktemp, remove it (but not if W_OPT_NOCLEAN is set to 1):
     test "$W_OPT_NOCLEAN" = 1 || rm -rf "$W_TMP_EARLY"
-    test "$W_OPT_NOCLEAN" = 1 || "$WINEPREFIX"/wrapper.cfg
+    test "$W_OPT_NOCLEAN" = 1 || rm -rf "$WINEPREFIX"/wrapper.cfg
 }
 
 winetricks_set_unattended()
