@@ -6832,7 +6832,7 @@ load_dxsdk_jun2010()
 # $1 - dxvk archive name (required)
 # $2 - minimum Wine version (required)
 # $3 - minimum Vulkan API version (required)
-# $4 - [dxgi,][d3d9,][d3d10,]d3d11 [d3d9=dvk9 d3d10/d3d11=dxvk] (required)
+# $4 - [dxgi,][d3d9,][d3d10,]d3d11 (required)
 helper_dxvk_d9vk()
 {
     _W_package_archive="${1}"
@@ -6849,43 +6849,50 @@ helper_dxvk_d9vk()
     _W_dll_overrides="$(echo "${_W_dll_overrides}" | sed 's/d3d10/& d3d10_1 d3d10core/')"
 
     case "${_W_package_archive}" in
+        d9vk*)
+            # dvk9 repository, for d3d9/d3d10/d3d11 support
+            _W_repository="Joshua-Ashton/d9vk"
+            ;;
+        dxvk*)
+            # dxvk repository, for d3d9/d3d10/d3d11 support
+            _W_repository="doitsujin/dxvk"
+            ;;
+        *)
+            w_die "parameter (1): unsupported package archive repository: '${_W_package_archive}'; supported: d9vk dxvk"
+            ;;
+    esac
+
+    case "${_W_package_archive}" in
         *master*)
             _W_package_dir="build/dxvk-release"
             _W_package_version="master"
+            w_warn "Using master ${_W_repository} build"
             ;;
         *)
             _W_package_dir="${_W_package_archive%.tar.gz}"
             _W_package_version="${_W_package_dir#*-}"
+            w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"
             ;;
     esac
+    w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support"
 
-    case "${_W_dll_overrides}" in
-        *d3d9*)
-            # dvk9 repository, for d3d9 support
-            _W_repository="Joshua-Ashton/d9vk"
-            if [ "${_W_package_version}" != "master" ]; then
-                w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"
-            fi
-            ;;
-        *)
-            # dxvk repository, for d3d10/d3d11 support
-            _W_repository="doitsujin/dxvk"
-            w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/v${_W_package_version}"
-            w_warn "Please refer to current ${_W_repository#*/} base graphics driver requirements... See: https://github.com/${_W_repository}/wiki/Driver-support"
-            ;;
-    esac
     if ! w_wine_version_in ",${_W_min_wine_version}" ; then
-        w_warn "${_W_repository#*/} ${_W_package_version} does not support wine version ${_wine_version_stripped}. ${_W_repository#*/} ${_W_package_version} requires wine version ${_W_min_wine_version} (or newer). Vulkan ${_W_min_vulkan_version} API (or newer) support is recommended."
+        # shellcheck disable=SC2140
+        w_warn "${_W_repository#*/} ${_W_package_version} does not support wine version ${_wine_version_stripped} . "\
+            "${_W_repository#*/} ${_W_package_version} requires wine version ${_W_min_wine_version} (or newer). "\
+            "Vulkan ${_W_min_vulkan_version} API (or newer) support is recommended."
     fi
 
-    if [ "${_W_package_version}" = "master" ]; then
+    if [ "${_W_package_archive##*.}" = "zip" ]; then
         w_try_unzip "$W_TMP" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
     else
         w_try_cd "${W_TMP}"
         w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
     fi
+
     for _W_dll in ${_W_dll_overrides}; do
         w_try mv "${W_TMP}/${_W_package_dir}/x32/${_W_dll}.dll" "${W_SYSTEM32_DLLS}/"
+        [ "${_W_dll}" = "d3d9" ] && _W_d3d9_support="1"
     done
     if test "${W_ARCH}" = "win64"; then
         for _W_dll in ${_W_dll_overrides}; do
@@ -6894,13 +6901,12 @@ helper_dxvk_d9vk()
     fi
     # shellcheck disable=SC2086
     w_override_dlls native ${_W_dll_overrides}
-
-    if [ "${_W_repository#*/}" = "d9vk" ]; then
+    if [ -n "${_W_d3d9_support}" ]; then
         w_call d3dcompiler_43
         w_call d3dx9
     fi
 
-    unset _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
+    unset _W_d3d9_support _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
         _W_package_archive _W_package_dir _W_package_version \
         _W_repository _W_supported_overrides
 }
