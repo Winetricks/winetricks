@@ -300,16 +300,6 @@ w_killall()
     kill -s KILL $(pgrep $1)
 }
 
-# Some packages don't support win32, die with an appropriate message
-# Returns 64 (for tests/winetricks-test)
-w_package_unsupported_win32()
-{
-    if [ "$W_ARCH" = "win32" ] ; then
-        w_warn "This package ($W_PACKAGE) does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64."
-        exit 64
-    fi
-}
-
 # Warn user if package is broken. Optionally provide a link to the bug report.
 w_package_broken_win64()
 {
@@ -324,6 +314,17 @@ w_package_broken_win64()
         fi
     fi
 }
+
+# Some packages don't support win32, die with an appropriate message
+# Returns 64 (for tests/winetricks-test)
+w_package_unsupported_win32()
+{
+    if [ "$W_ARCH" = "win32" ] ; then
+        w_warn "This package ($W_PACKAGE) does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64."
+        exit 64
+    fi
+}
+
 
 # Some packages don't support win64, die with an appropriate message
 # Note: this is for packages that natively don't support win64, not packages that are broken on wine64, for that, use w_package_broken_win64()
