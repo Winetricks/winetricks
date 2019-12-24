@@ -329,6 +329,108 @@ w_package_broken()
     fi
 }
 
+w_detect_mingw()
+{
+    # mingw builds have some (not yet all) .dll files in ${WINE}/../lib{,64}/wine
+    # non-mingw have exclusively .dll.so files
+    #
+    # Unfortunately, installed wine and wine run from source dir have different layouts:
+
+    # Source:
+    if test -f "$(dirname "${WINE}")/Makefile.in"; then
+        if ls "$(dirname "${WINE}")/dlls"/*/*.dll >/dev/null 2>&1; then
+            wine_mingw=1
+        else
+            wine_no_mingw=1
+        fi
+    # Installed (checked against the binaries of https://dl.winehq.org/):
+    elif ls "$(dirname "${WINE}")"/../lib/wine/*.dll >/dev/null 2>&1; then
+        wine_mingw=1
+    elif test ! -d "$(dirname "${WINE}")"/../lib/wine; then
+        w_warn "Unable to detect wine dlls, please file an issue on Github"
+    else
+        wine_no_mingw=1
+    fi
+}
+
+# Warn user if package is broken in the current wine version when compiled with mingw. Bug report required.
+w_package_broken_mingw()
+{
+    # FIXME: test cases for this
+
+    bug_link="$1"
+    bad_version="$2"
+    good_version="$3"
+
+    w_detect_mingw
+
+    if [ -z "$wine_mingw" ]; then
+        # We're not using a mingw build, nothing to do:
+        return
+    fi
+
+    if [ -z "$bug_link" ] ; then
+        w_die "Bug report link required!"
+    fi
+
+    if [ -n "$good_version" ]; then
+        if ! w_wine_version_in "${bad_version},${good_version}"; then
+            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} when wine is built with mingw. Upgrade to >=${good_version} or disable mingw. See ${bug_link} for more info."
+            exit 99
+        else
+            echo "package was broken, now fixed"
+        fi
+    elif [ -n "$bad_version" ]; then
+        if ! w_wine_version_in "${bad_version}"; then
+            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} (broken since ${bad_version} when wine is built with mingw. See ${bug_link} for more info."
+            exit 99
+        else
+            echo "Package is broken in future versions"
+        fi
+    else
+        w_warn "This package ($W_PACKAGE) is broken when wine is built with mingw. See ${bug_link} for more info."
+        exit 99
+    fi
+}
+
+# Warn user if package is broken in the current wine version when compiled without mingw. Bug report required.
+w_package_broken_no_mingw()
+{
+    # FIXME: test cases for this
+
+    bug_link="$1"
+    bad_version="$2"
+    good_version="$3"
+
+    if [ -z "$wine_no_mingw" ]; then
+        # We're using a mingw build, nothing to do:
+        return
+    fi
+
+    if [ -z "$bug_link" ] ; then
+        w_die "Bug report link required!"
+    fi
+
+    if [ -n "$good_version" ]; then
+        if ! w_wine_version_in "${bad_version},${good_version}"; then
+            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} when wine is built without mingw. Upgrade to >=${good_version}. See ${bug_link} for more info."
+            exit 99
+        else
+            echo "package was broken, now fixed"
+        fi
+    elif [ -n "$bad_version" ]; then
+        if ! w_wine_version_in "${bad_version}"; then
+            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} (broken since ${bad_version} when wine is built without mingw. See ${bug_link} for more info."
+            exit 99
+        else
+            echo "Package is broken in future versions"
+        fi
+    else
+        w_warn "This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info."
+        exit 99
+    fi
+}
+
 # Warn user if package is broken on win64. Optionally provide a link to the bug report.
 w_package_broken_win64()
 {
