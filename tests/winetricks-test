@@ -135,7 +135,7 @@ skips=0
 # middle of a two day run.
 check_deps() {
     for tool in time cabextract; do
-        command -v "$tool"
+        command -v "$tool" >/dev/null 2>&1
         ret=$?
 
         if [ ! $ret -eq 0 ] ; then
