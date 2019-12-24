@@ -802,9 +802,13 @@ test_w_compare_wine_version()
 
     # good (less than)
     helper_test_w_compare_wine_version "wine-1.0" ",1.8.0" "yes"
+    helper_test_w_compare_wine_version "wine-3.0" ",3.0" "yes"
 
     # good (between)
     helper_test_w_compare_wine_version "wine-1.6" "1.4,2.0" "yes"
+    helper_test_w_compare_wine_version "wine-1.8.0" "1.8.0,3.0" "yes"
+    helper_test_w_compare_wine_version "wine-3.0"   "1.8.0,3.0" "yes"
+
 
     # good (greater than)
     helper_test_w_compare_wine_version "wine-1.3" "1.2," "yes"
@@ -821,15 +825,16 @@ test_w_compare_wine_version()
     helper_test_w_compare_wine_version "wine-2.0.1 (staging)" "1.8.0," "yes"
     helper_test_w_compare_wine_version "wine-2.0-rc1" "1.8.0," "yes"
     helper_test_w_compare_wine_version "wine-3.0" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-3.0" "3.0," "yes"
 
     # bad (less than)
     helper_test_w_compare_wine_version "wine-1.0" "1.8.0," "no"
+    helper_test_w_compare_wine_version "wine-2.0" "3.0," "no"
     helper_test_w_compare_wine_version "wine-2.0.1 (staging)" "1.8.0," "yes"
 
     # bad (between)
+    helper_test_w_compare_wine_version "wine-1.0" "2.0,3.0" "no"
     helper_test_w_compare_wine_version "wine-2.0" "1.4,1.6" "no"
-    helper_test_w_compare_wine_version "wine-2.0" "2.2,3.0" "no"
-    helper_test_w_compare_wine_version "wine-4.0" "1.8.0,3.0" "no"
 
     # bad (greater than)
     helper_test_w_compare_wine_version "wine-1.3" ",1.2" "no"
@@ -852,6 +857,7 @@ test_w_compare_wine_version()
     helper_test_w_compare_wine_version "wine-2.0-rc1" ",1.8.0" "no"
     helper_test_w_compare_wine_version "wine-2.0-rc1" ",1.8.0" "no"
     helper_test_w_compare_wine_version "wine-3.0" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-4.0" ",3.0" "no"
 
     # FIXME: there's plenty of room for more tests..
 }

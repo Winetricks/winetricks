@@ -2518,7 +2518,12 @@ w_compare_wine_version()
         -bn) _expected_pos_current_wine="2";;
         -ge) _expected_pos_current_wine="2";;
         -le) _expected_pos_current_wine="1";;
-        *) w_die "Unsupported comparison. Only -ge and -le are supported" ;;
+        *) w_die "Unsupported comparison. Only -bn, -ge, and -le are supported" ;;
+    esac
+
+    # First, check if current wine is equal to either upper or lower wine version:
+    case "${_wine_version_stripped}" in
+        ${known_wine_val1}|${known_wine_val2}) return 1;;
     esac
 
     _pos_current_wine="$(printf "%s\\n%s\\n%s" "${known_wine_val1}" "${_wine_version_stripped}" "${known_wine_val2}" | sort -t. -k 1,1n -k 2,2n -k 3,3n | grep -n "^${_wine_version_stripped}\$" | cut -d : -f1)"
