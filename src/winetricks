@@ -15774,6 +15774,8 @@ load_wmp10()
 {
     w_package_unsupported_win64
 
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=48347" 5.0
+
     # FIXME: what versions of Windows are really bundled with wmp10?
     w_skip_windows wmp10 && return
 
