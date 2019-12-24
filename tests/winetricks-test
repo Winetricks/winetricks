@@ -800,44 +800,58 @@ test_w_compare_wine_version()
     #    comparison="$2" # the comparison to make (e.g., ',1.8', '1.9,', or '1.8,1.9')
     #    workaround_expected="$3" # should the workaround be executed (yes/no)
 
-    helper_test_w_compare_wine_version "wine-2.0" ",1.6" "no"
-    helper_test_w_compare_wine_version "wine-2.0" ",1.4" "no"
-    helper_test_w_compare_wine_version "wine-2.0" "1.4,1.6" "no"
-    helper_test_w_compare_wine_version "wine-1.6" "1.4,2.0" "yes"
-    helper_test_w_compare_wine_version "wine-1.0" "1.8.0," "no"
+    # good (less than)
     helper_test_w_compare_wine_version "wine-1.0" ",1.8.0" "yes"
-    helper_test_w_compare_wine_version "wine-1.3" ",1.2" "no"
+
+    # good (between)
+    helper_test_w_compare_wine_version "wine-1.6" "1.4,2.0" "yes"
+
+    # good (greater than)
     helper_test_w_compare_wine_version "wine-1.3" "1.2," "yes"
-    helper_test_w_compare_wine_version "wine-1.3.4" ",1.2" "no"
     helper_test_w_compare_wine_version "wine-1.3.4" "1.2," "yes"
-    helper_test_w_compare_wine_version "wine-1.6" ",1.2" "no"
-    helper_test_w_compare_wine_version "wine-1.6" ",1.2" "no"
     helper_test_w_compare_wine_version "wine-1.6" "1.2," "yes"
-    helper_test_w_compare_wine_version "wine-1.6-rc1" ",1.2" "no"
     helper_test_w_compare_wine_version "wine-1.6-rc1" "1.2," "yes"
-    helper_test_w_compare_wine_version "wine-2.0.1" ",1.8.0" "no"
     helper_test_w_compare_wine_version "wine-2.0.1" "1.8.0," "yes"
-    helper_test_w_compare_wine_version "wine-2.0.1" ",2.0" "no"
-    helper_test_w_compare_wine_version "wine-2.0.1" ",2.0" "no"
     helper_test_w_compare_wine_version "wine-2.0.1" "2.0," "yes"
-    helper_test_w_compare_wine_version "wine-2.0" ",1.8.0" "no"
-    helper_test_w_compare_wine_version "wine-2.0" ",1.8.0" "no"
     helper_test_w_compare_wine_version "wine-2.0" "1.8.0," "yes"
     helper_test_w_compare_wine_version "wine-2.0" "1.8.0," "yes"
-    helper_test_w_compare_wine_version "wine-2.0" ",1.8.1" "no"
     helper_test_w_compare_wine_version "wine-2.0" "1.8.1," "yes"
-    helper_test_w_compare_wine_version "wine-2.0" ",1.8" "no"
     helper_test_w_compare_wine_version "wine-2.0" "1.8," "yes"
+    helper_test_w_compare_wine_version "wine-2.0.1 (debian 2.0.1-r1)" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-2.0.1 (staging)" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-2.0-rc1" "1.8.0," "yes"
+    helper_test_w_compare_wine_version "wine-3.0" "1.8.0," "yes"
+
+    # bad (less than)
+    helper_test_w_compare_wine_version "wine-1.0" "1.8.0," "no"
+    helper_test_w_compare_wine_version "wine-2.0.1 (staging)" "1.8.0," "yes"
+
+    # bad (between)
+    helper_test_w_compare_wine_version "wine-2.0" "1.4,1.6" "no"
+    helper_test_w_compare_wine_version "wine-2.0" "2.2,3.0" "no"
+    helper_test_w_compare_wine_version "wine-4.0" "1.8.0,3.0" "no"
+
+    # bad (greater than)
+    helper_test_w_compare_wine_version "wine-1.3" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-1.3.4" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-1.6" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-1.6" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-1.6-rc1" ",1.2" "no"
+    helper_test_w_compare_wine_version "wine-2.0.1" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0.1" ",2.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0.1" ",2.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.4" "no"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.6" "no"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.8.0" "no"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.8.1" "no"
+    helper_test_w_compare_wine_version "wine-2.0" ",1.8" "no"
     helper_test_w_compare_wine_version "wine-2.0" ",1.9" "no"
     helper_test_w_compare_wine_version "wine-2.0.1 (debian 2.0.1-r1)" ",1.8.0" "no"
-    helper_test_w_compare_wine_version "wine-2.0.1 (debian 2.0.1-r1)" "1.8.0," "yes"
     helper_test_w_compare_wine_version "wine-2.0.1 (staging)" ",1.8.0" "no"
-    helper_test_w_compare_wine_version "wine-2.0.1 (staging)" "1.8.0," "yes"
     helper_test_w_compare_wine_version "wine-2.0-rc1" ",1.8.0" "no"
     helper_test_w_compare_wine_version "wine-2.0-rc1" ",1.8.0" "no"
-    helper_test_w_compare_wine_version "wine-2.0-rc1" "1.8.0," "yes"
     helper_test_w_compare_wine_version "wine-3.0" ",1.8.0" "no"
-    helper_test_w_compare_wine_version "wine-3.0" "1.8.0," "yes"
 
     # FIXME: there's plenty of room for more tests..
 }
