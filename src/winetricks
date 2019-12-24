@@ -300,7 +300,36 @@ w_killall()
     kill -s KILL $(pgrep $1)
 }
 
-# Warn user if package is broken. Optionally provide a link to the bug report.
+# Warn user if package is broken (on all arches) in the current wine version. Bug report required.
+w_package_broken()
+{
+    # FIXME: test cases for this
+
+    bug_link="$1"
+    bad_version="$2"
+    good_version="$3"
+
+    if [ -z "$bug_link" ] ; then
+        w_die "Bug report link required!"
+    fi
+
+    if [ -n "$good_version" ]; then
+        if ! w_wine_version_in "${bad_version},${good_version}"; then
+            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped}. Upgrade to >=${good_version}. See ${bug_link} for more info."
+            exit 99
+        fi
+    elif [ -n "$bad_version" ]; then
+        if ! w_wine_version_in "${bad_version}"; then
+            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped}. Broken since ${bad_version}. See ${bug_link} for more info."
+            exit 99
+        fi
+    else
+        w_warn "This package ($W_PACKAGE) is broken. See ${bug_link} for more info."
+        exit 99
+    fi
+}
+
+# Warn user if package is broken on win64. Optionally provide a link to the bug report.
 w_package_broken_win64()
 {
     # Optional:

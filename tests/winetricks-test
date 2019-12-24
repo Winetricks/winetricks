@@ -396,6 +396,9 @@ test_command()
         skip "$command is not supported on $WINEARCH, requires win64"
         archskip=1
         return
+    elif [ "$return" = "99" ]; then
+        skip "$command is known to be broken on this wine version, ignoring"
+        return
     fi
 
     if [ "$EXPECT_FAIL" = "yes" ] ; then
