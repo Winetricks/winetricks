@@ -12051,7 +12051,7 @@ w_metadata vcrun2015 dlls \
     publisher="Microsoft" \
     year="2015" \
     media="download" \
-    conflicts="vcrun2017" \
+    conflicts="vcrun2017 vcrun2019" \
     file1="vc_redist.x86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mfc140.dll"
 
@@ -12114,6 +12114,7 @@ w_metadata vcrun2017 dlls \
     publisher="Microsoft" \
     year="2017" \
     media="download" \
+    conflicts="vcrun2015 vcrun2019" \
     file1="vc_redist.x86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mfc140.dll"
 
@@ -12170,6 +12171,38 @@ load_vcrun2017()
             else
                 w_try "$WINE" vc_redist.x64.exe $W_UNATTENDED_SLASH_Q
             fi
+            ;;
+    esac
+}
+
+#----------------------------------------------------------------
+
+w_metadata vcrun2019 dlls \
+    title="Visual C++ 2015-2019 libraries (concrt140.dll,mfc140.dll,mfc140u.dll,mfcm140.dll,mfcm140u.dll,msvcp140.dll,vcamp140.dll,vccorlib140.dll,vcomp140.dll,vcruntime140.dll)" \
+    publisher="Microsoft" \
+    year="2019" \
+    media="download" \
+    conflicts="vcrun2015 vcrun2017" \
+    file1="vc_redist.x86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc140.dll"
+
+load_vcrun2019()
+{
+    # https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
+    # 2019/12/26: e59ae3e886bd4571a811fe31a47959ae5c40d87c583f786816c60440252cd7ec
+    w_download https://aka.ms/vs/16/release/vc_redist.x86.exe e59ae3e886bd4571a811fe31a47959ae5c40d87c583f786816c60440252cd7ec
+
+    w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcr140 ucrtbase vcomp140 vcruntime140
+
+    w_try_cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" vc_redist.x86.exe $W_UNATTENDED_SLASH_Q
+
+    case "$W_ARCH" in
+        win64)
+            # Also install the 64-bit version
+            # 2019/12/26: 40ea2955391c9eae3e35619c4c24b5aaf3d17aeaa6d09424ee9672aa9372aeed
+            w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 40ea2955391c9eae3e35619c4c24b5aaf3d17aeaa6d09424ee9672aa9372aeed
+            w_try "$WINE" vc_redist.x64.exe $W_UNATTENDED_SLASH_Q
             ;;
     esac
 }
