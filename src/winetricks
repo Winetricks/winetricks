@@ -12114,7 +12114,7 @@ w_metadata vcrun2017 dlls \
     publisher="Microsoft" \
     year="2017" \
     media="download" \
-    conflicts="vcrun2019" \
+    conflicts="vcrun2015 vcrun2019" \
     file1="vc_redist.x86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mfc140.dll"
 
@@ -12182,6 +12182,7 @@ w_metadata vcrun2019 dlls \
     publisher="Microsoft" \
     year="2019" \
     media="download" \
+    conflicts="vcrun2015 vcrun2017" \
     file1="vc_redist.x86.exe" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/mfc140.dll"
 
