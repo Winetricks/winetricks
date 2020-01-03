@@ -15936,8 +15936,8 @@ load_wmp10()
     # Crashes on exit, but otherwise ok; see https://bugs.winehq.org/show_bug.cgi?id=12633
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try cabextract -d "$W_TMP" ./MP10Setup.exe
-    w_try cd "$W_TMP"
-    w_try_cd "$WINE" setup_wm.exe $W_UNATTENDED_SLASH_CAP_QUIET
+    w_try_cd "$W_TMP"
+    "$WINE" setup_wm.exe $W_UNATTENDED_SLASH_CAP_QUIET
 
     # Disable WMP's services, since they depend on unimplemented stuff, they trigger the GUI debugger several times
     w_try_regedit /D "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\Cdr4_2K"
