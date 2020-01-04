@@ -6830,6 +6830,24 @@ load_dxsdk_jun2010()
 
 #----------------------------------------------------------------
 
+w_metadata dxtrans dlls \
+    title="MS dxtrans.dll" \
+    publisher="Microsoft" \
+    year="2002" \
+    media="download" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dxtrans.dll" \
+
+load_dxtrans()
+{
+    helper_winxpsp3 i386/dxtrans.dl_
+    w_try_cabextract --directory="$W_SYSTEM32_DLLS" "$W_TMP"/i386/dxtrans.dl_
+    w_override_dlls native,builtin dxtrans
+    w_try_regsvr dxtrans.dll
+}
+
+#----------------------------------------------------------------
+
 # $1 - dxvk archive name (required)
 # $2 - minimum Wine version (required)
 # $3 - minimum Vulkan API version (required)
