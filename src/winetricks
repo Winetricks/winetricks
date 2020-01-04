@@ -7889,10 +7889,11 @@ load_dxvk146()
 #----------------------------------------------------------------
 
 w_metadata dxvk dlls \
-    title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (latest)" \
+    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (latest)" \
     publisher="Philip Rebohle" \
     year="2017" \
     media="download" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d9.dll" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/d3d10.dll" \
     installed_file2="$W_SYSTEM32_DLLS_WIN/d3d10_1.dll" \
     installed_file3="$W_SYSTEM32_DLLS_WIN/d3d10core.dll" \
@@ -7905,7 +7906,7 @@ load_dxvk()
     _W_dxvk_version="$(w_get_github_latest_release doitsujin dxvk)"
     _W_dxvk_version="${_W_dxvk_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/doitsujin/dxvk/releases/download/v${_W_dxvk_version}/dxvk-${_W_dxvk_version}.tar.gz"
-    helper_dxvk_d9vk "dxvk-${_W_dxvk_version}.tar.gz" "4.20" "1.1.113" "dxgi,d3d10,d3d11"
+    helper_dxvk_d9vk "dxvk-${_W_dxvk_version}.tar.gz" "4.20" "1.1.113" "dxgi,d3d9,d3d10,d3d11"
     unset _W_dxvk_version
 }
 
