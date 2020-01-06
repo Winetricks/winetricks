@@ -10056,6 +10056,8 @@ w_metadata expand dlls \
 
 load_expand()
 {
+    w_warn "Do not set cabinet.dll to native in winecfg, it will break loads of installers"
+
     for i in x86_microsoft-windows-basic-misc-tools_31bf3856ad364e35_6.0.6001.18000_none_175cb770bf6b8f77/expand.exe \
         x86_microsoft-windows-deltapackageexpander_31bf3856ad364e35_6.0.6001.18000_none_69de962f3507db4b/dpx.dll \
         x86_microsoft-windows-cabinet_31bf3856ad364e35_6.0.6001.18000_none_373f511ce1ebb446/cabinet.dll \
@@ -10091,7 +10093,7 @@ w_metadata ffdshow dlls \
     title="ffdshow video codecs" \
     publisher="doom9 folks" \
     year="2010" \
-    media="download" \
+    media="download" \w_war
     file1="ffdshow_beta7_rev3154_20091209.exe" \
     installed_file1="$W_PROGRAMS_X86_WIN/ffdshow/ff_liba52.dll" \
     homepage="https://ffdshow-tryout.sourceforge.io/"
