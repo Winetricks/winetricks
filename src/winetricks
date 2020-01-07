@@ -10065,11 +10065,9 @@ load_expand()
 
         helper_winvista "$i"
         w_try cp "$W_TMP/$i" "$W_SYSTEM32_DLLS/"
-        
     done
     
     if [ "$W_ARCH" = "win64" ]; then
-    
         for i in amd64_microsoft-windows-basic-misc-tools_31bf3856ad364e35_6.0.6001.18000_none_737b52f477c900ad/expand.exe \
             amd64_microsoft-windows-deltapackageexpander_31bf3856ad364e35_6.0.6001.18000_none_c5fd31b2ed654c81/dpx.dll \
             amd64_microsoft-windows-cabinet_31bf3856ad364e35_6.0.6001.18000_none_935deca09a49257c/cabinet.dll \
@@ -10080,11 +10078,11 @@ load_expand()
         done
     fi
 
-    #Do not set expand/cabinet to native, it breaks lots of installers (!), but to extract files it works ok. So give example to user
-    echo "Example of usage:
-          WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand -F:* some.msu .  ---> extract all files (includes some.cab) from msu to current dir
-          WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand -F:* some.cab .  ---> extract all files from extracted some.cab to current dir
-          WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand /d some.cab      ---> list all files in extracted some.cab"
+    # Do not set expand/cabinet to native, it breaks lots of installers (!), but to extract files it works ok. So give example to user
+    w_warn  "Example of usage:
+             WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand -F:* some.msu .  ---> extract all files (includes some.cab) from msu to current dir
+             WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand -F:* some.cab .  ---> extract all files from extracted some.cab to current dir
+             WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand /d some.cab      ---> list all files in extracted some.cab"
   }
 
 #----------------------------------------------------------------
