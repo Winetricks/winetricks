@@ -5654,6 +5654,16 @@ helper_winxpsp3()
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe
 }
 
+helper_winvista()
+{
+    filename=$1
+
+    # https://www.microsoft.com/en-us/download/details.aspx?id=21299
+    w_download_to winvista https://download.microsoft.com/download/8/3/b/83b8c814-b000-44a4-b667-8c1f58727b8b/Windows6.0-KB936330-X64-wave0.exe a48ec1ba10120676c0529121dff5303ec777988ba25133d1dd15234a04dd6f9e
+
+    w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/winvista/Windows6.0-KB936330-X64-wave0.exe
+}
+
 # Filelist at ./misc/filelists/win7sp1.txt
 helper_win7sp1()
 {
@@ -10034,6 +10044,46 @@ load_dirac()
         WinWaitClose
     "
 }
+
+#----------------------------------------------------------------
+
+w_metadata expand dlls \
+    title="expand.exe; can be used to extract files from .msu package" \
+    publisher="Microsoft" \
+    media="download" \
+    file1="Windows6.0-KB936330-X64-wave0.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/expand.exe"
+
+load_expand()
+{
+    w_warn "Do not set expand.exe and cabinet.dll to native in winecfg, it will break lots of installers!"
+
+    for i in x86_microsoft-windows-basic-misc-tools_31bf3856ad364e35_6.0.6001.18000_none_175cb770bf6b8f77/expand.exe \
+        x86_microsoft-windows-deltapackageexpander_31bf3856ad364e35_6.0.6001.18000_none_69de962f3507db4b/dpx.dll \
+        x86_microsoft-windows-cabinet_31bf3856ad364e35_6.0.6001.18000_none_373f511ce1ebb446/cabinet.dll \
+        x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.0.6001.18000_none_095f6148c74a7a64/msdelta.dll; do
+
+        helper_winvista "$i"
+        w_try cp "$W_TMP/$i" "$W_SYSTEM32_DLLS/"
+    done
+    
+    if [ "$W_ARCH" = "win64" ]; then
+        for i in amd64_microsoft-windows-basic-misc-tools_31bf3856ad364e35_6.0.6001.18000_none_737b52f477c900ad/expand.exe \
+            amd64_microsoft-windows-deltapackageexpander_31bf3856ad364e35_6.0.6001.18000_none_c5fd31b2ed654c81/dpx.dll \
+            amd64_microsoft-windows-cabinet_31bf3856ad364e35_6.0.6001.18000_none_935deca09a49257c/cabinet.dll \
+            amd64_microsoft-windows-deltacompressionengine_31bf3856ad364e35_6.0.6001.18000_none_9c4b039c3e1c8af8/msdelta.dll; do
+
+            helper_winvista "$i"
+            w_try cp "$W_TMP/$i" "$W_SYSTEM64_DLLS/"
+        done
+    fi
+
+    # Do not set expand/cabinet to native, it breaks lots of installers (!), but to extract files it works ok. So give example to user
+    w_warn  "Example of usage:
+             WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand -F:* some.msu .  ---> extract all files (includes some.cab) from msu to current dir
+             WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand -F:* some.cab .  ---> extract all files from extracted some.cab to current dir
+             WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand /d some.cab      ---> list all files in extracted some.cab"
+  }
 
 #----------------------------------------------------------------
 
