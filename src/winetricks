@@ -5113,6 +5113,11 @@ winetricks_set_wineprefix()
         # shellcheck disable=SC2034
         W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
 
+        # There's also ProgramW6432, which =%ProgramFiles%(but only available when running under a 64 bit OS)
+        # See https://ss64.com/nt/syntax-variables.html
+        W_PROGRAMW6432_WIN="$(w_expand_env ProgramW6432)"
+        W_PROGRAMW6432_UNIX="$(w_pathconv -u "$W_PROGRAMW6432_WIN")"
+
         # Probably need fancier handling/checking, but for a basic start:
         # Note 'wine' may be named 'wine-stable'/'wine-staging'/etc.):
         # WINE64 = wine64, available on 64-bit prefixes
