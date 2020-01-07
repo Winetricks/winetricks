@@ -10056,7 +10056,7 @@ w_metadata expand dlls \
 
 load_expand()
 {
-    w_warn "Do not set cabinet.dll to native in winecfg, it will break loads of installers"
+    w_warn "Do not set expand.exe and cabinet.dll to native in winecfg, it will break lots of installers!"
 
     for i in x86_microsoft-windows-basic-misc-tools_31bf3856ad364e35_6.0.6001.18000_none_175cb770bf6b8f77/expand.exe \
         x86_microsoft-windows-deltapackageexpander_31bf3856ad364e35_6.0.6001.18000_none_69de962f3507db4b/dpx.dll \
@@ -10080,7 +10080,7 @@ load_expand()
         done
     fi
 
-    #Do not set cabinet to native, it breaks lots of installers (!), but to extract files with expand it works ok. So give example to user
+    #Do not set expand/cabinet to native, it breaks lots of installers (!), but to extract files it works ok. So give example to user
     echo "Example of usage:
           WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand -F:* some.msu .  ---> extract all files (includes some.cab) from msu to current dir
           WINEDLLOVERRIDES=expand.exe,cabinet=n wine expand -F:* some.cab .  ---> extract all files from extracted some.cab to current dir
