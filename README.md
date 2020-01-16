@@ -21,7 +21,7 @@ The ```winetricks``` package should be used if it is available and up to date. T
 * Fedora: https://fedoraproject.org/wiki/Wine#Packages
 * FreeBSD: https://www.freebsd.org/cgi/ports.cgi?query=winetricks&stype=all
 * Gentoo: https://packages.gentoo.org/packages/app-emulation/winetricks
-* Homebrew (OSX): http://brewformulas.org/Winetricks
+* Homebrew (OSX): https://formulae.brew.sh/formula/winetricks
 * MacPorts (OSX): https://www.macports.org/ports.php?by=name&substr=winetricks
 * Slackbuilds (Slackware): http://slackbuilds.org/repository/14.2/system/winetricks/?search=winetricks
 * Ubuntu: https://packages.ubuntu.com/search?keywords=winetricks
