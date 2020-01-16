@@ -20971,7 +20971,7 @@ load_mackeyremap()
         y|n) arg=$1;;
         *) w_die "illegal value $1 for MacKeyRemap";;
     esac
-    
+
     echo "Setting MacKeyRemap to $arg"
     cat > "$W_TMP"/set-mackeyremap.reg <<_EOF_
 REGEDIT4
