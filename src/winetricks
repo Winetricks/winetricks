@@ -22127,38 +22127,39 @@ winetricks_stats_report()
         *) return;;
     esac
 
-    test -f "$WINETRICKS_WORKDIR"/breadcrumbs || return
+    BREADCRUMBS_FILE="$WINETRICKS_WORKDIR"/breadcrumbs
+    if test -f "$BREADCRUMBS_FILE"; then
+        WINETRICKS_STATS_BREADCRUMBS=$(tr '\012' ' ' < "$BREADCRUMBS_FILE")
+        echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
 
-    WINETRICKS_STATS_BREADCRUMBS=$(tr '\012' ' ' < "$WINETRICKS_WORKDIR"/breadcrumbs)
-    echo "You opted in, so reporting '$WINETRICKS_STATS_BREADCRUMBS' to the winetricks maintainer so he knows which winetricks verbs get used and which don't.  Use --optout to disable future reports."
+        report="os=$(winetricks_os_description)&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
+        report="$(echo "$report" | sed 's/ /%20/g')"
 
-    report="os=$(winetricks_os_description)&winetricks=$WINETRICKS_VERSION&breadcrumbs=$WINETRICKS_STATS_BREADCRUMBS"
-    report="$(echo "$report" | sed 's/ /%20/g')"
+        # Just do a HEAD request with the raw command line.
+        # Yes, this can be fooled by caches.  That's ok.
 
-    # Just do a HEAD request with the raw command line.
-    # Yes, this can be fooled by caches.  That's ok.
-
-    # Note: these downloads are expected to fail (the resource won't exist), so don't use w_try and use '|| true' to ignore the expected errors
-    if [ "${WINETRICKS_DOWNLOADER}" = "wget" ] ; then
-        $torify wget --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-            --tries "$WINETRICKS_DOWNLOADER_RETRIES" \
-            --spider "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
-    elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ] ; then
-        $torify curl --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-           --retry "$WINETRICKS_DOWNLOADER_RETRIES" \
-           -I "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
-    elif [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ] ; then
-        $torify aria2c $aria2c_torify_opts \
-                $aria2c_torify_opts \
-                --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-                --daemon=false \
-                --enable-rpc=false \
-                --input-file='' \
-                --max-tries="$WINETRICKS_DOWNLOADER_RETRIES" \
-                --save-session='' \
-                "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
-    else
-        w_die "Here be dragons"
+        # Note: these downloads are expected to fail (the resource won't exist), so don't use w_try and use '|| true' to ignore the expected errors
+        if [ "${WINETRICKS_DOWNLOADER}" = "wget" ] ; then
+            $torify wget --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+                --tries "$WINETRICKS_DOWNLOADER_RETRIES" \
+                --spider "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
+        elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ] ; then
+            $torify curl --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+            --retry "$WINETRICKS_DOWNLOADER_RETRIES" \
+            -I "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
+        elif [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ] ; then
+            $torify aria2c $aria2c_torify_opts \
+                    $aria2c_torify_opts \
+                    --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
+                    --daemon=false \
+                    --enable-rpc=false \
+                    --input-file='' \
+                    --max-tries="$WINETRICKS_DOWNLOADER_RETRIES" \
+                    --save-session='' \
+                    "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
+        else
+            w_die "Here be dragons"
+        fi
     fi
 }
 
