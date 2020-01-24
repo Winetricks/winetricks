@@ -20962,6 +20962,40 @@ _EOF_
 }
 
 #----------------------------------------------------------------
+
+w_metadata mackeyremap=both settings \
+    title="Enable mapping opt->alt and cmd->ctrl keys for the Mac native driver"
+w_metadata mackeyremap=left settings \
+    title="Enable mapping of left opt->alt and cmd->ctrl keys for the Mac native driver"
+w_metadata mackeyremap=none settings \
+    title="Do not remap keys for the Mac native driver (default)"
+
+load_mackeyremap()
+{
+    case "$1" in
+        both|y) arg=both; _W_arg_l=y; _W_arg_r=y ;;
+        left)   arg=left; _W_arg_l=y; _W_arg_r=n ;;
+        none|n) arg=none; _W_arg_l=n; _W_arg_r=n ;;
+        *) w_die "illegal value $1 for MacKeyRemap";;
+    esac
+
+    echo "Setting MacKeyRemap to $arg"
+    cat > "$W_TMP"/set-mackeyremap.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Wine\\Mac Driver]
+"LeftCommandIsCtrl"="$_W_arg_l"
+"LeftOptionIsAlt"="$_W_arg_l"
+"RightCommandIsCtrl"="$_W_arg_r"
+"RightOptionIsAlt"="$_W_arg_r"
+
+_EOF_
+    w_try_regedit "$W_TMP"/set-mackeyremap.reg
+
+    unset _W_arg_l _W_arg_r
+}
+
+#----------------------------------------------------------------
 # X11 Driver settings
 
 w_metadata grabfullscreen=y settings \
