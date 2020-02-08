@@ -2554,6 +2554,13 @@ _EOF_
             "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
             ;;
         win2k8)
+            csdversion="Service Pack 2"
+            currentbuildnumber="6002"
+            currentversion="6.0"
+            csdversion_hex=dword:00000200
+            "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
+            ;;
+        win2k8r2)
             csdversion="Service Pack 1"
             currentbuildnumber="7601"
             currentversion="6.1"
@@ -21977,16 +21984,26 @@ load_win2k3()
     w_set_winver win2k3
 }
 
-
 #----------------------------------------------------------------
 
 w_metadata win2k8 settings \
-    title_uk="Встановити версію Windows 2008 R2" \
-    title="Set Windows version to Windows 2008 R2"
+    title_uk="Встановити версію Windows 2008" \
+    title="Set Windows version to Windows 2008"
 
 load_win2k8()
 {
     w_set_winver win2k8
+}
+
+#----------------------------------------------------------------
+
+w_metadata win2k8r2 settings \
+    title_uk="Встановити версію Windows 2008 R2" \
+    title="Set Windows version to Windows 2008 R2"
+
+load_win2k8r2()
+{
+    w_set_winver win2k8r2
 }
 
 #----------------------------------------------------------------
