@@ -5489,6 +5489,7 @@ winetricks_handle_option()
         --verify) WINETRICKS_VERIFY=1 ;;
         -vv|--really-verbose) WINETRICKS_OPT_VERBOSE=2 ; set -x ;;
         -*) w_die "unknown option $1" ;;
+        prefix=*) export WINEPREFIX="${W_PREFIXES_ROOT}/${1##prefix=}" ;;
         *) return 1 ;;
     esac
     return 0

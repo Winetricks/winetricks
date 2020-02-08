@@ -695,6 +695,68 @@ test_listing()
     export WINE="$W_WINE"
 }
 
+# shellcheck disable=SC2034
+test_prefix()
+{
+    # Run all this under the WINE_PREFIXES directory
+    WT_TEST_PREFIX="${WINE_PREFIXES}/wt-test-prefix"
+    XDG_CACHE_HOME="${WT_TEST_PREFIX}/.cache}"
+    cache="$XDG_CACHE_HOME/winetricks"
+
+    rm -rf "$WT_TEST_PREFIX"
+    testname="test1: WINEPREFIX set, no prefix="
+    if HOME="${WT_TEST_PREFIX}/home" WINEPREFIX="${WT_TEST_PREFIX}/test1" WINEDLLOVERRIDES="mshtml,mscoree=disabled" winetricks -q good && test -d "${WT_TEST_PREFIX}/test1/drive_c"; then
+        pass "${testname} passed"
+    else
+        fail "${testname} failed"
+    fi
+
+    rm -rf "$WT_TEST_PREFIX"
+    testname="test2: WINEPREFIX not set, prefix=test2"
+    if HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" winetricks -q prefix=test2 good && test -d "${WT_TEST_PREFIX}/home/.local/share/wineprefixes/test2/drive_c"; then
+        pass "${testname} passed"
+    else
+        fail "${testname} failed"
+    fi
+
+    # prefix= overrules WINEPREFIX:
+    rm -rf "$WT_TEST_PREFIX"
+    testname="test3: WINEPREFIX=test3, prefix=test3"
+    if HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" WINEPREFIX="${WT_TEST_PREFIX}/test3" winetricks -q prefix=test3 good && test -d "${WT_TEST_PREFIX}/home/.local/share/wineprefixes/test3/drive_c"; then
+        pass "${testname} passed"
+    else
+        fail "${testname} failed"
+    fi
+
+    # if both are invalid:
+    # Note: if prefix= is used, ~/.local/share/wineprefixes becomes the prefix. Not sure if that's good or bad, but for now just documenting the behavior:
+    rm -rf "$WT_TEST_PREFIX"
+    testname="test4: WINEPREFIX=/dev/null, prefix="
+    if HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" WINEPREFIX="/dev/null" winetricks -q prefix= good && test -d "${WT_TEST_PREFIX}/home/.local/share/wineprefixes/drive_c"; then
+        pass "${testname} passed"
+    else
+        fail "${testname} failed"
+    fi
+
+    # WINEPREFIX is invalid, prefix not used:
+    rm -rf "$WT_TEST_PREFIX"
+    testname="test5: WINEPREFIX=/dev/null, no prefix"
+    if ! HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" WINEPREFIX="/dev/null" winetricks -q good; then
+        pass "${testname} did not succeed (as expected)"
+    else
+        fail "${testname} worked, should have failed"
+    fi
+
+    # if nothing is defined, ~/.wine should be used:
+    rm -rf "$WT_TEST_PREFIX"
+    testname="test6: WINEPREFIX not set, prefix not set"
+    if HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" winetricks -q good && test -d "${WT_TEST_PREFIX}/home/.wine/drive_c"; then
+        pass "${testname} passed"
+    else
+        fail "${testname} failed"
+    fi
+}
+
 test_quick()
 {
     echo "warning: quick test takes up around 20GB"
@@ -714,6 +776,9 @@ test_quick()
 
     # And listing verbs (with/without WINE available)
     test_listing
+
+    # WINEPREFIX/prefix= handling
+    test_prefix
 }
 
 test_full() {
@@ -873,6 +938,7 @@ case "$1" in
     full)  check_deps && test_full ;;
     # doesn't use time/cabextract, so not bothering to check deps for now:
     listing) test_listing ;;
+    prefix) test_prefix ;;
     quick) check_deps && test_quick ;;
     w_compare_wine_version) check_deps && test_w_compare_wine_version ;;
     xvfb-check) check_deps && XVFB=xvfb-run && export XVFB && test_xvfb ;;
