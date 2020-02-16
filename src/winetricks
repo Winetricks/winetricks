@@ -13694,6 +13694,58 @@ load_opensymbol()
 
 #----------------------------------------------------------------
 
+w_metadata sourcehansans_cn fonts \
+    title="Source Han Sans CN fonts" \
+    publisher="Adobe" \
+    year="2019" \
+    media="download" \
+    file1="SourceHanSansCN.zip" \
+    installed_file1="$W_FONTSDIR_WIN/sourcehansanscn-regular.otf"
+
+load_sourcehansans_cn()
+{
+    w_download "https://github.com/adobe-fonts/source-han-sans/raw/2.001R/SubsetOTF/SourceHanSansCN.zip" dbc63746cd8daa8b219a236fe0278e5eb7f910bec90c9897ada440e6d796f256
+
+    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
+    w_try_cp_font_files "$W_TMP/SourceHanSansCN" "$W_FONTSDIR_UNIX" "*.otf"
+
+    w_register_font sourcehansanscn-extralight.otf "Source Han Sans CN Extra Light"
+    w_register_font sourcehansanscn-light.otf "Source Han Sans CN Light"
+    w_register_font sourcehansanscn-normal.otf "Source Han Sans CN Normal"
+    w_register_font sourcehansanscn-regular.otf "Source Han Sans CN"
+    w_register_font sourcehansanscn-medium.otf "Source Han Sans CN Medium"
+    w_register_font sourcehansanscn-bold.otf "Source Han Sans CN Bold"
+    w_register_font sourcehansanscn-heavy.otf "Source Han Sans CN Heavy"
+}
+
+#----------------------------------------------------------------
+
+w_metadata sourcehansans_tw fonts \
+    title="Source Han Sans TW fonts" \
+    publisher="Adobe" \
+    year="2019" \
+    media="download" \
+    file1="SourceHanSansTW.zip" \
+    installed_file1="$W_FONTSDIR_WIN/sourcehansanstw-regular.otf"
+
+load_sourcehansans_tw()
+{
+    w_download "https://github.com/adobe-fonts/source-han-sans/raw/2.001R/SubsetOTF/SourceHanSansTW.zip" 46d0ab308913572698d7a0ddf031c74b420bc0d575aba9a332db9e7e872db40f
+
+    w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
+    w_try_cp_font_files "$W_TMP/SourceHanSansTW" "$W_FONTSDIR_UNIX" "*.otf"
+
+    w_register_font sourcehansanstw-extralight.otf "Source Han Sans TW Extra Light"
+    w_register_font sourcehansanstw-light.otf "Source Han Sans TW Light"
+    w_register_font sourcehansanstw-normal.otf "Source Han Sans TW Normal"
+    w_register_font sourcehansanstw-regular.otf "Source Han Sans TW"
+    w_register_font sourcehansanstw-medium.otf "Source Han Sans TW Medium"
+    w_register_font sourcehansanstw-bold.otf "Source Han Sans TW Bold"
+    w_register_font sourcehansanstw-heavy.otf "Source Han Sans TW Heavy"
+}
+
+#----------------------------------------------------------------
+
 w_metadata tahoma fonts \
     title="MS Tahoma font (not part of corefonts)" \
     publisher="Microsoft" \
