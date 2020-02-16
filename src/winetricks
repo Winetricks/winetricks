@@ -13432,27 +13432,37 @@ load_eufonts()
 #----------------------------------------------------------------
 
 w_metadata fakechinese fonts \
-    title="Creates aliases for Chinese fonts using WenQuanYi fonts" \
-    publisher="wenq.org" \
-    year="2009"
+    title="Creates aliases for Chinese fonts using Source Han Sans fonts" \
+    publisher="Adobe" \
+    year="2019"
 
 load_fakechinese()
 {
-    w_call wenquanyi
-    # Loads Wenquanyi fonts and sets aliases for Microsoft Chinese fonts
+    w_call sourcehansans_cn
+    w_call sourcehansans_tw
+    # Loads Source Han Sans fonts and sets aliases for Microsoft Chinese fonts
     # Reference : https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_fonts
 
-    w_register_font_replacement "Microsoft JhengHei" "WenQuanYi Micro Hei"
-    w_register_font_replacement "Microsoft YaHei" "WenQuanYi Micro Hei"
-    w_register_font_replacement "SimHei" "WenQuanYi Micro Hei"
-    w_register_font_replacement "DFKai-SB" "WenQuanYi Micro Hei"
-    w_register_font_replacement "FangSong" "WenQuanYi Micro Hei"
-    w_register_font_replacement "KaiTi" "WenQuanYi Micro Hei"
-    w_register_font_replacement "PMingLiU" "WenQuanYi Micro Hei"
-    w_register_font_replacement "MingLiU" "WenQuanYi Micro Hei"
-    w_register_font_replacement "NSimSun" "WenQuanYi Micro Hei"
-    w_register_font_replacement "SimKai" "WenQuanYi Micro Hei"
-    w_register_font_replacement "SimSun" "WenQuanYi Micro Hei"
+    # Simplified Chinese
+    w_register_font_replacement "Dengxian" "Source Han Sans CN"
+    w_register_font_replacement "FangSong" "Source Han Sans CN"
+    w_register_font_replacement "KaiTi" "Source Han Sans CN"
+    w_register_font_replacement "Microsoft YaHei" "Source Han Sans CN"
+    w_register_font_replacement "Microsoft YaHei UI" "Source Han Sans CN"
+    w_register_font_replacement "NSimSun" "Source Han Sans CN"
+    w_register_font_replacement "SimHei" "Source Han Sans CN"
+    w_register_font_replacement "SimKai" "Source Han Sans CN"
+    w_register_font_replacement "SimSun" "Source Han Sans CN"
+    w_register_font_replacement "SimSun-ExtB" "Source Han Sans CN"
+
+    # Traditional Chinese
+    w_register_font_replacement "DFKai-SB" "Source Han Sans TW"
+    w_register_font_replacement "Microsoft JhengHei" "Source Han Sans TW"
+    w_register_font_replacement "Microsoft JhengHei UI" "Source Han Sans TW"
+    w_register_font_replacement "MingLiU" "Source Han Sans TW"
+    w_register_font_replacement "PMingLiU" "Source Han Sans TW"
+    w_register_font_replacement "MingLiU-ExtB" "Source Han Sans TW"
+    w_register_font_replacement "PMingLiU-ExtB" "Source Han Sans TW"
 }
 
 #----------------------------------------------------------------
