@@ -8913,15 +8913,7 @@ load_dotnet35()
     w_wineserver -w
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    "$WINE" "${file1}" /lang:ENU $W_UNATTENDED_SLASH_Q
-    status=$?
-
-    case $status in
-        0) ;;
-        105) echo "exit status $status - normal, user selected 'restart now'" ;;
-        194) echo "exit status $status - normal, user selected 'restart later'" ;;
-        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
-    esac
+    w_try_ms_installer "$WINE" "${file1}" /lang:ENU $W_UNATTENDED_SLASH_Q
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
