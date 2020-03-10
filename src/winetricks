@@ -14422,17 +14422,10 @@ load_ie6()
 
     w_try_cd "$W_TMP/IE 6.0 Full"
     if [ -n "$W_UNATTENDED_SLASH_Q" ]; then
-        "$WINE" IE6SETUP.EXE /q:a /r:n /c:"ie6wzd /S:""#e"" /q:a /r:n"
+        w_try_ms_installer "$WINE" IE6SETUP.EXE /q:a /r:n /c:"ie6wzd /S:""#e"" /q:a /r:n"
     else
-        "$WINE" IE6SETUP.EXE
+        w_try_ms_installer "$WINE" IE6SETUP.EXE
     fi
-
-    # IE6 exits with 194 to signal a reboot
-    status=$?
-    case $status in
-        0|194) ;;
-        *) w_die ie6 installation failed;;
-    esac
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
     # FIXME: whittle down this list
