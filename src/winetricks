@@ -8498,16 +8498,8 @@ load_dotnet20()
                 }
             "
         else
-            "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
-            status=$?
+            w_try_ms_installer "$WINE" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
         fi
-
-        case $status in
-            0) ;;
-            105) echo "exit status $status - normal, user selected 'restart now'" ;;
-            194) echo "exit status $status - normal, user selected 'restart later'" ;;
-            *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
-        esac
 
         w_set_winver 'default'
 
