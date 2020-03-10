@@ -14518,7 +14518,7 @@ load_ie7()
 
     if test -w /; then
         # END KLUDGE: restore Z:, assuming user didn't kill us
-        mv "$WINEPREFIX/dosdevices/z:.bak_wt" "$WINEPREFIX/dosdevices/z:"
+        w_try mv "$WINEPREFIX/dosdevices/z:.bak_wt" "$WINEPREFIX/dosdevices/z:"
     fi
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
