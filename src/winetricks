@@ -8736,15 +8736,7 @@ load_dotnet20sp2()
     fi
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    "$WINE" "$exe" ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
-    status=$?
-
-    case $status in
-        0) ;;
-        105) echo "exit status $status - normal, user selected 'restart now'" ;;
-        194) echo "exit status $status - normal, user selected 'restart later'" ;;
-        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
-    esac
+    w_try_ms_installer "$WINE" "$exe" ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
 
     if [ "$W_ARCH" = "win32" ]; then
         # We can't stop installing dotnet20sp1 in win2k mode until Wine supports
