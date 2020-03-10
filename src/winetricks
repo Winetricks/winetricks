@@ -8864,15 +8864,7 @@ load_dotnet30sp1()
     w_try "$WINE" msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_UNATTENDED_SLASH_QB}
     "$WINE" sc delete FontCache3.0.0.0
 
-    "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q}
-    status=$?
-
-    case $status in
-        0) ;;
-        105) echo "exit status $status - normal, user selected 'restart now'" ;;
-        194) echo "exit status $status - normal, user selected 'restart later'" ;;
-        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
-    esac
+    w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q}
 
     w_override_dlls native mscorwks
     w_set_winver 'default'
