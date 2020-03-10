@@ -9311,18 +9311,7 @@ load_dotnet471()
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+$unattended_args}
-    status=$?
-
-    echo "exit status: $status"
-
-    case $status in
-        0) ;;
-        5) w_die "exit status $status - user selected 'Cancel'" ;;
-        105) echo "exit status $status - normal, user selected 'restart now'" ;;
-        194) echo "exit status $status - normal, user selected 'restart later'" ;;
-        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
-    esac
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+$unattended_args}
 
     w_override_dlls native mscoree
 
