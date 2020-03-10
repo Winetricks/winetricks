@@ -515,13 +515,51 @@ w_try()
             ;;
     esac
     status=$?
-    if test $status -ne 0; then
-        case $LANG in
-            pl*) w_die "Informacja: poelcenie $* zwróciło status $status. Przerywam." ;;
-            ru*) w_die "Важно: команда $* вернула статус $status. Прерывание." ;;
-            *) w_die "Note: command $* returned status $status. Aborting." ;;
+
+    en_ms_5="exit status ${status} - user selected 'Cancel'"
+    en_ms_105="exit status ${status} - normal, user selected 'restart now'"
+    en_ms_194="exit status ${status} - normal, user selected 'restart later'"
+    en_abort="Note: command $* returned status ${status}. Aborting."
+    pl_abort="Informacja: poelcenie $* zwróciło status ${status}. Przerywam."
+    ru_abort="Важно: команда $* вернула статус ${status}. Прерывание."
+
+    if [ -n "${_w_ms_installer}" ]; then
+        case ${status} in
+            # Nonfatal
+            0)
+                case ${LANG} in
+                    pl*) w_die "${pl_abort}" ;;
+                    ru*) w_die "${ru_abort}" ;;
+                    *) w_die "${en_abort}" ;;
+                esac
+                ;;
+            105) echo "${en_ms_105}" ;;
+            194) echo "${en_ms_194}" ;;
+
+            # Fatal
+            5) w_die "${en_ms_5}" ;;
+            *) w_die "${en_abort}" ;;
+        esac
+    else
+        case ${status} in
+            0) ;;
+            *)
+                case ${LANG} in
+                    pl*) w_die "${pl_abort}" ;;
+                    ru*) w_die "${ru_abort}" ;;
+                    *) w_die "${en_abort}" ;;
+                esac
+                ;;
         esac
     fi
+}
+
+# For some MS installers that have special exit codes:
+w_try_ms_installer()
+{
+    _w_ms_installer=true
+    w_try "$@"
+    unset _w_ms_installer
 }
 
 w_try_7z()
