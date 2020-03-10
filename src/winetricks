@@ -9169,19 +9169,10 @@ load_dotnet46()
     fi
 
     if w_workaround_wine_bug 38959 "This installer will fail unless run in quiet mode. See: https://bugs.winehq.org/show_bug.cgi?id=38959" ,3.6; then
-        WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" /q /c:"install.exe /q"
+        w_try_ms_installer WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" /q /c:"install.exe /q"
     else
-        WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+        w_try_ms_installer WINEDLLOVERRIDES=fusion=b "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
     fi
-
-    status=$?
-
-    case $status in
-        0) ;;
-        105) echo "exit status $status - normal, user selected 'restart now'" ;;
-        194) echo "exit status $status - normal, user selected 'restart later'" ;;
-        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
-    esac
 
     w_override_dlls native mscoree
 }
