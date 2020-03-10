@@ -14514,16 +14514,7 @@ load_ie7()
     # IE7 requies winxp to install:
     w_set_winver winxp
 
-    "$WINE" IE7-WindowsXP-x86-enu.exe $W_UNATTENDED_SLASH_QUIET
-
-    # IE7 exits with 194 to signal a reboot
-    status=$?
-    case $status in
-        0) ;;
-        105) echo "exit status $status - normal, user selected 'restart now'" ;;
-        194) echo "exit status $status - normal, user selected 'restart later'" ;;
-        *) w_die "exit status $status - $W_PACKAGE installation failed" ;;
-    esac
+    w_try_ms_installer"$WINE" IE7-WindowsXP-x86-enu.exe $W_UNATTENDED_SLASH_QUIET
 
     if test -w /; then
         # END KLUDGE: restore Z:, assuming user didn't kill us
