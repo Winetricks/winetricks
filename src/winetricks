@@ -8443,11 +8443,8 @@ verify_dotnet11()
 {
     w_dotnet_verify dotnet11
 
-    # Note: mono mcs will compile a 64-bit binary, even though MS .Net doesn't support 64-bit?
-    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-1.0-x86.exe 909b30877ca3c52a17462784fefbb52e1695c9a2055ce600282a68543c0f0864
-
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "$WINE" dotnet-hello-world-1.0-x86.exe
+    # Note: mono mcs will compile 1.0 binaries, but they're broken. From #mono:
+    # mono gave up on a 1.1-compatible classlib, it's a pain in the ass to write a non-generics version of everything
 }
 
 #----------------------------------------------------------------
@@ -8506,11 +8503,8 @@ verify_dotnet11sp1()
 {
     w_dotnet_verify dotnet11sp1
 
-    # Note: mono mcs will compile a 64-bit binary, even though MS .Net doesn't support 64-bit?
-    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-1.0-x86.exe 909b30877ca3c52a17462784fefbb52e1695c9a2055ce600282a68543c0f0864
-
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "$WINE" dotnet-hello-world-1.0-x86.exe
+    # Note: mono mcs will compile 1.0 binaries, but they're broken. From #mono:
+    # mono gave up on a 1.1-compatible classlib, it's a pain in the ass to write a non-generics version of everything
 }
 
 #----------------------------------------------------------------
