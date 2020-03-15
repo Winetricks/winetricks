@@ -8505,6 +8505,12 @@ load_dotnet11sp1()
 verify_dotnet11sp1()
 {
     w_dotnet_verify dotnet11sp1
+
+    # Note: mono mcs will compile a 64-bit binary, even though MS .Net doesn't support 64-bit?
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-1.0-x86.exe 909b30877ca3c52a17462784fefbb52e1695c9a2055ce600282a68543c0f0864
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-1.0-x86.exe
 }
 
 #----------------------------------------------------------------
@@ -8585,6 +8591,16 @@ load_dotnet20()
 verify_dotnet20()
 {
     w_dotnet_verify dotnet20
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-2.0-x86.exe 19090bab6051f23e69ed9225d6da9a147158e3809e4bd219138a9e6c9a3cb08a
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-2.0-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-2.0-x64.exe 5a2354f15a80007f8319438f15c8e9b618301aad0e9f7111818aaa4582fdbeff
+        w_try "$WINE" dotnet-hello-world-2.0-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -8728,6 +8744,16 @@ load_dotnet20sp1()
 verify_dotnet20sp1()
 {
     w_dotnet_verify dotnet20sp1
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-2.0-x86.exe 19090bab6051f23e69ed9225d6da9a147158e3809e4bd219138a9e6c9a3cb08a
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-2.0-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-2.0-x64.exe 5a2354f15a80007f8319438f15c8e9b618301aad0e9f7111818aaa4582fdbeff
+        w_try "$WINE" dotnet-hello-world-2.0-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -8791,6 +8817,16 @@ load_dotnet20sp2()
 verify_dotnet20sp2()
 {
     w_dotnet_verify dotnet20sp2
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-2.0-x86.exe 19090bab6051f23e69ed9225d6da9a147158e3809e4bd219138a9e6c9a3cb08a
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-2.0-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-2.0-x64.exe 5a2354f15a80007f8319438f15c8e9b618301aad0e9f7111818aaa4582fdbeff
+        w_try "$WINE" dotnet-hello-world-2.0-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -8874,6 +8910,16 @@ load_dotnet30()
 verify_dotnet30()
 {
     w_dotnet_verify dotnet30
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-3.0-x64.exe 8fd2ce2d3a6187afd68d18ff2f57fd71d13a9c6363a2939cbfe712c0d81726d7
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-3.0-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-3.0-x64.exe c9325ad4eeb7fcbc288593c8d78ff834f64e5a0c8c242f5f77d9bf243fad9f67
+        w_try "$WINE" dotnet-hello-world-3.0-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -8935,6 +8981,16 @@ load_dotnet30sp1()
 verify_dotnet30sp1()
 {
     w_dotnet_verify dotnet30sp1
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-3.0-x86.exe 8fd2ce2d3a6187afd68d18ff2f57fd71d13a9c6363a2939cbfe712c0d81726d7
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-3.0-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-3.0-x64.exe c9325ad4eeb7fcbc288593c8d78ff834f64e5a0c8c242f5f77d9bf243fad9f67
+        w_try "$WINE" dotnet-hello-world-3.0-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -8981,6 +9037,16 @@ load_dotnet35()
 verify_dotnet35()
 {
     w_dotnet_verify dotnet35
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-3.0-x86.exe 8fd2ce2d3a6187afd68d18ff2f57fd71d13a9c6363a2939cbfe712c0d81726d7
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-3.0-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-3.0-x64.exe c9325ad4eeb7fcbc288593c8d78ff834f64e5a0c8c242f5f77d9bf243fad9f67
+        w_try "$WINE" dotnet-hello-world-3.0-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9024,6 +9090,16 @@ load_dotnet35sp1()
 verify_dotnet35sp1()
 {
     w_dotnet_verify dotnet35sp1
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-3.0-x86.exe 8fd2ce2d3a6187afd68d18ff2f57fd71d13a9c6363a2939cbfe712c0d81726d7
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-3.0-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-3.0-x64.exe c9325ad4eeb7fcbc288593c8d78ff834f64e5a0c8c242f5f77d9bf243fad9f67
+        w_try "$WINE" dotnet-hello-world-3.0-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9076,10 +9152,14 @@ verify_dotnet40()
     w_dotnet_verify dotnet40
 
     w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.0-x86.exe 800a05e97f1ed7f3858acf70126e948c9273ba05c2775e9d38a7f610d1f6560a
-    # FIXME: 64bit
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "$WINE" dotnet-hello-world-4.0-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.0-x64.exe 3bafa87bd60735bd00b3d00373a5d43175db548d85388d94a23dcb387b712a10
+        w_try "$WINE" dotnet-hello-world-4.0-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9114,6 +9194,16 @@ load_dotnet40_kb2468871()
 verify_dotnet40_kb2468871()
 {
     w_dotnet_verify dotnet40
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.0-x86.exe 800a05e97f1ed7f3858acf70126e948c9273ba05c2775e9d38a7f610d1f6560a
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-4.0-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.0-x64.exe 3bafa87bd60735bd00b3d00373a5d43175db548d85388d94a23dcb387b712a10
+        w_try "$WINE" dotnet-hello-world-4.0-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9158,6 +9248,16 @@ load_dotnet45()
 verify_dotnet45()
 {
     w_dotnet_verify dotnet45
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.5-x86.exe e8b5f6941f81e45294ddf7318d70b14ac6c6e9f7f8bed99f7c6201fe1ed4ef12
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-4.5-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.5-x64.exe 279ea461b014325c0b405917529414f3425df6c0cc55865486dd0b3d5b297c3d
+        w_try "$WINE" dotnet-hello-world-4.5-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9202,6 +9302,16 @@ load_dotnet452()
 verify_dotnet452()
 {
     w_dotnet_verify dotnet452
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.5-x86.exe e8b5f6941f81e45294ddf7318d70b14ac6c6e9f7f8bed99f7c6201fe1ed4ef12
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-4.5-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.5-x64.exe 279ea461b014325c0b405917529414f3425df6c0cc55865486dd0b3d5b297c3d
+        w_try "$WINE" dotnet-hello-world-4.5-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9245,6 +9355,16 @@ load_dotnet46()
 verify_dotnet46()
 {
     w_dotnet_verify dotnet46
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.6-x86.exe ce1cc8682e76e1755255d3d344c24236f86df1e4e440a1cc548bf13db3d9e369
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-4.6-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.6-x64.exe 0a82490003d0398bbebea582e7f1f3a1a6e0f5e09762400aea1de6c6fc3695a9
+        w_try "$WINE" dotnet-hello-world-4.6-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9283,6 +9403,16 @@ load_dotnet461()
 verify_dotnet461()
 {
     w_dotnet_verify dotnet461
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.6-x86.exe ce1cc8682e76e1755255d3d344c24236f86df1e4e440a1cc548bf13db3d9e369
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-4.6-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.6-x64.exe 0a82490003d0398bbebea582e7f1f3a1a6e0f5e09762400aea1de6c6fc3695a9
+        w_try "$WINE" dotnet-hello-world-4.6-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9323,6 +9453,16 @@ load_dotnet462()
 verify_dotnet462()
 {
     w_dotnet_verify dotnet462
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.6-x86.exe ce1cc8682e76e1755255d3d344c24236f86df1e4e440a1cc548bf13db3d9e369
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-4.6-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.6-x64.exe 0a82490003d0398bbebea582e7f1f3a1a6e0f5e09762400aea1de6c6fc3695a9
+        w_try "$WINE" dotnet-hello-world-4.6-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9362,6 +9502,16 @@ load_dotnet471()
 verify_dotnet471()
 {
     w_dotnet_verify dotnet471
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.7-experimental-x86.exe 82ab2cbad26c89d2bacf8c8954bc61447cae1eb8a1ab7cb6145a7a34913c540a
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-4.7-experimental-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.7-experimental-x64.exe 34ee7c98f806f08fd02f3e13bf635377974ca02d6b408fbabe03f866f3a72775
+        w_try "$WINE" dotnet-hello-world-4.7-experimental-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9408,6 +9558,16 @@ load_dotnet472()
 verify_dotnet472()
 {
     w_dotnet_verify dotnet472
+
+    w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.7-experimental-x86.exe 82ab2cbad26c89d2bacf8c8954bc61447cae1eb8a1ab7cb6145a7a34913c540a
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "$WINE" dotnet-hello-world-4.7-experimental-x86.exe
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download https://raw.githubusercontent.com/Winetricks/winetricks/master/tests/dotnet-hello-world-4.7-experimental-x64.exe 34ee7c98f806f08fd02f3e13bf635377974ca02d6b408fbabe03f866f3a72775
+        w_try "$WINE" dotnet-hello-world-4.7-experimental-x64.exe
+    fi
 }
 
 #----------------------------------------------------------------
@@ -9447,6 +9607,8 @@ load_dotnet48()
 verify_dotnet48()
 {
     w_dotnet_verify dotnet48
+
+    # mcs can't build 4.8 binaries (yet?)
 }
 
 #----------------------------------------------------------------
