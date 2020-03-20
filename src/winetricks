@@ -16143,8 +16143,7 @@ load_wmp9()
     # Not really expected to work well yet; see
     # https://appdb.winehq.org/appview.php?versionId=1449
 
-    # This version of Windows Media Player can be installed only on Windows 98 Second Edition, Windows Millennium Edition, Windows 2000, Windows XP(32-bit), and Windows .NET Server(32-bit).
-    w_package_unsupported_win64
+    # This version of Windows Media Player can be installed only on Windows 98 Second Edition, Windows Millennium Edition, Windows 2000, Windows XP, and Windows .NET Server.
 
     w_call wsh57
 
@@ -16165,8 +16164,14 @@ load_wmp9()
     w_override_app_dlls MPSetup.exe native pidgen
 
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" MPSetup.exe $W_UNATTENDED_SLASH_Q
-
+    if [ "$W_ARCH" = "win64" ]; then
+      w_try cabextract -d "$W_TMP" ./MPSetup.exe
+      w_try_cd "$W_TMP"
+      w_try sed -i 's/IsWow64Process/IsNow64Process/' setup_wm.exe
+      w_try "$WINE" setup_wm.exe $W_UNATTENDED_SLASH_CAP_QUIET
+    else
+      w_try "$WINE" MPSetup.exe $W_UNATTENDED_SLASH_Q
+    fi
     load_wm9codecs
 
     w_set_winver 'default'
