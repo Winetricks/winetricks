@@ -711,8 +711,12 @@ w_try_unrar()
     if [ -z "$WINETRICKS_FORCE_WIN_7Z" ] && [ -x "$(command -v unrar 2>/dev/null)" ]; then
         w_try unrar x "$@"
     else
-        w_warn "Cannot find unrar.  Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt-get install unrar' or 'sudo yum install unrar')."
+        w_warn "Cannot find unrar. Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt-get install unrar' or 'sudo yum install unrar')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
+
+        # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
+        w_try_cd "$PWD"
+
         w_try "$WINE" "$W_PROGRAMS_X86_WIN\\7-Zip\\7z.exe" x "$(w_pathconv -w "$1")"
     fi
 }
