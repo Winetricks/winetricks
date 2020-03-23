@@ -272,11 +272,14 @@ test_7zip()
 {
     # 7z
     WINETRICKS_FORCE_WIN_7Z=1 test_command --verify comctl32ocx
+
     # ar
     WINETRICKS_FORCE_WIN_7Z=1 test_command --verify opensymbol
+
     # rar
     # FIXME: protectionid requires a manual download, and the only other user is avatar_demo
     #WINETRICKS_FORCE_WIN_7Z=1 test_command --verify protectionid
+
     # zip
     WINETRICKS_FORCE_WIN_7Z=1 test_command --verify vb2run
 }
