@@ -750,6 +750,7 @@ test_prefix()
     # if nothing is defined, ~/.wine should be used:
     rm -rf "$WT_TEST_PREFIX"
     testname="test6: WINEPREFIX not set, prefix not set"
+    unset WINEPREFIX
     if HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" winetricks -q good && test -d "${WT_TEST_PREFIX}/home/.wine/drive_c"; then
         pass "${testname} passed"
     else
