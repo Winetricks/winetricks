@@ -558,8 +558,11 @@ w_try_ar()
     if [ -z "$WINETRICKS_FORCE_WIN_7Z" ] && [ -x "$(command -v ar 2>/dev/null)" ]; then
         w_try ar x "$@"
     else
-        w_warn "Cannot find ar.  Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
+        w_warn "Cannot find ar. Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
+
+        # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
+        w_try_cd "$PWD"
 
         # -t* prevents 7-zip from decompressing .tar.xz to .tar, see
         # https://sourceforge.net/p/sevenzip/discussion/45798/thread/8cd16946/?limit=25
