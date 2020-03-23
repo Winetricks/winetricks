@@ -16237,6 +16237,8 @@ load_wmp10()
     w_set_winver 'default'
 }
 
+#----------------------------------------------------------------
+
 w_metadata wmp11 dlls \
     title="Windows Media Player 11" \
     publisher="Microsoft" \
@@ -16254,31 +16256,31 @@ load_wmp11()
     if [ "$W_ARCH" = "win32" ]; then
       # https://appdb.winehq.org/objectManager.php?sClass=version&iId=8150
       w_download https://web.archive.org/web/20170628063001/http://download.microsoft.com/download/0/9/5/0953e553-3bb6-44b1-8973-106f1b7e5049/wmp11-windowsxp-x86-enu.exe ffd321a441a67001a893f3bde4bb1afba07d4d2c9659bfdb0fbb057e7945d970
-      wmp11_exe=wmp11-windowsxp-x86-enu.exe
+      installer_exe=wmp11-windowsxp-x86-enu.exe
+      wmf_exe=wmfdist11.exe
+      wmf_exe=wmp11.exe
     elif [ "$W_ARCH" = "win64" ]; then
       # https://appdb.winehq.org/objectManager.php?sClass=version&iId=32057
       w_download https://web.archive.org/web/20190512112704/https://download.microsoft.com/download/3/0/8/3080C52C-2517-43DE-BDB4-B7EAFD88F084/wmp11-windowsxp-x64-enu.exe 5af407cf336849aff435044ec28f066dd523bbdc22d1ce7aaddb5263084f5526
-      wmp11_exe=wmp11-windowsxp-x64-enu.exe
+      installer_exe=wmp11-windowsxp-x64-enu.exe
+      wmf_exe=wmfdist11-64.exe
+      wmp_exe=wmp11-64.exe
     fi
 
     w_set_winver winxp
 
     # remove builtin placeholders to allow update
     w_try rm -f "$W_PROGRAMS_UNIX/Windows Media Player/wmplayer.exe" "$W_SYSTEM64_DLLS"/wmp.dll "$W_SYSTEM64_DLLS"/wmvcore.dll
+
     # need native overrides to allow update and later checks to succeed
     w_override_dlls native l3codeca.acm wmp wmplayer.exe wmvcore wmpnssci
 
-    w_try_cd "$W_CACHE/$W_PACKAGE"
+    w_try_cd "$W_TMP"
 
-    # https://docs.microsoft.com/en-us/windows/win32/wmp/redistributing-windows-media-player-11
-    "${WINE}" ${wmp11_exe} ${W_OPT_UNATTENDED:+ /q:A /c:"setup_wm.exe /Q /R:N"}
-
-    # installer tries to install WindowsServer2003.WindowsXP-MSCompPackV1-x64.exe at end and fails with 126 code
-    status=$?
-    case $status in
-        0|126) ;;
-        *) w_die "Note: WMP11 installer returned status '$status'.  Aborting." ;;
-    esac
+    # https://bugs.winehq.org/show_bug.cgi?id=10219#c1
+    w_try_cabextract "${W_CACHE}/${W_PACKAGE}/${installer_exe}"
+    "${WINE}" "${wmf_exe}" /quiet
+    "${WINE}" "${wmp_exe}" /quiet
 
     # Disable WMP's services, since they depend on unimplemented stuff, they trigger the GUI debugger several times
     w_try_regedit /D "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\Cdr4_2K"
