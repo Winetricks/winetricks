@@ -1939,11 +1939,11 @@ w_ahk_do()
     # Previously this used printf + sed, but that was broken with BSD sed (FreeBSD/OS X):
     # https://github.com/Winetricks/winetricks/issues/697
     # So now using trying awk instead (next, perl):
-    cat <<_EOF_ | awk 'sub("$", "\r")' > "$W_TMP"/tmp.ahk
+    cat <<_EOF_ | awk 'sub("$", "\r")' > "${W_TMP}/${W_PACKAGE}.ahk"
 w_opt_unattended = ${W_OPT_UNATTENDED:-0}
 $@
 _EOF_
-    w_try "$WINE" "$W_CACHE_WIN\\ahk\\AutoHotkey.exe" "$W_TMP_WIN"\\tmp.ahk
+    w_try "${WINE}" "${W_CACHE_WIN}\\ahk\\AutoHotkey.exe" "${W_TMP_WIN}\\${W_PACKAGE}.ahk"
 }
 
 # Function to protect Wine-specific sections of code.
