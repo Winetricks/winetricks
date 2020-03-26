@@ -5100,7 +5100,7 @@ winetricks_set_wineprefix()
         W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN} (x86)"
         W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX} (x86)"
 
-        W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles)"
+        W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles\(x86\))"
         W_COMMONFILES_X86="$(w_pathconv -u "$W_COMMONFILES_X86_WIN")"
         W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
         W_COMMONFILES="$(w_pathconv -u "$W_COMMONFILES_WIN")"
