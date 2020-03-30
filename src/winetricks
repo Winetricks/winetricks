@@ -2974,6 +2974,13 @@ w_do_call()
             done
         fi
 
+        # Allow verifying a verb separately from installing it
+        if test "$WINETRICKS_VERIFY" = 1 && winetricks_is_installed "$1" && test -z "$WINETRICKS_FORCE"; then
+            echo "$1 is already installed. --force wasn't given, --verify was, so re-verifying."
+            winetricks_verify
+            return 0
+        fi
+
         # Don't install if already installed
         if test "$WINETRICKS_FORCE" != 1 && winetricks_is_installed "$1"; then
             echo "$1 already installed, skipping"
@@ -3003,14 +3010,7 @@ w_do_call()
 
         # If the user specified --verify, also run GUI tests:
         if test "$WINETRICKS_VERIFY" = 1; then
-            # command -v isn't POSIX :(
-            "verify_$cmd" 2>/dev/null
-            verify_status=$?
-            case $verify_status in
-                0) w_warn "verify_$cmd succeeded!" ;;
-                127) echo "verify_$cmd not found, not verifying $cmd" ;;
-                *) w_die "verify_$cmd failed!" ;;
-            esac
+            winetricks_verify
         fi
 
         # Clean up after this verb
@@ -5595,6 +5595,17 @@ winetricks_install_app()
     if ! w_do_call "$1" "$2"; then
         w_die "$fail_msg"
     fi
+}
+
+winetricks_verify()
+{
+    "verify_$cmd" 2>/dev/null
+    verify_status=$?
+    case $verify_status in
+        0) w_warn "verify_$cmd succeeded!" ;;
+        127) echo "verify_$cmd not found, not verifying $cmd" ;;
+        *) w_die "verify_$cmd failed!" ;;
+    esac
 }
 
 #---- Builtin Verbs ----
