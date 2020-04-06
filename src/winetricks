@@ -6731,11 +6731,12 @@ w_metadata directmusic dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="../directx9/directx_feb2010_redist.exe"
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/dmusic.dll"
 
 load_directmusic()
 {
-# Untested. Based off https://bugs.winehq.org/show_bug.cgi?id=4805 and https://bugs.winehq.org/show_bug.cgi?id=24911
+    # Untested. Based off https://bugs.winehq.org/show_bug.cgi?id=4805 and https://bugs.winehq.org/show_bug.cgi?id=24911
 
     w_warn "You can specify individual DirectMusic verbs instead. e.g. 'winetricks dmsynth dmusic'"
 
