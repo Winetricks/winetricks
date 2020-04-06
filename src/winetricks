@@ -6740,7 +6740,6 @@ load_directmusic()
 
     w_warn "You can specify individual DirectMusic verbs instead. e.g. 'winetricks dmsynth dmusic'"
 
-    w_call devenum
     w_call dmband
     w_call dmcompos
     w_call dmime
@@ -6752,7 +6751,6 @@ load_directmusic()
     w_call dmusic32
     w_call dsound
     w_call dswave
-    w_call quartz
 
     # FIXME: dxnt.cab doesn't contain this DLL. Is this really needed?
     w_override_dlls native streamci
