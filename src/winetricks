@@ -12023,6 +12023,12 @@ w_metadata vcrun2008 dlls \
 
 load_vcrun2008()
 {
+    echo "WINE is $WINE, WINE_MULTI is $WINE_MULTI, WINE_ARCH is $WINE_ARCH"
+    echo "W_PROGRAMS_X86_WIN is $W_PROGRAMS_X86_WIN"
+    echo "W_PROGRAMS_X86_UNIX is $W_PROGRAMS_X86_UNIX"
+    echo "W_PROGRAMS_WIN is $W_PROGRAMS_WIN"
+    echo "W_PROGRAMS_UNIX is $W_PROGRAMS_UNIX"
+
     # June 2011 security update, see
     # https://technet.microsoft.com/library/security/ms11-025 or
     # https://support.microsoft.com/kb/2538242
