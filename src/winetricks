@@ -4276,7 +4276,7 @@ winetricks_is_installed()
             ;;
         *)
             # Compute wineprefix for this app
-            case "${category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
+            case "${_W_category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
                 apps-0|benchmarks-0|games-0)
                     _W_prefix="$W_PREFIXES_ROOT/$1"
                     ;;
