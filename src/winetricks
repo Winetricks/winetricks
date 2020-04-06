@@ -895,7 +895,7 @@ w_pathconv()
 # Expand an environment variable and print it to stdout
 w_expand_env()
 {
-    winetricks_early_wine cmd.exe /c echo "%$1%"
+    winetricks_early_wine_arch cmd.exe /c echo "%$1%"
 }
 
 # Get the latest tagged release from github.com API
@@ -3335,6 +3335,14 @@ winetricks_early_wine()
     # The tr removes carriage returns so expanded variables don't have crud on the end
     # The grep works around using new wineprefixes with old wine
     WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
+}
+
+# Wrapper around winetricks_early_wine()
+# Same idea, but use $WINE_ARCH, i.e., always use wine64 for 64-bit prefixes
+# Currently only used by w_expand_env()
+winetricks_early_wine_arch()
+{
+    WINE="$WINE_ARCH" winetricks_early_wine "$@"
 }
 
 winetricks_detect_gui()
