@@ -5053,6 +5053,11 @@ winetricks_set_wineprefix()
         WINE_MULTI="${WINE}"
         W_ARCH=win64
 
+        # If user sets 'WINE=wine' in a 64-bit prefix, it will invoke a win32 environment, which probably isn't what they want
+        if [ "$WINE" != "$WINE_ARCH" ]; then
+            w_warn "You've set WINE=$WINE in a 64-bit prefix, which will run a win32 environment, you probably want to set it to the 64-bit version instead"
+        fi
+
         W_PROGRAMS_WIN="$(w_expand_env ProgramFiles)"
         W_PROGRAMS_UNIX="$(w_pathconv -u "$W_PROGRAMS_WIN")"
 
