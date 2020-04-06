@@ -895,7 +895,7 @@ w_pathconv()
 # Expand an environment variable and print it to stdout
 w_expand_env()
 {
-    winetricks_early_wine cmd.exe /c echo "%$1%"
+    winetricks_early_wine_arch cmd.exe /c echo "%$1%"
 }
 
 # Get the latest tagged release from github.com API
@@ -3337,6 +3337,14 @@ winetricks_early_wine()
     WINEDEBUG=-all "$WINE" "$@" 2> "$W_TMP_EARLY"/early_wine.err.txt | ( sed 's/.*1h.=//' | tr -d '\r' | grep -v -e "Module not found" -e "Could not load wine-gecko" || true)
 }
 
+# Wrapper around winetricks_early_wine()
+# Same idea, but use $WINE_ARCH, i.e., always use wine64 for 64-bit prefixes
+# Currently only used by w_expand_env()
+winetricks_early_wine_arch()
+{
+    WINE="$WINE_ARCH" winetricks_early_wine "$@"
+}
+
 winetricks_detect_gui()
 {
     if test -x "$(command -v zenity 2>/dev/null)"; then
@@ -5000,6 +5008,8 @@ winetricks_set_winearch()
 # shellcheck disable=SC2034
 winetricks_set_wineprefix()
 {
+    # Note: these are arch independent, but are needed by some arch dependent variables
+    # Defining here to avoid having two arch checks:
     if ! test "$1"; then
         WINEPREFIX="$WINETRICKS_ORIGINAL_WINEPREFIX"
     else
@@ -5007,23 +5017,112 @@ winetricks_set_wineprefix()
     fi
 
     export WINEPREFIX
-    #echo "WINEPREFIX is now $WINEPREFIX" >&2
-    mkdir -p "$(dirname "$WINEPREFIX")"
-
-    # Run wine here to force creation of the wineprefix so it's there when we want to make the cache symlink a bit later.
-    # The folder-name is localized!
-    W_PROGRAMS_WIN="$(w_expand_env ProgramFiles)"
-    case "$W_PROGRAMS_WIN" in
-        "") w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned empty string, error message \"$(cat $W_TMP_EARLY/early_wine.err.txt)\" ";;
-        %*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned unexpanded string '$W_PROGRAMS_WIN' ... this can be caused by a corrupt wineprefix (\`wineboot -u\` may help), by an old wine, or by not owning $WINEPREFIX" ;;
-        *unknown*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
-    esac
+    w_try mkdir -p "$(dirname "$WINEPREFIX")"
 
     case "$W_PLATFORM" in
         windows_cmd)
             W_DRIVE_C="/cygdrive/c" ;;
         *)
             W_DRIVE_C="$WINEPREFIX/dosdevices/c:" ;;
+    esac
+    W_WINDIR_UNIX="$W_DRIVE_C/windows"
+
+    # Make sure the prefix is initialized:
+    w_try winetricks_early_wine cmd /c "echo init" > /dev/null 2>&1
+
+    # Win(e) 32/64?
+    # Using the variable W_SYSTEM32_DLLS instead of SYSTEM32 because some stuff does go under system32 for both arch's
+    # e.g., spool/drivers/color
+    if test -d "$W_DRIVE_C/windows/syswow64"; then
+        # Probably need fancier handling/checking, but for a basic start:
+        # Note 'wine' may be named 'wine-stable'/'wine-staging'/etc.):
+        # WINE64 = wine64, available on 64-bit prefixes
+        # WINE_ARCH = the native wine for the prefix (wine for 32-bit, wine64 for 64-bit)
+        # WINE_MULTI = generic wine, new name
+        if [ "${WINE%??}64" = "$WINE" ]; then
+            WINE64="${WINE}"
+        elif command -v "${WINE}64" >/dev/null 2>&1; then
+            WINE64="${WINE}64"
+        else
+            # Handle case where wine binaries (or binary wrappers) have a suffix
+            WINE64="$(dirname "$WINE")/"
+            [ "$WINE64" = "./" ] && WINE64=""
+            WINE64="${WINE64}$(basename "$WINE" | sed 's/^wine/wine64/')"
+        fi
+        WINE_ARCH="${WINE64}"
+        WINE_MULTI="${WINE}"
+        W_ARCH=win64
+
+        W_PROGRAMS_WIN="$(w_expand_env ProgramFiles)"
+        W_PROGRAMS_UNIX="$(w_pathconv -u "$W_PROGRAMS_WIN")"
+
+        # Common variable for 32-bit dlls on win32/win64:
+        W_32BIT_DLLS="$W_WINDIR_UNIX/syswow64"
+        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
+        W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
+
+        W_SYSTEM64_DLLS="$W_WINDIR_UNIX/system32"
+        W_SYSTEM64_DLLS_WIN32="C:\\windows\\sysnative" # path to access 64-bit dlls from 32-bit apps
+        W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
+
+        # There's also ProgramW6432, which =%ProgramFiles%(but only available when running under a 64 bit OS)
+        # See https://ss64.com/nt/syntax-variables.html
+        W_PROGRAMW6432_WIN="$(w_expand_env ProgramW6432)"
+        W_PROGRAMW6432_UNIX="$(w_pathconv -u "$W_PROGRAMW6432_WIN")"
+
+        # 64-bit Windows has a second directory for program files
+        W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN} (x86)"
+        W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX} (x86)"
+
+        W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles\(x86\))"
+        W_COMMONFILES_X86="$(w_pathconv -u "$W_COMMONFILES_X86_WIN")"
+        W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
+        W_COMMONFILES="$(w_pathconv -u "$W_COMMONFILES_WIN")"
+
+        # 64-bit prefixes still have plenty of issues:
+        case $LANG in
+            ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
+            *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
+        esac
+    else
+        WINE64="false"
+        WINE_ARCH="${WINE}"
+        WINE_MULTI="${WINE}"
+        W_ARCH=win32
+
+        W_PROGRAMS_WIN="$(w_expand_env ProgramFiles)"
+        W_PROGRAMS_UNIX="$(w_pathconv -u "$W_PROGRAMS_WIN")"
+
+        # Common variable for 32-bit dlls on win32/win64:
+        W_32BIT_DLLS="$W_WINDIR_UNIX/system32"
+        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
+        W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
+
+        # These don't exist on win32, but are defined in case they are used on 32-bit.
+        # W_SYSTEM64_DLLS_WIN64 in particular is needed by w_metadata()
+        W_SYSTEM64_DLLS="/dev/null"
+        W_SYSTEM64_DLLS_WIN32="C:\\does-not-exist-on-win32" # path to access 64-bit dlls from 32-bit apps
+        W_SYSTEM64_DLLS_WIN64="C:\\does-not-exist-on-win32"  # path to access 64-bit dlls from 64-bit apps
+
+        W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN}"
+        W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX}"
+
+        W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles)"
+        W_COMMONFILES_X86="$(w_pathconv -u "$W_COMMONFILES_X86_WIN")"
+        W_COMMONFILES_WIN="$(w_expand_env CommonProgramFiles)"
+        W_COMMONFILES="$(w_pathconv -u "$W_COMMONFILES_WIN")"
+    fi
+
+    ## Arch independent variables:
+
+    # Note: using AppData since it's arch indepedent
+    W_APPDATA_WIN="$(w_expand_env AppData)"
+    W_APPDATA_UNIX="$(w_pathconv -u "$W_APPDATA_WIN")"
+
+    case "$W_APPDATA_WIN" in
+        "") w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%AppData%' returned empty string, error message \"$(cat $W_TMP_EARLY/early_wine.err.txt)\" ";;
+        %*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%AppData%' returned unexpanded string '$W_PROGRAMS_WIN' ... this can be caused by a corrupt wineprefix (\`wineboot -u\` may help), by an old wine, or by not owning $WINEPREFIX" ;;
+        *unknown*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%AppData%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
     esac
 
     # Kludge: use Temp instead of temp to avoid \t expansion in w_try
@@ -5056,11 +5155,7 @@ winetricks_set_wineprefix()
             ;;
     esac
 
-    W_PROGRAMS_UNIX="$(w_pathconv -u "$W_PROGRAMS_WIN")"
     W_WINDIR_UNIX="$W_DRIVE_C/windows"
-
-    W_APPDATA_WIN="$(w_expand_env AppData)"
-    W_APPDATA_UNIX="$(w_pathconv -u "$W_APPDATA_WIN")"
 
     # FIXME: get fonts path from SHGetFolderPath
     # See also https://blogs.msdn.microsoft.com/oldnewthing/20031103-00/?p=41973/
@@ -5075,84 +5170,6 @@ winetricks_set_wineprefix()
     fi
     mkdir -p "${W_FONTSDIR_UNIX}"
 
-    # Win(e) 32/64?
-    # Using the variable W_SYSTEM32_DLLS instead of SYSTEM32 because some stuff does go under system32 for both arch's
-    # e.g., spool/drivers/color
-    if test -d "$W_DRIVE_C/windows/syswow64"; then
-        W_ARCH=win64
-
-        # Common variable for 32-bit dlls on win32/win64:
-        W_32BIT_DLLS="$W_WINDIR_UNIX/syswow64"
-        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
-        W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
-
-        W_SYSTEM64_DLLS="$W_WINDIR_UNIX/system32"
-        W_SYSTEM64_DLLS_WIN32="C:\\windows\\sysnative" # path to access 64-bit dlls from 32-bit apps
-        W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
-
-        # There's also ProgramW6432, which =%ProgramFiles%(but only available when running under a 64 bit OS)
-        # See https://ss64.com/nt/syntax-variables.html
-        W_PROGRAMW6432_WIN="$(w_expand_env ProgramW6432)"
-        W_PROGRAMW6432_UNIX="$(w_pathconv -u "$W_PROGRAMW6432_WIN")"
-
-        # 64-bit Windows has a second directory for program files
-        W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN} (x86)"
-        W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX} (x86)"
-
-        W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles\(x86\))"
-        W_COMMONFILES_X86="$(w_pathconv -u "$W_COMMONFILES_X86_WIN")"
-        W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
-        W_COMMONFILES="$(w_pathconv -u "$W_COMMONFILES_WIN")"
-
-        # Probably need fancier handling/checking, but for a basic start:
-        # Note 'wine' may be named 'wine-stable'/'wine-staging'/etc.):
-        # WINE64 = wine64, available on 64-bit prefixes
-        # WINE_ARCH = the native wine for the prefix (wine for 32-bit, wine64 for 64-bit)
-        # WINE_MULTI = generic wine, new name
-        if [ "${WINE%??}64" = "$WINE" ]; then
-            WINE64="${WINE}"
-        elif command -v "${WINE}64" >/dev/null 2>&1; then
-            WINE64="${WINE}64"
-        else
-            # Handle case where wine binaries (or binary wrappers) have a suffix
-            WINE64="$(dirname "$WINE")/"
-            [ "$WINE64" = "./" ] && WINE64=""
-            WINE64="${WINE64}$(basename "$WINE" | sed 's/^wine/wine64/')"
-        fi
-        WINE_ARCH="${WINE64}"
-        WINE_MULTI="${WINE}"
-
-        # 64-bit prefixes still have plenty of issues:
-        case $LANG in
-            ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
-            *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
-        esac
-    else
-        W_ARCH=win32
-
-        # Common variable for 32-bit dlls on win32/win64:
-        W_32BIT_DLLS="$W_WINDIR_UNIX/system32"
-        W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
-        W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
-
-        # These don't exist on win32, but are defined in case they are used on 32-bit.
-        # W_SYSTEM64_DLLS_WIN64 in particular is needed by w_metadata()
-        W_SYSTEM64_DLLS="/dev/null"
-        W_SYSTEM64_DLLS_WIN32="C:\\does-not-exist-on-win32" # path to access 64-bit dlls from 32-bit apps
-        W_SYSTEM64_DLLS_WIN64="C:\\does-not-exist-on-win32"  # path to access 64-bit dlls from 64-bit apps
-
-        W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN}"
-        W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX}"
-
-        W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles)"
-        W_COMMONFILES_X86="$(w_pathconv -u "$W_COMMONFILES_X86_WIN")"
-        W_COMMONFILES_WIN="$(w_expand_env CommonProgramFiles)"
-        W_COMMONFILES="$(w_pathconv -u "$W_COMMONFILES_WIN")"
-
-        WINE64="false"
-        WINE_ARCH="${WINE}"
-        WINE_MULTI="${WINE}"
-    fi
 
     # Unset WINEARCH which might be set from winetricks_set_winearch().
     # It is no longer necessary after the new wineprefix was created
