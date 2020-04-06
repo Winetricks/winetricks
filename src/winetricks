@@ -2951,8 +2951,7 @@ w_do_call()
         case "$W_PLATFORM" in
             windows_cmd|wine_cmd) ;;
             *)
-                # shellcheck disable=SC2154
-                case "${category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
+                case "${_W_category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
                     apps-0|benchmarks-0|games-0) winetricks_set_wineprefix "$cmd";;
                     *) winetricks_set_wineprefix;;
                 esac
