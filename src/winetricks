@@ -2953,7 +2953,7 @@ w_do_call()
             *)
                 case "${_W_category}-${WINETRICKS_OPT_SHAREDPREFIX}" in
                     apps-0|benchmarks-0|games-0) winetricks_set_wineprefix "$cmd";;
-                    *) winetricks_set_wineprefix;;
+                    *) winetricks_set_wineprefix "$_W_prefix_name";;
                 esac
                 # If it's a new wineprefix, give it metadata
                 if test ! -f "$WINEPREFIX"/wrapper.cfg; then
@@ -22601,6 +22601,7 @@ if ! test "$WINETRICKS_LIB"; then
                             # the GUI, this may have an "arch=* " prefix
                             _W_arch=$(echo "$verbs" | grep -o 'arch=.*' | cut -d' ' -f1)
                             _W_prefix=$(echo "$verbs" | grep -o 'prefix=.*')
+                            _W_prefix_name="${_W_prefix#*=}"
                             if [ -n "$_W_arch" ]; then
                                 execute_command "$_W_arch"
                             fi
