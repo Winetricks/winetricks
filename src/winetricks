@@ -14870,7 +14870,7 @@ w_metadata mspaint apps \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    file1="WindowsXP-KB978706-x86-ENU.exe" \
+    file1="windowsxp-kb978706-x86-enu_f4e076b3867c2f08b6d258316aa0e11d6822b8d7.exe" \
     installed_file1="c:/windows/mspaint.exe"
 
 load_mspaint()
@@ -14882,8 +14882,8 @@ load_mspaint()
     # Originally at: https://download.microsoft.com/download/0/A/4/0A40DF5C-2BAE-4C63-802A-84C33B34AC98/WindowsXP-KB978706-x86-ENU.exe
     # Mirror list: http://www.filewatcher.com/_/?q=WindowsXP-KB978706-x86-ENU.exe
     w_download http://download.windowsupdate.com/msdownload/update/software/secu/2010/01/windowsxp-kb978706-x86-enu_f4e076b3867c2f08b6d258316aa0e11d6822b8d7.exe 93ed34ab6c0d01a323ce10992d1c1ca27d1996fef82f0864d83e7f5ac6f9b24b
-    w_try $WINE "$W_CACHE"/mspaint/WindowsXP-KB978706-x86-ENU.exe /q /x:"$W_TMP"/WindowsXP-KB978706-x86-ENU
-    w_try cp -f "$W_TMP"/WindowsXP-KB978706-x86-ENU/SP3GDR/mspaint.exe "$W_WINDIR_UNIX"/mspaint.exe
+    w_try "$WINE" "${W_CACHE}/${W_PACKAGE}/${file1}" /q /x:"${W_TMP}/${file1}"
+    w_try cp -f "${W_TMP}/${file1}/SP3GDR/mspaint.exe" "$W_WINDIR_UNIX"/mspaint.exe
 }
 
 #----------------------------------------------------------------
