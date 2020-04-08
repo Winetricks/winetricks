@@ -9396,6 +9396,31 @@ verify_dotnet48()
 
 #----------------------------------------------------------------
 
+w_metadata dotnetcore2 dlls \
+    title="MS .NET Core Runtime 2.1 LTS" \
+    publisher="Microsoft" \
+    year="2020" \
+    media="download" \
+    file1="dotnet-runtime-2.1.17-win-x86.exe" \
+    installed_file1="$W_PROGRAMS_WIN/dotnet/dotnet.exe"
+
+load_dotnetcore2()
+{
+    # Official version, see https://dotnet.microsoft.com/download/dotnet-core/2.1
+    w_download https://download.visualstudio.microsoft.com/download/pr/73a0ea97-57d6-4263-ac36-ea3a9b373bcf/cd5f7e08e749c1d3468cdae89e4518de/dotnet-runtime-2.1.17-win-x86.exe 706a7f0ad998c3c1b321e89e4bcd6304bef31c95c83eda119e8d4adccccbc915
+
+    w_try_cd "$W_CACHE"/"$W_PACKAGE"
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "$W_ARCH" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/cd223083-8c0e-4963-9fcd-fcf01a55e56c/15500e764899442ed6e014687caa34e9/dotnet-runtime-2.1.17-win-x64.exe 5a065ae6f9e031399cb7084c6315ce977342dec069cd6386caed1c5b69d49260
+        w_try "$WINE" "dotnet-runtime-2.1.17-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata dotnet_verifier dlls \
     title="MS .NET Verifier" \
     publisher="Microsoft" \
