@@ -6687,10 +6687,19 @@ load_devenum()
 {
     helper_directx_dl
 
-    w_try_cabextract -d "$W_TMP" -L -F 'dxnt.cab' "$W_CACHE/directx9/$DIRECTX_NAME"
-    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'devenum.dll' "$W_TMP/dxnt.cab"
     w_override_dlls native devenum
-    w_try_regsvr devenum.dll
+
+    if [ "$W_ARCH" = "win32" ]; then
+        w_try_cabextract -d "$W_TMP" -L -F 'dxnt.cab' "$W_CACHE/directx9/$DIRECTX_NAME"
+        w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'devenum.dll' "$W_TMP/dxnt.cab"
+        w_override_dlls native devenum
+        w_try_regsvr devenum.dll
+    elif [ "$W_ARCH" = "win64" ]; then
+        helper_winxp64sp2 amd64/devenum.dl_
+        echo "load_devenum(): warning: the 32/64-bit dlls have different versions (32: 6.5.1.902 64: 6.5.3790.3959), couldn't find matching, may cause issues"
+        w_try_cabextract -d "$W_SYSTEM64_DLLS" -L "$W_TMP"/amd64/devenum.dl_
+        w_try_regsvr64 devenum.dll
+    fi
 }
 
 #----------------------------------------------------------------
