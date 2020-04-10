@@ -334,22 +334,23 @@ w_detect_mingw()
     # mingw builds have some (not yet all) .dll files in ${WINE}/../lib{,64}/wine
     # non-mingw have exclusively .dll.so files
     #
-    # Unfortunately, installed wine and wine run from source dir have different layouts:
+    # It's more portable though, to check for 'Wine (placeholder|builtin) DLL'
+    # placeholder=no-mingw
+    # builtin=mingw (wine-4.11+)
 
-    # Source:
-    if test -f "$(dirname "${WINE}")/Makefile.in"; then
-        if ls "$(dirname "${WINE}")/dlls"/*/*.dll >/dev/null 2>&1; then
-            wine_mingw=1
+    # See https://github.com/Winetricks/winetricks/issues/1461
+    if w_wine_version_in ,4.10 ; then
+        if grep -obUa "Wine placeholder DLL" "$("$WINE" winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine placeholder DLL'; then
+            _W_no_mingw=1
+        elif grep -obUa "Wine builtin DLL" "$("$WINE" winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine builtin DLL'; then
+            _W_mingw=1
         else
-            wine_no_mingw=1
+            w_warn "Unable to detect wine dlls, please file an issue on Github!"
         fi
-    # Installed (checked against the binaries of https://dl.winehq.org/):
-    elif ls "$(dirname "${WINE}")"/../lib/wine/*.dll >/dev/null 2>&1; then
-        wine_mingw=1
-    elif test ! -d "$(dirname "${WINE}")"/../lib/wine; then
-        w_warn "Unable to detect wine dlls, please file an issue on Github"
     else
-        wine_no_mingw=1
+        # FIXME: better message here (at least, easier to grep/recognize
+        echo "w_detect_mingw: mingw detection unimplemented for wine<4.11"
+        _W_no_mingw=1
     fi
 }
 
@@ -364,7 +365,7 @@ w_package_broken_mingw()
 
     w_detect_mingw
 
-    if [ -z "$wine_mingw" ]; then
+    if [ -z "$_W_mingw" ]; then
         # We're not using a mingw build, nothing to do:
         return
     fi
@@ -402,7 +403,7 @@ w_package_broken_no_mingw()
     bad_version="$2"
     good_version="$3"
 
-    if [ -z "$wine_no_mingw" ]; then
+    if [ -z "$_W_no_mingw" ]; then
         # We're using a mingw build, nothing to do:
         return
     fi
