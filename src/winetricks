@@ -9445,7 +9445,6 @@ w_metadata dotnetcore2 dlls \
     year="2020" \
     media="download" \
     file1="dotnet-runtime-2.1.17-win-x86.exe" \
-    file2="dotnet-runtime-2.1.17-win-x64.exe"\
     installed_file1="$W_PROGRAMS_WIN/dotnet/dotnet.exe"
 
 load_dotnetcore2()
@@ -9457,8 +9456,9 @@ load_dotnetcore2()
 
     if [ "$W_ARCH" = "win64" ]; then
       # Also install the 64-bit version
+      file1="dotnet-runtime-2.1.17-win-x64.exe"
       w_download https://download.visualstudio.microsoft.com/download/pr/cd223083-8c0e-4963-9fcd-fcf01a55e56c/15500e764899442ed6e014687caa34e9/dotnet-runtime-2.1.17-win-x64.exe 5a065ae6f9e031399cb7084c6315ce977342dec069cd6386caed1c5b69d49260
-      w_try "$WINE" "$file2" "/quiet"
+      w_try "$WINE" "$file1" "/quiet"
     fi
 }
 
