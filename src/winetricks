@@ -11168,6 +11168,7 @@ w_metadata prntvpt dlls \
 
 load_prntvpt()
 {
+    w_package_broken_win64 https://github.com/Winetricks/winetricks/issues/1518
 
     helper_win7sp1 x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll
     w_try cp "$W_TMP/x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll" "$W_SYSTEM32_DLLS/prntvpt.dll"
