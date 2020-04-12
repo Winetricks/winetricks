@@ -11647,7 +11647,8 @@ load_speechsdk()
 
     w_override_dlls native sapi
 
-    w_set_winver 'default'
+    # SAPI 5.1 doesn't work on vista and newer
+    w_set_winver winxp
 }
 
 #----------------------------------------------------------------
