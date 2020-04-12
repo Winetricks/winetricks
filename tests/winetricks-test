@@ -369,15 +369,22 @@ test_command()
         rm -rf "$WINEPREFIX"
     fi
 
+    # FIXME: track timeouts like we do pass/fail:
+    # FIXME: test with timeout of good/bad/10s/sleep
+    if command -v timeout >/dev/null 2>&1; then
+        timeout="timeout --verbose --foreground --kill-after=1m 1h"
+    fi
+
     # Isolate us from the user's home directory
     # shellcheck disable=SC2086
+    # FIXME: test wirth xvfb
     if [ -z "$_W_wine_not_needed" ]; then
-        $XVFB $WINETRICKS sandbox || fail "\'$XVFB $WINETRICKS sandbox\' failed"
+        $XVFB $timeout $WINETRICKS sandbox || fail "\'$XVFB $WINETRICKS sandbox\' failed"
         echo "Installing $command"
-        $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@"
+        $XVFB $timeout $WINETRICKS --no-isolate -q nocrashdialog "$@"
         return=$?
     else
-        $XVFB $WINETRICKS --no-isolate -q "$@"
+        $XVFB $timeout $WINETRICKS --no-isolate -q "$@"
         return=$?
     fi
 
