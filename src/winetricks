@@ -5057,7 +5057,6 @@ winetricks_set_wineprefix()
         W_PROGRAMS_UNIX="$(w_pathconv -u "$W_PROGRAMS_WIN")"
 
         # Common variable for 32-bit dlls on win32/win64:
-        W_32BIT_DLLS="$W_WINDIR_UNIX/syswow64"
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/syswow64"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
 
@@ -5094,7 +5093,6 @@ winetricks_set_wineprefix()
         W_PROGRAMS_UNIX="$(w_pathconv -u "$W_PROGRAMS_WIN")"
 
         # Common variable for 32-bit dlls on win32/win64:
-        W_32BIT_DLLS="$W_WINDIR_UNIX/system32"
         W_SYSTEM32_DLLS="$W_WINDIR_UNIX/system32"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
 
@@ -11640,7 +11638,8 @@ load_speechsdk()
 
     # If sapi.dll isn't in original location, applications won't start, see
     # e.g., https://bugs.winehq.org/show_bug.cgi?id=43841
-    w_try ln -s "$W_COMMONFILES_X86/Microsoft Shared/Speech/sapi.dll" "$W_32BIT_DLLS/Speech/Common"
+    mkdir -p "$W_SYSTEM32_DLLS/Speech/Common/"
+    w_try ln -s "$W_COMMONFILES_X86/Microsoft Shared/Speech/sapi.dll" "$W_SYSTEM32_DLLS/Speech/Common"
 
     w_override_dlls native sapi
 
