@@ -681,22 +681,26 @@ w_try_mkdir()
     # Wrapper around mkdir -p, for making a directory/directories.
     # Only tell the user if we attempt to make the directory (otherwise it's a bit noisy).
     # If -q is passed, only print if WINETRICKS_VERBOSE is set (to avoid printing noise for tempdir/metadata)
-
+# set -x
     # FIXME: test with multiple directories
     if [ "$1" = "-q" ]; then
         shift
+        echo a
         for target_dir in "$@"; do
             if [ ! -d "$target_dir" ]; then
-                WINETRICKS_SUPER_QUIET=1 w_try mkdir -p "$target_dir"
+                # FIXME: can't use this variable, then every w_try call after is also silenced (!)
+                w_try mkdir -p "$target_dir"
             fi
         done
     else
+        echo b
         for target_dir in "$@"; do
             if [ ! -d "$target_dir" ]; then
                 w_try mkdir -p "$target_dir"
             fi
         done
     fi
+set +x
 }
 
 w_try_msiexec64()
@@ -21885,6 +21889,8 @@ w_metadata good settings \
 load_good()
 {
     w_info "$W_PACKAGE succeeded!"
+
+    w_try_mkdir "$W_CACHE/$W_PACKAGE/1" "$W_CACHE/$W_PACKAGE/2"
 }
 
 #----------------------------------------------------------------
