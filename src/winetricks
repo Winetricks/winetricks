@@ -3184,7 +3184,7 @@ winetricks_dl_url_to_stdout()
             rm "${stdout_tmpfile}"
         fi
                 $torify aria2c \
-                $aria2c_torify_opts \
+                ${aria2c_torify_opts:+"$aria2c_torify_opts"} \
                 --continue \
                 --daemon=false \
                 --dir="${W_TMP_EARLY}" \
