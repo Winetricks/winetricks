@@ -14646,11 +14646,12 @@ load_ie8()
 
     # Remove the fake DLLs from the existing WINEPREFIX
     if [ -f "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" ]; then
-        mv "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe.bak"
+        w_try mv "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe" "$W_PROGRAMS_X86_UNIX/Internet Explorer/iexplore.exe.bak"
     fi
+
     for dll in browseui inseng itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon; do
         test -f "$W_SYSTEM32_DLLS"/$dll.dll &&
-        mv "$W_SYSTEM32_DLLS"/$dll.dll "$W_SYSTEM32_DLLS"/$dll.dll.bak
+            w_try mv "$W_SYSTEM32_DLLS"/$dll.dll "$W_SYSTEM32_DLLS"/$dll.dll.bak
     done
 
     # See https://bugs.winehq.org/show_bug.cgi?id=16013
@@ -14662,24 +14663,27 @@ load_ie8()
     w_try cp -f "$W_CACHE"/ie8/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
     w_download https://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe 5a2c6c82774bfe99b175f50a05b05bcd1fac7e9d0e54db2534049209f50cd6ef
-    if [ -n "$W_UNATTENDED_SLASH_QUIET" ]; then
-        quiet="$W_UNATTENDED_SLASH_QUIET /forcerestart"
-    else
-        quiet=""
-    fi
-    w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    # KLUDGE: if / is writable, having a Z: mapping to it causes ie8 to put temporary directories on Z:\
-    # so hide it temporarily.  This is not very robust!
-    rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
-    mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
+    # KLUDGE: if / is writable (as on OS X?), having a Z: mapping to it
+    # causes ie7 to put temporary directories on Z:\.
+    # So hide it temporarily.  This is not very robust!
+    if [ -w / ] && [ -h "$WINEPREFIX/dosdevices/z:" ]; then
+        w_try rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
+        w_try mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
+        _W_restore_z=1
+    fi
+
+    w_try_cd "$W_CACHE/$W_PACKAGE"
 
     # FIXME: There's an option for /updates-noupdates to disable checking for updates, but that
     # forces the install to fail on Wine. Not sure if it's an IE8 or Wine bug...
     # FIXME: can't check status, as it always reports failure on wine?
-    "$WINE" IE8-WindowsXP-x86-ENU.exe $quiet
-    # END KLUDGE: restore Z:, assuming user didn't kill us
-    mv "$WINEPREFIX/dosdevices/z:.bak_wt" "$WINEPREFIX/dosdevices/z:"
+    "$WINE" IE8-WindowsXP-x86-ENU.exe ${W_OPT_UNATTENDED:+ $W_UNATTENDED_SLASH_QUIET /forcerestart}
+
+    if [ "$_W_restore_z" = 1 ]; then
+        # END KLUDGE: restore Z:, assuming that the user didn't kill us
+        w_try mv "$WINEPREFIX/dosdevices/z:.bak_wt" "$WINEPREFIX/dosdevices/z:"
+    fi
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
     # FIXME: whittle down this list
@@ -14726,6 +14730,8 @@ _EOF_
     esac
 
     w_set_winver 'default'
+
+    unset _W_restore_z
 }
 
 #----------------------------------------------------------------
