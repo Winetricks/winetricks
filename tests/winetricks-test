@@ -204,7 +204,7 @@ case "$OS" in
             "$WINESERVER" \
             "${WINE}server" \
             "$(command -v wineserver 2> /dev/null)" \
-            "$(dirname $WINE)/server/wineserver" \
+            "$(dirname "$WINE")/server/wineserver" \
             /usr/lib/wine/wineserver \
             /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
             /usr/lib/i386-linux-gnu/wine/wineserver \
