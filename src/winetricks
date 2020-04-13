@@ -22360,8 +22360,8 @@ winetricks_stats_report()
             --retry "$WINETRICKS_DOWNLOADER_RETRIES" \
             -I "http://kegel.com/data/winetricks-usage?$report" > /dev/null 2>&1 || true
         elif [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ] ; then
-            $torify aria2c $aria2c_torify_opts \
-                    $aria2c_torify_opts \
+            $torify aria2c \
+                    ${aria2c_torify_opts:+"$aria2c_torify_opts"} \
                     --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
                     --daemon=false \
                     --enable-rpc=false \
