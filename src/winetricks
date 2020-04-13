@@ -12525,6 +12525,7 @@ load_windowscodecs()
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     if w_workaround_wine_bug 32859 "Working around possibly broken libX11"; then
+        # shellcheck disable=SC2086
         w_try $W_TASKSET "$WINE" "$EXE" /passive
     else
         w_try "$WINE" "$EXE" /passive
