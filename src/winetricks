@@ -5311,7 +5311,7 @@ winetricks_init()
     fi
 
     # Whether to automate installs (0=no, 1=yes)
-    winetricks_set_unattended ${W_OPT_UNATTENDED:-0}
+    winetricks_set_unattended "${W_OPT_UNATTENDED:-0}"
 
     # We have to call this here, because it needs to be called before w_metadata
     # Unfortunately, that means we run wine before the gui runs. Avoiding that would take quite the refactor..
