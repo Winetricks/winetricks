@@ -33,6 +33,9 @@ hosts                    Add empty C:\windows\system32\drivers\etc\{hosts,servic
 isolate_home             Remove wineprefix links to /home/austin
 macdriver=mac            Enable the Mac native Quartz driver (default)
 macdriver=x11            Disable the Mac native Quartz driver, use X11 instead
+mackeyremap=both         Enable mapping opt->alt and cmd->ctrl keys for the Mac native driver
+mackeyremap=left         Enable mapping of left opt->alt and cmd->ctrl keys for the Mac native driver
+mackeyremap=none         Do not remap keys for the Mac native driver (default)
 mimeassoc=off            Disable exporting MIME-type file associations to the native desktop
 mimeassoc=on             Enable exporting MIME-type file associations to the native desktop (default)
 multisampling=disabled   Disable Direct3D multisampling
@@ -85,7 +88,8 @@ vsm=2                    Set MaxShaderModelVS to 2
 vsm=3                    Set MaxShaderModelVS to 3
 win10                    Set Windows version to Windows 10
 win2k3                   Set Windows version to Windows 2003
-win2k8                   Set Windows version to Windows 2008 R2
+win2k8r2                 Set Windows version to Windows 2008 R2
+win2k8                   Set Windows version to Windows 2008
 win2k                    Set Windows version to Windows 2000
 win31                    Set Windows version to Windows 3.1
 win7                     Set Windows version to Windows 7
