@@ -14226,14 +14226,8 @@ load_ev3()
 
     w_download http://esd.lego.com.edgesuite.net/digitaldelivery/mindstorms/6ecda7c2-1189-4816-b2dd-440e22d65814/public/LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
 
-    if [ -n "$W_UNATTENDED_SLASH_Q" ]; then
-        quiet="$W_UNATTENDED_SLASH_QB /AcceptLicenses yes"
-    else
-        quiet=""
-    fi
-
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" "$file1" ${quiet}
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ $W_UNATTENDED_SLASH_QB /AcceptLicenses yes}
 
     if w_workaround_wine_bug 40729 "Setting override for urlmon.dll to native to avoid crash"; then
         w_override_dlls native urlmon
