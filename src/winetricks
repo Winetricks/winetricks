@@ -1322,7 +1322,7 @@ w_download_to()
 
             # shellcheck disable=SC2086
             $torify aria2c \
-                $aria2c_torify_opts \
+                ${aria2c_torify_opts:+"$aria2c_torify_opts"} \
                 --connect-timeout="${WINETRICKS_DOWNLOADER_TIMEOUT}" \
                 --continue \
                 --daemon=false \
