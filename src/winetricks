@@ -14549,11 +14549,12 @@ load_ie7()
     w_try cp -f "$W_CACHE"/ie7/winetest.cat "$W_SYSTEM32_DLLS"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
     # KLUDGE: if / is writable (as on OS X?), having a Z: mapping to it
-    # causes ie7 to put temporary directories on Z:\
-    # so hide it temporarily.  This is not very robust!
-    if test -w /; then
-        rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
-        mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
+    # causes ie7 to put temporary directories on Z:\.
+    # So hide it temporarily.  This is not very robust!
+    if [ -w / ] && [ -h "$WINEPREFIX/dosdevices/z:" ]; then
+        w_try rm -f "$WINEPREFIX/dosdevices/z:.bak_wt"
+        w_try mv "$WINEPREFIX/dosdevices/z:" "$WINEPREFIX/dosdevices/z:.bak_wt"
+        _W_restore_z=1
     fi
 
     # Install
@@ -14565,8 +14566,8 @@ load_ie7()
 
     w_try_ms_installer "$WINE" IE7-WindowsXP-x86-enu.exe "$W_UNATTENDED_SLASH_QUIET"
 
-    if test -w /; then
-        # END KLUDGE: restore Z:, assuming user didn't kill us
+    if [ "$_W_restore_z" = 1 ]; then
+        # END KLUDGE: restore Z:, assuming that the user didn't kill us
         w_try mv "$WINEPREFIX/dosdevices/z:.bak_wt" "$WINEPREFIX/dosdevices/z:"
     fi
 
@@ -14602,6 +14603,8 @@ load_ie7()
             "$WINE" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore" https://www.microsoft.com/windows/internet-explorer/ie7/ > /dev/null 2>&1 &
             ;;
     esac
+
+    unset _W_restore_z
 }
 
 #----------------------------------------------------------------
