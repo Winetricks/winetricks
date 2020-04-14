@@ -204,7 +204,7 @@ case "$OS" in
             "$WINESERVER" \
             "${WINE}server" \
             "$(command -v wineserver 2> /dev/null)" \
-            "$(dirname $WINE)/server/wineserver" \
+            "$(dirname "$WINE")/server/wineserver" \
             /usr/lib/wine/wineserver \
             /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
             /usr/lib/i386-linux-gnu/wine/wineserver \
@@ -589,16 +589,15 @@ test_dotnet()
         test_command --verify "$x"
     done
 
-    # FIXME: add other possible combinations
-
     # combinations that should work:
-    for combo in "dotnet20 dotnet20sp2"; do
+    for combo in "dotnet20 dotnet20sp2" "dotnet30 dotnet40"; do
         # shellcheck disable=SC2086
         test_command --verify $combo
     done
 
     # combinations that should break:
-    for fail_combo in "dotnet20sp2 dotnet20sp1"; do
+    # shellcheck disable=SC2043
+    for fail_combo in "dotnet20sp2 dotnet20sp1" "dotnet30sp1 dotnet30"; do
         # shellcheck disable=SC2086
         EXPECT_FAIL=yes test_command $fail_combo
     done
