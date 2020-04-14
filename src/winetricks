@@ -22035,7 +22035,7 @@ load_sandbox()
     w_skip_windows sandbox && return
 
     # Unmap drive Z
-    rm -f "$WINEPREFIX/dosdevices/z:"
+    w_try rm -f "$WINEPREFIX/dosdevices/z:"
 
     # Disable unixfs
     # Unfortunately, when you run with a different version of Wine, Wine will recreate this key.
