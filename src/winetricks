@@ -12041,6 +12041,39 @@ load_vcrun2005()
     fi
 }
 
+w_metadata mfc80 dlls \
+    title="Visual C++ 2005 mfc80 library; part of vcrun2005" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../vcrun2005/vcredist_x86.EXE" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc80.dll"
+
+load_mfc80()
+{
+    w_download_to vcrun2005 https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x86.EXE 4ee4da0fe62d5fa1b5e80c6e6d88a4a2f8b3b140c35da51053d0d7b72a381d29
+
+    w_try_cabextract --directory="$W_TMP/win32" "$W_CACHE"/vcrun2005/vcredist_x86.EXE -F 'vcredist.msi'
+    w_try_cabextract --directory="$W_TMP/win32" "$W_TMP/win32/vcredist.msi"
+
+    w_try cp "$W_TMP/win32"/mfc80.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "$W_SYSTEM32_DLLS"/mfc80.dll
+    w_try cp "$W_TMP/win32"/mfc80u.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "$W_SYSTEM32_DLLS"/mfc80u.dll
+    w_try cp "$W_TMP/win32"/mfcm80.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "$W_SYSTEM32_DLLS"/mfcm80.dll
+    w_try cp "$W_TMP/win32"/mfcm80u.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "$W_SYSTEM32_DLLS"/mfcm80u.dll
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download_to vcrun2005 https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x64.EXE 0551a61c85b718e1fa015b0c3e3f4c4eea0637055536c00e7969286b4fa663e0
+
+        w_try_cabextract --directory="$W_TMP/win64" "$W_CACHE"/vcrun2005/vcredist_x64.EXE -F 'vcredist.msi'
+        w_try_cabextract --directory="$W_TMP/win64" "$W_TMP/win64/vcredist.msi"
+
+        w_try cp "$W_TMP/win64"/mfc80.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "$W_SYSTEM64_DLLS"/mfc80.dll
+        w_try cp "$W_TMP/win64"/mfc80u.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "$W_SYSTEM64_DLLS"/mfc80u.dll
+        w_try cp "$W_TMP/win64"/mfcm80.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "$W_SYSTEM64_DLLS"/mfcm80.dll
+        w_try cp "$W_TMP/win64"/mfcm80u.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "$W_SYSTEM64_DLLS"/mfcm80u.dll
+    fi
+}
+
 #----------------------------------------------------------------
 
 w_metadata vcrun2008 dlls \
