@@ -12127,6 +12127,39 @@ load_vcrun2008()
     esac
 }
 
+w_metadata mfc90 dlls \
+    title="Visual C++ 2008 mfc90 library; part of vcrun2008" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../vcrun2008/vcredist_x86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc90.dll"
+
+load_mfc90()
+{
+    w_download_to vcrun2008 https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x86.exe 6b3e4c51c6c0e5f68c8a72b497445af3dbf976394cbb62aa23569065c28deeb6
+
+    w_try_cabextract --directory="$W_TMP/win32" "$W_CACHE"/vcrun2008/vcredist_x86.exe -F 'vc_red.cab'
+    w_try_cabextract --directory="$W_TMP/win32" "$W_TMP/win32/vc_red.cab"
+
+    w_try cp "$W_TMP/win32"/mfc90.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "$W_SYSTEM32_DLLS"/mfc90.dll
+    w_try cp "$W_TMP/win32"/mfc90u.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "$W_SYSTEM32_DLLS"/mfc90u.dll
+    w_try cp "$W_TMP/win32"/mfcm90.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "$W_SYSTEM32_DLLS"/mfcm90.dll
+    w_try cp "$W_TMP/win32"/mfcm90u.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "$W_SYSTEM32_DLLS"/mfcm90u.dll
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download_to vcrun2008 https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x64.exe b811f2c047a3e828517c234bd4aa4883e1ec591d88fad21289ae68a6915a6665
+
+        w_try_cabextract --directory="$W_TMP/win64" "$W_CACHE"/vcrun2008/vcredist_x64.exe -F 'vc_red.cab'
+        w_try_cabextract --directory="$W_TMP/win64" "$W_TMP/win64/vc_red.cab"
+
+        w_try cp "$W_TMP/win64"/mfc90.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "$W_SYSTEM64_DLLS"/mfc90.dll
+        w_try cp "$W_TMP/win64"/mfc90u.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "$W_SYSTEM64_DLLS"/mfc90u.dll
+        w_try cp "$W_TMP/win64"/mfcm90.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "$W_SYSTEM64_DLLS"/mfcm90.dll
+        w_try cp "$W_TMP/win64"/mfcm90u.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "$W_SYSTEM64_DLLS"/mfcm90u.dll
+    fi
+}
+
 #----------------------------------------------------------------
 
 w_metadata vcrun2010 dlls \
