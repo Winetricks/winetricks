@@ -11977,13 +11977,11 @@ w_metadata vcrun2003 dlls \
 
 load_vcrun2003()
 {
-    # Load the Visual C++ 2003 runtime libraries
     # Sadly, I know of no Microsoft URL for these
-    echo "Installing BZFlag (which comes with the Visual C++ 2003 runtimes)"
     # winetricks-test can't handle ${file1} in url since it does a raw parsing :/
     w_download https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
-    w_try "$WINE" "$W_CACHE/vcrun2003/${file1}" ${W_OPT_UNATTENDED:+/S}
-    w_try cp "$W_PROGRAMS_X86_UNIX/BZEdit1.6.5"/m*71* "$W_SYSTEM32_DLLS"
+
+    w_try_7z "$W_SYSTEM32_DLLS" "${W_CACHE}/vcrun2003/BZEditW32_1.6.5.exe" "mfc71.dll" "msvcp71.dll" "msvcr71.dll" -y
 }
 
 #----------------------------------------------------------------
