@@ -12181,6 +12181,39 @@ load_vcrun2010()
     esac
 }
 
+w_metadata mfc100 dlls \
+    title="Visual C++ 2010 mfc100 library; part of vcrun2010" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    file1="../vcrun2010/vcredist_x86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc100u.dll"
+
+load_mfc100()
+{
+    w_download_to vcrun2010 https://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 8162b2d665ca52884507ede19549e99939ce4ea4a638c537fa653539819138c8
+
+    w_try_cabextract --directory="$W_TMP/win32" "$W_CACHE"/vcrun2010/vcredist_x86.exe -F '*.cab'
+    w_try_cabextract --directory="$W_TMP/win32" "$W_TMP/win32/vc_red.cab"
+
+    w_try cp "$W_TMP/win32"/F_CENTRAL_mfc100_x86 "$W_SYSTEM32_DLLS"/mfc100.dll
+    w_try cp "$W_TMP/win32"/F_CENTRAL_mfc100u_x86 "$W_SYSTEM32_DLLS"/mfc100u.dll
+    w_try cp "$W_TMP/win32"/F_CENTRAL_mfcm100_x86 "$W_SYSTEM32_DLLS"/mfcm100.dll
+    w_try cp "$W_TMP/win32"/F_CENTRAL_mfcm100u_x86 "$W_SYSTEM32_DLLS"/mfcm100u.dll
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download_to vcrun2010 https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe c6cd2d3f0b11dc2a604ffdc4dd97861a83b77e21709ba71b962a47759c93f4c8
+
+        w_try_cabextract --directory="$W_TMP/win64" "$W_CACHE"/vcrun2010/vcredist_x64.exe -F '*.cab'
+        w_try_cabextract --directory="$W_TMP/win64" "$W_TMP/win64/vc_red.cab"
+
+        w_try cp "$W_TMP/win64"/F_CENTRAL_mfc100_x64 "$W_SYSTEM64_DLLS"/mfc100.dll
+        w_try cp "$W_TMP/win64"/F_CENTRAL_mfc100u_x64 "$W_SYSTEM64_DLLS"/mfc100u.dll
+        w_try cp "$W_TMP/win64"/F_CENTRAL_mfcm100_x64 "$W_SYSTEM64_DLLS"/mfcm100.dll
+        w_try cp "$W_TMP/win64"/F_CENTRAL_mfcm100u_x64 "$W_SYSTEM64_DLLS"/mfcm100u.dll
+    fi
+}
+
 #----------------------------------------------------------------
 
 w_metadata vcrun2012 dlls \
