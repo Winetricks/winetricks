@@ -340,9 +340,9 @@ w_detect_mingw()
 
     # See https://github.com/Winetricks/winetricks/issues/1461
     if w_wine_version_in ,4.10 ; then
-        if grep -obUa "Wine placeholder DLL" "$("$WINE" winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine placeholder DLL'; then
+        if grep -obUa "Wine placeholder DLL" "$(w_winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine placeholder DLL'; then
             _W_no_mingw=1
-        elif grep -obUa "Wine builtin DLL" "$("$WINE" winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine builtin DLL'; then
+        elif grep -obUa "Wine builtin DLL" "$(w_winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine builtin DLL'; then
             _W_mingw=1
         else
             w_warn "Unable to detect wine dlls, please file an issue on Github!"
@@ -887,7 +887,7 @@ w_pathconv()
         *)
             case "$@" in
                 -u?c:\\*|-u?C:\\*|-u?c:/*|-u?C:/*) winetricks_wintounix "$2" ;;
-                *) winetricks_early_wine winepath "$@" ;;
+                *) w_winepath "$@" ;;
             esac
         ;;
     esac
@@ -999,6 +999,13 @@ w_verify_shasum()
         # 128) sha512..
         *) w_die "unsupported shasum..bug" ;;
     esac
+}
+
+# simple wrapper around winepath using winetricks_early_wine (to strip escape characters, etc.)
+# For https://bugs.winehq.org/show_bug.cgi?id=48937 and any future regressions
+w_winepath()
+{
+    winetricks_early_wine winepath "$@"
 }
 
 # wget outputs progress messages that look like this:
