@@ -12352,6 +12352,39 @@ load_vcrun2013()
     esac
 }
 
+w_metadata mfc120 dlls \
+    title="Visual C++ 2013 mfc120 library; part of vcrun2013" \
+    publisher="Microsoft" \
+    year="2013" \
+    media="download" \
+    file1="../vcrun2013/vcredist_x86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc120u.dll"
+
+load_mfc120()
+{
+    w_download_to vcrun2013 https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x86.exe 89f4e593ea5541d1c53f983923124f9fd061a1c0c967339109e375c661573c17
+
+    w_try_cabextract --directory="$W_TMP/win32"  "$W_CACHE"/vcrun2013/vcredist_x86.exe -F 'a3'
+    w_try_cabextract --directory="$W_TMP/win32" "$W_TMP/win32/a3"
+
+    w_try cp "$W_TMP/win32"/F_CENTRAL_mfc120_x86 "$W_SYSTEM32_DLLS"/mfc120.dll
+    w_try cp "$W_TMP/win32"/F_CENTRAL_mfc120u_x86 "$W_SYSTEM32_DLLS"/mfc120u.dll
+    w_try cp "$W_TMP/win32"/F_CENTRAL_mfcm120_x86 "$W_SYSTEM32_DLLS"/mfcm120.dll
+    w_try cp "$W_TMP/win32"/F_CENTRAL_mfcm120u_x86 "$W_SYSTEM32_DLLS"/mfcm120u.dll
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download_to vcrun2013 https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
+
+        w_try_cabextract --directory="$W_TMP/win64"  "$W_CACHE"/vcrun2013/vcredist_x64.exe -F 'a3'
+        w_try_cabextract --directory="$W_TMP/win64" "$W_TMP/win64/a3"
+
+        w_try cp "$W_TMP/win64"/F_CENTRAL_mfc120_x64 "$W_SYSTEM64_DLLS"/mfc120.dll
+        w_try cp "$W_TMP/win64"/F_CENTRAL_mfc120u_x64 "$W_SYSTEM64_DLLS"/mfc120u.dll
+        w_try cp "$W_TMP/win64"/F_CENTRAL_mfcm120_x64 "$W_SYSTEM64_DLLS"/mfcm120.dll
+        w_try cp "$W_TMP/win64"/F_CENTRAL_mfcm120u_x64 "$W_SYSTEM64_DLLS"/mfcm120u.dll
+    fi
+}
+
 #----------------------------------------------------------------
 
 w_metadata vcrun2015 dlls \
