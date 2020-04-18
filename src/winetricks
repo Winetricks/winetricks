@@ -12448,6 +12448,39 @@ load_vcrun2015()
     esac
 }
 
+w_metadata mfc140 dlls \
+    title="Visual C++ 2015 mfc140 library; part of vcrun2015" \
+    publisher="Microsoft" \
+    year="2015" \
+    media="download" \
+    file1="../vcrun2015/vc_redist.x86.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc140u.dll"
+
+load_mfc140()
+{
+    w_download_to vcrun2015 https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe fdd1e1f0dcae2d0aa0720895eff33b927d13076e64464bb7c7e5843b7667cd14
+
+    w_try_cabextract --directory="$W_TMP/win32"  "$W_CACHE"/vcrun2015/vc_redist.x86.exe -F 'a11'
+    w_try_cabextract --directory="$W_TMP/win32" "$W_TMP/win32/a11"
+
+    w_try cp "$W_TMP/win32"/mfc140.dll "$W_SYSTEM32_DLLS"/mfc140.dll
+    w_try cp "$W_TMP/win32"/mfc140u.dll "$W_SYSTEM32_DLLS"/mfc140u.dll
+    w_try cp "$W_TMP/win32"/mfcm140.dll "$W_SYSTEM32_DLLS"/mfcm140.dll
+    w_try cp "$W_TMP/win32"/mfcm140u.dll "$W_SYSTEM32_DLLS"/mfcm140u.dll
+
+    if [ "$W_ARCH" = "win64" ]; then
+        w_download_to vcrun2015 https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
+
+        w_try_cabextract --directory="$W_TMP/win64"  "$W_CACHE"/vcrun2015/vc_redist.x64.exe -F 'a11'
+        w_try_cabextract --directory="$W_TMP/win64" "$W_TMP/win64/a11"
+
+        w_try cp "$W_TMP/win64"/mfc140.dll "$W_SYSTEM64_DLLS"/mfc140.dll
+        w_try cp "$W_TMP/win64"/mfc140u.dll "$W_SYSTEM64_DLLS"/mfc140u.dll
+        w_try cp "$W_TMP/win64"/mfcm140.dll "$W_SYSTEM64_DLLS"/mfcm140.dll
+        w_try cp "$W_TMP/win64"/mfcm140u.dll "$W_SYSTEM64_DLLS"/mfcm140u.dll
+    fi
+}
+
 #----------------------------------------------------------------
 
 w_metadata vcrun2017 dlls \
