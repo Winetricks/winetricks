@@ -11965,6 +11965,21 @@ load_vcrun2003()
     w_try_7z "$W_SYSTEM32_DLLS" "${W_CACHE}/vcrun2003/BZEditW32_1.6.5.exe" "mfc71.dll" "msvcp71.dll" "msvcr71.dll" -y
 }
 
+w_metadata mfc71 dlls \
+    title="Visual C++ 2003 mfc71 library; part of vcrun2003" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="BZEditW32_1.6.5.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/mfc71.dll"
+
+load_mfc71()
+{
+    w_download_to vcrun2003 https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
+
+    w_try_7z "$W_SYSTEM32_DLLS" "${W_CACHE}/vcrun2003/BZEditW32_1.6.5.exe" "mfc71.dll" -y
+}
+
 #----------------------------------------------------------------
 
 # Temporary fix for bug 169
