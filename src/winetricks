@@ -4953,13 +4953,11 @@ winetricks_set_unattended()
             # Might want to trim our stable of variables here a bit...
             W_UNATTENDED_SLASH_Q="/q"
             W_UNATTENDED_SLASH_QB="/qb"
-            W_UNATTENDED_SLASH_QN="/qn"
             ;;
         *)
             W_OPT_UNATTENDED=""
             W_UNATTENDED_SLASH_Q=""
             W_UNATTENDED_SLASH_QB=""
-            W_UNATTENDED_SLASH_QN=""
             ;;
     esac
 }
@@ -11358,7 +11356,7 @@ load_quicktime72()
     w_download http://appldnld.apple.com.edgesuite.net/content.info.apple.com/QuickTime/061-2915.20070710.pO94c/QuickTimeInstaller.exe a42b93531910bdf1539cc5ae3199ade5a1ca63fd4ac971df74c345d8e1ee6593
 
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" "$file1" ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No "$W_UNATTENDED_SLASH_QN" > /dev/null 2>&1
+    w_try "$WINE" "$file1" ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No ${W_OPT_UNATTENDED:+/qn} > /dev/null 2>&1
 
     if w_workaround_wine_bug 11681; then
         # Following advice verified with test movies from
@@ -11396,7 +11394,7 @@ load_quicktime76()
     w_download http://appldnld.apple.com/QuickTime/041-0025.20101207.Ptrqt/QuickTimeInstaller.exe c2dcda76ed55428e406ad7e6acdc84e804d30752a1380c313394c09bb3e27f56
 
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" QuickTimeInstaller.exe ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No "$W_UNATTENDED_SLASH_Q"N > /dev/null 2>&1
+    w_try "$WINE" QuickTimeInstaller.exe ALLUSERS=1 DESKTOP_SHORTCUTS=0 QTTaskRunFlags=0 QTINFO.BISQTPRO=1 SCHEDULE_ASUW=0 REBOOT_REQUIRED=No ${W_OPT_UNATTENDED:+/qn} > /dev/null 2>&1
 
     if w_workaround_wine_bug 11681; then
         # Following advice verified with test movies from
@@ -15577,7 +15575,7 @@ load_safari()
     fi
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE_MULTI" SafariSetup.exe "$W_UNATTENDED_SLASH_QN"
+    w_try "$WINE_MULTI" SafariSetup.exe ${W_OPT_UNATTENDED:+/qn}
 }
 
 #----------------------------------------------------------------
