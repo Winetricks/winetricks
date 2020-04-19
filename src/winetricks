@@ -4962,7 +4962,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_CAP_QUIET="/Quiet"
             W_UNATTENDED_SLASH_S="/S"
             W_UNATTENDED_DASH_SILENT="-silent"
-            #W_UNATTENDED_SLASH_SILENT="/silent"
             ;;
         *)
             W_OPT_UNATTENDED=""
@@ -4974,7 +4973,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_QUIET=""
             W_UNATTENDED_SLASH_S=""
             W_UNATTENDED_DASH_SILENT=""
-            W_UNATTENDED_SLASH_SILENT=""
             ;;
     esac
 }
@@ -10160,7 +10158,7 @@ load_ffdshow()
 {
     w_download https://downloads.sourceforge.net/ffdshow-tryout/ffdshow_beta7_rev3154_20091209.exe 86fb22e9a79a1c83340a99fd5722974a4d03948109d404a383c4334fab8f8860
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" ffdshow_beta7_rev3154_20091209.exe "$W_UNATTENDED_SLASH_S"ILENT
+    w_try "$WINE" ffdshow_beta7_rev3154_20091209.exe ${W_OPT_UNATTENDED:+/silent}
 }
 
 #----------------------------------------------------------------
@@ -14182,7 +14180,7 @@ load_emu8086()
     # w_download http://www.emu8086.com/files/emu8086v408r11.zip d56d6e42fe170c52df5abd6002b1e8fef0b840eb8d8807d77819fe1fc2e17afd
     w_download https://web.archive.org/web/20160206003914if_/http://emu8086.com/files/emu8086v408r11.zip d56d6e42fe170c52df5abd6002b1e8fef0b840eb8d8807d77819fe1fc2e17afd
     w_try_unzip "$W_TMP" "$W_CACHE/$W_PACKAGE/$file1"
-    w_try "$WINE" "$W_TMP/Setup.exe" "$W_UNATTENDED_SLASH_SILENT"
+    w_try "$WINE" "$W_TMP/Setup.exe" ${W_OPT_UNATTENDED:+/silent}
 }
 
 #----------------------------------------------------------------
