@@ -4952,12 +4952,10 @@ winetricks_set_unattended()
             W_OPT_UNATTENDED=1
             # Might want to trim our stable of variables here a bit...
             W_UNATTENDED_SLASH_Q="/q"
-            W_UNATTENDED_SLASH_QB="/qb"
             ;;
         *)
             W_OPT_UNATTENDED=""
             W_UNATTENDED_SLASH_Q=""
-            W_UNATTENDED_SLASH_QB=""
             ;;
     esac
 }
@@ -8900,7 +8898,7 @@ load_dotnet30sp1()
 
     w_set_winver winxp
 
-    w_try "$WINE" msiexec /i "XPSEP XP and Server 2003 32 bit.msi" "${W_UNATTENDED_SLASH_QB}"
+    w_try "$WINE" msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_OPT_UNATTENDED:+/qb}
     "$WINE" sc delete FontCache3.0.0.0
 
     w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q}
@@ -14195,7 +14193,7 @@ load_ev3()
     w_download http://esd.lego.com.edgesuite.net/digitaldelivery/mindstorms/6ecda7c2-1189-4816-b2dd-440e22d65814/public/LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
 
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+ $W_UNATTENDED_SLASH_QB /AcceptLicenses yes}
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+/qb /AcceptLicenses yes}
 
     if w_workaround_wine_bug 40729 "Setting override for urlmon.dll to native to avoid crash"; then
         w_override_dlls native urlmon
@@ -15354,7 +15352,7 @@ load_psdk2003()
     # Sanity check...
     w_verify_sha256sum d2605ae6f35a7fcc209e1d8dfbdfdb42afcb61e7d173f58fd608ae31db4ab1e7 PSDK-x86.msi
 
-    w_try "$WINE" msiexec /i PSDK-x86.msi "${W_UNATTENDED_SLASH_QB}"
+    w_try "$WINE" msiexec /i PSDK-x86.msi ${W_OPT_UNATTENDED:+/qb}
 }
 
 #----------------------------------------------------------------
