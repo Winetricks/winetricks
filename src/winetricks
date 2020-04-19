@@ -4954,14 +4954,12 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_Q="/q"
             W_UNATTENDED_SLASH_QB="/qb"
             W_UNATTENDED_SLASH_QN="/qn"
-            W_UNATTENDED_SLASH_QNT="/qnt"
             ;;
         *)
             W_OPT_UNATTENDED=""
             W_UNATTENDED_SLASH_Q=""
             W_UNATTENDED_SLASH_QB=""
             W_UNATTENDED_SLASH_QN=""
-            W_UNATTENDED_SLASH_QNT=""
             ;;
     esac
 }
@@ -10479,7 +10477,7 @@ load_mdac27()
     load_native_mdac
     w_set_winver nt40
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "$WINE" "${file1}" ${W_OPT_UNATTENDED:+ /q /C:"setup $W_UNATTENDED_SLASH_QNT"}
+    w_try "$WINE" "${file1}" ${W_OPT_UNATTENDED:+/q /C:"setup /qnt"}
     w_set_winver 'default'
 }
 
@@ -10500,7 +10498,7 @@ load_mdac28()
     load_native_mdac
     w_set_winver nt40
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" mdac_typ.exe ${W_OPT_UNATTENDED:+ /q /C:"setup $W_UNATTENDED_SLASH_QNT"}
+    w_try "$WINE" mdac_typ.exe ${W_OPT_UNATTENDED:+/q /C:"setup /qnt"}
     w_set_winver 'default'
 }
 
@@ -12368,7 +12366,7 @@ load_vjrun20()
     # See https://www.microsoft.com/en-us/download/details.aspx?id=18084
     w_download https://download.microsoft.com/download/9/2/3/92338cd0-759f-4815-8981-24b437be74ef/vjredist.exe cf8f3dd4ad41453a302870b74de1c6489e7ed255ad3f652ce4af0b424a933b41
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
-    w_try "$WINE" vjredist.exe ${W_OPT_UNATTENDED:+ /q /C:"install $W_UNATTENDED_SLASH_QNT"}
+    w_try "$WINE" vjredist.exe ${W_OPT_UNATTENDED:+/q /C:"install /qnt"}
 }
 
 #----------------------------------------------------------------
