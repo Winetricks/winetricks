@@ -706,7 +706,7 @@ w_try_regedit32()
     esac
 
     # shellcheck disable=SC2086
-    w_try "$WINE_MULTI" $cmdc regedit "$W_UNATTENDED_SLASH_S" "$@"
+    w_try "$WINE_MULTI" $cmdc regedit ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
 w_try_regedit64()
@@ -718,19 +718,17 @@ w_try_regedit64()
     esac
 
     # shellcheck disable=SC2086
-    w_try "$WINE64" $cmdc regedit "$W_UNATTENDED_SLASH_S" "$@"
+    w_try "$WINE64" $cmdc regedit ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
 w_try_regsvr()
 {
-    # shellcheck disable=SC2086
-    w_try "$WINE" regsvr32 "$W_UNATTENDED_SLASH_S" "$@"
+    w_try "$WINE" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
 w_try_regsvr64()
 {
-    # shellcheck disable=SC2086
-    w_try "$WINE64" regsvr32 "$W_UNATTENDED_SLASH_S" "$@"
+    w_try "$WINE64" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
 w_try_unrar()
@@ -4960,7 +4958,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_QT="/qt"
             W_UNATTENDED_SLASH_QUIET="/quiet"
             W_UNATTENDED_SLASH_CAP_QUIET="/Quiet"
-            W_UNATTENDED_SLASH_S="/S"
             ;;
         *)
             W_OPT_UNATTENDED=""
@@ -4970,7 +4967,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_QNT=""
             W_UNATTENDED_SLASH_QT=""
             W_UNATTENDED_SLASH_QUIET=""
-            W_UNATTENDED_SLASH_S=""
             ;;
     esac
 }
@@ -11009,7 +11005,7 @@ load_ogg()
 {
     w_download https://downloads.xiph.org/releases/oggdsf/opencodecs_0.85.17777.exe fcec3cea637e806501aff447d902de3b5bfef226b629e43ab67e46dbb23f13e7
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1" "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+/S}
 }
 
 
@@ -11968,7 +11964,7 @@ load_vcrun2003()
     echo "Installing BZFlag (which comes with the Visual C++ 2003 runtimes)"
     # winetricks-test can't handle ${file1} in url since it does a raw parsing :/
     w_download https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
-    w_try "$WINE" "$W_CACHE/vcrun2003/${file1}" "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" "$W_CACHE/vcrun2003/${file1}" ${W_OPT_UNATTENDED:+/S}
     w_try cp "$W_PROGRAMS_X86_UNIX/BZEdit1.6.5"/m*71* "$W_SYSTEM32_DLLS"
 }
 
@@ -12395,7 +12391,7 @@ load_vulkanrt()
     # https://vulkan.lunarg.com/sdk/home
     w_download "https://sdk.lunarg.com/sdk/download/1.1.73.0/windows/VulkanRT-1.1.73.0-Installer.exe?Human=true;u=" cfec461b17aff521cf06b727aa612d654d4e72de8e3c21bd219e77b87f56f20a VulkanRT-1.1.73.0-Installer.exe
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1" "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
@@ -12416,7 +12412,7 @@ load_vulkansdk()
     # https://vulkan.lunarg.com/sdk/home
     w_download "https://sdk.lunarg.com/sdk/download/1.1.73.0/windows/VulkanSDK-1.1.73.0-Installer.exe?Human=true;u=" a5d193f97db4de97e6b4fdd81f00ff6a603f66bb17dc3cf8ac0fe9aec58497c7 VulkanSDK-1.1.73.0-Installer.exe
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1" "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+/S}
     echo "Creating C:\\windows\\winevulkan.json winevulkan json file"
     cat > "$W_WINDIR_UNIX"/winevulkan.json <<_EOF_
 {
@@ -12607,7 +12603,7 @@ load_wmi()
 
     # Note: there is a crash in the background towards the end, doesn't seem to hurt; see https://bugs.winehq.org/show_bug.cgi?id=7920
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" wmi9x.exe "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" wmi9x.exe ${W_OPT_UNATTENDED:+/S}
     w_killall "WinMgmt.exe"
 
     w_set_winver 'default'
@@ -13906,7 +13902,7 @@ load_3m_library()
 {
     w_download https://usestrwebaccess.blob.core.windows.net/apps/pc/cloudLibrary-2.1.1702011951-Setup.exe bb3d854cc525c065e7298423bf0019309f4b65497c1d8bc6af09460cd6fcb57f
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "${file1}" "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" "${file1}" ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
@@ -13923,7 +13919,7 @@ load_7zip()
 {
     w_download https://www.7-zip.org/a/7z1900.exe 759aa04d5b03ebeee13ba01df554e8c962ca339c74f56627c8bed6984bb7ef80
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "${file1}" "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" "${file1}" ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
@@ -13940,7 +13936,7 @@ load_abiword()
 {
     w_download https://www.abisource.com/downloads/abiword/2.8.6/Windows/abiword-setup-2.8.6.exe f85c7f32044bbb4d31f1672c86951e35319f8e89fbd6c01ab4c19e960efd9ff8
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" abiword-setup-2.8.6.exe "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" abiword-setup-2.8.6.exe ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
@@ -14015,7 +14011,7 @@ load_autohotkey()
 {
     w_download https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.0.48.05/AutoHotkey104805_Install.exe 4311c3e7c29ed2d67f415138360210bc2f55ff78758b20b003b91d775ee207b9
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" AutoHotkey104805_Install.exe "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" AutoHotkey104805_Install.exe ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
@@ -14056,7 +14052,7 @@ load_cmake()
 {
     w_download https://www.cmake.org/files/v2.8/cmake-2.8.11.2-win32-x86.exe cb6a7df8fd6f2eca66512279991f3c2349e3f788477c3be8eaa362d46c21dbf0
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" cmake-2.8.11.2-win32-x86.exe "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" cmake-2.8.11.2-win32-x86.exe ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
@@ -14249,7 +14245,7 @@ load_fontxplorer()
     # 2019/06/14: http://www.moonsoftware.com/files/legacy/Font_Xplorer_122_Free.exe is dead
     w_download https://web.archive.org/web/20190217101943/http://www.moonsoftware.com/files/legacy/Font_Xplorer_122_Free.exe e3a53841c133e2ecfeb75c7ea277e23011317bb031f8caf423b7e9b7f92d85e0
     w_try_cd "$W_CACHE/fontxplorer"
-    w_try "$WINE" Font_Xplorer_122_Free.exe "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" Font_Xplorer_122_Free.exe ${W_OPT_UNATTENDED:+/S}
     w_killall "explorer.exe"
 }
 
@@ -14270,7 +14266,7 @@ load_foobar2000()
 
     w_download_manual https://www.foobar2000.org/download foobar2000_v1.4.exe 7c048faecfec79f9ec2b332b2c68b25e0d0219b47a7c679fe56f2ec05686a96a
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "$file1" "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" "$file1" ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
@@ -14832,7 +14828,7 @@ load_mozillabuild()
 {
     w_download https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/MozillaBuildSetup-2.0.0.exe d5ffe52fe634fb7ed02e61041cc183c3af92039ee74e794f7ae83a408e4cf3f5
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" MozillaBuildSetup-2.0.0.exe "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" MozillaBuildSetup-2.0.0.exe ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
@@ -15025,7 +15021,7 @@ load_npp()
 {
     w_download https://notepad-plus-plus.org/repository/7.x/7.7.1/npp.7.7.1.Installer.exe 6787c524b0ac30a698237ffb035f932d7132343671b8fe8f0388ed380d19a51c
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" "${file1}" "$W_UNATTENDED_SLASH_S"
+    w_try "$WINE" "${file1}" ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
@@ -19639,7 +19635,7 @@ load_penpenxmas()
     w_download http://retrospec.sgn.net/download/files/PenPenXmasOlympics100.exe c35c5c6a9a3fa62d6b099713e72390d0490320534dba958b57b94f0a6ab458db
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    "$WINE" PenPenXmasOlympics100.exe "$W_UNATTENDED_SLASH_S"
+    "$WINE" PenPenXmasOlympics100.exe ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
