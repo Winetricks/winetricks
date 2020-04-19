@@ -9367,17 +9367,8 @@ load_dotnet472()
 {
     w_package_warn_win64
 
-    if w_workaround_wine_bug 42170 "Running un-official repacked .NET 4.7.2 setup until the official version is fixed.", 3.1; then
-        # Un-official slim version. See https://repacks.net/forum/viewtopic.php?t=7
-        file_package="dotNetFx472_Full_x86_x64_Slim.exe"
-        w_download "https://drive.google.com/uc?export=download&id=1aLBCH0Yt2-6ROpWRBxZ01kqGMyhc_8hM&confirm" a36da041b8f46079f8e16647312d642953cde520f4a600ad5b3f4f90a23495a7 $file_package
-        unattended_args="/ai /gm2"
-    else
-        # Official version. See https://www.microsoft.com/en-us/download/details.aspx?id=53344
-        w_download https://download.microsoft.com/download/6/E/4/6E48E8AB-DC00-419E-9704-06DD46E5F81D/NDP472-KB4054530-x86-x64-AllOS-ENU.exe c908f0a5bea4be282e35acba307d0061b71b8b66ca9894943d3cbb53cad019bc
-        file_package="NDP472-KB4054530-x86-x64-AllOS-ENU.exe"
-        unattended_args="/sfxlang:1027 /q /norestart"
-    fi
+    # Official version. See https://www.microsoft.com/en-us/download/details.aspx?id=53344
+    w_download https://download.microsoft.com/download/6/E/4/6E48E8AB-DC00-419E-9704-06DD46E5F81D/NDP472-KB4054530-x86-x64-AllOS-ENU.exe c908f0a5bea4be282e35acba307d0061b71b8b66ca9894943d3cbb53cad019bc
 
     w_call remove_mono
 
@@ -9386,7 +9377,7 @@ load_dotnet472()
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file_package" ${W_OPT_UNATTENDED:+$unattended_args}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" NDP472-KB4054530-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     w_override_dlls native mscoree
 
