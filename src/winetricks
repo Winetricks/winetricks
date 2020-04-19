@@ -689,8 +689,6 @@ w_try_msiexec64()
 w_try_regedit()
 {
     # If on wow64, run under both wine and wine64 (otherwise they only go in the 32-bit registry afaict)
-
-    # shellcheck disable=SC2086
     if [ "$W_ARCH" = "win32" ]; then
         w_try_regedit32 "$@"
     elif [ "$W_ARCH" = "win64" ]; then
@@ -699,8 +697,6 @@ w_try_regedit()
     fi
 }
 
-# fixme: cleanup. For wow64 registries, some/all entries need to be duplicated.
-# Not sure of the best way yet, but thinking running wine/wine64 regedit for each?
 w_try_regedit32()
 {
     # on windows, doesn't work without cmd /c
