@@ -6831,7 +6831,6 @@ w_metadata dsdmo dlls \
 load_dsdmo()
 {
     helper_directx_dl
-    mkdir "$W_CACHE"/dsdmo   # kludge so test -f $file1 works
 
     w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dsdmo.dll' "$W_TMP/dxnt.cab"
