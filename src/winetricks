@@ -4940,19 +4940,9 @@ winetricks_cleanup()
 
 winetricks_set_unattended()
 {
-    # We shouldn't use all these extra variables.  Instead, we should
-    # use ${foo:+bar} to jam in commandline options for silent install
-    # only if W_OPT_UNATTENDED is nonempty.  See
-    # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_02
-    # So in attended mode, W_OPT_UNATTENDED should be empty.
-
     case "$1" in
-        1)
-            W_OPT_UNATTENDED=1
-            ;;
-        *)
-            W_OPT_UNATTENDED=""
-            ;;
+        1) W_OPT_UNATTENDED=1;;
+        *) unset W_OPT_UNATTENDED;;
     esac
 }
 
