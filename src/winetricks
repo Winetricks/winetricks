@@ -9332,7 +9332,6 @@ load_dotnet471()
 
     # https://www.microsoft.com/en-US/download/details.aspx?id=56116
     w_download https://download.microsoft.com/download/9/E/6/9E63300C-0941-4B45-A0EC-0008F96DD480/NDP471-KB4033342-x86-x64-AllOS-ENU.exe 63dc850df091f3f137b5d4392f47917f847f8926dc8af1da9bfba6422e495805
-    unattended_args="/sfxlang:1027 /q /norestart"
 
     w_call remove_mono
 
@@ -9341,7 +9340,7 @@ load_dotnet471()
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+$unattended_args}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     w_override_dlls native mscoree
 
