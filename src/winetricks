@@ -4955,7 +4955,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_QB="/qb"
             W_UNATTENDED_SLASH_QN="/qn"
             W_UNATTENDED_SLASH_QNT="/qnt"
-            W_UNATTENDED_SLASH_QT="/qt"
             ;;
         *)
             W_OPT_UNATTENDED=""
@@ -4963,7 +4962,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_QB=""
             W_UNATTENDED_SLASH_QN=""
             W_UNATTENDED_SLASH_QNT=""
-            W_UNATTENDED_SLASH_QT=""
             ;;
     esac
 }
@@ -14092,7 +14090,7 @@ load_controlpad()
     echo "If setup says 'Unable to start DDE ...', press Ignore"
 
     w_try_cd "$W_TMP"
-    w_try "$WINE" setup "$W_UNATTENDED_SLASH_QT"
+    w_try "$WINE" setup ${W_OPT_UNATTENDED:+/qt}
 
     if ! test -f "$W_SYSTEM32_DLLS"/FM20.DLL; then
         w_die "Install failed.  Please report,  If you just wanted fm20.dll, try installing art2min instead."
