@@ -9293,7 +9293,6 @@ load_dotnet462()
     # Official version. See https://www.microsoft.com/en-us/download/details.aspx?id=53344
     w_download https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe 28886593e3b32f018241a4c0b745e564526dbb3295cb2635944e3a393f4278d4
     file_package="NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
-    unattended_args="/sfxlang:1027 /q /norestart"
 
     w_call remove_mono
 
@@ -9302,7 +9301,7 @@ load_dotnet462()
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file_package" ${W_OPT_UNATTENDED:+$unattended_args}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file_package" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     w_override_dlls native mscoree
 
