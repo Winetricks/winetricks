@@ -4956,7 +4956,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_QN="/qn"
             W_UNATTENDED_SLASH_QNT="/qnt"
             W_UNATTENDED_SLASH_QT="/qt"
-            W_UNATTENDED_SLASH_QUIET="/quiet"
             ;;
         *)
             W_OPT_UNATTENDED=""
@@ -4965,7 +4964,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_QN=""
             W_UNATTENDED_SLASH_QNT=""
             W_UNATTENDED_SLASH_QT=""
-            W_UNATTENDED_SLASH_QUIET=""
             ;;
     esac
 }
@@ -10431,7 +10429,7 @@ load_ie8_kb2936068()
     w_set_winver winxp
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try_ms_installer "$WINE" IE8-WindowsXP-KB2936068-x86-ENU.exe ${W_OPT_UNATTENDED:+ $W_UNATTENDED_SLASH_QUIET /forcerestart}
+    w_try_ms_installer "$WINE" IE8-WindowsXP-KB2936068-x86-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
 
     w_set_winver 'default'
 }
@@ -12816,7 +12814,7 @@ load_xna31()
     w_call dotnet20sp2
     w_download https://download.microsoft.com/download/5/9/1/5912526C-B950-4662-99B6-119A83E60E5C/xnafx31_redist.msi 187e7e6b08fe35428d945612a7d258bfed25fad53cc54882983abdc73fe60f91
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec "$W_UNATTENDED_SLASH_Q"UIET /i "$file1"
+    w_try "$WINE" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "$file1"
 }
 
 #----------------------------------------------------------------
@@ -12842,7 +12840,7 @@ load_xna40()
     # https://www.microsoft.com/en-us/download/details.aspx?id=20914
     w_download https://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi e6c41d692ebcba854dad4b1c52bb7ddd05926bad3105595d6596b8bab01c25e7
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" msiexec "$W_UNATTENDED_SLASH_Q"UIET /i "$file1"
+    w_try "$WINE" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "$file1"
 }
 
 #----------------------------------------------------------------
@@ -14540,7 +14538,7 @@ load_ie7()
     # IE7 requies winxp to install:
     w_set_winver winxp
 
-    w_try_ms_installer "$WINE" IE7-WindowsXP-x86-enu.exe "$W_UNATTENDED_SLASH_QUIET"
+    w_try_ms_installer "$WINE" IE7-WindowsXP-x86-enu.exe ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "$_W_restore_z" = 1 ]; then
         # END KLUDGE: restore Z:, assuming that the user didn't kill us
@@ -14654,7 +14652,7 @@ load_ie8()
     # FIXME: There's an option for /updates-noupdates to disable checking for updates, but that
     # forces the install to fail on Wine. Not sure if it's an IE8 or Wine bug...
     # FIXME: can't check status, as it always reports failure on wine?
-    "$WINE" IE8-WindowsXP-x86-ENU.exe ${W_OPT_UNATTENDED:+ $W_UNATTENDED_SLASH_QUIET /forcerestart}
+    "$WINE" IE8-WindowsXP-x86-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
 
     if [ "$_W_restore_z" = 1 ]; then
         # END KLUDGE: restore Z:, assuming that the user didn't kill us
