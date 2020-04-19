@@ -4961,7 +4961,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_QUIET="/quiet"
             W_UNATTENDED_SLASH_CAP_QUIET="/Quiet"
             W_UNATTENDED_SLASH_S="/S"
-            W_UNATTENDED_DASH_SILENT="-silent"
             ;;
         *)
             W_OPT_UNATTENDED=""
@@ -4972,7 +4971,6 @@ winetricks_set_unattended()
             W_UNATTENDED_SLASH_QT=""
             W_UNATTENDED_SLASH_QUIET=""
             W_UNATTENDED_SLASH_S=""
-            W_UNATTENDED_DASH_SILENT=""
             ;;
     esac
 }
@@ -5796,7 +5794,7 @@ load_adobeair()
     if w_workaround_wine_bug 43506 "Forcing quiet install"; then
         w_try "$WINE" AdobeAIRInstaller.exe -silent
     else
-        w_try "$WINE" AdobeAIRInstaller.exe "$W_UNATTENDED_DASH_SILENT"
+        w_try "$WINE" AdobeAIRInstaller.exe ${W_OPT_UNATTENDED:+-silent}
     fi
 }
 
