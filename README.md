@@ -58,7 +58,7 @@ cat > update_winetricks <<_EOF_SCRIPT
 
 # Create and switch to a temporary directory writeable by current user. See:
 #   https://www.tldp.org/LDP/abs/html/subshells.html
-cd "$(mktemp -d)"
+cd "\$(mktemp -d)"
 
 # Download the latest winetricks script (master="latest version") from Github.
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
@@ -104,7 +104,7 @@ cd "$(mktemp -d)"
 cat > update_winetricks <<_EOF_SCRIPT
 #!/bin/sh
 
-cd "$(mktemp -d)"
+cd "\$(mktemp -d)"
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks.bash-completion
 chmod +x winetricks
