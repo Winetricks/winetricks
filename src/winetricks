@@ -21540,7 +21540,11 @@ w_metadata ddr=opengl settings \
 
 load_ddr()
 {
-    winetricks_set_wined3d_var DirectDrawRenderer "$1"
+    if w_wine_version_in ,3.16 ; then
+        winetricks_set_wined3d_var DirectDrawRenderer "$1"
+    else
+        winetricks_set_wined3d_var renderer "$1"
+    fi
 }
 
 #----------------------------------------------------------------
