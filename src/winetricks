@@ -11171,7 +11171,7 @@ load_prntvpt()
 
     if [ "$W_ARCH" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_7180ae1eb5ce8062/prntvpt.dll
-        w_try cp "$W_TMP/x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll" "$W_SYSTEM64_DLLS/prntvpt.dll"
+        w_try cp "$W_TMP/amd64_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_7180ae1eb5ce8062/prntvpt.dll" "$W_SYSTEM64_DLLS/prntvpt.dll"
         w_try_regsvr64 prntvpt.dll
     fi
 }
