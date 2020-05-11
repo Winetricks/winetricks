@@ -5091,7 +5091,6 @@ winetricks_set_wineprefix()
     case "$W_APPDATA_WIN" in
         "") w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%AppData%' returned empty string, error message \"$(cat $W_TMP_EARLY/early_wine.err.txt)\" ";;
         %*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%AppData%' returned unexpanded string '$W_PROGRAMS_WIN' ... this can be caused by a corrupt wineprefix (\`wineboot -u\` may help), by an old wine, or by not owning $WINEPREFIX" ;;
-        *unknown*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "$WINE cmd.exe /c echo '%AppData%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
     esac
 
     # Kludge: use Temp instead of temp to avoid \t expansion in w_try
