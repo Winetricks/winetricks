@@ -42,9 +42,10 @@ Then, for Ubuntu, use a shell script to download the current winetricks script(s
 E.g.:
 
 ```
+#!/bin/sh
 # Create and switch to a temporary directory writeable by current user. See:
 #   https://www.tldp.org/LDP/abs/html/subshells.html
-cd "$(mktemp -d)"
+cd "$(mktemp -d)" || exit 1
 
 # Use a BASH "here document" to create an updater shell script file.
 # See:
@@ -77,7 +78,7 @@ wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetric
 # Move the winetricks BASH completion script to a standard location for BASH completion modules. See:
 #   https://www.tldp.org/LDP/abs/html/tabexpansion.html
 sudo mv winetricks.bash-completion /usr/share/bash-completion/completions/winetricks
-_EOF_SCRIPT 
+_EOF_SCRIPT
 ###### create update_winetricks FINISH ########
 
 # Mark the update_winetricks script (we've just written out) as executable. See:
