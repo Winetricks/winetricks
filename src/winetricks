@@ -15714,7 +15714,7 @@ load_qq()
         w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
         w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
         # shellcheck disable=SC1001
-        echo Exec=env WINEPREFIX="$WINEPREFIX" "$WINE" "$W_PROGRAMS_X86_WIN"\/Tencent\/QQ\/bin\/QQScLauncher.exe >> "$HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop"
+        echo Exec=env WINEPREFIX="$WINEPREFIX" "$WINE" \""$W_PROGRAMS_X86_WIN"/Tencent/QQ/bin/QQScLauncher.exe\" >> "$HOME/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop"
     fi
 
     if w_workaround_wine_bug 39657 "Disable ntoskrnl.exe to work around can't be started bug"; then
