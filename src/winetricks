@@ -15679,11 +15679,11 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata qq apps \
-    title="QQ 8.9.1(Chinese chat app)" \
+    title="QQ 8.9.6(Chinese chat app)" \
     publisher="Tencent" \
     year="2017" \
     media="download" \
-    file1="QQ8.9.1.exe" \
+    file1="QQ8.9.6.exe" \
     file2="QQ.tar.gz"\
     installed_exe1="$W_PROGRAMS_X86_WIN/Tencent/QQ/Bin/QQScLauncher.exe" \
     homepage="https://www.qq.com/" \
@@ -15691,7 +15691,7 @@ w_metadata qq apps \
 
 load_qq()
 {
-    w_download https://dldir1.qq.com/qqfile/qq/QQ8.9.1/20437/QQ8.9.1.exe 8e0d3ff5264da2d77e2fc011c21048edeebcf082f55f68a301f763c3a15c0d3f
+    w_download https://dldir1.qq.com/qqfile/qq/QQ8.9.6/22404/QQ8.9.6.exe d207f49a642be21c4e1b14fc9f4cf47a6a9a2718afbc8bd0685b607b65424ef6
     w_download https://hillwoodhome.net/wine/QQ.tar.gz eb5cd6371eb75ec9e2fc0271199df05cbb9f38a60c2e81d5d8ac7daeb40aba62
 
     if w_workaround_wine_bug 5162 "Installing native riched20 to work around can't input username."; then
@@ -15724,6 +15724,9 @@ load_qq()
     if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"; then
         w_override_dlls disabled txplatform.exe
     fi
+
+    # Disable update, stay on the version.
+    w_override_dlls disabled txupd.exe
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try "$WINE" "$file1"
