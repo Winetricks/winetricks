@@ -16322,7 +16322,7 @@ load_wmp9()
       w_try cabextract -d "$W_TMP" ./MPSetup.exe
       w_try_cd "$W_TMP"
       w_try sed -i 's/IsWow64Process/IsNow64Process/' setup_wm.exe
-      w_try "$WINE" setup_wm.exe ${W_OPT_UNATTENDED:+/quiet}
+      w_try "$WINE" setup_wm.exe ${W_OPT_UNATTENDED:+/Quiet}
     else
       w_try "$WINE" MPSetup.exe ${W_OPT_UNATTENDED:+/q}
     fi
