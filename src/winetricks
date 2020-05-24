@@ -72,7 +72,7 @@ WINETRICKS_VERSION=20200412-next
 #   Copyright (C) 2011 Łukasz Wojniłowicz
 #   Copyright (C) 2011 Matthew Bozarth
 #   Copyright (C) 2013-2017 Andrey Gusev <andrey.goosev!gmail.com>
-#   Copyright (C) 2013-2017 Hillwood Yang <hillwood!opensuse.org>
+#   Copyright (C) 2013-2020 Hillwood Yang <hillwood!opensuse.org>
 #   Copyright (C) 2013,2016 André Hentschel <nerv!dawncrow.de>
 #
 # License:
@@ -467,6 +467,8 @@ w_package_unsupported_win64()
         case $LANG in
             pl*) w_warn "Ten pakiet ($W_PACKAGE) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
             ru*) w_warn "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
+            zh_CN*) w_warn "($W_PACKAGE) 无法在64位下工作，只能将容器变量设置为 WINEARCH=win32 安装。" ;;
+            zh_TW*|zh_HK*) w_warn "($W_PACKAGE) 無法在64元下工作，只能將容器變數設定為 WINEARCH=win32 安装。" ;;
             *) w_warn "This package ($W_PACKAGE) does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32." ;;
         esac
         exit 32
@@ -480,6 +482,8 @@ w_package_warn_win64()
         case $LANG in
             pl*) w_warn "Ten pakiet ($W_PACKAGE) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działać lepiej." ;;
             ru*) w_warn "Данный пакет может работать не полностью в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
+            zh_CN*) w_warn "($W_PACKAGE) 可能在64位环境下工作有问题，安装在32位环境可能会更好。" ;;
+            zh_TW*|zh_HK*) w_warn "($W_PACKAGE) 可能在64元環境下工作有問題，安装在32元環境可能會更好。" ;;
             *) w_warn "This package ($W_PACKAGE) may not fully work on a 64-bit installation. 32-bit prefixes may work better." ;;
         esac
     fi
@@ -3310,6 +3314,8 @@ winetricks_latest_version_check()
         case $LANG in
             pl*) w_warn "GitHub nie działa? Wersja '${latest_version}' nie wydaje się być prawdiłową wersją" ;;
             ru*) w_warn "Отсутствует подключение к Github? версия '${latest_version}' может быть неактуальной" ;;
+            zh_CN*) w_warn "Github 提供的下载？${latest_version} 似乎不是个有效的版本号。" ;;
+            zh_TW*|zh_HK*) w_warn "Github 提供的下載？${latest_version} 似乎不是個有效的版本號。" ;;
             *) w_warn "Github down? version '${latest_version}' doesn't appear to be a valid version" ;;
         esac
 
@@ -3332,6 +3338,14 @@ winetricks_latest_version_check()
                 ru*)
                     w_warn "Запущен winetricks-${WINETRICKS_VERSION}, последняя версия winetricks-${latest_version}!"
                     w_warn "Вы можете ее обновить с помощью менеджера пакетов, --self-update или вручную."
+                    ;;
+                zh_CN*)
+                    w_warn "你正在使用 winetricks-${WINETRICKS_VERSION}，最新版本是 winetricks-${latest_version}!"
+                    w_warn "你应该使用你的发行版软件管理器、--self-update 或者手动更新。"
+                    ;;
+                zh_TW*|zh_HK*)
+                    w_warn "你正在使用 winetricks-${WINETRICKS_VERSION}，最新版本是 winetricks-${latest_version}!"
+                    w_warn "你應該使用你的發行版軟體管理者、--self-update 或者手動更新。"
                     ;;
                 *)
                     w_warn "You are running winetricks-${WINETRICKS_VERSION}, latest upstream is winetricks-${latest_version}!"
@@ -3504,8 +3518,8 @@ winetricks_prefixmenu()
              _W_msg_unattended1="Увімкнути автоматичне встановлення"
              _W_msg_help="Переглянути довідку"
              ;;
-        zh_CN*)   _W_msg_title="Winetricks - 选择一个 Wine 容器"
-             _W_msg_body='您想要做什么？'
+        zh_CN*)   _W_msg_title="Winetricks - 择一 Wine 容器"
+             _W_msg_body='君欲何为？'
              _W_msg_apps='安装一个 Windows 应用'
              _W_msg_games='安装一个游戏'
              _W_msg_benchmarks='安装一个基准测试软件'
@@ -3515,8 +3529,8 @@ winetricks_prefixmenu()
              _W_msg_unattended1="启用静默安装"
              _W_msg_help="查看帮助"
              ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 選取一個 Wine 容器"
-             _W_msg_body='您想要做什麼？'
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 取一 Wine 容器"
+             _W_msg_body='君欲何為？'
              _W_msg_apps='安裝一個 Windows 應用'
              _W_msg_games='安裝一個遊戲'
              _W_msg_benchmarks='安裝一個基准測試軟體'
