@@ -2470,10 +2470,45 @@ Usage: 'w_override_app_dlls app mode dll ...'." ;;
 w_set_winver()
 {
     w_skip_windows w_set_winver && return
-    # FIXME: This should really be done with winecfg, but it has no CLI options.
-    # Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45616
 
     _W_winver="$1"
+
+    if w_wine_version_in ,5.7 ; then
+        # Make sure we pass the right version name:
+        case "$_W_winver" in
+            # These are the mismatched ones:
+            # winecfg doesn't accept 'default' as an option (as of wine-5.9):
+            # https://bugs.winehq.org/show_bug.cgi?id=49241
+            # For now, assuming win7:
+            default)  _W_winver="win7";;
+            win2k3)   _W_winver="win2003";;
+            win2k8)   _W_winver="win2008";;
+            win2k8r2) _W_winver="win2008r2";;
+
+            # xp has two entries (winxp/winxp64):
+            winxp)
+                if [ "$W_ARCH" = "win64" ]; then
+                    _W_winver="winxp64"
+                else
+                    _W_winver="winxp"
+                fi
+                ;;
+            # These are the same:
+            nt351|nt40|vista|win10|win20|win2k|win30|win31|win7|win8|win81|win95|win98|winme) : ;;
+            *) w_die "Unsupported Windows version $_W_winver";;
+        esac
+
+        # These are 32-bit only:
+        case "$_W_winver" in
+            nt40|win2k|win31|win95|win98)
+                if [ "$W_ARCH" = "win64" ]; then
+                    w_package_unsupported_win64
+                fi
+                ;;
+        esac
+        w_try "$WINE" winecfg -v "$_W_winver"
+    else
+        # FIXME: remove this after wine-7.0 (i.e., after it's been in stable wine for a while):
 
     # First, delete any lingering version info, otherwise it may conflict:
     (
@@ -2661,6 +2696,8 @@ _EOF_
 
     # Prevent a race when calling from another verb
     w_wineserver -w
+
+    fi
 }
 
 w_unset_winver()
