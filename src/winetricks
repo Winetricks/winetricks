@@ -2473,6 +2473,8 @@ w_set_winver()
     # FIXME: This should really be done with winecfg, but it has no CLI options.
     # Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45616
 
+    _W_winver="$1"
+
     # First, delete any lingering version info, otherwise it may conflict:
     (
     "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion" /v SubVersionNumber /f || true
@@ -2487,9 +2489,9 @@ w_set_winver()
     "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /f || true
     ) > /dev/null 2>&1
 
-    case "$1" in
+    case "$_W_winver" in
         win31)
-            echo "Setting Windows version to $1"
+            echo "Setting Windows version to $_W_winver"
             cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
@@ -2503,7 +2505,7 @@ _EOF_
         win95)
             # This key is only used for Windows 95/98:
 
-            echo "Setting Windows version to $1"
+            echo "Setting Windows version to $_W_winver"
             cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
@@ -2519,7 +2521,7 @@ _EOF_
         win98)
             # This key is only used for Windows 95/98:
 
-            echo "Setting Windows version to $1"
+            echo "Setting Windows version to $_W_winver"
             cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
@@ -2535,7 +2537,7 @@ _EOF_
         nt40)
             # Similar to modern version, but sets two extra keys:
 
-            echo "Setting Windows version to $1"
+            echo "Setting Windows version to $_W_winver"
             cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
@@ -2642,7 +2644,7 @@ _EOF_
             ;;
     esac
 
-    echo "Setting Windows version to $1"
+    echo "Setting Windows version to $_W_winver"
     cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
