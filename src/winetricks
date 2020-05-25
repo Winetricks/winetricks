@@ -22370,6 +22370,21 @@ load_vista()
 
 #----------------------------------------------------------------
 
+w_metadata win20 settings \
+    title_uk="Встановити версію Windows 2.0" \
+    title="Set Windows version to Windows 2.0"
+
+load_win20()
+{
+    if w_wine_version_in 5.7, ; then
+        w_die "Uninplemented for wine<5.7, sorry"
+    fi
+
+    w_set_winver win20
+}
+
+#----------------------------------------------------------------
+
 w_metadata win2k settings \
     title_uk="Встановити версію Windows 2000" \
     title="Set Windows version to Windows 2000"
