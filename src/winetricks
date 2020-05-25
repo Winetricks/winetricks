@@ -22429,6 +22429,21 @@ load_win2k8r2()
 
 #----------------------------------------------------------------
 
+w_metadata win30 settings \
+    title_uk="Встановити версію Windows 3.0" \
+    title="Set Windows version to Windows 3.0"
+
+load_win30()
+{
+    if w_wine_version_in 5.7, ; then
+        w_die "Uninplemented for wine<5.7, sorry"
+    fi
+
+    w_set_winver win30
+}
+
+#----------------------------------------------------------------
+
 w_metadata win31 settings \
     title_uk="Встановити версію Windows 3.1" \
     title="Set Windows version to Windows 3.1"
