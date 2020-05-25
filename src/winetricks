@@ -22521,6 +22521,21 @@ load_win98()
 
 #----------------------------------------------------------------
 
+w_metadata winme settings \
+    title_uk="Встановити версію Windows ME" \
+    title="Set Windows version to Windows ME"
+
+load_winme()
+{
+    if w_wine_version_in 5.7, ; then
+        w_die "Uninplemented for wine<5.7, sorry"
+    fi
+
+    w_set_winver winme
+}
+
+#----------------------------------------------------------------
+
 # Really, we should support other values, since winetricks did
 w_metadata winver= settings \
     title_uk="Встановити версію Windows за замовчуванням (Windows 7)" \
