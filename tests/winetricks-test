@@ -924,6 +924,19 @@ test_w_compare_wine_version()
     # FIXME: there's plenty of room for more tests..
 }
 
+test_windows_versions()
+{
+    grep 'Windows version' files/verbs/settings.txt | cut -d ' ' -f1 | while IFS= read -r version; do
+        # Make sure that changing the Windows version works:
+        test_command "$version"
+
+        # FIXME: maybe bite the bullet and go ahead and add version detection too, using cmd?
+        # Then that can be used to make sure the version is as expected
+        # FIXME: run cmd here and get the string for each:
+        "$WINE" cmd /c ver >> "$WINE_PREFIXES/version.cmd"
+    done
+}
+
 case "$1" in
     7zip) check_deps; test_7zip;;
     check-deps) check_deps ; exit $? ;;
@@ -934,6 +947,7 @@ case "$1" in
     listing) test_listing ;;
     prefix) test_prefix ;;
     quick) check_deps && test_quick ;;
+    version) test_windows_versions;;
     w_compare_wine_version) check_deps && test_w_compare_wine_version ;;
     xvfb-check) check_deps && XVFB=xvfb-run && export XVFB && test_xvfb ;;
     *) echo "Usage: $0 quick|full" ; exit 1 ;;
