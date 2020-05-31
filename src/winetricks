@@ -2498,14 +2498,6 @@ w_set_winver()
             *) w_die "Unsupported Windows version $_W_winver";;
         esac
 
-        # These are 32-bit only:
-        case "$_W_winver" in
-            nt40|win2k|win31|win95|win98)
-                if [ "$W_ARCH" = "win64" ]; then
-                    w_package_unsupported_win64
-                fi
-                ;;
-        esac
         w_try "$WINE" winecfg -v "$_W_winver"
     else
         # FIXME: remove this after wine-7.0 (i.e., after it's been in stable wine for a while):
@@ -22354,6 +22346,7 @@ w_metadata nt40 settings \
 
 load_nt40()
 {
+    w_package_unsupported_win64
     w_set_winver nt40
 }
 
@@ -22380,6 +22373,7 @@ load_win20()
         w_die "Uninplemented for wine<5.7, sorry"
     fi
 
+    w_package_unsupported_win64
     w_set_winver win20
 }
 
@@ -22391,6 +22385,7 @@ w_metadata win2k settings \
 
 load_win2k()
 {
+    w_package_unsupported_win64
     w_set_winver win2k
 }
 
@@ -22439,6 +22434,7 @@ load_win30()
         w_die "Uninplemented for wine<5.7, sorry"
     fi
 
+    w_package_unsupported_win64
     w_set_winver win30
 }
 
@@ -22450,6 +22446,7 @@ w_metadata win31 settings \
 
 load_win31()
 {
+    w_package_unsupported_win64
     w_set_winver win31
 }
 
@@ -22505,6 +22502,7 @@ w_metadata win95 settings \
 
 load_win95()
 {
+    w_package_unsupported_win64
     w_set_winver win95
 }
 
@@ -22516,6 +22514,7 @@ w_metadata win98 settings \
 
 load_win98()
 {
+    w_package_unsupported_win64
     w_set_winver win98
 }
 
@@ -22531,6 +22530,7 @@ load_winme()
         w_die "Uninplemented for wine<5.7, sorry"
     fi
 
+    w_package_unsupported_win64
     w_set_winver winme
 }
 

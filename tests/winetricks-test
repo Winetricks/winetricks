@@ -930,15 +930,16 @@ test_w_compare_wine_version()
 
 test_windows_versions()
 {
-    grep 'Windows version' files/verbs/settings.txt | cut -d ' ' -f1 | while IFS= read -r version; do
+    # shellcheck disable=SC2013
+    for version in $(grep 'Windows version' files/verbs/settings.txt | cut -d ' ' -f1 | grep -v 'winver='); do
         # Make sure that changing the Windows version works:
-        echo "-------------------------"
-        test_command "$version"
+        test_command "$line"
 
         # FIXME: maybe bite the bullet and go ahead and add version detection too, using cmd?
         # Then that can be used to make sure the version is as expected
         # FIXME: run cmd here and get the string for each:
-        "$WINE" cmd /c ver >> "$WINE_PREFIXES/version.cmd"
+        wineserver -w
+        "$WINE" cmd /c ver >> "$WINE_PREFIXES/$line.cmd"
     done
 }
 
