@@ -141,6 +141,17 @@ check_deps() {
         fi
     done
 }
+        
+cleanup() {
+    # Cleanup the prefix, unless $W_OPT_NOCLEAN is set to 1 (to match winetricks):
+    if [ "$W_OPT_NOCLEAN" = "1" ]; then
+        echo "W_OPT_NOCLEAN set to 1, not removing wineprefix $WINEPREFIX"
+    else
+        echo "Removing wineprefix $WINEPREFIX"
+        # FIXME: for some reason, steam doesn't clean up. $WINESERVER -k doesn't help either
+        rm -rf "$WINEPREFIX"
+    fi
+}
 
 fail()
 {
@@ -341,15 +352,6 @@ test_app()
         TOTAL_MB=$((TOTAL / 1024))
         mkdir -p "${outputdir}/measurements"
         echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> "${outputdir}/measurements/$app.dat"
-
-        # Cleanup the prefix, unless $W_OPT_NOCLEAN is set to 1 (to match winetricks):
-        if [ "$W_OPT_NOCLEAN" = "1" ]; then
-            echo "W_OPT_NOCLEAN set to 1, not removing wineprefix $WINEPREFIX"
-        else
-            echo "Removing wineprefix $WINEPREFIX"
-            # FIXME: for some reason, steam doesn't clean up. $WINESERVER -k doesn't help either
-            rm -rf "$WINEPREFIX"
-        fi
     fi
 }
 
@@ -432,6 +434,8 @@ test_command()
         "$WINESERVER" -w
         echo "Wineserver done."
     fi
+
+    cleanup
 }
 
 test_custom_verbs()
@@ -928,6 +932,7 @@ test_windows_versions()
 {
     grep 'Windows version' files/verbs/settings.txt | cut -d ' ' -f1 | while IFS= read -r version; do
         # Make sure that changing the Windows version works:
+        echo "-------------------------"
         test_command "$version"
 
         # FIXME: maybe bite the bullet and go ahead and add version detection too, using cmd?
