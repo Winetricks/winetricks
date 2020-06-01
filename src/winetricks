@@ -2494,7 +2494,7 @@ w_set_winver()
                 fi
                 ;;
             # These are the same:
-            nt40|vista|win10|win20|win2k|win30|win31|win7|win8|win81|win95|win98|winme) : ;;
+            nt351|nt40|vista|win10|win20|win2k|win30|win31|win7|win8|win81|win95|win98|winme) : ;;
             *) w_die "Unsupported Windows version $_W_winver";;
         esac
 
@@ -22323,6 +22323,19 @@ _EOF_
 }
 
 # settings->winversions
+#----------------------------------------------------------------
+
+w_metadata nt351 settings \
+    title_uk="Встановити версію Windows NT 3.51" \
+    title="Set Windows version to Windows NT 3.51"
+
+load_nt351()
+{
+    w_package_unsupported_win64
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=41559" "" "5.7"
+    w_set_winver nt351
+}
+
 #----------------------------------------------------------------
 
 w_metadata nt40 settings \
