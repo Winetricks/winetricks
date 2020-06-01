@@ -2470,43 +2470,70 @@ Usage: 'w_override_app_dlls app mode dll ...'." ;;
 w_set_winver()
 {
     w_skip_windows w_set_winver && return
-    # FIXME: This should really be done with winecfg, but it has no CLI options.
-    # Wine-Bug: https://bugs.winehq.org/show_bug.cgi?id=45616
 
     _W_winver="$1"
 
-    # First, delete any lingering version info, otherwise it may conflict:
-    (
-    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion" /v SubVersionNumber /f || true
-    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion" /v VersionNumber /f || true
-    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CSDVersion /f || true
-    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CurrentBuildNumber /f || true
-    "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CurrentVersion /f || true
-    "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /f || true
-    "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ServiceCurrent" /v OS /f || true
-    "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\Windows" /v CSDVersion /f || true
-    "$WINE" reg delete "HKCU\\Software\\Wine" /v Version /f || true
-    "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /f || true
-    ) > /dev/null 2>&1
+    if w_wine_version_in ,5.7 ; then
+        # Make sure we pass the right version name:
+        case "$_W_winver" in
+            # These are the mismatched ones:
+            # winecfg doesn't accept 'default' as an option (as of wine-5.9):
+            # https://bugs.winehq.org/show_bug.cgi?id=49241
+            # For now, assuming win7:
+            default)  _W_winver="win7";;
+            win2k3)   _W_winver="win2003";;
+            win2k8)   _W_winver="win2008";;
+            win2k8r2) _W_winver="win2008r2";;
 
-    case "$_W_winver" in
-        win31)
-            echo "Setting Windows version to $_W_winver"
-            cat > "$W_TMP"/set-winver.reg <<_EOF_
+            # xp has two entries (winxp/winxp64):
+            winxp)
+                if [ "$W_ARCH" = "win64" ]; then
+                    _W_winver="winxp64"
+                else
+                    _W_winver="winxp"
+                fi
+                ;;
+            # These are the same:
+            nt40|vista|win10|win2k|win31|win7|win8|win81|win95|win98) : ;;
+            *) w_die "Unsupported Windows version $_W_winver";;
+        esac
+
+        w_try "$WINE" winecfg -v "$_W_winver"
+    else
+        # FIXME: remove this after wine-7.0 (i.e., after it's been in stable wine for a while):
+
+        # First, delete any lingering version info, otherwise it may conflict:
+        (
+        "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion" /v SubVersionNumber /f || true
+        "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion" /v VersionNumber /f || true
+        "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CSDVersion /f || true
+        "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CurrentBuildNumber /f || true
+        "$WINE" reg delete "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion" /v CurrentVersion /f || true
+        "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /f || true
+        "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ServiceCurrent" /v OS /f || true
+        "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\Windows" /v CSDVersion /f || true
+        "$WINE" reg delete "HKCU\\Software\\Wine" /v Version /f || true
+        "$WINE" reg delete "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /f || true
+        ) > /dev/null 2>&1
+
+        case "$_W_winver" in
+            win31)
+                echo "Setting Windows version to $_W_winver"
+                cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
 [HKEY_USERS\\S-1-5-4\\Software\\Wine]
 "Version"="win31"
 
 _EOF_
-            w_try_regedit "$W_TMP_WIN"\\set-winver.reg
-            return
-            ;;
-        win95)
-            # This key is only used for Windows 95/98:
+                w_try_regedit "$W_TMP_WIN"\\set-winver.reg
+                return
+                ;;
+            win95)
+                # This key is only used for Windows 95/98:
 
-            echo "Setting Windows version to $_W_winver"
-            cat > "$W_TMP"/set-winver.reg <<_EOF_
+                echo "Setting Windows version to $_W_winver"
+                cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion]
@@ -2515,14 +2542,14 @@ REGEDIT4
 "VersionNumber"="4.0.950"
 
 _EOF_
-            w_try_regedit "$W_TMP_WIN"\\set-winver.reg
-            return
-            ;;
-        win98)
-            # This key is only used for Windows 95/98:
+                w_try_regedit "$W_TMP_WIN"\\set-winver.reg
+                return
+                ;;
+            win98)
+                # This key is only used for Windows 95/98:
 
-            echo "Setting Windows version to $_W_winver"
-            cat > "$W_TMP"/set-winver.reg <<_EOF_
+                echo "Setting Windows version to $_W_winver"
+                cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion]
@@ -2531,14 +2558,14 @@ REGEDIT4
 "VersionNumber"="4.10.2222"
 
 _EOF_
-            w_try_regedit "$W_TMP_WIN"\\set-winver.reg
-            return
-            ;;
-        nt40)
-            # Similar to modern version, but sets two extra keys:
+                w_try_regedit "$W_TMP_WIN"\\set-winver.reg
+                return
+                ;;
+            nt40)
+                # Similar to modern version, but sets two extra keys:
 
-            echo "Setting Windows version to $_W_winver"
-            cat > "$W_TMP"/set-winver.reg <<_EOF_
+                echo "Setting Windows version to $_W_winver"
+                cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion]
@@ -2556,96 +2583,96 @@ REGEDIT4
 "CSDVersion"=dword:00000600
 
 _EOF_
-            w_try_regedit "$W_TMP_WIN"\\set-winver.reg
-            return
-            ;;
-        win2k)
-            csdversion="Service Pack 4"
-            currentbuildnumber="2195"
-            currentversion="5.0"
-            csdversion_hex=dword:00000400
-            ;;
-        winxp)
-            # Special case, afaik it's the only Windows version that has different version numbers for 32/64-bit
-            # So ensure we set the arch appropriate version:
-            if [ "$W_ARCH" = "win32" ]; then
-                csdversion="Service Pack 3"
-                currentbuildnumber="2600"
-                currentversion="5.1"
-                csdversion_hex=dword:00000300
-            elif [ "$W_ARCH" = "win64" ]; then
+                w_try_regedit "$W_TMP_WIN"\\set-winver.reg
+                return
+                ;;
+            win2k)
+                csdversion="Service Pack 4"
+                currentbuildnumber="2195"
+                currentversion="5.0"
+                csdversion_hex=dword:00000400
+                ;;
+            winxp)
+                # Special case, afaik it's the only Windows version that has different version numbers for 32/64-bit
+                # So ensure we set the arch appropriate version:
+                if [ "$W_ARCH" = "win32" ]; then
+                    csdversion="Service Pack 3"
+                    currentbuildnumber="2600"
+                    currentversion="5.1"
+                    csdversion_hex=dword:00000300
+                elif [ "$W_ARCH" = "win64" ]; then
+                    csdversion="Service Pack 2"
+                    currentbuildnumber="3790"
+                    currentversion="5.2"
+                    csdversion_hex=dword:00000200
+                    "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
+                else
+                    w_die "Invalid W_ARCH $W_ARCH"
+                fi
+                ;;
+            win2k3)
                 csdversion="Service Pack 2"
                 currentbuildnumber="3790"
                 currentversion="5.2"
                 csdversion_hex=dword:00000200
+                "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
+                ;;
+            vista)
+                csdversion="Service Pack 2"
+                currentbuildnumber="6002"
+                currentversion="6.0"
+                csdversion_hex=dword:00000200
                 "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
-            else
-                w_die "Invalid W_ARCH $W_ARCH"
-            fi
-            ;;
-        win2k3)
-            csdversion="Service Pack 2"
-            currentbuildnumber="3790"
-            currentversion="5.2"
-            csdversion_hex=dword:00000200
-            "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
-            ;;
-        vista)
-            csdversion="Service Pack 2"
-            currentbuildnumber="6002"
-            currentversion="6.0"
-            csdversion_hex=dword:00000200
-            "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
-            ;;
-        win7|default)
-            csdversion="Service Pack 1"
-            currentbuildnumber="7601"
-            currentversion="6.1"
-            csdversion_hex=dword:00000100
-            "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
-            ;;
-        win2k8)
-            csdversion="Service Pack 2"
-            currentbuildnumber="6002"
-            currentversion="6.0"
-            csdversion_hex=dword:00000200
-            "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
-            ;;
-        win2k8r2)
-            csdversion="Service Pack 1"
-            currentbuildnumber="7601"
-            currentversion="6.1"
-            csdversion_hex=dword:00000100
-            "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
-            ;;
-        win8)
-            csdversion=""
-            currentbuildnumber="9200"
-            currentversion="6.2"
-            csdversion_hex=dword:00000000
-            "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
-            ;;
-        win81)
-            csdversion=""
-            currentbuildnumber="9600"
-            currentversion="6.3"
-            csdversion_hex=dword:00000000
-            "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
-            ;;
-        win10)
-            csdversion=""
-            currentbuildnumber="10240"
-            currentversion="10.0"
-            csdversion_hex=dword:00000000
-            "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
-            ;;
-        *)
-            w_die "Invalid Windows version given."
-            ;;
-    esac
+                ;;
+            win7|default)
+                csdversion="Service Pack 1"
+                currentbuildnumber="7601"
+                currentversion="6.1"
+                csdversion_hex=dword:00000100
+                "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
+                ;;
+            win2k8)
+                csdversion="Service Pack 2"
+                currentbuildnumber="6002"
+                currentversion="6.0"
+                csdversion_hex=dword:00000200
+                "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
+                ;;
+            win2k8r2)
+                csdversion="Service Pack 1"
+                currentbuildnumber="7601"
+                currentversion="6.1"
+                csdversion_hex=dword:00000100
+                "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "ServerNT" /f
+                ;;
+            win8)
+                csdversion=""
+                currentbuildnumber="9200"
+                currentversion="6.2"
+                csdversion_hex=dword:00000000
+                "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
+                ;;
+            win81)
+                csdversion=""
+                currentbuildnumber="9600"
+                currentversion="6.3"
+                csdversion_hex=dword:00000000
+                "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
+                ;;
+            win10)
+                csdversion=""
+                currentbuildnumber="10240"
+                currentversion="10.0"
+                csdversion_hex=dword:00000000
+                "$WINE" reg add "HKLM\\System\\CurrentControlSet\\Control\\ProductOptions" /v ProductType /d "WinNT" /f
+                ;;
+            *)
+                w_die "Invalid Windows version given."
+                ;;
+        esac
 
-    echo "Setting Windows version to $_W_winver"
-    cat > "$W_TMP"/set-winver.reg <<_EOF_
+        echo "Setting Windows version to $_W_winver"
+        cat > "$W_TMP"/set-winver.reg <<_EOF_
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion]
@@ -2657,10 +2684,12 @@ REGEDIT4
 "CSDVersion"=$csdversion_hex
 
 _EOF_
-    w_try_regedit "$W_TMP_WIN"\\set-winver.reg
+        w_try_regedit "$W_TMP_WIN"\\set-winver.reg
 
-    # Prevent a race when calling from another verb
-    w_wineserver -w
+        # Prevent a race when calling from another verb
+        w_wineserver -w
+
+        fi
 }
 
 w_unset_winver()
