@@ -2494,7 +2494,7 @@ w_set_winver()
                 fi
                 ;;
             # These are the same:
-            nt40|vista|win10|win2k|win31|win7|win8|win81|win95|win98) : ;;
+            nt40|vista|win10|win20|win2k|win31|win7|win8|win81|win95|win98) : ;;
             *) w_die "Unsupported Windows version $_W_winver";;
         esac
 
@@ -22344,6 +22344,19 @@ w_metadata vista settings \
 load_vista()
 {
     w_set_winver vista
+}
+
+#----------------------------------------------------------------
+
+w_metadata win20 settings \
+    title_uk="Встановити версію Windows 2.0" \
+    title="Set Windows version to Windows 2.0"
+
+load_win20()
+{
+    w_package_unsupported_win64
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=41559" "" "5.7"
+    w_set_winver win20
 }
 
 #----------------------------------------------------------------
