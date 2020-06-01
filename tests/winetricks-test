@@ -785,6 +785,7 @@ test_full() {
     test_speed list-installed
     test_custom_verbs
     test_w_compare_wine_version
+    test_windows_versions
 }
 
 test_xvfb() {
@@ -924,6 +925,18 @@ test_w_compare_wine_version()
     # FIXME: there's plenty of room for more tests..
 }
 
+test_windows_versions()
+{
+    # shellcheck disable=SC2013
+    for version in $("$WINETRICKS" settings list | grep 'Windows version' | cut -d ' ' -f1 | grep -v 'winver='); do
+        # Make sure that changing the Windows version works:
+        test_command "$version"
+
+        # FIXME: ideally, we'd verify the version here, but that's currently not trivial, see:
+        # https://bugs.winehq.org/show_bug.cgi?id=49242
+    done
+}
+
 case "$1" in
     7zip) check_deps; test_7zip;;
     check-deps) check_deps ; exit $? ;;
@@ -934,6 +947,7 @@ case "$1" in
     listing) test_listing ;;
     prefix) test_prefix ;;
     quick) check_deps && test_quick ;;
+    windows-versions) test_windows_versions;;
     w_compare_wine_version) check_deps && test_w_compare_wine_version ;;
     xvfb-check) check_deps && XVFB=xvfb-run && export XVFB && test_xvfb ;;
     *) echo "Usage: $0 quick|full" ; exit 1 ;;
