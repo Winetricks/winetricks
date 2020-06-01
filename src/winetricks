@@ -2494,7 +2494,7 @@ w_set_winver()
                 fi
                 ;;
             # These are the same:
-            nt40|vista|win10|win20|win2k|win30|win31|win7|win8|win81|win95|win98) : ;;
+            nt40|vista|win10|win20|win2k|win30|win31|win7|win8|win81|win95|win98|winme) : ;;
             *) w_die "Unsupported Windows version $_W_winver";;
         esac
 
@@ -22495,6 +22495,19 @@ load_win98()
 {
     w_package_unsupported_win64
     w_set_winver win98
+}
+
+#----------------------------------------------------------------
+
+w_metadata winme settings \
+    title_uk="Встановити версію Windows ME" \
+    title="Set Windows version to Windows ME"
+
+load_winme()
+{
+    w_package_unsupported_win64
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=41559" "" "5.7"
+    w_set_winver winme
 }
 
 #----------------------------------------------------------------
