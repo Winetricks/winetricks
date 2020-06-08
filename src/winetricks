@@ -12600,7 +12600,7 @@ load_vcrun2017()
 #----------------------------------------------------------------
 
 w_metadata vcrun2019 dlls \
-    title="Visual C++ 2015-2019 libraries (concrt140.dll,mfc140.dll,mfc140u.dll,mfcm140.dll,mfcm140u.dll,msvcp140.dll,vcamp140.dll,vccorlib140.dll,vcomp140.dll,vcruntime140.dll)" \
+    title="Visual C++ 2015-2019 libraries (concrt140.dll,mfc140.dll,mfc140u.dll,mfcm140.dll,mfcm140u.dll,msvcp140.dll,vcamp140.dll,vccorlib140.dll,vcomp140.dll,vcruntime140.dll) (and vcruntime140_1.dll on win64)" \
     publisher="Microsoft" \
     year="2019" \
     media="download" \
@@ -12627,6 +12627,10 @@ load_vcrun2019()
             # 2019/12/26: 40ea2955391c9eae3e35619c4c24b5aaf3d17aeaa6d09424ee9672aa9372aeed
             # 2020/03/23: b6c82087a2c443db859fdbeaae7f46244d06c3f2a7f71c35e50358066253de52
             # 2020/05/20: 7d7105c52fcd6766beee1ae162aa81e278686122c1e44890712326634d0b055e
+
+            # vcruntime140_1 is only shipped on x64:
+            w_override_dlls native,builtin vcruntime140_1
+
             w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 7d7105c52fcd6766beee1ae162aa81e278686122c1e44890712326634d0b055e
             w_try "$WINE" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
