@@ -5055,7 +5055,9 @@ winetricks_set_wineprefix()
         # WINE64 = wine64, available on 64-bit prefixes
         # WINE_ARCH = the native wine for the prefix (wine for 32-bit, wine64 for 64-bit)
         # WINE_MULTI = generic wine, new name
-        if [ "${WINE%??}64" = "$WINE" ]; then
+        if [ -n "$WINE64" ]; then
+            true
+        elif [ "${WINE%??}64" = "$WINE" ]; then
             WINE64="${WINE}"
         elif command -v "${WINE}64" >/dev/null 2>&1; then
             WINE64="${WINE}64"
