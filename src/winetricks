@@ -6055,7 +6055,7 @@ w_metadata binkw32 dlls \
     publisher="RAD Game Tools, Inc." \
     year="2000" \
     media="download" \
-    file1="__32-binkw32.dll3.0.0.0.zip" \
+    file1="binkw32.zip" \
     installed_file1="$W_SYSTEM32_DLLS_WIN/binkw32.dll"
 
 load_binkw32()
@@ -6064,11 +6064,11 @@ load_binkw32()
     # sha256sum of the decompressed file: 1fd7ef7873c8a3be7e2f127b306d0d24d7d88e20cf9188894eff87b5af0d495f
     #
     # Zip sha256sum:
-    # 2015/12/27: 1d5efda8e4af796319b94034ba67b453cbbfddd81eb7d94fd059b40e237fa75d
+    # 2020/06/20: ea6fee73e2b2ff31db84204b63988ca3d9112030001a07887567522be1323458
 
-    w_download http://www.down-dll.com/dll/b/__32-binkw32.dll3.0.0.0.zip 1d5efda8e4af796319b94034ba67b453cbbfddd81eb7d94fd059b40e237fa75d
+    w_download https://www.dlldump.com/zip/dllfiles/B/binkw32.zip ea6fee73e2b2ff31db84204b63988ca3d9112030001a07887567522be1323458
 
-    w_try_unzip "$W_TMP" "$W_CACHE"/binkw32/__32-binkw32.dll3.0.0.0.zip
+    w_try_unzip "$W_TMP" "$W_CACHE"/binkw32/binkw32.zip
     w_try cp "$W_TMP"/binkw32.dll "$W_SYSTEM32_DLLS"/binkw32.dll
 
     w_override_dlls native binkw32
