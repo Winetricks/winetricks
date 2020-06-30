@@ -2685,11 +2685,10 @@ REGEDIT4
 
 _EOF_
         w_try_regedit "$W_TMP_WIN"\\set-winver.reg
+        fi # if w_wine_version_in ,5.7
 
-        # Prevent a race when calling from another verb
-        w_wineserver -w
-
-        fi
+    # Prevent a race when calling from another verb
+    w_wineserver -w
 }
 
 w_unset_winver()
