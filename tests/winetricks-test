@@ -426,7 +426,7 @@ test_command()
 
     echo "Checking for dangling processes!"
     # shellcheck disable=SC2009
-    ps augxw | grep \\.exe
+    ps augxw | grep \\.exe | grep -v grep
 
     if [ -z "$_W_wine_not_needed" ]; then
         "$WINESERVER" -w
