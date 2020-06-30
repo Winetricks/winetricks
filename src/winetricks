@@ -228,15 +228,11 @@ w_info()
         echo "------------------------------------------------------"
     fi
 
-    _W_timeout="--timeout 3"
-
     case $WINETRICKS_GUI in
-        zenity) $WINETRICKS_GUI "$_W_timeout" --info --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
+        zenity) $WINETRICKS_GUI --timeout=3 --info --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
         kdialog) $WINETRICKS_GUI --title winetricks --msgbox "$@" ;;
         none) ;;
     esac
-
-    unset _W_timeout
 }
 
 # Display warning message to stderr (since it is called inside redirected code)
