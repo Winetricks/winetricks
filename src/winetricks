@@ -296,6 +296,18 @@ w_killall()
     kill -s KILL $(pgrep $1)
 }
 
+# Helper for w_package_broken() and friends. If --force is used, continue.
+# If not, exit 99 or the optional value passed as $1
+_w_force_continue_check()
+{
+    exitval="${1:-99}"
+    if [ "$WINETRICKS_FORCE" = 1 ]; then
+        w_warn "--force was used, so trying anyway. Caveat emptor."
+    else
+        exit "$exitval"
+    fi
+}
+
 # Warn user if package is broken (on all arches) in the current wine version. Bug report required.
 w_package_broken()
 {
@@ -312,17 +324,16 @@ w_package_broken()
     if [ -n "$good_version" ]; then
         if ! w_wine_version_in "${bad_version},${good_version}"; then
             w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped}. Upgrade to >=${good_version}. See ${bug_link} for more info."
-            exit 99
         fi
     elif [ -n "$bad_version" ]; then
         if ! w_wine_version_in "${bad_version}"; then
             w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped}. Broken since ${bad_version}. See ${bug_link} for more info."
-            exit 99
         fi
     else
         w_warn "This package ($W_PACKAGE) is broken. See ${bug_link} for more info."
-        exit 99
     fi
+
+    _w_force_continue_check
 }
 
 w_detect_mingw()
@@ -373,20 +384,20 @@ w_package_broken_mingw()
     if [ -n "$good_version" ]; then
         if ! w_wine_version_in "${bad_version},${good_version}"; then
             w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} when wine is built with mingw. Upgrade to >=${good_version} or disable mingw. See ${bug_link} for more info."
-            exit 99
+            _w_force_continue_check
         else
             echo "package was broken, now fixed"
         fi
     elif [ -n "$bad_version" ]; then
         if ! w_wine_version_in "${bad_version}"; then
             w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} (broken since ${bad_version} when wine is built with mingw. See ${bug_link} for more info."
-            exit 99
+            _w_force_continue_check
         else
             echo "Package is broken in future versions"
         fi
     else
         w_warn "This package ($W_PACKAGE) is broken when wine is built with mingw. See ${bug_link} for more info."
-        exit 99
+        _w_force_continue_check
     fi
 }
 
@@ -411,20 +422,20 @@ w_package_broken_no_mingw()
     if [ -n "$good_version" ]; then
         if ! w_wine_version_in "${bad_version},${good_version}"; then
             w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} when wine is built without mingw. Upgrade to >=${good_version}. See ${bug_link} for more info."
-            exit 99
+            _w_force_continue_check
         else
             echo "package was broken, now fixed"
         fi
     elif [ -n "$bad_version" ]; then
         if ! w_wine_version_in "${bad_version}"; then
             w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} (broken since ${bad_version} when wine is built without mingw. See ${bug_link} for more info."
-            exit 99
+            _w_force_continue_check
         else
             echo "Package is broken in future versions"
         fi
     else
         w_warn "This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info."
-        exit 99
+        _w_force_continue_check
     fi
 }
 
@@ -436,9 +447,11 @@ w_package_broken_win64()
 
     if [ "$W_ARCH" = "win64" ] ; then
         if [ -n "$1" ] ; then
-            w_die "This package ($W_PACKAGE) is broken on 64-bit Wine. Using a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
+            w_warn "This package ($W_PACKAGE) is broken on 64-bit Wine. Using a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
+            _w_force_continue_check
         else
-            w_die "This package ($W_PACKAGE) is broken on 64-bit Wine. Using a prefix made with WINEARCH=win32 to work around this."
+            w_warn "This package ($W_PACKAGE) is broken on 64-bit Wine. Using a prefix made with WINEARCH=win32 to work around this."
+            _w_force_continue_check
         fi
     fi
 }
@@ -449,7 +462,7 @@ w_package_unsupported_win32()
 {
     if [ "$W_ARCH" = "win32" ] ; then
         w_warn "This package ($W_PACKAGE) does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64."
-        exit 64
+        _w_force_continue_check 64
     fi
 }
 
@@ -467,7 +480,7 @@ w_package_unsupported_win64()
             zh_TW*|zh_HK*) w_warn "($W_PACKAGE) 無法在64元下工作，只能將容器變數設定為 WINEARCH=win32 安装。" ;;
             *) w_warn "This package ($W_PACKAGE) does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32." ;;
         esac
-        exit 32
+        _w_force_continue_check 32
     fi
 }
 
