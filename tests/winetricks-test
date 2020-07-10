@@ -242,11 +242,15 @@ test_speed()
     # shellcheck disable=SC2086
     if ! w_time $XVFB $WINETRICKS "$1" > "${outputdir}/foo.log"; then
         fail "winetricks $1 returned status $?"
+    else
+        pass "winetricks $1 returned status $?"
     fi
 
     list_lines="$(wc -l < "${outputdir}/foo.log")"
     if [ "$list_lines" -lt 5 ] ; then
         fail "winetricks $1 returned $list_lines lines, expected at least 5"
+    else
+        pass "winetricks $1 returned $list_lines lines"
     fi
 
     if [ ! -f time.log ] ; then
@@ -260,6 +264,8 @@ test_speed()
     # Longest runtime as of 11 Dec 2010 is 5 seconds on an e8400 with cygwin
     if [ "$seconds" -gt 7 ] ; then
         fail "test_speed: winetricks $1 took $seconds seconds"
+    else
+        pass "test_speed: winetricks $1 took $seconds seconds"
     fi
 }
 
