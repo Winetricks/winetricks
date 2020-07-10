@@ -240,7 +240,7 @@ esac
 test_speed()
 {
     # shellcheck disable=SC2086
-    if ! w_time $XVFB $WINETRICKS nocrashdialog "$1" > "${outputdir}/foo.log"; then
+    if ! w_time $XVFB $WINETRICKS "$1" > "${outputdir}/foo.log"; then
         fail "winetricks $1 returned status $?"
     fi
 
