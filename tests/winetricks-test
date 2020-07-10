@@ -89,13 +89,7 @@ BLACKLIST="dx8sdk|kde|psdk2003|psdkwin7"
 # verbs that hang in -q because of simple problem we should work around soon
 BLACKLIST="$BLACKLIST|vc2005trial"
 # verbs that are too slow
-BLACKLIST="$BLACKLIST|bfbc2|dxsdk_nov2006|dxsdk_jun2010"
-# steam verbs I don't have
-BLACKLIST="$BLACKLIST|borderlands|supermeatboy|trine"
-# broken http://bugs.winehq.org/show_bug.cgi?id=26411:
-BLACKLIST="$BLACKLIST|mfsxde|mfsx_demo"
-# hang lately, probably ui changes in install process
-BLACKLIST="$BLACKLIST|bioshock2"
+BLACKLIST="$BLACKLIST|dxsdk_nov2006|dxsdk_jun2010"
 # broken/flaky, http://bugs.winehq.org/show_bug.cgi?id=26016
 BLACKLIST="$BLACKLIST|xmllite"
 # redundant metaverbs
@@ -608,55 +602,6 @@ test_dotnet()
     done
 }
 
-test_install_cached_or_download()
-{
-    # no xvfb needed, kcov breaks
-    "${shwinetricks}" list-cached list-download > "${outputdir}/ticd.log"
-    if grep .------------------- ticd.log ; then
-        fail "output of list-cached list-download contained garbage"
-        exit 1
-    fi
-    sort -u < ticd.log | grep -E -v "$BLACKLIST" > ticd.verbs
-
-    if true ; then
-        # Split into two, only do half
-        nverbs=$(wc -l < ticd.verbs )
-        firsthalf=$((nverbs / 2 + 1))
-        sed "${firsthalf}"',$d' < ticd.verbs > ticd-1.verbs
-        sed '1,'"${firsthalf}"d   < ticd.verbs > ticd-2.verbs
-        VERBS=$(cat ticd-1.verbs)
-    else
-        VERBS=$(cat ticd.verbs)
-    fi
-
-    for a in $VERBS; do
-        test_app "$a"
-    done
-
-    # no xvfb needed, kcov breaks
-    "${shwinetricks}" list-cached | sort > cached.txt
-
-    # Verbs that are just wrappers around others don't detect cache/install state yet.
-    # Verbs that are just informative placeholders don't ever download (gecko).
-    # And some verbs (gecko110) don't usually install for other reasons.
-    BLACKLIST_CACHE="allfonts|cjkfonts|allcodecs|gecko|gecko110|fontfix"
-
-    grep -E -vw "$BLACKLIST_CACHE" ticd.verbs > download.txt
-    comm -23 download.txt cached.txt > download-but-not-cached.txt
-    echo "Supposedly downloadable"
-    cat download.txt
-    echo "Cached"
-    cat cached.txt
-    echo "Downloadable but not cached"
-    cat download-but-not-cached.txt
-
-    # shellcheck disable=SC2046
-    if [ $(wc -l < download-but-not-cached.txt) != 0 ] ; then
-        fail "test_install_cached_or_download: asked to install all downloadable apps, but some not listed as cached afterwards"
-        cat download-but-not-cached.txt
-    fi
-}
-
 test_listing()
 {
     export _W_wine_not_needed=1
@@ -785,7 +730,6 @@ test_full() {
     test_dotnet
     test_speed list
     test_speed list-download
-    #test_install_cached_or_download
     test_speed list-cached
     test_speed list-installed
     test_custom_verbs
