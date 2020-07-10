@@ -244,9 +244,9 @@ test_speed()
         fail "winetricks $1 returned status $?"
     fi
 
-    # shellcheck disable=SC2046
-    if [ $(wc -l < "${outputdir}/foo.log") -lt 5 ] ; then
-        fail "winetricks $1 returned too few lines"
+    list_lines="$(wc -l < "${outputdir}/foo.log")"
+    if [ "$list_lines" -lt 5 ] ; then
+        fail "winetricks $1 returned $list_lines lines, expected at least 5"
     fi
 
     if [ ! -f time.log ] ; then
