@@ -141,6 +141,7 @@ fail()
     echo "FAIL: $*"
     failed_verbs="${failed_verbs}|$*"
     errors=$((errors + 1))
+    w_prefix_failed=1
 }
 
 pass()
@@ -160,6 +161,25 @@ w_die()
 {
     echo "$*"
     exit 1
+}
+
+w_remove_prefix()
+{
+    if [ -n "$WINEPREFIX" ]; then
+        # Cleanup the prefix, unless $W_OPT_NOCLEAN is set to 1 (to match winetricks)
+        # AND if there weren't failures to debug:
+        if [ "$W_OPT_NOCLEAN" = "1" ]; then
+            echo "W_OPT_NOCLEAN set to 1, not removing wineprefix $WINEPREFIX"
+        elif [ "$w_prefix_failed" = "1" ]; then
+            echo "w_prefix_failed set to 1, not removing wineprefix $WINEPREFIX"
+        elif [ -n "$w_remove_prefix_disable" ]; then
+            # Don't remove the prefix yet, as there will be some further checks on the same prefix
+            echo "prefix removed disabled, not removing wineprefix $WINEPREFIX"
+        else
+            echo "Removing wineprefix $WINEPREFIX"
+            rm -rf "$WINEPREFIX"
+        fi
+    fi
 }
 
 w_time()
@@ -340,22 +360,19 @@ test_app()
         TOTAL_MB=$((TOTAL / 1024))
         mkdir -p "${outputdir}/measurements"
         echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> "${outputdir}/measurements/$app.dat"
-
-        # Cleanup the prefix, unless $W_OPT_NOCLEAN is set to 1 (to match winetricks):
-        if [ "$W_OPT_NOCLEAN" = "1" ]; then
-            echo "W_OPT_NOCLEAN set to 1, not removing wineprefix $WINEPREFIX"
-        else
-            echo "Removing wineprefix $WINEPREFIX"
-            # FIXME: for some reason, steam doesn't clean up. $WINESERVER -k doesn't help either
-            rm -rf "$WINEPREFIX"
-        fi
     fi
+
+    unset w_remove_prefix_disable
+    w_remove_prefix
 }
 
 test_command()
 {
     archskip=0
     command="$*"
+
+    # will be set by fail() if a prefix has a failure, so that w_remove_prefix() doesn't remove the prefix
+    unset w_prefix_failed
 
     # If _W_wine_not_needed is set, don't fail if wine is missing (used by test_listing())
 
@@ -431,6 +448,8 @@ test_command()
         "$WINESERVER" -w
         echo "Wineserver done."
     fi
+
+    w_remove_prefix
 }
 
 test_custom_verbs()
@@ -704,6 +723,12 @@ test_prefix()
     else
         fail "${testname} failed"
     fi
+
+    if [ "$W_OPT_NOCLEAN" = "1" ]; then
+        echo "W_OPT_NOCLEAN set to 1, not removing ${WT_TEST_PREFIX}"
+    else
+        rm -rf "${WT_TEST_PREFIX}"
+    fi
 }
 
 test_quick()
@@ -901,17 +926,26 @@ case "$1" in
     *) echo "Usage: $0 quick|full" ; exit 1 ;;
 esac
 
+if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
+    result="PASS"
+    if [ "$W_OPT_NOCLEAN" = "1" ]; then
+        echo "W_OPT_NOCLEAN set to 1, not removing ${WINE_PREFIXES}"
+    else
+        rm -rf "${WINE_PREFIXES}"
+    fi
+else
+    result="FAIL"
+fi
 # Turn off set -x so the results are cleaner:
 set +x
 
 echo "==============================================================="
 echo "Test over, $errors failures, $passes successes, $skips skipped."
+echo $result
 if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
-    echo PASS
     echo "==============================================================="
     exit 0
 else
-    echo FAIL
     echo "Test failures:"
     oldifs="$IFS"
     IFS="|"
