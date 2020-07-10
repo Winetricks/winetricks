@@ -258,8 +258,7 @@ test_speed()
 
     echo "test_speed: winetricks $1 took $seconds seconds"
     # Longest runtime as of 11 Dec 2010 is 5 seconds on an e8400 with cygwin
-    # shellcheck disable=SC2086
-    if [ $seconds -gt 7 ] ; then
+    if [ "$seconds" -gt 7 ] ; then
         fail "test_speed: winetricks $1 took $seconds seconds"
     fi
 }
