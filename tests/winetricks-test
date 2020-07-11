@@ -253,6 +253,24 @@ esac
 
 test_speed()
 {
+    speed_test="$1"
+
+    case "$speed_test" in
+        # No wine/WINEPREFIX needed:
+        list|list-download|list-cached) export _W_wine_not_needed=1;;
+
+        # Needs a WINEPREFIX, with some things installed (need at least 5, see list_lines below):
+        # Note: not using test_command here because that would forcefully override WINEPREFIX
+        list-installed)
+            export WINEPREFIX="$WINE_PREFIXES/test_speed-list-installed"
+            w_remove_prefix_disable=1
+            # shellcheck disable=SC2086
+            $XVFB $WINETRICKS good good good good good || fail "\'$XVFB $WINETRICKS good good good good good\' failed"
+            ;;
+
+        *) echo "error: unknown test_speed command '$speed_test'"; exit 1;;
+    esac
+
     # shellcheck disable=SC2086
     if ! w_time $XVFB $WINETRICKS "$1" > "${outputdir}/foo.log"; then
         fail "winetricks $1 returned status $?"
@@ -281,6 +299,10 @@ test_speed()
     else
         pass "test_speed: winetricks $1 took $seconds seconds"
     fi
+
+    unset _W_wine_not_needed
+    unset w_remove_prefix_disable
+    w_remove_prefix
 }
 
 # test win32 7-zip fallback
