@@ -89,6 +89,14 @@ games list
 list verbs in category 'games'
 .TP
 .B
+fonts list
+list verbs in category 'fonts'
+.TP
+.B
+settings list
+list verbs in category 'settings'
+.TP
+.B
 list
 list categories
 .TP
@@ -109,12 +117,18 @@ list-installed
 list already-installed verbs
 .TP
 .B
+arch=32|64
+create wineprefix with 32 or 64 bit, this option must be
+given before prefix=foobar and will not work in case of
+the default wineprefix.
+.TP
+.B
 prefix=foobar
 select WINEPREFIX=$HOME/.local/share/wineprefixes/foobar
 .TP
 .B
-settings list
-list verbs in category 'settings'
+annihilate
+Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX
 
 .PP
 .SH EXAMPLES
