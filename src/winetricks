@@ -10054,8 +10054,8 @@ load_gdiplus_winxp()
     # https://www.microsoft.com/en-us/download/details.aspx?id=5339
     w_download https://web.archive.org/web/20140615000000/http://download.microsoft.com/download/a/b/c/abc45517-97a0-4cee-a362-1957be2f24e1/WindowsXP-KB975337-x86-ENU.exe 699e76e9f100db3d50da8762c484a369df4698d4b84f7821d4df0e37ce68bcbe
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try_cabextract -d "$W_TMP" -F _sfx_0005._p "$W_CACHE/${W_PACKAGE}/$file1"
-    w_try cp "$W_TMP/_sfx_0005._p" "$W_SYSTEM32_DLLS/gdiplus.dll"
+    w_try "$WINE" "$W_CACHE/${W_PACKAGE}/$file1" /x:. /q
+    w_try cp "$W_CACHE/$W_PACKAGE/asms/10/msft/windows/gdiplus/gdiplus.dll" "$W_SYSTEM32_DLLS/gdiplus.dll"
 
     # For some reason, native, builtin isn't good enough...?
     w_override_dlls native gdiplus
