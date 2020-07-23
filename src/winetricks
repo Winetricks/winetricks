@@ -5051,6 +5051,11 @@ winetricks_set_wineprefix()
     esac
     W_WINDIR_UNIX="$W_DRIVE_C/windows"
 
+    if [ ! -d "$WINEPREFIX" ] && [ -n "$WINEARCH" ]; then
+        w_info "Creating WINEPREFIX \"$WINEPREFIX\" with WINEARCH=$WINEARCH"
+        "$WINE" wineboot
+    fi
+
     # Make sure the prefix is initialized:
     w_try winetricks_early_wine cmd /c "echo init" > /dev/null 2>&1
 
