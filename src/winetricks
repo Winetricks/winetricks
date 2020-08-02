@@ -9144,10 +9144,6 @@ load_dotnet40()
 
     w_call remove_mono
 
-    # Installing dotnet20 beforehand avoids a popup for users when updating their WINEPREFIX
-    # See https://bugs.winehq.org/show_bug.cgi?id=41727#c5
-    w_call dotnet20
-
     w_call winxp
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -9160,6 +9156,9 @@ load_dotnet40()
     "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Version /t REG_SZ /d "4.0.30319" /f
 
     W_NGEN_CMD="$WINE $WINEPREFIX/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/ngen.exe executequeueditems"
+
+    # Avoid a popup on WINEPREFIX updates, see https://bugs.winehq.org/show_bug.cgi?id=41727#c5
+    "$WINE" reg add "HKLM\\Software\\Microsoft\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
 
     w_set_winver 'default'
 }
