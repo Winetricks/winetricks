@@ -9113,6 +9113,10 @@ load_dotnet40()
 
     w_call remove_mono
 
+    # Installing dotnet20 beforehand avoids a popup for users when updating their WINEPREFIX
+    # See https://bugs.winehq.org/show_bug.cgi?id=41727#c5
+    w_call dotnet20
+
     w_call winxp
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
