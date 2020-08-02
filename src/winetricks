@@ -5461,19 +5461,39 @@ winetricks_usage()
 Brug: $0 [tilvalg] [verbum|sti-til-verbum] ...
 Kører de angivne verber.  Hvert verbum installerer et program eller ændrer en indstilling.
 Tilvalg:
--k|--keep_isos: lagr iso'er lokalt (muliggør senere installation uden disk)
--q|--unattended: stil ingen spørgsmål, installér bare automatisk
--r|--ddrescue: brug alternativ disk-tilgangsmetode (hjælper i tilfælde af en ridset disk)
--t|--torify: Run downloads under torify, if available
--v|--verbose: vis alle kommandoer som de bliver udført
--V|--version: vis programversionen og afslut
--h|--help: vis denne besked og afslut
+    --country=CC      Set country code to CC and don't detect your IP address
+-f, --force           Don't check whether packages were already installed
+    --gui             Show gui diagnostics even when driven by commandline
+    --isolate         Install each app or game in its own bottle (WINEPREFIX)
+    --self-update     Update this application to the last version
+    --update-rollback Rollback the last self update
+-k, --keep_isos       lagr iso'er lokalt (muliggør senere installation uden disk)
+    --no-clean        Don't delete temp directories (useful during debugging)
+-q, --unattended      stil ingen spørgsmål, installér bare automatisk
+-r, --ddrescue        brug alternativ disk-tilgangsmetode (hjælper i tilfælde af en ridset disk)
+-t, --torify          Run downloads under torify, if available
+    --verify          Run (automated) GUI tests for verbs, if available
+-v, --verbose         vis alle kommandoer som de bliver udført
+-V, --version         vis programversionen og afslut
+-h  --help            vis denne besked og afslut
+
 Diverse verber:
-list: vis en liste over alle verber
-list-cached: vis en liste over verber for allerede-hentede installationsprogrammer
-list-download: vis en liste over verber for programmer der kan hentes
-list-manual-download: list applications which can be downloaded with some help from the user
-list-installed: list already-installed applications
+list                  vis en liste over alle verber
+list-all              list all categories and their verbs
+apps list             list verbs in category 'applications'
+benchmarks list       list verbs in category 'benchmarks'
+dlls list             list verbs in category 'dlls'
+fonts list            list verbs in category 'fonts'
+games list            list verbs in category 'games'
+settings list         list verbs in category 'settings'
+list-cached           vis en liste over verber for allerede-hentede installationsprogrammer
+list-download         vis en liste over verber for programmer der kan hentes
+list-manual-download  list applications which can be downloaded with some help from the user
+list-installed        list already-installed applications
+arch=32|64            create wineprefix with 32 or 64 bit, this option must be
+                      given before prefix=foobar and will not work in case of
+                      the default wineprefix.
+prefix=foobar         select WINEPREFIX=$W_PREFIXES_ROOT/foobar
 annihilate            Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX
 _EOF_
             ;;
