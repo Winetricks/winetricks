@@ -9218,18 +9218,13 @@ load_dotnet45()
 
     w_call remove_mono
 
-    # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
-
-    # Seems unneeded in wine-2.0
-    # w_call dotnet35
-    w_call dotnet40
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" dotnetfx45_full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
-
     w_override_dlls native mscoree
+
+    w_try_ms_installer "$WINE" dotnetfx45_full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
     w_set_winver win2k3
