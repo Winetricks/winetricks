@@ -5504,9 +5504,12 @@ Angegebene Verben ausführen.
 Jedes Verb installiert eine Anwendung oder ändert eine Einstellung.
 
 Optionen:
+    --country=CC      Set country code to CC and don't detect your IP address
 -f, --force           Nicht prüfen ob Pakete bereits installiert wurden
     --gui             GUI Diagnosen anzeigen, auch wenn von der Kommandozeile gestartet
     --isolate         Jedes Programm oder Spiel in eigener Bottle (WINEPREFIX) installieren
+    --self-update     Update this application to the last version
+    --update-rollback Rollback the last self update
 -k, --keep_isos       ISOs local speichern (erlaubt spätere Installation ohne Disk)
     --no-clean        Temp Verzeichnisse nicht löschen (nützlich beim debuggen)
 -q, --unattended      Keine Fragen stellen, alles automatisch installieren
@@ -5523,6 +5526,7 @@ list-all              Alle Kategorien und deren Verben auflisten
 apps list             Verben der Kategorie 'Anwendungen' auflisten
 benchmarks list       Verben der Kategorie 'Benchmarks' auflisten
 dlls list             Verben der Kategorie 'DLLs' auflisten
+fonts list            list verbs in category 'fonts'
 games list            Verben der Kategorie 'Spiele' auflisten
 settings list         Verben der Kategorie 'Einstellungen' auflisten
 list-cached           Verben für bereits gecachte Installers auflisten
