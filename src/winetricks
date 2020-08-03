@@ -9259,18 +9259,12 @@ load_dotnet452()
 
     w_call remove_mono
 
-    # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
-
-    # Seems unneeded in wine-2.0
-    # w_call dotnet35
-    w_call dotnet40
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" NDP452-KB2901907-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
-
     w_override_dlls native mscoree
+    w_try_ms_installer "$WINE" NDP452-KB2901907-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
     w_set_winver win2k3
@@ -9301,22 +9295,13 @@ load_dotnet46()
 
     w_call remove_mono
 
-    w_call dotnet45
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    if w_workaround_wine_bug 42470 "$W_PACKAGE may experience heap timeouts" ,3.14; then
-        w_warn "If you see heap timeouts like: 'err:ntdll:RtlpWaitForCriticalSection section 0x110060 \"heap.c: main process heap section\" wait timed out in thread 0064, blocked by 0000, retrying (60 sec)', try the patch from https://bugs.winehq.org/show_bug.cgi?id=42470"
-    fi
-
-    if w_workaround_wine_bug 38959 "This installer will fail unless run in quiet mode. See: https://bugs.winehq.org/show_bug.cgi?id=38959" ,3.6; then
-        WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" /q /c:"install.exe /q"
-    else
-        WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
-    fi
-
     w_override_dlls native mscoree
+
+    w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 }
 
 verify_dotnet46()
@@ -9344,14 +9329,13 @@ load_dotnet461()
 
     w_call remove_mono
 
-    w_call dotnet46
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" /sfxlang:1027 ${W_OPT_UNATTENDED:+/q /norestart}
-
+    
     w_override_dlls native mscoree
+
+    w_try_ms_installer "$WINE" "$file1" /sfxlang:1027 ${W_OPT_UNATTENDED:+/q /norestart}
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet461.installed.workaround"
@@ -9382,14 +9366,13 @@ load_dotnet462()
 
     w_call remove_mono
 
-    w_call dotnet461
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file_package" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
-
     w_override_dlls native mscoree
+
+    w_try_ms_installer "$WINE" "$file_package" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     # Unfortunately, dotnet462 install the same files that dotnet461 does, but with different checksums
     # The only unique files are temporary ones. As a workaround, touch a file instead so that we know it's been installed for list-installed
@@ -9421,14 +9404,13 @@ load_dotnet471()
 
     w_call remove_mono
 
-    w_call dotnet462
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
-
     w_override_dlls native mscoree
+
+    w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet471.installed.workaround"
@@ -9458,14 +9440,13 @@ load_dotnet472()
 
     w_call remove_mono
 
-    w_call dotnet462
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" NDP472-KB4054530-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
-
     w_override_dlls native mscoree
+
+    w_try_ms_installer "$WINE" NDP472-KB4054530-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet472.installed.workaround"
@@ -9496,14 +9477,13 @@ load_dotnet48()
 
     w_call remove_mono
 
-    w_call dotnet40
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
-
     w_override_dlls native mscoree
+
+    w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet48.installed.workaround"
