@@ -1140,7 +1140,25 @@ w_dotnet_verify()
         }
     "
     dn_status="$?"
+    
+    # FIXME: this doesn't actually fail if it gets non-zero, does it?
     w_info ".Net Verifier returned $dn_status"
+
+##################
+
+
+    # FIXME: add check for https://bugs.winehq.org/show_bug.cgi?id=41727#c5 here
+    # WINEDEBUG=+msgbox wine "c:\\windows\\system32\\regsvr32.exe" "c:\\windows\\system32\\mscoree.dll"
+    #
+    #0024:trace:msgbox:MSGBOX_OnInit L"Unable to find a version of the runtime to run this application."
+    #regsvr32: Failed to register DLL 'c:\windows\system32\mscoree.dll'
+    #
+    # $ WINEDEBUG=+msgbox wine "c:\\windows\\syswow64\\regsvr32.exe" "c:\\windows\\syswow64\\mscoree.dll"
+
+    # it should run w_ahk_do, with a while loop that looks for regsvr32.exe to exist (maybe, may be a different process)
+    # or the popup window
+    # then check for regsvr exit status
+    # be sure to test good and bad cases (i.e., uncomment dotnet4 fix
 }
 
 # Checks if the user can run the self-update/rollback commands
@@ -9264,6 +9282,7 @@ load_dotnet452()
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     w_override_dlls native mscoree
+
     WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" NDP452-KB2901907-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
@@ -9333,7 +9352,7 @@ load_dotnet461()
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
-    
+
     w_override_dlls native mscoree
 
     WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" /sfxlang:1027 ${W_OPT_UNATTENDED:+/q /norestart}
@@ -9411,7 +9430,7 @@ load_dotnet471()
 
     w_override_dlls native mscoree
 
-    w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet471.installed.workaround"
@@ -9447,7 +9466,7 @@ load_dotnet472()
 
     w_override_dlls native mscoree
 
-    w_try_ms_installer "$WINE" NDP472-KB4054530-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" NDP472-KB4054530-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet472.installed.workaround"
@@ -9484,7 +9503,7 @@ load_dotnet48()
 
     w_override_dlls native mscoree
 
-    w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet48.installed.workaround"
