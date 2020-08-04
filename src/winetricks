@@ -9223,7 +9223,7 @@ load_dotnet45()
 
     w_override_dlls native mscoree
 
-    w_try_ms_installer "$WINE" dotnetfx45_full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" dotnetfx45_full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 
     # Avoid a popup on WINEPREFIX updates, see https://bugs.winehq.org/show_bug.cgi?id=41727#c5
     "$WINE" reg add "HKLM\\Software\\Microsoft\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
@@ -9264,7 +9264,7 @@ load_dotnet452()
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     w_override_dlls native mscoree
-    w_try_ms_installer "$WINE" NDP452-KB2901907-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" NDP452-KB2901907-x86-x64-AllOS-ENU.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
     w_set_winver win2k3
@@ -9301,7 +9301,7 @@ load_dotnet46()
 
     w_override_dlls native mscoree
 
-    w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 }
 
 verify_dotnet46()
@@ -9322,6 +9322,7 @@ w_metadata dotnet461 dlls \
 
 load_dotnet461()
 {
+    # FIXME: remove, maybe
     w_package_warn_win64
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=49982
@@ -9335,7 +9336,7 @@ load_dotnet461()
     
     w_override_dlls native mscoree
 
-    w_try_ms_installer "$WINE" "$file1" /sfxlang:1027 ${W_OPT_UNATTENDED:+/q /norestart}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" /sfxlang:1027 ${W_OPT_UNATTENDED:+/q /norestart}
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet461.installed.workaround"
@@ -9372,7 +9373,7 @@ load_dotnet462()
 
     w_override_dlls native mscoree
 
-    w_try_ms_installer "$WINE" "$file_package" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
+    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file_package" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
 
     # Unfortunately, dotnet462 install the same files that dotnet461 does, but with different checksums
     # The only unique files are temporary ones. As a workaround, touch a file instead so that we know it's been installed for list-installed
