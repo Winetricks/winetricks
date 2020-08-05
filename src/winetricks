@@ -1081,6 +1081,8 @@ winetricks_wget_progress()
 
 w_dotnet_verify()
 {
+    set -x
+
     case "$1" in
         dotnet11) version="1.1" ;;
         dotnet11sp1) version="1.1 SP1" ;;
@@ -1144,21 +1146,45 @@ w_dotnet_verify()
     # FIXME: this doesn't actually fail if it gets non-zero, does it?
     w_info ".Net Verifier returned $dn_status"
 
-##################
+    if [ "$W_ARCH" = "win64" ]; then
+        sysdirs="system32 syswow64"
+    else
+        sysdirs="system32"
+    fi
 
+    for sysdir in $sysdirs; do
+        rm -rf "$W_TMP"/regsvr_out.txt
+        dll="c:\\windows\\$sysdir\\mscoree.dll"
+        w_info "running regsvr32.exe mscoree.dll to ensure it doesn't show a popup"
+        w_ahk_do "
+            run c:\\windows\\$sysdir\\regsvr32.exe $dll
+            loop, 60
+            {
+                sleep 1000
+                process, exist, regsvr32.exe
+                r_pid=%ErrorLevel%
+                if r_pid = 0
+                {
+                    break
+                }
+                pause
+                ifWinExist, regsvr32.exe, Unable to find a version of the runtime to run this application.
+                {
+                    process, close, regsvr32.exe
+                    FileAppend, Unable to find a version of the runtime to run this application.\`n, *
+                    break
+                }
+            }
+        " > "$W_TMP"/regsvr_out.txt
 
-    # FIXME: add check for https://bugs.winehq.org/show_bug.cgi?id=41727#c5 here
-    # WINEDEBUG=+msgbox wine "c:\\windows\\system32\\regsvr32.exe" "c:\\windows\\system32\\mscoree.dll"
-    #
-    #0024:trace:msgbox:MSGBOX_OnInit L"Unable to find a version of the runtime to run this application."
-    #regsvr32: Failed to register DLL 'c:\windows\system32\mscoree.dll'
-    #
-    # $ WINEDEBUG=+msgbox wine "c:\\windows\\syswow64\\regsvr32.exe" "c:\\windows\\syswow64\\mscoree.dll"
-
-    # it should run w_ahk_do, with a while loop that looks for regsvr32.exe to exist (maybe, may be a different process)
-    # or the popup window
-    # then check for regsvr exit status
-    # be sure to test good and bad cases (i.e., uncomment dotnet4 fix
+        cat "$W_TMP"/regsvr_out.txt
+        # make sure it worked:
+        if grep -q "regsvr32: Successfully registered DLL 'c:\\\\windows\\\\$sysdir\\\\mscoree.dll'" "$W_TMP"/regsvr_out.txt; then
+            cat "$W_TMP"/regsvr_out.txt
+        else
+            w_die "unable to regsvr32 $dll: $(cat "$W_TMP/regsvr_out.txt")"
+        fi
+    done
 }
 
 # Checks if the user can run the self-update/rollback commands
@@ -9235,6 +9261,7 @@ load_dotnet45()
 
     w_call remove_mono
 
+    w_call dotnet40
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -9242,9 +9269,6 @@ load_dotnet45()
     WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" dotnetfx45_full_x86_x64.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 
     w_override_dlls native mscoree
-
-    # Avoid a popup on WINEPREFIX updates, see https://bugs.winehq.org/show_bug.cgi?id=41727#c5
-    "$WINE" reg add "HKLM\\Software\\Microsoft\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
     w_set_winver win2k3
@@ -9277,6 +9301,7 @@ load_dotnet452()
 
     w_call remove_mono
 
+    w_call dotnet40
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -9314,11 +9339,12 @@ load_dotnet46()
 
     w_call remove_mono
 
+    w_call dotnet45
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
+   WINEDLLOVERRIDES=fusion=b w_try_ms_installer "$WINE" "$file1" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 
     w_override_dlls native mscoree
 }
@@ -9341,7 +9367,6 @@ w_metadata dotnet461 dlls \
 
 load_dotnet461()
 {
-    # FIXME: remove, maybe
     w_package_warn_win64
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=49982
@@ -9426,6 +9451,7 @@ load_dotnet471()
 
     w_call remove_mono
 
+    w_call dotnet462
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -9462,6 +9488,7 @@ load_dotnet472()
 
     w_call remove_mono
 
+    w_call dotnet462
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
@@ -9499,6 +9526,7 @@ load_dotnet48()
 
     w_call remove_mono
 
+    w_call dotnet40
     w_set_winver win7
 
     w_try_cd "$W_CACHE/$W_PACKAGE"
