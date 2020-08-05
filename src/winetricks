@@ -1177,7 +1177,6 @@ w_dotnet_verify()
             }
         " > "$W_TMP"/regsvr_out.txt
 
-        cat "$W_TMP"/regsvr_out.txt
         # make sure it worked:
         if grep -q "regsvr32: Successfully registered DLL 'c:\\\\windows\\\\$sysdir\\\\mscoree.dll'" "$W_TMP"/regsvr_out.txt; then
             cat "$W_TMP"/regsvr_out.txt
