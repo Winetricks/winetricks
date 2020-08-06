@@ -698,6 +698,41 @@ w_try_msiexec64()
     w_try "$WINE" start /wait "$W_SYSTEM64_DLLS_WIN32/msiexec.exe" ${W_OPT_UNATTENDED:+/q} "$@"
 }
 
+w_try_reg()
+{
+    # If on wow64, run under both wine and wine64 (otherwise they only go in the 32-bit registry afaict)
+    if [ "$W_ARCH" = "win32" ]; then
+        w_try_reg32 "$@"
+    elif [ "$W_ARCH" = "win64" ]; then
+        w_try_reg32 "$@"
+        w_try_reg64 "$@"
+    fi
+}
+
+w_try_reg32()
+{
+    # on windows, doesn't work without cmd /c
+    case "$W_PLATFORM" in
+        windows_cmd|wine_cmd) cmdc="cmd /c";;
+        *) unset cmdc ;;
+    esac
+
+    # shellcheck disable=SC2086
+    w_try "$WINE_MULTI" $cmdc reg "$@"
+}
+
+w_try_reg64()
+{
+    # on windows, doesn't work without cmd /c
+    case "$W_PLATFORM" in
+        windows_cmd|wine_cmd) cmdc="cmd /c";;
+        *) unset cmdc ;;
+    esac
+
+    # shellcheck disable=SC2086
+    w_try "$WINE64" $cmdc reg "$@"
+}
+
 w_try_regedit()
 {
     # If on wow64, run under both wine and wine64 (otherwise they only go in the 32-bit registry afaict)
@@ -1155,7 +1190,7 @@ w_dotnet_verify()
     for sysdir in $sysdirs; do
         rm -rf "$W_TMP"/regsvr_out.txt
         dll="c:\\windows\\$sysdir\\mscoree.dll"
-        w_info "running regsvr32.exe mscoree.dll to ensure it doesn't show a popup"
+        w_info "running regsvr32.exe mscoree.dll bzto ensure it doesn't show a popup"
         w_ahk_do "
             run c:\\windows\\$sysdir\\regsvr32.exe $dll
             loop, 60
@@ -9188,13 +9223,13 @@ load_dotnet40()
 
     w_override_dlls native mscoree
 
-    "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Install /t REG_DWORD /d 0001 /f
-    "$WINE" reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Version /t REG_SZ /d "4.0.30319" /f
+    w_try_reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Install /t REG_DWORD /d 0001 /f
+    w_try_reg add "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full" /v Version /t REG_SZ /d "4.0.30319" /f
 
     W_NGEN_CMD="$WINE $WINEPREFIX/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/ngen.exe executequeueditems"
 
     # Avoid a popup on WINEPREFIX updates, see https://bugs.winehq.org/show_bug.cgi?id=41727#c5
-    "$WINE" reg add "HKLM\\Software\\Microsoft\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
+    w_try_reg add "HKLM\\Software\\Microsoft\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
 
     w_set_winver 'default'
 }
