@@ -146,12 +146,14 @@ fail()
     failed_verbs="${failed_verbs}|$*"
     errors=$((errors + 1))
     w_prefix_failed=1
+    status
 }
 
 pass()
 {
     echo "PASS: $*"
     passes=$((passes + 1))
+    status
 }
 
 skip()
@@ -159,6 +161,12 @@ skip()
     echo "SKIP: $*"
     skips=$((skips + 1))
     was_skipped=1
+    status
+}
+
+status()
+{
+    echo "Test in progress. Current status: $errors failures, $passes successes, $skips skipped."
 }
 
 w_die()
