@@ -12672,7 +12672,8 @@ load_vcrun2019()
     # 2019/12/26: e59ae3e886bd4571a811fe31a47959ae5c40d87c583f786816c60440252cd7ec
     # 2020/03/23: ac96016f1511ae3eb5ec9de04551146fe351b7f97858dcd67163912e2302f5d6
     # 2020/05/20: a06aac66734a618ab33c1522920654ddfc44fc13cafaa0f0ab85b199c3d51dc0
-    w_download https://aka.ms/vs/16/release/vc_redist.x86.exe a06aac66734a618ab33c1522920654ddfc44fc13cafaa0f0ab85b199c3d51dc0
+    # 2020/08/05: b4d433e2f66b30b478c0d080ccd5217ca2a963c16e90caf10b1e0592b7d8d519
+    w_download https://aka.ms/vs/16/release/vc_redist.x86.exe b4d433e2f66b30b478c0d080ccd5217ca2a963c16e90caf10b1e0592b7d8d519
 
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcr140 ucrtbase vcomp140 vcruntime140
 
@@ -12685,11 +12686,12 @@ load_vcrun2019()
             # 2019/12/26: 40ea2955391c9eae3e35619c4c24b5aaf3d17aeaa6d09424ee9672aa9372aeed
             # 2020/03/23: b6c82087a2c443db859fdbeaae7f46244d06c3f2a7f71c35e50358066253de52
             # 2020/05/20: 7d7105c52fcd6766beee1ae162aa81e278686122c1e44890712326634d0b055e
+            # 2020/08/05: 952a0c6cb4a3dd14c3666ef05bb1982c5ff7f87b7103c2ba896354f00651e358
 
             # vcruntime140_1 is only shipped on x64:
             w_override_dlls native,builtin vcruntime140_1
 
-            w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 7d7105c52fcd6766beee1ae162aa81e278686122c1e44890712326634d0b055e
+            w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 952a0c6cb4a3dd14c3666ef05bb1982c5ff7f87b7103c2ba896354f00651e358
             w_try "$WINE" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
