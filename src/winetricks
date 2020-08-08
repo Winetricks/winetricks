@@ -14949,7 +14949,9 @@ load_ie7()
     fi
 
     # Install
-    w_download https://download.microsoft.com/download/3/8/8/38889DC1-848C-4BF2-8335-86C573AD86D9/IE7-WindowsXP-x86-enu.exe bf5c325bbe3f4174869b2a8ff75f92833e7f7debe64777ed0faf293c7725cbef
+    # Microsoft took this down (as of 2020/08/08), but the latest snapshot on archive.org (2020/06/20) gives a different binary.
+    # The snapshot just before that (2020/06/17) is fine, however:
+    w_download https://web.archive.org/web/20200617171343/https://download.microsoft.com/download/3/8/8/38889DC1-848C-4BF2-8335-86C573AD86D9/IE7-WindowsXP-x86-enu.exe bf5c325bbe3f4174869b2a8ff75f92833e7f7debe64777ed0faf293c7725cbef
     w_try_cd "$W_CACHE/$W_PACKAGE"
 
     # IE7 requies winxp to install:
