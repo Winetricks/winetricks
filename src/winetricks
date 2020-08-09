@@ -6136,7 +6136,7 @@ load_comdlg32ocx()
 {
     helper_vb6sp6 "${W_TMP}" ComDlg32.ocx
     w_try mv "${W_TMP}/ComDlg32.ocx" "${W_SYSTEM32_DLLS}/comdlg32.ocx"
-    w_try_regsvr comdlg32.ocx
+    w_try_regsvr32 comdlg32.ocx
 }
 
 #----------------------------------------------------------------
