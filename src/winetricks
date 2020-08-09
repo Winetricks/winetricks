@@ -8493,7 +8493,7 @@ load_dmscript()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmscript.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmscript
-    w_try_regsvr dmscript.dll
+    w_try_regsvr32 dmscript.dll
 }
 
 #----------------------------------------------------------------
