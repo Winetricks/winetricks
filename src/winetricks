@@ -8578,7 +8578,7 @@ load_dswave()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dswave.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dswave
-    w_try_regsvr dswave.dll
+    w_try_regsvr32 dswave.dll
 }
 
 #----------------------------------------------------------------
