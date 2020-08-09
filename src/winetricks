@@ -8472,7 +8472,7 @@ load_dmloader()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmloader.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmloader
-    w_try_regsvr dmloader.dll
+    w_try_regsvr32 dmloader.dll
 }
 
 #----------------------------------------------------------------
