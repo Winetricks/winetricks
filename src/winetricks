@@ -5125,6 +5125,7 @@ winetricks_set_wineprefix()
     if test -d "${W_DRIVE_C}/windows/syswow64"; then
         # Probably need fancier handling/checking, but for a basic start:
         # Note 'wine' may be named 'wine-stable'/'wine-staging'/etc.):
+        # WINE32 = wine (regular behvaior on 32-bit, but on 64-bit this starts a 32-bit rather than 64-bit process)
         # WINE64 = wine64, available on 64-bit prefixes
         # WINE_ARCH = the native wine for the prefix (wine for 32-bit, wine64 for 64-bit)
         # WINE_MULTI = generic wine, new name
@@ -5141,6 +5142,7 @@ winetricks_set_wineprefix()
             WINE64="${WINE64}$(basename "${WINE}" | sed 's/^wine/wine64/')"
         fi
         WINE_ARCH="${WINE64}"
+        WINE32="${WINE64%64}"
         WINE_MULTI="${WINE}"
         W_ARCH=win64
 
@@ -5176,6 +5178,7 @@ winetricks_set_wineprefix()
         esac
     else
         WINE64="false"
+        WINE32="${WINE}"
         WINE_ARCH="${WINE}"
         WINE_MULTI="${WINE}"
         W_ARCH=win32
@@ -5428,6 +5431,7 @@ winetricks_wine_setup()
     case "${W_PLATFORM}" in
         windows_cmd)
             WINE=""
+            WINE32=""
             WINE64=""
             WINE_ARCH=""
             WINE_MULTI=""
