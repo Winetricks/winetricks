@@ -783,6 +783,11 @@ w_try_regsvr()
     w_try "${WINE}" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
+w_try_regsvr32()
+{
+    w_try "${WINE32}" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
+}
+
 w_try_regsvr64()
 {
     w_try "${WINE64}" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
