@@ -8535,7 +8535,7 @@ load_dmsynth()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmsynth.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmsynth
-    w_try_regsvr dmsynth.dll
+    w_try_regsvr32 dmsynth.dll
 }
 
 #----------------------------------------------------------------
