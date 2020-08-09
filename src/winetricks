@@ -8556,7 +8556,7 @@ load_dmusic()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmusic.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmusic
-    w_try_regsvr dmusic.dll
+    w_try_regsvr32 dmusic.dll
 }
 
 #----------------------------------------------------------------
