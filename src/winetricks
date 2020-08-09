@@ -8451,7 +8451,7 @@ load_dmime()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmime.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmime
-    w_try_regsvr dmime.dll
+    w_try_regsvr32 dmime.dll
 }
 
 #----------------------------------------------------------------
