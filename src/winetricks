@@ -6799,7 +6799,7 @@ load_dinput8()
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dinput8.dll' "$W_TMP/dxnt.cab"
 
     # Don't try to register native dinput8; it doesn't export DllRegisterServer().
-    w_try_regsvr dinput8
+    #w_try_regsvr32 dinput8
     w_override_dlls native dinput8
 }
 
