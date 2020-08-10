@@ -9090,15 +9090,6 @@ w_metadata dotnet35sp1 dlls \
 
 load_dotnet35sp1()
 {
-    if [ "$W_ARCH" = "win64" ] && w_workaround_wine_bug 46168 "Doesn't install prior to wine-4.0-rc1" ,4.0; then
-        w_package_unsupported_win64
-    fi
-
-    case "$W_PLATFORM" in
-        windows_cmd) ;;
-        *) w_warn "dotnet35sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
-    esac
-
     w_verify_cabextract_available
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=25150
