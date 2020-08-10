@@ -9051,15 +9051,6 @@ w_metadata dotnet35 dlls \
 
 load_dotnet35()
 {
-    if [ "$W_ARCH" = "win64" ] && w_workaround_wine_bug 45680 "Upgrade to 3.18 for win64 support" ,3.18 ; then
-        w_package_unsupported_win64
-    fi
-
-    case "$W_PLATFORM" in
-        windows_cmd) ;;
-        *) w_warn "dotnet35 does not yet fully work or install on wine.  Caveat emptor." ;;
-    esac
-
     w_verify_cabextract_available
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=21
