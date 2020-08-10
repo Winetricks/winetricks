@@ -159,6 +159,7 @@ pass()
 skip()
 {
     echo "SKIP: $*"
+    skipped_verbs="${skipped_verbs}|$*"
     skips=$((skips + 1))
     was_skipped=1
     status
@@ -978,18 +979,42 @@ echo "Test over, $errors failures, $passes successes, $skips skipped."
 echo $result
 if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
     echo "==============================================================="
-    exit 0
+    status=0
 else
-    echo "Test failures:"
+    echo "==============================================================="
+
     oldifs="$IFS"
     IFS="|"
+
+    echo "Test failures:"
     for test_failure in $failed_verbs; do
         if [ -z "$test_failure" ]; then
             :
         fi
         echo "$test_failure"
     done
+    echo
+
     IFS=$oldifs
-    echo "==============================================================="
-    exit 1
+    status=1
 fi
+
+# skips
+if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
+    echo "==============================================================="
+    oldifs="$IFS"
+    IFS="|"
+
+    echo "Skipped tests:"
+    for skipped_test in $skipped_verbs; do
+        if [ -z "$skipped_test" ]; then
+            :
+        fi
+        echo "$skipped_test"
+    done
+
+    IFS=$oldifs
+fi
+
+echo "==============================================================="
+exit $status
