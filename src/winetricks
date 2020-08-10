@@ -442,17 +442,36 @@ w_package_broken_no_mingw()
 # Warn user if package is broken on win64. Optionally provide a link to the bug report.
 w_package_broken_win64()
 {
-    # Optional:
-    bug_link="$1"
+    # FIXME: test cases for this
 
-    if [ "$W_ARCH" = "win64" ] ; then
-        if [ -n "$1" ] ; then
-            w_warn "This package ($W_PACKAGE) is broken on 64-bit Wine. Using a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
+    bug_link="$1"
+    bad_version="$2"
+    good_version="$3"
+
+    if [ "$W_ARCH" != "win64" ]; then
+        # not a 64-bit prefix, nothing to do:
+        :
+    elif [ -z "$bug_link" ]; then
+        w_die "Bug report link required!"
+    fi
+
+    if [ -n "$good_version" ]; then
+        if ! w_wine_version_in "${bad_version},${good_version}"; then
+            w_warn "This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Use a prefix made with WINEARCH=win32 or upgrade wine to >=${good_version} to work around this. See: ${bug_link}"
             _w_force_continue_check
         else
-            w_warn "This package ($W_PACKAGE) is broken on 64-bit Wine. Using a prefix made with WINEARCH=win32 to work around this."
-            _w_force_continue_check
+            echo "package was broken on win64, now fixed"
         fi
+    elif [ -n "$bad_version" ]; then
+        if ! w_wine_version_in "${bad_version}"; then
+            w_warn "This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped} (broken since ${bad_version}. Use a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
+            _w_force_continue_check
+        else
+            echo "Package is broken in future versions on win64"
+        fi
+    else
+        w_warn "This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info."
+        _w_force_continue_check
     fi
 }
 
