@@ -9051,6 +9051,8 @@ w_metadata dotnet35 dlls \
 
 load_dotnet35()
 {
+    w_package_broken_win64 https://bugs.winehq.org/show_bug.cgi?id=49690 5.12
+
     w_verify_cabextract_available
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=21
