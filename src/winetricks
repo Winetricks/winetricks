@@ -9749,7 +9749,7 @@ load_dxdiagn_feb2010()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dxdiagn.dll' "${W_TMP}/dxnt.cab"
     w_override_dlls native dxdiagn
-    w_try_regsvr dxdiagn.dll
+    w_try_regsvr32 dxdiagn.dll
 }
 
 #----------------------------------------------------------------
