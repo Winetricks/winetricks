@@ -11950,7 +11950,7 @@ load_tabctl32()
 {
     helper_vb6sp6 "${W_TMP}" TabCtl32.ocx
     w_try mv "${W_TMP}/TabCtl32.ocx" "${W_SYSTEM32_DLLS}/tabctl32.ocx"
-    w_try_regsvr tabctl32.ocx
+    w_try_regsvr32 tabctl32.ocx
 }
 
 #----------------------------------------------------------------
