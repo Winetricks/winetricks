@@ -10486,7 +10486,7 @@ load_icodecs()
     # Work around bug in codec's installer?
     # https://support.britannica.com/other/touchthesky/win/issues/TSTUw_150.htm
     # https://appdb.winehq.org/objectManager.php?sClass=version&iId=7091
-    w_try_regsvr ir50_32.dll
+    w_try_regsvr32 ir50_32.dll
 
     # Apparently some codecs are missing, see https://github.com/Winetricks/winetricks/issues/302
     # Download at https://www.moviecodec.com/download-codec-packs/indeo-codecs-legacy-package-31/
