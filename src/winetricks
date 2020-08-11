@@ -9704,7 +9704,7 @@ load_dsound()
     w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F 'dsound.dll' "$W_TMP/dxnt.cab"
 
     # Don't try to register native dsound; it doesn't export DllRegisterServer().
-    w_try_regsvr dsound.dll
+    #w_try_regsvr32 dsound.dll
     w_override_dlls native dsound
 }
 
