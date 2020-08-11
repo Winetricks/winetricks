@@ -10611,7 +10611,7 @@ load_itircl()
     w_try_cabextract -d "${W_TMP}" -F hhupd.exe "${W_CACHE}"/hhw/htmlhelp.exe
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -F itircl.dll "${W_TMP}"/hhupd.exe
     w_override_dlls native itircl
-    w_try_regsvr itircl.dll
+    w_try_regsvr32 itircl.dll
 }
 
 #----------------------------------------------------------------
