@@ -11050,7 +11050,7 @@ load_mshflxgd()
 {
     helper_vb6sp6 "${W_TMP}" MShflxgd.ocx
     w_try mv "${W_TMP}/MShflxgd.ocx" "${W_SYSTEM32_DLLS}/mshflxgd.ocx"
-    w_try_regsvr mshflxgd.ocx
+    w_try_regsvr32 mshflxgd.ocx
 }
 
 #----------------------------------------------------------------
