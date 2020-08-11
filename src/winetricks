@@ -11415,7 +11415,7 @@ load_pngfilt()
 
     helper_winxpsp3 i386/pngfilt.dl_
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/pngfilt.dl_
-    w_try_regsvr pngfilt.dll
+    w_try_regsvr32 pngfilt.dll
 }
 
 #----------------------------------------------------------------
