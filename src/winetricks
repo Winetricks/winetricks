@@ -6992,8 +6992,8 @@ load_dsdmo()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dsdmo.dll' "${W_TMP}/dxnt.cab"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dsdmoprp.dll' "${W_TMP}/dxnt.cab"
-    w_try_regsvr dsdmo.dll
-    w_try_regsvr dsdmoprp.dll
+    w_try_regsvr32 dsdmo.dll
+    w_try_regsvr32 dsdmoprp.dll
 }
 
 #----------------------------------------------------------------
