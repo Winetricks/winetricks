@@ -11016,7 +11016,7 @@ load_msdxmocx()
     w_download http://hell.pl/agnus/windows95/mpfull.exe a39b2b9735cedd513fcb78f8634695d35073e9d7e865e536a0da6db38c7225e4
 
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_CACHE}/${W_PACKAGE}/${file1}"
-    w_try_regsvr msdxm.ocx
+    w_try_regsvr32 msdxm.ocx
 }
 
 #----------------------------------------------------------------
