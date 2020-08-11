@@ -11033,7 +11033,7 @@ load_msflxgrd()
 {
     helper_vb6sp6 "${W_TMP}" MSFlxGrd.ocx
     w_try mv "${W_TMP}/MSFlxGrd.ocx" "${W_SYSTEM32_DLLS}/msflxgrd.ocx"
-    w_try_regsvr msflxgrd.ocx
+    w_try_regsvr32 msflxgrd.ocx
 }
 
 #----------------------------------------------------------------
