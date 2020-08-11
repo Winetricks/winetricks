@@ -96,6 +96,10 @@ BLACKLIST="$BLACKLIST|xmllite"
 BLACKLIST="$BLACKLIST|allcodecs|allfonts|cjkfonts|pptfonts"
 # https://bugs.winehq.org/show_bug.cgi?id=16876
 BLACKLIST="$BLACKLIST|wmi"
+# These break in combination with sandbox, https://bugs.winehq.org/show_bug.cgi?id=49421
+BLACKLIST="$BLACKLIST|ffdshow|python26|python27"
+# Also sandbox, but different bug, https://bugs.winehq.org/show_bug.cgi?id=49550
+BLACKLIST="$BLACKLIST|dirac"
 
 # Travis CI is apparently blocking archive.org, which breaks several verbs:
 # https://github.com/travis-ci/travis-ci/issues/6798
