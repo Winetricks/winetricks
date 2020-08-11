@@ -780,6 +780,8 @@ w_try_regedit64()
 
 w_try_regsvr()
 {
+    # Deprecated 2020/08/11:
+    w_warn "w_try_regsvr() is deprecated, use w_try_regsvr32()/w_try_regsvr64() instead!"
     w_try "${WINE}" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
