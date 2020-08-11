@@ -5943,7 +5943,7 @@ load_amstream()
 
     w_override_dlls native,builtin amstream
 
-    w_try_regsvr amstream.dll
+    w_try_regsvr32 amstream.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_6b778d68f75a1a54/amstream.dll
