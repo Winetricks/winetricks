@@ -6968,10 +6968,11 @@ load_dpvoice()
       w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvvox.dll' "${x}"
       w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvacm.dll' "${x}"
     done
+
     w_override_dlls native dpvoice dpvvox dpvacm
-    w_try_regsvr dpvoice.dll
-    w_try_regsvr dpvvox.dll
-    w_try_regsvr dpvacm.dll
+    w_try_regsvr32 dpvoice.dll
+    w_try_regsvr32 dpvvox.dll
+    w_try_regsvr32 dpvacm.dll
 }
 
 #----------------------------------------------------------------
