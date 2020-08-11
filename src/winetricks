@@ -7055,7 +7055,7 @@ load_dxtrans()
     helper_winxpsp3 i386/dxtrans.dl_
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/dxtrans.dl_
     w_override_dlls native,builtin dxtrans
-    w_try_regsvr dxtrans.dll
+    w_try_regsvr32 dxtrans.dll
 }
 
 #----------------------------------------------------------------
