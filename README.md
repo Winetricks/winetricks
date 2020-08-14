@@ -148,7 +148,7 @@ Description=Run winetricks update script
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/update_winetricks
+ExecStart=/bin/bash /usr/bin/update_winetricks
 Type=oneshot
 _EOF_SERVICE_UNIT
 
