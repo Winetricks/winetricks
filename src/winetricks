@@ -10081,6 +10081,22 @@ load_galliumnine05()
     helper_galliumnine "$file1"
 }
 
+w_metadata galliumnine06 dlls \
+    title="Gallium Nine Standalone (v0.6)" \
+    publisher="Gallium Nine Team" \
+    year="2020" \
+    media="download" \
+    file1="gallium-nine-standalone-v0.6.tar.gz" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/d3d9-nine.dll" \
+    installed_file2="$W_SYSTEM32_DLLS_WIN/ninewinecfg.exe" \
+    homepage="https://github.com/iXit/wine-nine-standalone"
+
+load_galliumnine06()
+{
+    w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.6/gallium-nine-standalone-v0.6.tar.gz" 1a085b5175791414fdd513b5adb5682985917fef81e84f0116ef2b4d5295ad1c
+    helper_galliumnine "$file1"
+}
+
 w_metadata galliumnine dlls \
     title="Gallium Nine Standalone (latest)" \
     publisher="Gallium Nine Team" \
