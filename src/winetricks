@@ -10024,6 +10024,7 @@ w_metadata galliumnine02 dlls \
 load_galliumnine02()
 {
     w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=49676" 5.13,
+    w_package_broken "https://github.com/iXit/wine-nine-standalone/issues/83" 5.14,
 
     w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.2/gallium-nine-standalone-v0.2.tar.gz" 6818fe890e343aa32d3d53179bfeb63df40977797bd7b6263e85e2bb57559313
     helper_galliumnine "$file1"
@@ -10042,6 +10043,7 @@ w_metadata galliumnine03 dlls \
 load_galliumnine03()
 {
     w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=49676" 5.13,
+    w_package_broken "https://github.com/iXit/wine-nine-standalone/issues/83" 5.14,
 
     w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.3/gallium-nine-standalone-v0.3.tar.gz" 8bb564073ab2198e5b9b870f7b8cac8d9bc20bc6accf66c4c798e4b450ec0c91
     helper_galliumnine "$file1"
@@ -10060,6 +10062,7 @@ w_metadata galliumnine04 dlls \
 load_galliumnine04()
 {
     w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=49676" 5.13,
+    w_package_broken "https://github.com/iXit/wine-nine-standalone/issues/83" 5.14,
 
     w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.4/gallium-nine-standalone-v0.4.tar.gz" 4423c32d46419830c8e68fea86d28e740f17f182c365250c379b5493176e19ab
     helper_galliumnine "$file1"
@@ -10077,6 +10080,8 @@ w_metadata galliumnine05 dlls \
 
 load_galliumnine05()
 {
+    w_package_broken "https://github.com/iXit/wine-nine-standalone/issues/83" 5.14,
+
     w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.5/gallium-nine-standalone-v0.5.tar.gz" c46e06b13a3ba0adee75b27a8b54e9d772f83ed29dee5e203364460771fb1bcd
     helper_galliumnine "$file1"
 }
