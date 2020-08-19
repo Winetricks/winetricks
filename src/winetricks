@@ -14287,6 +14287,28 @@ load_wenquanyi()
 
 #----------------------------------------------------------------
 
+w_metadata wenquanyizenhei fonts \
+    title="WenQuanYi ZenHei font" \
+    publisher="wenq.org" \
+    year="2009" \
+    media="download" \
+    file1="wqy-zenhei-0.8.38-1.tar.gz" \
+    installed_file1="$W_FONTSDIR_WIN/wqy-zenhei.ttc"
+
+load_wenquanyizenhei()
+{
+    # See http://wenq.org/wqy2/index.cgi?ZenHei
+    # Donate at http://wenq.org/wqy2/index.cgi?Donation if you want to help support free font development
+    w_download "http://downloads.sourceforge.net/wqy/wqy-zenhei-0.8.38-1.tar.gz" 6018eb54243eddc41e9cbe0b71feefa5cb2570ecbaccd39daa025961235dea22
+    w_try_cd "$W_TMP"
+    w_try tar -zxf "$W_CACHE/$W_PACKAGE/$file1"
+    w_try_cp_font_files "$W_TMP/wqy-zenhei" "$W_FONTSDIR_UNIX" "*.ttc"
+
+    w_register_font wqy-zenhei.ttc "WenQuanYi Zen Hei"
+}
+
+#----------------------------------------------------------------
+
 w_metadata unifont fonts \
     title="Unifont alternative to Arial Unicode MS" \
     publisher="Roman Czyborra / GNU" \
