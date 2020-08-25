@@ -163,6 +163,10 @@ WINETRICKS_VERSION=20200412-next
 # - Pull Requests: https://github.com/Winetricks/winetricks/pulls
 #--------------------------------------------------------------------
 
+# Using TRUE and FALSE instead of 0 and 1, to make the logic flow better and cause less confusion with other languages's definitions.
+TRUE=0
+FALSE=1
+
 # FIXME: XDG_CACHE_HOME is defined twice, clean this up
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
@@ -819,7 +823,7 @@ w_read_key()
 {
     if test ! "$W_OPT_UNATTENDED"; then
         W_KEY=dummy_to_make_autohotkey_happy
-        return 0
+        return "${TRUE}"
     fi
 
     mkdir -p "$W_CACHE/$W_PACKAGE"
@@ -1992,10 +1996,10 @@ w_skip_windows()
     case "$W_PLATFORM" in
         windows_cmd)
             echo "Skipping operation '$1' on Windows"
-            return 0
+            return "${TRUE}"
             ;;
     esac
-    return 1
+    return "${FALSE}"
 }
 
 # for common code in w_override_dlls and w_override_app_dlls
@@ -2772,18 +2776,18 @@ w_compare_wine_version()
 
     # First, check if current wine is equal to either upper or lower wine version:
     case "${_wine_version_stripped}" in
-        "${known_wine_val1}"|"${known_wine_val2}") return 1;;
+        "${known_wine_val1}"|"${known_wine_val2}") return "${FALSE}";;
     esac
 
     _pos_current_wine="$(printf "%s\\n%s\\n%s" "${known_wine_val1}" "${_wine_version_stripped}" "${known_wine_val2}" | sort -t. -k 1,1n -k 2,2n -k 3,3n | grep -n "^${_wine_version_stripped}\$" | cut -d : -f1)"
     if [ "$_pos_current_wine" = "$_expected_pos_current_wine" ] ; then
         #echo "true: known_wine_version=$2, comparison=$1, stripped wine=$_wine_version_stripped, expected_pos=$_expected_pos_known, pos_known=$_pos_known_wine"
         #echo "Wine version comparison is true"
-        return 1
+        return "${FALSE}"
     else
         #echo "false: known_wine_version=$2, comparison=$1, stripped wine=$_wine_version_stripped, expected_pos=$_expected_pos_known, pos_known=$_pos_known_wine"
         #echo "Wine version comparison is false"
-        return 0
+        return "${TRUE}"
     fi
 }
 
@@ -2800,13 +2804,13 @@ w_wine_version_in()
         _W_val2=$(echo "$_W_range" | sed 's/.*,//')
         # If in this range, return true
         case $_W_range in
-            ,*) w_compare_wine_version -le "$_W_val2"            && unset _W_range _W_val1 _W_val2 && return 0;;
-            *,) w_compare_wine_version -ge "$_W_val1"            && unset _W_range _W_val1 _W_val2 && return 0;;
-            *)  w_compare_wine_version -bn "$_W_val1" "$_W_val2" && unset _W_range _W_val1 _W_val2 && return 0;;
+            ,*) w_compare_wine_version -le "$_W_val2"            && unset _W_range _W_val1 _W_val2 && return "${TRUE}";;
+            *,) w_compare_wine_version -ge "$_W_val1"            && unset _W_range _W_val1 _W_val2 && return "${TRUE}";;
+            *)  w_compare_wine_version -bn "$_W_val1" "$_W_val2" && unset _W_range _W_val1 _W_val2 && return "${TRUE}";;
         esac
     done
     unset _W_range _W_val1 _W_val2
-    return 1
+    return "${FALSE}"
 }
 
 # Usage: workaround_wine_bug bugnumber [message] [good-wine-version-range ...]
@@ -2817,7 +2821,7 @@ w_workaround_wine_bug()
 {
     if test "$WINE" = ""; then
         echo "No need to work around wine bug $1 on Windows"
-        return 1
+        return "${FALSE}"
     fi
     case "$2" in
         [0-9]*) w_die "bug: want message in w_workaround_wine_bug arg 2, got $2" ;;
@@ -2828,13 +2832,13 @@ w_workaround_wine_bug()
     # shellcheck disable=SC2086
     if test "$3" && w_wine_version_in $3 $4 $5 $6; then
         echo "Current Wine does not have Wine bug $1, so not applying workaround"
-        return 1
+        return "${FALSE}"
     fi
 
     case "$1" in
         "$WINETRICKS_BLACKLIST")
             echo "Wine bug $1 workaround blacklisted, skipping"
-            return 1
+            return "${FALSE}"
             ;;
     esac
 
@@ -2850,7 +2854,7 @@ w_workaround_wine_bug()
     esac
 
     winetricks_stats_log_command "w_workaround_wine_bug-$1"
-    return 0
+    return "${TRUE}"
 }
 
 # Function for verbs to register themselves so they show up in the menu.
@@ -3040,13 +3044,13 @@ w_do_call()
         if test "$WINETRICKS_VERIFY" = 1 && winetricks_is_installed "$1" && test -z "$WINETRICKS_FORCE"; then
             echo "$1 is already installed. --force wasn't given, --verify was, so re-verifying."
             winetricks_verify
-            return 0
+            return "${TRUE}"
         fi
 
         # Don't install if already installed
         if test "$WINETRICKS_FORCE" != 1 && winetricks_is_installed "$1"; then
             echo "$1 already installed, skipping"
-            return 0
+            return "${TRUE}"
         fi
 
         # We'd like to get rid of W_PACKAGE, but for now, just set it as late as possible.
@@ -4320,11 +4324,11 @@ winetricks_is_cached()
 
     if test -f "$_W_path"; then
         unset _W_path
-        return 0
+        return "${TRUE}"
     fi
 
     unset _W_path
-    return 1
+    return "${FALSE}"
 }
 
 # Returns true if given verb has been installed
@@ -4337,13 +4341,13 @@ winetricks_is_installed()
     elif test "$installed_file1"; then
         _W_file="$installed_file1"
     else
-        return 1  # not installed
+        return "${FALSE}"  # not installed
     fi
 
     # Test if the verb has been executed before
     if ! grep -qw "$1" "$WINEPREFIX/winetricks.log" 2>/dev/null; then
         unset _W_file
-        return 1  # not installed
+        return "${FALSE}"  # not installed
     fi
 
     case "$W_PLATFORM" in
@@ -4352,7 +4356,7 @@ winetricks_is_installed()
             _W_file_unix="$(w_pathconv -u "$_W_file")"
             if test -f "$_W_file_unix"; then
                 unset _W_file _W_file_unix _W_prefix
-                return 0  # installed
+                return "${TRUE}"  # installed
             fi
             ;;
         *)
@@ -4375,7 +4379,7 @@ winetricks_is_installed()
                 if test -f "$_W_file_unix" && ! grep -q "Wine placeholder DLL" "$_W_file_unix"; then
                     IFS="$_W_IFS"
                     unset _W_file _W_file_ _W_file_unix _W_prefix _W_IFS
-                    return 0  # installed
+                    return "${TRUE}"  # installed
                 fi
               done
              IFS="$_W_IFS"
@@ -4383,7 +4387,7 @@ winetricks_is_installed()
             ;;
     esac
     unset _W_file _W_prefix _W_IFS  # leak _W_file_unix for caller. Is this wise?
-    return 1  # not installed
+    return "${FALSE}"  # not installed
 }
 
 # List verbs which are already fully cached locally
@@ -4916,7 +4920,7 @@ winetricks_is_mounted()
         _W_dev=$(echo "$_W_tmp" | sed 's/ .*//')
         _W_mountpoint="$(echo "$_W_tmp" | sed 's/^[^ ]* //')"
         # Volume found!
-        return 0
+        return "${TRUE}"
     fi
 
     # If that fails, read volume name the hard way for each volume
@@ -4941,12 +4945,12 @@ winetricks_is_mounted()
         _W_dev=$(sed 's/ .*//' "$W_TMP_EARLY/_W_tmp.$LOGNAME")
         _W_mountpoint="$(sed 's/^[^ ]* //' "$W_TMP_EARLY/_W_tmp.$LOGNAME")"
         rm -f "$W_TMP_EARLY/_W_tmp.$LOGNAME"
-        return 0
+        return "${TRUE}"
     fi
 
     # Volume not found
     unset _W_dev _W_mountpoint _W_volname
-    return 1
+    return "${FALSE}"
 }
 
 winetricks_mount_real_volume()
@@ -5628,9 +5632,9 @@ winetricks_handle_option()
         -vv|--really-verbose) WINETRICKS_OPT_VERBOSE=2 ; set -x ;;
         -*) w_die "unknown option $1" ;;
         prefix=*) export WINEPREFIX="${W_PREFIXES_ROOT}/${1##prefix=}" ;;
-        *) return 1 ;;
+        *) return "${FALSE}" ;;
     esac
-    return 0
+    return "${TRUE}"
 }
 
 # Test whether temporary directory is valid - before initialising script
