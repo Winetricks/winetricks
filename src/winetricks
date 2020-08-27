@@ -10572,12 +10572,10 @@ w_metadata jet40 dlls \
 
 load_jet40()
 {
-    # mdac27 is 32-bit only, so use mdac28 for win64:
-    if [ "$W_ARCH" = "win64" ] ; then
-        w_call mdac28
-    else
-        w_call mdac27
-    fi
+    # Both mdac27/mdac28 are 32-bit only:
+    w_package_unsupported_win64
+
+    w_call mdac27
     w_call wsh57
 
     # https://support.microsoft.com/kb/239114
