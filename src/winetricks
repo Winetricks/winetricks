@@ -325,12 +325,12 @@ w_package_broken()
         w_die "Bug report link required!"
     fi
 
-    if [ -n "$good_version" ]; then
-        if ! w_wine_version_in "${bad_version},${good_version}"; then
+    if [ -n "$good_version" ] && [ -n "$bad_version" ]; then
+        if w_wine_version_in "${bad_version},${good_version}"; then
             w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped}. Upgrade to >=${good_version}. See ${bug_link} for more info."
         fi
     elif [ -n "$bad_version" ]; then
-        if ! w_wine_version_in "${bad_version}"; then
+        if w_wine_version_in "${bad_version}",; then
             w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped}. Broken since ${bad_version}. See ${bug_link} for more info."
         fi
     else
@@ -350,7 +350,7 @@ w_detect_mingw()
     # builtin=mingw (wine-4.11+)
 
     # See https://github.com/Winetricks/winetricks/issues/1461
-    if w_wine_version_in ,4.10 ; then
+    if w_wine_version_in 4.10, ; then
         if grep -obUa "Wine placeholder DLL" "$(w_winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine placeholder DLL'; then
             _W_no_mingw=1
         elif grep -obUa "Wine builtin DLL" "$(w_winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine builtin DLL'; then
@@ -462,14 +462,14 @@ w_package_broken_win64()
     fi
 
     if [ -n "$good_version" ]; then
-        if ! w_wine_version_in "${bad_version},${good_version}"; then
+        if w_wine_version_in "${bad_version},${good_version}"; then
             w_warn "This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Use a prefix made with WINEARCH=win32 or upgrade wine to >=${good_version} to work around this. See: ${bug_link}"
             _w_force_continue_check
         else
             echo "package was broken on win64, now fixed"
         fi
     elif [ -n "$bad_version" ]; then
-        if ! w_wine_version_in "${bad_version}"; then
+        if w_wine_version_in "${bad_version}"; then
             w_warn "This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped} (broken since ${bad_version}. Use a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
             _w_force_continue_check
         else
@@ -2511,7 +2511,7 @@ w_set_winver()
 
     _W_winver="$1"
 
-    if w_wine_version_in ,5.7 ; then
+    if w_wine_version_in 5.7, ; then
         # Make sure we pass the right version name:
         case "$_W_winver" in
             # These are the mismatched ones:
@@ -2723,7 +2723,7 @@ REGEDIT4
 
 _EOF_
         w_try_regedit "$W_TMP_WIN"\\set-winver.reg
-        fi # if w_wine_version_in ,5.7
+        fi # if w_wine_version_in 5.7,
 
     # Prevent a race when calling from another verb
     w_wineserver -w
@@ -2762,6 +2762,8 @@ w_set_app_winver()
 #  if w_compare_wine_version -ge 2.5 ; then
 #      ...
 #  fi
+#
+# Returns true if comparison is valid
 w_compare_wine_version()
 {
     comparison="$1"
@@ -2770,7 +2772,17 @@ w_compare_wine_version()
 
     case "$comparison" in
         # expected value if the comparison is true
-        -bn) _expected_pos_current_wine="2";;
+        -bn)
+            # If the current wine version matches the lower version, it's a match (the bug is present).
+            # If it matches the higher version, it's not a match (the bug is fixed in that version).
+            if [ "${_wine_version_stripped}" = "${known_wine_val1}" ]; then
+                return "${TRUE}"
+            elif [ "${_wine_version_stripped}" = "${known_wine_val2}" ]; then
+                return "${FALSE}"
+            else
+                _expected_pos_current_wine="2"
+            fi
+            ;;
         -ge) _expected_pos_current_wine="2";;
         -le) _expected_pos_current_wine="1";;
         *) w_die "Unsupported comparison. Only -bn, -ge, and -le are supported" ;;
@@ -2778,18 +2790,18 @@ w_compare_wine_version()
 
     # First, check if current wine is equal to either upper or lower wine version:
     case "${_wine_version_stripped}" in
-        "${known_wine_val1}"|"${known_wine_val2}") return "${FALSE}";;
+        "${known_wine_val1}"|"${known_wine_val2}") return "${TRUE}";;
     esac
 
     _pos_current_wine="$(printf "%s\\n%s\\n%s" "${known_wine_val1}" "${_wine_version_stripped}" "${known_wine_val2}" | sort -t. -k 1,1n -k 2,2n -k 3,3n | grep -n "^${_wine_version_stripped}\$" | cut -d : -f1)"
     if [ "$_pos_current_wine" = "$_expected_pos_current_wine" ] ; then
         #echo "true: known_wine_version=$2, comparison=$1, stripped wine=$_wine_version_stripped, expected_pos=$_expected_pos_known, pos_known=$_pos_known_wine"
         #echo "Wine version comparison is true"
-        return "${FALSE}"
+        return "${TRUE}"
     else
         #echo "false: known_wine_version=$2, comparison=$1, stripped wine=$_wine_version_stripped, expected_pos=$_expected_pos_known, pos_known=$_pos_known_wine"
         #echo "Wine version comparison is false"
-        return "${TRUE}"
+        return "${FALSE}"
     fi
 }
 
@@ -5467,7 +5479,7 @@ winetricks_wine_setup()
 
     # If WINE is < 4.0, warn user:
     # 4.0 doesn't do what I thought it would
-    if w_wine_version_in 3.99, ; then
+    if w_wine_version_in ,3.99 ; then
         w_warn "Your version of wine $_wine_version_stripped is no longer supported upstream. You should upgrade to 4.x"
     fi
 
@@ -7062,7 +7074,7 @@ helper_dxvk_d9vk()
     esac
     w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support"
 
-    if ! w_wine_version_in ",${_W_min_wine_version}" ; then
+    if w_wine_version_in ",${_W_min_wine_version}" ; then
         # shellcheck disable=SC2140
         w_warn "${_W_repository#*/} ${_W_package_version} does not support wine version ${_wine_version_stripped} . "\
             "${_W_repository#*/} ${_W_package_version} requires wine version ${_W_min_wine_version} (or newer). "\
@@ -8807,7 +8819,7 @@ load_dotnet20sp1()
     # Given that 3.x is deprecated, not worth looking into.
     # See https://github.com/Winetricks/winetricks/pull/1271
     # https://bugs.winehq.org/show_bug.cgi?id=47484, et al
-    if w_wine_version_in ,4.0 ; then
+    if w_wine_version_in 4.0, ; then
         WINEDLLOVERRIDES="regsvcs.exe,mscorsvw.exe=b;$WINEDLLOVERRIDES"
         export WINEDLLOVERRIDES
     else
@@ -8879,7 +8891,7 @@ load_dotnet20sp2()
     # Given that 3.x is deprecated, not worth looking into.
     # See https://github.com/Winetricks/winetricks/pull/1271
     # https://bugs.winehq.org/show_bug.cgi?id=47484, et al
-    if w_wine_version_in ,4.0 ; then
+    if w_wine_version_in 4.0, ; then
         WINEDLLOVERRIDES="regsvcs.exe,mscorsvw.exe=b;$WINEDLLOVERRIDES"
         export WINEDLLOVERRIDES
     else
@@ -8984,7 +8996,7 @@ load_dotnet30()
     # Given that 3.x is deprecated, not worth looking into.
     # See https://github.com/Winetricks/winetricks/pull/1271
     # https://bugs.winehq.org/show_bug.cgi?id=47484, et al
-    if w_wine_version_in ,4.0 ; then
+    if w_wine_version_in 4.0, ; then
         WINEDLLOVERRIDES="mscorsvw.exe=b;$WINEDLLOVERRIDES"
         export WINEDLLOVERRIDES
     else
