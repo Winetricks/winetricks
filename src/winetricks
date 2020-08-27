@@ -312,14 +312,49 @@ _w_force_continue_check()
     fi
 }
 
+_w_get_broken_messages()
+{
+    # Unify the broken messages (to make it easier for future translators):
+    case $LANG in
+        *)
+            broken_good_version_known_default="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Upgrade to >=${good_version}. See ${bug_link} for more info."
+            broken_good_and_bad_version_known_default="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. Upgrade to >=${good_version}. See ${bug_link} for more info."
+            broken_only_bad_version_known_default="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. See ${bug_link} for more info."
+            broken_no_version_known_default="This package ($W_PACKAGE) is broken. See ${bug_link} for more info."
+
+            broken_good_version_known_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped} when wine is built with mingw. Upgrade to >=${good_version} or rebuild wine without mingw. See ${bug_link} for more info."
+            broken_good_and_bad_version_known_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built with mingw. Upgrade to >=${good_version} or rebuild wine without mingw. See ${bug_link} for more info."
+            broken_only_bad_version_known_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built with mingw. See ${bug_link} for more info."
+            broken_no_version_known_mingw="This package ($W_PACKAGE) is broken when wine is built with mingw. See ${bug_link} for more info."
+
+            broken_good_version_known_no_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped} when wine is built without mingw. Upgrade to >=${good_version}. See ${bug_link} for more info."
+            broken_good_and_bad_version_known_no_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built without mingw. Upgrade to >=${good_version}. See ${bug_link} for more info."
+            broken_only_bad_version_known_no_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built without mingw. See ${bug_link} for more info."
+            broken_no_version_known_no_mingw="This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info."
+
+            broken_good_version_known_win64="This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Use a prefix made with WINEARCH=win32 or upgrade wine to >=${good_version} to work around this. See: ${bug_link}"
+            broken_good_and_bad_version_known_win64="This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Broken since ${bad_version}. Use a prefix made with WINEARCH=win32 or upgrade wine to >=${good_version} to work around this. See: ${bug_link}"
+            broken_only_bad_version_known_win64="This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Broken since ${bad_version}. Use a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
+            broken_no_version_known_win64="This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info."
+            ;;
+    esac
+}
+
 # Warn user if package is broken (on all arches) in the current wine version. Bug report required.
 w_package_broken()
 {
     # FIXME: test cases for this
 
     bug_link="$1"
-    bad_version="$2"
-    good_version="$3"
+    bad_version="$2"  # Optional, for upstream regressions
+    good_version="$3" # Optional, if it's been fixed upstream
+
+    _w_get_broken_messages
+
+    broken_good_version_known="${broken_good_version_known:-$broken_good_version_known_default}"
+    broken_good_and_bad_version_known="${broken_good_and_bad_version_known:-$broken_good_and_bad_version_known_default}"
+    broken_only_bad_version_known="${broken_only_bad_version_known:-$broken_only_bad_version_known_default}"
+    broken_no_version_known="${broken_no_version_known:-$broken_no_version_known_default}"
 
     if [ -z "$bug_link" ] ; then
         w_die "Bug report link required!"
@@ -327,15 +362,30 @@ w_package_broken()
 
     if [ -n "$good_version" ] && [ -n "$bad_version" ]; then
         if w_wine_version_in "${bad_version},${good_version}"; then
-            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped}. Upgrade to >=${good_version}. See ${bug_link} for more info."
+            w_warn "${broken_good_and_bad_version_known}"
+        else
+            return
+        fi
+    elif [ -n "$good_version" ]; then
+        if w_wine_version_in ,"${good_version}"; then
+            w_warn "${broken_good_version_known}"
+        else
+            return
         fi
     elif [ -n "$bad_version" ]; then
         if w_wine_version_in "${bad_version}",; then
-            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped}. Broken since ${bad_version}. See ${bug_link} for more info."
+            w_warn "${broken_only_bad_version_known}"
+        else
+            return
         fi
     else
-        w_warn "This package ($W_PACKAGE) is broken. See ${bug_link} for more info."
+        w_warn "${broken_no_version_known}"
     fi
+
+    unset broken_good_version_known
+    unset broken_good_and_bad_version_known
+    unset broken_only_bad_version_known
+    unset broken_no_version_known
 
     _w_force_continue_check
 }
@@ -371,38 +421,24 @@ w_package_broken_mingw()
     # FIXME: test cases for this
 
     bug_link="$1"
-    bad_version="$2"
-    good_version="$3"
+    bad_version="$2"  # Optional, for upstream regressions
+    good_version="$3" # Optional, if it's been fixed upstream
 
     w_detect_mingw
 
-    if [ -z "$_W_mingw" ]; then
-        # We're not using a mingw build, nothing to do:
+    _w_get_broken_messages
+
+    if [ -z "${_W_mingw}" ]; then
+        echo "Not using a mingw build, nothing to do"
         return
     fi
 
-    if [ -z "$bug_link" ] ; then
-        w_die "Bug report link required!"
-    fi
+    broken_good_version_known="${broken_good_version_known_mingw}"
+    broken_good_and_bad_version_known="${broken_good_and_bad_version_known_mingw}"
+    broken_only_bad_version_known="${broken_only_bad_version_known_mingw}"
+    broken_no_version_known="${broken_no_version_known_mingw}"
 
-    if [ -n "$good_version" ]; then
-        if ! w_wine_version_in "${bad_version},${good_version}"; then
-            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} when wine is built with mingw. Upgrade to >=${good_version} or disable mingw. See ${bug_link} for more info."
-            _w_force_continue_check
-        else
-            echo "package was broken, now fixed"
-        fi
-    elif [ -n "$bad_version" ]; then
-        if ! w_wine_version_in "${bad_version}"; then
-            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} (broken since ${bad_version} when wine is built with mingw. See ${bug_link} for more info."
-            _w_force_continue_check
-        else
-            echo "Package is broken in future versions"
-        fi
-    else
-        w_warn "This package ($W_PACKAGE) is broken when wine is built with mingw. See ${bug_link} for more info."
-        _w_force_continue_check
-    fi
+    w_package_broken "${bug_link}" "${bad_version}" "${good_version}"
 }
 
 # Warn user if package is broken in the current wine version when compiled without mingw. Bug report required.
@@ -411,74 +447,48 @@ w_package_broken_no_mingw()
     # FIXME: test cases for this
 
     bug_link="$1"
-    bad_version="$2"
-    good_version="$3"
+    bad_version="$2"  # Optional, for upstream regressions
+    good_version="$3" # Optional, if it's been fixed upstream
 
     w_detect_mingw
 
+    _w_get_broken_messages
+
     if [ -z "$_W_no_mingw" ]; then
-        # We're using a mingw build, nothing to do:
+        echo "Using a mingw build, nothing to do"
         return
     fi
 
-    if [ -z "$bug_link" ] ; then
-        w_die "Bug report link required!"
-    fi
+    broken_good_version_known="${broken_good_version_known_no_mingw}"
+    broken_good_and_bad_version_known="${broken_good_and_bad_version_known_no_mingw}"
+    broken_only_bad_version_known="${broken_only_bad_version_known_no_mingw}"
+    broken_no_version_known="${broken_no_version_known_no_mingw}"
 
-    if [ -n "$good_version" ]; then
-        if ! w_wine_version_in "${bad_version},${good_version}"; then
-            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} when wine is built without mingw. Upgrade to >=${good_version}. See ${bug_link} for more info."
-            _w_force_continue_check
-        else
-            echo "package was broken, now fixed"
-        fi
-    elif [ -n "$bad_version" ]; then
-        if ! w_wine_version_in "${bad_version}"; then
-            w_warn "This package ($W_PACKAGE) is broken in ${_wine_version_stripped} (broken since ${bad_version} when wine is built without mingw. See ${bug_link} for more info."
-            _w_force_continue_check
-        else
-            echo "Package is broken in future versions"
-        fi
-    else
-        w_warn "This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info."
-        _w_force_continue_check
-    fi
+    w_package_broken "${bug_link}" "${bad_version}" "${good_version}"
 }
 
-# Warn user if package is broken on win64. Optionally provide a link to the bug report.
+# Warn user if package is broken on win64.
 w_package_broken_win64()
 {
     # FIXME: test cases for this
 
     bug_link="$1"
-    bad_version="$2"
-    good_version="$3"
+    bad_version="$2"  # Optional, for upstream regressions
+    good_version="$3" # Optional, if it's been fixed upstream
+
+    _w_get_broken_messages
 
     if [ "$W_ARCH" != "win64" ]; then
-        # not a 64-bit prefix, nothing to do:
-        :
-    elif [ -z "$bug_link" ]; then
-        w_die "Bug report link required!"
+        echo "Not using a 64-bit prefix, nothing to do"
+        return
     fi
 
-    if [ -n "$good_version" ]; then
-        if w_wine_version_in "${bad_version},${good_version}"; then
-            w_warn "This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Use a prefix made with WINEARCH=win32 or upgrade wine to >=${good_version} to work around this. See: ${bug_link}"
-            _w_force_continue_check
-        else
-            echo "package was broken on win64, now fixed"
-        fi
-    elif [ -n "$bad_version" ]; then
-        if w_wine_version_in "${bad_version}"; then
-            w_warn "This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped} (broken since ${bad_version}. Use a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
-            _w_force_continue_check
-        else
-            echo "Package is broken in future versions on win64"
-        fi
-    else
-        w_warn "This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info."
-        _w_force_continue_check
-    fi
+    broken_good_version_known="${broken_good_version_known_win64}"
+    broken_good_and_bad_version_known="${broken_good_and_bad_version_known_win64}"
+    broken_only_bad_version_known="${broken_only_bad_version_known_win64}"
+    broken_no_version_known="${broken_no_version_known_win64}"
+
+    w_package_broken "${bug_link}" "${bad_version}" "${good_version}"
 }
 
 # Some packages don't support win32, die with an appropriate message
