@@ -5823,8 +5823,10 @@ helper_win7sp1()
 {
     filename=$1
 
+    # Formerly at:
     # https://www.microsoft.com/en-us/download/details.aspx?id=5842
-    w_download_to win7sp1 https://download.microsoft.com/download/0/A/F/0AFB5316-3062-494A-AB78-7FB0D4461357/windows6.1-KB976932-X86.exe e5449839955a22fc4dd596291aff1433b998f9797e1c784232226aba1f8abd97
+    # 2020/08/27: https://download.microsoft.com/download/0/A/F/0AFB5316-3062-494A-AB78-7FB0D4461357/windows6.1-KB976932-X86.exe
+    w_download_to win7sp1 http://download.windowsupdate.com/msdownload/update/software/svpk/2011/02/windows6.1-kb976932-x86_c3516bc5c9e69fee6d9ac4f981f5b95977a8a2fa.exe e5449839955a22fc4dd596291aff1433b998f9797e1c784232226aba1f8abd97 windows6.1-KB976932-X86.exe
 
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win7sp1/windows6.1-KB976932-X86.exe
 }
@@ -5834,8 +5836,10 @@ helper_win7sp1_x64()
 {
     filename=$1
 
+    # Formerly at:
     # https://www.microsoft.com/en-us/download/details.aspx?id=5842
-    w_download_to win7sp1 https://download.microsoft.com/download/0/A/F/0AFB5316-3062-494A-AB78-7FB0D4461357/windows6.1-KB976932-X64.exe f4d1d418d91b1619688a482680ee032ffd2b65e420c6d2eaecf8aa3762aa64c8
+    # 2020/08/27: https://download.microsoft.com/download/0/A/F/0AFB5316-3062-494A-AB78-7FB0D4461357/windows6.1-KB976932-X64.exe
+    w_download_to win7sp1 http://download.windowsupdate.com/msdownload/update/software/svpk/2011/02/windows6.1-kb976932-x64_74865ef2562006e51d7f9333b4a8d45b7a749dab.exe f4d1d418d91b1619688a482680ee032ffd2b65e420c6d2eaecf8aa3762aa64c8 windows6.1-KB976932-X64.exe
 
     w_try_cabextract -d "$W_TMP" -L -F "$filename" "$W_CACHE"/win7sp1/windows6.1-KB976932-X64.exe
 }
