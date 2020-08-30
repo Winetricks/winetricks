@@ -16533,6 +16533,9 @@ load_wm9codecs()
 {
     # Note: must install WMP9 or 10 first, or installer will complain and abort.
 
+    # The Microsoft page says that is supports XP, but in both 32/64 prefixes, it gives a message box saying it requires win98/winme/win2k
+    w_package_unsupported_win64
+
     # See https://www.microsoft.com/en-us/download/details.aspx?id=507
     # Used by direct calls from load_wmp9, so we have to specify cache directory.
     # http://birds.camden.rutgers.edu/
@@ -16579,14 +16582,15 @@ load_wmp9()
 
     w_try_cd "$W_CACHE"/"$W_PACKAGE"
     if [ "$W_ARCH" = "win64" ]; then
-      w_try cabextract -d "$W_TMP" ./MPSetup.exe
-      w_try_cd "$W_TMP"
-      w_try sed -i 's/IsWow64Process/IsNow64Process/' setup_wm.exe
-      w_try "$WINE" setup_wm.exe ${W_OPT_UNATTENDED:+/Quiet}
+        w_try cabextract -d "$W_TMP" ./MPSetup.exe
+        w_try_cd "$W_TMP"
+        w_try sed -i 's/IsWow64Process/IsNow64Process/' setup_wm.exe
+        w_try "$WINE" setup_wm.exe ${W_OPT_UNATTENDED:+/Quiet}
+        w_warn "wm9codecs is not supported in win64 prefixes. If you need those codecs, reinstall wmp9 in a 32-bit prefix."
     else
-      w_try "$WINE" MPSetup.exe ${W_OPT_UNATTENDED:+/q}
+        w_try "$WINE" MPSetup.exe ${W_OPT_UNATTENDED:+/q}
+        load_wm9codecs
     fi
-    load_wm9codecs
 
     w_set_winver 'default'
 }
