@@ -435,8 +435,11 @@ test_command()
 
     if [ -d "$WINEPREFIX/drive_c/windows/syswow64" ]; then
         WINEARCH="win64"
-    else
+    elif [ -d "$WINEPREFIX/drive_c/windows/system32" ]; then
         WINEARCH="win32"
+    else
+        # This happens during, e.g., `winetricks apps list`.
+        echo "No WINEPREFIX found, not setting WINEARCH"
     fi
 
     if [ "$return" = "32" ] && [ "$WINEARCH" != "win32" ]; then
