@@ -414,6 +414,8 @@ w_package_broken_no_mingw()
     bad_version="$2"
     good_version="$3"
 
+    w_detect_mingw
+
     if [ -z "$_W_no_mingw" ]; then
         # We're using a mingw build, nothing to do:
         return
