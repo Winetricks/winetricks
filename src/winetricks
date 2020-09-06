@@ -1045,12 +1045,34 @@ w_winepath()
 # It uses minimal buffering, so each line is output immediately
 # and the user can watch progress as it happens.
 
+# Wait to all process that is using the ${1} directory to finish, checking 3 times.
+winetricks_wait_process_using_dir() {
+    _W_verification_dir="${1}"
+    _W_verification_time=7
+    _W_verification_num=3
+
+    i=0 ; while true; do
+        i=$((i+1))
+        sleep "${_W_verification_time}"
+
+        _W_fist_pid="$(lsof -t "${_W_verification_dir}" | head -n 1)"
+        if [ -n "${_W_fist_pid}" ]; then
+            i=0
+            tail --pid="${_W_fist_pid}" -f /dev/null
+            continue
+        fi
+
+        [ "${i}" -lt "${_W_verification_num}" ] || break
+    done
+}
+
 # wrapper around wineserver, to let users know that it will wait indefinitely/kill stuff
 w_wineserver()
 {
     case "$@" in
         *-k) w_warn "Running $WINESERVER -k. This will kill all running wine processes in prefix=$WINEPREFIX";;
-        *-w) w_warn "Running $WINESERVER -w. This will hang until all wine processes in prefix=$WINEPREFIX terminate";;
+        *-w) w_warn "Running $WINESERVER -w. This will hang until all wine processes in prefix=$WINEPREFIX terminate"
+            winetricks_wait_process_using_dir "${WINEPREFIX}";;
         *)   w_warn "Invoking wineserver with '$*'";;
     esac
     # shellcheck disable=SC2068
