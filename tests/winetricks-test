@@ -781,8 +781,10 @@ test_quick()
     echo "warning: quick test takes up around 20GB"
     export W_CACHE="$cache"
 
-    # And test all the automatically-downloadable dlls
+    # And test all the automatically-downloadable dlls (and fonts/settings):
     test_category dlls
+    test_category fonts
+    test_category settings
 
     # And win32 7zip fallback
     test_7zip
