@@ -16,10 +16,14 @@ set -e
 set -x
 
 nopush=0
-# Don't push commits/tags or upload files
+# Don't push commits/tags or upload files if --no-push is given:
 if [ "$1" = "--no-push" ] ; then
     nopush=1
     shift
+# If we _are_ pushing, we'll need a github token:
+elif [ -z "$GITHUB_TOKEN" ] ; then
+    echo "--no-push wasn't given, GITHUB_TOKEN must be set in the environment!"
+    exit 1
 fi
 
 # FIXME: If "--no-push" isn't set, above statement dies, not sure how to construct properly to avoid
@@ -39,11 +43,6 @@ export WINEARCH="win32"
 
 # Needed by the list commands below:
 export WINETRICKS_LATEST_VERSION_CHECK="development"
-
-if [ -z "$GITHUB_TOKEN" ] ; then
-    echo "GITHUB_TOKEN must be set in the environment!"
-    exit 1
-fi
 
 # Make sure we're at top level:
 if [ ! -f Makefile ] ; then
