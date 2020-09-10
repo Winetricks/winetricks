@@ -819,6 +819,8 @@ test_xvfb() {
     # Not test_quick() since flash fails without proper X, but test_quick() doesn't respect $BLACKLIST
     # Also, we don't really want to duplicate those tests twice, as this is for TravisCI where time is limited..
     test_category dlls
+    test_category fonts
+    test_category settings
 }
 
 helper_test_w_compare_wine_version()
