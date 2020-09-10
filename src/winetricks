@@ -245,7 +245,7 @@ w_warn()
     # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
     if [ -z "$WINETRICKS_SUPER_QUIET" ] ; then
         echo "------------------------------------------------------"
-        echo "$@"
+        echo "warning: $*"
         echo "------------------------------------------------------"
     fi
 
