@@ -610,30 +610,37 @@ _EOF
     pass
 }
 
-test_dlls()
+test_category()
 {
+    # Test everything list in a particular category (i.e., dlls/fonts/settings/etc.)
+    category="$1"
+
+    if [ -z "$1" ]; then
+        fail "You must specify a category to test. I.e., one of: $(winetricks list | tr '\n' ' ')"
+    fi
+
     # no xvfb needed, kcov breaks
     "${shwinetricks}" list-manual-download > "${outputdir}/manual.log"
-    "${shwinetricks}" dlls list | awk '{print $1}' > "${outputdir}/dlls.log"
-    if grep .------------------- "${outputdir}/dlls.log" ; then
-        fail "output of dlls list contained garbage"
+    "${shwinetricks}" "${category}" list | awk '{print $1}' > "${outputdir}/${category}.log"
+    if grep .------------------- "${outputdir}/${category}.log" ; then
+        fail "output of ${category} list contained garbage"
         exit 1
     fi
 
-    sort -u < "${outputdir}/dlls.log" | grep -F -w -v -f "${outputdir}/manual.log" | grep -E -v "$BLACKLIST" > "${outputdir}/dlls.verbs"
+    sort -u < "${outputdir}/${category}.log" | grep -F -w -v -f "${outputdir}/manual.log" | grep -E -v "$BLACKLIST" > "${outputdir}/${category}.verbs"
 
-    if [ ! -f "${outputdir}/dlls.verbs" ] ; then
-        w_die "${outputdir}/dlls.verbs doesn't exist? No verbs to test!"
-    elif [ -f "${outputdir}/dlls.verbs" ] && [ ! -s "${outputdir}/dlls.verbs" ] ; then
-        w_die "${outputdir}/dlls.verbs exists, but it is empty"
+    if [ ! -f "${outputdir}/${category}.verbs" ] ; then
+        w_die "${outputdir}/${category}.verbs doesn't exist? No verbs to test!"
+    elif [ -f "${outputdir}/${category}.verbs" ] && [ ! -s "${outputdir}/${category}.verbs" ] ; then
+        w_die "${outputdir}/${category}.verbs exists, but it is empty"
     else
         echo "Testing these verbs:"
-        cat "${outputdir}/dlls.verbs"
+        cat "${outputdir}/${category}.verbs"
     fi
 
     while IFS= read -r line; do
         test_app "$line"
-    done < "${outputdir}/dlls.verbs"
+    done < "${outputdir}/${category}.verbs"
 }
 
 test_dotnet()
@@ -775,7 +782,7 @@ test_quick()
     export W_CACHE="$cache"
 
     # And test all the automatically-downloadable dlls
-    test_dlls
+    test_category dlls
 
     # And win32 7zip fallback
     test_7zip
@@ -809,7 +816,7 @@ test_xvfb() {
 
     # Not test_quick() since flash fails without proper X, but test_quick() doesn't respect $BLACKLIST
     # Also, we don't really want to duplicate those tests twice, as this is for TravisCI where time is limited..
-    test_dlls
+    test_category dlls
 }
 
 helper_test_w_compare_wine_version()
