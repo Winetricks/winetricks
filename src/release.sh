@@ -69,11 +69,9 @@ echo "${version}" > files/LATEST
 
 # Update verb lists:
 # actual categories
-./src/winetricks apps list | sed 's/[[:blank:]]*$//' > files/verbs/apps.txt
-./src/winetricks benchmarks list | sed 's/[[:blank:]]*$//' > files/verbs/benchmarks.txt
-./src/winetricks dlls list | sed 's/[[:blank:]]*$//' > files/verbs/dlls.txt
-./src/winetricks games list | sed 's/[[:blank:]]*$//' > files/verbs/games.txt
-./src/winetricks settings list | sed 's/[[:blank:]]*$//' > files/verbs/settings.txt
+for category in $(./src/winetricks list); do
+    ./src/winetricks "$category" list | sed 's/[[:blank:]]*$//' > "files/verbs/${category}.txt"
+done
 
 # meta categories
 ./src/winetricks list-all | sed 's/[[:blank:]]*$//' > files/verbs/all.txt
