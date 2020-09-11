@@ -374,7 +374,7 @@ test_app()
                 fi
 
                 # no xvfb needed
-                "${shwinetricks}" -q list-installed > "${outputdir}/list-installed.out"
+                DISPLAY="" "${shwinetricks}" -q list-installed > "${outputdir}/list-installed.out"
 
                 if ! grep -w "$app" "${outputdir}/list-installed.out"; then
                     fail "test app $app not installed after install?"
@@ -430,12 +430,17 @@ test_command()
     # Isolate us from the user's home directory
     # shellcheck disable=SC2086
     if [ -z "$_W_wine_not_needed" ]; then
+        # First, make the prefix (without $DISPLAY set).
+        # This reduces the amount of GUI activity (unless the prefix actually makes a window, which most tests don't).
+        DISPLAY="" "$WINE" wineboot || fail "\'$WINE wineboot\' failed"
+        "$WINESERVER" -w
+
         $XVFB $WINETRICKS sandbox || fail "\'$XVFB $WINETRICKS sandbox\' failed"
         echo "Installing $command"
         $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@"
         return=$?
     else
-        $XVFB $WINETRICKS --no-isolate -q "$@"
+        DISPLAY="" $XVFB $WINETRICKS --no-isolate -q "$@"
         return=$?
     fi
 
