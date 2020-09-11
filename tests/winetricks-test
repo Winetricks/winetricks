@@ -409,6 +409,12 @@ test_command()
     # will be set by fail() if a prefix has a failure, so that w_remove_prefix() doesn't remove the prefix
     unset w_prefix_failed
 
+    # Hate to hardcode this, but not a good way to set it from the winetricks side:
+    case "$command" in
+        "--verify bad") EXPECT_FAIL="yes";;
+        *) :;;
+    esac
+
     # If _W_wine_not_needed is set, don't fail if wine is missing (used by test_listing())
 
     # This previously changed spaces to hyphens. Going back to spaces so we test WINEPREFIXes
@@ -488,6 +494,8 @@ test_command()
     fi
 
     w_remove_prefix
+
+    unset EXPECT_FAIL
 }
 
 test_custom_verbs()
