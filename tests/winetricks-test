@@ -482,7 +482,7 @@ test_command()
         seconds=$(awk '/real/ {print $2}' < time.log | sed 's/\..*//')
     fi
 
-    echo "test_app: ${app}: install_time $seconds seconds."
+    echo "test_command: ${app}: install_time $seconds seconds."
 
     echo "Checking for dangling processes!"
     # shellcheck disable=SC2009
