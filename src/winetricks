@@ -9136,6 +9136,8 @@ load_dotnet35()
     w_try_cd "$W_CACHE/$W_PACKAGE"
     w_try_ms_installer "$WINE" "${file1}" /lang:ENU ${W_OPT_UNATTENDED:+/q}
 
+    w_set_winver 'default'
+
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
 }
