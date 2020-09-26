@@ -314,6 +314,12 @@ _w_force_continue_check()
 
 _w_get_broken_messages()
 {
+    # bit of a hack, but otherwise if two bugs are reported, the second message won't get set:
+    unset broken_good_version_known
+    unset broken_good_and_bad_version_known
+    unset broken_only_bad_version_known
+    unset broken_no_version_known
+
     # Unify the broken messages (to make it easier for future translators):
     case $LANG in
         *)
