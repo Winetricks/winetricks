@@ -9032,6 +9032,7 @@ load_dotnet30()
     w_try "$WINE" "$file1" /q /c:"install.exe /q"
 
     w_override_dlls native mscorwks
+    w_set_winver 'default'
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
