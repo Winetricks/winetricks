@@ -23,9 +23,9 @@
 
 set -x
 
-WINE_GIT="${WINE_GIT:-$HOME/wine-git}"
+WINE_GIT="${WINE_GIT:-${HOME}/wine-git}"
 
-cd "$WINE_GIT" || exit 125
+cd "${WINE_GIT}" || exit 125
 
 git clean -fxd || exit 125
 
@@ -39,6 +39,6 @@ fi
 
 "${WINE_GIT}/server/wineserver" -k || true
 
-rm -rf "$HOME/.wine" || exit 125
+rm -rf "${HOME}/.wine" || exit 125
 
 WINE="${WINE_GIT}/wine" winetricks -q -v "$@"
