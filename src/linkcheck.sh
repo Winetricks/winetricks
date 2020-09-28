@@ -23,15 +23,15 @@ check_deps() {
 }
 
 if [ -f src/winetricks ] ; then
-    TOP="$PWD"
+    TOP="${PWD}"
     shwinetricks="${PWD}/src/winetricks"
 elif [ -f ../src/winetricks ] ; then
     # realpath isn't available on OSX, use a subshell instead:
-    TOP="$(cd .. && echo "$PWD")"
+    TOP="$(cd .. && echo "${PWD}")"
     shwinetricks="${TOP}/src/winetricks"
 elif [ -f ../../src/winetricks ] ; then
     # realpath isn't available on OSX, use a subshell instead:
-    TOP="$(cd ../.. && echo "$PWD")"
+    TOP="$(cd ../.. && echo "${PWD}")"
     shwinetricks="${TOP}/src/winetricks"
 else
     echo "Dude, where's my car?!"
@@ -46,9 +46,9 @@ ftp_microsoft_com=64.4.17.176
 
 w_download() {
     # shellcheck disable=SC2016
-    url="$(echo "$1" | sed -e 's,$ftp_microsoft_com,'$ftp_microsoft_com',;s, ,%20,g')"
-    urlkey="$(echo "$url" | tr / _)"
-    echo "$url" > "${datadir}/${urlkey}.url"
+    url="$(echo "$1" | sed -e 's,$ftp_microsoft_com,'${ftp_microsoft_com}',;s, ,%20,g')"
+    urlkey="$(echo "${url}" | tr / _)"
+    echo "${url}" > "${datadir}/${urlkey}.url"
 }
 
 # Extract list of URLs from winetricks
@@ -72,12 +72,12 @@ extract_all() {
 show_one() {
     urlfile=$1
     base=${urlfile%.url}
-    url="$(cat "$urlfile")"
-    if grep -E "HTTP.*200|HTTP.*30[0-9]|Content-Length" "$base.log" > /dev/null; then
+    url="$(cat "${urlfile}")"
+    if grep -E "HTTP.*200|HTTP.*30[0-9]|Content-Length" "${base}.log" > /dev/null; then
         passes=$((passes + 1))
     else
-        echo "BAD $url"
-        cat "$base.log"
+        echo "BAD ${url}"
+        cat "${base}.log"
         echo ""
         errors=$((errors + 1))
     fi
@@ -85,8 +85,8 @@ show_one() {
 
 # Show full report on most recent crawl
 show_all() {
-    for urlfile in "$datadir"/*.url ; do
-        show_one "$urlfile"
+    for urlfile in "${datadir}"/*.url ; do
+        show_one "${urlfile}"
     done
 }
 
@@ -99,36 +99,36 @@ show_all() {
 crawl_one() {
     urlfile=$1
     base=${urlfile%.url}
-    url="$(cat "$urlfile")"
+    url="$(cat "${urlfile}")"
 
-    curl --connect-timeout 10 --retry 6 -s -S -I "$url" 2>&1 |
+    curl --connect-timeout 10 --retry 6 -s -S -I "${url}" 2>&1 |
         tr -d '\015' |
         grep . |
-        sort > "$base.log"
+        sort > "${base}.log"
     # more diff-able?
     # cat "$base.log" |
     #  grep -E 'HTTP|Last-Modified:|Content-Length:|ETag:' |
     #  tr '\012' ' ' |
     #  sed 's/ Connection:.*//' > "$datadir"/"$urlkey.dat"
     # echo "" >> "$base.dat"
-    show_one "$urlfile"
+    show_one "${urlfile}"
 }
 
 # Fetch all info
 # Do fetches in background so slow servers don't hang us
 # Print quick feedback as results come in
 crawl_all() {
-    for urlfile in "$datadir"/*.url ; do
-        url="$(cat "$urlfile")"
-        echo "Crawling $url"
-        crawl_one "$urlfile" &
+    for urlfile in "${datadir}"/*.url ; do
+        url="$(cat "${urlfile}")"
+        echo "Crawling ${url}"
+        crawl_one "${urlfile}" &
         sleep 1
     done
     # Wait for fetches to finish
     wait
 }
 
-mkdir -p "$datadir"
+mkdir -p "${datadir}"
 
 case "$1" in
 check-deps)
@@ -148,9 +148,9 @@ report)
 esac
 
 # cleanup
-rm -rf "$datadir" url-script-fragment.tmp
-echo "Test over, $errors failures, $passes successes."
-if test $errors = 0 && test $passes -gt 0; then
+rm -rf "${datadir}" url-script-fragment.tmp
+echo "Test over, ${errors} failures, ${passes} successes."
+if test ${errors} = 0 && test ${passes} -gt 0; then
     echo PASS
     exit 0
 else
