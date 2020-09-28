@@ -19,14 +19,14 @@ outdir="$(mktemp -d "${TMPDIR:-/tmp}/winetricks-test.XXXXXXXX")"
 # Note: skips dotnet20sdk, which is broken AF
 dotnet_verbs="$(./src/winetricks dlls list | grep ^dotnet | grep -v -e sdk -e verifier | cut -d ' ' -f1)"
 
-for verb1 in $dotnet_verbs; do
-    for verb2 in $dotnet_verbs; do
-        if [ "$verb1" = "$verb2" ]; then
+for verb1 in ${dotnet_verbs}; do
+    for verb2 in ${dotnet_verbs}; do
+        if [ "${verb1}" = "${verb2}" ]; then
                 continue
         fi
 
         combo="${verb1}-${verb2}"
-        case "$combo" in
+        case "${combo}" in
             dotnet11*-dotnet20|dotnet11*-dotnet30*|dotnet11*-dotnet35*)
                 echo "Skipping, has a popup that needs to be automated away in -q mode (but fails anyway, so not worth it)";
                 echo "${combo} skipped" | tee -a "${outdir}/statuslog.txt";
@@ -36,11 +36,11 @@ for verb1 in $dotnet_verbs; do
         export WINEPREFIX="${outdir}/prefix-${combo}"
         wineserver -k
 
-        ./src/winetricks -q --force --verify "$verb1" "$verb2" 2>&1 | tee -a "${outdir}/${combo}.txt"
+        ./src/winetricks -q --force --verify "${verb1}" "${verb2}" 2>&1 | tee -a "${outdir}/${combo}.txt"
         status="$?"
-        echo "$combo exited $status" 2>&1 | tee -a "${outdir}/${combo}.txt"
-        echo "$combo exited $status" 2>&1 | tee -a "${outdir}/statuslog.txt"
+        echo "${combo} exited ${status}" 2>&1 | tee -a "${outdir}/${combo}.txt"
+        echo "${combo} exited ${status}" 2>&1 | tee -a "${outdir}/statuslog.txt"
 
-        rm -rf "$WINEPREFIX"
+        rm -rf "${WINEPREFIX}"
     done
 done
