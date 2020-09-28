@@ -24,8 +24,8 @@ w_die() {
 w_try() {
     "$@"
     status=$?
-    if test $status -ne 0; then
-        w_die "Note: command $* returned status $status.  Aborting."
+    if test ${status} -ne 0; then
+        w_die "Note: command $* returned status ${status}.  Aborting."
     fi
 }
 
@@ -47,14 +47,14 @@ trap 'rm -fr "$temp"' EXIT
 
 # tests using bashate
 test_bashate() {
-    if [ ! -x "$(command -v bashate 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
+    if [ ! -x "$(command -v bashate 2>/dev/null)" ] && [ "${TRAVIS_OS_NAME}" = "osx" ]; then
         echo "On OSX and bashate not available, skipping."
         return
     else
         bashate="$(command -v bashate)"
 
         #echo "======================== Begin bashate version info ==========================="
-        "$bashate" --help > /dev/null || w_die "bashate must be installed!"
+        "${bashate}" --help > /dev/null || w_die "bashate must be installed!"
         ## bashate doesn't have a --version option (as of bashate-0.3.1)
         #"$bashate" --version
         #echo "======================== End bashate version info ==========================="
@@ -65,21 +65,21 @@ test_bashate() {
         # E010=do/while same line (in some embedded perl in winetricks)
         # E044=Use [[ for non-POSIX comparisions
         echo "Checking ${shellscript} with bashate:"
-        w_try "$bashate" -i E006,E010,E044 "${shellscript}"
+        w_try "${bashate}" -i E006,E010,E044 "${shellscript}"
     fi
 }
 
 # tests using checkbashisms
 test_checkbashisms() {
-    if [ ! -x "$(command -v checkbashisms 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
+    if [ ! -x "$(command -v checkbashisms 2>/dev/null)" ] && [ "${TRAVIS_OS_NAME}" = "osx" ]; then
         echo "On OSX and checkbashisms not available, skipping."
         return
     else
         checkbashisms="$(command -v checkbashisms)"
 
         echo "======================== Begin checkbashisms version info ==========================="
-        "$checkbashisms" --help > /dev/null || w_die "checkbashisms must be installed!"
-        "$checkbashisms" --version
+        "${checkbashisms}" --help > /dev/null || w_die "checkbashisms must be installed!"
+        "${checkbashisms}" --version
         echo "======================== End checkbashisms version info ==========================="
 
         # Check if checkbashisms supports `command -v`. If not, warn, or if on travis, patch it:
@@ -88,12 +88,12 @@ test_checkbashisms() {
 command -v grep
 _EOF
 
-        if ! "$checkbashisms" --posix "${temp}/command.sh"; then
+        if ! "${checkbashisms}" --posix "${temp}/command.sh"; then
             echo "Use a sed expression, to add checkbashisms support for 'command -v', based on the patch from https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733511"
             echo "Creating a copy of the checkbashisms script, in ${temp}, to workaround this issue"
             # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
             (
-                sed -e '/qr'\''command\\s+\-\[\^p\]\\s'\''/ { ' -e 's|\[\^p\]|[^pvV]|' -e 's| \-p>| -p/-v/-V>|' -e '}' "$checkbashisms" > "${temp}/checkbashisms.patched" && \
+                sed -e '/qr'\''command\\s+\-\[\^p\]\\s'\''/ { ' -e 's|\[\^p\]|[^pvV]|' -e 's| \-p>| -p/-v/-V>|' -e '}' "${checkbashisms}" > "${temp}/checkbashisms.patched" && \
                 chmod +x "${temp}/checkbashisms.patched"
             )
             checkbashisms="${temp}/checkbashisms.patched"
@@ -109,19 +109,19 @@ sleep 5 & spid="$!"
 kill -HUP \$spid
 _EOF
 
-        if ! "$checkbashisms" --posix "${temp}/kill.sh"; then
+        if ! "${checkbashisms}" --posix "${temp}/kill.sh"; then
             echo "Disabling the kill -signal warning"
             echo "Creating a copy of the checkbashisms script, in ${temp}, to workaround this issue"
             # /usr/bin/ (or /usr/local/bin on OSX) isn't writable on Travis, so we have to patch it in /tmp and use that:
             (
-                sed -e '/bashisms.*kill/d' "$checkbashisms" >  "${temp}/checkbashisms.patched.kill" && \
+                sed -e '/bashisms.*kill/d' "${checkbashisms}" >  "${temp}/checkbashisms.patched.kill" && \
                 chmod +x "${temp}/checkbashisms.patched.kill"
             )
             checkbashisms="${temp}/checkbashisms.patched.kill"
         fi
 
         echo "Checking ${shellscript} for bashisms:"
-        w_try "$checkbashisms" --posix "${shellscript}"
+        w_try "${checkbashisms}" --posix "${shellscript}"
     fi
 }
 
@@ -152,19 +152,19 @@ test_formatting() {
 
 # tests using shellcheck
 test_shellcheck() {
-    if [ ! -x "$(command -v shellcheck 2>/dev/null)" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then
+    if [ ! -x "$(command -v shellcheck 2>/dev/null)" ] && [ "${TRAVIS_OS_NAME}" = "osx" ]; then
         echo "On OSX and shellcheck not available, skipping."
         return
     else
         shellcheck="$(command -v shellcheck)"
 
         echo "======================== Begin shellcheck version info ==========================="
-        "$shellcheck" --version > /dev/null || w_die "shellcheck must be installed!"
-        "$shellcheck" --version
+        "${shellcheck}" --version > /dev/null || w_die "shellcheck must be installed!"
+        "${shellcheck}" --version
         echo "======================== End shellcheck version info ==========================="
 
         echo "Checking ${shellscript} with shellcheck:"
-        w_try "$shellcheck" -s sh "${shellscript}"
+        w_try "${shellcheck}" -s sh "${shellscript}"
     fi
 }
 
@@ -186,7 +186,7 @@ test_travis_yml() {
     else
         yq="$(command -v yq)"
 
-        if [ -n "$yq" ]; then
+        if [ -n "${yq}" ]; then
             echo "yq available, validating .travis.yml"
             yq . .travis.yml || true
         else
@@ -220,7 +220,7 @@ main() {
     test_travis_yml
 
     # Generic shellscript checks:
-    for shellscript in $files_to_check; do
+    for shellscript in ${files_to_check}; do
         test_formatting
         test_bashate
         test_checkbashisms
