@@ -18,23 +18,23 @@
 # automate non -q verbs with autohotkey
 
 # Override this if you want to put the work area on a different disk
-WINE_PREFIXES=${WINE_PREFIXES:-$HOME/winetrickstest-prefixes}
-XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-cache="$XDG_CACHE_HOME/winetricks"
+WINE_PREFIXES=${WINE_PREFIXES:-${HOME}/winetrickstest-prefixes}
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
+cache="${XDG_CACHE_HOME}/winetricks"
 
 #set -e
 set -x
 
 if [ -f src/winetricks ] ; then
-    TOP="$PWD"
+    TOP="${PWD}"
     shwinetricks="${PWD}/src/winetricks"
 elif [ -f ../src/winetricks ] ; then
     # realpath isn't available on OSX, use a subshell instead:
-    TOP="$(cd .. && echo "$PWD")"
+    TOP="$(cd .. && echo "${PWD}")"
     shwinetricks="${TOP}/src/winetricks"
 elif [ -f ../../src/winetricks ] ; then
     # realpath isn't available on OSX, use a subshell instead:
-    TOP="$(cd ../.. && echo "$PWD")"
+    TOP="$(cd ../.. && echo "${PWD}")"
     shwinetricks="${TOP}/src/winetricks"
 else
     echo "Running from unknown directory. Exiting"
@@ -58,10 +58,10 @@ if [ "$1" = "check-deps" ] ; then
 
 # Using an environmental variable rather than a CLI option
 # so it doesn't need extra handling/targets in Makefile
-elif [ -n "$WINETRICKS_ENABLE_KCOV" ] ; then
+elif [ -n "${WINETRICKS_ENABLE_KCOV}" ] ; then
     KCOV_RESULTS="${outputdir}/kcov-results"
-    rm -rf "$KCOV_RESULTS"
-    mkdir -p "$KCOV_RESULTS"
+    rm -rf "${KCOV_RESULTS}"
+    mkdir -p "${KCOV_RESULTS}"
 
     # kcov --kcov-options output-dir testscript --test-script-args
     # I think kcov lets you append results, if not we may have to use separate for each invocation then combine at the end
@@ -70,7 +70,7 @@ elif [ -n "$WINETRICKS_ENABLE_KCOV" ] ; then
 
     # Previously, winetricks-test used `$WINETRICKS`. That fails for kcov, which
     # then tracks bash itself and not winetricks. `${shwinetricks}` works fine.
-    WINETRICKS="kcov --configure=bash-use-basic-parser=1 $KCOV_RESULTS \"${shwinetricks}\""
+    WINETRICKS="kcov --configure=bash-use-basic-parser=1 ${KCOV_RESULTS} \"${shwinetricks}\""
     #WINETRICKS="kcov --configure=bash-use-basic-parser=1 $KCOV_RESULTS-$(date +%k-%M-%S) \"${shwinetricks}\""
 else
     WINETRICKS="${shwinetricks}"
@@ -87,38 +87,38 @@ export WINETRICKS_SUPER_QUIET
 # verbs known to not work in -q mode yet
 BLACKLIST="dx8sdk|kde|psdk2003|psdkwin7"
 # verbs that hang in -q because of simple problem we should work around soon
-BLACKLIST="$BLACKLIST|vc2005trial"
+BLACKLIST="${BLACKLIST}|vc2005trial"
 # verbs that are too slow
-BLACKLIST="$BLACKLIST|dxsdk_nov2006|dxsdk_jun2010"
+BLACKLIST="${BLACKLIST}|dxsdk_nov2006|dxsdk_jun2010"
 # broken/flaky, http://bugs.winehq.org/show_bug.cgi?id=26016
-BLACKLIST="$BLACKLIST|xmllite"
+BLACKLIST="${BLACKLIST}|xmllite"
 # redundant metaverbs
-BLACKLIST="$BLACKLIST|allcodecs|allfonts|cjkfonts|pptfonts"
+BLACKLIST="${BLACKLIST}|allcodecs|allfonts|cjkfonts|pptfonts"
 # https://bugs.winehq.org/show_bug.cgi?id=16876
-BLACKLIST="$BLACKLIST|wmi"
+BLACKLIST="${BLACKLIST}|wmi"
 # These break in combination with sandbox, https://bugs.winehq.org/show_bug.cgi?id=49421
-BLACKLIST="$BLACKLIST|ffdshow|python26|python27"
+BLACKLIST="${BLACKLIST}|ffdshow|python26|python27"
 # Also sandbox, but different bug, https://bugs.winehq.org/show_bug.cgi?id=49550
-BLACKLIST="$BLACKLIST|dirac"
+BLACKLIST="${BLACKLIST}|dirac"
 
 # Travis CI is apparently blocking archive.org, which breaks several verbs:
 # https://github.com/travis-ci/travis-ci/issues/6798
 # Blacklist those verbs on those hosts:
 # FIXME: setup another test target for torify, use it to d/l these?
 ARCHIVE_ORG_BLACKLIST="atmlib|avifil32|cabinet|cmd|comctl32ocx|comdgl32ocx|gmdls|mdac27|mfc40|msflxgrd|mshflxgd"
-ARCHIVE_ORG_BLACKLIST="$ARCHIVE_ORG_BLACKLIST|msls31ms|msmask|msscript|msxml3|pdh|pngfilt|riched30"
-ARCHIVE_ORG_BLACKLIST="$ARCHIVE_ORG_BLACKLIST|richtx32|secur32|tabctl32|usp10|"
+ARCHIVE_ORG_BLACKLIST="${ARCHIVE_ORG_BLACKLIST}|msls31ms|msmask|msscript|msxml3|pdh|pngfilt|riched30"
+ARCHIVE_ORG_BLACKLIST="${ARCHIVE_ORG_BLACKLIST}|richtx32|secur32|tabctl32|usp10|"
 
 # See https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables
-if [ "$TRAVIS" = "true" ] ; then
-    BLACKLIST="$ARCHIVE_ORG_BLACKLIST|$BLACKLIST"
+if [ "${TRAVIS}" = "true" ] ; then
+    BLACKLIST="${ARCHIVE_ORG_BLACKLIST}|${BLACKLIST}"
 fi
 
 # Tests that fail under Xvfb
 XVFB_DOTNET_BLACKLIST="dotnet11|dotnet11sp1|dotnet20|dotnet20sdk|dotnet20sp1|dotnet30|dotnet40|dotnet46"
-XVFB_BLACKLIST="$XVFB_DOTNET_BLACKLIST|adobeair|binkw32|dirac|directmusic|dxdiag|flash|gdiplus_winxp|gfw|ie6|ie7|ie8"
-XVFB_BLACKLIST="$XVFB_BLACKLIST|jet40|nuget|quicktime72|vcrun2008|vcrun2010|vcrun2012|vcrun2013|vcrun2015"
-XVFB_BLACKLIST="$XVFB_BLACKLIST|vjrun20|windowscodecs|wmi|wmp9|wmp10|wsh56js|wsh56vb|xmllite|xna31|xna40|xvid"
+XVFB_BLACKLIST="${XVFB_DOTNET_BLACKLIST}|adobeair|binkw32|dirac|directmusic|dxdiag|flash|gdiplus_winxp|gfw|ie6|ie7|ie8"
+XVFB_BLACKLIST="${XVFB_BLACKLIST}|jet40|nuget|quicktime72|vcrun2008|vcrun2010|vcrun2012|vcrun2013|vcrun2015"
+XVFB_BLACKLIST="${XVFB_BLACKLIST}|vjrun20|windowscodecs|wmi|wmp9|wmp10|wsh56js|wsh56vb|xmllite|xna31|xna40|xvid"
 
 failed_verbs=""
 passes=0
@@ -130,11 +130,11 @@ skips=0
 # middle of a two day run.
 check_deps() {
     for tool in time cabextract; do
-        command -v "$tool" >/dev/null 2>&1
+        command -v "${tool}" >/dev/null 2>&1
         ret=$?
 
-        if [ ! $ret -eq 0 ] ; then
-            echo "Please install $tool."
+        if [ ! ${ret} -eq 0 ] ; then
+            echo "Please install ${tool}."
             exit 1
         fi
     done
@@ -167,7 +167,7 @@ skip()
 
 status()
 {
-    echo "Test in progress. Current status: $errors failures, $passes successes, $skips skipped."
+    echo "Test in progress. Current status: ${errors} failures, ${passes} successes, ${skips} skipped."
 }
 
 w_die()
@@ -178,19 +178,19 @@ w_die()
 
 w_remove_prefix()
 {
-    if [ -n "$WINEPREFIX" ]; then
+    if [ -n "${WINEPREFIX}" ]; then
         # Cleanup the prefix, unless $W_OPT_NOCLEAN is set to 1 (to match winetricks)
         # AND if there weren't failures to debug:
-        if [ "$W_OPT_NOCLEAN" = "1" ]; then
-            echo "W_OPT_NOCLEAN set to 1, not removing wineprefix $WINEPREFIX"
-        elif [ "$w_prefix_failed" = "1" ]; then
-            echo "w_prefix_failed set to 1, not removing wineprefix $WINEPREFIX"
-        elif [ -n "$w_remove_prefix_disable" ]; then
+        if [ "${W_OPT_NOCLEAN}" = "1" ]; then
+            echo "W_OPT_NOCLEAN set to 1, not removing wineprefix ${WINEPREFIX}"
+        elif [ "${w_prefix_failed}" = "1" ]; then
+            echo "w_prefix_failed set to 1, not removing wineprefix ${WINEPREFIX}"
+        elif [ -n "${w_remove_prefix_disable}" ]; then
             # Don't remove the prefix yet, as there will be some further checks on the same prefix
-            echo "prefix removed disabled, not removing wineprefix $WINEPREFIX"
+            echo "prefix removed disabled, not removing wineprefix ${WINEPREFIX}"
         else
-            echo "Removing wineprefix $WINEPREFIX"
-            rm -rf "$WINEPREFIX"
+            echo "Removing wineprefix ${WINEPREFIX}"
+            rm -rf "${WINEPREFIX}"
         fi
     fi
 }
@@ -205,15 +205,15 @@ w_time()
     fi
 }
 
-case "$LANG" in
+case "${LANG}" in
     ""|"C") echo "Some games won't install in the Posix locale; doing 'export LANG=en_US.UTF-8'" ; export LANG=en_US.UTF-8;;
 esac
 
-case "$OS" in
+case "${OS}" in
     "Windows_NT")
         # Mostly unimplemented...
         # Cheezy fix for getting rid of double slashes when running cygwin in wine
-        case "$HOME" in
+        case "${HOME}" in
             /) HOME="" ;;
         esac
 
@@ -228,10 +228,10 @@ case "$OS" in
         # If wineserver is from wine-development set WINE to wine-development.
         # FIXME: get packagers to put wineserver on the path.
         for x in \
-            "$WINESERVER" \
+            "${WINESERVER}" \
             "${WINE}server" \
             "$(command -v wineserver 2> /dev/null)" \
-            "$(dirname "$WINE")/server/wineserver" \
+            "$(dirname "${WINE}")/server/wineserver" \
             /usr/lib/wine/wineserver \
             /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
             /usr/lib/i386-linux-gnu/wine/wineserver \
@@ -245,8 +245,8 @@ case "$OS" in
             /usr/lib/powerpc-linux-gnu/wine-development/wineserver \
             /usr/lib/x86_64-linux-gnu/wine-development/wineserver \
             file-not-found; do
-        if [ -x "$x" ] ; then
-            case "$x" in
+        if [ -x "${x}" ] ; then
+            case "${x}" in
                 /usr/lib/*/wine-development/wineserver)
                     if [ -x /usr/bin/wine-development ] ; then
                         WINE="/usr/bin/wine-development"
@@ -257,9 +257,9 @@ case "$OS" in
         fi
     done
 
-    case "$x" in
+    case "${x}" in
         file-not-found) w_die "wineserver not found!" ;;
-        *) WINESERVER="$x" ;;
+        *) WINESERVER="${x}" ;;
     esac
     ;;
 esac
@@ -268,34 +268,34 @@ test_speed()
 {
     speed_test="$1"
 
-    case "$speed_test" in
+    case "${speed_test}" in
         # No wine/WINEPREFIX needed:
         list|list-download|list-cached) export _W_wine_not_needed=1;;
 
         # Needs a WINEPREFIX, with some things installed (need at least 5, see list_lines below):
         # Note: not using test_command here because that would forcefully override WINEPREFIX
         list-installed)
-            export WINEPREFIX="$WINE_PREFIXES/test_speed-list-installed"
+            export WINEPREFIX="${WINE_PREFIXES}/test_speed-list-installed"
             w_remove_prefix_disable=1
             # shellcheck disable=SC2086
-            $XVFB $WINETRICKS good good good good good || fail "\'$XVFB $WINETRICKS good good good good good\' failed"
+            ${XVFB} ${WINETRICKS} good good good good good || fail "\'${XVFB} ${WINETRICKS} good good good good good\' failed"
             ;;
 
-        *) echo "error: unknown test_speed command '$speed_test'"; exit 1;;
+        *) echo "error: unknown test_speed command '${speed_test}'"; exit 1;;
     esac
 
     # shellcheck disable=SC2086
-    if ! w_time $XVFB $WINETRICKS "$1" > "${outputdir}/foo.log"; then
+    if ! w_time ${XVFB} ${WINETRICKS} "$1" > "${outputdir}/foo.log"; then
         fail "winetricks $1 returned status $?"
     else
         pass "winetricks $1 returned status $?"
     fi
 
     list_lines="$(wc -l < "${outputdir}/foo.log")"
-    if [ "$list_lines" -lt 5 ] ; then
-        fail "winetricks $1 returned $list_lines lines, expected at least 5"
+    if [ "${list_lines}" -lt 5 ] ; then
+        fail "winetricks $1 returned ${list_lines} lines, expected at least 5"
     else
-        pass "winetricks $1 returned $list_lines lines"
+        pass "winetricks $1 returned ${list_lines} lines"
     fi
 
     if [ ! -f time.log ] ; then
@@ -305,12 +305,12 @@ test_speed()
         seconds=$(awk '/real/ {print $2}' < "${outputdir}/time.log" | sed 's/\..*//')
     fi
 
-    echo "test_speed: winetricks $1 took $seconds seconds"
+    echo "test_speed: winetricks $1 took ${seconds} seconds"
     # Longest runtime as of 11 Dec 2010 is 5 seconds on an e8400 with cygwin
-    if [ "$seconds" -gt 7 ] ; then
-        fail "test_speed: winetricks $1 took $seconds seconds"
+    if [ "${seconds}" -gt 7 ] ; then
+        fail "test_speed: winetricks $1 took ${seconds} seconds"
     else
-        pass "test_speed: winetricks $1 took $seconds seconds"
+        pass "test_speed: winetricks $1 took ${seconds} seconds"
     fi
 
     unset _W_wine_not_needed
@@ -349,35 +349,35 @@ test_app()
 
     # Watch transient disk space
     DF_START=$(total_df)
-    if [ -d "$W_CACHE/$app" ] ; then
-        DU_CACHE_START=$(du -s "$W_CACHE/$app" | awk '{print $1}')
+    if [ -d "${W_CACHE}/${app}" ] ; then
+        DU_CACHE_START=$(du -s "${W_CACHE}/${app}" | awk '{print $1}')
     else
         DU_CACHE_START=0
     fi
     touch "${outputdir}/df-daemon"
     (set +x; while test -f "${outputdir}/df-daemon"; do total_df; sleep 1; done ) > "${outputdir}/df-during.log" &
 
-    test_command --verify "$app"
+    test_command --verify "${app}"
 
-    if [ $was_skipped = 1 ]; then
-        skip "post-install file check for skipped verb $app"
+    if [ ${was_skipped} = 1 ]; then
+        skip "post-install file check for skipped verb ${app}"
     else
         # Post install:
         # Don't check whether metaverbs are installed
-        case "$app" in
+        case "${app}" in
             allcodecs) ;;
             *)
                 # if test was skipped because of wrong arch, don't check for it:
-                if [ "$archskip" = "1" ]; then
-                    skip "$app was skipped because of wrong prefix arch!"
+                if [ "${archskip}" = "1" ]; then
+                    skip "${app} was skipped because of wrong prefix arch!"
                     return
                 fi
 
                 # no xvfb needed
                 DISPLAY="" "${shwinetricks}" -q list-installed > "${outputdir}/list-installed.out"
 
-                if ! grep -w "$app" "${outputdir}/list-installed.out"; then
-                    fail "test app $app not installed after install?"
+                if ! grep -w "${app}" "${outputdir}/list-installed.out"; then
+                    fail "test app ${app} not installed after install?"
                 fi
 
                 ;;
@@ -391,10 +391,10 @@ test_app()
         DF_MIN=$(awk '{ if (min == "" || $1 < min) min=$1; } END {printf "%d\n", min}' < "${outputdir}/df-during.log" )
         DF_DIFF=$((DF_START - DF_MIN))
         TOTAL=$((DF_DIFF + DU_CACHE_START))
-        echo "test_app: ${app}: max_disk $TOTAL blocks."
+        echo "test_app: ${app}: max_disk ${TOTAL} blocks."
         TOTAL_MB=$((TOTAL / 1024))
         mkdir -p "${outputdir}/measurements"
-        echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> "${outputdir}/measurements/$app.dat"
+        echo "${app}:size_MB=${TOTAL_MB},time_sec=${seconds}" >> "${outputdir}/measurements/${app}.dat"
     fi
 
     unset w_remove_prefix_disable
@@ -410,7 +410,7 @@ test_command()
     unset w_prefix_failed
 
     # Hate to hardcode this, but not a good way to set it from the winetricks side:
-    case "$command" in
+    case "${command}" in
         "--verify bad") EXPECT_FAIL="yes";;
         *) :;;
     esac
@@ -419,62 +419,62 @@ test_command()
 
     # This previously changed spaces to hyphens. Going back to spaces so we test WINEPREFIXes
     # with special characters, to prevent issues like https://github.com/Winetricks/winetricks/issues/995
-    export WINEPREFIX="$WINE_PREFIXES/${command}"
+    export WINEPREFIX="${WINE_PREFIXES}/${command}"
     #DRIVE_C="$WINEPREFIX/dosdevices/c:"
 
     # always use a clean $WINEPREFIX
-    if [ -d "$WINEPREFIX" ] ; then
-        rm -rf "$WINEPREFIX"
+    if [ -d "${WINEPREFIX}" ] ; then
+        rm -rf "${WINEPREFIX}"
     fi
 
     # Isolate us from the user's home directory
     # shellcheck disable=SC2086
-    if [ -z "$_W_wine_not_needed" ]; then
+    if [ -z "${_W_wine_not_needed}" ]; then
         # First, make the prefix (without $DISPLAY set).
         # This reduces the amount of GUI activity (unless the prefix actually makes a window, which most tests don't).
-        DISPLAY="" "$WINE" wineboot || fail "\'$WINE wineboot\' failed"
-        "$WINESERVER" -w
+        DISPLAY="" "${WINE}" wineboot || fail "\'${WINE} wineboot\' failed"
+        "${WINESERVER}" -w
 
-        $XVFB $WINETRICKS sandbox || fail "\'$XVFB $WINETRICKS sandbox\' failed"
-        echo "Installing $command"
-        $XVFB $WINETRICKS --no-isolate -q nocrashdialog "$@"
+        ${XVFB} ${WINETRICKS} sandbox || fail "\'${XVFB} ${WINETRICKS} sandbox\' failed"
+        echo "Installing ${command}"
+        ${XVFB} ${WINETRICKS} --no-isolate -q nocrashdialog "$@"
         return=$?
     else
-        DISPLAY="" $XVFB $WINETRICKS --no-isolate -q "$@"
+        DISPLAY="" ${XVFB} ${WINETRICKS} --no-isolate -q "$@"
         return=$?
     fi
 
-    if [ -d "$WINEPREFIX/drive_c/windows/syswow64" ]; then
+    if [ -d "${WINEPREFIX}/drive_c/windows/syswow64" ]; then
         WINEARCH="win64"
-    elif [ -d "$WINEPREFIX/drive_c/windows/system32" ]; then
+    elif [ -d "${WINEPREFIX}/drive_c/windows/system32" ]; then
         WINEARCH="win32"
     else
         # This happens during, e.g., `winetricks apps list`.
         echo "No WINEPREFIX found, not setting WINEARCH"
     fi
 
-    if [ "$return" = "32" ] && [ "$WINEARCH" != "win32" ]; then
-        skip "$command is not supported on $WINEARCH, requires win32"
+    if [ "${return}" = "32" ] && [ "${WINEARCH}" != "win32" ]; then
+        skip "${command} is not supported on ${WINEARCH}, requires win32"
         archskip=1
         return
-    elif [ "$return" = "64" ] && [ "$WINEARCH" != "win64" ]; then
-        skip "$command is not supported on $WINEARCH, requires win64"
+    elif [ "${return}" = "64" ] && [ "${WINEARCH}" != "win64" ]; then
+        skip "${command} is not supported on ${WINEARCH}, requires win64"
         archskip=1
         return
-    elif [ "$return" = "99" ]; then
-        skip "$command is known to be broken on this wine version, ignoring"
+    elif [ "${return}" = "99" ]; then
+        skip "${command} is known to be broken on this wine version, ignoring"
         return
     fi
 
-    if [ "$EXPECT_FAIL" = "yes" ] ; then
+    if [ "${EXPECT_FAIL}" = "yes" ] ; then
         # A success is failure:
-        if [ "$return" = "0" ] ; then
-            fail "$command succeeded, should have failed"
+        if [ "${return}" = "0" ] ; then
+            fail "${command} succeeded, should have failed"
         else
-            pass "test_command $command expected to fail, and did fail!"
+            pass "test_command ${command} expected to fail, and did fail!"
         fi
     else
-        if [ "$return" = "0" ] ; then
+        if [ "${return}" = "0" ] ; then
             pass "$@"
         else
             fail "$@"
@@ -487,14 +487,14 @@ test_command()
         seconds=$(awk '/real/ {print $2}' < time.log | sed 's/\..*//')
     fi
 
-    echo "test_command: ${app}: install_time $seconds seconds."
+    echo "test_command: ${app}: install_time ${seconds} seconds."
 
     echo "Checking for dangling processes!"
     # shellcheck disable=SC2009
     ps augxw | grep \\.exe | grep -v grep
 
-    if [ -z "$_W_wine_not_needed" ]; then
-        "$WINESERVER" -w
+    if [ -z "${_W_wine_not_needed}" ]; then
+        "${WINESERVER}" -w
         echo "Wineserver done."
     fi
 
@@ -536,30 +536,30 @@ load_false()
 _EOF
 
     # no xvfb needed
-    $WINETRICKS --no-isolate "${outputdir}/true.verb" ; ret=$?
-    case $ret in
+    ${WINETRICKS} --no-isolate "${outputdir}/true.verb" ; ret=$?
+    case ${ret} in
         0) pass "${outputdir}/true.verb not isolated, as apps passed" ;;
         *) fail "${outputdir}/true.verb not isolated, as apps failed" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --no-isolate "${outputdir}/false.verb" ; ret=$?
-    case $ret in
+    ${WINETRICKS} --no-isolate "${outputdir}/false.verb" ; ret=$?
+    case ${ret} in
         0) fail "false.verb not isolated, as apps worked, should have failed" ;;
         1) pass "false.verb not isolated, as apps passed" ;;
         *) fail "false.verb not isolated, as apps failed in unexpected way" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --isolate "${outputdir}/true.verb" ; ret=$?
-    case $ret in
+    ${WINETRICKS} --isolate "${outputdir}/true.verb" ; ret=$?
+    case ${ret} in
         0) pass "${outputdir}/true.verb isolated, as apps passed" ;;
         *) fail "${outputdir}/true.verb isolated, as apps failed" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --isolate "${outputdir}/false.verb" ; ret=$?
-    case $ret in
+    ${WINETRICKS} --isolate "${outputdir}/false.verb" ; ret=$?
+    case ${ret} in
         0) fail "${outputdir}/false.verb isolated, as apps worked, should have failed" ;;
         1) pass "${outputdir}/false.verb isolated, as apps passed" ;;
         *) fail "${outputdir}/false.verb isolated, as apps failed in unexpected way" ;;
@@ -590,30 +590,30 @@ load_false()
 _EOF
 
     # no xvfb needed
-    $WINETRICKS --no-isolate "${outputdir}/true.verb" ; ret=$?
-    case $ret in
+    ${WINETRICKS} --no-isolate "${outputdir}/true.verb" ; ret=$?
+    case ${ret} in
         0) pass "true.verb isolated, as dlls passed" ;;
         *) fail "true.verb isolated, as dlls failed" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --no-isolate "${outputdir}/false.verb" ; ret=$?
-    case $ret in
+    ${WINETRICKS} --no-isolate "${outputdir}/false.verb" ; ret=$?
+    case ${ret} in
         0) fail "${outputdir}/false.verb isolated, as dlls worked, should have failed" ;;
         1) pass "${outputdir}/false.verb isolated, as dlls passed" ;;
         *) fail "${outputdir}/false.verb isolated, as dlls failed in unexpected way" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --no-isolate "${outputdir}/true.verb" ; ret=$?
-    case $ret in
+    ${WINETRICKS} --no-isolate "${outputdir}/true.verb" ; ret=$?
+    case ${ret} in
         0) pass "${outputdir}/true.verb isolated, as dlls passed" ;;
         *) fail "${outputdir}/true.verb isolated, as dlls failed" ;;
     esac
 
     # no xvfb needed
-    $WINETRICKS --no-isolate "${outputdir}/false.verb" ; ret=$?
-    case $ret in
+    ${WINETRICKS} --no-isolate "${outputdir}/false.verb" ; ret=$?
+    case ${ret} in
         0) fail "${outputdir}/false.verb isolated, as dlls worked, should have failed" ;;
         1) pass "${outputdir}/false.verb isolated, as dlls passed" ;;
         *) fail "${outputdir}/false.verb isolated, as dlls failed in unexpected way" ;;
@@ -640,7 +640,7 @@ test_category()
         exit 1
     fi
 
-    sort -u < "${outputdir}/${category}.log" | grep -F -w -v -f "${outputdir}/manual.log" | grep -E -v "$BLACKLIST" > "${outputdir}/${category}.verbs"
+    sort -u < "${outputdir}/${category}.log" | grep -F -w -v -f "${outputdir}/manual.log" | grep -E -v "${BLACKLIST}" > "${outputdir}/${category}.verbs"
 
     if [ ! -f "${outputdir}/${category}.verbs" ] ; then
         w_die "${outputdir}/${category}.verbs doesn't exist? No verbs to test!"
@@ -652,73 +652,73 @@ test_category()
     fi
 
     while IFS= read -r line; do
-        test_app "$line"
+        test_app "${line}"
     done < "${outputdir}/${category}.verbs"
 }
 
 test_dotnet()
 {
     # verify that each individual installer works:
-    dotnet_verbs="$($WINETRICKS dlls list | grep ^dotnet | grep -v -e sdk -e verifier | cut -d ' ' -f1)"
-    for x in $dotnet_verbs; do
-        echo "testing $x"
-        test_command --verify "$x"
+    dotnet_verbs="$(${WINETRICKS} dlls list | grep ^dotnet | grep -v -e sdk -e verifier | cut -d ' ' -f1)"
+    for x in ${dotnet_verbs}; do
+        echo "testing ${x}"
+        test_command --verify "${x}"
     done
 
     # combinations that should work:
     for combo in "dotnet20 dotnet20sp2" "dotnet30 dotnet40"; do
         # shellcheck disable=SC2086
-        test_command --verify $combo
+        test_command --verify ${combo}
     done
 
     # combinations that should break:
     # shellcheck disable=SC2043
     for fail_combo in "dotnet20sp2 dotnet20sp1" "dotnet30sp1 dotnet30"; do
         # shellcheck disable=SC2086
-        EXPECT_FAIL=yes test_command $fail_combo
+        EXPECT_FAIL=yes test_command ${fail_combo}
     done
 }
 
 test_listing()
 {
     export _W_wine_not_needed=1
-    W_WINE="$WINE"
+    W_WINE="${WINE}"
 
     # Most options should work with or without WINE available:
     for category in $("${WINETRICKS}" list); do
-        export WINE="$W_WINE"
-        test_command "$category" list
+        export WINE="${W_WINE}"
+        test_command "${category}" list
 
         export WINE=/dev/null
-        test_command "$category" list
+        test_command "${category}" list
     done
 
     for hardcoded in list list-cached list-download list-manual-download list-all; do
-        export WINE="$W_WINE"
-        test_command $hardcoded
+        export WINE="${W_WINE}"
+        test_command ${hardcoded}
 
         export WINE=/dev/null
-        test_command $hardcoded
+        test_command ${hardcoded}
     done
 
     # list-installed needs the installed metadata which requires wine/wineprefix info:
-    export WINE="$W_WINE"
+    export WINE="${W_WINE}"
     test_command list-installed
 
     # Testing list-installed without wine is hard. A new prefix won't have anything installed
     # and so winetricks bails out before it tries to run w_metadata
     # So to truly test we need something installed first, then re-use that prefix with WINE=/dev/null
     unset _W_wine_not_needed
-    export WINE="$W_WINE"
+    export WINE="${W_WINE}"
     test_command mfc42
 
-    export WINEPREFIX="$WINE_PREFIXES/mfc42"
+    export WINEPREFIX="${WINE_PREFIXES}/mfc42"
     export _W_wine_not_needed=1
     export WINE=/dev/null
-    EXPECT_FAIL=yes "$WINETRICKS" -q list-installed
+    EXPECT_FAIL=yes "${WINETRICKS}" -q list-installed
 
     unset _W_wine_not_needed
-    export WINE="$W_WINE"
+    export WINE="${W_WINE}"
 }
 
 test_prefix()
@@ -726,9 +726,9 @@ test_prefix()
     # Run all this under the WINE_PREFIXES directory
     WT_TEST_PREFIX="${WINE_PREFIXES}/wt-test-prefix"
     XDG_CACHE_HOME="${WT_TEST_PREFIX}/.cache}"
-    cache="$XDG_CACHE_HOME/winetricks"
+    cache="${XDG_CACHE_HOME}/winetricks"
 
-    rm -rf "$WT_TEST_PREFIX"
+    rm -rf "${WT_TEST_PREFIX}"
     testname="test1: WINEPREFIX set, no prefix="
     if HOME="${WT_TEST_PREFIX}/home" WINEPREFIX="${WT_TEST_PREFIX}/test1" WINEDLLOVERRIDES="mshtml,mscoree=disabled" winetricks -q good && test -d "${WT_TEST_PREFIX}/test1/drive_c"; then
         pass "${testname} passed"
@@ -736,7 +736,7 @@ test_prefix()
         fail "${testname} failed"
     fi
 
-    rm -rf "$WT_TEST_PREFIX"
+    rm -rf "${WT_TEST_PREFIX}"
     testname="test2: WINEPREFIX not set, prefix=test2"
     if HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" winetricks -q prefix=test2 good && test -d "${WT_TEST_PREFIX}/home/.local/share/wineprefixes/test2/drive_c"; then
         pass "${testname} passed"
@@ -745,7 +745,7 @@ test_prefix()
     fi
 
     # prefix= overrules WINEPREFIX:
-    rm -rf "$WT_TEST_PREFIX"
+    rm -rf "${WT_TEST_PREFIX}"
     testname="test3: WINEPREFIX=test3, prefix=test3"
     if HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" WINEPREFIX="${WT_TEST_PREFIX}/test3" winetricks -q prefix=test3 good && test -d "${WT_TEST_PREFIX}/home/.local/share/wineprefixes/test3/drive_c"; then
         pass "${testname} passed"
@@ -755,7 +755,7 @@ test_prefix()
 
     # if both are invalid:
     # Note: if prefix= is used, ~/.local/share/wineprefixes becomes the prefix. Not sure if that's good or bad, but for now just documenting the behavior:
-    rm -rf "$WT_TEST_PREFIX"
+    rm -rf "${WT_TEST_PREFIX}"
     testname="test4: WINEPREFIX=/dev/null, prefix="
     if HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" WINEPREFIX="/dev/null" winetricks -q prefix= good && test -d "${WT_TEST_PREFIX}/home/.local/share/wineprefixes/drive_c"; then
         pass "${testname} passed"
@@ -764,7 +764,7 @@ test_prefix()
     fi
 
     # WINEPREFIX is invalid, prefix not used:
-    rm -rf "$WT_TEST_PREFIX"
+    rm -rf "${WT_TEST_PREFIX}"
     testname="test5: WINEPREFIX=/dev/null, no prefix"
     if ! HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" WINEPREFIX="/dev/null" winetricks -q good; then
         pass "${testname} did not succeed (as expected)"
@@ -773,7 +773,7 @@ test_prefix()
     fi
 
     # if nothing is defined, ~/.wine should be used:
-    rm -rf "$WT_TEST_PREFIX"
+    rm -rf "${WT_TEST_PREFIX}"
     testname="test6: WINEPREFIX not set, prefix not set"
     unset WINEPREFIX
     if HOME="${WT_TEST_PREFIX}/home" WINEDLLOVERRIDES="mshtml,mscoree=disabled" winetricks -q good && test -d "${WT_TEST_PREFIX}/home/.wine/drive_c"; then
@@ -782,7 +782,7 @@ test_prefix()
         fail "${testname} failed"
     fi
 
-    if [ "$W_OPT_NOCLEAN" = "1" ]; then
+    if [ "${W_OPT_NOCLEAN}" = "1" ]; then
         echo "W_OPT_NOCLEAN set to 1, not removing ${WT_TEST_PREFIX}"
     else
         rm -rf "${WT_TEST_PREFIX}"
@@ -792,7 +792,7 @@ test_prefix()
 test_quick()
 {
     echo "warning: quick test takes up around 20GB"
-    export W_CACHE="$cache"
+    export W_CACHE="${cache}"
 
     # And test all the automatically-downloadable dlls
     test_category dlls
@@ -826,7 +826,7 @@ test_xvfb() {
         w_die "Please install xvfb-run for xvfb tests"
     fi
 
-    BLACKLIST="$BLACKLIST|$XVFB_BLACKLIST"
+    BLACKLIST="${BLACKLIST}|${XVFB_BLACKLIST}"
     export BLACKLIST
 
     # Not test_quick() since flash fails without proper X, but test_quick() doesn't respect $BLACKLIST
@@ -842,7 +842,7 @@ helper_test_w_compare_wine_version()
     comparison="$2" # the comparison to make (e.g., ',1.8', '1.9,', or '1.8,1.9')
     workaround_expected="$3" # should the workaround be executed (yes/no)
 
-    WINETRICKS_WINE_VERSION="$version"
+    WINETRICKS_WINE_VERSION="${version}"
     export WINETRICKS_WINE_VERSION
 
 if [ "${workaround_expected}" = "yes" ] ; then
@@ -852,10 +852,10 @@ w_metadata test_version settings
 load_test_version()
 {
     # FIXME: w_info/w_die aren't getting through b/c of QUIET? stop using quiet everywhere..
-    if w_workaround_wine_bug 99999 "test" "$comparison" ; then
-        w_info "Using w_workaround, expected, version: $WINETRICKS_WINE_VERSION"
+    if w_workaround_wine_bug 99999 "test" "${comparison}" ; then
+        w_info "Using w_workaround, expected, version: ${WINETRICKS_WINE_VERSION}"
     else
-        w_die "Not using w_workaround, unexpected, version: $WINETRICKS_WINE_VERSION"
+        w_die "Not using w_workaround, unexpected, version: ${WINETRICKS_WINE_VERSION}"
     fi
 }
 _EOF
@@ -865,10 +865,10 @@ w_metadata test_version settings
 
 load_test_version()
 {
-    if w_workaround_wine_bug 99999 "test" "$comparison" ; then
-        w_die "Using w_workaround, unexpected, version: $WINETRICKS_WINE_VERSION"
+    if w_workaround_wine_bug 99999 "test" "${comparison}" ; then
+        w_die "Using w_workaround, unexpected, version: ${WINETRICKS_WINE_VERSION}"
     else
-        w_info "Not using w_workaround, expected, version: $WINETRICKS_WINE_VERSION"
+        w_info "Not using w_workaround, expected, version: ${WINETRICKS_WINE_VERSION}"
     fi
 }
 _EOF
@@ -877,10 +877,10 @@ else
 fi
 
     # no xvfb needed
-    $WINETRICKS -v --no-isolate "${outputdir}/test_version.verb" ; ret=$?
-    case $ret in
-        0) pass "test_version.verb (version: $version comparison: $comparison expected: $workaround_expected passed" ;;
-        *) fail "test_version.verb (version: $version comparison: $comparison expected: $workaround_expected failed" ;;
+    ${WINETRICKS} -v --no-isolate "${outputdir}/test_version.verb" ; ret=$?
+    case ${ret} in
+        0) pass "test_version.verb (version: ${version} comparison: ${comparison} expected: ${workaround_expected} passed" ;;
+        *) fail "test_version.verb (version: ${version} comparison: ${comparison} expected: ${workaround_expected} failed" ;;
     esac
 }
 
@@ -963,9 +963,9 @@ test_w_compare_wine_version()
 test_windows_versions()
 {
     # shellcheck disable=SC2013
-    for version in $("$WINETRICKS" settings list | grep 'Windows version' | cut -d ' ' -f1 | grep -v 'winver='); do
+    for version in $("${WINETRICKS}" settings list | grep 'Windows version' | cut -d ' ' -f1 | grep -v 'winver='); do
         # Make sure that changing the Windows version works:
-        test_command "$version"
+        test_command "${version}"
 
         # FIXME: ideally, we'd verify the version here, but that's currently not trivial, see:
         # https://bugs.winehq.org/show_bug.cgi?id=49242
@@ -988,9 +988,9 @@ case "$1" in
     *) echo "Usage: $0 quick|full" ; exit 1 ;;
 esac
 
-if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
+if [ ${errors} = 0 ] && [ ${passes} -gt 0 ] ; then
     result="PASS"
-    if [ "$W_OPT_NOCLEAN" = "1" ]; then
+    if [ "${W_OPT_NOCLEAN}" = "1" ]; then
         echo "W_OPT_NOCLEAN set to 1, not removing ${WINE_PREFIXES}"
     else
         rm -rf "${WINE_PREFIXES}"
@@ -1002,46 +1002,46 @@ fi
 set +x
 
 echo "==============================================================="
-echo "Test over, $errors failures, $passes successes, $skips skipped."
-echo $result
-if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
+echo "Test over, ${errors} failures, ${passes} successes, ${skips} skipped."
+echo ${result}
+if [ ${errors} = 0 ] && [ ${passes} -gt 0 ] ; then
     echo "==============================================================="
     status=0
 else
     echo "==============================================================="
 
-    oldifs="$IFS"
+    oldifs="${IFS}"
     IFS="|"
 
     echo "Test failures:"
-    for test_failure in $failed_verbs; do
-        if [ -z "$test_failure" ]; then
+    for test_failure in ${failed_verbs}; do
+        if [ -z "${test_failure}" ]; then
             :
         fi
-        echo "$test_failure"
+        echo "${test_failure}"
     done
     echo
 
-    IFS=$oldifs
+    IFS=${oldifs}
     status=1
 fi
 
 # skips
-if [ $errors = 0 ] && [ $passes -gt 0 ] ; then
+if [ ${errors} = 0 ] && [ ${passes} -gt 0 ] ; then
     echo "==============================================================="
-    oldifs="$IFS"
+    oldifs="${IFS}"
     IFS="|"
 
     echo "Skipped tests:"
-    for skipped_test in $skipped_verbs; do
-        if [ -z "$skipped_test" ]; then
+    for skipped_test in ${skipped_verbs}; do
+        if [ -z "${skipped_test}" ]; then
             :
         fi
-        echo "$skipped_test"
+        echo "${skipped_test}"
     done
 
-    IFS=$oldifs
+    IFS=${oldifs}
 fi
 
 echo "==============================================================="
-exit $status
+exit ${status}
