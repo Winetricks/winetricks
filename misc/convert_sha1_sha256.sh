@@ -22,7 +22,7 @@
 set -x
 
 CACHE_DIR="${HOME}/.cache/winetricks"
-SRC_DIR="$PWD"
+SRC_DIR="${PWD}"
 winetricks="${SRC_DIR}/src/winetricks"
 
 if [ ! -f README.md ] ; then
@@ -51,7 +51,7 @@ for dir in "${CACHE_DIR}/"* ; do
     for file in "${dir}"/* ; do
         # Convert the package:
         echo file="${file}"
-        echo "dir=$dir, package=$package, file=$file"
+        echo "dir=${dir}, package=${package}, file=${file}"
         sha1_file="$(sha1sum "${file}" | awk '{print $1}')"
         sha256_file="$(sha256sum "${file}" | awk '{print $1}')"
         echo "sha1: ${sha1_file}"
@@ -67,7 +67,7 @@ for dir in "${CACHE_DIR}/"* ; do
 
     # Test it
     wineserver -k || true
-    rm -rf "$HOME/.wine"
+    rm -rf "${HOME}/.wine"
 
     # shellcheck disable=SC2115
     rm -rf "${CACHE_DIR}/${package}"
@@ -77,7 +77,7 @@ for dir in "${CACHE_DIR}/"* ; do
     test_status="$?"
 
     # Commit it (if it worked):
-    if [ $test_status = 0 ] ; then
+    if [ ${test_status} = 0 ] ; then
         git commit -m "${package}: convert to sha256" "${winetricks}"
     else
         git checkout -f
