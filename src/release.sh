@@ -21,7 +21,7 @@ if [ "$1" = "--no-push" ] ; then
     nopush=1
     shift
 # If we _are_ pushing, we'll need a github token:
-elif [ -z "$GITHUB_TOKEN" ] ; then
+elif [ -z "${GITHUB_TOKEN}" ] ; then
     echo "--no-push wasn't given, GITHUB_TOKEN must be set in the environment!"
     exit 1
 fi
@@ -70,7 +70,7 @@ echo "${version}" > files/LATEST
 # Update verb lists:
 # actual categories
 for category in $(./src/winetricks list); do
-    ./src/winetricks "$category" list | sed 's/[[:blank:]]*$//' > "files/verbs/${category}.txt"
+    ./src/winetricks "${category}" list | sed 's/[[:blank:]]*$//' > "files/verbs/${category}.txt"
 done
 
 # meta categories
@@ -85,7 +85,7 @@ git tag -s -m "winetricks-${version}" "${version}"
 sed -i -e "s%WINETRICKS_VERSION=.*%WINETRICKS_VERSION=${version}-next%" src/winetricks
 git commit src/winetricks -m "development version bump - ${version}-next"
 
-if [ $nopush = 1 ] ; then
+if [ ${nopush} = 1 ] ; then
     echo "--no-push used, not pushing commits / tags"
 else
     git push
@@ -99,7 +99,7 @@ git archive --prefix="winetricks-${version}/" -o "${tmpdir}/${version}.tar.gz" "
 gpg --armor --default-key 0x053F0749 --detach-sign "${tmpdir}/${version}.tar.gz"
 
 # upload the detached signature to github:
-if [ $nopush = 1 ] ; then
+if [ ${nopush} = 1 ] ; then
     echo "--no-push used, not uploading signature file"
 else
     python3 src/github-api-releases.py  "${tmpdir}/${version}.tar.gz.asc" Winetricks winetricks "${version}"
