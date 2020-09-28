@@ -14483,23 +14483,6 @@ load_7zip()
 
 #----------------------------------------------------------------
 
-w_metadata abiword apps \
-    title="AbiWord 2.8.6" \
-    publisher="AbiSource" \
-    year="2010" \
-    media="download" \
-    file1="abiword-setup-2.8.6.exe" \
-    installed_exe1="$W_PROGRAMS_X86_WIN/AbiWord/bin/AbiWord.exe"
-
-load_abiword()
-{
-    w_download https://www.abisource.com/downloads/abiword/2.8.6/Windows/abiword-setup-2.8.6.exe f85c7f32044bbb4d31f1672c86951e35319f8e89fbd6c01ab4c19e960efd9ff8
-    w_try_cd "$W_CACHE/$W_PACKAGE"
-    w_try "$WINE" abiword-setup-2.8.6.exe ${W_OPT_UNATTENDED:+/S}
-}
-
-#----------------------------------------------------------------
-
 w_metadata adobe_diged apps \
     title="Adobe Digital Editions 1.7" \
     publisher="Adobe" \
