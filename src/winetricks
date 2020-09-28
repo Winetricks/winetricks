@@ -323,25 +323,29 @@ _w_get_broken_messages()
     # Unify the broken messages (to make it easier for future translators):
     case $LANG in
         *)
-            broken_good_version_known_default="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Upgrade to >=${good_version}. See ${bug_link} for more info."
-            broken_good_and_bad_version_known_default="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. Upgrade to >=${good_version}. See ${bug_link} for more info."
-            broken_only_bad_version_known_default="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. See ${bug_link} for more info."
-            broken_no_version_known_default="This package ($W_PACKAGE) is broken. See ${bug_link} for more info."
+            # default broken messages
+            broken_good_version_known_default="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Upgrade to >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
+            broken_good_and_bad_version_known_default="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. Upgrade to >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
+            broken_only_bad_version_known_default="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. See ${bug_link} for more info. Use --force to try anyway."
+            broken_no_version_known_default="This package ($W_PACKAGE) is broken. See ${bug_link} for more info. Use --force to try anyway."
 
-            broken_good_version_known_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped} when wine is built with mingw. Upgrade to >=${good_version} or rebuild wine without mingw. See ${bug_link} for more info."
-            broken_good_and_bad_version_known_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built with mingw. Upgrade to >=${good_version} or rebuild wine without mingw. See ${bug_link} for more info."
-            broken_only_bad_version_known_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built with mingw. See ${bug_link} for more info."
-            broken_no_version_known_mingw="This package ($W_PACKAGE) is broken when wine is built with mingw. See ${bug_link} for more info."
+            # mingw broken messages
+            broken_good_version_known_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped} when wine is built with mingw. Upgrade to >=${good_version} or rebuild wine without mingw. See ${bug_link} for more info. Use --force to try anyway."
+            broken_good_and_bad_version_known_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built with mingw. Upgrade to >=${good_version} or rebuild wine without mingw. See ${bug_link} for more info. Use --force to try anyway."
+            broken_only_bad_version_known_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built with mingw. See ${bug_link} for more info. Use --force to try anyway."
+            broken_no_version_known_mingw="This package ($W_PACKAGE) is broken when wine is built with mingw. See ${bug_link} for more info. Use --force to try anyway."
 
-            broken_good_version_known_no_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped} when wine is built without mingw. Upgrade to >=${good_version}. See ${bug_link} for more info."
-            broken_good_and_bad_version_known_no_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built without mingw. Upgrade to >=${good_version}. See ${bug_link} for more info."
-            broken_only_bad_version_known_no_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built without mingw. See ${bug_link} for more info."
-            broken_no_version_known_no_mingw="This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info."
+            # no mingw broken messages
+            broken_good_version_known_no_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped} when wine is built without mingw. Upgrade to >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
+            broken_good_and_bad_version_known_no_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built without mingw. Upgrade to >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
+            broken_only_bad_version_known_no_mingw="This package ($W_PACKAGE) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version} when wine is built without mingw. See ${bug_link} for more info. Use --force to try anyway."
+            broken_no_version_known_no_mingw="This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info. Use --force to try anyway."
 
-            broken_good_version_known_win64="This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Use a prefix made with WINEARCH=win32 or upgrade wine to >=${good_version} to work around this. See: ${bug_link}"
-            broken_good_and_bad_version_known_win64="This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Broken since ${bad_version}. Use a prefix made with WINEARCH=win32 or upgrade wine to >=${good_version} to work around this. See: ${bug_link}"
-            broken_only_bad_version_known_win64="This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Broken since ${bad_version}. Use a prefix made with WINEARCH=win32 to work around this. See: ${bug_link}"
-            broken_no_version_known_win64="This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info."
+            # win64 broken messages
+            broken_good_version_known_win64="This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Use a prefix made with WINEARCH=win32 or upgrade wine to >=${good_version} to work around this. Or use --force to try anyway. See ${bug_link} for more info. Use --force to try anyway."
+            broken_good_and_bad_version_known_win64="This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Broken since ${bad_version}. Use a prefix made with WINEARCH=win32 or upgrade wine to >=${good_version} to work around this. See ${bug_link} for more info. Use --force to try anyway."
+            broken_only_bad_version_known_win64="This package ($W_PACKAGE) is broken on 64-bit wine-${_wine_version_stripped}. Broken since ${bad_version}. Use a prefix made with WINEARCH=win32 to work around this. See ${bug_link} for more info. Use --force to try anyway."
+            broken_no_version_known_win64="This package ($W_PACKAGE) is broken when wine is built without mingw. See ${bug_link} for more info. Use --force to try anyway."
             ;;
     esac
 }
