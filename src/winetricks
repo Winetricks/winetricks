@@ -16053,10 +16053,6 @@ load_qq()
         echo Exec=env WINEPREFIX="${WINEPREFIX}" "${WINE}" \""${W_PROGRAMS_X86_WIN}"/Tencent/QQ/bin/QQScLauncher.exe\" >> "${HOME}/.local/share/applications/wine/Programs/腾讯软件/QQ/腾讯QQ.desktop"
     fi
 
-    if w_workaround_wine_bug 39657 "Disable ntoskrnl.exe to work around can't be started bug"; then
-        w_override_dlls disabled ntoskrnl.exe
-    fi
-
     if w_workaround_wine_bug 37680 "Disable txplatform.exe to work around QQ can't be quit cleanly"; then
         w_override_dlls disabled txplatform.exe
     fi
