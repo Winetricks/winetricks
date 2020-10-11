@@ -12625,31 +12625,7 @@ load_vcrun2015()
             # Also install the 64-bit version
             # 2015/10/12: 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
             w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
-            if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls", 3.8; then
-                rm -f "${W_TMP}"/*  # Avoid permission error
-                w_try_cabextract --directory="${W_TMP}" vc_redist.x64.exe
-                w_try_cabextract --directory="${W_TMP}" "${W_TMP}/a10"
-                w_try_cabextract --directory="${W_TMP}" "${W_TMP}/a11"
-                cp "${W_TMP}"/concrt140.dll "${W_SYSTEM64_DLLS}"/concrt140.dll
-                cp "${W_TMP}"/mfc140.dll "${W_SYSTEM64_DLLS}"/mfc140.dll
-                cp "${W_TMP}"/mfc140u.dll "${W_SYSTEM64_DLLS}"/mfc140u.dll
-                cp "${W_TMP}"/mfcm140.dll "${W_SYSTEM64_DLLS}"/mfcm140.dll
-                cp "${W_TMP}"/mfcm140u.dll "${W_SYSTEM64_DLLS}"/mfcm140u.dll
-                cp "${W_TMP}"/msvcp140.dll "${W_SYSTEM64_DLLS}"/msvcp140.dll
-                cp "${W_TMP}"/vcamp140.dll "${W_SYSTEM64_DLLS}"/vcamp140.dll
-                cp "${W_TMP}"/vccorlib140.dll "${W_SYSTEM64_DLLS}"/vccorlib140.dll
-                cp "${W_TMP}"/vcomp140.dll "${W_SYSTEM64_DLLS}"/vcomp140.dll
-                cp "${W_TMP}"/vcruntime140.dll "${W_SYSTEM64_DLLS}"/vcruntime140.dll
-
-                cp "${W_TMP}"/api_ms_win_crt_conio_l1_1_0.dll "${W_SYSTEM64_DLLS}"/api-ms-win-crt-conio-l1-1-0.dll
-                cp "${W_TMP}"/api_ms_win_crt_heap_l1_1_0.dll "${W_SYSTEM64_DLLS}"/api-ms-win-crt-heap-l1-1-0.dll
-                cp "${W_TMP}"/api_ms_win_crt_locale_l1_1_0.dll "${W_SYSTEM64_DLLS}"/api-ms-win-crt-locale-l1-1-0.dll
-                cp "${W_TMP}"/api_ms_win_crt_math_l1_1_0.dll "${W_SYSTEM64_DLLS}"/api-ms-win-crt-math-l1-1-0.dll
-                cp "${W_TMP}"/api_ms_win_crt_runtime_l1_1_0.dll "${W_SYSTEM64_DLLS}"/api-ms-win-crt-runtime-l1-1-0.dll
-                cp "${W_TMP}"/api_ms_win_crt_stdio_l1_1_0.dll "${W_SYSTEM64_DLLS}"/api-ms-win-crt-stdio-l1-1-0.dll
-                cp "${W_TMP}"/ucrtbase.dll "${W_SYSTEM64_DLLS}"/ucrtbase.dll
-            else
-                w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
+            w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             fi
             ;;
     esac
