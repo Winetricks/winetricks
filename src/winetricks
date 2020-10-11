@@ -12365,21 +12365,7 @@ load_vcrun2008()
             # Also install the 64-bit version
             # 2016/11/15: b811f2c047a3e828517c234bd4aa4883e1ec591d88fad21289ae68a6915a6665
             w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x64.exe b811f2c047a3e828517c234bd4aa4883e1ec591d88fad21289ae68a6915a6665
-            if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls" ,3.8; then
-                rm -f "${W_TMP}"/*  # Avoid permission error
-                w_try_cabextract --directory="${W_TMP}" vcredist_x64.exe
-                w_try_cabextract --directory="${W_TMP}" "${W_TMP}/vc_red.cab"
-
-                w_try cp "${W_TMP}"/atl90.dll.30729.6161.Microsoft_VC90_ATL_x64.QFE "${W_SYSTEM64_DLLS}"/atl90.dll
-                w_try cp "${W_TMP}"/mfc90.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfc90.dll
-                w_try cp "${W_TMP}"/mfcm90.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfcm90.dll
-                w_try cp "${W_TMP}"/msvcm90.dll.30729.6161.Microsoft_VC90_CRT_x64.QFE "${W_SYSTEM64_DLLS}"/msvcm90.dll
-                w_try cp "${W_TMP}"/msvcp90.dll.30729.6161.Microsoft_VC90_CRT_x64.QFE "${W_SYSTEM64_DLLS}"/msvcp90.dll
-                w_try cp "${W_TMP}"/msvcr90.dll.30729.6161.Microsoft_VC90_CRT_x64.QFE "${W_SYSTEM64_DLLS}"/msvcr90.dll
-                w_try cp "${W_TMP}"/vcomp90.dll.30729.6161.Microsoft_VC90_OpenMP_x64.QFE "${W_SYSTEM64_DLLS}"/vcomp90.dll
-            else
-                w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
-            fi
+            w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 }
