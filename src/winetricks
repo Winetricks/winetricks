@@ -12427,18 +12427,7 @@ load_vcrun2010()
             # Also install the 64-bit version
             # https://www.microsoft.com/en-us/download/details.aspx?id=13523
             w_download https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe c6cd2d3f0b11dc2a604ffdc4dd97861a83b77e21709ba71b962a47759c93f4c8
-            if w_workaround_wine_bug 30713 "Manually extracting the 64-bit dlls" ,3.8; then
-                w_try_cabextract --directory="${W_TMP}" vcredist_x64.exe -F '*.cab'
-                w_try_cabextract --directory="${W_TMP}" "${W_TMP}"/vc_red.cab
-                cp "${W_TMP}"/F_CENTRAL_mfc100_x64 "${W_SYSTEM64_DLLS}"/mfc100.dll
-                cp "${W_TMP}"/F_CENTRAL_mfc100u_x64 "${W_SYSTEM64_DLLS}"/mfc100u.dll
-                cp "${W_TMP}"/F_CENTRAL_msvcr100_x64 "${W_SYSTEM64_DLLS}"/msvcr100.dll
-                cp "${W_TMP}"/F_CENTRAL_msvcp100_x64 "${W_SYSTEM64_DLLS}"/msvcp100.dll
-                cp "${W_TMP}"/F_CENTRAL_vcomp100_x64 "${W_SYSTEM64_DLLS}"/vcomp100.dll
-                cp "${W_TMP}"/F_CENTRAL_atl100_x64 "${W_SYSTEM64_DLLS}"/atl100.dll
-            else
-                w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
-            fi
+            w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 }
