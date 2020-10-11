@@ -15931,9 +15931,6 @@ load_psdkwin7()
     # https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/c053b616-7d5b-405d-9841-ec465a8e21d5/
     w_download https://download.microsoft.com/download/7/A/B/7ABD2203-C472-4036-8BA0-E505528CCCB7/winsdk_web.exe bb0e3b5d8feb750b3164b657a046f76ff086887719e418f57ce88ada5e8990d5
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    if w_workaround_wine_bug 21596; then
-        w_warn "When given a choice, select only C++ compilers and headers, the other options don't work yet.  See https://bugs.winehq.org/show_bug.cgi?id=21596"
-    fi
     w_try "${WINE}" winsdk_web.exe
 
     if w_workaround_wine_bug 21362; then
@@ -15973,10 +15970,6 @@ load_psdkwin71()
     w_call mfc42   # need mfc42u, or setup will abort
     # https://www.microsoft.com/en-us/download/details.aspx?id=3138
     w_download https://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe 9ea8d82a66a33946e8673df92d784971b35b8f65ade3e0325855be8490e3d51d
-
-    if w_workaround_wine_bug 21596; then
-        w_warn "When given a choice, select only C++ compilers and headers, the other options don't work yet.  See https://bugs.winehq.org/show_bug.cgi?id=21596"
-    fi
 
     # don't have a working unattended recipe.  Maybe we'll have to
     # do an AutoHotKey script until Microsoft gets its act together:
