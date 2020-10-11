@@ -16450,10 +16450,6 @@ load_vc2010express()
         w_call mspatcha
     fi
 
-    if w_workaround_wine_bug 34627 "Installing Visual C++ 2005 managed runtime to work around bug in SQL Server install"; then
-        w_call vcrun2005
-    fi
-
     w_try ${WINE} setup.exe ${W_OPT_UNATTENDED:+/q}
 }
 
