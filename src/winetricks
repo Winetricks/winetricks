@@ -9096,7 +9096,7 @@ load_dotnet30sp1()
     w_call dotnet20sp1
     w_wineserver -w
 
-    if w_workaround_wine_bug 47436 "Installing native prntvpt" 4.11, ; then
+    if w_workaround_wine_bug 47436 "Installing native prntvpt" 4.11,4.15 ;then
         w_call prntvpt
     fi
 
