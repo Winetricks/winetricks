@@ -14442,7 +14442,7 @@ load_adobe_diged4()
 
     #w_call win7
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    if w_workaround_wine_bug 46019 "Installer fails under wine, manually unpacking it instead"; then
+    if w_workaround_wine_bug 46019 "Installer fails under wine, manually unpacking it instead" ,4.6; then
         w_try_7z "${W_PROGRAMS_X86_UNIX}/Adobe/Adobe Digital Editions 4.5" "${file1}" -y
     else
         w_ahk_do "
