@@ -17633,20 +17633,6 @@ load_bfbc2()
         ControlClick,No, Updater, successfully updated  ; Button2
     "
 
-    if w_workaround_wine_bug 22762; then
-        # FIXME: does this directory name change in Windows 7?
-        w_try_cd "${W_DRIVE_C}/users/${LOGNAME}/My Documents"
-        if test -f BFBC2/settings.ini; then
-            mv BFBC2/settings.ini BFBC2/oldsettings.ini
-            sed 's,DxVersion=auto,DxVersion=9,;
-                 s,Fullscreen=true,Fullscreen=false,' BFBC2/oldsettings.ini > BFBC2/settings.ini
-        else
-            mkdir -p BFBC2
-            echo "[Graphics]" > BFBC2/settings.ini
-            echo "DxVersion=9" >> BFBC2/settings.ini
-        fi
-    fi
-
     if w_workaround_wine_bug 22961; then
         # shellcheck disable=SC2016
         w_warn 'If the game says "No CD/DVD error", try "sudo mount -o remount,unhide,uid=$(uid -u)".  See https://bugs.winehq.org/show_bug.cgi?id=22961 for more info.'
