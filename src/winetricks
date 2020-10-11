@@ -19083,7 +19083,7 @@ REGEDIT4
 _EOF_
     try_regedit "${W_TMP_WIN}\\${W_PACKAGE}.reg"
 
-    if w_workaround_wine_bug 24912; then
+    if w_workaround_wine_bug 24912 ,4.19; then
         # kill off lingering installer
         w_ahk_do "
             SetTitleMatchMode, 2
@@ -19093,13 +19093,7 @@ _EOF_
         w_killall IDriver.exe
     fi
 
-    if w_workaround_wine_bug 25352; then
-        w_call devenum
-        w_call quartz
-        w_call wmp9
-    fi
-
-    if w_workaround_wine_bug 20074; then
+    if w_workaround_wine_bug 20074 "Installing native d3dx9_36" ,4.18; then
         w_call d3dx9_36
     fi
 }
