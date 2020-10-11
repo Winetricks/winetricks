@@ -17138,7 +17138,7 @@ load_aoe3_demo()
         WinWaitClose
     "
 
-    if w_workaround_wine_bug 24912; then
+    if w_workaround_wine_bug 24912 ,4.19; then
         # kill off lingering installer
         w_ahk_do "
             SetTitleMatchMode, 2
