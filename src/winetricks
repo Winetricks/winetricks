@@ -15719,17 +15719,6 @@ load_office2013pro()
         w_call msxml6
     fi
 
-    if w_workaround_wine_bug 38648 "DirectX < 11 has problems with black window after installation" ,3.0; then
-        cat > "${W_TMP}"/MaxVersionGL.reg <<_EOF_
-REGEDIT4
-
-[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]
-"MaxVersionGL"=dword:00030002
-
-_EOF_
-        w_try_regedit "${W_TMP_WIN}"\\MaxVersionGL.reg
-    fi
-
     case "${WINETRICKS_ISO_MOUNT}" in
         # archivemount > 0.8.8: works
         # archivemount <= 0.8.8: cannot finish installation due to path issue
