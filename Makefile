@@ -97,6 +97,7 @@ check:
 
 check64:
 	# FIXME: verify this works
+	# FIXME: can we share check32/check64 (and just have them set WINEARCH, then call the real function)?
 	export WINEARCH="win64"
 	echo 'This verifies that most DLL verbs, plus flash, install ok.'
 	echo 'It should take about an hour to run with a fast connection.'
@@ -134,6 +135,7 @@ shell-checks:
 	echo "This is relatively fast and doesn't download anything."
 	sh ./tests/shell-checks || exit 1
 
+# FIXME: test32/test64
 test:
 	echo 'This verifies that most DLL verbs, plus flash and dotnet, install ok.'
 	echo 'It also makes sure that all URLs in winetricks work, so a fast uncapped internet connection is needed.'
