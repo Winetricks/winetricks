@@ -18683,10 +18683,12 @@ load_dragonage()
     else
         cp -f "${ini}" "${ini}.old"
     fi
-    if w_workaround_wine_bug 22383 "use strictdrawordering to avoid video problems"; then
+
+    if w_workaround_wine_bug 22383 "use strictdrawordering to avoid video problems" ,4.15; then
         w_call strictdrawordering=enabled
     fi
-    if w_workaround_wine_bug 22557 "Setting UseVSync=0 to avoid black menu"; then
+
+    if w_workaround_wine_bug 22557 "Setting UseVSync=0 to avoid black menu" ,4.15; then
         sed 's,UseVSync=1,UseVSync=0,' < "${ini}" > "${ini}.new"
         mv -f "${ini}.new" "${ini}"
     fi
@@ -18755,15 +18757,15 @@ load_dragonage_ue()
         winwaitclose
     "
 
-    if w_workaround_wine_bug 22383; then
-        w_try_winetricks strictdrawordering=enabled
+    if w_workaround_wine_bug 22383 "use strictdrawordering to avoid video problems" ,4.15; then
+        w_call strictdrawordering=enabled
     fi
 
-    if w_workaround_wine_bug 23730; then
+    if w_workaround_wine_bug 23730 ,4.15; then
         w_warn "Run with WINEDEBUG=-all to reduce flickering."
     fi
 
-    if w_workaround_wine_bug 23081; then
+    if w_workaround_wine_bug 23081 ,4.15; then
         w_warn "If you still see flickering, try applying the patch from https://bugs.winehq.org/show_bug.cgi?id=23081"
     fi
 
