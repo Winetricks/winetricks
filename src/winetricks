@@ -22288,6 +22288,8 @@ w_metadata good settings \
 
 load_good()
 {
+    # debugging
+    w_try_mkdir "${W_DRIVE_C}/foo" "${W_DRIVE_C}/bar"
     w_info "${W_PACKAGE} succeeded!"
 }
 
