@@ -3132,7 +3132,7 @@ w_do_call()
 
         # Clean up after this verb
         test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP}"
-        mkdir -p "${W_TMP}"
+        w_try_mkdir "${W_TMP}"
 
         # Reset whether use of user mount tool
         unset W_USE_USERMOUNT
