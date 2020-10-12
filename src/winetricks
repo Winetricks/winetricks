@@ -734,6 +734,16 @@ _EOF_
     unset _W_dest_dir
 }
 
+w_try_mkdir()
+{
+    # Wrapper around mkdir, only print the message if the directory needs to be made
+    for dir in "$@"; do
+        if [ ! -d "${dir}" ]; then
+            w_try mkdir -p "${dir}"
+        fi
+    done
+}
+
 w_try_msiexec64()
 {
     if test "${W_ARCH}" != "win64"; then
@@ -855,7 +865,7 @@ w_read_key()
         return "${TRUE}"
     fi
 
-    mkdir -p "${W_CACHE}/${W_PACKAGE}"
+    w_try_mkdir "${W_CACHE}/${W_PACKAGE}"
 
     # backwards compatible location
     # Auth doesn't belong in cache, since restoring it requires user input
@@ -1307,7 +1317,7 @@ w_download_to()
     fi
 
     if test ! -d "${_W_cache}" ; then
-        w_try mkdir -p "${_W_cache}"
+        w_try_mkdir "${_W_cache}"
     fi
 
     # Try download twice
@@ -1608,7 +1618,7 @@ w_download_manual_to()
             *) _W_dlmsg="Please download ${_W_file} from ${_W_url}, place it in ${W_CACHE}/${_W_packagename}, then re-run this script.";;
         esac
 
-        mkdir -p "${W_CACHE}/${_W_packagename}"
+        w_try_mkdir "${W_CACHE}/${_W_packagename}"
         w_open_folder "${W_CACHE}/${_W_packagename}"
         w_open_webpage "${_W_url}"
         sleep 3   # give some time for web browser to open
@@ -1908,7 +1918,7 @@ w_mount()
     else
         WINETRICKS_IMG="${W_CACHE}/${W_PACKAGE}/$1.iso"
     fi
-    mkdir -p "${W_CACHE}/${W_PACKAGE}"
+    w_try_mkdir "${W_CACHE}/${W_PACKAGE}"
 
     if test -f "${WINETRICKS_IMG}"; then
         winetricks_mount_cached_iso
@@ -3017,7 +3027,7 @@ w_do_call()
             load_vd "${arg}"
             _W_status=$?
             test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP}"
-            mkdir -p "${W_TMP}"
+            w_try_mkdir "${W_TMP}"
             return ${_W_status}
         fi
 
@@ -3033,7 +3043,7 @@ w_do_call()
         W_TMP="${W_DRIVE_C}/windows/temp/_$1"
         W_TMP_WIN="C:\\windows\\Temp\\_$1"
         test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP}"
-        mkdir -p "${W_TMP}"
+        w_try_mkdir "${W_TMP}"
 
         # Unset all known used metadata values, in case this is a nested call
         unset conflicts installed_file1 installed_exe1
@@ -3049,7 +3059,7 @@ w_do_call()
             w_override_dlls "${cmd}" "${arg}"
             _W_status=$?
             test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP}"
-            mkdir -p "${W_TMP}"
+            w_try_mkdir "${W_TMP}"
             return ${_W_status}
         else
             w_die "No such verb $1"
@@ -3071,7 +3081,7 @@ w_do_call()
         esac
 
         test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP}"
-        mkdir -p "${W_TMP}"
+        w_try_mkdir "${W_TMP}"
 
         # Don't install if a conflicting verb is already installed:
         # shellcheck disable=SC2154
@@ -5105,7 +5115,7 @@ winetricks_set_wineprefix()
     fi
 
     export WINEPREFIX
-    w_try mkdir -p "$(dirname "${WINEPREFIX}")"
+    w_try_mkdir "$(dirname "${WINEPREFIX}")"
 
     case "${W_PLATFORM}" in
         windows_cmd)
@@ -5243,7 +5253,7 @@ winetricks_set_wineprefix()
             test "${WINETRICKS_CACHE_SYMLINK}" && rm -f "${WINETRICKS_CACHE_SYMLINK}"
             for letter in y x w v u t s r q p o n m; do
                 if ! test -d "${WINEPREFIX}"/dosdevices/${letter}:; then
-                    mkdir -p "${WINEPREFIX}"/dosdevices
+                    w_try_mkdir "${WINEPREFIX}"/dosdevices
                     WINETRICKS_CACHE_SYMLINK="${WINEPREFIX}"/dosdevices/${letter}:
                     ln -sf "${W_CACHE}" "${WINETRICKS_CACHE_SYMLINK}"
                     break
@@ -5266,7 +5276,7 @@ winetricks_set_wineprefix()
     else
         W_FONTSDIR_UNIX="${W_WINDIR_UNIX}"/Fonts
     fi
-    mkdir -p "${W_FONTSDIR_UNIX}"
+    w_try_mkdir "${W_FONTSDIR_UNIX}"
 
 
     # Unset WINEARCH which might be set from winetricks_set_winearch().
@@ -5333,6 +5343,7 @@ winetricks_init()
     # The list of categories is also hardcoded in winetricks_mainmenu() :-(
     WINETRICKS_CATEGORIES="apps benchmarks dlls fonts games settings mkprefix"
     for _W_cat in ${WINETRICKS_CATEGORIES}; do
+        # Not using w_try_mkdir to avoid the extra noise
         mkdir -p "${WINETRICKS_METADATA}/${_W_cat}"
     done
 
@@ -5386,7 +5397,7 @@ winetricks_init()
     # Config options are currently opt-in and not required, so not creating the config
     # directory unless there's demand:
     WINETRICKS_CONFIG="${XDG_CONFIG_HOME}/winetricks"
-    #test -d "$WINETRICKS_CONFIG" || mkdir -p "$WINETRICKS_CONFIG"
+    #test -d "$WINETRICKS_CONFIG" || w_try_mkdir "$WINETRICKS_CONFIG"
 
     # Load country code from config file only when "--country=" option is not specified
     if test -z "${W_COUNTRY}" -a -f "${WINETRICKS_CONFIG}"/country; then
@@ -9033,7 +9044,7 @@ load_dotnet30()
 
     # AF's workaround to avoid long pause
     LANGPACKS_BASE_PATH="${W_WINDIR_UNIX}/SYSMSICache/Framework/v3.0"
-    test -d "${LANGPACKS_BASE_PATH}" || mkdir -p "${LANGPACKS_BASE_PATH}"
+    test -d "${LANGPACKS_BASE_PATH}" || w_try_mkdir "${LANGPACKS_BASE_PATH}"
     # shellcheck disable=SC1010
     for lang in ar cs da de el es fi fr he it jp ko nb nl pl pt-BR pt-PT ru sv tr zh-CHS zh-CHT; do
         ln -sf "${W_SYSTEM32_DLLS}/spupdsvc.exe" "${LANGPACKS_BASE_PATH}/dotnetfx3langpack${lang}.exe"
@@ -10072,7 +10083,7 @@ helper_galliumnine()
     _W_galliumnine_tmp="${W_TMP}/galliumnine"
 
     w_try rm -rf "${_W_galliumnine_tmp}"
-    w_try mkdir -p "${_W_galliumnine_tmp}"
+    w_try_mkdir "${_W_galliumnine_tmp}"
     w_try tar -C "${_W_galliumnine_tmp}" --strip-components=1 -zxf "${W_CACHE}/${W_PACKAGE}/${_W_galliumnine_archive}"
     w_try mv "${_W_galliumnine_tmp}/lib32/d3d9-nine.dll.so" "${W_SYSTEM32_DLLS}/d3d9-nine.dll"
     w_try mv "${_W_galliumnine_tmp}/bin32/ninewinecfg.exe.so" "${W_SYSTEM32_DLLS}/ninewinecfg.exe"
@@ -10831,7 +10842,7 @@ load_mdx()
             w_try_cd "${ver}"
             for asm in *.dll; do
                 name="${asm%%.dll}"
-                w_try mkdir -p "${W_WINDIR_UNIX}/assembly/GAC/${name}/${ver}__31bf3856ad364e35"
+                w_try_mkdir "${W_WINDIR_UNIX}/assembly/GAC/${name}/${ver}__31bf3856ad364e35"
                 w_try cp "${asm}" "${W_WINDIR_UNIX}/assembly/GAC/${name}/${ver}__31bf3856ad364e35"
             done
         )
@@ -11929,7 +11940,7 @@ load_speechsdk()
 
     # If sapi.dll isn't in original location, applications won't start, see
     # e.g., https://bugs.winehq.org/show_bug.cgi?id=43841
-    mkdir -p "${W_SYSTEM32_DLLS}/Speech/Common/"
+    w_try_mkdir "${W_SYSTEM32_DLLS}/Speech/Common/"
     w_try ln -s "${W_COMMONFILES_X86}/Microsoft Shared/Speech/sapi.dll" "${W_SYSTEM32_DLLS}/Speech/Common"
 
     w_override_dlls native sapi
@@ -14563,7 +14574,7 @@ load_colorprofile()
     w_try_unzip "${W_TMP}" "${W_CACHE}"/colorprofile/ColorProfile.exe
 
     # It's in system32 for both win32/win64
-    mkdir -p "${W_WINDIR_UNIX}"/system32/spool/drivers/color
+    w_try_mkdir "${W_WINDIR_UNIX}"/system32/spool/drivers/color
     w_try cp -f "${W_TMP}/sRGB Color Space Profile.icm" "${W_WINDIR_UNIX}"/system32/spool/drivers/color
 }
 
@@ -14610,7 +14621,7 @@ load_controlspy()
     # 2019/04/11: changed to https://github.com/pywinauto/pywinauto/blob/master/apps/ControlSpy_20/ControlSpyV6.exe
     # Unfortunately that means no V5 of ControlSpy :/
     w_download https://github.com/pywinauto/pywinauto/blob/master/apps/ControlSpy_20/ControlSpyV6.exe
-    w_try mkdir -p "${W_PROGRAMS_X86_UNIX}/Microsoft/ControlSpy"
+    w_try_mkdir "${W_PROGRAMS_X86_UNIX}/Microsoft/ControlSpy"
     w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_PROGRAMS_X86_UNIX}/Microsoft/ControlSpy"
 }
 
@@ -14634,7 +14645,7 @@ load_dxdiag()
 
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "dxdiag.exe" "${W_TMP}/dxnt.cab"
-    mkdir -p "${W_WINDIR_UNIX}/help"
+    w_try_mkdir "${W_WINDIR_UNIX}/help"
     w_try_cabextract -d "${W_WINDIR_UNIX}/help" -L -F "dxdiag.chm" "${W_TMP}/dxnt.cab"
     w_override_dlls native dxdiag.exe
 
@@ -15011,7 +15022,7 @@ load_ie7()
     w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat 5d18ab44fc289100ccf4b51cf614cc2d36f7ca053e557e2ba973811293c97d38
 
     # Put a dummy catalog file in place
-    mkdir -p "${W_SYSTEM32_DLLS}"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
+    w_try_mkdir "${W_SYSTEM32_DLLS}"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
     w_try cp -f "${W_CACHE}"/ie7/winetest.cat "${W_SYSTEM32_DLLS}"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
     # KLUDGE: if / is writable (as on OS X?), having a Z: mapping to it
@@ -15127,7 +15138,7 @@ load_ie8()
     w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat 5d18ab44fc289100ccf4b51cf614cc2d36f7ca053e557e2ba973811293c97d38
 
     # Put a dummy catalog file in place
-    mkdir -p "${W_SYSTEM32_DLLS}"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
+    w_try_mkdir "${W_SYSTEM32_DLLS}"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}
     w_try cp -f "${W_CACHE}"/ie8/winetest.cat "${W_SYSTEM32_DLLS}"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
     w_download https://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe 5a2c6c82774bfe99b175f50a05b05bcd1fac7e9d0e54db2534049209f50cd6ef
@@ -15978,9 +15989,9 @@ load_qq()
     if w_workaround_wine_bug 38171 "Installing desktop file to work around bug"; then
         w_try_cd "${W_TMP}/"
         tar -zxf "${W_CACHE}/qq/QQ.tar.gz"
-        mkdir -p "${HOME}/.local/share/applications/wine/Programs/腾讯软件/QQ"
-        mkdir -p "${HOME}/.local/share/icons/hicolor/48x48/apps"
-        mkdir -p "${HOME}/.local/share/icons/hicolor/256x256/apps"
+        w_try_mkdir "${HOME}/.local/share/applications/wine/Programs/腾讯软件/QQ"
+        w_try_mkdir "${HOME}/.local/share/icons/hicolor/48x48/apps"
+        w_try_mkdir "${HOME}/.local/share/icons/hicolor/256x256/apps"
         w_try mv QQ/腾讯QQ.desktop ~/.local/share/applications/wine/Programs/腾讯软件/QQ
         w_try mv QQ/48x48/QQ.png ~/.local/share/icons/hicolor/48x48/apps
         w_try mv QQ/256x256/QQ.png ~/.local/share/icons/hicolor/256x256/apps
@@ -18344,7 +18355,7 @@ load_deadspace2()
         w_mount Disc2
         # On Linux, use symlinks for disc 2.  (On Cygwin, we'd have to copy.)
         w_try ln -s "${W_ISO_MOUNT_ROOT}"/*.dat .
-        mkdir -p movies/en movies/fr
+        w_try_mkdir "movies/en movies/fr"
         w_try ln -s "${W_ISO_MOUNT_ROOT}"/movies/en/* movies/en/
         w_try ln -s "${W_ISO_MOUNT_ROOT}"/movies/fr/* movies/fr/
         # Make the files writable, otherwise you'll get errors when trying to remove the temp directory.
@@ -19172,7 +19183,7 @@ load_mfsxde()
         w_try_cd "${W_CACHE}/${W_PACKAGE}"
         # Copy takes a LONG time, so offer a way to avoid copy while debugging verb
         if test ! -f bothdiscs/setup.exe; then
-            mkdir bothdiscs
+            w_try_mkdir bothdiscs
             w_try_cd bothdiscs
             w_try cp -R "${W_ISO_MOUNT_ROOT}"/* .
 
@@ -22345,7 +22356,7 @@ load_hosts()
     # See https://bugs.winehq.org/show_bug.cgi?id=12076
 
     # It's in system32 for both win32/win64
-    mkdir -p "${W_WINDIR_UNIX}"/system32/drivers/etc
+    w_try_mkdir "${W_WINDIR_UNIX}"/system32/drivers/etc
     touch "${W_WINDIR_UNIX}"/system32/drivers/etc/hosts
     touch "${W_WINDIR_UNIX}"/system32/drivers/etc/services
 }
@@ -22365,7 +22376,7 @@ load_isolate_home()
     for x in *; do
         if test -h "${x}" && test -d "${x}"; then
             rm -f "${x}"
-            mkdir -p "${x}"
+            w_try_mkdir "${x}"
         fi
     done
     w_try_cd "${_olddir}"
@@ -22739,7 +22750,7 @@ winetricks_stats_save()
     # Save opt-in status
     if test "${WINETRICKS_STATS_REPORT}"; then
         if test ! -d "${W_CACHE}"; then
-            mkdir -p "${W_CACHE}"
+            w_try_mkdir "${W_CACHE}"
         fi
         echo "${WINETRICKS_STATS_REPORT}" > "${W_CACHE}"/track_usage
     fi
@@ -22869,7 +22880,7 @@ winetricks_stats_log_command()
         *) _W_LOGDIR="${WINEPREFIX}" ;;
     esac
 
-    mkdir -p "${_W_LOGDIR}"
+    w_try_mkdir "${_W_LOGDIR}"
     echo "$*" >> "${_W_LOGDIR}"/winetricks.log
     unset _W_LOGDIR
 }
