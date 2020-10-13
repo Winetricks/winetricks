@@ -95,6 +95,10 @@ _check:
 	cd src; sh ../tests/winetricks-test quick
 
 check:
+	# FIXME: revisit how this runs
+	# I.e., with set -e, check32 won't "silently" fail
+	# but ideally both checks with run, and the results would be combined at the end:
+	set -e
 	$(MAKE) check32
 	$(MAKE) check64
 
