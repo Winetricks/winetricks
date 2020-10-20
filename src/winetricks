@@ -18784,12 +18784,12 @@ load_dragonage_ue()
         w_call strictdrawordering=enabled
     fi
 
-    if w_workaround_wine_bug 23730 ,4.15; then
-        w_warn "Run with WINEDEBUG=-all to reduce flickering."
+    if w_workaround_wine_bug 23730 "Run with WINEDEBUG=-all to reduce flickering" ,4.15; then
+        :
     fi
 
-    if w_workaround_wine_bug 23081 ,4.15; then
-        w_warn "If you still see flickering, try applying the patch from https://bugs.winehq.org/show_bug.cgi?id=23081"
+    if w_workaround_wine_bug 23081 "If you still see flickering, try applying the patch from https://bugs.winehq.org/show_bug.cgi?id=23081" ,4.15; then
+        :
     fi
 
     w_warn "To activate the additional content, visit https://social.bioware.com/redeem_code.php?path=/dragonage/pc/dlcactivate/en"
