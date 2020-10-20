@@ -11643,9 +11643,8 @@ load_quartz_feb2010()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F quartz.dll "${W_TMP}/dxnt.cab"
 
+    w_override_dlls native,builtin quartz
     w_try_regsvr quartz.dll
-
-    w_override_dlls native quartz
 }
 
 #----------------------------------------------------------------
