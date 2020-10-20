@@ -11627,6 +11627,29 @@ load_quartz()
 
 #----------------------------------------------------------------
 
+w_metadata quartz_feb2010 dlls \
+    title="quartz.dll (February 2010)" \
+    publisher="Microsoft" \
+    year="2010" \
+    media="download" \
+    conflicts="quartz" \
+    file1="../directx9/directx_feb2010_redist.exe" \
+    installed_file1="$W_SYSTEM32_DLLS_WIN/quartz.dll"
+
+load_quartz_feb2010()
+{
+    helper_directx_dl
+
+    w_try_cabextract -d "$W_TMP" -L -F dxnt.cab "$W_CACHE"/directx9/$DIRECTX_NAME
+    w_try_cabextract -d "$W_SYSTEM32_DLLS" -L -F quartz.dll "$W_TMP/dxnt.cab"
+
+    w_try_regsvr quartz.dll
+
+    w_override_dlls native quartz
+}
+
+#----------------------------------------------------------------
+
 w_metadata quicktime72 dlls \
     title="Apple QuickTime 7.2" \
     publisher="Apple" \
