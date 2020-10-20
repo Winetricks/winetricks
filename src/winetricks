@@ -18972,7 +18972,7 @@ REGEDIT4
 _EOF_
     try_regedit "${W_TMP_WIN}\\${W_PACKAGE}.reg"
 
-    if w_workaround_wine_bug 24912 ,4.19; then
+    if w_workaround_wine_bug 24912 "Killing off lingering installer" ,4.19; then
         # kill off lingering installer
         w_ahk_do "
             SetTitleMatchMode, 2
