@@ -2853,10 +2853,14 @@ w_wine_version_in()
 # the environment variable WINETRICKS_BLACKLIST to disable it.
 w_workaround_wine_bug()
 {
+    # FIXME: should probably make $1 and $2 required (but need to fix callers first)
+    # $3 .. are optional, as there may not be a good version available
+
     if test "${WINE}" = ""; then
         echo "No need to work around wine bug $1 on Windows"
         return "${FALSE}"
     fi
+
     case "$2" in
         [0-9]*) w_die "bug: want message in w_workaround_wine_bug arg 2, got $2" ;;
         "") _W_msg="";;
