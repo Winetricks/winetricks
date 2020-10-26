@@ -436,6 +436,8 @@ test_command()
         "${WINESERVER}" -w
 
         ${XVFB} ${WINETRICKS} sandbox || fail "\'${XVFB} ${WINETRICKS} sandbox\' failed"
+        "${WINESERVER}" -w
+
         echo "Installing ${command}"
         ${XVFB} ${WINETRICKS} --no-isolate -q nocrashdialog "$@"
         return=$?
