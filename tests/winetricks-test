@@ -100,6 +100,8 @@ BLACKLIST="${BLACKLIST}|wmi"
 BLACKLIST="${BLACKLIST}|ffdshow|python26|python27"
 # Also sandbox, but different bug, https://bugs.winehq.org/show_bug.cgi?id=49550
 BLACKLIST="${BLACKLIST}|dirac"
+# https://bugs.winehq.org/show_bug.cgi?id=50061 / https://github.com/Winetricks/winetricks/issues/1644
+BLACKLIST="${BLACKLIST}|quicktime76"
 
 # Travis CI is apparently blocking archive.org, which breaks several verbs:
 # https://github.com/travis-ci/travis-ci/issues/6798
