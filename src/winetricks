@@ -12799,6 +12799,28 @@ load_vjrun20()
 
 #----------------------------------------------------------------
 
+w_metadata vstools2019 apps \
+    title="MS Visual Studio Build Tools 2019" \
+    publisher="Microsoft" \
+    year="2019" \
+    media="download"
+
+load_vstools2019()
+{
+    w_call dotnet472
+    w_download https://aka.ms/vs/16/release/installer d6e0778f57a0f56302e6ad5b55b0423e148cce2244a5d6047c3256e841052a23 vstools2019.zip
+    w_try_unzip "${W_TMP}/vs_installer_16" "${W_CACHE}/${W_PACKAGE}/vstools2019.zip"
+    w_try "${WINE}" "${W_TMP}"/vs_installer_16/Contents/vs_installer.exe install \
+        --channelId VisualStudio.16.Release \
+        --channelUri "https://aka.ms/vs/16/release/channel" \
+        --productId "Microsoft.VisualStudio.Product.BuildTools" \
+        --add "Microsoft.VisualStudio.Workload.VCTools" \
+        --includeRecommended \
+        ${W_OPT_UNATTENDED:+--quiet}
+}
+
+#----------------------------------------------------------------
+
 w_metadata vulkanrt121412 dlls \
     title="Vulkan Runtime 1.2.141.2" \
     publisher="LunarG" \
