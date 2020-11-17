@@ -10751,6 +10751,25 @@ load_lavfilters()
 
 #----------------------------------------------------------------
 
+w_metadata lavfilters702 dlls \
+    title="LAV Filters 0.70.2" \
+    publisher="Hendrik Leppkes" \
+    year="2017" \
+    media="download" \
+    conflicts="lavfilters" \
+    file1="LAVFilters-0.70.2-Installer.exe" \
+    installed_file1="${W_PROGRAMS_X86_WIN}/LAV Filters/x86/avfilter-lav-6.dll" \
+    homepage="https://github.com/Nevcairiel/LAVFilters"
+
+load_lavfilters702()
+{
+    w_download https://github.com/Nevcairiel/LAVFilters/releases/download/0.70.2/LAVFilters-0.70.2-Installer.exe 526e6f2de21759c0d5a60bfd2471880b5720cfb88a3b70163865a9d6cd2aa7cc
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "${WINE}" LAVFilters-0.70.2-Installer.exe ${W_OPT_UNATTENDED:+ /VERYSILENT}
+}
+
+#----------------------------------------------------------------
+
 # FIXME: installed location is
 # $W_PROGRAMS_X86_WIN/Gemeinsame Dateien/System/ADO/msado26.tlb
 # in German... need a variable W_COMMONFILES or something like that
