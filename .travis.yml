@@ -2,6 +2,9 @@ language: shell
 os:
   - linux
   - osx
+arch:
+  - amd64
+  - ppc64le
 sudo: required
 dist: bionic
 
@@ -22,7 +25,7 @@ addons:
     - devscripts
 
 # Ubuntu notes:
-#    * ShellCheck is already installed in TravisCI
+#    * ShellCheck is already installed in TravisCI (but not on ppc64le, see below) 
 #    * bashate is not available on Trusty and we need to install it manually
 # macOS note:
 #    * Homebrew doesn't provide bashate, they don't package things
@@ -67,6 +70,14 @@ before_install:
               fi
           done
       fi
+     
+    # Install shellcheck for power job
+    - |
+      if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then
+          time sudo apt update;
+          time sudo apt install -y shellcheck;
+      fi    
+      
 
 # Note if testing on a branch, you can replace this with your desired command, e.g.,:
 # script: time sh ./src/winetricks -q comctl32
