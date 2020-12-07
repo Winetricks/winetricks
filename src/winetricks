@@ -9668,6 +9668,31 @@ load_dotnetcore2()
 
 #----------------------------------------------------------------
 
+w_metadata dotnetcore3 dlls \
+    title="MS .NET Core Runtime 3.1 LTS" \
+    publisher="Microsoft" \
+    year="2020" \
+    media="download" \
+    file1="dotnet-runtime-3.1.10-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetcore3()
+{
+    # Official version, see https://dotnet.microsoft.com/download/dotnet-core/3.1
+    w_download https://download.visualstudio.microsoft.com/download/pr/abb3fb5d-4e82-4ca8-bc03-ac13e988e608/b34036773a72b30c5dc5520ee6a2768f/dotnet-runtime-3.1.10-win-x86.exe 6ae8d2fb7a23ac4770fa815bc27614b2db0e89f5c078eb2744771bf5541cdba3
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/9845b4b0-fb52-48b6-83cf-4c431558c29b/41025de7a76639eeff102410e7015214/dotnet-runtime-3.1.10-win-x64.exe 78ef39c732ec35e79a0c1a10010ea797733df2811d774709b0fde23dce02efdf
+        w_try "${WINE}" "dotnet-runtime-3.1.10-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata dotnet_verifier dlls \
     title="MS .NET Verifier" \
     publisher="Microsoft" \
