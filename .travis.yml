@@ -96,6 +96,9 @@ script:
     # Keep updates working
     - time sh ./tests/self-update-test
 
+    # check for broken links:
+    - time sh ./src/linkcheck.sh crawl
+
 # OS X doesn't allow writing to /usr/bin, skip non-PREFIX make install test there
 install:
     - if [[ "$TRAVIS_OS_NAME" != "osx" ]] ; then time sudo make install ; fi
