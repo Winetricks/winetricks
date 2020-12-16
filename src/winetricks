@@ -12757,6 +12757,8 @@ load_vcrun2015()
             w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
+
+    w_set_winver 'default'
 }
 
 w_metadata mfc140 dlls \
@@ -12834,6 +12836,8 @@ load_vcrun2017()
             w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
+
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
@@ -12887,6 +12891,8 @@ load_vcrun2019()
             w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
+
+    w_set_winver 'default'
 }
 
 #----------------------------------------------------------------
