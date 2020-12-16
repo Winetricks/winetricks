@@ -12737,16 +12737,11 @@ load_vcrun2015()
     # 2015/10/12: fdd1e1f0dcae2d0aa0720895eff33b927d13076e64464bb7c7e5843b7667cd14
     w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe fdd1e1f0dcae2d0aa0720895eff33b927d13076e64464bb7c7e5843b7667cd14
 
-    if w_workaround_wine_bug 37781 "This may fail in non-XP mode, see https://bugs.winehq.org/show_bug.cgi?id=37781" ,4.15; then
-        :
-    fi
-
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcr140 ucrtbase vcomp140 vcruntime140
-
-    w_set_winver winxp
 
     # Otherwise ucrtbase doesn't get replaced
     # See https://bugs.winehq.org/show_bug.cgi?id=46317
+    w_set_winver winxp
     w_try rm -f "${W_SYSTEM32_DLLS}"/ucrtbase.dll
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
@@ -12816,16 +12811,11 @@ load_vcrun2017()
     # 2019/08/14: 54ad46ae80984aa48cae6361213692c96b3639e322730d28c7fb93b183c761da
     w_download https://aka.ms/vs/15/release/vc_redist.x86.exe 54ad46ae80984aa48cae6361213692c96b3639e322730d28c7fb93b183c761da
 
-    if w_workaround_wine_bug 37781 "This may fail in non-XP mode, see https://bugs.winehq.org/show_bug.cgi?id=37781" ,4.15; then
-        :
-    fi
-
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcr140 ucrtbase vcomp140 vcruntime140
-
-    w_set_winver winxp
 
     # Otherwise ucrtbase doesn't get replaced
     # See https://bugs.winehq.org/show_bug.cgi?id=46317
+    w_set_winver winxp
     w_try rm -f "${W_SYSTEM32_DLLS}"/ucrtbase.dll
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
@@ -12872,6 +12862,7 @@ load_vcrun2019()
 
     # Otherwise ucrtbase doesn't get replaced
     # See https://bugs.winehq.org/show_bug.cgi?id=46317
+    w_set_winver winxp
     w_try rm -f "${W_SYSTEM32_DLLS}"/ucrtbase.dll
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
