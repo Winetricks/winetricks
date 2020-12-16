@@ -5948,6 +5948,22 @@ load_amstream()
 #----------------------------------------------------------------
 
 w_metadata art2kmin dlls \
+    title="MS Access 2000 runtime" \
+    publisher="Microsoft" \
+    year="2000" \
+    media="download" \
+    file1="art2kmin.exe" \
+    installed_file1="${W_COMMONFILES_X86_WIN}/Microsoft Shared/MSDesigners98/MDT2DBNS.DLL"
+
+load_art2kmin()
+{
+    w_download http://download.microsoft.com/download/office2000dev/art2kmin/1/win98/en-us/art2kmin.exe c6bf34dfac8d22b5d4ba8a4b14256dc25215f1ce769049c7f25c40850b5e5b81
+    w_try_7z "${W_TMP}" "${W_CACHE}/${W_PACKAGE}"/art2kmin.exe
+    w_try_cd "${W_TMP}"
+    w_try "${WINE}" Setup.exe INSTALLPFILES=1 /wait ${W_OPT_UNATTENDED:+/q}
+}
+
+w_metadata art2k7min dlls \
     title="MS Access 2007 runtime" \
     publisher="Microsoft" \
     year="2007" \
@@ -5955,7 +5971,7 @@ w_metadata art2kmin dlls \
     file1="AccessRuntime.exe" \
     installed_file1="${W_COMMONFILES_X86_WIN}/Microsoft Shared/OFFICE12/ACEES.DLL"
 
-load_art2kmin()
+load_art2k7min()
 {
     # See https://www.microsoft.com/en-us/download/details.aspx?id=4438
     # Originally at https://download.microsoft.com/download/D/2/A/D2A2FC8B-0447-491C-A5EF-E8AA3A74FB98/AccessRuntime.exe
