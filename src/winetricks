@@ -11942,6 +11942,38 @@ load_richtx32()
 
 #----------------------------------------------------------------
 
+w_metadata sapi dlls \
+    title="MS Speech API" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    conflicts="speechsdk" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/sapi.dll"
+
+load_sapi()
+{
+    # This version of native SAPI needs to be directly in system32/syswow64
+    for stub in "${W_SYSTEM32_DLLS}/Speech" "${W_SYSTEM64_DLLS}/Speech"; do
+        if [ -d "${stub}" ]; then
+            w_try rm -rf "${stub}"
+        fi
+    done
+
+    helper_win7sp1 x86_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_d809b28230ecfe46/sapi.dll
+    w_try cp "${W_TMP}/x86_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_d809b28230ecfe46/sapi.dll" "${W_SYSTEM32_DLLS}/sapi.dll"
+    w_override_dlls native sapi
+    w_try_regsvr sapi.dll
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_34284e05e94a6f7c/sapi.dll
+        w_try cp "${W_TMP}/amd64_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_34284e05e94a6f7c/sapi.dll" "${W_SYSTEM64_DLLS}/sapi.dll"
+        w_try_regsvr64 sapi.dll
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata sdl dlls \
     title="Simple DirectMedia Layer" \
     publisher="Sam Lantinga" \
@@ -12034,6 +12066,7 @@ w_metadata speechsdk dlls \
     publisher="Microsoft" \
     year="2009" \
     media="download" \
+    conflicts="sapi" \
     file1="SpeechSDK51.exe" \
     installed_file1="${W_PROGRAMS_X86_WIN}/Microsoft Speech SDK 5.1/Bin/SAPI51SampleApp.exe"
 
