@@ -11029,6 +11029,26 @@ load_mfc40()
 
 #----------------------------------------------------------------
 
+w_metadata mfc70 dlls \
+    title="Visual Studio (.NET) 2002 mfc70 library" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="download" \
+    file1="VS7.0sp1-KB924642-X86.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/mfc70.dll"
+
+load_mfc70()
+{
+    w_download https://download.microsoft.com/download/6/b/e/6be11d8a-e0c7-429c-ac8c-9860e313ced9/VS7.0sp1-KB924642-X86.exe 7173a950169a58c56d7174811a7cd50e6092046f1f083db9d2b03315347fc0f4
+
+    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}" -F '*mfc*'
+
+    w_try cp "${W_TMP}"/FL_mfc70_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "${W_SYSTEM32_DLLS}"/mfc70.dll
+    w_try cp "${W_TMP}"/FL_mfc70u_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "${W_SYSTEM32_DLLS}"/mfc70u.dll
+}
+
+#----------------------------------------------------------------
+
 w_metadata msacm32 dlls \
     title="MS ACM32" \
     publisher="Microsoft" \
