@@ -6925,12 +6925,13 @@ load_directplay()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dplaysvr.exe' "${W_TMP}/dxnt.cab"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dplayx.dll' "${W_TMP}/dxnt.cab"
+    w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpmodemx.dll' "${W_TMP}/dxnt.cab"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpnet.dll' "${W_TMP}/dxnt.cab"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpnhpast.dll' "${W_TMP}/dxnt.cab"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpnsvr.exe' "${W_TMP}/dxnt.cab"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpwsockx.dll' "${W_TMP}/dxnt.cab"
 
-    w_override_dlls native dplaysvr.exe dplayx dpnet dpnhpast dpnsvr.exe dpwsockx
+    w_override_dlls native dplaysvr.exe dplayx dpmodemx dpnet dpnhpast dpnsvr.exe dpwsockx
 
     w_try_regsvr dplayx.dll
     w_try_regsvr dpnet.dll
