@@ -3458,7 +3458,12 @@ winetricks_early_wine_arch()
 
 winetricks_detect_gui()
 {
-    if test -x "$(command -v zenity 2>/dev/null)"; then
+    if [ $XDG_CURRENT_DESKTOP == "KDE" ] && [ "$1" != "zenity" ]; then
+        [ "$1" = "--gui" ] || [  -z "$1" ] && echo "No GUI specified, defaulting to kdialog."
+        WINETRICKS_GUI=kdialog
+        WINETRICKS_GUI_VERSION="$(kdialog --version)"
+    elif test -x "$(command -v zenity 2>/dev/null)"; then
+        [ "$1" = "--gui" ] || [  -z "$1" ] && echo "No GUI specified, defaulting to zenity."
         WINETRICKS_GUI=zenity
         WINETRICKS_GUI_VERSION="$(zenity --version)"
         WINETRICKS_MENU_HEIGHT=500
@@ -3468,15 +3473,15 @@ winetricks_detect_gui()
         WINETRICKS_GUI=kdialog
         WINETRICKS_GUI_VERSION="$(kdialog --version)"
     else
-        echo "No arguments given, so tried to start GUI, but zenity not found."
-        echo "Please install zenity if you want a graphical interface, or "
-        echo "run with --help for more options."
+        echo "No arguments given, so tried to start GUI, but neither zenity or"
+        echo "kdialog were not found. Please install one of them if you want a"
+        echo "graphical interface, or run with --help for more options."
         exit 1
     fi
 
     # Print zenity/dialog version info for debugging:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-       echo "winetricks GUI enabled, using ${WINETRICKS_GUI} ${WINETRICKS_GUI_VERSION}"
+       echo "winetricks GUI enabled, using "${WINETRICKS_GUI}" ${WINETRICKS_GUI_VERSION##kdialog }"
     fi
 }
 
@@ -5609,6 +5614,7 @@ Options:
     --country=CC      Set country code to CC and don't detect your IP address
 -f, --force           Don't check whether packages were already installed
     --gui             Show gui diagnostics even when driven by commandline
+    --gui=OPT         Set OPT to kdialog or zenity to override GUI engine
     --isolate         Install each app or game in its own bottle (WINEPREFIX)
     --self-update     Update this application to the last version
     --update-rollback Rollback the last self update
@@ -5650,7 +5656,7 @@ winetricks_handle_option()
     case "$1" in
         --country=*) W_COUNTRY="${1##--country=}" ;;
         -f|--force) WINETRICKS_FORCE=1;;
-        --gui) winetricks_detect_gui;;
+        --gui*) winetricks_detect_gui "${1##--gui=}";;
         -h|--help) winetricks_usage ; exit 0 ;;
         --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
         -k|--keep_isos) WINETRICKS_OPT_KEEPISOS=1 ;;
@@ -23268,7 +23274,9 @@ if ! test "${WINETRICKS_LIB}"; then
 
             # GUI case
             # No non-option arguments given, so read them from GUI, and loop until user quits
-            winetricks_detect_gui
+            if [ $WINETRICKS_GUI = "none" ]; then 
+                winetricks_detect_gui
+            fi
             winetricks_detect_sudo
             test -z "${WINETRICKS_ISO_MOUNT}" && winetricks_detect_iso_mount
             while true; do
