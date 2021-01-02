@@ -3459,11 +3459,11 @@ winetricks_early_wine_arch()
 winetricks_detect_gui()
 {
     if [ $XDG_CURRENT_DESKTOP == "KDE" ] && [ "$1" != "zenity" ]; then
-        [ "$1" = "--gui" ] || [  -z "$1" ] && echo "No GUI specified, defaulting to kdialog."
+        [ "$1" = "--gui" ] && echo "No GUI specified, defaulting to kdialog."
         WINETRICKS_GUI=kdialog
         WINETRICKS_GUI_VERSION="$(kdialog --version)"
     elif test -x "$(command -v zenity 2>/dev/null)"; then
-        [ "$1" = "--gui" ] || [  -z "$1" ] && echo "No GUI specified, defaulting to zenity."
+        [ "$1" = "--gui" ] && echo "No GUI specified, defaulting to zenity."
         WINETRICKS_GUI=zenity
         WINETRICKS_GUI_VERSION="$(zenity --version)"
         WINETRICKS_MENU_HEIGHT=500
