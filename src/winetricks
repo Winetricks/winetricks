@@ -3481,7 +3481,7 @@ winetricks_detect_gui()
         WINETRICKS_GUI=kdialog
         WINETRICKS_GUI_VERSION="$(kdialog --version)"
     else
-        echo "No arguments given, so tried to start GUI, but neither zenity or"
+        echo "No arguments given, so tried to start GUI, but neither zenity nor"
         echo "kdialog were not found. Please install one of them if you want"
         echo "a graphical interface, or run with --help for more options."
         exit 1
