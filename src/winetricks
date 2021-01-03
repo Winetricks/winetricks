@@ -3472,7 +3472,7 @@ winetricks_detect_gui()
             echo "Valid options are 'zenity' and 'kdialog'"
             exit 1
         fi
-    elif test -x "$(command -v zenity 2>/dev/null)" && [ $XDG_CURRENT_DESKTOP != "KDE" ]; then
+    elif test -x "$(command -v zenity 2>/dev/null)" && [ "${XDG_CURRENT_DESKTOP}" != "KDE" ]; then
         WINETRICKS_GUI=zenity
         WINETRICKS_GUI_VERSION="$(zenity --version)"
         WINETRICKS_MENU_HEIGHT=500
@@ -23282,7 +23282,7 @@ if ! test "${WINETRICKS_LIB}"; then
 
             # GUI case
             # No non-option arguments given, so read them from GUI, and loop until user quits
-            if [ $WINETRICKS_GUI = "none" ]; then
+            if [ ${WINETRICKS_GUI} = "none" ]; then
                 winetricks_detect_gui
             fi
             winetricks_detect_sudo
