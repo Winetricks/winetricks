@@ -3458,24 +3458,32 @@ winetricks_early_wine_arch()
 
 winetricks_detect_gui()
 {
-    if [ $XDG_CURRENT_DESKTOP == "KDE" ] && [ "$1" != "zenity" ]; then
-        [ "$1" = "--gui" ] && echo "No GUI specified, defaulting to kdialog."
-        WINETRICKS_GUI=kdialog
-        WINETRICKS_GUI_VERSION="$(kdialog --version)"
-    elif test -x "$(command -v zenity 2>/dev/null)"; then
-        [ "$1" = "--gui" ] && echo "No GUI specified, defaulting to zenity."
+    if [[ -n "$1" ]]; then
+        if [ "$1" == "kdialog" ] && test -x "$(command -v kdialog 2>/dev/null)"; then
+            WINETRICKS_GUI=kdialog
+            WINETRICKS_GUI_VERSION="$(kdialog --version)"
+        elif [ "$1" == "zenity" ] && test -x "$(command -v zenity 2>/dev/null)"; then
+            WINETRICKS_GUI=zenity
+            WINETRICKS_GUI_VERSION="$(zenity --version)"
+            WINETRICKS_MENU_HEIGHT=500
+            WINETRICKS_MENU_WIDTH=1010
+        else
+            echo "Invalid argument for --gui"
+            echo "Valid options are 'zenity' and 'kdialog'"
+            exit 1
+        fi
+    elif test -x "$(command -v zenity 2>/dev/null)" && [ $XDG_CURRENT_DESKTOP != "KDE" ]; then
         WINETRICKS_GUI=zenity
         WINETRICKS_GUI_VERSION="$(zenity --version)"
         WINETRICKS_MENU_HEIGHT=500
         WINETRICKS_MENU_WIDTH=1010
     elif test -x "$(command -v kdialog 2>/dev/null)"; then
-        echo "Zenity not found!  Using kdialog as poor substitute."
         WINETRICKS_GUI=kdialog
         WINETRICKS_GUI_VERSION="$(kdialog --version)"
     else
         echo "No arguments given, so tried to start GUI, but neither zenity or"
-        echo "kdialog were not found. Please install one of them if you want a"
-        echo "graphical interface, or run with --help for more options."
+        echo "kdialog were not found. Please install one of them if you want"
+        echo "a graphical interface, or run with --help for more options."
         exit 1
     fi
 
@@ -3483,6 +3491,8 @@ winetricks_detect_gui()
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
        echo "winetricks GUI enabled, using "${WINETRICKS_GUI}" ${WINETRICKS_GUI_VERSION##kdialog }"
     fi
+
+    exit 1
 }
 
 # Detect which sudo to use
@@ -23274,6 +23284,7 @@ if ! test "${WINETRICKS_LIB}"; then
 
             # GUI case
             # No non-option arguments given, so read them from GUI, and loop until user quits
+            
             if [ $WINETRICKS_GUI = "none" ]; then 
                 winetricks_detect_gui
             fi
