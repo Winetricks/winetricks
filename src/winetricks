@@ -3472,17 +3472,20 @@ winetricks_detect_gui()
             echo "Valid options are 'zenity' and 'kdialog'"
             exit 1
         fi
-    elif test -x "$(command -v zenity 2>/dev/null)" && [ "${XDG_CURRENT_DESKTOP}" != "KDE" ]; then
+    elif [ "${XDG_CURRENT_DESKTOP}" == "KDE" ] && test -x "$(command -v kdialog 2>/dev/null)"; then
+        WINETRICKS_GUI=kdialog
+        WINETRICKS_GUI_VERSION="$(kdialog --version)"
+    elif test -x "$(command -v zenity 2>/dev/null)"; then
         WINETRICKS_GUI=zenity
         WINETRICKS_GUI_VERSION="$(zenity --version)"
         WINETRICKS_MENU_HEIGHT=500
-        WINETRICKS_MENU_WIDTH=1010
+        WINETRICKS_MENU_WIDTH=1010 
     elif test -x "$(command -v kdialog 2>/dev/null)"; then
         WINETRICKS_GUI=kdialog
         WINETRICKS_GUI_VERSION="$(kdialog --version)"
     else
-        echo "No arguments given, so tried to start GUI, but neither zenity nor"
-        echo "kdialog were not found. Please install one of them if you want"
+        echo "No arguments given, so tried to start GUI, but neither zenity"
+        echo "nor kdialog were found. Please install one of them if you want"
         echo "a graphical interface, or run with --help for more options."
         exit 1
     fi
