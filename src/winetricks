@@ -9174,7 +9174,8 @@ w_metadata dotnet35 dlls \
 
 load_dotnet35()
 {
-    w_package_broken_win64 https://bugs.winehq.org/show_bug.cgi?id=49690 5.12
+    # actually, fixed in 6.0-rc2, but w_package_broken() doesn't handle rc versions well
+    w_package_broken_win64 https://bugs.winehq.org/show_bug.cgi?id=49690 5.12 6.0
 
     w_verify_cabextract_available
 
