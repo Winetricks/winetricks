@@ -8658,6 +8658,7 @@ load_dotnet11()
     fi
 
     w_override_dlls native mscorwks
+    w_override_dlls native fusion
 
     W_NGEN_CMD="w_try ${WINE} ${W_DRIVE_C}/windows/Microsoft.NET/Framework/v1.1.4322/ngen.exe executequeueditems"
 }
