@@ -3479,7 +3479,7 @@ winetricks_detect_gui()
         WINETRICKS_GUI=zenity
         WINETRICKS_GUI_VERSION="$(zenity --version)"
         WINETRICKS_MENU_HEIGHT=500
-        WINETRICKS_MENU_WIDTH=1010 
+        WINETRICKS_MENU_WIDTH=1010
     elif test -x "$(command -v kdialog 2>/dev/null)"; then
         WINETRICKS_GUI=kdialog
         WINETRICKS_GUI_VERSION="$(kdialog --version)"
