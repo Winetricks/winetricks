@@ -3472,7 +3472,7 @@ winetricks_detect_gui()
             echo "Valid options are 'zenity' and 'kdialog'"
             exit 1
         fi
-    elif [ "${XDG_CURRENT_DESKTOP}" == "KDE" ] && test -x "$(command -v kdialog 2>/dev/null)"; then
+    elif [ "${XDG_CURRENT_DESKTOP}" = "KDE" ] && test -x "$(command -v kdialog 2>/dev/null)"; then
         WINETRICKS_GUI=kdialog
         WINETRICKS_GUI_VERSION="$(kdialog --version)"
     elif test -x "$(command -v zenity 2>/dev/null)"; then
