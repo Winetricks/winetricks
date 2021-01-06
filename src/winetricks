@@ -9120,7 +9120,11 @@ load_dotnet30sp1()
     # And a third way, but only with mingw enabled in wine-4.12.1 through wine-4.14
     w_package_broken_mingw  "https://bugs.winehq.org/show_bug.cgi?id=47484" 4.12.1 4.14
 
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=49831" 5.17
+    # crashes on install:
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=49831" 5.17 6.0
+
+    # XpsFilt.dll doesn't get installed (not sure what version exactly causes it, bug 49831 muddies things):
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=50463" 5.17
 
     # FIXME: URL?
     w_download https://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 3100df4d4db3965ead9520c887a534115cf6fc7ba100abde45226958b865695b
