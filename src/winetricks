@@ -9135,9 +9135,11 @@ load_dotnet30sp1()
     w_call dotnet20sp1
     w_wineserver -w
 
-    if w_workaround_wine_bug 47436 "Installing native prntvpt" 4.11,4.15 ;then
+    # FIXME: This still gets called in 6.x, but it shouldn't, since it's not between 4.11/4.15?
+    # FIXME: that said, we do want it, for 50463..
+    #if w_workaround_wine_bug 47436 "Installing native prntvpt" 4.11,4.15 ;then
         w_call prntvpt
-    fi
+    #fi
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
