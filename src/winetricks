@@ -16056,48 +16056,6 @@ load_psdk2003()
 
 #----------------------------------------------------------------
 
-w_metadata psdkwin7 apps \
-    title="MS Windows 7 SDK" \
-    publisher="Microsoft" \
-    year="2009" \
-    media="download" \
-    file1="winsdk_web.exe" \
-    installed_exe1="C:/Program Files/Microsoft SDKs/Windows/v7.0/Bin/SetEnv.Cmd"
-
-load_psdkwin7()
-{
-    # https://www.microsoft.com/en-us/download/details.aspx?id=3138
-    w_call dotnet20
-    w_call mfc42   # need mfc42u, or setup will abort
-    # don't have a working unattended recipe.  Maybe we'll have to
-    # do an AutoHotKey script until Microsoft gets its act together:
-    # https://social.msdn.microsoft.com/Forums/windowsdesktop/en-US/c053b616-7d5b-405d-9841-ec465a8e21d5/
-    w_download https://download.microsoft.com/download/7/A/B/7ABD2203-C472-4036-8BA0-E505528CCCB7/winsdk_web.exe bb0e3b5d8feb750b3164b657a046f76ff086887719e418f57ce88ada5e8990d5
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" winsdk_web.exe
-
-    if w_workaround_wine_bug 21362; then
-        # Assume user installed in default location
-        cat > "${W_TMP}"/set-psdk7.reg <<_EOF_
-REGEDIT4
-
-[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs]
-
-[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs\\Windows]
-"CurrentVersion"="v7.0"
-"CurrentInstallFolder"="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.0\\\\"
-
-[HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SDKs\\Windows\\v7.0]
-"InstallationFolder"="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.0\\\\"
-"ProductVersion"="7.0.7600.16385.40715"
-"ProductName"="Microsoft Windows SDK for Windows 7 (7.0.7600.16385.40715)"
-_EOF_
-        w_try_regedit "${W_TMP_WIN}"\\set-psdk7.reg
-    fi
-}
-
-#----------------------------------------------------------------
-
 w_metadata psdkwin71 apps \
     title="MS Windows 7.1 SDK" \
     publisher="Microsoft" \
@@ -23219,6 +23177,7 @@ execute_command()
         jscript) w_warn "Calling jscript is deprecated, please use wsh57 instead" ; w_call wsh57 ;;
         npm-repack) w_warn "Calling npm-repack is deprecated, please use npm=repack instead" ; w_call npm=repack ;;
         oss) w_warn "Calling oss is deprecated, please use sound=oss instead" ; w_call sound=oss ;;
+        psdkwin7) w_warn "psdkwin7 has been removed, use psdkwin71 instead"; w_call psdkwin71 ;;
         python) w_warn "Calling python is deprecated, please use python26 instead" ; w_call python26 ;;
         vbrun60) w_warn "Calling vbrun60 is deprecated, please use vb6run instead" ; w_call vb6run ;;
         vcrun2005sp1) w_warn "Calling vcrun2005sp1 is deprecated, please use vcrun2005 instead" ; w_call vcrun2005 ;;
