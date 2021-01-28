@@ -5500,10 +5500,10 @@ winetricks_wine_setup()
     # wine-2.8
     _wine_version_stripped="$(echo "${WINETRICKS_WINE_VERSION}" | cut -d ' ' -f1 | sed -e 's/wine-//' -e 's/-rc.*//')"
 
-    # If WINE is < 4.0, warn user:
-    # 4.0 doesn't do what I thought it would
-    if w_wine_version_in ,3.99 ; then
-        w_warn "Your version of wine ${_wine_version_stripped} is no longer supported upstream. You should upgrade to 4.x"
+    # If WINE is < 5.0, warn user:
+    # 5.0 doesn't do what I thought it would
+    if w_wine_version_in ,4.99 ; then
+        w_warn "Your version of wine ${_wine_version_stripped} is no longer supported upstream. You should upgrade to 5.x"
     fi
 
     winetricks_set_wineprefix "$1"
