@@ -22078,7 +22078,7 @@ winetricks_set_wined3d_var()
         enable*) arg=enabled;;
         hard*) arg=hardware;;
         repack) arg=repack;;
-        backbuffer|fbo|gdi|none|opengl|readdraw|readtex|texdraw|textex|auto) arg=$2;;
+        backbuffer|fbo|gdi|gl|no3d|none|opengl|readdraw|readtex|texdraw|textex|vulkan|auto) arg=$2;;
         [0-9]*) arg=$2;;
         *) w_die "illegal value $2 for $1";;
     esac
@@ -22279,6 +22279,26 @@ load_strictdrawordering()
 }
 
 #----------------------------------------------------------------
+
+w_metadata renderer=gdi settings \
+    title_uk="Встановити renderer на gdi" \
+    title="Set renderer to gdi"
+w_metadata renderer=gl settings \
+    title_uk="Встановити renderer на gl" \
+    title="Set renderer to gl"
+w_metadata renderer=no3d settings \
+    title_uk="Встановити renderer на no3d" \
+    title="Set renderer to no3d"
+w_metadata renderer=vulkan settings \
+    title_uk="Встановити renderer на vulkan" \
+    title="Set renderer to vulkan"
+
+load_renderer()
+{
+    winetricks_set_wined3d_var renderer "$1"
+}
+
+#----------------------------------------------------------------=
 
 w_metadata rtlm=auto settings \
     title_uk="Встановити RenderTargetLockMode на авто (за замовчуванням)" \
