@@ -22078,7 +22078,7 @@ winetricks_set_wined3d_var()
         enable*) arg=enabled;;
         hard*) arg=hardware;;
         repack) arg=repack;;
-        backbuffer|fbo|gdi|gl|no3d|none|opengl|readdraw|readtex|texdraw|textex|vulkan|auto) arg=$2;;
+        backbuffer|fbo|gdi|gl|no3d|none|readdraw|readtex|texdraw|textex|vulkan|auto) arg=$2;;
         [0-9]*) arg=$2;;
         *) w_die "illegal value $2 for $1";;
     esac
@@ -22154,24 +22154,6 @@ _EOF_
 
 #----------------------------------------------------------------
 # DirectDraw settings
-
-w_metadata ddr=gdi settings \
-    title_uk="Встановити DirectDrawRenderer на gdi" \
-    title="Set DirectDrawRenderer to gdi"
-w_metadata ddr=opengl settings \
-    title_uk="Встановити DirectDrawRenderer на opengl" \
-    title="Set DirectDrawRenderer to opengl"
-
-load_ddr()
-{
-    if w_wine_version_in ,3.16 ; then
-        winetricks_set_wined3d_var DirectDrawRenderer "$1"
-    else
-        winetricks_set_wined3d_var renderer "$1"
-    fi
-}
-
-#----------------------------------------------------------------
 
 w_metadata glsl=enabled settings \
     title_uk="Увімкнути GLSL шейдери (за замовчуванням)" \
@@ -23191,6 +23173,8 @@ execute_command()
         dotnet1) w_warn "Calling dotnet1 is deprecated, please use dotnet11 instead" ; w_call dotnet11 ;;
         dotnet2) w_warn "Calling dotnet2 is deprecated, please use dotnet20 instead" ; w_call dotnet20 ;;
         d9vk_master) w_warn "Calling d9vk_master is deprecated, please use dxvk_master instead" ; w_call dxvk_master ;;
+        ddr=gdi) w_warn "Calling ddr=gdi is deprecated, please use renderer=gdi or renderer=no3d instead" ; w_call renderer=gdi ;;
+        ddr=opengl) w_warn "Calling ddr=opengl is deprecated, please use renderer=gl instead" ; w_call renderer=gl ;;
         dxvk54) w_warn "Calling dxvk54 is deprecated, please use dxvk054 instead" ; w_call dxvk054 ;;
         dxvk60) w_warn "Calling dxvk60 is deprecated, please use dxvk060 instead" ; w_call dxvk060 ;;
         dxvk61) w_warn "Calling dxvk61 is deprecated, please use dxvk061 instead" ; w_call dxvk061 ;;
