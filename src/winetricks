@@ -22053,20 +22053,6 @@ _EOF_
 #----------------------------------------------------------------
 # DirectDraw settings
 
-w_metadata glsl=enabled settings \
-    title_uk="Увімкнути GLSL шейдери (за замовчуванням)" \
-    title="Enable GLSL shaders (default)"
-w_metadata glsl=disabled settings \
-    title_uk="Вимкнути GLSL шейдери та використовувати ARB шейдери (іноді впливає на швидкодію)" \
-    title="Disable GLSL shaders, use ARB shaders (faster, but sometimes breaks)"
-
-load_glsl()
-{
-    winetricks_set_wined3d_var UseGLSL "$1"
-}
-
-#----------------------------------------------------------------
-
 w_metadata gsm=0 settings \
     title_uk="Встановити MaxShaderModelGS на 0" \
     title="Set MaxShaderModelGS to 0"
@@ -23115,6 +23101,8 @@ execute_command()
         fontsmooth-disable) w_warn "Calling fontsmooth-disable is deprecated, please use fontsmooth=disable instead" ; w_call fontsmooth=disable ;;
         fontsmooth-gray) w_warn "Calling fontsmooth-gray is deprecated, please use fontsmooth=gray instead" ; w_call fontsmooth=gray ;;
         fontsmooth-rgb) w_warn "Calling fontsmooth-rgb is deprecated, please use fontsmooth=rgb instead" ; w_call fontsmooth=rgb ;;
+        glsl=enabled) w_warn "Calling glsl=enabled is deprecated, please use shader_backend=glsl instead" ; w_call shader_backend=glsl ;;
+        glsl=disabled) w_warn "Calling glsl=disabled is deprecated, please use shader_backend=arb instead" ; w_call shader_backend=arb ;;
         glsl-disable) w_warn "Calling glsl-disable is deprecated, please use glsl=disabled instead" ; w_call glsl=disabled ;;
         glsl-enable) w_warn "Calling glsl-enable is deprecated, please use glsl=enabled instead" ; w_call glsl=enabled ;;
         ie6_full) w_warn "Calling ie6_full is deprecated, please use ie6 instead" ; w_call ie6 ;;
