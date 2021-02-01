@@ -22058,20 +22058,6 @@ load_gsm()
 
 #----------------------------------------------------------------
 
-w_metadata multisampling=enabled settings \
-    title_uk="Увімкнути Direct3D мультисемплінг" \
-    title="Enable Direct3D multisampling"
-w_metadata multisampling=disabled settings \
-    title_uk="Вимкнути Direct3D мультисемплінг" \
-    title="Disable Direct3D multisampling"
-
-load_multisampling()
-{
-    winetricks_set_wined3d_var Multisampling "$1"
-}
-
-#----------------------------------------------------------------
-
 w_metadata npm=repack settings \
     title_uk="Встановити NonPower2Mode на repack" \
     title="Set NonPower2Mode to repack"
@@ -23038,7 +23024,6 @@ execute_command()
         cfc=disable*) w_call cfc=disabled ;;
         fontsmooth=disable*) w_call fontsmooth=disable ;;
         glsl=disable*) w_call glsl=disabled ;;
-        multisampling=disable*) w_call multisampling=disabled ;;
         mwo=disable*) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
         rtlm=disable*) w_call rtlm=disabled ;;
         sound=disable*) w_call sound=disabled ;;
