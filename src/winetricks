@@ -21993,21 +21993,6 @@ _EOF_
 }
 
 #----------------------------------------------------------------
-# AlwaysOffscreen settings
-
-w_metadata ao=enabled settings \
-    title_uk="Увімкнути AlwaysOffscreen" \
-    title="Enable AlwaysOffscreen"
-w_metadata ao=disabled settings \
-    title_uk="Вимкнути AlwaysOffscreen (за замовчуванням)" \
-    title="Disable AlwaysOffscreen (default)"
-
-load_ao()
-{
-    winetricks_set_wined3d_var AlwaysOffscreen "$1"
-}
-
-#----------------------------------------------------------------
 # CheckFloatConstants settings
 
 w_metadata cfc=enabled settings \
@@ -23056,7 +23041,6 @@ execute_command()
         mwo=disable*) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
         rtlm=disable*) w_call rtlm=disabled ;;
         sound=disable*) w_call sound=disabled ;;
-        ao=disable*) w_call ao=disabled ;;
         strictdrawordering=disable*) w_call strictdrawordering=disabled ;;
 
         # Use winecfg if you want a GUI for plain old DLL overrides
