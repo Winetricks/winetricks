@@ -21998,7 +21998,7 @@ _EOF_
 w_metadata cfc=enabled settings \
     title_uk="Увімкнути CheckFloatConstants" \
     title="Enable CheckFloatConstants"
-w_metadata cfc=disable settings \
+w_metadata cfc=disabled settings \
     title_uk="Вимкнути CheckFloatConstants (за замовчуванням)" \
     title="Disable CheckFloatConstants (default)"
 
@@ -23035,6 +23035,7 @@ execute_command()
         shell) winetricks_shell ;;
 
         # These have to come before *=disabled to avoid looking like DLLs
+        cfc=disable*) w_call cfc=disabled ;;
         fontsmooth=disable*) w_call fontsmooth=disable ;;
         glsl=disable*) w_call glsl=disabled ;;
         multisampling=disable*) w_call multisampling=disabled ;;
