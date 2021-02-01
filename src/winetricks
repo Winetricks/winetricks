@@ -21979,7 +21979,7 @@ winetricks_set_wined3d_var()
         enable*) arg=enabled;;
         hard*) arg=hardware;;
         repack) arg=repack;;
-        backbuffer|fbo|gdi|gl|no3d|none|readdraw|readtex|texdraw|textex|vulkan|auto) arg=$2;;
+        arb|backbuffer|fbo|gdi|gl|glsl|no3d|none|readdraw|readtex|texdraw|textex|vulkan|auto) arg=$2;;
         [0-9]*) arg=$2;;
         *) w_die "illegal value $2 for $1";;
     esac
@@ -22145,6 +22145,23 @@ w_metadata psm=3 settings \
 load_psm()
 {
     winetricks_set_wined3d_var MaxShaderModelPS "$1"
+}
+
+#----------------------------------------------------------------
+
+w_metadata shader_backend=glsl settings \
+    title_uk="Встановити shader_backend на glsl" \
+    title="Set shader_backend to glsl"
+w_metadata shader_backend=arb settings \
+    title_uk="Встановити shader_backend на arb" \
+    title="Set shader_backend to arb"
+w_metadata shader_backend=none settings \
+    title_uk="Встановити shader_backend на none" \
+    title="Set shader_backend to none"
+
+load_shader_backend()
+{
+    winetricks_set_wined3d_var shader_backend "$1"
 }
 
 #----------------------------------------------------------------
