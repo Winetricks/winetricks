@@ -13188,11 +13188,11 @@ load_windowscodecs()
     # Separate 32/64-bit installers:
     if [ "${W_ARCH}" = "win32" ] ; then
         # https://www.microsoft.com/en-us/download/details.aspx?id=32
-        w_download https://download.microsoft.com/download/f/f/1/ff178bb1-da91-48ed-89e5-478a99387d4f/wic_x86_enu.exe 196868b09d87ae04e4ab42b4a3e0abbb160500e8ff13deb38e2956ee854868b1
+        w_download https://web.archive.org/web/20200810071051if_/https://download.microsoft.com/download/f/f/1/ff178bb1-da91-48ed-89e5-478a99387d4f/wic_x86_enu.exe 196868b09d87ae04e4ab42b4a3e0abbb160500e8ff13deb38e2956ee854868b1
         EXE="wic_x86_enu.exe"
     elif [ "${W_ARCH}" = "win64" ] ; then
         # https://www.microsoft.com/en-us/download/details.aspx?id=1385
-        w_download https://download.microsoft.com/download/6/4/5/645FED5F-A6E7-44D9-9D10-FE83348796B0/wic_x64_enu.exe 5822fecd69a90c2833965a25e8779000825d69cc8c9250933f0ab70df52171e1
+        w_download https://web.archive.org/web/20191125095535if_/http://download.microsoft.com/download/6/4/5/645fed5f-a6e7-44d9-9d10-fe83348796b0/wic_x64_enu.exe 5822fecd69a90c2833965a25e8779000825d69cc8c9250933f0ab70df52171e1
         EXE="wic_x64_enu.exe"
     else
         w_die "Invalid W_ARCH value, ${W_ARCH}"
