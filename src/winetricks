@@ -10060,88 +10060,6 @@ load_filever()
 
 #----------------------------------------------------------------
 
-# FIXME: update winetricks_is_installed to look at installed_file2..n
-# https://github.com/Winetricks/winetricks/issues/988
-w_metadata flash dlls \
-    title="Flash Player 32" \
-    publisher="Adobe" \
-    year="2020" \
-    media="download" \
-    file1="fp_32.0.0.363_archive.zip" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/Macromed/Flash/FlashUtil32_32_0_0_363_Plugin.exe" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/Macromed/Flash/FlashUtil32_32_0_0_363_ActiveX.exe" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/Macromed/Flash/flashplayer32_0r0_363_win_sa.exe" \
-    homepage="https://www.adobe.com/products/flashplayer/"
-
-load_flash()
-{
-    _W_ver_major=32
-    _W_ver_minor=0
-    _W_ver_rel=0
-    _W_ver_build=363
-    _W_dirname="${_W_ver_major}_${_W_ver_minor}_r${_W_ver_rel}_${_W_ver_build}"
-    _W_archive="fp_${_W_ver_major}.${_W_ver_minor}.${_W_ver_rel}.${_W_ver_build}_archive.zip"
-    _W_fileprefix="flashplayer${_W_ver_major}_${_W_ver_minor}r${_W_ver_rel}_${_W_ver_build}"
-
-    # 2013/07/09: Adobe Flash 10 is no longer supported.
-    # 2013/06/24: Adobe Flash 10.3 won't even install for me, it tells you to go get a newer version!
-    # See
-    # https://blogs.adobe.com/psirt/
-    # https://get.adobe.com/de/flashplayer/otherversions/
-    # Now, we install older versions by using zipfiles at
-    # https://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html
-
-    # 2018/06/24: d4b6f9a5e42cc9f2c7cbd1fd72059d4c1bead91b076afa2ca042d28f0fd7bedb
-    # 2020/05/24  a64230033de485f9454a07cdb1b366e1307d005223657086ab8a0b8b91610ed4
-    w_linkcheck_ignore=1 w_download "https://fpdownload.macromedia.com/pub/flashplayer/installers/archive/${_W_archive}" a64230033de485f9454a07cdb1b366e1307d005223657086ab8a0b8b91610ed4
-
-    # If OS version is Vista or newer:
-    #   1. NPAPI plugin doesn't work
-    #   2. In win64 prefix, "File not found." dialog appears when installing:
-    #      'wine: cannot find L"C:\\windows\\system32\\Macromed\\Temp\\{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}\\InstallFlashPlayer.exe"'
-    w_set_winver winxp
-
-    # ActiveX plugin
-    # 2014/10/02: 3958827058648cfe05fc6ee510685e8d93f995d3428c3eedbd6814704765672a
-    w_try_unzip "${W_TMP}" "${W_CACHE}/flash/${_W_archive}" "${_W_dirname}/${_W_fileprefix}_winax.exe"
-    w_try_cd "${W_TMP}/${_W_dirname}"
-    w_try "${WINE}" "${_W_fileprefix}_winax.exe" ${W_OPT_UNATTENDED:+ /install}
-
-    # Mozilla / Firefox (NPAPI) plugin
-    # 2014/10/02: 17496fd3c863c180aead953d7d4499dd36f997a9570abc2b92f55e4ea1d55d73
-    w_try_unzip "${W_TMP}" "${W_CACHE}/flash/${_W_archive}" "${_W_dirname}/${_W_fileprefix}_win.exe"
-    w_try "${WINE}" "${_W_fileprefix}_win.exe" ${W_OPT_UNATTENDED:+ /install}
-
-    # Projector (standalone player)
-    # 2015/07/06: 8640c42e73dc44125045e17abd32412c48f3808a8393c94fc8281cf4b0d87bdc
-    w_try_unzip "${W_TMP}" "${W_CACHE}/flash/${_W_archive}" "${_W_dirname}/${_W_fileprefix}_win_sa.exe"
-    w_try mv "${_W_fileprefix}_win_sa.exe" "${W_SYSTEM32_DLLS}/Macromed/Flash"
-
-    # After updating the above, you should carry the following steps out by
-    # hand to verify that plugin works.
-
-    #    rm -rf ~/.cache/winetricks/flash
-    #    w_try_cd ~/winetricks/src
-    #    rm -rf ~/.wine
-    #    sh winetricks -q flash ie7
-    #    cd "~/.wine/drive_c/Program Files/Internet Explorer"
-    #    wine iexplore.exe https://www.adobe.com/software/flash/about
-    # Verify that the version of Flash shows up and that you're not prompted
-    # to install Flash again
-    #
-    #    w_try_cd ~/winetricks/src
-    #    rm -rf ~/.wine
-    #    sh winetricks -q flash firefox
-    #    cd "~/.wine/drive_c/Program Files/Mozilla Firefox"
-    #    wine firefox.exe https://www.adobe.com/software/flash/about
-    # Verify that the version of Flash shows up and that you're not prompted
-    # to install Flash again
-
-    unset _W_ver_major _W_ver_minor _W_ver_rel _W_ver_build _W_dirname _W_archive _W_fileprefix
-}
-
-#----------------------------------------------------------------
-
 # $1 - gallium nine standalone archive name (required)
 helper_galliumnine()
 {
@@ -18344,9 +18262,6 @@ w_metadata dcuo games \
 
 load_dcuo()
 {
-    # The installer would take care of this, but let's do it first
-    w_call flash
-
     w_mount "DCUO - Disc 1"
     w_ahk_do "
         SetWinDelay 1000
@@ -23164,7 +23079,6 @@ execute_command()
         dxvk94) w_warn "Calling dxvk94 is deprecated, please use dxvk094 instead" ; w_call dxvk094 ;;
         dxvk95) w_warn "Calling dxvk95 is deprecated, please use dxvk095 instead" ; w_call dxvk095 ;;
         dxvk96) w_warn "Calling dxvk96 is deprecated, please use dxvk096 instead" ; w_call dxvk096 ;;
-        flash11) w_warn "Calling flash11 is deprecated, please use flash instead" ; w_call flash ;;
         # art2kmin also comes with fm20.dll
         fm20) w_warn "Calling fm20 is deprecated, please use controlpad instead" ; w_call controlpad ;;
         fontsmooth-bgr) w_warn "Calling fontsmooth-bgr is deprecated, please use fontsmooth=bgr instead" ; w_call fontsmooth=bgr ;;

@@ -64,7 +64,7 @@ install:
 	$(INSTALL_DATA) src/winetricks.bash-completion $(DESTDIR)$(PREFIX)/share/bash-completion/completions/winetricks
 
 check:
-	echo 'This verifies that most DLL verbs, plus flash, install ok.'
+	echo 'This verifies that most DLL verbs install ok.'
 	echo 'It should take about an hour to run with a fast connection.'
 	echo 'If you want to test a particular version of wine, do e.g.'
 	echo 'export WINE=$$HOME/wine-git/wine first.'
@@ -102,7 +102,7 @@ shell-checks:
 	sh ./tests/shell-checks || exit 1
 
 test:
-	echo 'This verifies that most DLL verbs, plus flash and dotnet, install ok.'
+	echo 'This verifies that most DLL verbs install ok (and some other misc tests).'
 	echo 'It also makes sure that all URLs in winetricks work, so a fast uncapped internet connection is needed.'
 	echo 'It should take about an hour to run with a fast connection.'
 	echo 'If you want to test a particular version of wine, do e.g.'
