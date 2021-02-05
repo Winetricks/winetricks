@@ -21789,13 +21789,13 @@ w_metadata windowmanagerdecorated=n settings \
 
 #----------------------------------------------------------------
 
-w_metadata usetakefocus=enabled settings \
+w_metadata usetakefocus=y settings \
     title_cz="Aktivovat UseTakeFocus" \
     title_uk="Увімкнути фокусування на вікні" \
     title_sk="Aktivovať UseTakeFocus" \
     title_tlh="Qorwagh buSchoH \'e\' chu\'" \
     title="Enable UseTakeFocus"
-w_metadata usetakefocus=disabled settings \
+w_metadata usetakefocus=n settings \
     title_cz="Deaktivovat UseTakeFocus (výchozí)" \
     title_uk="Вимкнути фокусування на вікні (за замовчуванням)" \
     title_sk="Deaktivovať UseTakeFocus (výchozí)" \
@@ -21805,20 +21805,20 @@ w_metadata usetakefocus=disabled settings \
 load_usetakefocus()
 {
     case "$1" in
-        enabled) arg="Y";;
-        disabled) arg="N";;
+        y) arg="Y";;
+        n) arg="N";;
         *) w_die "illegal value $1 for UseTakeFocus";;
     esac
 
     echo "Setting UseTakeFocus to ${arg}"
-    cat > "${W_TMP}"/set-gfs.reg <<_EOF_
+    cat > "${W_TMP}"/set-usetakefocus.reg <<_EOF_
 REGEDIT4
 
 [HKEY_CURRENT_USER\\Software\\Wine\\X11 Driver]
 "UseTakeFocus"="${arg}"
 
 _EOF_
-    w_try_regedit "${W_TMP}"/set-gfs.reg
+    w_try_regedit "${W_TMP}"/set-usetakefocus.reg
 }
 
 #----------------------------------------------------------------
