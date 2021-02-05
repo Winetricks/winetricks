@@ -13471,7 +13471,7 @@ load_xna40()
     fi
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=20914
-    w_download https://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi e6c41d692ebcba854dad4b1c52bb7ddd05926bad3105595d6596b8bab01c25e7
+    w_download https://web.archive.org/web/20120325002813/https://download.microsoft.com/download/A/C/2/AC2C903B-E6E8-42C2-9FD7-BEBAC362A930/xnafx40_redist.msi e6c41d692ebcba854dad4b1c52bb7ddd05926bad3105595d6596b8bab01c25e7
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${file1}"
 }
