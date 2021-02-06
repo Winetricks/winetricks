@@ -9104,7 +9104,7 @@ w_metadata dotnet30sp1 dlls \
     media="download" \
     conflicts="dotnet11 dotnet20sdk" \
     file1="NetFx30SP1_x86.exe" \
-    installed_file1="c:/windows/system32/XpsFilt.dll"    # we're cheating a bit here
+    installed_file1="c:/windows/dotnet30sp1.installed.workaround"
 
 load_dotnet30sp1()
 {
@@ -9121,7 +9121,7 @@ load_dotnet30sp1()
     w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=49831" 5.17 6.0
 
     # XpsFilt.dll doesn't get installed (not sure what version exactly causes it, bug 49831 muddies things):
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=50463" 5.17
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=50463" 5.17 6.0
 
     # FIXME: URL?
     w_download https://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 3100df4d4db3965ead9520c887a534115cf6fc7ba100abde45226958b865695b
@@ -9146,7 +9146,6 @@ load_dotnet30sp1()
 
     w_set_winver winxp
 
-    w_try "${WINE}" msiexec /i "XPSEP XP and Server 2003 32 bit.msi" ${W_OPT_UNATTENDED:+/qb}
     "${WINE}" sc delete FontCache3.0.0.0
 
     w_try_ms_installer "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q}
@@ -9156,6 +9155,9 @@ load_dotnet30sp1()
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
+
+    # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
+    w_try touch "${W_WINDIR_UNIX}/dotnet30sp1.installed.workaround"
 }
 
 verify_dotnet30sp1()
