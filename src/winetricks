@@ -10308,9 +10308,9 @@ load_gfw()
     # http://www.next-gen.biz/features/should-games-for-windows-live-die
     w_download https://web.archive.org/web/20140730232216/https://download.microsoft.com/download/5/5/8/55846E20-4A46-4EF8-B272-7F988BC9090A/gfwlivesetupmin.exe b14609508e2f8dba0886ded84e2817ad532ebfa31f8a6d4be2e6a5a03a9d7c23
 
-    # FIXME: Depends on .NET 20, but is it really needed? For now, skip it.
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" gfwlivesetupmin.exe /nodotnet ${W_OPT_UNATTENDED:+/q}
+    # Otherwise it leaves an arbitrarily named empty directory in ${W_CACHE}
+    w_try cp "${W_CACHE}/${W_PACKAGE}/gfwlivesetupmin.exe" "${W_TMP}"
+    w_try "${WINE}" "${W_TMP_WIN}\gfwlivesetupmin.exe" /nodotnet ${W_OPT_UNATTENDED:+/q}
 
     w_call msasn1
 }
