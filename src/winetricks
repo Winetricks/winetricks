@@ -9231,8 +9231,19 @@ load_dotnet35sp1()
 
     w_set_winver winxp
 
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    # The installer is braindead and picks the lowest drive letter that's writable
+    # winetricks_set_wineprefix(), which is called by w_do_call() sets up this symlink so that wine
+    # can make a windows path to the cache (which is removed during cleanup).
+    # To avoid that, we sylmink the executable directly and remove the symlink
+    # and then the installer leaves the cruft on C:\ instead (assuming there's no other drives mounted).
+    #
+    # If the user has other drives mounted (or maybe if Z:\ is writable),
+    # then they have to clean up the mess themselves, sorry.
+    w_try rm "${WINETRICKS_CACHE_SYMLINK}"
+    w_try_cd "${W_TMP}"
+    w_try ln -s "${W_CACHE}/${W_PACKAGE}/${file1}" .
     w_try_ms_installer "${WINE}" dotnetfx35.exe /lang:ENU ${W_OPT_UNATTENDED:+/q}
+    w_try rm dotnetfx35.exe
 
     w_set_winver 'default'
 
