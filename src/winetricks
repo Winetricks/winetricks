@@ -22116,6 +22116,34 @@ load_shader_backend()
 
 #----------------------------------------------------------------
 
+w_metadata ssm=disabled settings \
+    title_uk="Вимкнути Struct Shader Math (за замовчуванням)" \
+    title="Disable Struct Shader Math (default)"
+w_metadata ssm=enabled settings \
+    title_uk="Увімкнути Struct Shader Math"\
+    title="Enable Struct Shader Math"
+
+load_ssm()
+{
+    case "$1" in
+        disabled) arg=0;;
+        enabled) arg=1;;
+        *) w_die "illegal value $1 for csmt";;
+    esac
+
+    echo "Setting strict_shader_math to ${arg}"
+    cat > "${W_TMP}"/set-ssm.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Wine\\Direct3D]
+"strict_shader_math"=dword:${arg}
+
+_EOF_
+    w_try_regedit "${W_TMP}"/set-ssm.reg
+}
+
+#----------------------------------------------------------------
+
 w_metadata renderer=gdi settings \
     title_uk="Встановити renderer на gdi" \
     title="Set renderer to gdi"
@@ -23009,6 +23037,7 @@ execute_command()
         mwo=disable*) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
         rtlm=disable*) w_call rtlm=disabled ;;
         sound=disable*) w_call sound=disabled ;;
+        ssm=disable*) w_call ssm=disabled ;;
         strictdrawordering=disable*) w_call strictdrawordering=disabled ;;
 
         # Use winecfg if you want a GUI for plain old DLL overrides
