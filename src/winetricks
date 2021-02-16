@@ -22001,6 +22001,9 @@ load_cfc()
 #----------------------------------------------------------------
 # CSMT settings
 
+w_metadata csmt=force settings \
+    title_uk="Увімкнути та примусити серіалізацію команд OpenGL або Vulkan між кількома потоками команд в одній програмі" \
+    title="Enable and force serialisation of OpenGL or Vulkan commands between multiple command streams in the same application"
 w_metadata csmt=on settings \
     title_uk="Увімкнути Command Stream Multithreading (за замовчуванням)" \
     title="Enable Command Stream Multithreading (default)"
@@ -22013,6 +22016,7 @@ load_csmt()
     case "$1" in
         off) arg=0;;
         on)  arg=1;;
+        force) arg=3;;
         *) w_die "illegal value $1 for csmt";;
     esac
 
