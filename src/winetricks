@@ -18817,10 +18817,6 @@ load_dragonage()
         cp -f "${ini}" "${ini}.old"
     fi
 
-    if w_workaround_wine_bug 22383 "use strictdrawordering to avoid video problems" ,4.15; then
-        w_call strictdrawordering=enabled
-    fi
-
     if w_workaround_wine_bug 22557 "Setting UseVSync=0 to avoid black menu" ,4.15; then
         sed 's,UseVSync=1,UseVSync=0,' < "${ini}" > "${ini}.new"
         mv -f "${ini}.new" "${ini}"
@@ -18889,10 +18885,6 @@ load_dragonage_ue()
         }
         winwaitclose
     "
-
-    if w_workaround_wine_bug 22383 "use strictdrawordering to avoid video problems" ,4.15; then
-        w_call strictdrawordering=enabled
-    fi
 
     if w_workaround_wine_bug 23730 "Run with WINEDEBUG=-all to reduce flickering" ,4.15; then
         :
@@ -22123,20 +22115,6 @@ load_shader_backend()
 
 #----------------------------------------------------------------
 
-w_metadata strictdrawordering=enabled settings \
-    title_uk="Увімкнути StrictDrawOrdering" \
-    title="Enable StrictDrawOrdering"
-w_metadata strictdrawordering=disabled settings \
-    title_uk="Вимкнути StrictDrawOrdering (за замовчуванням)" \
-    title="Disable StrictDrawOrdering (default)"
-
-load_strictdrawordering()
-{
-    winetricks_set_wined3d_var StrictDrawOrdering "$1"
-}
-
-#----------------------------------------------------------------
-
 w_metadata renderer=gdi settings \
     title_uk="Встановити renderer на gdi" \
     title="Set renderer to gdi"
@@ -23085,6 +23063,8 @@ execute_command()
         oss) w_warn "Calling oss is deprecated, please use sound=oss instead" ; w_call sound=oss ;;
         psdkwin7) w_warn "psdkwin7 has been removed, use psdkwin71 instead"; w_call psdkwin71 ;;
         python) w_warn "Calling python is deprecated, please use python26 instead" ; w_call python26 ;;
+        strictdrawordering=enabled) w_warn "Calling strictdrawordering=enabled is deprecated, please use csmt=enabled instead" ; w_call csmt=enabled ;;
+        strictdrawordering=disabled) w_warn "Calling strictdrawordering=disabled is deprecated, please use csmt=disabled instead" ; w_call csmt=disabled ;;
         vbrun60) w_warn "Calling vbrun60 is deprecated, please use vb6run instead" ; w_call vb6run ;;
         vcrun2005sp1) w_warn "Calling vcrun2005sp1 is deprecated, please use vcrun2005 instead" ; w_call vcrun2005 ;;
         vcrun2008sp1) w_warn "Calling vcrun2008sp1 is deprecated, please use vcrun2008 instead" ; w_call vcrun2008 ;;
