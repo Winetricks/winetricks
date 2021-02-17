@@ -23036,20 +23036,10 @@ execute_command()
         # These have to come before *=disabled to avoid looking like DLLs
         cfc=disable*) w_call cfc=disabled ;;
         fontsmooth=disable*) w_call fontsmooth=disable ;;
-        glsl=disable*) w_call glsl=disabled ;;
         mwo=disable*) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
         rtlm=disable*) w_call rtlm=disabled ;;
         sound=disable*) w_call sound=disabled ;;
         ssm=disable*) w_call ssm=disabled ;;
-        strictdrawordering=disable*) w_call strictdrawordering=disabled ;;
-
-        # Use winecfg if you want a GUI for plain old DLL overrides
-        alldlls=*) w_call "$1" ;;
-        *=native) w_do_call native "${cmd}";;
-        *=builtin) w_do_call builtin "${cmd}";;
-        *=default) w_do_call default "${cmd}";;
-        *=disabled) w_do_call disabled "${cmd}";;
-        vd=*) w_do_call "${cmd}";;
 
         # Hacks for backwards compatibility
         # 2017/03/22: add deprecation notices
@@ -23105,6 +23095,14 @@ execute_command()
         # See https://github.com/Winetricks/winetricks/issues/747
         xact_jun2010) w_warn "Calling xact_jun2010 is deprecated, please use xact instead" ; w_call xact ;;
         xlive) w_warn "Calling xlive is deprecated, please use gfw instead" ; w_call gfw ;;
+
+        # Use winecfg if you want a GUI for plain old DLL overrides
+        alldlls=*) w_call "$1" ;;
+        *=native) w_do_call native "${cmd}";;
+        *=builtin) w_do_call builtin "${cmd}";;
+        *=default) w_do_call default "${cmd}";;
+        *=disabled) w_do_call disabled "${cmd}";;
+        vd=*) w_do_call "${cmd}";;
 
         # Normal verbs, with metadata and load_ functions
         *)
