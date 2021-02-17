@@ -9231,6 +9231,9 @@ load_dotnet35sp1()
 
     w_set_winver winxp
 
+    w_override_dlls native mscoree mscorwks
+    w_wineserver -w
+
     # The installer is braindead and picks the lowest drive letter that's writable
     # winetricks_set_wineprefix(), which is called by w_do_call() sets up this symlink so that wine
     # can make a windows path to the cache (which is removed during cleanup).
