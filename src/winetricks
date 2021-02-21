@@ -8385,7 +8385,7 @@ load_dxvk()
     _W_dxvk_version="$(w_get_github_latest_release doitsujin dxvk)"
     _W_dxvk_version="${_W_dxvk_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/doitsujin/dxvk/releases/download/v${_W_dxvk_version}/dxvk-${_W_dxvk_version}.tar.gz"
-    helper_dxvk_d9vk "dxvk-${_W_dxvk_version}.tar.gz" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk_d9vk "dxvk-${_W_dxvk_version}.tar.gz" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
     unset _W_dxvk_version
 }
 
