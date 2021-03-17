@@ -14665,25 +14665,26 @@ load_autohotkey()
 #----------------------------------------------------------------
 
 w_metadata busybox apps \
-    title="BusyBox FRP-2121" \
+    title="BusyBox FRP-3902-g61e53aa93" \
     publisher="Ron Yorston / Busybox authors" \
-    year="2015" \
+    year="2021" \
     media="download" \
-    file1="busybox-w32-FRP-2121-ga316078ad.exe" \
-    installed_exe1=""
+    file1="busybox-w32-FRP-3902-g61e53aa93.exe" \
+    installed_exe1="${W_SYSTEM32_DLLS_WIN}/busybox.exe"
 
 load_busybox()
 {
-    # Could use https://frippery.org/files/busybox/busybox.exe, but it hasn't updated in last 3 years..
-    w_download https://frippery.org/files/busybox/busybox-w32-FRP-2121-ga316078ad.exe 1bab530f2fd2a9d69528bc2b35ba1f9f75481ae053443b47cb23ad2c2740d887
+    w_download https://frippery.org/files/busybox/busybox-w32-FRP-3902-g61e53aa93.exe 5595ff92795dba4717df671c0b17fe3419c332986b2cf5e6a92b4a0f83312fa3
 
     if test "${W_ARCH}" = "win64"; then
-        w_download https://frippery.org/files/busybox/busybox-w64-FRP-2121-ga316078ad.exe dcb2faf17f996fda8d273d513bc195aec615ef468e3d55b8b4dc9c089b22e035
+        w_download https://frippery.org/files/busybox/busybox-w64-FRP-3902-g61e53aa93.exe 901f5125fd35df11102df65c70b8877f0d06aad5ac3a27bf9e5d50a43644744b
         w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
         w_try cp "${W_CACHE}/${W_PACKAGE}/busybox-w64-FRP-2121-ga316078ad.exe" "${W_SYSTEM64_DLLS}/busybox.exe"
     else
         w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
     fi
+
+    w_warn "There are known issues with busybox under wine. For https://bugs.winehq.org/show_bug.cgi?id=49780, set BB_SKIP_ANSI_EMULATION=0. For https://github.com/rmyorston/busybox-w32/issues/210, set BB_ALT_BUFFER=0. I.e., \`BB_SKIP_ANSI_EMULATION=0 BB_ALT_BUFFER=0 ${WINE} busybox.exe\`"
 }
 
 #----------------------------------------------------------------
