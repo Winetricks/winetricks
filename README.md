@@ -199,7 +199,7 @@ load_icecat()
 Note that the file prefix (icecat.verb) and command name (icecat) must match. All metadata fields are optional, only the command name and category are required.
 
 # Tests
-The tests need `bashate`, `checkbashisms`, and `shellcheck>=0.4.4` installed.
+The tests need `bashate` and `shellcheck>=0.4.4` installed.
 Makefile supports a few test targets:
 
 * `check` - runs './tests/winetricks-tests quick' (without first clearing $WINETRICKS_CACHE)

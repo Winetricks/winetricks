@@ -83,8 +83,8 @@ check:
 	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
 	echo ''
 	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
-	# Check for checkbashisms/shellcheck issues first:
-	echo "Running checkbashisms/shellcheck:"
+	# Check for shellcheck issues first:
+	echo "Running shellcheck:"
 	sh ./tests/shell-checks || exit 1
 	# Check all script dependencies before starting tests:
 	echo "Checking dependencies.."
@@ -97,7 +97,7 @@ check-coverage:
 	WINETRICKS_ENABLE_KCOV=1 $(MAKE) check
 
 shell-checks:
-	echo "This runs shell checks only. Currently, these are checkbashisms and shellcheck."
+	echo "This runs shell checks only. Currently, this is mostly shellcheck."
 	echo "This is relatively fast and doesn't download anything."
 	sh ./tests/shell-checks || exit 1
 
@@ -122,8 +122,8 @@ test:
 	echo 'To suppress tests in debuild, export DEB_BUILD_OPTIONS=nocheck'
 	echo ''
 	echo 'FIXME: this should kill stray wine processes before and after, but some leak through, you might need to kill them.'
-	# Check for checkbashisms/shellcheck issues first:
-	echo "Running checkbashisms/shellcheck:"
+	# Check for shellcheck issues first:
+	echo "Running shellcheck:"
 	sh ./tests/shell-checks || exit 1
 	# Check all script dependencies before starting tests:
 	echo "Checking dependencies.."

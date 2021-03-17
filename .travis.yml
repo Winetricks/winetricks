@@ -21,8 +21,6 @@ addons:
     packages:
     # for bashate
     - python-tz
-    # for checkbashisms
-    - devscripts
 
 # Ubuntu notes:
 #    * ShellCheck is already installed in TravisCI (but not on ppc64le, see below) 
@@ -55,12 +53,12 @@ before_install:
     - time sh ./misc/travis-install-bashate-deb.sh || time sh ./misc/travis-install-bashate-pip.sh
 
     # "brew update" (or auto-update when installing) takes a long time,
-    # but checkbashisms and shellcheck can (usually) be installed without this
+    # but shellcheck can (usually) be installed without this
     # So try installing with "HOMEBREW_NO_AUTO_UPDATE=1", which considerably reduces job time on macOS
     # If it fails retry each individually with auto-update enabled
     - |
       if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-          for pkg in checkbashisms shellcheck yq; do
+          for pkg in shellcheck yq; do
               if HOMEBREW_NO_AUTO_UPDATE=1 brew install "$pkg"; then
                   # everything worked, nothing more to do:
                   :
