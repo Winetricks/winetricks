@@ -1026,11 +1026,15 @@ w_verify_sha256sum()
 
     w_get_sha256sum "${_W_vs_file}"
     if [ "${_W_gotsha256sum}"x != "${_W_vs_wantsum}"x ] ; then
-        case ${LANG} in
-            pl*) w_die "Niezgodność sumy sha256sum! Zmień nazwę ${_W_vs_file} i spróbuj ponownie." ;;
-            ru*) w_die "Контрольная сумма sha256sum не совпадает! Переименуйте файл ${_W_vs_file} и попробуйте еще раз." ;;
-            *) w_die "sha256sum mismatch! Rename ${_W_vs_file} and try again." ;;
-        esac
+        if [ "${WINETRICKS_FORCE}" = 1 ]; then
+            w_warn "sha256sum mismatch! However --force was used, so trying anyway. Caveat emptor."
+        else
+            case ${LANG} in
+                pl*) w_die "Niezgodność sumy sha256sum! Zmień nazwę ${_W_vs_file} i spróbuj ponownie." ;;
+                ru*) w_die "Контрольная сумма sha256sum не совпадает! Переименуйте файл ${_W_vs_file} и попробуйте еще раз." ;;
+                *) w_die "sha256sum mismatch! Rename ${_W_vs_file} and try again. Alternatively, use --force to ignore this check." ;;
+            esac
+        fi
     fi
     unset _W_vs_wantsum _W_vs_file _W_gotsha256sum
 }
