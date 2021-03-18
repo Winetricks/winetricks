@@ -578,6 +578,9 @@ w_try()
     en_ms_105="exit status ${status} - normal, user selected 'restart now'"
     en_ms_194="exit status ${status} - normal, user selected 'restart later'"
 
+    en_regsvr32_3="regsvr32 exit status ${status} - regsvr32: ${_w_regsvr32} not found in syswow64 or system32 depending if wine or wine64. Aborting."
+    en_regsvr32_4="regsvr32 exit status ${status} - regsvr32: 'DllRegisterServer' not implemented in ${_w_regsvr32}, don't try to register such native DLLs. Aborting."
+
     en_abort="Note: command $* returned status ${status}. Aborting."
     pl_abort="Informacja: poelcenie $* zwróciło status ${status}. Przerywam."
     ru_abort="Важно: команда $* вернула статус ${status}. Прерывание."
@@ -591,6 +594,16 @@ w_try()
 
             # Fatal
             5) w_die "${en_ms_5}" ;;
+            *) w_die "${en_abort}" ;;
+        esac
+    elif [ -n "${_w_regsvr32}" ]; then
+        case ${status} in
+            # Nonfatal
+            0) ;;
+
+            # Fatal
+            3) w_die "${en_regsvr32_3}" ;;
+            4) w_die "${en_regsvr32_4}" ;;
             *) w_die "${en_abort}" ;;
         esac
     else
@@ -779,12 +792,16 @@ w_try_regedit64()
 
 w_try_regsvr()
 {
+    _w_regsvr32="$1"
     w_try "${WINE}" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
+    unset _w_regsvr32
 }
 
 w_try_regsvr64()
 {
+    _w_regsvr32="$1"
     w_try "${WINE64}" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
+    unset _w_regsvr32
 }
 
 w_try_unrar()
