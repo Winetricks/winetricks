@@ -14506,16 +14506,16 @@ load_wenquanyizenhei()
 w_metadata unifont fonts \
     title="Unifont alternative to Arial Unicode MS" \
     publisher="Roman Czyborra / GNU" \
-    year="2019" \
+    year="2021" \
     media="download" \
-    file1="unifont-12.1.02.ttf" \
+    file1="unifont-13.0.06.ttf" \
     installed_file1="${W_FONTSDIR_WIN}/unifont.ttf"
 
 load_unifont()
 {
-    # The GNU Unifont provides glyphs for just about everything in common language.  It is intended for multilingual usage.
-    # See http://unifoundry.com/unifont.html for project page
-    w_download "http://unifoundry.com/pub/unifont/unifont-12.1.02/font-builds/unifont-12.1.02.ttf" da4961540b9d02e01fb8755924db730db233c360b20ee321fda8ab7d0b9ca549
+    # The GNU Unifont provides glyphs for just about everything in common language. It is intended for multilingual usage.
+    # See https://unifoundry.com/unifont/index.html for project page.
+    w_download "https://unifoundry.com/pub/unifont/unifont-13.0.06/font-builds/unifont-13.0.06.ttf" d73c0425811ffd366b0d1973e9338bac26fe7cf085760a12e10c61241915e742
     w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_TMP}/unifont.ttf"
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}"
 
