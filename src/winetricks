@@ -16267,6 +16267,9 @@ load_steam()
     if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly."; then
         w_override_dlls disabled libglesv2
     fi
+
+    # Otherwise Steam Store and Library don't show
+    w_call corefonts
 }
 
 #----------------------------------------------------------------
