@@ -16233,7 +16233,8 @@ load_steam()
 {
     # 2016/10/28: 029f918a29b2b311711788e8a477c8de529c11d7dba3caf99cbbde5a983efdad
     # 2018/06/01: 3bc6942fe09f10ed3447bccdcf4a70ed369366fef6b2c7f43b541f1a3c5d1c51
-    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 3bc6942fe09f10ed3447bccdcf4a70ed369366fef6b2c7f43b541f1a3c5d1c51
+    # 2021/03/27: 874788b45dfc043289ba05387e83f27b4a046004a88a4c5ee7c073187ff65b9d
+    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 874788b45dfc043289ba05387e83f27b4a046004a88a4c5ee7c073187ff65b9d
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     if [ -n "${W_OPT_UNATTENDED}" ]; then
