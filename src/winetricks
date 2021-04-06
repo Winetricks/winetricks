@@ -12767,21 +12767,24 @@ load_vcrun2015()
 
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-convert-l1-1-0 api-ms-win-crt-environment-l1-1-0 api-ms-win-crt-filesystem-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-multibyte-l1-1-0 api-ms-win-crt-process-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-string-l1-1-0 api-ms-win-crt-utility-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcr140 ucrtbase vcomp140 vcruntime140
 
-    # Otherwise ucrtbase doesn't get replaced
-    # See https://bugs.winehq.org/show_bug.cgi?id=46317
     w_set_winver winxp
-    w_try rm -f "${W_SYSTEM32_DLLS}"/ucrtbase.dll
+
+    # Setup will refuse to install ucrtbase because builtin's version number is higher, so manually replace it
+    # See https://bugs.winehq.org/show_bug.cgi?id=46317
+    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2015/vc_redist.x86.exe -F 'a10'
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'ucrtbase.dll'
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
-            # Also remove the 64-bit version
-            w_try rm -f "${W_SYSTEM64_DLLS}"/ucrtbase.dll
             # Also install the 64-bit version
             # 2015/10/12: 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
             w_download https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
+            # Also replace 64-bit ucrtbase.dll
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2015/vc_redist.x64.exe -F 'a10'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
             w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
@@ -12843,24 +12846,27 @@ load_vcrun2017()
 
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcr140 ucrtbase vcomp140 vcruntime140
 
-    # Otherwise ucrtbase doesn't get replaced
-    # See https://bugs.winehq.org/show_bug.cgi?id=46317
     w_set_winver winxp
-    w_try rm -f "${W_SYSTEM32_DLLS}"/ucrtbase.dll
+
+    # Setup will refuse to install ucrtbase because builtin's version number is higher, so manually replace it
+    # See https://bugs.winehq.org/show_bug.cgi?id=46317
+    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2017/vc_redist.x86.exe -F 'a10'
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'ucrtbase.dll'
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
-            # Also remove the 64-bit version
-            w_try rm -f "${W_SYSTEM64_DLLS}"/ucrtbase.dll
             # Also install the 64-bit version
             # https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads
             # 2017/10/02: 7434bf559290cccc3dd3624f10c9e6422cce9927d2231d294114b2f929f0e465
             # 2019/03/17: b192e143d55257a0a2f76be42e44ff8ee14014f3b1b196c6e59829b6b3ec453c
             # 2019/08/14: 5b0cbb977f2f5253b1ebe5c9d30edbda35dbd68fb70de7af5faac6423db575b5
             w_download https://aka.ms/vs/15/release/vc_redist.x64.exe 5b0cbb977f2f5253b1ebe5c9d30edbda35dbd68fb70de7af5faac6423db575b5
+            # Also replace 64-bit ucrtbase.dll
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2017/vc_redist.x64.exe -F 'a10'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
             w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
@@ -12896,18 +12902,18 @@ load_vcrun2019()
 
     w_download https://aka.ms/vs/16/release/vc_redist.x86.exe e830c313aa99656748f9d2ed582c28101eaaf75f5377e3fb104c761bf3f808b2
 
-    # Otherwise ucrtbase doesn't get replaced
-    # See https://bugs.winehq.org/show_bug.cgi?id=46317
     w_set_winver winxp
-    w_try rm -f "${W_SYSTEM32_DLLS}"/ucrtbase.dll
+
+    # Setup will refuse to install ucrtbase because builtin's version number is higher, so manually replace it
+    # See https://bugs.winehq.org/show_bug.cgi?id=46317
+    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2019/vc_redist.x86.exe -F 'a10'
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'ucrtbase.dll'
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
-            # Also remove the 64-bit version
-            w_try rm -f "${W_SYSTEM64_DLLS}"/ucrtbase.dll
             # Also install the 64-bit version
             # 2019/12/26: 40ea2955391c9eae3e35619c4c24b5aaf3d17aeaa6d09424ee9672aa9372aeed
             # 2020/03/23: b6c82087a2c443db859fdbeaae7f46244d06c3f2a7f71c35e50358066253de52
@@ -12923,6 +12929,9 @@ load_vcrun2019()
             w_override_dlls native,builtin vcruntime140_1
 
             w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 015edd4e5d36e053b23a01adb77a2b12444d3fb6eccefe23e3a8cd6388616a16
+            # Also replace 64-bit ucrtbase.dll
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2019/vc_redist.x64.exe -F 'a10'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
             w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
