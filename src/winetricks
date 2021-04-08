@@ -10384,10 +10384,13 @@ load_gmdls()
 
     w_try_cabextract -d "${W_TMP}" -F DirectX.cab "${W_CACHE}"/directx9/directx_apr2006_redist.exe
     w_try_cabextract -d "${W_TMP}" -F gm16.dls "${W_TMP}"/DirectX.cab
+
+    # When running in a 64bit prefix, syswow64/drivers doesn't exist
+    w_try mkdir -p "${W_SYSTEM32_DLLS}"/drivers
     w_try mv "${W_TMP}"/gm16.dls "${W_SYSTEM32_DLLS}"/drivers/gm.dls
+
     if test "${W_ARCH}" = "win64"; then
-        w_try_cd "${W_SYSTEM64_DLLS}"/drivers
-        w_try ln -s ../../syswow64/drivers/gm.dls
+        w_try ln -s "${W_SYSTEM32_DLLS}"/drivers/gm.dls "${W_SYSTEM64_DLLS}"/drivers
     fi
 }
 
