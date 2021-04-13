@@ -12904,10 +12904,11 @@ load_vcrun2019()
     # 2021/03/09: 4521ed84b9b1679a706e719423d54ef5e413dc50dde1cf362232d7359d7e89c4
     # 2021/03/28: e830c313aa99656748f9d2ed582c28101eaaf75f5377e3fb104c761bf3f808b2
     # 2021/04/05: e830c313aa99656748f9d2ed582c28101eaaf75f5377e3fb104c761bf3f808b2
+    # 2021/04/13: 14563755ac24a874241935ef2c22c5fce973acb001f99e524145113b2dc638c1
 
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcr140 ucrtbase vcomp140 vcruntime140
 
-    w_download https://aka.ms/vs/16/release/vc_redist.x86.exe e830c313aa99656748f9d2ed582c28101eaaf75f5377e3fb104c761bf3f808b2
+    w_download https://aka.ms/vs/16/release/vc_redist.x86.exe 14563755ac24a874241935ef2c22c5fce973acb001f99e524145113b2dc638c1
 
     if w_workaround_wine_bug 50894 "Working around failing wusa.exe lookup via C:\windows\SysNative"; then
         w_set_winver winxp
@@ -12933,11 +12934,12 @@ load_vcrun2019()
             # 2021/03/09: f299953673de262fefad9dd19bfbe6a5725a03ae733bebfec856f1306f79c9f7
             # 2021/03/28: b6c82087a2c443db859fdbeaae7f46244d06c3f2a7f71c35e50358066253de52
             # 2021/04/05: 015edd4e5d36e053b23a01adb77a2b12444d3fb6eccefe23e3a8cd6388616a16
+            # 2021/04/13: 52b196bbe9016488c735e7b41805b651261ffa5d7aa86eb6a1d0095be83687b2
 
             # vcruntime140_1 is only shipped on x64:
             w_override_dlls native,builtin vcruntime140_1
 
-            w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 015edd4e5d36e053b23a01adb77a2b12444d3fb6eccefe23e3a8cd6388616a16
+            w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 52b196bbe9016488c735e7b41805b651261ffa5d7aa86eb6a1d0095be83687b2
             # Also replace 64-bit ucrtbase.dll
             w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2019/vc_redist.x64.exe -F 'a10'
             w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
