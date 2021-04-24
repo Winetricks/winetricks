@@ -12591,7 +12591,9 @@ w_metadata vcrun2010 dlls \
 load_vcrun2010()
 {
     # See https://www.microsoft.com/en-us/download/details.aspx?id=5555
-    w_download https://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 8162b2d665ca52884507ede19549e99939ce4ea4a638c537fa653539819138c8
+    # Originally: 8162b2d665ca52884507ede19549e99939ce4ea4a638c537fa653539819138c8
+    # 2021/04/24: 31d32fa39d52cac9a765a43660431f7a127eee784b54b2f5e2af3e2b763a1af8
+    w_download https://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 31d32fa39d52cac9a765a43660431f7a127eee784b54b2f5e2af3e2b763a1af8
 
     w_override_dlls native,builtin msvcp100 msvcr100 vcomp100 atl100
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
@@ -12601,7 +12603,9 @@ load_vcrun2010()
         win64)
             # Also install the 64-bit version
             # https://www.microsoft.com/en-us/download/details.aspx?id=13523
-            w_download https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe c6cd2d3f0b11dc2a604ffdc4dd97861a83b77e21709ba71b962a47759c93f4c8
+            # Originally: c6cd2d3f0b11dc2a604ffdc4dd97861a83b77e21709ba71b962a47759c93f4c8
+            # 2021/04/24: 2fddbc3aaaab784c16bc673c3bae5f80929d5b372810dbc28649283566d33255
+            w_download https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe 2fddbc3aaaab784c16bc673c3bae5f80929d5b372810dbc28649283566d33255
             w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
@@ -12617,7 +12621,7 @@ w_metadata mfc100 dlls \
 
 load_mfc100()
 {
-    w_download_to vcrun2010 https://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 8162b2d665ca52884507ede19549e99939ce4ea4a638c537fa653539819138c8
+    w_download_to vcrun2010 https://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe 31d32fa39d52cac9a765a43660431f7a127eee784b54b2f5e2af3e2b763a1af8
 
     w_try_cabextract --directory="${W_TMP}/win32" "${W_CACHE}"/vcrun2010/vcredist_x86.exe -F '*.cab'
     w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/vc_red.cab"
@@ -12628,7 +12632,7 @@ load_mfc100()
     w_try cp "${W_TMP}/win32"/F_CENTRAL_mfcm100u_x86 "${W_SYSTEM32_DLLS}"/mfcm100u.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download_to vcrun2010 https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe c6cd2d3f0b11dc2a604ffdc4dd97861a83b77e21709ba71b962a47759c93f4c8
+        w_download_to vcrun2010 https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe 2fddbc3aaaab784c16bc673c3bae5f80929d5b372810dbc28649283566d33255
 
         w_try_cabextract --directory="${W_TMP}/win64" "${W_CACHE}"/vcrun2010/vcredist_x64.exe -F '*.cab'
         w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/vc_red.cab"
