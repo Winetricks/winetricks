@@ -6060,7 +6060,7 @@ w_metadata comctl32 dlls \
     publisher="Microsoft" \
     year="2001" \
     media="download" \
-    file1="cc32inst.exe" \
+    file1="CC32inst.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/comctl32.dll"
 
 load_comctl32()
@@ -6073,7 +6073,7 @@ load_comctl32()
 
     w_download https://downloads.sourceforge.net/project/pocmin/Win%2095_98%20Controls/Win%2095_98%20Controls/CC32inst.exe d68c0cca721870aed39f5f2efd80dfb74f3db66d5f9a49e7578b18279edfa4a7
 
-    w_try "${WINE}" "${W_CACHE}"/comctl32/cc32inst.exe "/T:${W_TMP_WIN}" /c ${W_OPT_UNATTENDED:+/q}
+    w_try "${WINE}" "${W_CACHE}/${W_PACKAGE}/${file1}" "/T:${W_TMP_WIN}" /c ${W_OPT_UNATTENDED:+/q}
     w_try_unzip "${W_TMP}" "${W_TMP}"/comctl32.exe
     w_try "${WINE}" "${W_TMP}"/x86/50ComUpd.Exe "/T:${W_TMP_WIN}" /c ${W_OPT_UNATTENDED:+/q}
     w_try cp "${W_TMP}"/comcnt.dll "${W_SYSTEM32_DLLS}"/comctl32.dll
