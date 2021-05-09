@@ -10773,6 +10773,44 @@ load_ie8_kb2936068()
 
 #----------------------------------------------------------------
 
+w_metadata ie8_tls12 dlls \
+    title="TLS 1.1 and 1.2 for Internet Explorer 8" \
+    publisher="Microsoft" \
+    year="2017" \
+    media="download" \
+    file1="windowsxp-kb4019276-x86-embedded-enu_3822fc1692076429a7dc051b00213d5e1240ce3d.exe" \
+    file2="ie8-windowsxp-kb4230450-x86-embedded-enu_d8b388624d07b6804485d347be4f74a985d50be7.exe" \
+    installed_file1="c:/windows/KB4230450-IE8.log"
+
+load_ie8_tls12()
+{
+    w_package_unsupported_win64
+    w_call ie8
+    w_set_winver winxp
+
+    "${WINE}" reg add "HKLM\\System\\WPA\\PosReady" /v Installed /t REG_DWORD /d 0001 /f
+
+    w_download http://download.windowsupdate.com/c/msdownload/update/software/updt/2017/10/windowsxp-kb4019276-x86-embedded-enu_3822fc1692076429a7dc051b00213d5e1240ce3d.exe 381abded5dd70a02bd54d4e8926e519ca6b306e26cbf10c45bbf1533bf57a026
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+
+    # Avoid permanent hang in attended mode; avoid long pause in unattended mode
+    w_try_ms_installer "${WINE}" "${file1}" /passive /norestart ${W_OPT_UNATTENDED:+/quiet}
+
+    "${WINE}" reg add "HKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\Schannel\\Protocols\\TLS 1.1\\Client" /v DisabledByDefault /t REG_DWORD /d 0000 /f
+    "${WINE}" reg add "HKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\Schannel\\Protocols\\TLS 1.2\\Client" /v DisabledByDefault /t REG_DWORD /d 0000 /f
+
+    w_download http://download.windowsupdate.com/c/msdownload/update/software/secu/2018/06/ie8-windowsxp-kb4230450-x86-embedded-enu_d8b388624d07b6804485d347be4f74a985d50be7.exe ec1183d4bfd0a92286678554f20a2d0f58c70ee9cb8ad90a5084812545b80068
+
+    # Force quiet mode to avoid permanent hang
+    w_try_ms_installer "${WINE}" ie8-windowsxp-kb4230450-x86-embedded-enu_d8b388624d07b6804485d347be4f74a985d50be7.exe /quiet
+
+    "${WINE}" reg add "HKLM\\Software\\Microsoft\\Internet Explorer\\AdvancedOptions\\CRYPTO\\TLS1.1" /v OSVersion /t REG_SZ /d "3.5.1.0.0" /f
+    "${WINE}" reg add "HKLM\\Software\\Microsoft\\Internet Explorer\\AdvancedOptions\\CRYPTO\\TLS1.2" /v OSVersion /t REG_SZ /d "3.5.1.0.0" /f
+}
+
+#----------------------------------------------------------------
+
 w_metadata l3codecx dlls \
     title="MPEG Layer-3 Audio Codec for Microsoft DirectShow" \
     publisher="Microsoft" \
