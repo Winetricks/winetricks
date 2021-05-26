@@ -12251,7 +12251,7 @@ load_vb6run()
 {
     # https://support.microsoft.com/kb/290887
     if test ! -f "${W_CACHE}"/vb6run/vbrun60sp6.exe; then
-        w_download https://download.microsoft.com/download/5/a/d/5ad868a0-8ecd-4bb0-a882-fe53eb7ef348/VB6.0-KB290887-X86.exe 467b5a10c369865f2021d379fc0933cb382146b702bbca4bcb703fc86f4322bb
+        w_download https://lon-01.lo4d.com/files/visual-basic-runtime-files/VB6.0-KB290887-X86.exe 467b5a10c369865f2021d379fc0933cb382146b702bbca4bcb703fc86f4322bb
 
         w_try "${WINE}" "${W_CACHE}"/vb6run/VB6.0-KB290887-X86.exe "/T:${W_TMP_WIN}" /c ${W_OPT_UNATTENDED:+/q}
         if test ! -f "${W_TMP}"/vbrun60sp6.exe; then
