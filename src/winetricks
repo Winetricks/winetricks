@@ -11327,7 +11327,7 @@ load_msxml4()
     # MS07-042: https://www.microsoft.com/en-us/download/details.aspx?id=2386
     # w_download https://download.microsoft.com/download/9/4/2/9422e6b6-08ee-49cb-9f05-6c6ee755389e/msxml4-KB936181-enu.exe 1ce9ff868816cfc9bf33e93fdf1552afce5b491443892babb521e74c05e45242
     # SP3 (2009): https://www.microsoft.com/en-us/download/details.aspx?id=15697
-    w_download https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi 47c2ae679c37815da9267c81fc3777de900ad2551c11c19c2840938b346d70bb
+    w_download https://web.archive.org/web/20210506101448/http://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi 47c2ae679c37815da9267c81fc3777de900ad2551c11c19c2840938b346d70bb
     w_override_dlls native,builtin msxml4
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" msiexec /i msxml.msi ${W_OPT_UNATTENDED:+/q}
