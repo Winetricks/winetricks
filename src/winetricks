@@ -12934,18 +12934,15 @@ load_vcrun2019()
     # 2021/04/13: 14563755ac24a874241935ef2c22c5fce973acb001f99e524145113b2dc638c1
     # 2021/06/06: 91c21c93a88dd82e8ae429534dacbc7a4885198361eae18d82920c714e328cf9
 
-    w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcr140 ucrtbase vcomp140 vcruntime140
+    w_warn "ucrtbase.dll is no longer included in vcrun2019. For details see: https://github.com/Winetricks/winetricks/issues/1770"
+
+    w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcr140 vcomp140 vcruntime140
 
     w_download https://aka.ms/vs/16/release/vc_redist.x86.exe 91c21c93a88dd82e8ae429534dacbc7a4885198361eae18d82920c714e328cf9
 
     if w_workaround_wine_bug 50894 "Working around failing wusa.exe lookup via C:\windows\SysNative"; then
         w_set_winver winxp
     fi
-
-    # Setup will refuse to install ucrtbase because builtin's version number is higher, so manually replace it
-    # See https://bugs.winehq.org/show_bug.cgi?id=46317
-    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2019/vc_redist.x86.exe -F 'a10'
-    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'ucrtbase.dll'
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
@@ -12969,9 +12966,6 @@ load_vcrun2019()
             w_override_dlls native,builtin vcruntime140_1
 
             w_download https://aka.ms/vs/16/release/vc_redist.x64.exe a1592d3da2b27230c087a3b069409c1e82c2664b0d4c3b511701624702b2e2a3
-            # Also replace 64-bit ucrtbase.dll
-            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2019/vc_redist.x64.exe -F 'a10'
-            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
             w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
