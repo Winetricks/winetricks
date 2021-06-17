@@ -11452,6 +11452,7 @@ w_metadata pdh dlls \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
+    conflicts="pdh_nt4" \
     file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/pdh.dll"
 
@@ -11464,6 +11465,31 @@ load_pdh()
         helper_win7sp1_x64 amd64_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_1202940e4711971e/pdh.dll
         w_try cp "${W_TMP}/amd64_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_1202940e4711971e/pdh.dll" "${W_SYSTEM64_DLLS}/pdh.dll"
     fi
+
+    w_override_dlls native,builtin pdh
+}
+
+#----------------------------------------------------------------
+
+w_metadata pdh_nt4 dlls \
+    title="MS pdh.dll (Performance Data Helper); WinNT 4.0 Version" \
+    publisher="Microsoft" \
+    year="1997" \
+    media="download" \
+    conflicts="pdh" \
+    file1="nt4pdhdll.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/pdh.dll"
+
+load_pdh_nt4()
+{
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_warn "There is no 64-bit version of the WinNT 4.0 pdh.dll. If your program doesn't work then try a 32-bit wineprefix or use 'winetricks pdh' instead."
+    fi
+    
+    w_download http://download.microsoft.com/download/winntsrv40/update/5.0.2195.2668/nt4/en-us/nt4pdhdll.exe a0a45ea8f4b82daaebcff7ad5bd1b7f5546e527e04790ca8c4c9b71b18c73e32
+
+    w_try_unzip "${W_TMP}/${W_PACKAGE}" "${W_CACHE}/${W_PACKAGE}"/nt4pdhdll.exe
+    w_try cp "${W_TMP}/${W_PACKAGE}/pdh.dll" "${W_SYSTEM32_DLLS}/pdh.dll"
 
     w_override_dlls native,builtin pdh
 }
