@@ -15264,16 +15264,6 @@ load_ie8()
     # Bundled updspapi cannot work on Wine
     w_override_dlls builtin updspapi
 
-    # Remove the fake DLLs from the existing WINEPREFIX
-    if [ -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe" ]; then
-        w_try mv "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe" "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe.bak"
-    fi
-
-    for dll in browseui inseng itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon; do
-        test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
-            w_try mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak
-    done
-
     # See https://bugs.winehq.org/show_bug.cgi?id=16013
     # Find instructions to create this file in dlls/wintrust/tests/crypt.c
     w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat 5d18ab44fc289100ccf4b51cf614cc2d36f7ca053e557e2ba973811293c97d38
@@ -15283,6 +15273,18 @@ load_ie8()
     w_try cp -f "${W_CACHE}"/ie8/winetest.cat "${W_SYSTEM32_DLLS}"/catroot/\{f750e6c3-38ee-11d1-85e5-00c04fc295ee\}/oem0.cat
 
     w_download https://download.microsoft.com/download/C/C/0/CC0BD555-33DD-411E-936B-73AC6F95AE11/IE8-WindowsXP-x86-ENU.exe 5a2c6c82774bfe99b175f50a05b05bcd1fac7e9d0e54db2534049209f50cd6ef
+
+    # Remove the fake DLLs from the existing WINEPREFIX
+    if [ -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe" ]; then
+        w_try mv "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe" "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe.bak"
+    fi
+
+    # Replace the fake DLLs by copies from the bundle
+    for dll in browseui inseng itircl itss jscript mshtml shdoclc shdocvw shlwapi urlmon; do
+        test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
+            w_try mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak &&
+            w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_CACHE}"/ie8/IE8-WindowsXP-x86-ENU.exe -F ${dll}.dll
+    done
 
     # KLUDGE: if / is writable (as on OS X?), having a Z: mapping to it
     # causes ie7 to put temporary directories on Z:\.
