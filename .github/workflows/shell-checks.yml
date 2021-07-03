@@ -1,0 +1,10 @@
+on: [push, pull_request]
+jobs:
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+      - name: run shell-checks
+        run: sudo apt-get -y install shellcheck python3-bashate && time ./tests/shell-checks
