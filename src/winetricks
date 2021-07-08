@@ -13679,6 +13679,50 @@ load_corbel()
 
 #----------------------------------------------------------------
 
+w_metadata dejavu fonts \
+    title="DejavVu fonts" \
+    publisher="DejaVu authors" \
+    homepage="https://dejavu-fonts.github.io" \
+    year="2016" \
+    media="download" \
+    file1="dejavu-fonts-ttf-2.37.tar.bz2" \
+    installed_file1="$W_FONTSDIR_WIN/dejavusans.ttf"
+
+load_dejavu()
+{
+    # Similar to liberation, can replace several MS fonts
+    w_download http://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2 fa9ca4d13871dd122f61258a80d01751d603b4d3ee14095d65453b4e846e17d7
+
+    w_try_cd "${W_TMP}"
+    w_try tar -jxf "${W_CACHE}/${W_PACKAGE}/${file1}" "${file1%.tar.bz2}/ttf"
+    w_try_cp_font_files "${file1%.tar.bz2}/ttf" "${W_FONTSDIR_UNIX}"
+
+    w_register_font dejavumathtexgyre.ttf "DejaVuMathTeXGyre-Regular"
+    w_register_font dejavusans-boldoblique.ttf "DejaVu Sans Bold Oblique"
+    w_register_font dejavusans-bold.ttf "DejaVu Sans Bold"
+    w_register_font dejavusanscondensed-boldoblique.ttf "DejaVu Sans Condensed Bold Oblique"
+    w_register_font dejavusanscondensed-bold.ttf "DejaVu Sans Condensed Bold"
+    w_register_font dejavusanscondensed-oblique.ttf "DejaVu Sans Condensed Oblique"
+    w_register_font dejavusanscondensed.ttf "DejaVu Sans Condensed"
+    w_register_font dejavusans-extralight.ttf "DejaVu Sans ExtraLight"
+    w_register_font dejavusansmono-boldoblique.ttf "DejaVu Sans Mono Bold Oblique"
+    w_register_font dejavusansmono-bold.ttf "DejaVu Sans Mono Bold"
+    w_register_font dejavusansmono-oblique.ttf "DejaVu Sans Mono Oblique"
+    w_register_font dejavusansmono.ttf "DejaVu Sans Mono"
+    w_register_font dejavusans-oblique.ttf "DejaVu Sans Oblique"
+    w_register_font dejavusans.ttf "DejaVu Sans"
+    w_register_font dejavuserif-bolditalic.ttf "DejaVu Serif Bold Italic"
+    w_register_font dejavuserif-bold.ttf "DejaVu Serif Bold"
+    w_register_font dejavuserifcondensed-bolditalic.ttf "DejaVu Serif Condensed Bold Italic"
+    w_register_font dejavuserifcondensed-bold.ttf "DejaVu Serif Condensed Bold"
+    w_register_font dejavuserifcondensed-italic.ttf "DejaVu Serif Condensed Italic"
+    w_register_font dejavuserifcondensed.ttf "DejaVu Serif Condensed"
+    w_register_font dejavuserif-italic.ttf "DejaVu Serif Italic"
+    w_register_font dejavuserif.ttf "DejaVu Serif"
+}
+
+#----------------------------------------------------------------
+
 w_metadata meiryo fonts \
     title="MS Meiryo font" \
     publisher="Microsoft" \
@@ -14248,6 +14292,103 @@ load_liberation()
     w_register_font liberationserif-bold.ttf "Liberation Serif Bold"
     w_register_font liberationserif-italic.ttf "Liberation Serif Italic"
     w_register_font liberationserif-regular.ttf "Liberation Serif"
+}
+
+#----------------------------------------------------------------
+
+w_metadata foss_corefonts fonts \
+    title="FOSS corefont replacements (including registry substitutes)" \
+    publisher="misc" \
+    year="misc" \
+    media="download" \
+    file1="FIXME" \
+    installed_file1="FIXME"
+
+load_foss_corefonts() {
+    # Install free fonts in place of corefonts
+    # TIP: try `fc-match 'fontname'` to find a replacement, for example:
+    # $ fc-match 'Comic Sans MS'
+    # DejaVuSans.ttf: "DejaVu Sans" "Book"
+    # I used italics/bold versions when avilable; fc-match never seems to recommend them?
+
+    # Make sure we have the fonts we need:
+    w_call dejavu
+    w_call liberation
+    w_call opensymbol
+
+    # FIXME: currently this doesn't work for Algadoo. Need to try other fonts/workarounds :/
+    # http://www.algodoo.com/download/ (needs comicsans and verdana)
+    # https://bugs.winehq.org/show_bug.cgi?id=39804
+    #
+    # What algadoo complains about (doesn't work):
+    # w_register_font liberationsans-bold.ttf "Comic Sans MS Bold Not-Rotated 32px"
+    # w_register_font liberationsans-regular.ttf "Comic Sans MS Not-Rotated 32px"
+    # w_register_font liberationsans-regular.ttf "Verdana 12px"
+    # w_register_font liberationsans-regular.ttf "Verdana Not-Rotated 12px"
+    # w_register_font liberationsans-regular.ttf "Verdana Not-Rotated 14px"
+    # w_register_font liberationsans-regular.ttf "Verdana Not-Rotated 16px"
+
+    # andale
+    w_register_font dejavusansmono.ttf "Andale Mono"
+
+    # arial:
+    # Tested with Terragen 4 https://bugs.winehq.org/show_bug.cgi?id=42360 (note: will accept Arial, Tahoma or Veranda)
+    w_register_font dejavusans-bold.ttf "Arial Bold"
+    w_register_font dejavusans-bold.ttf "Arial Bold Italic"
+    w_register_font dejavusans.ttf "Arial Italic"
+    w_register_font liberationsans-regular.ttf "Arial"
+    w_register_font dejavusans.ttf "Arial Black"
+
+    # comicsans
+    # FIXME: haven't found an app to test with:
+    w_register_font liberationsans-bold.ttf "Comic Sans MS Bold"
+    w_register_font liberationsans-regular.ttf "Comic Sans MS"
+
+    # courier
+    # FIXME: test courier in fasmw - https://bugs.winehq.org/show_bug.cgi?id=7117
+    w_register_font dejavusans-bold.ttf "Courier New Bold"
+    w_register_font dejavusans-bold.ttf "Courier New Bold Italic"
+    w_register_font dejavusans.ttf "Courier New Italic"
+    w_register_font liberationmono-regular.ttf "Courier New"
+
+    # georgia
+    # FIXME: test Photoshop CS2, Times, maybe Georgia - https://bugs.winehq.org/show_bug.cgi?id=9623
+    w_register_font dejavusans-bold.ttf "Georgia Bold"
+    w_register_font dejavusans.ttf "Georgia Italic"
+    w_register_font dejavuserif.ttf "Georgia"
+    w_register_font dejavusans-bold.ttf "Georgia Bold Italic"
+
+    # impact
+    # FIXME: haven't found an app to test with:
+    w_register_font dejavusans.ttf "Impact"
+
+    # times
+    # FIXME: test Arial, Times New Roman in misc apps - https://bugs.winehq.org/show_bug.cgi?id=32342
+    w_register_font dejavusans-bold.ttf "Times New Roman Bold"
+    w_register_font dejavusans-bold.ttf "Times New Roman Bold Italic"
+    w_register_font dejavusans.ttf "Times New Roman Italic"
+    w_register_font liberationserif-regular.ttf "Times New Roman"
+
+    # trebuchet
+    # FIXME: haven't found an app to test with:
+    w_register_font dejavusans-bold.ttf "Trebuchet MS Bold"
+    w_register_font dejavusans-bold.ttf "Trebuchet MS Bold Italic"
+    w_register_font dejavusans.ttf "Trebuchet MS Italic"
+    w_register_font dejavusans.ttf "Trebuchet MS"
+
+    # verdana
+    # Tested with Terragen 4 https://bugs.winehq.org/show_bug.cgi?id=42360 (note: will accept Arial, Tahoma or Veranda)
+    w_register_font dejavusans-bold.ttf "Verdana Bold"
+    w_register_font dejavusans.ttf "Verdana Italic"
+    w_register_font dejavusans.ttf "Verdana"
+    w_register_font dejavusans-bold.ttf "Verdana Bold Italic"
+
+    # webdings
+    # FIXME: test some apps that need wingdings - https://bugs.winehq.org/show_bug.cgi?id=7156
+    # FIXME: is there a better font we could use? dingbats maybe?
+    w_register_font opens___.ttf "Webdings"
+
+    w_try touch "${W_WINDIR_UNIX}/${W_PACKAGE}.installed.workaround"
 }
 
 #----------------------------------------------------------------
