@@ -26,19 +26,32 @@ The ```winetricks``` package should be used if it is available and up to date. T
 * Slackbuilds (Slackware): http://slackbuilds.org/repository/14.2/system/winetricks/?search=winetricks
 * Ubuntu: https://packages.ubuntu.com/search?keywords=winetricks
 
-Note: packaged Debian / Ubuntu winetricks versions are typically outdated, so a manual installation is recommended.
-
 If the package is unavailable, outdated, or the latest version is desired, a manual installation of winetricks can be done.
+
+# Quick install
+
+To quickly install winetricks open a terminal and type
+~~~~~
+wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+~~~~~
+
+You can then run it from a terminal with
+~~~~~
+sh winetricks
+~~~~~
+
+# Full installation
+
 It is _highly_ recommended to uninstall any previously installed version of winetricks first.
 
-**_If you don't uninstall a previously installed, packaged version of winetricks... Well then you get to pick up the pieces!_**
+**_If you don't uninstall a previously installed version of winetricks, that installation might be used instead of your manual installation._**
 
 E.g. for Debian / Ubuntu:
 ```
-sudo apt-get purge winetricks
+sudo apt purge winetricks
 ```
 
-Then, for Ubuntu, use a shell script to download the current winetricks script(s).
+Then (tested on Ubuntu), use a shell script to download the current winetricks script(s).
 E.g.:
 
 ```
