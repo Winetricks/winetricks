@@ -11482,14 +11482,14 @@ w_metadata pdh_nt4 dlls \
 
 load_pdh_nt4()
 {
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_warn "There is no 64-bit version of the WinNT 4.0 pdh.dll. If your program doesn't work then try a 32-bit wineprefix or use 'winetricks pdh' instead."
+    fi
+    
     w_download http://download.microsoft.com/download/winntsrv40/update/5.0.2195.2668/nt4/en-us/nt4pdhdll.exe a0a45ea8f4b82daaebcff7ad5bd1b7f5546e527e04790ca8c4c9b71b18c73e32
 
     w_try_unzip "${W_TMP}/${W_PACKAGE}" "${W_CACHE}/${W_PACKAGE}"/nt4pdhdll.exe
     w_try cp "${W_TMP}/${W_PACKAGE}/pdh.dll" "${W_SYSTEM32_DLLS}/pdh.dll"
-
-    if [ "${W_ARCH}" = "win64" ]; then
-        w_warn "There is no 64-bit version of the WinNT 4.0 pdh.dll. If your program doesn't work then try a 32-bit wineprefix or use 'winetricks pdh' instead."
-    fi
 
     w_override_dlls native,builtin pdh
 }
