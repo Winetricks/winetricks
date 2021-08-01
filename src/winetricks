@@ -10743,7 +10743,8 @@ load_cinepak()
 
     w_try_unzip "${W_SYSTEM32_DLLS}" "${W_CACHE}/${W_PACKAGE}/${file1}" ICCVID.DLL
 
-    w_try mv -f "${W_SYSTEM32_DLLS}/ICCVID.DLL" "${W_SYSTEM32_DLLS}/iccvid.dll"
+    w_try mv -f "${W_SYSTEM32_DLLS}/ICCVID.DLL" "${W_SYSTEM32_DLLS}/iccvid_.dll"
+    w_try mv -f "${W_SYSTEM32_DLLS}/iccvid_.dll" "${W_SYSTEM32_DLLS}/iccvid.dll"
 
     w_override_dlls native iccvid
 }
