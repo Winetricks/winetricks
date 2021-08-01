@@ -16010,7 +16010,8 @@ load_protectionid()
     w_try_unrar "${W_CACHE}/${W_PACKAGE}/${file1}"
 
     # ProtectionId.685.December.2016 has a different executable name than usual, this may need to be disabled on next update:
-    w_try mv Protection_ID.eXe protection_id.exe
+    w_try mv Protection_ID.eXe protection_id_.exe
+    w_try mv protection_id_.exe protection_id.exe
 }
 
 #----------------------------------------------------------------
