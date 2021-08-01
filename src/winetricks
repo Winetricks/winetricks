@@ -14351,7 +14351,8 @@ load_sourcehansans()
 {
     w_download "https://github.com/adobe-fonts/source-han-sans/releases/download/2.004R/SourceHanSans.ttc.zip" 6f59118a9adda5a7fe4e9e6bb538309f7e1d3c5411f9a9d32af32a79501b7e4f
     w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
-    w_try mv "${W_TMP}/SourceHanSans.ttc" "${W_TMP}/sourcehansans.ttc"
+    w_try mv "${W_TMP}/SourceHanSans.ttc" "${W_TMP}/sourcehansans_.ttc"
+    w_try mv "${W_TMP}/sourcehansans_.ttc" "${W_TMP}/sourcehansans.ttc"
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "*.ttc"
 
     # Simplified Chinese
