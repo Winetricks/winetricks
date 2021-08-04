@@ -11558,16 +11558,16 @@ load_peverify()
 w_metadata physx dlls \
     title="PhysX" \
     publisher="Nvidia" \
-    year="2014" \
+    year="2019" \
     media="download" \
-    file1="PhysX-9.14.0702-SystemSoftware.msi" \
-    installed_file1="${W_PROGRAMS_X86_WIN}/NVIDIA Corporation/PhysX/Engine/v2.8.3/PhysXCore.dll"
+    file1="PhysX-9.19.0218-SystemSoftware.exe" \
+    installed_file1="${W_PROGRAMS_X86_WIN}/NVIDIA Corporation/PhysX/Engine/86C5F4F22ECD/APEX_Particles_x64.dll"
 
 load_physx()
 {
-    w_download https://uk.download.nvidia.com/Windows/9.14.0702/PhysX-9.14.0702-SystemSoftware.msi 0a022e28accf5851be9d6577487cdcd3d3a3e2a8a21a64456b72b415c217f03c
+    w_download https://uk.download.nvidia.com/Windows/9.19.0218/PhysX-9.19.0218-SystemSoftware.exe 4f36389fcbfbdef4781fb85e7a68373542903235f65d93f7143693738324917c
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" msiexec /i PhysX-9.14.0702-SystemSoftware.msi ${W_OPT_UNATTENDED:+/q}
+    w_try "${WINE}" PhysX-9.19.0218-SystemSoftware.exe ${W_OPT_UNATTENDED:+/s}
 }
 
 #----------------------------------------------------------------
