@@ -47,26 +47,21 @@ trap 'rm -fr "$temp"' EXIT
 
 # tests using bashate
 test_bashate() {
-    if [ ! -x "$(command -v bashate 2>/dev/null)" ] && [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-        echo "On OSX and bashate not available, skipping."
-        return
-    else
-        bashate="$(command -v bashate)"
+    bashate="$(command -v bashate)"
 
-        #echo "======================== Begin bashate version info ==========================="
-        "${bashate}" --help > /dev/null || w_die "bashate must be installed!"
-        ## bashate doesn't have a --version option (as of bashate-0.3.1)
-        #"$bashate" --version
-        #echo "======================== End bashate version info ==========================="
+    #echo "======================== Begin bashate version info ==========================="
+    "${bashate}" --help > /dev/null || w_die "bashate must be installed!"
+    ## bashate doesn't have a --version option (as of bashate-0.3.1)
+    #"$bashate" --version
+    #echo "======================== End bashate version info ==========================="
 
-        # Can't ignore individual things for now, filed bug:
-        # https://bugs.launchpad.net/bash8/+bug/1698088
-        # E006=line length check
-        # E010=do/while same line (in some embedded perl in winetricks)
-        # E044=Use [[ for non-POSIX comparisions
-        echo "Checking ${shellscript} with bashate:"
-        w_try "${bashate}" -i E006,E010,E044 "${shellscript}"
-    fi
+    # Can't ignore individual things for now, filed bug:
+    # https://bugs.launchpad.net/bash8/+bug/1698088
+    # E006=line length check
+    # E010=do/while same line (in some embedded perl in winetricks)
+    # E044=Use [[ for non-POSIX comparisions
+    echo "Checking ${shellscript} with bashate:"
+    w_try "${bashate}" -i E006,E010,E044 "${shellscript}"
 }
 
 # check formatting, (no trailing whitespace, no tabs)
@@ -96,20 +91,15 @@ test_formatting() {
 
 # tests using shellcheck
 test_shellcheck() {
-    if [ ! -x "$(command -v shellcheck 2>/dev/null)" ] && [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-        echo "On OSX and shellcheck not available, skipping."
-        return
-    else
-        shellcheck="$(command -v shellcheck)"
+    shellcheck="$(command -v shellcheck)"
 
-        echo "======================== Begin shellcheck version info ==========================="
-        "${shellcheck}" --version > /dev/null || w_die "shellcheck must be installed!"
-        "${shellcheck}" --version
-        echo "======================== End shellcheck version info ==========================="
+    echo "======================== Begin shellcheck version info ==========================="
+    "${shellcheck}" --version > /dev/null || w_die "shellcheck must be installed!"
+    "${shellcheck}" --version
+    echo "======================== End shellcheck version info ==========================="
 
-        echo "Checking ${shellscript} with shellcheck:"
-        w_try "${shellcheck}" -s sh "${shellscript}"
-    fi
+    echo "Checking ${shellscript} with shellcheck:"
+    w_try "${shellcheck}" -s sh "${shellscript}"
 }
 
 # tests for linkcheck
@@ -121,21 +111,6 @@ test_linkcheck() {
         w_die "Do not use variables in these URLs, it breaks src/linkcheck.sh"
     else
         echo "linkcheck checks passed"
-    fi
-}
-
-test_travis_yml() {
-    if [ ! -x "$(command -v yq 2>/dev/null)" ]; then
-        echo "warning: yq unavilable, skipping .travis.yml validation"
-    else
-        yq="$(command -v yq)"
-
-        if [ -n "${yq}" ]; then
-            echo "yq available, validating .travis.yml"
-            yq . .travis.yml || true
-        else
-            echo "warning: yq not available, not validating .travis.yml"
-        fi
     fi
 }
 
@@ -157,11 +132,6 @@ main() {
 
     # really, this checks winetricks, to make sure it doesn't break linkcheck.sh:
     test_linkcheck
-
-    # make sure yq (if present), can validate .travis_yml.
-    # Available in brew, not ubuntu (without snap), but if .travis_yml is invalid,
-    # travis won't run anyway. Only useful when running locally.
-    test_travis_yml
 
     # Generic shellscript checks:
     for shellscript in ${files_to_check}; do

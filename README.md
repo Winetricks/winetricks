@@ -1,5 +1,5 @@
 # Winetricks
-[![Build Status](https://travis-ci.org/Winetricks/winetricks.svg?branch=master)](https://travis-ci.org/Winetricks/winetricks) [![License](http://img.shields.io/:license-lgpl-green.svg)](https://tldrlegal.com/license/gnu-lesser-general-public-license-v2.1-(lgpl-2.1))
+[![License](http://img.shields.io/:license-lgpl-green.svg)](https://tldrlegal.com/license/gnu-lesser-general-public-license-v2.1-(lgpl-2.1))
 
 Homepage of Winetricks, previously hosted at <https://code.google.com/p/winetricks>.
 
