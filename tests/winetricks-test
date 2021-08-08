@@ -103,19 +103,6 @@ BLACKLIST="${BLACKLIST}|dirac"
 # https://bugs.winehq.org/show_bug.cgi?id=50061 / https://github.com/Winetricks/winetricks/issues/1644
 BLACKLIST="${BLACKLIST}|quicktime76"
 
-# Travis CI is apparently blocking archive.org, which breaks several verbs:
-# https://github.com/travis-ci/travis-ci/issues/6798
-# Blacklist those verbs on those hosts:
-# FIXME: setup another test target for torify, use it to d/l these?
-ARCHIVE_ORG_BLACKLIST="atmlib|avifil32|cabinet|cmd|comctl32ocx|comdgl32ocx|gmdls|mdac27|mfc40|msflxgrd|mshflxgd"
-ARCHIVE_ORG_BLACKLIST="${ARCHIVE_ORG_BLACKLIST}|msls31ms|msmask|msscript|msxml3|pdh|pngfilt|riched30"
-ARCHIVE_ORG_BLACKLIST="${ARCHIVE_ORG_BLACKLIST}|richtx32|secur32|tabctl32|usp10|"
-
-# See https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables
-if [ "${TRAVIS}" = "true" ] ; then
-    BLACKLIST="${ARCHIVE_ORG_BLACKLIST}|${BLACKLIST}"
-fi
-
 # Tests that fail under Xvfb
 XVFB_DOTNET_BLACKLIST="dotnet11|dotnet11sp1|dotnet20|dotnet20sdk|dotnet20sp1|dotnet30|dotnet40|dotnet46"
 XVFB_BLACKLIST="${XVFB_DOTNET_BLACKLIST}|binkw32|dirac|directmusic|dxdiag|gdiplus_winxp|gfw|ie6|ie7|ie8"
@@ -834,7 +821,7 @@ test_xvfb() {
     export BLACKLIST
 
     # Not test_quick() since some tests fail without proper X, but test_quick() doesn't respect $BLACKLIST
-    # Also, we don't really want to duplicate those tests twice, as this is for TravisCI where time is limited..
+    # Also, we don't really want to duplicate those tests twice, as this is for CI/CD where time is limited..
     test_category dlls
     test_category fonts
     test_category settings
