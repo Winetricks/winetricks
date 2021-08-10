@@ -78,6 +78,13 @@ wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetric
 # Move the winetricks BASH completion script to a standard location for BASH completion modules. See:
 #   https://www.tldp.org/LDP/abs/html/tabexpansion.html
 sudo mv winetricks.bash-completion /usr/share/bash-completion/completions/winetricks
+
+# Download the latest winetricks MAN page (master="latest version") from Github.
+wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks.1
+
+# Move the winetricks MAN page to a standard location for MAN pages. See:
+#   https://www.pathname.com/fhs/pub/fhs-2.3.html#USRSHAREMANMANUALPAGES
+sudo mv winetricks.1 /usr/share/man/man1/winetricks.1
 _EOF_SCRIPT
 ###### create update_winetricks FINISH ########
 
