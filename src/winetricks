@@ -12308,7 +12308,7 @@ w_metadata vb6run dlls \
     year="2004" \
     media="download" \
     file1="vbrun60sp6.exe" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/MSVBVM60.DLL"
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/msvbvm60.dll"
 
 load_vb6run()
 {
@@ -12323,21 +12323,12 @@ load_vb6run()
         w_try mv "${W_TMP}"/vbrun60sp6.exe "${W_CACHE}"/vb6run
     fi
 
-    # Delete some fake DLLs to ensure that the installer overwrites them.
-    rm -f "${W_SYSTEM32_DLLS}"/comcat.dll
-    rm -f "${W_SYSTEM32_DLLS}"/oleaut32.dll
-    rm -f "${W_SYSTEM32_DLLS}"/olepro32.dll
-    rm -f "${W_SYSTEM32_DLLS}"/stdole2.tlb
+    # extract the files instead of using installer to avoid https://github.com/Winetricks/winetricks/issues/1806
+    w_try_cabextract -L "${W_CACHE}/${W_PACKAGE}/${file1}" -d "${W_TMP}"
 
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    # Exits with status 43 for some reason?
-    "${WINE}" vbrun60sp6.exe ${W_OPT_UNATTENDED:+/q}
-
-    status=$?
-    case ${status} in
-        0|43) ;;
-        *) w_die "${W_PACKAGE} installation failed"
-    esac
+    for dll in asycfilt.dll comcat.dll msvbvm60.dll oleaut32.dll olepro32.dll stdole2.tlb; do
+        w_try mv "${W_TMP}/${dll}" "${W_SYSTEM32_DLLS}"
+    done
 }
 
 #----------------------------------------------------------------
