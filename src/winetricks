@@ -12418,30 +12418,16 @@ load_vcrun6sp6()
 {
     w_download https://www.ddsystem.com.br/update/setup/vb6+sp6/VS6SP6.EXE 7fa1d1778824b55a5fceb02f45c399b5d4e4dce7403661e67e587b5f455edbf3
 
-    # No EULA is presented when passing command-line extraction arguments,
-    # so we'll simplify extraction with cabextract.
+    # extract the files instead of using installer to avoid https://github.com/Winetricks/winetricks/issues/1806
     w_try_cabextract "${W_CACHE}/${W_PACKAGE}/${file1}" -d "${W_TMP}" -F vcredist.exe
-    w_try_cd "${W_TMP}"
+    w_try_cabextract "${W_TMP}/vcredist.exe" -d "${W_TMP}"
 
-    # Delete some fake DLLs to avoid vcredist installer warnings
-    w_try rm -f "${W_SYSTEM32_DLLS}"/comcat.dll
-    w_try rm -f "${W_SYSTEM32_DLLS}"/msvcrt.dll
-    w_try rm -f "${W_SYSTEM32_DLLS}"/oleaut32.dll
-    w_try rm -f "${W_SYSTEM32_DLLS}"/olepro32.dll
-    w_try rm -f "${W_SYSTEM32_DLLS}"/stdole2.tlb
-    # vcredist still exits with status 43.  Anyone know why?
-    "${WINE}" vcredist.exe
+    for dll in asycfilt.dll comcat.dll mfc42.dll mfc42u.dll msvcirt.dll msvcp60.dll msvcrt.dll oleaut32.dll olepro32.dll stdole2.tlb; do
+        w_try mv "${W_TMP}/${dll}" "${W_SYSTEM32_DLLS}"
+    done
 
-    status=$?
-    case ${status} in
-        0|43) ;;
-        *) w_die "${W_PACKAGE} installation failed"
-    esac
-
-    # And then some apps need mfc42u.dll, dont know what right way
-    # is to get it, vcredist doesn't install it by default?
-    w_try_cabextract vcredist.exe -d "${W_SYSTEM32_DLLS}" -F mfc42u.dll
-    # Should the mfc42 verb install this one instead?
+    # atla.dll lbecomes atl.dll (note: atlu.dll is unused)
+    w_try mv "${W_TMP}/atla.dll" "${W_SYSTEM32_DLLS}/atl.dll"
 }
 
 #----------------------------------------------------------------
