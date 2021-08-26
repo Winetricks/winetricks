@@ -12358,23 +12358,16 @@ load_vcrun6()
     # Load the Visual C++ 6 runtime libraries, including the elusive mfc42u.dll
     winetricks_vcrun6_helper
 
-    # Delete some fake DLLs to avoid vcredist installer warnings
-    rm -f "${W_SYSTEM32_DLLS}"/comcat.dll
-    rm -f "${W_SYSTEM32_DLLS}"/msvcrt.dll
-    rm -f "${W_SYSTEM32_DLLS}"/oleaut32.dll
-    rm -f "${W_SYSTEM32_DLLS}"/olepro32.dll
-    rm -f "${W_SYSTEM32_DLLS}"/stdole2.tlb
-    "${WINE}" "${W_CACHE}"/vcrun6/vcredist.exe
+    # extract the files instead of using installer to avoid https://github.com/Winetricks/winetricks/issues/1806
+    w_try_cabextract "${W_CACHE}/${W_PACKAGE}/${file1}" -d "${W_TMP}" -F vcredist.exe
+    w_try_cabextract "${W_TMP}/vcredist.exe" -d "${W_TMP}"
 
-    status=$?
-    case ${status} in
-        0|43) ;;
-        *) w_die vcrun6 installation failed
-    esac
+    for dll in asycfilt.dll comcat.dll mfc42.dll mfc42u.dll msvcirt.dll msvcp60.dll msvcrt.dll oleaut32.dll olepro32.dll stdole2.tlb; do
+        w_try mv "${W_TMP}/${dll}" "${W_SYSTEM32_DLLS}"
+    done
 
-    # And then some apps need mfc42u.dll, dunno what the right way
-    # is to get it, vcredist doesn't seem to install it by default?
-    load_mfc42
+    # atla.dll lbecomes atl.dll (note: atlu.dll is unused)
+    w_try mv "${W_TMP}/atla.dll" "${W_SYSTEM32_DLLS}/atl.dll"
 }
 
 w_metadata mfc42 dlls \
