@@ -7157,31 +7157,6 @@ helper_dxvk_d9vk()
 
 #----------------------------------------------------------------
 
-w_metadata d9vk dlls \
-    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (latest)" \
-    publisher="Joshua Ashton" \
-    year="2019" \
-    media="download" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
-
-load_d9vk()
-{
-    # https://github.com/Joshua-Ashton/d9vk
-    _W_d9vk_version="$(w_get_github_latest_prerelease Joshua-Ashton d9vk)"
-    _W_d9vk_version="${_W_d9vk_version#v}"
-    w_linkcheck_ignore=1 w_download "https://github.com/Joshua-Ashton/d9vk/releases/download/${_W_d9vk_version}/d9vk-${_W_d9vk_version}.tar.gz"
-    helper_dxvk_d9vk "d9vk-${_W_d9vk_version}.tar.gz" "4.5" "1.1.104" "dxgi,d3d9,d3d10core,d3d10,d3d11"
-    unset _W_d9vk_version
-}
-
-
-#----------------------------------------------------------------
-
 w_metadata dxvk054 dlls \
     title="Vulkan-based D3D11 implementation for Linux / Wine (0.54)" \
     publisher="Philip Rebohle" \
