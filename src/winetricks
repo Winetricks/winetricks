@@ -12369,12 +12369,15 @@ load_vcrun6()
     # Load the Visual C++ 6 runtime libraries, including the elusive mfc42u.dll
     winetricks_vcrun6_helper
 
-    # Delete some fake DLLs to avoid vcredist installer warnings
-    rm -f "${W_SYSTEM32_DLLS}"/comcat.dll
-    rm -f "${W_SYSTEM32_DLLS}"/msvcrt.dll
-    rm -f "${W_SYSTEM32_DLLS}"/oleaut32.dll
-    rm -f "${W_SYSTEM32_DLLS}"/olepro32.dll
-    rm -f "${W_SYSTEM32_DLLS}"/stdole2.tlb
+    # Extract some DLLs to ensure the native version gets used
+    # See: https://github.com/Winetricks/winetricks/issues/1806
+    w_try_cabextract "${W_CACHE}/${W_PACKAGE}/${file1}" -d "${W_TMP}" -F vcredist.exe
+    w_try_cabextract "${W_TMP}/vcredist.exe" -d "${W_TMP}"
+
+    for dll in comcat.dll msvcrt.dll oleaut32.dll olepro32.dll stdole2.tlb; do
+        w_try mv "${W_TMP}/${dll}" "${W_SYSTEM32_DLLS}"
+    done
+
     "${WINE}" "${W_CACHE}"/vcrun6/vcredist.exe
 
     status=$?
@@ -12383,8 +12386,7 @@ load_vcrun6()
         *) w_die vcrun6 installation failed
     esac
 
-    # And then some apps need mfc42u.dll, dunno what the right way
-    # is to get it, vcredist doesn't seem to install it by default?
+    # To install mfc42u.dll
     load_mfc42
 }
 
