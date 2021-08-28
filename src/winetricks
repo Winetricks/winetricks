@@ -12443,12 +12443,15 @@ load_vcrun6sp6()
     w_try_cabextract "${W_CACHE}/${W_PACKAGE}/${file1}" -d "${W_TMP}" -F vcredist.exe
     w_try_cd "${W_TMP}"
 
-    # Delete some fake DLLs to avoid vcredist installer warnings
-    w_try rm -f "${W_SYSTEM32_DLLS}"/comcat.dll
-    w_try rm -f "${W_SYSTEM32_DLLS}"/msvcrt.dll
-    w_try rm -f "${W_SYSTEM32_DLLS}"/oleaut32.dll
-    w_try rm -f "${W_SYSTEM32_DLLS}"/olepro32.dll
-    w_try rm -f "${W_SYSTEM32_DLLS}"/stdole2.tlb
+    # Extract some DLLs to ensure the native version gets used
+    # See: https://github.com/Winetricks/winetricks/issues/1806
+    w_try_cabextract "${W_CACHE}/${W_PACKAGE}/${file1}" -d "${W_TMP}" -F vcredist.exe
+    w_try_cabextract "${W_TMP}/vcredist.exe" -d "${W_TMP}"
+
+    for dll in comcat.dll msvcrt.dll oleaut32.dll olepro32.dll stdole2.tlb; do
+        w_try mv "${W_TMP}/${dll}" "${W_SYSTEM32_DLLS}"
+    done
+
     # vcredist still exits with status 43.  Anyone know why?
     "${WINE}" vcredist.exe
 
@@ -12458,10 +12461,8 @@ load_vcrun6sp6()
         *) w_die "${W_PACKAGE} installation failed"
     esac
 
-    # And then some apps need mfc42u.dll, dont know what right way
-    # is to get it, vcredist doesn't install it by default?
-    w_try_cabextract vcredist.exe -d "${W_SYSTEM32_DLLS}" -F mfc42u.dll
-    # Should the mfc42 verb install this one instead?
+    # To install mfc42u.dll
+    load_mfc42
 }
 
 #----------------------------------------------------------------
