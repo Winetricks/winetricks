@@ -205,6 +205,27 @@ load_icecat()
 
 Note that the file prefix (icecat.verb) and command name (icecat) must match. All metadata fields are optional, only the command name and category are required.
 
+This feature is specially useful if you need to install a setup manually, instead of relying on internet downloads.
+
+Here is an example that installs mdac28 from a folder named `Libs`: 
+
+```
+load_mdac28()
+{
+    w_package_unsupported_win64
+    load_native_mdac
+    w_set_winver nt40
+    mkdir -p "${W_CACHE}"/"${W_PACKAGE}"
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try cp "/Libs/MDAC_TYP.EXE"  "${W_CACHE}"/"${W_PACKAGE}/MDAC_TYP.EXE"
+    w_try "${WINE}" mdac_typ.exe ${W_OPT_UNATTENDED:+/q /C:"setup /qnt"}
+    w_set_winver 'default'
+}
+```
+
+Also, all the methods in `winetricks` are available to use in your own `.verb` scripts.
+
+
 # Tests
 The tests need `bashate` and `shellcheck>=0.4.4` installed.
 Makefile supports a few test targets:
