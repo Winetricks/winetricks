@@ -31,7 +31,7 @@ git clean -fxd || exit 125
 
 ./configure --disable-tests || exit 125
 
-if command nproc >/dev/null 2>&1 ; then
+if command -v nproc ; then
     make "-j$(nproc)" || exit 125
 else
     make -j2
