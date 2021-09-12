@@ -8470,6 +8470,83 @@ load_dxvk()
 
 #----------------------------------------------------------------
 
+# $1 - vkd3d-proton archive name (required)
+helper_vkd3d_proton()
+{
+    _W_package_archive="${1}"
+
+    _W_dll_overrides="d3d12"
+
+    case "${_W_package_archive}" in
+        vkd3d-proton*)
+            _W_repository="HansKristian-Work/vkd3d-proton"
+            ;;
+        *)
+            w_die "parameter (1): unsupported package archive repository: '${_W_package_archive}'; supported: vkd3d-proton"
+            ;;
+    esac
+
+    case "${_W_package_archive}" in
+        *master*)
+            _W_package_dir="build/vkd3d-proton-release"
+            _W_package_version="master"
+            w_warn "Using master ${_W_repository} build"
+            ;;
+        *)
+            _W_package_dir="${_W_package_archive%.tar.zst}"
+            _W_package_version="${_W_package_dir#*-}"
+            _W_package_version="${_W_package_version#*-}"
+            w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"
+            ;;
+    esac
+    w_warn "Please refer to current vkd3d-proton base graphics driver requirements... See: https://github.com/HansKristian-Work/vkd3d-proton#drivers"
+
+    if [ "${_W_package_archive##*.}" = "zip" ]; then
+        w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    elif [ "${_W_package_archive##*.}" = "zst" ]; then
+        w_try_cd "${W_TMP}"
+        w_try tar -I zstd -xvf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    else
+        w_try_cd "${W_TMP}"
+        w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    fi
+
+    for _W_dll in ${_W_dll_overrides}; do
+        w_try mv "${W_TMP}/${_W_package_dir}/x86/${_W_dll}.dll" "${W_SYSTEM32_DLLS}/"
+    done
+    if test "${W_ARCH}" = "win64"; then
+        for _W_dll in ${_W_dll_overrides}; do
+            w_try mv "${W_TMP}/${_W_package_dir}/x64/${_W_dll}.dll" "${W_SYSTEM64_DLLS}/"
+        done
+    fi
+    # shellcheck disable=SC2086
+    w_override_dlls native ${_W_dll_overrides}
+
+    unset _W_dll _W_dll_overrides _W_package_archive _W_package_dir \
+        _W_package_version _W_repository
+}
+
+#----------------------------------------------------------------
+
+w_metadata vkd3d dlls \
+    title="Vulkan-based D3D12 implementation for Linux / Wine (latest)" \
+    publisher="Hans-Kristian Arntzen " \
+    year="2020" \
+    media="download" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d12.dll"
+
+load_vkd3d()
+{
+    # https://github.com/HansKristian-Work/vkd3d-proton
+    _W_vkd3d_proton_version="$(w_get_github_latest_release HansKristian-Work vkd3d-proton)"
+    _W_vkd3d_proton_version="${_W_vkd3d_proton_version#v}"
+    w_linkcheck_ignore=1 w_download "https://github.com/HansKristian-Work/vkd3d-proton/releases/download/v${_W_vkd3d_proton_version}/vkd3d-proton-${_W_vkd3d_proton_version}.tar.zst"
+    helper_vkd3d_proton "vkd3d-proton-${_W_vkd3d_proton_version}.tar.zst"
+    unset _W_vkd3d-proton_version
+}
+
+#----------------------------------------------------------------
+
 w_metadata dmusic32 dlls \
     title="MS dmusic32.dll from DirectX user redistributable" \
     publisher="Microsoft" \
