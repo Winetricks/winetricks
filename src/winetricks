@@ -5353,6 +5353,12 @@ winetricks_init()
 
     winetricks_get_platform
 
+    # Workaround SIP DYLD_stripping
+    # See https://support.apple.com/en-us/HT204899
+    if [ -n "${WINETRICKS_FALLBACK_LIBRARY_PATH}" ]; then
+        export DYLD_FALLBACK_LIBRARY_PATH="${WINETRICKS_FALLBACK_LIBRARY_PATH}"
+    fi
+
     #---- Public Variables ----
 
     # Where application installers are cached
