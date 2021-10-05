@@ -901,6 +901,15 @@ w_read_key()
     unset _W_keyfile _W_keymsg _W_nokeymsg
 }
 
+w_verify_7z_available()
+{
+    # If verb_a requires verb_b, then verba will fail when the dependency for verb_b is installed
+    # This should be called by verb_a, to give a proper warning
+    if test ! -x "$(command -v 7z 2>/dev/null)"; then
+        w_die "Cannot find 7z.  Please install it (e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip-plugins')."
+    fi
+}
+
 w_verify_cabextract_available()
 {
     # If verb_a requires verb_b, then verba will fail when the dependency for verb_b is installed
