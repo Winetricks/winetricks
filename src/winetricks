@@ -15850,6 +15850,65 @@ load_openwatcom()
 
 #----------------------------------------------------------------
 
+w_metadata origin apps \
+    title="EA Origin" \
+    publisher="EA" \
+    media="download" \
+    file1="OriginSetup.exe" \
+    installed_file1="${W_PROGRAMS_X86_WIN}/Origin/Origin.exe" \
+    homepage="https://www.origin.com/"
+
+helper_origin_dl()
+{
+    # 2021/09/16: 8546b63534ddcd0af6ab1b01348fdfbbb2244d96111176e1a5f9b91cef775017
+    w_download_to origin https://origin-a.akamaihd.net/Origin-Client-Download/origin/live/OriginSetup.exe df43da28b2b3eae4077139b6a1668ee9f2dad8d9e39c49971544f9c4f9812097
+}
+
+load_origin()
+{
+    helper_origin_dl
+
+    if w_workaround_wine_bug 44691 "Installer fails under wine, manually unpacking it instead" 6.7,; then
+        w_call originupdate
+        w_warn "${W_PACKAGE} might fail to update use the originupdate verb"
+    else
+        w_try_cd "${W_CACHE}/${W_PACKAGE}"
+        w_try "${WINE}" "${file1}" /NoLaunch ${W_OPT_UNATTENDED:+/SILENT}
+    fi
+
+    if w_workaround_wine_bug 32342 "QtWebEngineProcess.exe crashes when updating or launching Origin (missing fonts)"; then
+        w_call corefonts
+    fi
+
+    if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly."; then
+        w_override_dlls disabled libglesv2
+    fi
+
+    w_call d3dcompiler_47
+
+    # Avoids "An unexpected error has occurred. Please try again in a few moments. Error: 327684:3"
+    # Also gets games to registor correctly
+    w_override_dlls disabled gameux
+}
+
+w_metadata originupdate apps \
+    title="EA Origin (updater)" \
+    publisher="EA" \
+    media="download" \
+    file1="../Origin/OriginSetup.exe" \
+    homepage="https://www.origin.com/"
+
+load_originupdate()
+{
+    w_verify_7z_available
+    helper_origin_dl
+
+    w_try_7z "${W_TMP}"/origin "${W_CACHE}"/origin/OriginSetup.exe update
+    w_try_7z "${W_PROGRAMS_X86_UNIX}"/Origin "${W_TMP}"/origin/update/OriginUpdate_*_*_*_*.zip -aoa
+}
+
+#----------------------------------------------------------------
+
 w_metadata protectionid apps \
     title="Protection ID" \
     publisher="CDKiLLER & TippeX" \
