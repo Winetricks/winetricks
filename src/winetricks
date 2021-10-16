@@ -232,7 +232,7 @@ w_info()
     fi
 
     case ${WINETRICKS_GUI} in
-        zenity) ${WINETRICKS_GUI} --timeout=3 --info --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
+        zenity) ${WINETRICKS_GUI} --timeout=3 --info --width=400 --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
         kdialog) ${WINETRICKS_GUI} --title winetricks --msgbox "$@" ;;
         none) ;;
     esac
@@ -253,7 +253,7 @@ w_warn()
     fi
 
     case ${WINETRICKS_GUI} in
-        zenity) ${WINETRICKS_GUI} "${_W_timeout}" --error --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
+        zenity) ${WINETRICKS_GUI} "${_W_timeout}" --error --width=400 --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
         kdialog) ${WINETRICKS_GUI} --title winetricks --error "$@" ;;
         none) ;;
     esac
