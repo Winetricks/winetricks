@@ -3386,8 +3386,8 @@ winetricks_latest_version_check()
         case ${LANG} in
             pl*) w_warn "GitHub nie działa? Wersja '${latest_version}' nie wydaje się być prawdiłową wersją" ;;
             ru*) w_warn "Отсутствует подключение к Github? версия '${latest_version}' может быть неактуальной" ;;
-            zh_CN*) w_warn "Github 提供的下载？${latest_version} 似乎不是个有效的版本号。" ;;
-            zh_TW*|zh_HK*) w_warn "Github 提供的下載？${latest_version} 似乎不是個有效的版本號。" ;;
+            zh_CN*) w_warn "GitHub 无法访问？${latest_version} 似乎不是个有效的版本号。" ;;
+            zh_TW*|zh_HK*) w_warn "GitHub 宕機了？${latest_version} 似乎不是個有效的版本號。" ;;
             *) w_warn "Github down? version '${latest_version}' doesn't appear to be a valid version" ;;
         esac
 
