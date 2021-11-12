@@ -213,6 +213,7 @@ w_askpermission()
         case ${LANG} in
             uk*) w_die "Операція скасована." ;;
             pl*) w_die "Anulowano operację, opuszczanie." ;;
+            pt*) w_die "Operação cancelada, saindo." ;;
             *) w_die "Operation cancelled, quitting." ;;
         esac
         exec false
@@ -321,9 +322,34 @@ _w_get_broken_messages()
 
     # Unify the broken messages (to make it easier for future translators):
     case ${LANG} in
+        pt*)
+            # default broken messages
+            broken_good_version_known_default="O pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped}. Atualize para >=${good_version}. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_good_and_bad_version_known_default="O pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped}. Quebrado desde ${bad_version}. Atualize para >=${good_version}. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_only_bad_version_known_default="O pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped}. Quebrado desde ${bad_version}. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_no_version_known_default="Este pacote (${W_PACKAGE}) está quebrado. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+
+            # mingw broken messages
+            broken_good_version_known_mingw="Este pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped} quando o wine é feito com o mingw. Atualize para >=${good_version} ou refaça o wine sem mingw. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_good_and_bad_version_known_mingw="O pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped}. Quebrado desde ${bad_version} quando o wine é feito com o mingw. Atualize para >=${good_version} ou refaça o wine sem mingw. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_only_bad_version_known_mingw="O pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped}. Quebrado desde ${bad_version} quando o wine é feito com o mingw. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_no_version_known_mingw="Este pacote (${W_PACKAGE}) está quebrado quando o wine é feito com o mingw. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+
+            # no mingw broken messages
+            broken_good_version_known_no_mingw="Este pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped} quando o wine é feito sem mingw. Atualize para >=${good_version}. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_good_and_bad_version_known_no_mingw="O pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped}. Quebrado desde ${bad_version} quando o wine é feito sem mingw. Atualize para >=${good_version}. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_only_bad_version_known_no_mingw="O pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped}. Quebrado desde ${bad_version} quando o wine é feito sem mingw. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_no_version_known_no_mingw="Este pacote (${W_PACKAGE}) está quebrado quando o wine é feito sem mingw. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+
+            # win64 broken messages
+            broken_good_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado em 64-bit wine-${_wine_version_stripped}. Use um prefixo feito com WINEARCH=win32 ou atualize o wine para >=${good_version} para trabalhar com isto. Or use --force to try anyway. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_good_and_bad_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado em 64-bit wine-${_wine_version_stripped}. Quebrado desde ${bad_version}. Use um prefixo feito com WINEARCH=win32 ou atualize o wine para >=${good_version} para trabalhar com isto. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_only_bad_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado em 64-bit wine-${_wine_version_stripped}. Quebrado desde ${bad_version}. Use um prefixo feito com WINEARCH=win32 para trabalhar com isto. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            broken_no_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado quando o wine é feito sem mingw. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            ;;
         *)
             # default broken messages
-            broken_good_version_known_default="This package (${W_PACKAGE}) is broken in wine-${_wine_version_stripped}. Upgrade to >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
+            broken_good_version_known_default="This package (${W_PACKAGE}) is broken in wine-${_wine_version_stripped}. veja >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
             broken_good_and_bad_version_known_default="This package (${W_PACKAGE}) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. Upgrade to >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
             broken_only_bad_version_known_default="This package (${W_PACKAGE}) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. See ${bug_link} for more info. Use --force to try anyway."
             broken_no_version_known_default="This package (${W_PACKAGE}) is broken. See ${bug_link} for more info. Use --force to try anyway."
@@ -519,6 +545,7 @@ w_package_unsupported_win64()
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
+            pt*) w_warn "Este pacote (${W_PACKAGE}) não funciona em instalação de 64-bit. Você precisa usar um prefixo feito com WINEARCH=win32." ;;
             ru*) w_warn "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
             zh_CN*) w_warn "(${W_PACKAGE}) 无法在64位下工作，只能将容器变量设置为 WINEARCH=win32 安装。" ;;
             zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 無法在64元下工作，只能將容器變數設定為 WINEARCH=win32 安装。" ;;
@@ -533,6 +560,7 @@ w_package_warn_win64()
 {
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
+            pt*) w_warn "Este pacote (${W_PACKAGE}) talvez não funcione completamente em 64-bit. Em prefixo 32-bit talvez funcione melhor." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działać lepiej." ;;
             ru*) w_warn "Данный пакет может работать не полностью в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
             zh_CN*) w_warn "(${W_PACKAGE}) 可能在64位环境下工作有问题，安装在32位环境可能会更好。" ;;
@@ -580,6 +608,7 @@ w_try()
 
     en_abort="Note: command $* returned status ${status}. Aborting."
     pl_abort="Informacja: poelcenie $* zwróciło status ${status}. Przerywam."
+    pt_abort="Nota: comando $* retornou o status ${status}. Cancelando."
     ru_abort="Важно: команда $* вернула статус ${status}. Прерывание."
 
     if [ -n "${_w_ms_installer}" ]; then
@@ -599,6 +628,7 @@ w_try()
             *)
                 case ${LANG} in
                     pl*) w_die "${pl_abort}" ;;
+                    pt*) w_die "${pl_abort}" ;;
                     ru*) w_die "${ru_abort}" ;;
                     *) w_die "${en_abort}" ;;
                 esac
@@ -867,6 +897,9 @@ w_read_key()
             pl*) _W_keymsg="Proszę podać klucz dla programu '${W_PACKAGE}'"
                 _W_nokeymsg="Nie podano klucza"
                 ;;
+            pt*)  _W_keymsg="Por favor, insira a chave do aplicativo '${W_PACKAGE}'"
+                _W_nokeymsg="Nenhuma chave fornecida"
+                ;;
             ru*) _W_keymsg="Пожалуйста, введите ключ для приложения '${W_PACKAGE}'"
                 _W_nokeymsg="Ключ не введён"
                 ;;
@@ -1031,6 +1064,7 @@ w_verify_sha256sum()
         else
             case ${LANG} in
                 pl*) w_die "Niezgodność sumy sha256sum! Zmień nazwę ${_W_vs_file} i spróbuj ponownie." ;;
+                pt*) w_die "sha256sum não confere! Renomeie ${_W_vs_file} e tente novamente. Alternativamente, use --force para ignorar esta verificação." ;;
                 ru*) w_die "Контрольная сумма sha256sum не совпадает! Переименуйте файл ${_W_vs_file} и попробуйте еще раз." ;;
                 *) w_die "sha256sum mismatch! Rename ${_W_vs_file} and try again. Alternatively, use --force to ignore this check." ;;
             esac
@@ -1344,6 +1378,7 @@ w_download_to()
                 if test "${WINETRICKS_FORCE}" != 1; then
                     case ${LANG} in
                         pl*) w_warn "Niezgodność sum kontrolnych dla ${_W_cache}/${_W_file}, pobieram ponownie" ;;
+                        pt*) w_warn "Checksum para ${_W_cache}/${_W_file} não confere, tentando novo download" ;;
                         ru*) w_warn "Контрольная сумма файла ${_W_cache}/${_W_file} не совпадает, попытка повторной загрузки" ;;
                         *) w_warn "Checksum for ${_W_cache}/${_W_file} did not match, retrying download" ;;
                     esac
@@ -1601,6 +1636,7 @@ w_download_manual_to()
             da*) _W_dlmsg="Hent venligst filen ${_W_file} fra ${_W_url} og placér den i ${W_CACHE}/${_W_packagename}, kør derefter dette skript.";;
             de*) _W_dlmsg="Bitte laden Sie ${_W_file} von ${_W_url} runter, stellen Sie's in ${W_CACHE}/${_W_packagename}, dann wiederholen Sie dieses Kommando.";;
             pl*) _W_dlmsg="Proszę pobrać plik ${_W_file} z ${_W_url}, następnie umieścić go w ${W_CACHE}/${_W_packagename}, a na końcu uruchomić ponownie ten skrypt.";;
+            pt*) _W_dlmsg="Baixe o ${_W_file} de ${_W_url}, salve em ${W_CACHE}/${_W_packagename}, então tente executar novamente este script.";;
             ru*) _W_dlmsg="Пожалуйста, скачайте файл ${_W_file} по адресу ${_W_url}, и поместите его в ${W_CACHE}/${_W_packagename}, а затем запустите winetricks заново.";;
             uk*) _W_dlmsg="Будь ласка, звантажте ${_W_file} з ${_W_url}, розташуйте в ${W_CACHE}/${_W_packagename}, потім запустіть скрипт знову.";;
             zh_CN*) _W_dlmsg="请从 ${_W_url} 下载 ${_W_file}，并置放于 ${W_CACHE}/${_W_packagename}, 然后重新运行 winetricks.";;
@@ -2887,6 +2923,7 @@ w_workaround_wine_bug()
         da*) w_warn "Arbejder uden om wine-fejl ${1} ${_W_msg}" ;;
         de*) w_warn "Wine-Fehler ${1} wird umgegangen ${_W_msg}" ;;
         pl*) w_warn "Obchodzenie błędu w wine ${1} ${_W_msg}" ;;
+        pt*)   w_warn "Trabalhando em torno do bug do wine ${1} ${_W_msg}" ;;
         ru*) w_warn "Обход ошибки ${1} ${_W_msg}" ;;
         uk*) w_warn "Обхід помилки ${1} ${_W_msg}" ;;
         zh_CN*)   w_warn "绕过 wine bug ${1} ${_W_msg}" ;;
@@ -3385,6 +3422,7 @@ winetricks_latest_version_check()
     if ! echo "${latest_version}" | grep -q -E "[0-9]{8}" || [ -z "${latest_version}" ] ; then
         case ${LANG} in
             pl*) w_warn "GitHub nie działa? Wersja '${latest_version}' nie wydaje się być prawdiłową wersją" ;;
+            pt*) w_warn "Github offline? versão '${latest_version}' não parece uma versão válida" ;;
             ru*) w_warn "Отсутствует подключение к Github? версия '${latest_version}' может быть неактуальной" ;;
             zh_CN*) w_warn "Github 提供的下载？${latest_version} 似乎不是个有效的版本号。" ;;
             zh_TW*|zh_HK*) w_warn "Github 提供的下載？${latest_version} 似乎不是個有效的版本號。" ;;
@@ -3407,7 +3445,10 @@ winetricks_latest_version_check()
                     w_warn "Korzystasz z winetricks-${WINETRICKS_VERSION}, a najnowszą wersją winetricks-${latest_version}!"
                     w_warn "Zalecana jest aktualizacja z użyciem menedżera pakietów Twojej dystrybucji, --self-update lub ręczna aktualizacja."
                     ;;
-                ru*)
+                pt*)
+                    w_warn "Você está utilizando o winetricks-${WINETRICKS_VERSION}, a versão mais recente é winetricks-${latest_version}!"
+                    w_warn "Você pode atualizar com o sistema de atualizações da sua distribuição, --self-update, ou manualmente."
+                    ;;                ru*)
                     w_warn "Запущен winetricks-${WINETRICKS_VERSION}, последняя версия winetricks-${latest_version}!"
                     w_warn "Вы можете ее обновить с помощью менеджера пакетов, --self-update или вручную."
                     ;;
@@ -3634,6 +3675,17 @@ winetricks_prefixmenu()
              _W_msg_unattended1="Włącz cichą instalację"
              _W_msg_help="Wyświetl pomoc"
              ;;
+        pt*)   _W_msg_title="Winetricks - Escolha um wineprefix"
+             _W_msg_body='O que você quer fazer?'
+             _W_msg_apps='Instalar um programa'
+             _W_msg_games='Instalar um jogo'
+             _W_msg_benchmarks='Instalar um teste de desempenho/benchmark'
+             _W_msg_default="Selecionar o prefixo padrão wineprefix"
+             _W_msg_mkprefix="Criar novo prefixo wineprefix"
+             _W_msg_unattended0="Desativar instalação silenciosa"
+             _W_msg_unattended1="Ativar instalação silenciosa"
+             _W_msg_help="Ver ajuda"
+             ;;
         *)   _W_msg_title="Winetricks - choose a wineprefix"
              _W_msg_body='What do you want to do?'
              _W_msg_apps='Install an application'
@@ -3687,6 +3739,7 @@ winetricks_prefixmenu()
                     zh_TW*|zh_HK*) printf %s " FALSE prefix='${p}' '選擇管理 ${_W_msg_name}' " ;;
                     de*) printf %s " FALSE prefix='${p}' '${_W_msg_name} auswählen' " ;;
                     pl*) printf %s " FALSE prefix='${p}' 'Wybierz ${_W_msg_name}' " ;;
+                    pt*) printf %s " FALSE prefix='${p}' 'Selecione ${_W_msg_name}' " ;;
                     *) printf %s " FALSE prefix='${p}' 'Select ${_W_msg_name}' " ;;
                 esac
                 done >> "${WINETRICKS_WORKDIR}"/zenity.sh
@@ -3739,6 +3792,10 @@ winetricks_mkprefixmenu()
         de)  _W_msg_title="Winetricks - Neues Wineprefix erstellen"
              _W_msg_name="Name"
              _W_msg_arch="Architektur"
+             ;;
+        *)   _W_msg_title="Winetricks - criar novo wineprefix"
+             _W_msg_name="Nome"
+             _W_msg_arch="Arquitetura"
              ;;
         *)   _W_msg_title="Winetricks - create new wineprefix"
              _W_msg_name="Name"
@@ -3810,6 +3867,20 @@ winetricks_mainmenu()
              _W_msg_shell='Uruchomić powłokę wiersza poleceń (dla debugowania)'
              _W_msg_folder='Przeglądać pliki'
              _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
+             ;;
+        *)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
+             _W_msg_body='O que você gostaria de fazer com este prefixo wineprefix?'
+             _W_msg_dlls="Instalar DLL ou componente do Windows"
+             _W_msg_fonts='Instalar fontes'
+             _W_msg_settings='Alterar configurações'
+             _W_msg_winecfg='Executar winecfg'
+             _W_msg_regedit='Executar regedit'
+             _W_msg_taskmgr='Executar taskmgr'
+             _W_msg_explorer='Executar explorer'
+             _W_msg_uninstaller='Executar desinstalador'
+             _W_msg_shell='Executar linha de comandos shell (para depuração)'
+             _W_msg_folder='Gerenciar arquivos'
+             _W_msg_annihilate="Apagar TODOS OS DADOS E APLICATIVOS DENTRO DESTE WINEPREFIX"
              ;;
         ru*) _W_msg_title="Winetricks - текущий путь для wine (wineprefix) \"${WINEPREFIX}\""
              _W_msg_body='Что вы хотите сделать с этим wineprefix?'
@@ -3951,6 +4022,9 @@ winetricks_settings_menu()
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
              _W_msg_body='Jakie ustawienia chcesz zmienić?'
              ;;
+        pt*)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
+             _W_msg_body='Quais configurações você gostaria de alterar?'
+             ;;
         ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"${WINEPREFIX}\""
              _W_msg_body='Какие настройки вы хотите изменить?'
              ;;
@@ -4003,6 +4077,18 @@ winetricks_settings_menu()
                         --column '' \
                         --column Ustawienie \
                         --column Nazwa \
+                        --height ${WINETRICKS_MENU_HEIGHT} \
+                        --width ${WINETRICKS_MENU_WIDTH} \
+                        "
+                    ;;
+                *) printf %s "zenity \
+                        --title '${_W_msg_title}' \
+                        --text '${_W_msg_body}' \
+                        --list \
+                        --checklist \
+                        --column '' \
+                        --column Configuração \
+                        --column Título \
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
@@ -4125,6 +4211,10 @@ winetricks_showmenu()
              _W_msg_body='Które paczki chesz zainstalować?'
              _W_cached="zarchiwizowane"
              ;;
+        *)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
+             _W_msg_body='Quais pacotes você gostaria de instalar?'
+             _W_cached="em cache"
+             ;;
         ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"${WINEPREFIX}\""
              _W_msg_body='Какое приложение(я) вы хотите установить?'
              _W_cached="в кэше"
@@ -4194,6 +4284,22 @@ winetricks_showmenu()
                         --column Wydawca \
                         --column Rok \
                         --column Media \
+                        --column Status \
+                        --height ${WINETRICKS_MENU_HEIGHT} \
+                        --width ${WINETRICKS_MENU_WIDTH} \
+                        "
+                     ;;
+                *) printf %s "zenity \
+                        --title '${_W_msg_title}' \
+                        --text '${_W_msg_body}' \
+                        --list \
+                        --checklist \
+                        --column '' \
+                        --column Pacote \
+                        --column Título \
+                        --column Publisher \
+                        --column Ano \
+                        --column Mídia \
                         --column Status \
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
@@ -4498,6 +4604,7 @@ winetricks_list_all()
         da*) _W_cached="cached"   ; _W_download="kan hentes"    ;;
         de*) _W_cached="gecached" ; _W_download="herunterladbar";;
         pl*) _W_cached="zarchiwizowane"   ; _W_download="do pobrania"  ;;
+        pt*)   _W_cached="em cache"   ; _W_download="para download"  ;;
         ru*) _W_cached="в кэше"   ; _W_download="доступно для скачивания"  ;;
         uk*) _W_cached="кешовано"   ; _W_download="завантажуване"  ;;
         zh_CN*)   _W_cached="已缓存"   ; _W_download="可下载"  ;;
@@ -4729,6 +4836,7 @@ winetricks_cache_iso()
                 da*)  w_warn "Forkert disk [${_W_volname}] indsat. Indsæt venligst disken [${_W_expected_volname}]" ;;
                 de*)  w_warn "Falsche Disk [${_W_volname}] eingelegt. Bitte legen Sie Disk [${_W_expected_volname}] ein!" ;;
                 pl*)  w_warn "Umieszczono zły dysk [${_W_volname}]. Proszę włożyć dysk [${_W_expected_volname}]" ;;
+                pt*)    w_warn "Disco errado [${_W_volname}] inserido. Por favor insira o disco [${_W_expected_volname}]" ;;
                 ru*)  w_warn "Неверный диск [${_W_volname}]. Пожалуйста, вставьте диск [${_W_expected_volname}]" ;;
                 uk*)  w_warn "Неправильний диск [${_W_volname}]. Будь ласка, вставте диск [${_W_expected_volname}]" ;;
                 zh_CN*)    w_warn " [${_W_volname}] 光盘插入错误，请插入光盘 [${_W_expected_volname}]" ;;
@@ -5004,6 +5112,7 @@ winetricks_mount_real_volume()
         da*)_W_mountmsg="Indsæt venligst disken '${_W_expected_volname}' (krævet af pakken '${W_PACKAGE}')" ;;
         de*)_W_mountmsg="Bitte Disk '${_W_expected_volname}' einlegen (für Paket '${W_PACKAGE}')" ;;
         pl*)  _W_mountmsg="Proszę włożyć dysk '${_W_expected_volname}' (potrzebny paczce '${W_PACKAGE}')" ;;
+        pt*)  _W_mountmsg="Por favor insira o volume '${_W_expected_volname}' (necessário para o pacote '${W_PACKAGE}')" ;;
         ru*)  _W_mountmsg="Пожалуйста, вставьте том '${_W_expected_volname}' (требуется для пакета '${W_PACKAGE}')" ;;
         uk*)  _W_mountmsg="Будь ласка, вставте том '${_W_expected_volname}' (потрібний для пакунка '${W_PACKAGE}')" ;;
         zh_CN*)  _W_mountmsg="请插入卷 '${_W_expected_volname}' (为包 '${W_PACKAGE} 所需')" ;;
@@ -5179,6 +5288,7 @@ winetricks_set_wineprefix()
         # 64-bit prefixes still have plenty of issues:
         case ${LANG} in
             ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
+            pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
             *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
         esac
     else
@@ -5279,6 +5389,7 @@ winetricks_annihilate_wineprefix()
     case ${LANG} in
         uk*) w_askpermission "Бажаєте видалити '${WINEPREFIX}'?" ;;
         pl*) w_askpermission "Czy na pewno chcesz usunąć prefiks ${WINEPREFIX} i wszystkie jego elementy?" ;;
+        pt*) w_askpermission "Apagar ${WINEPREFIX}, Estes apps, ícones e ítens do menu?" ;;
         *) w_askpermission "Delete ${WINEPREFIX}, its apps, icons, and menu items?" ;;
     esac
 
@@ -5728,6 +5839,7 @@ winetricks_install_app()
         da*) fail_msg="Installationen af pakken $1 fejlede" ;;
         de*) fail_msg="Installieren von Paket $1 gescheitert" ;;
         pl*) fail_msg="Niepowodzenie przy instalacji paczki $1" ;;
+        pt*)   fail_msg="Falha ao instalar o pacote $1" ;;
         ru*) fail_msg="Ошибка установки пакета $1" ;;
         uk*) fail_msg="Помилка встановлення пакунка $1" ;;
         zh_CN*)   fail_msg="$1 安装失败" ;;
@@ -11728,6 +11840,7 @@ load_quicktime72()
 
         case ${LANG} in
             ru*) w_warn "В настройках Quicktime включите Дополнительно / Безопасный режим (только gdi), иначе видеофайлы не будут воспроизводиться." ;;
+            pt*) w_warn "Nas preferências do Quicktime, marque Advanced / Safe Mode (gdi), ou os vídeos não irão reproduzir." ;;
             *) w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play." ;;
         esac
         if [ -z "${W_OPT_UNATTENDED}" ]; then
@@ -11766,6 +11879,7 @@ load_quicktime76()
 
         case ${LANG} in
             ru*) w_warn "В настройках Quicktime включите Дополнительно / Безопасный режим (только gdi), иначе видеофайлы не будут воспроизводиться." ;;
+            *) w_warn "Nas preferências do Quicktime, marque Advanced / Safe Mode (gdi), ou os vídeos não irão reproduzir." ;;
             *) w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play." ;;
         esac
         if [ -z "${W_OPT_UNATTENDED}" ]; then
@@ -19471,6 +19585,11 @@ load_lhp_demo()
 {
     case "${LANG}" in
         *UTF-8*|*utf8*) ;;
+        pt*)
+            w_warn "O instalaou falhou em uma localização não utf-8. Utilize 'export LANG=en_US.UTF-8' para contornar."
+            LANG=en_US.UTF-8
+            export LANG
+            ;;
         *)
             w_warn "This installer fails in non-utf-8 locales. Doing 'export LANG=en_US.UTF-8' is a workaround."
             LANG=en_US.UTF-8
@@ -22765,6 +22884,12 @@ winetricks_stats_init()
                     question="Czy chcesz pomóc w rozwoju Winetricks pozwalając na wysyłanie statystyk przez program? Możesz wyłączyć tą opcję w każdej chwili z użyciem komendy 'winetricks --optout'."
                     thanks="Dziękujemy! Nie otrzymasz już tego pytania. Pamiętaj, ze możesz wyłączyć tą opcję komendą 'winetricks --optout'"
                     declined="OK, Winetricks *nie* będzie wysyłać statystyk. Nie otrzymasz już tego pytania."
+                    ;;
+                *)
+                    title="Pergunta única sobre ajudar no desenvolvimento do Winetricks"
+                    question="Você gostaria de ajudar no desenvolvimento do winetricks, permitindo que o winetricks relate estatísticas? Você pode desativar o relatório a qualquer momento com o comando 'winetricks --optout'"
+                    thanks="Obrigado! Esta pergunta não será feita novamente. Lembre-se, você pode desativar o relatório a qualquer momento com o comando 'winetricks --optout'"
+                    declined="OK, winetricks *não* reportará estatísticas. Esta pergunta não será feita novamente."
                     ;;
                 ru*)
                     title="Помощь в разработке Winetricks"
