@@ -349,7 +349,7 @@ _w_get_broken_messages()
             ;;
         *)
             # default broken messages
-            broken_good_version_known_default="This package (${W_PACKAGE}) is broken in wine-${_wine_version_stripped}. veja >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
+            broken_good_version_known_default="This package (${W_PACKAGE}) is broken in wine-${_wine_version_stripped}. Upgrade to >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
             broken_good_and_bad_version_known_default="This package (${W_PACKAGE}) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. Upgrade to >=${good_version}. See ${bug_link} for more info. Use --force to try anyway."
             broken_only_bad_version_known_default="This package (${W_PACKAGE}) is broken in wine-${_wine_version_stripped}. Broken since ${bad_version}. See ${bug_link} for more info. Use --force to try anyway."
             broken_no_version_known_default="This package (${W_PACKAGE}) is broken. See ${bug_link} for more info. Use --force to try anyway."
@@ -3448,7 +3448,8 @@ winetricks_latest_version_check()
                 pt*)
                     w_warn "Você está utilizando o winetricks-${WINETRICKS_VERSION}, a versão mais recente é winetricks-${latest_version}!"
                     w_warn "Você pode atualizar com o sistema de atualizações da sua distribuição, --self-update, ou manualmente."
-                    ;;                ru*)
+                    ;;
+                ru*)
                     w_warn "Запущен winetricks-${WINETRICKS_VERSION}, последняя версия winetricks-${latest_version}!"
                     w_warn "Вы можете ее обновить с помощью менеджера пакетов, --self-update или вручную."
                     ;;
@@ -3793,7 +3794,7 @@ winetricks_mkprefixmenu()
              _W_msg_name="Name"
              _W_msg_arch="Architektur"
              ;;
-        *)   _W_msg_title="Winetricks - criar novo wineprefix"
+        pt*)   _W_msg_title="Winetricks - criar novo wineprefix"
              _W_msg_name="Nome"
              _W_msg_arch="Arquitetura"
              ;;
@@ -3868,7 +3869,7 @@ winetricks_mainmenu()
              _W_msg_folder='Przeglądać pliki'
              _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
              ;;
-        *)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
+        pt*)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
              _W_msg_body='O que você gostaria de fazer com este prefixo wineprefix?'
              _W_msg_dlls="Instalar DLL ou componente do Windows"
              _W_msg_fonts='Instalar fontes'
@@ -4081,7 +4082,7 @@ winetricks_settings_menu()
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
                     ;;
-                *) printf %s "zenity \
+                pt*) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
                         --list \
@@ -4211,7 +4212,7 @@ winetricks_showmenu()
              _W_msg_body='Które paczki chesz zainstalować?'
              _W_cached="zarchiwizowane"
              ;;
-        *)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
+        pt*)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
              _W_msg_body='Quais pacotes você gostaria de instalar?'
              _W_cached="em cache"
              ;;
@@ -4289,7 +4290,7 @@ winetricks_showmenu()
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
                      ;;
-                *) printf %s "zenity \
+                pt*) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
                         --list \
@@ -22885,7 +22886,7 @@ winetricks_stats_init()
                     thanks="Dziękujemy! Nie otrzymasz już tego pytania. Pamiętaj, ze możesz wyłączyć tą opcję komendą 'winetricks --optout'"
                     declined="OK, Winetricks *nie* będzie wysyłać statystyk. Nie otrzymasz już tego pytania."
                     ;;
-                *)
+                pt*)
                     title="Pergunta única sobre ajudar no desenvolvimento do Winetricks"
                     question="Você gostaria de ajudar no desenvolvimento do winetricks, permitindo que o winetricks relate estatísticas? Você pode desativar o relatório a qualquer momento com o comando 'winetricks --optout'"
                     thanks="Obrigado! Esta pergunta não será feita novamente. Lembre-se, você pode desativar o relatório a qualquer momento com o comando 'winetricks --optout'"
