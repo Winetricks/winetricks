@@ -706,6 +706,19 @@ w_try_cd()
     w_try cd "$@"
 }
 
+# Copy $1 into $2. If $2 is found to be a symbolic link, it will be removed first.
+# This solve a problem of dlls being symbolic links on some versions or variants of wine.
+# We want to replace the symbolic link and not copy into its target.
+w_try_cp_dll()
+{
+    _W_srcfile="$1"
+    _W_destfile="$2"
+    [ -d "${_W_destfile}" ] && _W_destfile="${_W_destfile}/$(basename "${_W_srcfile}")"
+
+    [ -h "${_W_destfile}" ] && w_try rm -f "${_W_destfile}"
+    w_try cp -f "${_W_srcfile}" "${_W_destfile}"
+}
+
 # Copy font files matching a glob pattern from source directory to destination directory.
 # Also remove any file in the destination directory that has the same name as
 # any of the files that we're trying to copy, but with different case letters.
@@ -6028,7 +6041,7 @@ w_metadata amstream dlls \
 load_amstream()
 {
     helper_win7sp1 x86_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_0f58f1e53efca91e/amstream.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_0f58f1e53efca91e/amstream.dll" "${W_SYSTEM32_DLLS}/amstream.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_0f58f1e53efca91e/amstream.dll" "${W_SYSTEM32_DLLS}/amstream.dll"
 
     w_override_dlls native,builtin amstream
 
@@ -6036,7 +6049,7 @@ load_amstream()
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_6b778d68f75a1a54/amstream.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_6b778d68f75a1a54/amstream.dll" "${W_SYSTEM64_DLLS}/amstream.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_6b778d68f75a1a54/amstream.dll" "${W_SYSTEM64_DLLS}/amstream.dll"
         w_try_regsvr64 amstream.dll
     fi
 }
@@ -6130,7 +6143,7 @@ load_cabinet()
     w_download https://web.archive.org/web/20060718123742/http://ftp.gunadarma.ac.id/pub/driver/itegno/USB%20Software/MDAC/MDAC_TYP.EXE 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
 
     w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
-    w_try cp "${W_TMP}/cabinet.dll" "${W_SYSTEM32_DLLS}/cabinet.dll"
+    w_try_cp_dll "${W_TMP}/cabinet.dll" "${W_SYSTEM32_DLLS}/cabinet.dll"
 
     w_override_dlls native,builtin cabinet
 }
@@ -6195,7 +6208,7 @@ load_comctl32()
     w_try "${WINE}" "${W_CACHE}/${W_PACKAGE}/${file1}" "/T:${W_TMP_WIN}" /c ${W_OPT_UNATTENDED:+/q}
     w_try_unzip "${W_TMP}" "${W_TMP}"/comctl32.exe
     w_try "${WINE}" "${W_TMP}"/x86/50ComUpd.Exe "/T:${W_TMP_WIN}" /c ${W_OPT_UNATTENDED:+/q}
-    w_try cp "${W_TMP}"/comcnt.dll "${W_SYSTEM32_DLLS}"/comctl32.dll
+    w_try_cp_dll "${W_TMP}"/comcnt.dll "${W_SYSTEM32_DLLS}"/comctl32.dll
 
     w_override_dlls native,builtin comctl32
 
@@ -6281,7 +6294,7 @@ load_binkw32()
     w_download https://web.archive.org/web/20160221223726if_/http://www.down-dll.com/dll/b/__32-binkw32.dll3.0.0.0.zip 1d5efda8e4af796319b94034ba67b453cbbfddd81eb7d94fd059b40e237fa75d
 
     w_try_unzip "${W_TMP}" "${W_CACHE}"/binkw32/__32-binkw32.dll3.0.0.0.zip
-    w_try cp "${W_TMP}"/binkw32.dll "${W_SYSTEM32_DLLS}"/binkw32.dll
+    w_try_cp_dll "${W_TMP}"/binkw32.dll "${W_SYSTEM32_DLLS}"/binkw32.dll
 
     w_override_dlls native binkw32
 }
@@ -6393,12 +6406,12 @@ load_d3dcompiler_47()
 
     w_download https://download-installer.cdn.mozilla.net/pub/firefox/releases/62.0.3/win32/ach/Firefox%20Setup%2062.0.3.exe "d6edb4ff0a713f417ebd19baedfe07527c6e45e84a6c73ed8c66a33377cc0aca" "FirefoxSetup62.0.3-win32.exe"
     w_try_7z "${W_TMP}/win32" "${W_CACHE}/d3dcompiler_47/FirefoxSetup62.0.3-win32.exe" "core/d3dcompiler_47.dll"
-    w_try cp "${W_TMP}/win32/core/d3dcompiler_47.dll" "${W_SYSTEM32_DLLS}/d3dcompiler_47.dll"
+    w_try_cp_dll "${W_TMP}/win32/core/d3dcompiler_47.dll" "${W_SYSTEM32_DLLS}/d3dcompiler_47.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         w_download https://download-installer.cdn.mozilla.net/pub/firefox/releases/62.0.3/win64/ach/Firefox%20Setup%2062.0.3.exe "721977f36c008af2b637aedd3f1b529f3cfed6feb10f68ebe17469acb1934986" "FirefoxSetup62.0.3-win64.exe"
         w_try_7z "${W_TMP}/win64" "${W_CACHE}/d3dcompiler_47/FirefoxSetup62.0.3-win64.exe" "core/d3dcompiler_47.dll"
-        w_try cp "${W_TMP}/win64/core/d3dcompiler_47.dll" "${W_SYSTEM64_DLLS}/d3dcompiler_47.dll"
+        w_try_cp_dll "${W_TMP}/win64/core/d3dcompiler_47.dll" "${W_SYSTEM64_DLLS}/d3dcompiler_47.dll"
     fi
 
     w_override_dlls native d3dcompiler_47
@@ -6911,7 +6924,7 @@ load_dbghelp()
 {
     helper_winxpsp3 i386/dbghelp.dll
 
-    w_try cp -f "${W_TMP}"/i386/dbghelp.dll "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}"/i386/dbghelp.dll "${W_SYSTEM32_DLLS}"
 
     w_override_dlls native dbghelp
 }
@@ -9857,13 +9870,13 @@ w_metadata dxdiagn dlls \
 load_dxdiagn()
 {
     helper_win7sp1 x86_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_25cb021dbc0611db/dxdiagn.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_25cb021dbc0611db/dxdiagn.dll" "${W_SYSTEM32_DLLS}/dxdiagn.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_25cb021dbc0611db/dxdiagn.dll" "${W_SYSTEM32_DLLS}/dxdiagn.dll"
     w_override_dlls native,builtin dxdiagn
     w_try_regsvr dxdiagn.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_81e99da174638311/dxdiagn.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_81e99da174638311/dxdiagn.dll" "${W_SYSTEM64_DLLS}/dxdiagn.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_81e99da174638311/dxdiagn.dll" "${W_SYSTEM64_DLLS}/dxdiagn.dll"
         w_try_regsvr64 dxdiagn.dll
     fi
 }
@@ -9924,11 +9937,11 @@ w_metadata esent dlls \
 load_esent()
 {
     helper_win7sp1 x86_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_f3ebb0cc8a4dd814/esent.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_f3ebb0cc8a4dd814/esent.dll" "${W_SYSTEM32_DLLS}/esent.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_f3ebb0cc8a4dd814/esent.dll" "${W_SYSTEM32_DLLS}/esent.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_500a4c5042ab494a/esent.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_500a4c5042ab494a/esent.dll" "${W_SYSTEM64_DLLS}/esent.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-e..estorageengine-isam_31bf3856ad364e35_6.1.7601.17514_none_500a4c5042ab494a/esent.dll" "${W_SYSTEM64_DLLS}/esent.dll"
     fi
 
     w_override_dlls native,builtin esent
@@ -9952,7 +9965,7 @@ helper_faudio()
         # Unless they add something more complex, this should suffice:
         for dll in "${faudio_version}/x32/"*.dll; do
             shortdll="$(basename "${dll}" .dll)"
-            w_try cp "${dll}" "${W_SYSTEM32_DLLS}"
+            w_try_cp_dll "${dll}" "${W_SYSTEM32_DLLS}"
             w_override_dlls native "${shortdll}"
         done
     fi
@@ -9961,7 +9974,7 @@ helper_faudio()
         for dll in "${faudio_version}/x64/"*.dll; do
             # Note: 'libgcc_s_sjlj-1.dll' is not included in the 64-bit build
             shortdll="$(basename "${dll}" .dll)"
-            w_try cp "${dll}" "${W_SYSTEM64_DLLS}"
+            w_try_cp_dll "${dll}" "${W_SYSTEM64_DLLS}"
             w_override_dlls native "${shortdll}"
         done
     fi
@@ -10113,7 +10126,7 @@ w_metadata filever dlls \
 load_filever()
 {
     helper_winxpsp2_support_tools filever.exe
-    w_try cp "${W_TMP}/filever.exe" "${W_SYSTEM32_DLLS}/filever.exe"
+    w_try_cp_dll "${W_TMP}/filever.exe" "${W_SYSTEM32_DLLS}/filever.exe"
 }
 
 #----------------------------------------------------------------
@@ -10294,11 +10307,11 @@ load_gdiplus()
 {
     # gdiplus has changed in win7. See https://bugs.winehq.org/show_bug.cgi?id=32163#c3
     helper_win7sp1 x86_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_72d18a4386696c80/gdiplus.dll
-    w_try cp "${W_TMP}/x86_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_72d18a4386696c80/gdiplus.dll" "${W_SYSTEM32_DLLS}/gdiplus.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_72d18a4386696c80/gdiplus.dll" "${W_SYSTEM32_DLLS}/gdiplus.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_2b24536c71ed437a/gdiplus.dll
-        w_try cp "${W_TMP}/amd64_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_2b24536c71ed437a/gdiplus.dll" "${W_SYSTEM64_DLLS}/gdiplus.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_2b24536c71ed437a/gdiplus.dll" "${W_SYSTEM64_DLLS}/gdiplus.dll"
     fi
 
     # For some reason, native, builtin isn't good enough...?
@@ -10321,7 +10334,7 @@ load_gdiplus_winxp()
     w_download https://web.archive.org/web/20140615000000/http://download.microsoft.com/download/a/b/c/abc45517-97a0-4cee-a362-1957be2f24e1/WindowsXP-KB975337-x86-ENU.exe 699e76e9f100db3d50da8762c484a369df4698d4b84f7821d4df0e37ce68bcbe
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" "${W_CACHE}/${W_PACKAGE}/${file1}" /x:. /q
-    w_try cp "${W_CACHE}/${W_PACKAGE}/asms/10/msft/windows/gdiplus/gdiplus.dll" "${W_SYSTEM32_DLLS}/gdiplus.dll"
+    w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/asms/10/msft/windows/gdiplus/gdiplus.dll" "${W_SYSTEM32_DLLS}/gdiplus.dll"
 
     # For some reason, native, builtin isn't good enough...?
     w_override_dlls native gdiplus
@@ -10403,7 +10416,7 @@ load_glut()
     # FreeBSD unzip rm -rf's inside the target directory before extracting:
     w_try_unzip "${W_TMP}" "${W_CACHE}"/glut/glut-3.7.6-bin.zip
     w_try mv "${W_TMP}/glut-3.7.6-bin" "${W_DRIVE_C}"
-    w_try cp "${W_DRIVE_C}"/glut-3.7.6-bin/glut32.dll "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_DRIVE_C}"/glut-3.7.6-bin/glut32.dll "${W_SYSTEM32_DLLS}"
     w_warn "If you want to compile glut programs, add c:/glut-3.7.6-bin to LIB and INCLUDE"
 }
 
@@ -10657,11 +10670,11 @@ w_metadata iertutil dlls \
 load_iertutil()
 {
     helper_win7sp1 x86_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_64655b7c61c841cb/iertutil.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_64655b7c61c841cb/iertutil.dll" "${W_SYSTEM32_DLLS}/iertutil.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_64655b7c61c841cb/iertutil.dll" "${W_SYSTEM32_DLLS}/iertutil.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_c083f7001a25b301/iertutil.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_c083f7001a25b301/iertutil.dll" "${W_SYSTEM64_DLLS}/iertutil.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-ie-runtimeutilities_31bf3856ad364e35_8.0.7601.17514_none_c083f7001a25b301/iertutil.dll" "${W_SYSTEM64_DLLS}/iertutil.dll"
     fi
 
     w_override_dlls native,builtin iertutil
@@ -10998,11 +11011,11 @@ w_metadata mf dlls \
 load_mf()
 {
     helper_win7sp1 x86_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_9e6699276b03c38e/mf.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_9e6699276b03c38e/mf.dll" "${W_SYSTEM32_DLLS}/mf.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_9e6699276b03c38e/mf.dll" "${W_SYSTEM32_DLLS}/mf.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_fa8534ab236134c4/mf.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_fa8534ab236134c4/mf.dll" "${W_SYSTEM64_DLLS}/mf.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_fa8534ab236134c4/mf.dll" "${W_SYSTEM64_DLLS}/mf.dll"
     fi
 
     w_override_dlls native,builtin mf
@@ -11021,10 +11034,10 @@ w_metadata mfc40 dlls \
 load_mfc40()
 {
     helper_win7sp1 x86_microsoft-windows-mfc40_31bf3856ad364e35_6.1.7601.17514_none_5c06580240091047/mfc40.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-mfc40_31bf3856ad364e35_6.1.7601.17514_none_5c06580240091047/mfc40.dll" "${W_SYSTEM32_DLLS}/mfc40.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-mfc40_31bf3856ad364e35_6.1.7601.17514_none_5c06580240091047/mfc40.dll" "${W_SYSTEM32_DLLS}/mfc40.dll"
 
     helper_win7sp1 x86_microsoft-windows-mfc40u_31bf3856ad364e35_6.1.7601.17514_none_f51a7bf0b3d25294/mfc40u.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-mfc40u_31bf3856ad364e35_6.1.7601.17514_none_f51a7bf0b3d25294/mfc40u.dll" "${W_SYSTEM32_DLLS}/mfc40u.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-mfc40u_31bf3856ad364e35_6.1.7601.17514_none_f51a7bf0b3d25294/mfc40u.dll" "${W_SYSTEM32_DLLS}/mfc40u.dll"
 
     w_call msvcrt40
 }
@@ -11045,8 +11058,8 @@ load_mfc70()
 
     w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}" -F '*mfc*'
 
-    w_try cp "${W_TMP}"/FL_mfc70_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "${W_SYSTEM32_DLLS}"/mfc70.dll
-    w_try cp "${W_TMP}"/FL_mfc70u_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "${W_SYSTEM32_DLLS}"/mfc70u.dll
+    w_try_cp_dll "${W_TMP}"/FL_mfc70_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "${W_SYSTEM32_DLLS}"/mfc70.dll
+    w_try_cp_dll "${W_TMP}"/FL_mfc70u_dll_____X86.3643236F_FC70_11D3_A536_0090278A1BB8 "${W_SYSTEM32_DLLS}"/mfc70u.dll
 }
 
 #----------------------------------------------------------------
@@ -11134,11 +11147,11 @@ w_metadata msdelta dlls \
 load_msdelta()
 {
     helper_win7sp1 x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/msdelta.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/msdelta.dll" "${W_SYSTEM32_DLLS}/msdelta.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/msdelta.dll" "${W_SYSTEM32_DLLS}/msdelta.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_678566b7ddea04a5/msdelta.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_678566b7ddea04a5/msdelta.dll" "${W_SYSTEM64_DLLS}/msdelta.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_678566b7ddea04a5/msdelta.dll" "${W_SYSTEM64_DLLS}/msdelta.dll"
     fi
 
     w_override_dlls native,builtin msdelta
@@ -11261,7 +11274,7 @@ load_msls31()
     w_download https://web.archive.org/web/20160710055851if_/http://download.microsoft.com/download/WindowsInstaller/Install/2.0/NT45/EN-US/InstMsiW.exe 4c3516c0b5c2b76b88209b22e3bf1cb82d8e2de7116125e97e128952372eed6b
 
     w_try_cabextract --directory="${W_TMP}" "${W_CACHE}"/msls31/InstMsiW.exe
-    w_try cp -f "${W_TMP}"/msls31.dll "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}"/msls31.dll "${W_SYSTEM32_DLLS}"
 }
 
 #----------------------------------------------------------------
@@ -11294,11 +11307,11 @@ w_metadata msftedit dlls \
 load_msftedit()
 {
     helper_win7sp1 x86_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_d7d862f19573a5ff/msftedit.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_d7d862f19573a5ff/msftedit.dll" "${W_SYSTEM32_DLLS}/msftedit.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_d7d862f19573a5ff/msftedit.dll" "${W_SYSTEM32_DLLS}/msftedit.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_33f6fe754dd11735/msftedit.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_33f6fe754dd11735/msftedit.dll" "${W_SYSTEM64_DLLS}/msftedit.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-msftedit_31bf3856ad364e35_6.1.7601.17514_none_33f6fe754dd11735/msftedit.dll" "${W_SYSTEM64_DLLS}/msftedit.dll"
     fi
 
     w_override_dlls native,builtin msftedit
@@ -11400,12 +11413,12 @@ load_msxml6()
 
     w_try_cabextract --directory="${W_TMP}" "${W_CACHE}"/msxml6/msxml6-KB973686-enu-amd64.exe
     w_try_cabextract --directory="${W_TMP}" "${W_TMP}"/msxml6.msi
-    w_try cp -f "${W_TMP}"/msxml6.dll.86F857F6_A743_463D_B2FE_98CB5F727E09 "${W_SYSTEM32_DLLS}"/msxml6.dll
-    w_try cp -f "${W_TMP}"/msxml6r.dll.86F857F6_A743_463D_B2FE_98CB5F727E09 "${W_SYSTEM32_DLLS}"/msxml6r.dll
+    w_try_cp_dll "${W_TMP}"/msxml6.dll.86F857F6_A743_463D_B2FE_98CB5F727E09 "${W_SYSTEM32_DLLS}"/msxml6.dll
+    w_try_cp_dll "${W_TMP}"/msxml6r.dll.86F857F6_A743_463D_B2FE_98CB5F727E09 "${W_SYSTEM32_DLLS}"/msxml6r.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_try cp -f "${W_TMP}"/msxml6.dll.1ECC0691_D2EB_4A33_9CBF_5487E5CB17DB "${W_SYSTEM64_DLLS}"/msxml6.dll
-        w_try cp -f "${W_TMP}"/msxml6r.dll.1ECC0691_D2EB_4A33_9CBF_5487E5CB17DB "${W_SYSTEM64_DLLS}"/msxml6r.dll
+        w_try_cp_dll "${W_TMP}"/msxml6.dll.1ECC0691_D2EB_4A33_9CBF_5487E5CB17DB "${W_SYSTEM64_DLLS}"/msxml6.dll
+        w_try_cp_dll "${W_TMP}"/msxml6r.dll.1ECC0691_D2EB_4A33_9CBF_5487E5CB17DB "${W_SYSTEM64_DLLS}"/msxml6r.dll
     fi
 
     w_override_dlls native,builtin msxml6
@@ -11427,7 +11440,7 @@ load_nuget()
     w_call dotnet40
     # Changes too rapidly to check shasum
     w_download https://nuget.org/nuget.exe
-    w_try cp "${W_CACHE}/${W_PACKAGE}"/nuget.exe "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_CACHE}/${W_PACKAGE}"/nuget.exe "${W_SYSTEM32_DLLS}"
     w_warn "To run NuGet, use the command line \"${WINE} nuget\"."
 }
 
@@ -11481,11 +11494,11 @@ w_metadata oleaut32 dlls \
 load_oleaut32()
 {
     helper_win7sp1 x86_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_bf07947959bc4c33/oleaut32.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_bf07947959bc4c33/oleaut32.dll" "${W_SYSTEM32_DLLS}/oleaut32.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_bf07947959bc4c33/oleaut32.dll" "${W_SYSTEM32_DLLS}/oleaut32.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_1b262ffd1219bd69/oleaut32.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_1b262ffd1219bd69/oleaut32.dll" "${W_SYSTEM64_DLLS}/oleaut32.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-ole-automation_31bf3856ad364e35_6.1.7601.17514_none_1b262ffd1219bd69/oleaut32.dll" "${W_SYSTEM64_DLLS}/oleaut32.dll"
     fi
 
     w_override_dlls native,builtin oleaut32
@@ -11505,11 +11518,11 @@ w_metadata pdh dlls \
 load_pdh()
 {
     helper_win7sp1 x86_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_b5e3f88a8eb425e8/pdh.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_b5e3f88a8eb425e8/pdh.dll" "${W_SYSTEM32_DLLS}/pdh.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_b5e3f88a8eb425e8/pdh.dll" "${W_SYSTEM32_DLLS}/pdh.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_1202940e4711971e/pdh.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_1202940e4711971e/pdh.dll" "${W_SYSTEM64_DLLS}/pdh.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-p..rastructureconsumer_31bf3856ad364e35_6.1.7601.17514_none_1202940e4711971e/pdh.dll" "${W_SYSTEM64_DLLS}/pdh.dll"
     fi
 
     w_override_dlls native,builtin pdh
@@ -11535,7 +11548,7 @@ load_pdh_nt4()
     w_download http://download.microsoft.com/download/winntsrv40/update/5.0.2195.2668/nt4/en-us/nt4pdhdll.exe a0a45ea8f4b82daaebcff7ad5bd1b7f5546e527e04790ca8c4c9b71b18c73e32
 
     w_try_unzip "${W_TMP}/${W_PACKAGE}" "${W_CACHE}/${W_PACKAGE}"/nt4pdhdll.exe
-    w_try cp "${W_TMP}/${W_PACKAGE}/pdh.dll" "${W_SYSTEM32_DLLS}/pdh.dll"
+    w_try_cp_dll "${W_TMP}/${W_PACKAGE}/pdh.dll" "${W_SYSTEM32_DLLS}/pdh.dll"
 
     w_override_dlls native,builtin pdh
 }
@@ -11613,14 +11626,14 @@ load_prntvpt()
 {
 
     helper_win7sp1 x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll" "${W_SYSTEM32_DLLS}/prntvpt.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll" "${W_SYSTEM32_DLLS}/prntvpt.dll"
 
     w_override_dlls native,builtin prntvpt
     w_try_regsvr prntvpt.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_7180ae1eb5ce8062/prntvpt.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_7180ae1eb5ce8062/prntvpt.dll" "${W_SYSTEM64_DLLS}/prntvpt.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_7180ae1eb5ce8062/prntvpt.dll" "${W_SYSTEM64_DLLS}/prntvpt.dll"
         w_try_regsvr64 prntvpt.dll
     fi
 }
@@ -11708,14 +11721,14 @@ w_metadata qasf dlls \
 load_qasf()
 {
     helper_win7sp1 x86_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_1cc4e9c15ccc8ae8/qasf.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_1cc4e9c15ccc8ae8/qasf.dll" "${W_SYSTEM32_DLLS}/qasf.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_1cc4e9c15ccc8ae8/qasf.dll" "${W_SYSTEM32_DLLS}/qasf.dll"
 
     w_override_dlls native,builtin qasf
     w_try_regsvr qasf.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_78e385451529fc1e/qasf.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_78e385451529fc1e/qasf.dll" "${W_SYSTEM64_DLLS}/qasf.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_78e385451529fc1e/qasf.dll" "${W_SYSTEM64_DLLS}/qasf.dll"
         w_try_regsvr64 qasf.dll
     fi
 }
@@ -11733,13 +11746,13 @@ w_metadata qcap dlls \
 load_qcap()
 {
     helper_win7sp1 x86_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_bae08d1e7dcccf2a/qcap.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_bae08d1e7dcccf2a/qcap.dll" "${W_SYSTEM32_DLLS}/qcap.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_bae08d1e7dcccf2a/qcap.dll" "${W_SYSTEM32_DLLS}/qcap.dll"
     w_override_dlls native,builtin qcap
     w_try_regsvr qcap.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_16ff28a2362a4060/qcap.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_16ff28a2362a4060/qcap.dll" "${W_SYSTEM64_DLLS}/qcap.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_16ff28a2362a4060/qcap.dll" "${W_SYSTEM64_DLLS}/qcap.dll"
         w_try_regsvr64 qcap.dll
     fi
 }
@@ -11757,13 +11770,13 @@ w_metadata qdvd dlls \
 load_qdvd()
 {
     helper_win7sp1 x86_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_562994bd321aac67/qdvd.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_562994bd321aac67/qdvd.dll" "${W_SYSTEM32_DLLS}/qdvd.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_562994bd321aac67/qdvd.dll" "${W_SYSTEM32_DLLS}/qdvd.dll"
     w_override_dlls native,builtin qdvd
     w_try_regsvr qdvd.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_b2483040ea781d9d/qdvd.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_b2483040ea781d9d/qdvd.dll" "${W_SYSTEM64_DLLS}/qdvd.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_b2483040ea781d9d/qdvd.dll" "${W_SYSTEM64_DLLS}/qdvd.dll"
         w_try_regsvr64 qdvd.dll
     fi
 }
@@ -11781,13 +11794,13 @@ w_metadata qedit dlls \
 load_qedit()
 {
     helper_win7sp1 x86_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_5ca34698a5a970d2/qedit.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_5ca34698a5a970d2/qedit.dll" "${W_SYSTEM32_DLLS}/qedit.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_5ca34698a5a970d2/qedit.dll" "${W_SYSTEM32_DLLS}/qedit.dll"
     w_override_dlls native,builtin qedit
     w_try_regsvr qedit.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_b8c1e21c5e06e208/qedit.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_b8c1e21c5e06e208/qedit.dll" "${W_SYSTEM64_DLLS}/qedit.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_b8c1e21c5e06e208/qedit.dll" "${W_SYSTEM64_DLLS}/qedit.dll"
         w_try_regsvr64 qedit.dll
     fi
 }
@@ -11805,13 +11818,13 @@ w_metadata quartz dlls \
 load_quartz()
 {
     helper_win7sp1 x86_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_a877a1cc4c284497/quartz.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_a877a1cc4c284497/quartz.dll" "${W_SYSTEM32_DLLS}/quartz.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_a877a1cc4c284497/quartz.dll" "${W_SYSTEM32_DLLS}/quartz.dll"
     w_override_dlls native,builtin quartz
     w_try_regsvr quartz.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_04963d500485b5cd/quartz.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_04963d500485b5cd/quartz.dll" "${W_SYSTEM64_DLLS}/quartz.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_04963d500485b5cd/quartz.dll" "${W_SYSTEM64_DLLS}/quartz.dll"
         w_try_regsvr64 quartz.dll
     fi
 }
@@ -11968,8 +11981,8 @@ load_riched30()
     w_download https://web.archive.org/web/20060720160141/https://download.microsoft.com/download/WindowsInstaller/Install/2.0/W9XMe/EN-US/InstMsiA.exe 536e4c8385d7d250fd5702a6868d1ed004692136eefad22252d0dac15f02563a
 
     w_try_cabextract --directory="${W_TMP}" "${W_CACHE}"/riched30/InstMsiA.exe
-    w_try cp -f "${W_TMP}"/riched20.dll "${W_SYSTEM32_DLLS}"
-    w_try cp -f "${W_TMP}"/msls31.dll "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}"/riched20.dll "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}"/msls31.dll "${W_SYSTEM32_DLLS}"
     w_override_dlls native,builtin riched20
 }
 
@@ -12010,13 +12023,13 @@ load_sapi()
     done
 
     helper_win7sp1 x86_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_d809b28230ecfe46/sapi.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_d809b28230ecfe46/sapi.dll" "${W_SYSTEM32_DLLS}/sapi.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_d809b28230ecfe46/sapi.dll" "${W_SYSTEM32_DLLS}/sapi.dll"
     w_override_dlls native sapi
     w_try_regsvr sapi.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_34284e05e94a6f7c/sapi.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_34284e05e94a6f7c/sapi.dll" "${W_SYSTEM64_DLLS}/sapi.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_34284e05e94a6f7c/sapi.dll" "${W_SYSTEM64_DLLS}/sapi.dll"
         w_try_regsvr64 sapi.dll
     fi
 }
@@ -12053,11 +12066,11 @@ load_secur32()
     w_warn "Installing native secur32 may lead to stack overflow crashes, see https://bugs.winehq.org/show_bug.cgi?id=45344"
 
     helper_win7sp1 x86_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_a851f4adbb0d5141/secur32.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_a851f4adbb0d5141/secur32.dll" "${W_SYSTEM32_DLLS}/secur32.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_a851f4adbb0d5141/secur32.dll" "${W_SYSTEM32_DLLS}/secur32.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_04709031736ac277/secur32.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_04709031736ac277/secur32.dll" "${W_SYSTEM64_DLLS}/secur32.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-lsa_31bf3856ad364e35_6.1.7601.17514_none_04709031736ac277/secur32.dll" "${W_SYSTEM64_DLLS}/secur32.dll"
     fi
 
     w_override_dlls native,builtin secur32
@@ -12182,7 +12195,7 @@ w_metadata updspapi dlls \
 load_updspapi()
 {
     helper_winxpsp3 i386/update/updspapi.dll
-    w_try cp -f "${W_TMP}"/i386/update/updspapi.dll "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}"/i386/update/updspapi.dll "${W_SYSTEM32_DLLS}"
 
     w_override_dlls native,builtin updspapi
 }
@@ -12200,11 +12213,11 @@ w_metadata urlmon dlls \
 load_urlmon()
 {
     helper_win7sp1 x86_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_d1a4c8feac0dfcdb/urlmon.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_d1a4c8feac0dfcdb/urlmon.dll" "${W_SYSTEM32_DLLS}/urlmon.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_d1a4c8feac0dfcdb/urlmon.dll" "${W_SYSTEM32_DLLS}/urlmon.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_2dc36482646b6e11/urlmon.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_2dc36482646b6e11/urlmon.dll" "${W_SYSTEM64_DLLS}/urlmon.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-i..ersandsecurityzones_31bf3856ad364e35_8.0.7601.17514_none_2dc36482646b6e11/urlmon.dll" "${W_SYSTEM64_DLLS}/urlmon.dll"
     fi
 
     w_override_dlls native,builtin urlmon
@@ -12225,11 +12238,11 @@ w_metadata usp10 dlls \
 load_usp10()
 {
     helper_win7sp1 x86_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_af01e2f9b6be7939/usp10.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_af01e2f9b6be7939/usp10.dll" "${W_SYSTEM32_DLLS}/usp10.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_af01e2f9b6be7939/usp10.dll" "${W_SYSTEM32_DLLS}/usp10.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_0b207e7d6f1bea6f/usp10.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_0b207e7d6f1bea6f/usp10.dll" "${W_SYSTEM64_DLLS}/usp10.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-usp_31bf3856ad364e35_6.1.7601.17514_none_0b207e7d6f1bea6f/usp10.dll" "${W_SYSTEM64_DLLS}/usp10.dll"
     fi
 
     w_override_dlls native,builtin usp10
@@ -12254,7 +12267,7 @@ load_vb2run()
     # 2018/11/15: now conradshome is down ,but quaddicted.com also has it (and a lot more)
     w_download https://www.quaddicted.com/files/mirrors/ftp.planetquake.com/aoe/downloads/VBRUN200.EXE 4b0811d8fdcac1fd9411786c9119dc8d98d0540948211bdbc1ac682fbe5c0228
     w_try_unzip "${W_TMP}" "${W_CACHE}"/vb2run/VBRUN200.EXE
-    w_try cp -f "${W_TMP}/VBRUN200.DLL" "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}/VBRUN200.DLL" "${W_SYSTEM32_DLLS}"
 }
 
 #----------------------------------------------------------------
@@ -12272,7 +12285,7 @@ load_vb3run()
     # See https://support.microsoft.com/kb/196285
     w_download https://download.microsoft.com/download/vb30/utility/1/w9xnt4/en-us/vb3run.exe 3ca3ad6332f83b5c2b86e4758afa400150f07ae66ce8b850d8f9d6bcd47ad4cd
     w_try_unzip "${W_TMP}" "${W_CACHE}"/vb3run/vb3run.exe
-    w_try cp -f "${W_TMP}/Vbrun300.dll" "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}/Vbrun300.dll" "${W_SYSTEM32_DLLS}"
 }
 
 #----------------------------------------------------------------
@@ -12290,8 +12303,8 @@ load_vb4run()
     # See https://support.microsoft.com/kb/196286
     w_download https://download.microsoft.com/download/vb40ent/sample27/1/w9xnt4/en-us/vb4run.exe 40931308b5a137f9ce3e9da9b43f4ca6688e18b523687cfea8be6cdffa3153fb
     w_try_unzip "${W_TMP}" "${W_CACHE}"/vb4run/vb4run.exe
-    w_try cp -f "${W_TMP}/Vb40032.dll" "${W_SYSTEM32_DLLS}"
-    w_try cp -f "${W_TMP}/Vb40016.dll" "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}/Vb40032.dll" "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}/Vb40016.dll" "${W_SYSTEM32_DLLS}"
 }
 
 #----------------------------------------------------------------
@@ -12536,10 +12549,10 @@ load_mfc80()
     w_try_cabextract --directory="${W_TMP}/win32" "${W_CACHE}"/vcrun2005/vcredist_x86.EXE -F 'vcredist.msi'
     w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/vcredist.msi"
 
-    w_try cp "${W_TMP}/win32"/mfc80.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "${W_SYSTEM32_DLLS}"/mfc80.dll
-    w_try cp "${W_TMP}/win32"/mfc80u.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "${W_SYSTEM32_DLLS}"/mfc80u.dll
-    w_try cp "${W_TMP}/win32"/mfcm80.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "${W_SYSTEM32_DLLS}"/mfcm80.dll
-    w_try cp "${W_TMP}/win32"/mfcm80u.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "${W_SYSTEM32_DLLS}"/mfcm80u.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfc80.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "${W_SYSTEM32_DLLS}"/mfc80.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfc80u.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "${W_SYSTEM32_DLLS}"/mfc80u.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfcm80.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "${W_SYSTEM32_DLLS}"/mfcm80.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfcm80u.dll.8.0.50727.6195.9BAE13A2_E7AF_D6C3_FF1F_C8B3B9A1E18E "${W_SYSTEM32_DLLS}"/mfcm80u.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         w_download_to vcrun2005 https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x64.EXE 4487570bd86e2e1aac29db2a1d0a91eb63361fcaac570808eb327cd4e0e2240d
@@ -12547,10 +12560,10 @@ load_mfc80()
         w_try_cabextract --directory="${W_TMP}/win64" "${W_CACHE}"/vcrun2005/vcredist_x64.EXE -F 'vcredist.msi'
         w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/vcredist.msi"
 
-        w_try cp "${W_TMP}/win64"/mfc80.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "${W_SYSTEM64_DLLS}"/mfc80.dll
-        w_try cp "${W_TMP}/win64"/mfc80u.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "${W_SYSTEM64_DLLS}"/mfc80u.dll
-        w_try cp "${W_TMP}/win64"/mfcm80.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "${W_SYSTEM64_DLLS}"/mfcm80.dll
-        w_try cp "${W_TMP}/win64"/mfcm80u.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "${W_SYSTEM64_DLLS}"/mfcm80u.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfc80.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "${W_SYSTEM64_DLLS}"/mfc80.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfc80u.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "${W_SYSTEM64_DLLS}"/mfc80u.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfcm80.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "${W_SYSTEM64_DLLS}"/mfcm80.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfcm80u.dll.8.0.50727.6195.8731EA9C_B0D8_8F16_FF1F_C8B3B9A1E18E "${W_SYSTEM64_DLLS}"/mfcm80u.dll
     fi
 }
 
@@ -12611,10 +12624,10 @@ load_mfc90()
     w_try_cabextract --directory="${W_TMP}/win32" "${W_CACHE}"/vcrun2008/vcredist_x86.exe -F 'vc_red.cab'
     w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/vc_red.cab"
 
-    w_try cp "${W_TMP}/win32"/mfc90.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "${W_SYSTEM32_DLLS}"/mfc90.dll
-    w_try cp "${W_TMP}/win32"/mfc90u.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "${W_SYSTEM32_DLLS}"/mfc90u.dll
-    w_try cp "${W_TMP}/win32"/mfcm90.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "${W_SYSTEM32_DLLS}"/mfcm90.dll
-    w_try cp "${W_TMP}/win32"/mfcm90u.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "${W_SYSTEM32_DLLS}"/mfcm90u.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfc90.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "${W_SYSTEM32_DLLS}"/mfc90.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfc90u.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "${W_SYSTEM32_DLLS}"/mfc90u.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfcm90.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "${W_SYSTEM32_DLLS}"/mfcm90.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfcm90u.dll.30729.6161.Microsoft_VC90_MFC_x86.QFE "${W_SYSTEM32_DLLS}"/mfcm90u.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         w_download_to vcrun2008 https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x64.exe c5e273a4a16ab4d5471e91c7477719a2f45ddadb76c7f98a38fa5074a6838654
@@ -12622,10 +12635,10 @@ load_mfc90()
         w_try_cabextract --directory="${W_TMP}/win64" "${W_CACHE}"/vcrun2008/vcredist_x64.exe -F 'vc_red.cab'
         w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/vc_red.cab"
 
-        w_try cp "${W_TMP}/win64"/mfc90.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfc90.dll
-        w_try cp "${W_TMP}/win64"/mfc90u.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfc90u.dll
-        w_try cp "${W_TMP}/win64"/mfcm90.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfcm90.dll
-        w_try cp "${W_TMP}/win64"/mfcm90u.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfcm90u.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfc90.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfc90.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfc90u.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfc90u.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfcm90.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfcm90.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfcm90u.dll.30729.6161.Microsoft_VC90_MFC_x64.QFE "${W_SYSTEM64_DLLS}"/mfcm90u.dll
     fi
 }
 
@@ -12677,10 +12690,10 @@ load_mfc100()
     w_try_cabextract --directory="${W_TMP}/win32" "${W_CACHE}"/vcrun2010/vcredist_x86.exe -F '*.cab'
     w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/vc_red.cab"
 
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfc100_x86 "${W_SYSTEM32_DLLS}"/mfc100.dll
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfc100u_x86 "${W_SYSTEM32_DLLS}"/mfc100u.dll
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfcm100_x86 "${W_SYSTEM32_DLLS}"/mfcm100.dll
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfcm100u_x86 "${W_SYSTEM32_DLLS}"/mfcm100u.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfc100_x86 "${W_SYSTEM32_DLLS}"/mfc100.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfc100u_x86 "${W_SYSTEM32_DLLS}"/mfc100u.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfcm100_x86 "${W_SYSTEM32_DLLS}"/mfcm100.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfcm100u_x86 "${W_SYSTEM32_DLLS}"/mfcm100u.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         w_download_to vcrun2010 https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe 2fddbc3aaaab784c16bc673c3bae5f80929d5b372810dbc28649283566d33255
@@ -12688,10 +12701,10 @@ load_mfc100()
         w_try_cabextract --directory="${W_TMP}/win64" "${W_CACHE}"/vcrun2010/vcredist_x64.exe -F '*.cab'
         w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/vc_red.cab"
 
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfc100_x64 "${W_SYSTEM64_DLLS}"/mfc100.dll
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfc100u_x64 "${W_SYSTEM64_DLLS}"/mfc100u.dll
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfcm100_x64 "${W_SYSTEM64_DLLS}"/mfcm100.dll
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfcm100u_x64 "${W_SYSTEM64_DLLS}"/mfcm100u.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfc100_x64 "${W_SYSTEM64_DLLS}"/mfc100.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfc100u_x64 "${W_SYSTEM64_DLLS}"/mfc100u.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfcm100_x64 "${W_SYSTEM64_DLLS}"/mfcm100.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfcm100u_x64 "${W_SYSTEM64_DLLS}"/mfcm100u.dll
     fi
 }
 
@@ -12739,10 +12752,10 @@ load_mfc110()
     w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2012/vcredist_x86.exe -F 'a3'
     w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/a3"
 
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfc110_x86 "${W_SYSTEM32_DLLS}"/mfc110.dll
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfc110u_x86 "${W_SYSTEM32_DLLS}"/mfc110u.dll
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfcm110_x86 "${W_SYSTEM32_DLLS}"/mfcm110.dll
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfcm110u_x86 "${W_SYSTEM32_DLLS}"/mfcm110u.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfc110_x86 "${W_SYSTEM32_DLLS}"/mfc110.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfc110u_x86 "${W_SYSTEM32_DLLS}"/mfc110u.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfcm110_x86 "${W_SYSTEM32_DLLS}"/mfcm110.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfcm110u_x86 "${W_SYSTEM32_DLLS}"/mfcm110u.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         w_download_to vcrun2012 https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe 681be3e5ba9fd3da02c09d7e565adfa078640ed66a0d58583efad2c1e3cc4064
@@ -12750,10 +12763,10 @@ load_mfc110()
         w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2012/vcredist_x64.exe -F 'a3'
         w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/a3"
 
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfc110_x64 "${W_SYSTEM64_DLLS}"/mfc110.dll
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfc110u_x64 "${W_SYSTEM64_DLLS}"/mfc110u.dll
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfcm110_x64 "${W_SYSTEM64_DLLS}"/mfcm110.dll
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfcm110u_x64 "${W_SYSTEM64_DLLS}"/mfcm110u.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfc110_x64 "${W_SYSTEM64_DLLS}"/mfc110.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfc110u_x64 "${W_SYSTEM64_DLLS}"/mfc110u.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfcm110_x64 "${W_SYSTEM64_DLLS}"/mfcm110.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfcm110u_x64 "${W_SYSTEM64_DLLS}"/mfcm110u.dll
     fi
 }
 
@@ -12804,10 +12817,10 @@ load_mfc120()
     w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2013/vcredist_x86.exe -F 'a3'
     w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/a3"
 
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfc120_x86 "${W_SYSTEM32_DLLS}"/mfc120.dll
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfc120u_x86 "${W_SYSTEM32_DLLS}"/mfc120u.dll
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfcm120_x86 "${W_SYSTEM32_DLLS}"/mfcm120.dll
-    w_try cp "${W_TMP}/win32"/F_CENTRAL_mfcm120u_x86 "${W_SYSTEM32_DLLS}"/mfcm120u.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfc120_x86 "${W_SYSTEM32_DLLS}"/mfc120.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfc120u_x86 "${W_SYSTEM32_DLLS}"/mfc120u.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfcm120_x86 "${W_SYSTEM32_DLLS}"/mfcm120.dll
+    w_try_cp_dll "${W_TMP}/win32"/F_CENTRAL_mfcm120u_x86 "${W_SYSTEM32_DLLS}"/mfcm120u.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         w_download_to vcrun2013 https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
@@ -12815,10 +12828,10 @@ load_mfc120()
         w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2013/vcredist_x64.exe -F 'a3'
         w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/a3"
 
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfc120_x64 "${W_SYSTEM64_DLLS}"/mfc120.dll
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfc120u_x64 "${W_SYSTEM64_DLLS}"/mfc120u.dll
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfcm120_x64 "${W_SYSTEM64_DLLS}"/mfcm120.dll
-        w_try cp "${W_TMP}/win64"/F_CENTRAL_mfcm120u_x64 "${W_SYSTEM64_DLLS}"/mfcm120u.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfc120_x64 "${W_SYSTEM64_DLLS}"/mfc120.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfc120u_x64 "${W_SYSTEM64_DLLS}"/mfc120u.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfcm120_x64 "${W_SYSTEM64_DLLS}"/mfcm120.dll
+        w_try_cp_dll "${W_TMP}/win64"/F_CENTRAL_mfcm120u_x64 "${W_SYSTEM64_DLLS}"/mfcm120u.dll
     fi
 }
 
@@ -12883,10 +12896,10 @@ load_mfc140()
     w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2015/vc_redist.x86.exe -F 'a11'
     w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/a11"
 
-    w_try cp "${W_TMP}/win32"/mfc140.dll "${W_SYSTEM32_DLLS}"/mfc140.dll
-    w_try cp "${W_TMP}/win32"/mfc140u.dll "${W_SYSTEM32_DLLS}"/mfc140u.dll
-    w_try cp "${W_TMP}/win32"/mfcm140.dll "${W_SYSTEM32_DLLS}"/mfcm140.dll
-    w_try cp "${W_TMP}/win32"/mfcm140u.dll "${W_SYSTEM32_DLLS}"/mfcm140u.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfc140.dll "${W_SYSTEM32_DLLS}"/mfc140.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfc140u.dll "${W_SYSTEM32_DLLS}"/mfc140u.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfcm140.dll "${W_SYSTEM32_DLLS}"/mfcm140.dll
+    w_try_cp_dll "${W_TMP}/win32"/mfcm140u.dll "${W_SYSTEM32_DLLS}"/mfcm140u.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         w_download_to vcrun2015 https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
@@ -12894,10 +12907,10 @@ load_mfc140()
         w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2015/vc_redist.x64.exe -F 'a11'
         w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/a11"
 
-        w_try cp "${W_TMP}/win64"/mfc140.dll "${W_SYSTEM64_DLLS}"/mfc140.dll
-        w_try cp "${W_TMP}/win64"/mfc140u.dll "${W_SYSTEM64_DLLS}"/mfc140u.dll
-        w_try cp "${W_TMP}/win64"/mfcm140.dll "${W_SYSTEM64_DLLS}"/mfcm140.dll
-        w_try cp "${W_TMP}/win64"/mfcm140u.dll "${W_SYSTEM64_DLLS}"/mfcm140u.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfc140.dll "${W_SYSTEM64_DLLS}"/mfc140.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfc140u.dll "${W_SYSTEM64_DLLS}"/mfc140u.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfcm140.dll "${W_SYSTEM64_DLLS}"/mfcm140.dll
+        w_try_cp_dll "${W_TMP}/win64"/mfcm140u.dll "${W_SYSTEM64_DLLS}"/mfcm140u.dll
     fi
 }
 
@@ -13136,11 +13149,11 @@ w_metadata webio dlls \
 load_webio()
 {
     helper_win7sp1 x86_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_5ef1a4093cf55387/webio.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_5ef1a4093cf55387/webio.dll" "${W_SYSTEM32_DLLS}/webio.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_5ef1a4093cf55387/webio.dll" "${W_SYSTEM32_DLLS}/webio.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_bb103f8cf552c4bd/webio.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_bb103f8cf552c4bd/webio.dll" "${W_SYSTEM64_DLLS}/webio.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-webio_31bf3856ad364e35_6.1.7601.17514_none_bb103f8cf552c4bd/webio.dll" "${W_SYSTEM64_DLLS}/webio.dll"
     fi
 
     w_override_dlls native,builtin webio
@@ -13234,11 +13247,11 @@ w_metadata wininet dlls \
 load_wininet()
 {
     helper_win7sp1 x86_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_1eaaa4a07717236e/wininet.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_1eaaa4a07717236e/wininet.dll" "${W_SYSTEM32_DLLS}/wininet.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_1eaaa4a07717236e/wininet.dll" "${W_SYSTEM32_DLLS}/wininet.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_7ac940242f7494a4/wininet.dll
-        w_try cp "${W_TMP}/amd64_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_7ac940242f7494a4/wininet.dll" "${W_SYSTEM64_DLLS}/wininet.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-i..tocolimplementation_31bf3856ad364e35_8.0.7601.17514_none_7ac940242f7494a4/wininet.dll" "${W_SYSTEM64_DLLS}/wininet.dll"
     fi
 
     w_override_dlls native,builtin wininet
@@ -13314,7 +13327,7 @@ load_wmv9vcm()
     # See also https://www.microsoft.com/en-us/download/details.aspx?id=6191
     w_download https://download.microsoft.com/download/2/8/D/28DA9C3E-6DA2-456F-BD33-1F937EB6E0FF/WindowsServer2003-WindowsMedia-KB2845142-x86-ENU.exe 51e11691339c1c817b12f92e613145ffcd7b6f7e869d994cc8dbc4591b24f155
     w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
-    w_try cp -f "${W_TMP}"/wm64/wmv9vcm.dll "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_TMP}"/wm64/wmv9vcm.dll "${W_SYSTEM32_DLLS}"
 
     # Register codec:
     cat > "${W_TMP}"/tmp.reg <<_EOF_
@@ -13481,11 +13494,11 @@ w_metadata xmllite dlls \
 load_xmllite()
 {
     helper_win7sp1 x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/xmllite.dll
-    w_try cp "${W_TMP}/x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/xmllite.dll" "${W_SYSTEM32_DLLS}/xmllite.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_0b66cb34258c936f/xmllite.dll" "${W_SYSTEM32_DLLS}/xmllite.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_678566b7ddea04a5/xmllite.dll "${W_SYSTEM64_DLLS}/xmllite.dll"
-        w_try cp "${W_TMP}/amd64_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_678566b7ddea04a5/xmllite.dll" "${W_SYSTEM64_DLLS}/xmllite.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-servicingstack_31bf3856ad364e35_6.1.7601.17514_none_678566b7ddea04a5/xmllite.dll" "${W_SYSTEM64_DLLS}/xmllite.dll"
     fi
 
     w_override_dlls native,builtin xmllite
@@ -14704,10 +14717,10 @@ load_busybox()
 
     if test "${W_ARCH}" = "win64"; then
         w_download https://frippery.org/files/busybox/busybox-w64-FRP-3902-g61e53aa93.exe 901f5125fd35df11102df65c70b8877f0d06aad5ac3a27bf9e5d50a43644744b
-        w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
-        w_try cp "${W_CACHE}/${W_PACKAGE}/busybox-w64-FRP-2121-ga316078ad.exe" "${W_SYSTEM64_DLLS}/busybox.exe"
+        w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
+        w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/busybox-w64-FRP-2121-ga316078ad.exe" "${W_SYSTEM64_DLLS}/busybox.exe"
     else
-        w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
+        w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
     fi
 
     w_warn "There are known issues with busybox under wine. For https://bugs.winehq.org/show_bug.cgi?id=49780, set BB_SKIP_ANSI_EMULATION=0. For https://github.com/rmyorston/busybox-w32/issues/210, set BB_ALT_BUFFER=0. I.e., \`BB_SKIP_ANSI_EMULATION=0 BB_ALT_BUFFER=0 ${WINE} busybox.exe\`"
@@ -15242,7 +15255,7 @@ load_ie7()
     # CLSID path will get overwritten on prefix update. Setting ieproxy to
     # native doesn't help because setupapi ignores DLL overrides. To work
     # around this problem, copy native ieproxy to system32.
-    w_try cp -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/ieproxy.dll" "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_PROGRAMS_X86_UNIX}/Internet Explorer/ieproxy.dll" "${W_SYSTEM32_DLLS}"
 
     # Seeing is believing
     case ${WINETRICKS_GUI} in
@@ -15369,7 +15382,7 @@ _EOF_
     # CLSID path will get overwritten on prefix update. Setting ieproxy to
     # native doesn't help because setupapi ignores DLL overrides. To work
     # around this problem, copy native ieproxy to system32.
-    w_try cp -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/ieproxy.dll" "${W_SYSTEM32_DLLS}"
+    w_try_cp_dll "${W_PROGRAMS_X86_UNIX}/Internet Explorer/ieproxy.dll" "${W_SYSTEM32_DLLS}"
 
     # Seeing is believing
     case ${WINETRICKS_GUI} in
