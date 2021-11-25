@@ -10938,6 +10938,28 @@ load_mfc70()
 
 #----------------------------------------------------------------
 
+w_metadata msaa dlls \
+    title="MS Active Accessibility (oleacc.dll, oleaccrc.dll, msaatext.dll)" \
+    publisher="Microsoft" \
+    year="2003" \
+    media="download" \
+    file1="MSAA20_RDK.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/oleacc.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/oleaccrc.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/msaatext.dll"
+
+load_msaa()
+{
+    w_download https://download.microsoft.com/download/c/1/c/c1cf13a6-4d7f-4b7d-9f67-51ef3a421fc7/MSAA20_RDK.exe 081e382f7e5b874ab143f0b073246fd31f84ae181df1838813b02935a951c9da
+    w_try_unzip "${W_TMP}/${W_PACKAGE}" "${W_CACHE}/${W_PACKAGE}"/MSAA20_RDK.exe
+    w_try cp "${W_TMP}/${W_PACKAGE}/oleaccW.dll" "${W_SYSTEM32_DLLS}/oleacc.dll"
+    w_try cp "${W_TMP}/${W_PACKAGE}/oleaccrc.dll" "${W_SYSTEM32_DLLS}/oleaccrc.dll"
+    w_try cp "${W_TMP}/${W_PACKAGE}/MSAATextW.dll" "${W_SYSTEM32_DLLS}/msaatext.dll"
+    w_override_dlls native,builtin oleacc oleaccrc msaatext
+}
+
+#----------------------------------------------------------------
+
 w_metadata msacm32 dlls \
     title="MS ACM32" \
     publisher="Microsoft" \
