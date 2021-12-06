@@ -897,7 +897,7 @@ w_read_key()
             pl*) _W_keymsg="Proszę podać klucz dla programu '${W_PACKAGE}'"
                 _W_nokeymsg="Nie podano klucza"
                 ;;
-            pt*)  _W_keymsg="Por favor, insira a chave do aplicativo '${W_PACKAGE}'"
+            pt*) _W_keymsg="Por favor, insira a chave do aplicativo '${W_PACKAGE}'"
                 _W_nokeymsg="Nenhuma chave fornecida"
                 ;;
             ru*) _W_keymsg="Пожалуйста, введите ключ для приложения '${W_PACKAGE}'"
@@ -2923,7 +2923,7 @@ w_workaround_wine_bug()
         da*) w_warn "Arbejder uden om wine-fejl ${1} ${_W_msg}" ;;
         de*) w_warn "Wine-Fehler ${1} wird umgegangen ${_W_msg}" ;;
         pl*) w_warn "Obchodzenie błędu w wine ${1} ${_W_msg}" ;;
-        pt*)   w_warn "Trabalhando em torno do bug do wine ${1} ${_W_msg}" ;;
+        pt*) w_warn "Trabalhando em torno do bug do wine ${1} ${_W_msg}" ;;
         ru*) w_warn "Обход ошибки ${1} ${_W_msg}" ;;
         uk*) w_warn "Обхід помилки ${1} ${_W_msg}" ;;
         zh_CN*)   w_warn "绕过 wine bug ${1} ${_W_msg}" ;;
@@ -3676,7 +3676,7 @@ winetricks_prefixmenu()
              _W_msg_unattended1="Włącz cichą instalację"
              _W_msg_help="Wyświetl pomoc"
              ;;
-        pt*)   _W_msg_title="Winetricks - Escolha um wineprefix"
+        pt*) _W_msg_title="Winetricks - Escolha um wineprefix"
              _W_msg_body='O que você quer fazer?'
              _W_msg_apps='Instalar um programa'
              _W_msg_games='Instalar um jogo'
@@ -3794,7 +3794,7 @@ winetricks_mkprefixmenu()
              _W_msg_name="Name"
              _W_msg_arch="Architektur"
              ;;
-        pt*)   _W_msg_title="Winetricks - criar novo wineprefix"
+        pt*) _W_msg_title="Winetricks - criar novo wineprefix"
              _W_msg_name="Nome"
              _W_msg_arch="Arquitetura"
              ;;
@@ -3869,7 +3869,7 @@ winetricks_mainmenu()
              _W_msg_folder='Przeglądać pliki'
              _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
              ;;
-        pt*)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
+        pt*) _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
              _W_msg_body='O que você gostaria de fazer com este prefixo wineprefix?'
              _W_msg_dlls="Instalar DLL ou componente do Windows"
              _W_msg_fonts='Instalar fontes'
@@ -4023,7 +4023,7 @@ winetricks_settings_menu()
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
              _W_msg_body='Jakie ustawienia chcesz zmienić?'
              ;;
-        pt*)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
+        pt*) _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
              _W_msg_body='Quais configurações você gostaria de alterar?'
              ;;
         ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"${WINEPREFIX}\""
@@ -4212,7 +4212,7 @@ winetricks_showmenu()
              _W_msg_body='Które paczki chesz zainstalować?'
              _W_cached="zarchiwizowane"
              ;;
-        pt*)   _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
+        pt*) _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
              _W_msg_body='Quais pacotes você gostaria de instalar?'
              _W_cached="em cache"
              ;;
@@ -4605,7 +4605,7 @@ winetricks_list_all()
         da*) _W_cached="cached"   ; _W_download="kan hentes"    ;;
         de*) _W_cached="gecached" ; _W_download="herunterladbar";;
         pl*) _W_cached="zarchiwizowane"   ; _W_download="do pobrania"  ;;
-        pt*)   _W_cached="em cache"   ; _W_download="para download"  ;;
+        pt*) _W_cached="em cache"   ; _W_download="para download"  ;;
         ru*) _W_cached="в кэше"   ; _W_download="доступно для скачивания"  ;;
         uk*) _W_cached="кешовано"   ; _W_download="завантажуване"  ;;
         zh_CN*)   _W_cached="已缓存"   ; _W_download="可下载"  ;;
@@ -4837,7 +4837,7 @@ winetricks_cache_iso()
                 da*)  w_warn "Forkert disk [${_W_volname}] indsat. Indsæt venligst disken [${_W_expected_volname}]" ;;
                 de*)  w_warn "Falsche Disk [${_W_volname}] eingelegt. Bitte legen Sie Disk [${_W_expected_volname}] ein!" ;;
                 pl*)  w_warn "Umieszczono zły dysk [${_W_volname}]. Proszę włożyć dysk [${_W_expected_volname}]" ;;
-                pt*)    w_warn "Disco errado [${_W_volname}] inserido. Por favor insira o disco [${_W_expected_volname}]" ;;
+                pt*)  w_warn "Disco errado [${_W_volname}] inserido. Por favor insira o disco [${_W_expected_volname}]" ;;
                 ru*)  w_warn "Неверный диск [${_W_volname}]. Пожалуйста, вставьте диск [${_W_expected_volname}]" ;;
                 uk*)  w_warn "Неправильний диск [${_W_volname}]. Будь ласка, вставте диск [${_W_expected_volname}]" ;;
                 zh_CN*)    w_warn " [${_W_volname}] 光盘插入错误，请插入光盘 [${_W_expected_volname}]" ;;
@@ -5840,7 +5840,7 @@ winetricks_install_app()
         da*) fail_msg="Installationen af pakken $1 fejlede" ;;
         de*) fail_msg="Installieren von Paket $1 gescheitert" ;;
         pl*) fail_msg="Niepowodzenie przy instalacji paczki $1" ;;
-        pt*)   fail_msg="Falha ao instalar o pacote $1" ;;
+        pt*) fail_msg="Falha ao instalar o pacote $1" ;;
         ru*) fail_msg="Ошибка установки пакета $1" ;;
         uk*) fail_msg="Помилка встановлення пакунка $1" ;;
         zh_CN*)   fail_msg="$1 安装失败" ;;
