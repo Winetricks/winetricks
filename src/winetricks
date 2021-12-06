@@ -16656,10 +16656,14 @@ load_wmp11()
     w_set_winver winxp
 
     # remove builtin placeholders to allow update
-    w_try rm -f "${W_PROGRAMS_UNIX}/Windows Media Player/wmplayer.exe" "${W_SYSTEM64_DLLS}"/wmp.dll "${W_SYSTEM64_DLLS}"/wmvcore.dll
+    w_try rm -f "${W_PROGRAMS_UNIX}/Windows Media Player/wmplayer.exe" \
+        "${W_SYSTEM32_DLLS}"/wmp.dll "${W_SYSTEM32_DLLS}"/wmvcore.dll "${W_SYSTEM32_DLLS}"/mfplat.dll "${W_SYSTEM32_DLLS}"/wmasf.dll \
+        "${W_SYSTEM32_DLLS}"/wmpnssci.dll \
+        "${W_SYSTEM64_DLLS}"/wmp.dll "${W_SYSTEM64_DLLS}"/wmvcore.dll "${W_SYSTEM64_DLLS}"/mfplat.dll "${W_SYSTEM64_DLLS}"/wmasf.dll \
+        "${W_SYSTEM64_DLLS}"/wmpnssci.dll
 
     # need native overrides to allow update and later checks to succeed
-    w_override_dlls native l3codeca.acm wmp wmplayer.exe wmvcore wmpnssci
+    w_override_dlls native l3codeca.acm mfplat wmasf wmp wmplayer.exe wmpnssci wmvcore
 
     w_try_cd "${W_TMP}"
 
