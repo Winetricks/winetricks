@@ -13067,7 +13067,7 @@ w_metadata vstools2019 apps \
 load_vstools2019()
 {
     w_call dotnet472
-    w_download https://aka.ms/vs/16/release/installer d6e0778f57a0f56302e6ad5b55b0423e148cce2244a5d6047c3256e841052a23 vstools2019.zip
+    w_download https://aka.ms/vs/16/release/installer e653e715ddb8a08873e50a2fe091fca2ce77726b8b6ed2b99ed916d0e03c1fbe vstools2019.zip
     w_try_unzip "${W_TMP}/vs_installer_16" "${W_CACHE}/${W_PACKAGE}/vstools2019.zip"
     w_try "${WINE}" "${W_TMP}"/vs_installer_16/Contents/vs_installer.exe install \
         --channelId VisualStudio.16.Release \
