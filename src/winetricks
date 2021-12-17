@@ -9279,7 +9279,7 @@ load_dotnet35sp1()
 
     w_verify_cabextract_available
 
-    # https://www.microsoft.com/en-us/download/details.aspx?id=25150
+    # Official version. See https://dotnet.microsoft.com/en-us/download/dotnet-framework/net35-sp1
     w_download https://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 0582515bde321e072f8673e829e175ed2e7a53e803127c50253af76528e66bc1
 
     w_call remove_mono
@@ -9336,7 +9336,7 @@ load_dotnet40()
         *) w_warn "dotnet40 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
-    # https://www.microsoft.com/en-us/download/details.aspx?id=17718
+    # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net40
     w_download https://download.microsoft.com/download/9/5/A/95A9616B-7A37-4AF6-BC36-D6EA96C8DAAE/dotNetFx40_Full_x86_x64.exe 65e064258f2e418816b304f646ff9e87af101e4c9552ab064bb74d281c38659f
 
     w_call remove_mono
@@ -9421,7 +9421,7 @@ load_dotnet45()
 
     w_verify_cabextract_available
 
-    # https://www.microsoft.com/en-us/download/details.aspx?id=17718
+    # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net45
     w_download https://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe a04d40e217b97326d46117d961ec4eda455e087b90637cb33dd6cc4a2c228d83
 
     w_call remove_mono
@@ -9471,7 +9471,7 @@ load_dotnet452()
 
     w_verify_cabextract_available
 
-    # https://www.microsoft.com/en-us/download/details.aspx?id=17718
+    # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net452
     w_download https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe 6c2c589132e830a185c5f40f82042bee3022e721a216680bd9b3995ba86f3781
 
     w_call remove_mono
@@ -9515,8 +9515,8 @@ load_dotnet46()
 
     w_package_warn_win64
 
-    # https://support.microsoft.com/kb/3045560
-    w_download https://download.microsoft.com/download/C/3/A/C3A5200B-D33C-47E9-9D70-2F7C65DAAD94/NDP46-KB3045557-x86-x64-AllOS-ENU.exe b21d33135e67e3486b154b11f7961d8e1cfd7a603267fb60febb4a6feab5cf87
+    # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net46
+    w_download https://download.microsoft.com/download/6/F/9/6F9673B1-87D1-46C4-BF04-95F24C3EB9DA/enu_netfx/NDP46-KB3045557-x86-x64-AllOS-ENU_exe/NDP46-KB3045557-x86-x64-AllOS-ENU.exe b21d33135e67e3486b154b11f7961d8e1cfd7a603267fb60febb4a6feab5cf87
 
     w_call remove_mono
 
@@ -9552,7 +9552,7 @@ load_dotnet461()
 
     w_package_warn_win64
 
-    # https://www.microsoft.com/en-us/download/details.aspx?id=49982
+    # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net461
     w_download https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe beaa901e07347d056efe04e8961d5546c7518fab9246892178505a7ba631c301
 
     w_call remove_mono
@@ -9591,8 +9591,8 @@ load_dotnet462()
 
     w_package_warn_win64
 
-    # Official version. See https://www.microsoft.com/en-us/download/details.aspx?id=53344
-    w_download https://web.archive.org/web/20210320155343if_/https://download.microsoft.com/download/F/9/4/F942F07D-F26F-4F30-B4E3-EBD54FABA377/NDP462-KB3151800-x86-x64-AllOS-ENU.exe 28886593e3b32f018241a4c0b745e564526dbb3295cb2635944e3a393f4278d4
+    # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net462
+    w_download https://download.visualstudio.microsoft.com/download/pr/8e396c75-4d0d-41d3-aea8-848babc2736a/80b431456d8866ebe053eb8b81a168b3/NDP462-KB3151800-x86-x64-AllOS-ENU.exe b4cbb4bc9a3983ec3be9f80447e0d619d15256a9ce66ff414ae6e3856705e237
     file_package="NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
 
     w_call remove_mono
@@ -9633,8 +9633,8 @@ load_dotnet471()
 
     w_package_warn_win64
 
-    # https://www.microsoft.com/en-US/download/details.aspx?id=56116
-    w_download https://download.microsoft.com/download/9/E/6/9E63300C-0941-4B45-A0EC-0008F96DD480/NDP471-KB4033342-x86-x64-AllOS-ENU.exe 63dc850df091f3f137b5d4392f47917f847f8926dc8af1da9bfba6422e495805
+    # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net471
+    w_download https://download.visualstudio.microsoft.com/download/pr/4312fa21-59b0-4451-9482-a1376f7f3ba4/9947fce13c11105b48cba170494e787f/NDP471-KB4033342-x86-x64-AllOS-ENU.exe df6e700d37ff416e2e1d8463dededdf76522ceaf5bb4cc3f197a7f2b9eccc4ad
 
     w_call remove_mono
 
