@@ -4790,7 +4790,7 @@ winetricks_read_volume_name()
 winetricks_volname()
 {
     x=$(volname "$1" 2> /dev/null| sed 's/  *$//')
-    if test "x${x}" = "x"; then
+    if test -z "${x}"; then
         # UDF?  See https://bugs.launchpad.net/bugs/678419
         x=$(winetricks_read_volume_name "$1")
     fi
