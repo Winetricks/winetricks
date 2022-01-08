@@ -22461,6 +22461,24 @@ _EOF_
     w_try_regedit crashdialog.reg
 }
 
+w_metadata set_userpath settings \
+    title_uk="" \
+    title="set user PATH variable in wine prefix specified by native and/or wine paths in WINEPATH environment variable with ';' as path separator"
+
+load_set_userpath()
+{
+    wineuserpath=$(winepath -w "${WINEPATH}" | sed 's,\\,\\\\,g')
+    cat > "${W_TMP}"/setuserpath.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Environment]
+"PATH"="${wineuserpath}"
+
+_EOF_
+    w_try_cd "${W_TMP}"
+    w_try_regedit setuserpath.reg
+}
+
 ####
 # settings->misc
 
