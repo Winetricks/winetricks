@@ -1075,12 +1075,7 @@ w_verify_sha256sum()
         if [ "${WINETRICKS_FORCE}" = 1 ]; then
             w_warn "sha256sum mismatch! However --force was used, so trying anyway. Caveat emptor."
         else
-            case ${LANG} in
-                pl*) w_die "Niezgodność sumy sha256sum! Zmień nazwę ${_W_vs_file} i spróbuj ponownie." ;;
-                pt*) w_die "sha256sum não confere! Renomeie ${_W_vs_file} e tente novamente. Alternativamente, use --force para ignorar esta verificação." ;;
-                ru*) w_die "Контрольная сумма sha256sum не совпадает! Переименуйте файл ${_W_vs_file} и попробуйте еще раз." ;;
-                *) w_die "sha256sum mismatch! Rename ${_W_vs_file} and try again. Alternatively, use --force to ignore this check." ;;
-            esac
+            w_askpermission "SHA256 mismatch!\n\nURL: ${_W_url}\nDownloaded: ${_W_gotsha256sum}\nExpected: ${_W_vs_wantsum}\n\nThis is often the result of an updated package such as vcrun2019.\nIf you are willing to accept the risk, you can bypass this check.\nAlternatively, you may use the --force option to ignore this check entirely.\n\nContinue anyway?"
         fi
     fi
     unset _W_vs_wantsum _W_vs_file _W_gotsha256sum
