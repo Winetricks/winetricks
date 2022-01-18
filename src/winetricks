@@ -12992,12 +12992,13 @@ load_vcrun2019()
     # 2021/06/06: 91c21c93a88dd82e8ae429534dacbc7a4885198361eae18d82920c714e328cf9
     # 2021/08/26: 1acd8d5ea1cdc3eb2eb4c87be3ab28722d0825c15449e5c9ceef95d897de52fa
     # 2021/10/23: 80c7969f4e05002a0cd820b746e0acb7406d4b85e52ef096707315b390927824
+    # 2022/01/18: 4c6c420cf4cbf2c9c9ed476e96580ae92a97b2822c21329a2e49e8439ac5ad30
 
     w_warn "ucrtbase.dll is no longer included in vcrun2019. For details see: https://github.com/Winetricks/winetricks/issues/1770"
 
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcr140 vcomp140 vcruntime140
 
-    w_download https://aka.ms/vs/16/release/vc_redist.x86.exe 80c7969f4e05002a0cd820b746e0acb7406d4b85e52ef096707315b390927824
+    w_download https://aka.ms/vs/16/release/vc_redist.x86.exe 4c6c420cf4cbf2c9c9ed476e96580ae92a97b2822c21329a2e49e8439ac5ad30
 
     if w_workaround_wine_bug 50894 "Working around failing wusa.exe lookup via C:\windows\SysNative"; then
         w_set_winver winxp
@@ -13022,11 +13023,12 @@ load_vcrun2019()
             # 2021/06/06: a1592d3da2b27230c087a3b069409c1e82c2664b0d4c3b511701624702b2e2a3
             # 2021/08/26: 003063723b2131da23f40e2063fb79867bae275f7b5c099dbd1792e25845872b
             # 2021/10/23: 9b9dd72c27ab1db081de56bb7b73bee9a00f60d14ed8e6fde45dab3e619b5f04
+            # 2022/01/18: 296f96cd102250636bcd23ab6e6cf70935337b1bbb3507fe8521d8d9cfaa932f
 
             # vcruntime140_1 is only shipped on x64:
             w_override_dlls native,builtin vcruntime140_1
 
-            w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 9b9dd72c27ab1db081de56bb7b73bee9a00f60d14ed8e6fde45dab3e619b5f04
+            w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 296f96cd102250636bcd23ab6e6cf70935337b1bbb3507fe8521d8d9cfaa932f
             w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
