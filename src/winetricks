@@ -3520,7 +3520,7 @@ winetricks_early_wine_arch()
 
 winetricks_detect_gui()
 {
-    if test "$XDG_CURRENT_DESKTOP" != "KDE"; then
+    if test "${XDG_CURRENT_DESKTOP}" != "KDE"; then
         if test -x "$(command -v zenity 2>/dev/null)"; then
             WINETRICKS_GUI=zenity
             WINETRICKS_GUI_VERSION="$(zenity --version)"
@@ -3536,7 +3536,7 @@ winetricks_detect_gui()
             echo "run with --help for more options."
             exit 1
         fi
-    elif test "$XDG_CURRENT_DESKTOP" == "KDE"; then
+    elif test "${XDG_CURRENT_DESKTOP}" == "KDE"; then
         if test -x "$(command -v kdialog 2>/dev/null)"; then
             WINETRICKS_GUI=kdialog
             WINETRICKS_GUI_VERSION="$(kdialog --version)"
