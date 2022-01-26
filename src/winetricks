@@ -8387,6 +8387,24 @@ load_dxvk193()
     helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
 }
 
+w_metadata dxvk194 dlls \
+    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.9.4)" \
+    publisher="Philip Rebohle" \
+    year="2017" \
+    media="download" \
+    file1="dxvk-1.9.4.tar.gz" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+
+load_dxvk194()
+{
+    # https://github.com/doitsujin/dxvk
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9.4/dxvk-1.9.4.tar.gz" 854f564c3b58a4cdf7b16eb9a4b6bc6ddc0f83d68c4f979a529fc23f7a770502
+    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+}
+
 #----------------------------------------------------------------
 
 w_metadata dxvk dlls \
