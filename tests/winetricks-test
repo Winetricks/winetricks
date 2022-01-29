@@ -211,7 +211,7 @@ case "${OS}" in
         #DRIVE_C="C:/"
         ;;
     *)
-        export WINE=${WINE:-wine}
+        export WINE="${WINE:-wine}"
         # Find wineserver.  Some distros (Debian) don't have it on the path,
         # on the mistaken understanding that user scripts never need it :-(
         # If wineserver is from wine-development set WINE to wine-development.
