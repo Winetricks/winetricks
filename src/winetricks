@@ -15321,7 +15321,7 @@ load_ie7()
             ;;
         *)
             w_warn "Starting ie7.  To start it later, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
-            "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" https://www.microsoft.com/windows/internet-explorer/ie7/ > /dev/null 2>&1 &
+            "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" http://www.example.com/ > /dev/null 2>&1 &
             ;;
     esac
 
