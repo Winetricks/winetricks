@@ -23,7 +23,7 @@ The ```winetricks``` package should be used if it is available and up to date. T
 * Gentoo: https://packages.gentoo.org/packages/app-emulation/winetricks
 * Homebrew (OSX): https://formulae.brew.sh/formula/winetricks
 * MacPorts (OSX): https://www.macports.org/ports.php?by=name&substr=winetricks
-* Slackbuilds (Slackware): https://slackbuilds.org/repository/14.2/system/winetricks/?search=winetricks
+* Slackbuilds (Slackware): https://slackbuilds.org/apps/winetricks/
 * Ubuntu: https://packages.ubuntu.com/search?keywords=winetricks
 
 Note: packaged Debian / Ubuntu winetricks versions are typically outdated, so a manual installation is recommended.
