@@ -8495,7 +8495,7 @@ load_vkd3d()
     _W_vkd3d_proton_version="${_W_vkd3d_proton_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/HansKristian-Work/vkd3d-proton/releases/download/v${_W_vkd3d_proton_version}/vkd3d-proton-${_W_vkd3d_proton_version}.tar.zst"
     helper_vkd3d_proton "vkd3d-proton-${_W_vkd3d_proton_version}.tar.zst"
-    unset _W_vkd3d-proton_version
+    unset _W_vkd3d_proton_version
 }
 
 #----------------------------------------------------------------
