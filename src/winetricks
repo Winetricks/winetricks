@@ -760,7 +760,8 @@ cat > "${WINETRICKS_WORKDIR}/cp_font_files.sh" <<_EOF_
     _W_file_name="\$(basename "\$_W_src_file" | tr "[:upper:]" "[:lower:]")"
 
     # Remove any existing font files that might have the same name, but with different case characters
-    find "${_W_dest_dir}" -maxdepth 1 -type f -iname "\$_W_file_name" -exec rm '{}' ';'
+    # LANG=C to avoid locale issues (https://github.com/Winetricks/winetricks/issues/1892)
+    LANG=C find "${_W_dest_dir}" -maxdepth 1 -type f -iname "\$_W_file_name" -exec rm '{}' ';'
 
     # FIXME: w_try() isn't available, need some better error handling:
     cp -f "\$_W_src_file" "${_W_dest_dir}/\$_W_file_name"
@@ -768,7 +769,8 @@ _EOF_
 
     # Use -exec "sh .." to avoid issues with noexec
     # Gross quoting is to avoid SC2156
-    find "${_W_src_dir}" -maxdepth 1 -type f -iname "${_W_pattern}" -exec sh -c 'sh '"${WINETRICKS_WORKDIR}/cp_font_files.sh"' "$1"' _ {} \;
+    # LANG=C to avoid locale issues (https://github.com/Winetricks/winetricks/issues/1892)
+    LANG=C find "${_W_src_dir}" -maxdepth 1 -type f -iname "${_W_pattern}" -exec sh -c 'sh '"${WINETRICKS_WORKDIR}/cp_font_files.sh"' "$1"' _ {} \;
 
     # Wait for Wine to add the new font to the registry under HKCU\Software\Wine\Fonts\Cache
     w_wineserver -w
