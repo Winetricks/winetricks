@@ -15254,7 +15254,7 @@ load_ie7()
     if [ -f "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe" ]; then
         mv "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe" "${W_PROGRAMS_X86_UNIX}/Internet Explorer/iexplore.exe.bak"
     fi
-    for dll in itircl itss jscript mshtml msimtf shdoclc shdocvw shlwapi urlmon; do
+    for dll in itircl itss jscript mshtml msimtf shdoclc shdocvw urlmon; do
         test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
         mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak
     done
