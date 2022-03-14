@@ -4948,10 +4948,13 @@ winetricks_cleanup()
         kill $(cat "${WINETRICKS_WORKDIR}/dd-pid")
     fi
     test "${WINETRICKS_CACHE_SYMLINK}" && rm -f "${WINETRICKS_CACHE_SYMLINK}"
-    test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${WINETRICKS_WORKDIR}"
-    # if $W_TMP_EARLY was created by mktemp, remove it (but not if W_OPT_NOCLEAN is set to 1):
-    test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP_EARLY}"
-    test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${WINEPREFIX}"/wrapper.cfg
+
+    if [ "${W_OPT_NOCLEAN}" = 1 ]; then
+        rm -rf "${WINETRICKS_WORKDIR}"
+        rm -rf "${W_TMP_EARLY}"
+        rm -rf "${WINEPREFIX}/wrapper.cfg"
+        rm -rf "${WINEPREFIX}/no_win64_warnings"
+    fi
 }
 
 winetricks_set_unattended()
@@ -5075,12 +5078,36 @@ winetricks_set_wineprefix()
         W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
         W_COMMONFILES="$(w_pathconv -u "${W_COMMONFILES_WIN}")"
 
-        # 64-bit prefixes still have plenty of issues:
-        case ${LANG} in
-            ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
-            pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
-            *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
+        # 64-bit prefixes still have plenty of issues/a lot of verbs only install 32-bit libraries
+        # Allow the user to disable that (globally, or per prefix).
+        if test -f "${W_CACHE}/no_win64_warnings"; then
+            echo "${W_CACHE}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+            _W_no_win64_warnings=1
+        elif test -f "${WINEPREFIX}/no_win64_warnings"; then
+            echo "${WINEPREFIX}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+            _W_no_win64_warnings=1
+        elif test -f "${W_TMP_EARLY}/no_win64_warnings"; then
+            echo "${W_TMP_EARLY}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+            _W_no_win64_warnings=1
+        else
+            _W_no_win64_warnings=0
+        fi
+
+        # In case of GUI, only warn once per prefix, per session (i.e., don't warn next time)
+        # Can't use ${W_TMP} because that is cleared out after each verb (by w_call())
+        case ${WINETRICKS_GUI} in
+            none) true ;;
+            *) touch "${W_TMP_EARLY}/no_win64_warnings" ;;
         esac
+
+        if [ "${_W_no_win64_warnings}" = 0 ]; then
+            case ${LANG} in
+                ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
+                pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
+                *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
+            esac
+        fi
+
     else
         WINE64="false"
         WINE_ARCH="${WINE}"
