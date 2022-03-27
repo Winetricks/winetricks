@@ -5977,7 +5977,7 @@ w_metadata cnc_ddraw dlls \
 load_cnc_ddraw()
 {
     # Note: only works if ddraw.ini contains settings for the executable
-    w_download https://github.com/CnCNet/cnc-ddraw/releases/download/v4.4.4.0/cnc-ddraw.zip 15b1f5ff38558869af651e3f10ab9e7728fa8f48d03b721e923f35fb417c55eb
+    w_download https://github.com/CnCNet/cnc-ddraw/releases/download/v4.4.7.0/cnc-ddraw.zip a430450204b34f676f4436870cbad7a0015e9451045f8999b8f1bfaff9531cf1
     w_try_unzip "${W_SYSTEM32_DLLS}" "${W_CACHE}/${W_PACKAGE}/${file1}"
 
     w_override_dlls native,builtin ddraw
