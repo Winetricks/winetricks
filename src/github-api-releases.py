@@ -52,8 +52,10 @@ def create_release(owner, repo, tag, token):
         return 1
     return 0
 
-
 def upload_asset(path, owner, repo, tag):
+    '''
+    Upload the asset to github
+    '''
     token = os.environ['GITHUB_TOKEN']
 
     url = urljoin(GITHUB_API,
