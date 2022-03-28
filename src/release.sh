@@ -103,7 +103,7 @@ if [ ${nopush} = 1 ] ; then
     echo "--no-push used, not uploading signature file"
 else
     python3 src/github-api-releases.py  "${tmpdir}/${version}.tar.gz.asc" Winetricks winetricks "${version}"
-    rm -rf "${tmpdir}"
+    #rm -rf "${tmpdir}"
 fi
 
 exit 0
