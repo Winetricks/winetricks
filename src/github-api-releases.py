@@ -78,6 +78,10 @@ def upload_asset(path, owner, repo, tag):
         # release must not exist, creating release from tag
         if create_release(owner, repo, tag, token):
             return 0
+        else:
+            # Need to start over with uploading now that release is created
+            # Return 1 to indicate we need to run upload_asset again
+            return 1
     upload_url = j['upload_url']
     upload_url = upload_url.split('{')[0]
 
