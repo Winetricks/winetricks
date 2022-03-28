@@ -89,7 +89,12 @@ def upload_asset(path, owner, repo, tag):
     with open(path, encoding="utf8") as f:
         contents = f.read()
 
-    content_type = mimetypes.guess_type(path)
+    try:
+        content_type = mime.from_file(path)
+    except:
+        import magic
+        content = magic.detect_from_filename(path)
+        content_type = content.name
 
     headers = {'Content-Type': content_type, 'Authorization': token}
     params = {'name': fname}
