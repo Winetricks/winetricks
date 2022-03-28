@@ -76,6 +76,7 @@ def upload_asset(path, owner, repo, tag):
     j = json.loads(res.text)
     if check_status(res, j):
         # release must not exist, creating release from tag
+        # pylint: disable=no-else-return
         if create_release(owner, repo, tag, token):
             return 0
         else:
