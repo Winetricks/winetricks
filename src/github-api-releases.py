@@ -31,7 +31,6 @@ import ntpath
 
 from urllib.parse import urljoin
 
-import mimetypes
 import requests
 
 GITHUB_API = 'https://api.github.com'
@@ -62,7 +61,7 @@ def create_release(owner, repo, tag, token):
         return 1
     return 0
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals,import-outside-toplevel
 def upload_asset(path, owner, repo, tag):
     '''
     Upload the asset to github
@@ -91,9 +90,14 @@ def upload_asset(path, owner, repo, tag):
         contents = f.read()
 
     try:
-        content_type = mime.from_file(path)
-    except:
+        import mimetypes
+        content = mimetypes.guess_type(path)
+        content_type = content[0]
+
+    except: # pylint: disable=bare-except
+        print("exception")
         import magic
+        # pylint: disable=no-member
         content = magic.detect_from_filename(path)
         content_type = content.name
 
