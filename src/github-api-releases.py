@@ -31,6 +31,9 @@ from urllib.parse import urljoin
 GITHUB_API = 'https://api.github.com'
 
 def check_status(res, j):
+    '''
+    Check that the HTTP server didn't return an error
+    '''
     if res.status_code >= 400:
         msg = j.get('message', 'UNDEFINED')
         print('ERROR: %s' % msg)
