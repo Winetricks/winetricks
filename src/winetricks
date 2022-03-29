@@ -15492,11 +15492,11 @@ _EOF_
     # Seeing is believing
     case ${WINETRICKS_GUI} in
         none)
-            w_warn "To start ie8, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
+            w_warn "To start ie8, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
             ;;
         *)
-            w_warn "Starting ie8.  To start it later, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore'"
-            "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore" https://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
+            w_warn "Starting ie8.  To start it later, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
+            "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" https://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
             ;;
     esac
 
