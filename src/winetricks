@@ -15496,7 +15496,7 @@ _EOF_
             ;;
         *)
             w_warn "Starting ie8.  To start it later, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
-            "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" https://www.microsoft.com/windows/internet-explorer > /dev/null 2>&1 &
+            "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" http://www.example.com > /dev/null 2>&1 &
             ;;
     esac
 
