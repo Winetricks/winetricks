@@ -1,28 +1,10 @@
+#!/usr/bin/env python3
+
 # pylint: disable=invalid-name
+
 '''
 Create a release using GitHub's API, and upload its assets
 '''
-
-# Homepage: https://github.com/josephbisch/test-releases-api/blob/master/github-api-releases.py
-#
-# Copyright:
-#   Copyright (C) 2016 Joseph Bisch <joseph.bisch AT gmail.com>
-#
-# License:
-#   This program is free software; you can redistribute it and/or
-#   modify it under the terms of the GNU Lesser General Public
-#   License as published by the Free Software Foundation; either
-#   version 2.1 of the License, or (at your option) any later
-#   version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU Lesser General Public License for more details.
-#
-#   You should have received a copy of the GNU Lesser General Public
-#   License along with this program.  If not, see
-#   <https://www.gnu.org/licenses/>.
 
 import json
 import sys
@@ -47,16 +29,34 @@ def check_status(res, j):
 
 
 # pylint: disable=redefined-outer-name
-def create_release(owner, repo, tag, token):
+def check_release(owner, repo, tag, token):
     '''
-    Create the release on GitHub
+    Check if the release already exists on GitHub
     '''
     url = urljoin(GITHUB_API, '/'.join(['repos', owner, repo, 'releases']))
     headers = {'Authorization': token}
     data = {'tag_name': tag, 'name': tag, 'body': f'winetricks - {tag}'}
     res = requests.post(url, auth=(owner, token), data=json.dumps(data), headers=headers)
 
+    print("about to create release")
     j = json.loads(res.text)
+    print(json.dumps(j, indent=4))
+    if check_status(res, j):
+        return 1
+    return 0
+
+# pylint: disable=redefined-outer-name
+def create_release(owner, repo, tag, token):
+    '''
+    Create the release on GitHub
+    '''
+    url = urljoin(GITHUB_API, '/'.join(['repos', owner, repo, 'releases', 'tags', tag]))
+    headers = {'Authorization': token}
+    res = requests.post(url, auth=(owner, token), data=json.dumps(data), headers=headers)
+
+    print("about to create release")
+    j = json.loads(res.text)
+    print(json.dumps(j, indent=4))
     if check_status(res, j):
         return 1
     return 0
@@ -72,16 +72,25 @@ def upload_asset(path, owner, repo, tag):
                   '/'.join(['repos', owner, repo, 'releases', 'tags', tag]))
     res = requests.get(url)
 
+    # FIXME: create_release is already a function, but still, this needs to be refactored
+    # i.e., this belongs in main()
+
+    print("uploading assets 1 (i.e., creating release)")
     j = json.loads(res.text)
+    print(json.dumps(j, indent=4))
     if check_status(res, j):
         # release must not exist, creating release from tag
         # pylint: disable=no-else-return
+        print("calling create release")
         if create_release(owner, repo, tag, token):
             return 0
         else:
             # Need to start over with uploading now that release is created
             # Return 1 to indicate we need to run upload_asset again
             return 1
+
+    ### FIXME END
+
     upload_url = j['upload_url']
     upload_url = upload_url.split('{')[0]
 
@@ -89,17 +98,10 @@ def upload_asset(path, owner, repo, tag):
     with open(path, encoding="utf8") as f:
         contents = f.read()
 
-    try:
-        import mimetypes
-        content = mimetypes.guess_type(path)
-        content_type = content[0]
-
-    except: # pylint: disable=bare-except
-        print("exception")
-        import magic
-        # pylint: disable=no-member
-        content = magic.detect_from_filename(path)
-        content_type = content.name
+    import mimetypes
+    content = mimetypes.guess_type(path)
+    content_type = content[0]
+    print("content_type is {content_type}")
 
     headers = {'Content-Type': content_type, 'Authorization': token}
     params = {'name': fname}
@@ -107,19 +109,33 @@ def upload_asset(path, owner, repo, tag):
     res = requests.post(upload_url, data=contents, auth=(owner, token),
                         headers=headers, params=params)
 
+    # This is where it's returning 422 ^^
+
+    print("uploading assets 2")
     j = json.loads(res.text)
+    print(json.dumps(j, indent=4))
     if check_status(res, j):
         return 0
     print(f'SUCCESS: {fname} uploaded')
     return 0
 
 if __name__ == '__main__':
-    path = sys.argv[1]
-    owner = sys.argv[2]
-    repo = sys.argv[3]
-    tag = sys.argv[4]
+    path = sys.argv[1]  # path of file to upload
+    owner = sys.argv[2] # github account owner of the repo
+    repo = sys.argv[3]  # github repo to upload to
+    tag = sys.argv[4]   # tag to upload
     if not os.path.isabs(path):
         path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
+    
+    # FIXME: refactor:
     RET = 1  # Run upload_asset at least once.
     while RET:
         RET = upload_asset(path, owner, repo, tag)
+
+    # new flow:
+    # step 1: make sure release doesn't already exist
+    #         * if it does, error out/skip 
+    #           (should probably warn/skip, since conceivably the script 
+    #            could be called multiple times for multiple assets)
+    # step 2: make a release
+    # step 3: upload asset (.asc, which is generated by ./src/release.sh)
