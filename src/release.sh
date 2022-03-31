@@ -102,7 +102,7 @@ gpg --armor --default-key 0x053F0749 --detach-sign "${tmpdir}/${version}.tar.gz"
 if [ ${nopush} = 1 ] ; then
     echo "--no-push used, not uploading signature file"
 else
-    python3 src/github-api-releases.py  "${tmpdir}/${version}.tar.gz.asc" Winetricks winetricks "${version}"
+    python3 src/github-api-releases.py  "${tmpdir}/${version}.tar.gz.asc" austin987 winetricks "${version}"
     rm -rf "${tmpdir}"
 fi
 
