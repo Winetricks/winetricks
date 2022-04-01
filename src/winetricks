@@ -16770,7 +16770,9 @@ load_wme9()
     # See also https://www.microsoft.com/en-us/download/details.aspx?id=17792
     # Formerly at: https://download.microsoft.com/download/8/1/f/81f9402f-efdd-439d-b2a4-089563199d47/WMEncoder.exe
     # Mirror list: http://www.filewatcher.com/_/?q=WMEncoder.exe
-    w_download https://people.ok.ubc.ca/mberger/MiscSW/WMEncoder.exe 19d1610d12b51c969f64703c4d3a76aae30dee526bae715381b5f3369f717d76
+    # 2018-06-11:  https://people.ok.ubc.ca/mberger/MiscSW/WMEncoder.exe
+    # 2022-03-31:  http://galinet13.free.fr/codec/WMEncoder.exe
+    w_download http://galinet13.free.fr/codec/WMEncoder.exe 19d1610d12b51c969f64703c4d3a76aae30dee526bae715381b5f3369f717d76
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" WMEncoder.exe ${W_OPT_UNATTENDED:+/q}
