@@ -16809,6 +16809,8 @@ load_wmp9()
 {
     w_skip_windows wmp9 && return
 
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=52772" 6.6
+
     # Not really expected to work well yet; see
     # https://appdb.winehq.org/appview.php?versionId=1449
 
