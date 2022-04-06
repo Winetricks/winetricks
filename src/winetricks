@@ -22707,6 +22707,11 @@ load_native_mdac()
         w_override_dlls native,builtin odbccp32
     fi
 
+    # https://github.com/Winetricks/winetricks/issues/1839
+    if w_wine_version_in ,6.21 ; then
+        w_override_dlls native,builtin msdasql
+    fi
+
     w_override_dlls native,builtin mtxdm odbc32 oledb32
 }
 
