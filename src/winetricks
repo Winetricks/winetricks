@@ -22702,10 +22702,17 @@ load_native_mdac()
         w_override_dlls native,builtin msado15
     fi
 
+    # For a while, this wasn't set (i.e., it was set to `builtin`, not `native,builtin`)
+    # See:
     # https://github.com/Winetricks/winetricks/issues/1448
-    if w_wine_version_in ,4.22 ; then
-        w_override_dlls native,builtin odbccp32
-    fi
+    # https://github.com/Winetricks/winetricks/issues/1737
+    # https://github.com/Winetricks/winetricks/issues/1841
+    #
+    # https://bugs.winehq.org/show_bug.cgi?id=3158
+    # https://bugs.winehq.org/show_bug.cgi?id=3161
+    # https://bugs.winehq.org/show_bug.cgi?id=50460
+    # et al..
+    w_override_dlls native,builtin odbccp32
 
     # https://github.com/Winetricks/winetricks/issues/1839
     if w_wine_version_in ,6.21 ; then
