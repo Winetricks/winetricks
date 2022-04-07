@@ -327,7 +327,9 @@ test_7zip()
 # Return the number of blocks available in the system
 total_df()
 {
-    df | grep -v /dev/loop | awk '/^\// { sum += $4 } END { print sum }'
+    # 'Operation not permitted' error is very verbose, hence the ugly workaround. See:
+    # https://github.com/flatpak/xdg-desktop-portal/issues/512
+    df 2>&1 | grep -v -e '/dev/loop' -e 'Operation not permitted' | awk '/^\// { sum += $4 } END { print sum }'
 }
 
 # for single apps, wrapper around test_command:
