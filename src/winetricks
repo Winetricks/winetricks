@@ -2804,8 +2804,8 @@ _EOF_
 
 w_unset_winver()
 {
-  w_warn "w_unset_winver() is deprecated, use \'w_set_winver default\' instead"
-  w_set_winver default
+    w_warn "w_unset_winver() is deprecated, use \'w_set_winver default\' instead"
+    w_set_winver default
 }
 
 # Present app $1 with the Windows personality $2
@@ -3324,10 +3324,10 @@ winetricks_dl_url_to_stdout()
     # Executing ... stuff, but still does error checking
     if [ "${WINETRICKS_DOWNLOADER}" = "wget" ] ; then
         ${torify} wget -q -O - --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-            --tries "${WINETRICKS_DOWNLOADER_RETRIES}" "$1"
+        --tries "${WINETRICKS_DOWNLOADER_RETRIES}" "$1"
     elif [ "${WINETRICKS_DOWNLOADER}" = "curl" ] ; then
         ${torify} curl -s --connect-timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
-               --retry "${WINETRICKS_DOWNLOADER_RETRIES}" "$1"
+        --retry "${WINETRICKS_DOWNLOADER_RETRIES}" "$1"
     elif [ "${WINETRICKS_DOWNLOADER}" = "aria2c" ] ; then
         # aria2c doesn't have support downloading to stdout:
         # https://github.com/aria2/aria2/issues/190
@@ -3551,7 +3551,7 @@ winetricks_detect_gui()
 
     # Print zenity/dialog version info for debugging:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-       echo "winetricks GUI enabled, using ${WINETRICKS_GUI} ${WINETRICKS_GUI_VERSION##kdialog }"
+        echo "winetricks GUI enabled, using ${WINETRICKS_GUI} ${WINETRICKS_GUI_VERSION##kdialog }"
     fi
 }
 
@@ -3637,93 +3637,93 @@ winetricks_prefixmenu()
 {
     case ${LANG} in
         ru*) _W_msg_title="Winetricks - выберите путь wine (wineprefix)"
-             _W_msg_body='Что вы хотите сделать?'
-             _W_msg_apps='Установить программу'
-             _W_msg_games='Установить игру'
-             _W_msg_benchmarks='Установить приложение для оценки производительности'
-             _W_msg_default="Выберите путь для wine по умолчанию"
-             _W_msg_mkprefix="Создать новый путь wine"
-             _W_msg_unattended0="Отключить автоматическую установку"
-             _W_msg_unattended1="Включить автоматическую установку"
-             _W_msg_help="Просмотр справки (в веб-браузере)"
-             ;;
+            _W_msg_body='Что вы хотите сделать?'
+            _W_msg_apps='Установить программу'
+            _W_msg_games='Установить игру'
+            _W_msg_benchmarks='Установить приложение для оценки производительности'
+            _W_msg_default="Выберите путь для wine по умолчанию"
+            _W_msg_mkprefix="Создать новый путь wine"
+            _W_msg_unattended0="Отключить автоматическую установку"
+            _W_msg_unattended1="Включить автоматическую установку"
+            _W_msg_help="Просмотр справки (в веб-браузере)"
+            ;;
         uk*) _W_msg_title="Winetricks - виберіть wineprefix"
-             _W_msg_body='Що Ви хочете зробити?'
-             _W_msg_apps='Встановити додаток'
-             _W_msg_games='Встановити гру'
-             _W_msg_benchmarks='Встановити benchmark'
-             _W_msg_default="Вибрати wineprefix за замовчуванням"
-             _W_msg_mkprefix="створити новий wineprefix"
-             _W_msg_unattended0="Вимкнути автоматичне встановлення"
-             _W_msg_unattended1="Увімкнути автоматичне встановлення"
-             _W_msg_help="Переглянути довідку"
-             ;;
+            _W_msg_body='Що Ви хочете зробити?'
+            _W_msg_apps='Встановити додаток'
+            _W_msg_games='Встановити гру'
+            _W_msg_benchmarks='Встановити benchmark'
+            _W_msg_default="Вибрати wineprefix за замовчуванням"
+            _W_msg_mkprefix="створити новий wineprefix"
+            _W_msg_unattended0="Вимкнути автоматичне встановлення"
+            _W_msg_unattended1="Увімкнути автоматичне встановлення"
+            _W_msg_help="Переглянути довідку"
+            ;;
         zh_CN*)   _W_msg_title="Winetricks - 择一 Wine 容器"
-             _W_msg_body='君欲何为？'
-             _W_msg_apps='安装一个 Windows 应用'
-             _W_msg_games='安装一个游戏'
-             _W_msg_benchmarks='安装一个基准测试软件'
-             _W_msg_default="选择默认的 Wine 容器"
-             _W_msg_mkprefix="创建新的 Wine 容器"
-             _W_msg_unattended0="禁用静默安装"
-             _W_msg_unattended1="启用静默安装"
-             _W_msg_help="查看帮助"
-             ;;
+            _W_msg_body='君欲何为？'
+            _W_msg_apps='安装一个 Windows 应用'
+            _W_msg_games='安装一个游戏'
+            _W_msg_benchmarks='安装一个基准测试软件'
+            _W_msg_default="选择默认的 Wine 容器"
+            _W_msg_mkprefix="创建新的 Wine 容器"
+            _W_msg_unattended0="禁用静默安装"
+            _W_msg_unattended1="启用静默安装"
+            _W_msg_help="查看帮助"
+            ;;
         zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 取一 Wine 容器"
-             _W_msg_body='君欲何為？'
-             _W_msg_apps='安裝一個 Windows 應用'
-             _W_msg_games='安裝一個遊戲'
-             _W_msg_benchmarks='安裝一個基准測試軟體'
-             _W_msg_default="選取預設的 Wine 容器"
-             _W_msg_mkprefix="建立新的 Wine 容器"
-             _W_msg_unattended0="禁用靜默安裝"
-             _W_msg_unattended1="啟用靜默安裝"
-             _W_msg_help="檢視輔助說明"
-             ;;
+            _W_msg_body='君欲何為？'
+            _W_msg_apps='安裝一個 Windows 應用'
+            _W_msg_games='安裝一個遊戲'
+            _W_msg_benchmarks='安裝一個基准測試軟體'
+            _W_msg_default="選取預設的 Wine 容器"
+            _W_msg_mkprefix="建立新的 Wine 容器"
+            _W_msg_unattended0="禁用靜默安裝"
+            _W_msg_unattended1="啟用靜默安裝"
+            _W_msg_help="檢視輔助說明"
+            ;;
         de*) _W_msg_title="Winetricks - wineprefix auswählen"
-             _W_msg_body='Was möchten Sie tun?'
-             _W_msg_apps='Ein Programm installieren'
-             _W_msg_games='Ein Spiel installieren'
-             _W_msg_benchmarks='Einen Benchmark-Test installieren'
-             _W_msg_default="Standard wineprefix auswählen"
-             _W_msg_mkprefix="Neuen wineprefix erstellen"
-             _W_msg_unattended0="Automatische Installation deaktivieren"
-             _W_msg_unattended1="Automatische Installation aktivieren"
-             _W_msg_help="Hilfe anzeigen"
-             ;;
+            _W_msg_body='Was möchten Sie tun?'
+            _W_msg_apps='Ein Programm installieren'
+            _W_msg_games='Ein Spiel installieren'
+            _W_msg_benchmarks='Einen Benchmark-Test installieren'
+            _W_msg_default="Standard wineprefix auswählen"
+            _W_msg_mkprefix="Neuen wineprefix erstellen"
+            _W_msg_unattended0="Automatische Installation deaktivieren"
+            _W_msg_unattended1="Automatische Installation aktivieren"
+            _W_msg_help="Hilfe anzeigen"
+            ;;
         pl*) _W_msg_title="Winetricks - wybierz prefiks Wine"
-             _W_msg_body='Co chcesz zrobić?'
-             _W_msg_apps='Zainstalować aplikację'
-             _W_msg_games='Zainstalować grę'
-             _W_msg_benchmarks='Zainstalować program sprawdzający wydajność komputera'
-             _W_msg_default="Wybrać domyślny prefiks Wine"
-             _W_msg_mkprefix="Stwórz nowy prefiks Wine"
-             _W_msg_unattended0="Wyłącz cichą instalację"
-             _W_msg_unattended1="Włącz cichą instalację"
-             _W_msg_help="Wyświetl pomoc"
-             ;;
+            _W_msg_body='Co chcesz zrobić?'
+            _W_msg_apps='Zainstalować aplikację'
+            _W_msg_games='Zainstalować grę'
+            _W_msg_benchmarks='Zainstalować program sprawdzający wydajność komputera'
+            _W_msg_default="Wybrać domyślny prefiks Wine"
+            _W_msg_mkprefix="Stwórz nowy prefiks Wine"
+            _W_msg_unattended0="Wyłącz cichą instalację"
+            _W_msg_unattended1="Włącz cichą instalację"
+            _W_msg_help="Wyświetl pomoc"
+            ;;
         pt*) _W_msg_title="Winetricks - Escolha um wineprefix"
-             _W_msg_body='O que você quer fazer?'
-             _W_msg_apps='Instalar um programa'
-             _W_msg_games='Instalar um jogo'
-             _W_msg_benchmarks='Instalar um teste de desempenho/benchmark'
-             _W_msg_default="Selecionar o prefixo padrão wineprefix"
-             _W_msg_mkprefix="Criar novo prefixo wineprefix"
-             _W_msg_unattended0="Desativar instalação silenciosa"
-             _W_msg_unattended1="Ativar instalação silenciosa"
-             _W_msg_help="Ver ajuda"
-             ;;
-        *)   _W_msg_title="Winetricks - choose a wineprefix"
-             _W_msg_body='What do you want to do?'
-             _W_msg_apps='Install an application'
-             _W_msg_games='Install a game'
-             _W_msg_benchmarks='Install a benchmark'
-             _W_msg_default="Select the default wineprefix"
-             _W_msg_mkprefix="Create new wineprefix"
-             _W_msg_unattended0="Disable silent install"
-             _W_msg_unattended1="Enable silent install"
-             _W_msg_help="View help"
-             ;;
+            _W_msg_body='O que você quer fazer?'
+            _W_msg_apps='Instalar um programa'
+            _W_msg_games='Instalar um jogo'
+            _W_msg_benchmarks='Instalar um teste de desempenho/benchmark'
+            _W_msg_default="Selecionar o prefixo padrão wineprefix"
+            _W_msg_mkprefix="Criar novo prefixo wineprefix"
+            _W_msg_unattended0="Desativar instalação silenciosa"
+            _W_msg_unattended1="Ativar instalação silenciosa"
+            _W_msg_help="Ver ajuda"
+            ;;
+        *)  _W_msg_title="Winetricks - choose a wineprefix"
+            _W_msg_body='What do you want to do?'
+            _W_msg_apps='Install an application'
+            _W_msg_games='Install a game'
+            _W_msg_benchmarks='Install a benchmark'
+            _W_msg_default="Select the default wineprefix"
+            _W_msg_mkprefix="Create new wineprefix"
+            _W_msg_unattended0="Disable silent install"
+            _W_msg_unattended1="Enable silent install"
+            _W_msg_help="View help"
+            ;;
     esac
     case "${W_OPT_UNATTENDED}" in
         1) _W_cmd_unattended=attended; _W_msg_unattended="${_W_msg_unattended0}" ;;
@@ -3817,17 +3817,17 @@ winetricks_mkprefixmenu()
     case ${LANG} in
         # TODO: translate to other languages
         de)  _W_msg_title="Winetricks - Neues Wineprefix erstellen"
-             _W_msg_name="Name"
-             _W_msg_arch="Architektur"
-             ;;
+            _W_msg_name="Name"
+            _W_msg_arch="Architektur"
+            ;;
         pt*) _W_msg_title="Winetricks - criar novo wineprefix"
-             _W_msg_name="Nome"
-             _W_msg_arch="Arquitetura"
-             ;;
-        *)   _W_msg_title="Winetricks - create new wineprefix"
-             _W_msg_name="Name"
-             _W_msg_arch="Architecture"
-             ;;
+            _W_msg_name="Nome"
+            _W_msg_arch="Arquitetura"
+            ;;
+        *)  _W_msg_title="Winetricks - create new wineprefix"
+            _W_msg_name="Name"
+            _W_msg_arch="Architecture"
+            ;;
     esac
 
     case ${WINETRICKS_GUI} in
@@ -3854,131 +3854,131 @@ winetricks_mainmenu()
 {
     case ${LANG} in
         da*) _W_msg_title="Vælg en pakke-kategori - Nuværende præfiks er \"${WINEPREFIX}\""
-             _W_msg_body='Hvad ønsker du at gøre?'
-             _W_msg_dlls="Install a Windows DLL"
-             _W_msg_fonts='Install a font'
-             _W_msg_settings='Change Wine settings'
-             _W_msg_winecfg='Run winecfg'
-             _W_msg_regedit='Run regedit'
-             _W_msg_taskmgr='Run taskmgr'
-             _W_msg_explorer='Run explorer'
-             _W_msg_uninstaller='Run uninstaller'
-             _W_msg_shell='Run a commandline shell (for debugging)'
-             _W_msg_folder='Browse files'
-             _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
-             ;;
+            _W_msg_body='Hvad ønsker du at gøre?'
+            _W_msg_dlls="Install a Windows DLL"
+            _W_msg_fonts='Install a font'
+            _W_msg_settings='Change Wine settings'
+            _W_msg_winecfg='Run winecfg'
+            _W_msg_regedit='Run regedit'
+            _W_msg_taskmgr='Run taskmgr'
+            _W_msg_explorer='Run explorer'
+            _W_msg_uninstaller='Run uninstaller'
+            _W_msg_shell='Run a commandline shell (for debugging)'
+            _W_msg_folder='Browse files'
+            _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
+            ;;
         de*) _W_msg_title="Pakettyp auswählen - Aktueller Präfix ist \"${WINEPREFIX}\""
-             _W_msg_body='Was möchten Sie tun?'
-             _W_msg_dlls="Windows-DLL installieren"
-             _W_msg_fonts='Schriftart installieren'
-             _W_msg_settings='Wine Einstellungen ändern'
-             _W_msg_winecfg='winecfg starten'
-             _W_msg_regedit='regedit starten'
-             _W_msg_taskmgr='taskmgr starten'
-             _W_msg_explorer='explorer starten'
-             _W_msg_uninstaller='uninstaller starten'
-             _W_msg_shell='Eine Kommandozeile zum debuggen starten'
-             _W_msg_folder='Ordner durchsuchen'
-             _W_msg_annihilate="ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen"
-             ;;
+            _W_msg_body='Was möchten Sie tun?'
+            _W_msg_dlls="Windows-DLL installieren"
+            _W_msg_fonts='Schriftart installieren'
+            _W_msg_settings='Wine Einstellungen ändern'
+            _W_msg_winecfg='winecfg starten'
+            _W_msg_regedit='regedit starten'
+            _W_msg_taskmgr='taskmgr starten'
+            _W_msg_explorer='explorer starten'
+            _W_msg_uninstaller='uninstaller starten'
+            _W_msg_shell='Eine Kommandozeile zum debuggen starten'
+            _W_msg_folder='Ordner durchsuchen'
+            _W_msg_annihilate="ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen"
+            ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
-             _W_msg_body='Co chcesz zrobić w tym prefiksie?'
-             _W_msg_dlls="Zainstalować windowsową bibliotekę DLL lub komponent"
-             _W_msg_fonts='Zainstalować czcionkę'
-             _W_msg_settings='Zmienić ustawienia'
-             _W_msg_winecfg='Uruchomić winecfg'
-             _W_msg_regedit='Uruchomić edytor rejestru'
-             _W_msg_taskmgr='Uruchomić menedżer zadań'
-             _W_msg_explorer='Uruchomić explorer'
-             _W_msg_uninstaller='Uruchomić program odinstalowujący'
-             _W_msg_shell='Uruchomić powłokę wiersza poleceń (dla debugowania)'
-             _W_msg_folder='Przeglądać pliki'
-             _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
-             ;;
+            _W_msg_body='Co chcesz zrobić w tym prefiksie?'
+            _W_msg_dlls="Zainstalować windowsową bibliotekę DLL lub komponent"
+            _W_msg_fonts='Zainstalować czcionkę'
+            _W_msg_settings='Zmienić ustawienia'
+            _W_msg_winecfg='Uruchomić winecfg'
+            _W_msg_regedit='Uruchomić edytor rejestru'
+            _W_msg_taskmgr='Uruchomić menedżer zadań'
+            _W_msg_explorer='Uruchomić explorer'
+            _W_msg_uninstaller='Uruchomić program odinstalowujący'
+            _W_msg_shell='Uruchomić powłokę wiersza poleceń (dla debugowania)'
+            _W_msg_folder='Przeglądać pliki'
+            _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
+            ;;
         pt*) _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
-             _W_msg_body='O que você gostaria de fazer com este prefixo wineprefix?'
-             _W_msg_dlls="Instalar DLL ou componente do Windows"
-             _W_msg_fonts='Instalar fontes'
-             _W_msg_settings='Alterar configurações'
-             _W_msg_winecfg='Executar winecfg'
-             _W_msg_regedit='Executar regedit'
-             _W_msg_taskmgr='Executar taskmgr'
-             _W_msg_explorer='Executar explorer'
-             _W_msg_uninstaller='Executar desinstalador'
-             _W_msg_shell='Executar linha de comandos shell (para depuração)'
-             _W_msg_folder='Gerenciar arquivos'
-             _W_msg_annihilate="Apagar TODOS OS DADOS E APLICATIVOS DENTRO DESTE WINEPREFIX"
-             ;;
+            _W_msg_body='O que você gostaria de fazer com este prefixo wineprefix?'
+            _W_msg_dlls="Instalar DLL ou componente do Windows"
+            _W_msg_fonts='Instalar fontes'
+            _W_msg_settings='Alterar configurações'
+            _W_msg_winecfg='Executar winecfg'
+            _W_msg_regedit='Executar regedit'
+            _W_msg_taskmgr='Executar taskmgr'
+            _W_msg_explorer='Executar explorer'
+            _W_msg_uninstaller='Executar desinstalador'
+            _W_msg_shell='Executar linha de comandos shell (para depuração)'
+            _W_msg_folder='Gerenciar arquivos'
+            _W_msg_annihilate="Apagar TODOS OS DADOS E APLICATIVOS DENTRO DESTE WINEPREFIX"
+            ;;
         ru*) _W_msg_title="Winetricks - текущий путь для wine (wineprefix) \"${WINEPREFIX}\""
-             _W_msg_body='Что вы хотите сделать с этим wineprefix?'
-             _W_msg_dlls="Установить библиотеку DLL или компонент Windows"
-             _W_msg_fonts='Установить шрифт'
-             _W_msg_settings='Поменять настройки'
-             _W_msg_winecfg='Запустить winecfg (редактор настроек wine)'
-             _W_msg_regedit='Запустить regedit (редактор реестра)'
-             _W_msg_taskmgr='Запустить taskmgr (менеджер задач)'
-             _W_msg_explorer='Запустить explorer'
-             _W_msg_uninstaller='Запустить uninstaller (деинсталлятор)'
-             _W_msg_shell='Запустить графический терминал (для отладки)'
-             _W_msg_folder='Проводник файлов'
-             _W_msg_annihilate="Удалить ВСЕ ДАННЫЕ И ПРИЛОЖЕНИЯ В ЭТОМ WINEPREFIX"
-             ;;
+            _W_msg_body='Что вы хотите сделать с этим wineprefix?'
+            _W_msg_dlls="Установить библиотеку DLL или компонент Windows"
+            _W_msg_fonts='Установить шрифт'
+            _W_msg_settings='Поменять настройки'
+            _W_msg_winecfg='Запустить winecfg (редактор настроек wine)'
+            _W_msg_regedit='Запустить regedit (редактор реестра)'
+            _W_msg_taskmgr='Запустить taskmgr (менеджер задач)'
+            _W_msg_explorer='Запустить explorer'
+            _W_msg_uninstaller='Запустить uninstaller (деинсталлятор)'
+            _W_msg_shell='Запустить графический терминал (для отладки)'
+            _W_msg_folder='Проводник файлов'
+            _W_msg_annihilate="Удалить ВСЕ ДАННЫЕ И ПРИЛОЖЕНИЯ В ЭТОМ WINEPREFIX"
+            ;;
         uk*) _W_msg_title="Winetricks - поточний prefix \"${WINEPREFIX}\""
-             _W_msg_body='Що Ви хочете зробити для цього wineprefix?'
-             _W_msg_dlls="Встановити Windows DLL чи компонент(и)"
-             _W_msg_fonts='Встановити шрифт'
-             _W_msg_settings='Змінити налаштування'
-             _W_msg_winecfg='Запустити winecfg'
-             _W_msg_regedit='Запустити regedit'
-             _W_msg_taskmgr='Запустити taskmgr'
-             _W_msg_explorer='Запустити explorer'
-             _W_msg_uninstaller='Встановлення/видалення програм'
-             _W_msg_shell='Запуск командної оболонки (для налагодження)'
-             _W_msg_folder='Перегляд файлів'
-             _W_msg_annihilate="Видалити УСІ ДАНІ ТА ПРОГРАМИ З ЦЬОГО WINEPREFIX"
-             ;;
+            _W_msg_body='Що Ви хочете зробити для цього wineprefix?'
+            _W_msg_dlls="Встановити Windows DLL чи компонент(и)"
+            _W_msg_fonts='Встановити шрифт'
+            _W_msg_settings='Змінити налаштування'
+            _W_msg_winecfg='Запустити winecfg'
+            _W_msg_regedit='Запустити regedit'
+            _W_msg_taskmgr='Запустити taskmgr'
+            _W_msg_explorer='Запустити explorer'
+            _W_msg_uninstaller='Встановлення/видалення програм'
+            _W_msg_shell='Запуск командної оболонки (для налагодження)'
+            _W_msg_folder='Перегляд файлів'
+            _W_msg_annihilate="Видалити УСІ ДАНІ ТА ПРОГРАМИ З ЦЬОГО WINEPREFIX"
+            ;;
         zh_CN*)   _W_msg_title="Winetricks - 当前容器路径是 \"${WINEPREFIX}\""
-             _W_msg_body='管理当前容器'
-             _W_msg_dlls="安装 Windows DLL 或组件"
-             _W_msg_fonts='安装字体'
-             _W_msg_settings='修改设置'
-             _W_msg_winecfg='运行 Wine 配置程序'
-             _W_msg_regedit='运行注册表'
-             _W_msg_taskmgr='运行任务管理器'
-             _W_msg_explorer='运行资源管理器'
-             _W_msg_uninstaller='运行卸载程序'
-             _W_msg_shell='运行命令提示窗口 (作为调试)'
-             _W_msg_folder='浏览容器中的文件'
-             _W_msg_annihilate="删除容器中所有数据和应用程序"
-             ;;
+            _W_msg_body='管理当前容器'
+            _W_msg_dlls="安装 Windows DLL 或组件"
+            _W_msg_fonts='安装字体'
+            _W_msg_settings='修改设置'
+            _W_msg_winecfg='运行 Wine 配置程序'
+            _W_msg_regedit='运行注册表'
+            _W_msg_taskmgr='运行任务管理器'
+            _W_msg_explorer='运行资源管理器'
+            _W_msg_uninstaller='运行卸载程序'
+            _W_msg_shell='运行命令提示窗口 (作为调试)'
+            _W_msg_folder='浏览容器中的文件'
+            _W_msg_annihilate="删除容器中所有数据和应用程序"
+            ;;
         zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"${WINEPREFIX}\""
-             _W_msg_body='管理目前容器'
-             _W_msg_dlls="安裝 Windows DLL 或套件"
-             _W_msg_fonts='安裝字型'
-             _W_msg_settings='修改設定'
-             _W_msg_winecfg='執行 Wine 設定程式'
-             _W_msg_regedit='執行登錄編輯程式'
-             _W_msg_taskmgr='執行工作管理員'
-             _W_msg_explorer='執行檔案總管'
-             _W_msg_uninstaller='執行解除安裝程式'
-             _W_msg_shell='執行命令提示視窗 (作為偵錯)'
-             _W_msg_folder='瀏覽容器中的檔案'
-             _W_msg_annihilate="刪除容器中所有資料和應用程式"
-             ;;
-        *)   _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
-             _W_msg_body='What would you like to do to this wineprefix?'
-             _W_msg_dlls="Install a Windows DLL or component"
-             _W_msg_fonts='Install a font'
-             _W_msg_settings='Change settings'
-             _W_msg_winecfg='Run winecfg'
-             _W_msg_regedit='Run regedit'
-             _W_msg_taskmgr='Run taskmgr'
-             _W_msg_explorer='Run explorer'
-             _W_msg_uninstaller='Run uninstaller'
-             _W_msg_shell='Run a commandline shell (for debugging)'
-             _W_msg_folder='Browse files'
-             _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
-             ;;
+            _W_msg_body='管理目前容器'
+            _W_msg_dlls="安裝 Windows DLL 或套件"
+            _W_msg_fonts='安裝字型'
+            _W_msg_settings='修改設定'
+            _W_msg_winecfg='執行 Wine 設定程式'
+            _W_msg_regedit='執行登錄編輯程式'
+            _W_msg_taskmgr='執行工作管理員'
+            _W_msg_explorer='執行檔案總管'
+            _W_msg_uninstaller='執行解除安裝程式'
+            _W_msg_shell='執行命令提示視窗 (作為偵錯)'
+            _W_msg_folder='瀏覽容器中的檔案'
+            _W_msg_annihilate="刪除容器中所有資料和應用程式"
+            ;;
+        *)  _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
+            _W_msg_body='What would you like to do to this wineprefix?'
+            _W_msg_dlls="Install a Windows DLL or component"
+            _W_msg_fonts='Install a font'
+            _W_msg_settings='Change settings'
+            _W_msg_winecfg='Run winecfg'
+            _W_msg_regedit='Run regedit'
+            _W_msg_taskmgr='Run taskmgr'
+            _W_msg_explorer='Run explorer'
+            _W_msg_uninstaller='Run uninstaller'
+            _W_msg_shell='Run a commandline shell (for debugging)'
+            _W_msg_folder='Browse files'
+            _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
+            ;;
     esac
 
     case ${WINETRICKS_GUI} in
@@ -4006,7 +4006,7 @@ winetricks_mainmenu()
                     FALSE shell       '${_W_msg_shell}' \
                     FALSE folder      '${_W_msg_folder}' \
                     FALSE annihilate  '${_W_msg_annihilate}' \
-                 "
+                "
             ) > "${WINETRICKS_WORKDIR}"/zenity.sh
 
             sh "${WINETRICKS_WORKDIR}"/zenity.sh | tr '|' ' '
@@ -4041,32 +4041,32 @@ winetricks_settings_menu()
     # FIXME: these translations should really be centralized/reused:
     case ${LANG} in
         da*) _W_msg_title="Vælg en pakke - Nuværende præfiks er \"${WINEPREFIX}\""
-             _W_msg_body='Which settings would you like to change?'
-             ;;
+            _W_msg_body='Which settings would you like to change?'
+            ;;
         de*) _W_msg_title="Winetricks - Aktueller Präfix ist \"${WINEPREFIX}\""
-             _W_msg_body='Welche Einstellungen möchten Sie ändern?'
-             ;;
+            _W_msg_body='Welche Einstellungen möchten Sie ändern?'
+            ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
-             _W_msg_body='Jakie ustawienia chcesz zmienić?'
-             ;;
+            _W_msg_body='Jakie ustawienia chcesz zmienić?'
+            ;;
         pt*) _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
-             _W_msg_body='Quais configurações você gostaria de alterar?'
-             ;;
+            _W_msg_body='Quais configurações você gostaria de alterar?'
+            ;;
         ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"${WINEPREFIX}\""
-             _W_msg_body='Какие настройки вы хотите изменить?'
-             ;;
+            _W_msg_body='Какие настройки вы хотите изменить?'
+            ;;
         uk*) _W_msg_title="Winetricks - поточний prefix \"${WINEPREFIX}\""
-             _W_msg_body='Які налаштування Ви хочете змінити?'
-             ;;
+            _W_msg_body='Які налаштування Ви хочете змінити?'
+            ;;
         zh_CN*)   _W_msg_title="Winetricks - 当前容器路径是 \"${WINEPREFIX}\""
-             _W_msg_body='您想要更改哪项设置？'
-             ;;
+            _W_msg_body='您想要更改哪项设置？'
+            ;;
         zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"${WINEPREFIX}\""
-             _W_msg_body='您想要變更哪項設定？'
-             ;;
-        *)   _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
-             _W_msg_body='Which settings would you like to change?'
-             ;;
+            _W_msg_body='您想要變更哪項設定？'
+            ;;
+        *)  _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
+            _W_msg_body='Which settings would you like to change?'
+            ;;
     esac
 
     case ${WINETRICKS_GUI} in
@@ -4227,41 +4227,41 @@ winetricks_showmenu()
 {
     case ${LANG} in
         da*) _W_msg_title='Vælg en pakke'
-             _W_msg_body='Vilken pakke vil du installere?'
-             _W_cached="cached"
-             ;;
+            _W_msg_body='Vilken pakke vil du installere?'
+            _W_cached="cached"
+            ;;
         de*) _W_msg_title="Winetricks - Aktueller Prefix ist \"${WINEPREFIX}\""
-             _W_msg_body='Welche Paket(e) möchten Sie installieren?'
-             _W_cached="gecached"
-             ;;
+            _W_msg_body='Welche Paket(e) möchten Sie installieren?'
+            _W_cached="gecached"
+            ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
-             _W_msg_body='Które paczki chesz zainstalować?'
-             _W_cached="zarchiwizowane"
-             ;;
+            _W_msg_body='Które paczki chesz zainstalować?'
+            _W_cached="zarchiwizowane"
+            ;;
         pt*) _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
-             _W_msg_body='Quais pacotes você gostaria de instalar?'
-             _W_cached="em cache"
-             ;;
+            _W_msg_body='Quais pacotes você gostaria de instalar?'
+            _W_cached="em cache"
+            ;;
         ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"${WINEPREFIX}\""
-             _W_msg_body='Какое приложение(я) вы хотите установить?'
-             _W_cached="в кэше"
-             ;;
+            _W_msg_body='Какое приложение(я) вы хотите установить?'
+            _W_cached="в кэше"
+            ;;
         uk*) _W_msg_title="Winetricks - поточний prefix \"${WINEPREFIX}\""
-             _W_msg_body='Які пакунки Ви хочете встановити?'
-             _W_cached="кешовано"
-             ;;
+            _W_msg_body='Які пакунки Ви хочете встановити?'
+            _W_cached="кешовано"
+            ;;
         zh_CN*)   _W_msg_title="Winetricks - 当前容器路径是 \"${WINEPREFIX}\""
-             _W_msg_body='您想要安装什么应用程序？'
-             _W_cached="已缓存"
-             ;;
+            _W_msg_body='您想要安装什么应用程序？'
+            _W_cached="已缓存"
+            ;;
         zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"${WINEPREFIX}\""
-             _W_msg_body='您想要安裝什麼應用程式？'
-             _W_cached="已緩存"
-             ;;
-        *)   _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
-             _W_msg_body='Which package(s) would you like to install?'
-             _W_cached="cached"
-             ;;
+            _W_msg_body='您想要安裝什麼應用程式？'
+            _W_cached="已緩存"
+            ;;
+        *)  _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
+            _W_msg_body='Which package(s) would you like to install?'
+            _W_cached="cached"
+            ;;
     esac
 
 
@@ -4283,7 +4283,7 @@ winetricks_showmenu()
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
-                    ;;
+                        ;;
                 de*) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
@@ -4299,7 +4299,7 @@ winetricks_showmenu()
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
-                     ;;
+                        ;;
                 pl*) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
@@ -4315,7 +4315,7 @@ winetricks_showmenu()
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
-                     ;;
+                        ;;
                 pt*) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
@@ -4331,7 +4331,7 @@ winetricks_showmenu()
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
-                     ;;
+                        ;;
                 ru*) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
@@ -4347,7 +4347,7 @@ winetricks_showmenu()
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
-                     ;;
+                        ;;
                 uk*) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
@@ -4363,7 +4363,7 @@ winetricks_showmenu()
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
-                     ;;
+                        ;;
                 zh_CN*) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
@@ -4379,7 +4379,7 @@ winetricks_showmenu()
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
-                     ;;
+                        ;;
                 zh_TW*|zh_HK*) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
@@ -4395,7 +4395,7 @@ winetricks_showmenu()
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
-                     ;;
+                        ;;
                 *) printf %s "zenity \
                         --title '${_W_msg_title}' \
                         --text '${_W_msg_body}' \
@@ -4411,7 +4411,7 @@ winetricks_showmenu()
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
-                     ;;
+                        ;;
             esac > "${WINETRICKS_WORKDIR}"/zenity.sh
 
             true > "${WINETRICKS_WORKDIR}"/installed.txt
@@ -4543,20 +4543,24 @@ winetricks_is_installed()
                     _W_prefix="${WINEPREFIX}"
                     ;;
             esac
+
             if test -d "${_W_prefix}/dosdevices"; then
-              # 'win7 vcrun2005' creates different file than 'winxp vcrun2005'
-              # so let it specify multiple, separated by |
-              _W_IFS="${IFS}"
-              IFS='|'
-              for _W_file_ in ${_W_file}; do
-                _W_file_unix="$(WINEPREFIX="${_W_prefix}" w_pathconv -u "${_W_file_}")"
-                if test -f "${_W_file_unix}" && ! grep -q "Wine placeholder DLL" "${_W_file_unix}"; then
-                    IFS="${_W_IFS}"
-                    unset _W_file _W_file_ _W_file_unix _W_prefix _W_IFS
-                    return "${TRUE}"  # installed
-                fi
-              done
-             IFS="${_W_IFS}"
+                # 'win7 vcrun2005' creates different file than 'winxp vcrun2005'
+                # so let it specify multiple, separated by |
+                _W_IFS="${IFS}"
+                IFS='|'
+
+                for _W_file_ in ${_W_file}; do
+                    _W_file_unix="$(WINEPREFIX="${_W_prefix}" w_pathconv -u "${_W_file_}")"
+
+                    if test -f "${_W_file_unix}" && ! grep -q "Wine placeholder DLL" "${_W_file_unix}"; then
+                        IFS="${_W_IFS}"
+                        unset _W_file _W_file_ _W_file_unix _W_prefix _W_IFS
+                        return "${TRUE}"  # installed
+                    fi
+                done
+
+                IFS="${_W_IFS}"
             fi
             ;;
     esac
@@ -4881,16 +4885,17 @@ winetricks_cache_iso()
     # Use conv=noerror,sync to replace unreadable blocks with zeroes
     case ${WINETRICKS_OPT_DD} in
         dd)
-          ${WINETRICKS_OPT_DD} if=${WINETRICKS_DEV} of="${W_CACHE}"/temp.iso bs=2048 conv=noerror,sync &
-          WINETRICKS_DD_PID=$!
-          ;;
+            ${WINETRICKS_OPT_DD} if=${WINETRICKS_DEV} of="${W_CACHE}"/temp.iso bs=2048 conv=noerror,sync &
+            WINETRICKS_DD_PID=$!
+            ;;
         ddrescue)
-          if [ ! -x "$(command -v ddrescue)" ]; then
-              w_die "Please install ddrescue first."
-          fi
-          ${WINETRICKS_OPT_DD} -v -b 2048 ${WINETRICKS_DEV} "${W_CACHE}"/temp.iso &
-          WINETRICKS_DD_PID=$!
-          ;;
+            if [ ! -x "$(command -v ddrescue)" ]; then
+                w_die "Please install ddrescue first."
+            fi
+
+            ${WINETRICKS_OPT_DD} -v -b 2048 ${WINETRICKS_DEV} "${W_CACHE}"/temp.iso &
+            WINETRICKS_DD_PID=$!
+            ;;
     esac
 
     echo "${WINETRICKS_DD_PID}" > "${WINETRICKS_WORKDIR}"/dd-pid
@@ -5936,7 +5941,7 @@ helper_d3dx9_xx()
     w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x86*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
 
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
     done
 
     if test "${W_ARCH}" = "win64"; then
@@ -6331,10 +6336,12 @@ load_d3dcompiler_42()
 
     w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x86*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
     done
+
     if test "${W_ARCH}" = "win64"; then
         w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x64*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
         for x in "${W_TMP}"/*x64.cab; do
             w_try_cabextract -d "${W_SYSTEM64_DLLS}" -L -F "${dllname}.dll" "${x}"
         done
@@ -6364,11 +6371,14 @@ load_d3dcompiler_43()
     helper_directx_Jun2010
 
     w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x86*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
     done
+
     if test "${W_ARCH}" = "win64"; then
         w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x64*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
         for x in "${W_TMP}"/*x64.cab; do
             w_try_cabextract -d "${W_SYSTEM64_DLLS}" -L -F "${dllname}.dll" "${x}"
         done
@@ -6467,11 +6477,14 @@ load_d3dx9()
 
     # Kinder, less invasive directx - only extract and override d3dx9_??.dll
     w_try_cabextract -d "${W_TMP}" -L -F '*d3dx9*x86*' "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'd3dx9*.dll' "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'd3dx9*.dll' "${x}"
     done
+
     if test "${W_ARCH}" = "win64"; then
         w_try_cabextract -d "${W_TMP}" -L -F '*d3dx9*x64*' "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
         for x in "${W_TMP}"/*x64.cab; do
             w_try_cabextract -d "${W_SYSTEM64_DLLS}" -L -F 'd3dx9*.dll' "${x}"
         done
@@ -6801,10 +6814,12 @@ load_d3dx11_42()
 
     w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x86*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
     done
+
     if test "${W_ARCH}" = "win64"; then
         w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x64*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
         for x in "${W_TMP}"/*x64.cab; do
             w_try_cabextract -d "${W_SYSTEM64_DLLS}" -L -F "${dllname}.dll" "${x}"
         done
@@ -6831,10 +6846,12 @@ load_d3dx11_43()
 
     w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x86*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
     done
+
     if test "${W_ARCH}" = "win64"; then
         w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x64*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
         for x in "${W_TMP}"/*x64.cab; do
             w_try_cabextract -d "${W_SYSTEM64_DLLS}" -L -F "${dllname}.dll" "${x}"
         done
@@ -6860,10 +6877,12 @@ load_d3dx10()
     # Kinder, less invasive directx10 - only extract and override d3dx10_??.dll
     w_try_cabextract -d "${W_TMP}" -L -F '*d3dx10*x86*' "${W_CACHE}"/directx9/${DIRECTX_NAME}
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'd3dx10*.dll' "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'd3dx10*.dll' "${x}"
     done
+
     if test "${W_ARCH}" = "win64"; then
         w_try_cabextract -d "${W_TMP}" -L -F '*d3dx10*x64*' "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
         for x in "${W_TMP}"/*x64.cab; do
             w_try_cabextract -d "${W_SYSTEM64_DLLS}" -L -F 'd3dx10*.dll' "${x}"
         done
@@ -6892,10 +6911,12 @@ load_d3dx10_43()
 
     w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x86*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F "${dllname}.dll" "${x}"
     done
+
     if test "${W_ARCH}" = "win64"; then
         w_try_cabextract -d "${W_TMP}" -L -F "*${dllname}*x64*" "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
         for x in "${W_TMP}"/*x64.cab; do
             w_try_cabextract -d "${W_SYSTEM64_DLLS}" -L -F "${dllname}.dll" "${x}"
         done
@@ -7123,9 +7144,9 @@ load_dpvoice()
 
     w_try_cabextract -d "${W_TMP}" -L -F 'dxnt.cab' "${W_CACHE}"/directx9/${DIRECTX_NAME}
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvoice.dll' "${x}"
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvvox.dll' "${x}"
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvacm.dll' "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvoice.dll' "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvvox.dll' "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvacm.dll' "${x}"
     done
     w_override_dlls native dpvoice dpvvox dpvacm
     w_try_regsvr dpvoice.dll
@@ -11763,13 +11784,13 @@ load_python26()
         run pywin32-214.win32-py2.6.exe
         WinWait, Setup, Wizard will install pywin32
         if ( w_opt_unattended > 0 ) {
-             ControlClick Button2   ; next
-             WinWait, Setup, Python 2.6 is required
-             ControlClick Button3   ; next
-             WinWait, Setup, Click Next to begin
-             ControlClick Button3   ; next
-             WinWait, Setup, finished
-             ControlClick Button4   ; Finish
+            ControlClick Button2   ; next
+            WinWait, Setup, Python 2.6 is required
+            ControlClick Button3   ; next
+            WinWait, Setup, Click Next to begin
+            ControlClick Button3   ; next
+            WinWait, Setup, finished
+            ControlClick Button4   ; Finish
         }
         WinWaitClose
         "
@@ -11798,13 +11819,13 @@ load_python27()
         run pywin32-224.win32-py2.7.exe
         WinWait, Setup, Wizard will install pywin32
         if ( w_opt_unattended > 0 ) {
-             ControlClick Button2   ; next
-             WinWait, Setup, Python 2.7 is required
-             ControlClick Button3   ; next
-             WinWait, Setup, Click Next to begin
-             ControlClick Button3   ; next
-             WinWait, Setup, finished
-             ControlClick Button4   ; Finish
+            ControlClick Button2   ; next
+            WinWait, Setup, Python 2.7 is required
+            ControlClick Button3   ; next
+            WinWait, Setup, Click Next to begin
+            ControlClick Button3   ; next
+            WinWait, Setup, finished
+            ControlClick Button4   ; Finish
         }
         WinWaitClose
         "
@@ -13037,7 +13058,7 @@ load_vcrun2017()
 
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcr140 ucrtbase vcomp140 vcruntime140
 
-   if w_workaround_wine_bug 50894 "Working around failing wusa.exe lookup via C:\windows\SysNative"; then
+    if w_workaround_wine_bug 50894 "Working around failing wusa.exe lookup via C:\windows\SysNative"; then
         w_set_winver winxp
     fi
 
@@ -13293,7 +13314,7 @@ load_windowscodecs()
     w_try rm -f "${W_SYSTEM32_DLLS}"/windowscodecs.dll "${W_SYSTEM32_DLLS}"/windowscodecsext.dll "${W_SYSTEM32_DLLS}"/wmphoto.dll "${W_SYSTEM32_DLLS}"/photometadatahandler.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
-         w_try rm -f "${W_SYSTEM64_DLLS}"/windowscodecs.dll "${W_SYSTEM64_DLLS}"/windowscodecsext.dll "${W_SYSTEM64_DLLS}"/wmphoto.dll "${W_SYSTEM64_DLLS}"/photometadatahandler.dll
+        w_try rm -f "${W_SYSTEM64_DLLS}"/windowscodecs.dll "${W_SYSTEM64_DLLS}"/windowscodecsext.dll "${W_SYSTEM64_DLLS}"/wmphoto.dll "${W_SYSTEM64_DLLS}"/photometadatahandler.dll
     fi
 
     # AF says in AppDB entry for .NET 3.0 that windowscodecs has to be native only
@@ -13571,10 +13592,12 @@ load_xinput()
 
     w_try_cabextract -d "${W_TMP}" -L -F '*_xinput_*x86*' "${W_CACHE}"/directx9/${DIRECTX_NAME}
     for x in "${W_TMP}"/*.cab; do
-      w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'xinput*.dll' "${x}"
+        w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'xinput*.dll' "${x}"
     done
+
     if test "${W_ARCH}" = "win64"; then
         w_try_cabextract -d "${W_TMP}" -L -F '*_xinput_*x64*' "${W_CACHE}"/directx9/${DIRECTX_NAME}
+
         for x in "${W_TMP}"/*x64.cab; do
             w_try_cabextract -d "${W_SYSTEM64_DLLS}" -L -F 'xinput*.dll' "${x}"
         done
@@ -16912,17 +16935,19 @@ load_wmp11()
     w_call gdiplus
 
     if [ "${W_ARCH}" = "win32" ]; then
-      # https://appdb.winehq.org/objectManager.php?sClass=version&iId=8150
-      w_download https://web.archive.org/web/20170628063001/http://download.microsoft.com/download/0/9/5/0953e553-3bb6-44b1-8973-106f1b7e5049/wmp11-windowsxp-x86-enu.exe ffd321a441a67001a893f3bde4bb1afba07d4d2c9659bfdb0fbb057e7945d970
-      installer_exe=wmp11-windowsxp-x86-enu.exe
-      wmf_exe=wmfdist11.exe
-      wmf_exe=wmp11.exe
+        # https://appdb.winehq.org/objectManager.php?sClass=version&iId=8150
+        w_download https://web.archive.org/web/20170628063001/http://download.microsoft.com/download/0/9/5/0953e553-3bb6-44b1-8973-106f1b7e5049/wmp11-windowsxp-x86-enu.exe ffd321a441a67001a893f3bde4bb1afba07d4d2c9659bfdb0fbb057e7945d970
+
+        installer_exe=wmp11-windowsxp-x86-enu.exe
+        wmf_exe=wmfdist11.exe
+        wmf_exe=wmp11.exe
     elif [ "${W_ARCH}" = "win64" ]; then
-      # https://appdb.winehq.org/objectManager.php?sClass=version&iId=32057
-      w_download https://web.archive.org/web/20190512112704/https://download.microsoft.com/download/3/0/8/3080C52C-2517-43DE-BDB4-B7EAFD88F084/wmp11-windowsxp-x64-enu.exe 5af407cf336849aff435044ec28f066dd523bbdc22d1ce7aaddb5263084f5526
-      installer_exe=wmp11-windowsxp-x64-enu.exe
-      wmf_exe=wmfdist11-64.exe
-      wmp_exe=wmp11-64.exe
+        # https://appdb.winehq.org/objectManager.php?sClass=version&iId=32057
+        w_download https://web.archive.org/web/20190512112704/https://download.microsoft.com/download/3/0/8/3080C52C-2517-43DE-BDB4-B7EAFD88F084/wmp11-windowsxp-x64-enu.exe 5af407cf336849aff435044ec28f066dd523bbdc22d1ce7aaddb5263084f5526
+
+        installer_exe=wmp11-windowsxp-x64-enu.exe
+        wmf_exe=wmfdist11-64.exe
+        wmp_exe=wmp11-64.exe
     fi
 
     w_set_winver winxp
@@ -18633,7 +18658,7 @@ load_deadspace2()
     # Install takes a long time, so offer a way to skip installation
     # and go straight to activation while debugging that
     if ! test -f "${W_PROGRAMS_X86_UNIX}/EA Games/Dead Space 2/deadspace2.exe"; then
-      w_ahk_do "
+        w_ahk_do "
         run easetup.exe
         if ( w_opt_unattended > 0 ) {
             SetTitleMatchMode, 2
