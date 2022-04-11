@@ -22759,11 +22759,6 @@ load_remove_mono()
         return
     fi
 
-    # FIXME: verify on pristine Windows XP:
-    if w_workaround_wine_bug 34803; then
-        "${WINE_ARCH}" reg delete 'HKLM\\Software\\Microsoft\\.NETFramework\\v2.0.50727\\SBSDisabled' /f
-    fi
-
     "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
     "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4" /f || true
 
