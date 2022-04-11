@@ -58,10 +58,9 @@ test_bashate() {
     # Can't ignore individual things for now, filed bug:
     # https://bugs.launchpad.net/bash8/+bug/1698088
     # E006=line length check
-    # E010=do/while same line (in some embedded perl in winetricks)
     # E044=Use [[ for non-POSIX comparisions
     echo "Checking ${shellscript} with bashate:"
-    w_try "${bashate}" -i E006,E010,E044 "${shellscript}"
+    w_try "${bashate}" -i E006,E044 "${shellscript}"
 }
 
 # check formatting, (no trailing whitespace, no tabs)
