@@ -9215,6 +9215,15 @@ load_dotnet40()
     # Avoid a popup on WINEPREFIX updates, see https://bugs.winehq.org/show_bug.cgi?id=41727#c5
     "${WINE}" reg add "HKLM\\Software\\Microsoft\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
 
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
+
     w_set_winver 'default'
 }
 
@@ -9251,6 +9260,15 @@ load_dotnet40_kb2468871()
 
     w_try_cd "${W_TMP}"
     w_try "${WINE}" msiexec /p NDP40-KB2468871.msp
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
 
     w_set_winver 'default'
 }
@@ -9304,6 +9322,15 @@ load_dotnet45()
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
     w_set_winver win2k3
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
 }
 
 verify_dotnet45()
@@ -9352,6 +9379,15 @@ load_dotnet452()
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
     w_set_winver win2k3
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
 }
 
 verify_dotnet452()
@@ -9390,6 +9426,15 @@ load_dotnet46()
     WINEDLLOVERRIDES=fusion=b w_try_ms_installer "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
 
     w_override_dlls native mscoree
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
 }
 
 verify_dotnet46()
@@ -9431,6 +9476,15 @@ load_dotnet461()
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet461.installed.workaround"
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
 }
 
 verify_dotnet461()
@@ -9473,6 +9527,15 @@ load_dotnet462()
     # Unfortunately, dotnet462 install the same files that dotnet461 does, but with different checksums
     # The only unique files are temporary ones. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet462.installed.workaround"
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
 }
 
 verify_dotnet462()
@@ -9514,6 +9577,15 @@ load_dotnet471()
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet471.installed.workaround"
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
 }
 
 verify_dotnet471()
@@ -9554,6 +9626,15 @@ load_dotnet472()
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet472.installed.workaround"
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
 }
 
 verify_dotnet472()
@@ -9595,6 +9676,15 @@ load_dotnet48()
 
     # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
     w_try touch "${W_WINDIR_UNIX}/dotnet48.installed.workaround"
+
+    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
+    case "${LANG}" in
+        C|en_US.UTF-8*) ;;
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
+        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
+        # *) w_warn "
+    esac
 }
 
 verify_dotnet48()
