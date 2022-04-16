@@ -418,6 +418,8 @@ test_command()
         rm -rf "${WINEPREFIX}"
     fi
 
+    mkdir -p "${WINE_PREFIXES}"
+
     # Isolate us from the user's home directory
     # shellcheck disable=SC2086
     if [ -z "${_W_wine_not_needed}" ]; then
