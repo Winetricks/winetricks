@@ -951,8 +951,12 @@ w_read_key()
 
 w_verify_cabextract_available()
 {
-    # If verb_a requires verb_b, then verba will fail when the dependency for verb_b is installed
+    # If verb_a requires verb_b, then verb_a will fail when the dependency for verb_b is installed
     # This should be called by verb_a, to give a proper warning
+
+    if test ! -x "$(command -v cabextract 2>/dev/null)"; then
+        w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt-get install cabextract' or 'sudo yum install cabextract')."
+    fi
 
     w_try_cabextract -q -v >/dev/null 2>&1
 }
