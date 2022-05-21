@@ -13049,64 +13049,6 @@ load_vstools2019()
 
 #----------------------------------------------------------------
 
-w_metadata vulkanrt121412 dlls \
-    title="Vulkan Runtime 1.2.141.2" \
-    publisher="LunarG" \
-    year="2020" \
-    media="download" \
-    file1="VulkanRT-1.2.141.2-Installer.exe" \
-    installed_exe1="${W_SYSTEM32_DLLS_WIN}/vulkaninfo.exe"
-
-load_vulkanrt121412()
-{
-    # https://vulkan.lunarg.com/sdk/home
-    w_download "https://sdk.lunarg.com/sdk/download/1.2.141.2/windows/VulkanRT-1.2.141.2-Installer.exe?Human=true;u=" bf5050ead980e66fdd7b8eb5664d2b92e037ec5c400f75c2dc209a595828aaf7 "${file1}"
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/S}
-}
-
-#----------------------------------------------------------------
-
-w_metadata vulkansdk121412 apps \
-    title="Vulkan SDK 1.2.141.2 (developers only)" \
-    publisher="LunarG" \
-    year="2020" \
-    media="download" \
-    file1="VulkanSDK-1.2.141.2-Installer.exe" \
-    installed_file1="C:/VulkanSDK/1.2.141.2/vulkan.ico" \
-    installed_file2="C:/windows/winevulkan.json"
-
-load_vulkansdk121412()
-{
-    _W_vulkan_version="${file1%-*.exe}"
-    _W_vulkan_version="${_W_vulkan_version#*-}"
-    # https://vulkan.lunarg.com/sdk/home
-    w_download "https://sdk.lunarg.com/sdk/download/1.2.141.2/windows/VulkanSDK-1.2.141.2-Installer.exe?Human=true;u=" d732eaee50c5f924ee64c9408bec7073b7a230464f1636f346833727c9bbddd0 "${file1}"
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/S}
-    echo "Creating C:\\windows\\winevulkan.json winevulkan json file"
-    cat > "${W_WINDIR_UNIX}"/winevulkan.json <<_EOF_
-{
-    "file_format_version": "1.0.0",
-    "ICD": {
-        "library_path": "c:\\\\windows\\\\system32\\\\winevulkan.dll",
-        "api_version": "${_W_vulkan_version}"
-    }
-}
-_EOF_
-    echo "Creating winevulkan registry settings"
-    cat > "${W_TMP}"/winevulkan.reg <<_EOF_
-REGEDIT4
-
-[HKEY_LOCAL_MACHINE\\SOFTWARE\\Khronos\\Vulkan\\Drivers\\]
-"C:\\\\Windows\\\\winevulkan.json"=dword:00000000
-
-_EOF_
-    w_try_regedit "${W_TMP_WIN}"\\winevulkan.reg
-}
-
-#----------------------------------------------------------------
-
 w_metadata webio dlls \
     title="MS Windows Web I/O" \
     publisher="Microsoft" \
