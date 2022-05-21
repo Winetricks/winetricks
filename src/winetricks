@@ -16356,7 +16356,9 @@ load_vc2005expresssp1()
     if w_workaround_wine_bug 37375; then
             w_warn "Installer currently fails"
     fi
-    w_download https://download.microsoft.com/download/7/7/3/7737290f-98e8-45bf-9075-85cc6ae34bf1/VS80sp1-KB926748-X86-INTL.exe a959d1ea52674b5338473be32a1370f9ec80df84629a2ed3471aa911b42d9e50
+
+    w_download https://web.archive.org/web/20110624054336/https://download.microsoft.com/download/7/7/3/7737290f-98e8-45bf-9075-85cc6ae34bf1/VS80sp1-KB926748-X86-INTL.exe a959d1ea52674b5338473be32a1370f9ec80df84629a2ed3471aa911b42d9e50
+
     w_try ${WINE} "${W_CACHE}"/vc2005expresssp1/VS80sp1-KB926748-X86-INTL.exe ${W_OPT_UNATTENDED:+/q}
 }
 
