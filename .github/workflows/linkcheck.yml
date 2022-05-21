@@ -1,0 +1,13 @@
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '09 18 * * *'
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+      - name: run linkcheck
+        run: ./src/linkcheck.sh crawl
