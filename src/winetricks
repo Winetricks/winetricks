@@ -3271,11 +3271,13 @@ winetricks_early_wine_arch()
 
 winetricks_detect_gui()
 {
-    if [ -n "$1" ]; then
-        if [ "$1" = "kdialog" ] && test -x "$(command -v kdialog 2>/dev/null)"; then
+    if [ "$1" != "--gui" ] ; then
+        if [ "$1" = "kdialog" ] ; then
+            test -x "$(command -v kdialog 2>/dev/null)" || w_die "--gui=kdialog was used, but kdialog is not installed"
             WINETRICKS_GUI=kdialog
             WINETRICKS_GUI_VERSION="$(kdialog --version)"
-        elif [ "$1" = "zenity" ] || [ "$1" = "--gui" ] && test -x "$(command -v zenity 2>/dev/null)"; then
+        elif [ "$1" = "zenity" ] ; then
+            test -x "$(command -v zenity 2>/dev/null)" || w_die "--gui=zenity was used, but zenity is not installed"
             WINETRICKS_GUI=zenity
             WINETRICKS_GUI_VERSION="$(zenity --version)"
             WINETRICKS_MENU_HEIGHT=500
@@ -23077,7 +23079,7 @@ if ! test "${WINETRICKS_LIB}"; then
             # GUI case
             # No non-option arguments given, so read them from GUI, and loop until user quits
             if [ ${WINETRICKS_GUI} = "none" ]; then
-                winetricks_detect_gui
+                winetricks_detect_gui --gui
             fi
             winetricks_detect_sudo
             test -z "${WINETRICKS_ISO_MOUNT}" && winetricks_detect_iso_mount
