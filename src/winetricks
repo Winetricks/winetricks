@@ -6931,22 +6931,22 @@ load_dsdmo()
 
 #----------------------------------------------------------------
 
-w_metadata dxsdk_nov2006 apps \
-    title="MS DirectX SDK, November 2006 (developers only)" \
+w_metadata dxsdk_aug2006 apps \
+    title="MS DirectX SDK, August 2006 (developers only)" \
     publisher="Microsoft" \
     year="2006" \
     media="download" \
     file1="dxsdk_aug2006.exe" \
     installed_file1="${W_PROGRAMS_X86_WIN}/Microsoft DirectX SDK (August 2006)/Lib/x86/d3d10.lib"
 
-load_dxsdk_nov2006()
+load_dxsdk_aug2006()
 {
-    w_download https://download.microsoft.com/download/9/e/5/9e5bfc66-a621-4e0d-8bfe-6688058c3f00/dxsdk_aug2006.exe ab8d7d895089a88108d4148ef0f7e214b7a23c1ee9ba720feca78c7d4ca16c00
+    w_download https://archive.org/download/dxsdk_aug2006/dxsdk_aug2006.exe ab8d7d895089a88108d4148ef0f7e214b7a23c1ee9ba720feca78c7d4ca16c00
 
     # dxview.dll uses mfc42u while registering
     w_call mfc42
 
-    w_try_cabextract "${W_CACHE}"/dxsdk_nov2006/dxsdk_aug2006.exe
+    w_try_cabextract "${W_CACHE}/${W_PACKAGE}/${file1}"
     w_try_unzip "${W_TMP}" dxsdk.exe
     w_try_cd "${W_TMP}"
     w_try "${WINE}" msiexec /i Microsoft_DirectX_SDK.msi ${W_OPT_UNATTENDED:+/q}
@@ -22947,6 +22947,8 @@ execute_command()
         dotnet2) w_warn "Calling dotnet2 is deprecated, please use dotnet20 instead" ; w_call dotnet20 ;;
         ddr=gdi) w_warn "Calling ddr=gdi is deprecated, please use renderer=gdi or renderer=no3d instead" ; w_call renderer=gdi ;;
         ddr=opengl) w_warn "Calling ddr=opengl is deprecated, please use renderer=gl instead" ; w_call renderer=gl ;;
+        dxsdk_nov2006) w_warn "Calling dxsdk_nov2006 is deprecated, please use dxsdk_aug2006 instead"; w_call dxsdk_aug2006 ;;
+
         dxvk054|dxvk54) w_warn "Calling $1 is deprecated, please use dxvk0054 instead" ; w_call dxvk0054 ;;
         dxvk060|dxvk60) w_warn "Calling $1 is deprecated, please use dxvk0060 instead" ; w_call dxvk0060 ;;
         dxvk061|dxvk61) w_warn "Calling $1 is deprecated, please use dxvk0061 instead" ; w_call dxvk0061 ;;
