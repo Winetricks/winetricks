@@ -8701,7 +8701,7 @@ load_dotnet20()
         # This affects Victoria 2 demo, see https://forum.paradoxplaza.com/forum/showthread.php?p=11523967
         rm -f "${W_SYSTEM32_DLLS}"/msvc?80.dll
     elif [ "${W_ARCH}" = "win64" ]; then
-        w_download https://download.microsoft.com/download/a/3/f/a3f1bf98-18f3-4036-9b68-8e6de530ce0a/NetFx64.exe 7ea86dca8eeaedcaa4a17370547ca2cea9e9b6774972b8e03d2cb1fb0e798669
+        w_download https://web.archive.org/web/20060509045320/https://download.microsoft.com/download/a/3/f/a3f1bf98-18f3-4036-9b68-8e6de530ce0a/NetFx64.exe 7ea86dca8eeaedcaa4a17370547ca2cea9e9b6774972b8e03d2cb1fb0e798669
 
         # validates successfully in win7 mode wine-3.19, so not setting winversion
         w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
