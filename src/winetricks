@@ -8271,7 +8271,7 @@ helper_vkd3d_proton()
         w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
     elif [ "${_W_package_archive##*.}" = "zst" ]; then
         w_try_cd "${W_TMP}"
-        w_try tar -I zstd -xvf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+        w_try tar --use-compress-program=unzstd -xvf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
     else
         w_try_cd "${W_TMP}"
         w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
