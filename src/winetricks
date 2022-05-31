@@ -18634,26 +18634,6 @@ load_diablo2()
     w_killall "Game.exe"
 }
 
-w_metadata digitanks_demo games \
-    title="Digitanks Demo" \
-    publisher="Lunar Workshop" \
-    year="2011" \
-    media="download" \
-    file1="digitanks.exe" \
-    installed_exe1="${W_PROGRAMS_X86_WIN}/Digitanks/digitanksdemo.exe" \
-    homepage="http://www.digitanks.com"
-
-load_digitanks_demo()
-{
-    # 2011/11/11: bc98de67680e907a30ee1ab5d062e098c07a87292e3fb82ae62ad2d7175e94ff
-    w_download "http://static.digitanks.com/files/digitanks.exe" bc98de67680e907a30ee1ab5d062e098c07a87292e3fb82ae62ad2d7175e94ff
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+ /S}
-    if w_workaround_wine_bug 8060 "installing corefonts"; then
-        w_call corefonts
-    fi
-}
-
 w_metadata dirt2_demo games \
     title="Dirt 2 Demo" \
     publisher="Codemasters" \
