@@ -15325,6 +15325,12 @@ _EOF_
         w_try_cp_dll "${W_PROGRAMS_UNIX}/Internet Explorer/ieproxy.dll" "${W_SYSTEM64_DLLS}"
     fi
 
+    if w_workaround_wine_bug 53103 "Running a no-op command so that ie8 finishes bootstrapping" 7.5; then
+        w_wineserver -w
+        w_try "${WINE}" xcopy /? > /dev/null
+        w_wineserver -w
+    fi
+
     # Seeing is believing
     case ${WINETRICKS_GUI} in
         none)
