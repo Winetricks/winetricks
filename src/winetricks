@@ -1366,15 +1366,6 @@ w_download_to()
 
         if test -s "${_W_cache}/${_W_file}" ; then
             if test "${_W_sum}" ; then
-                if test ${tries} = 1 ; then
-                    # The cache was full.  If the file is larger than 500 MB,
-                    # don't checksum it, that just annoys the user.
-                    # shellcheck disable=SC2046
-                    if test $(du -k "${_W_cache}/${_W_file}" | cut -f1) -gt 500000 ; then
-                        checksum_ok=1
-                        break
-                    fi
-                fi
                 # If checksum matches, declare success and exit loop
                 case "${_W_shatype}" in
                     none)
