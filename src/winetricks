@@ -5100,7 +5100,7 @@ winetricks_set_wineprefix()
 
     ## Arch independent variables:
 
-    # Note: using AppData since it's arch indepedent
+    # Note: using AppData since it's arch independent
     W_APPDATA_WIN="$(w_expand_env AppData)"
     W_APPDATA_UNIX="$(w_pathconv -u "${W_APPDATA_WIN}")"
 
@@ -15129,7 +15129,7 @@ load_ie7()
     w_download https://web.archive.org/web/20200617171343/https://download.microsoft.com/download/3/8/8/38889DC1-848C-4BF2-8335-86C573AD86D9/IE7-WindowsXP-x86-enu.exe bf5c325bbe3f4174869b2a8ff75f92833e7f7debe64777ed0faf293c7725cbef
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
-    # IE7 requies winxp to install:
+    # IE7 requires winxp to install:
     w_set_winver winxp
 
     w_try_ms_installer "${WINE}" IE7-WindowsXP-x86-enu.exe ${W_OPT_UNATTENDED:+/quiet}
@@ -18421,7 +18421,7 @@ load_deadspace2()
 
     w_mount Disc1
 
-    # FIXME: this bug was fixed in 1.3.36, so this is unneccessary
+    # FIXME: this bug was fixed in 1.3.36, so this is unnecessary
     #
     # Work around bug 25963 (fails to switch discs)
     w_warn "Copying discs to hard drive.  This will take a few minutes."
