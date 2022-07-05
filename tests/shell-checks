@@ -58,7 +58,7 @@ test_bashate() {
     # Can't ignore individual things for now, filed bug:
     # https://bugs.launchpad.net/bash8/+bug/1698088
     # E006=line length check
-    # E044=Use [[ for non-POSIX comparisions
+    # E044=Use [[ for non-POSIX comparisons
     echo "Checking ${shellscript} with bashate:"
     w_try "${bashate}" -i E006,E044 "${shellscript}"
 }

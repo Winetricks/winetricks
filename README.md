@@ -123,7 +123,7 @@ chmod +x update_winetricks
 su root sh -c 'mv update_winetricks /usr/bin/'
 ```
 
-To use ```curl``` instead of ```wget```: subsitute all ```wget``` calls with ```curl -O```, in the winetricks update script.
+To use ```curl``` instead of ```wget```: substitute all ```wget``` calls with ```curl -O```, in the winetricks update script.
 
 
 # Updating
