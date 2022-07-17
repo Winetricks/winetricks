@@ -6990,12 +6990,14 @@ load_dxtrans()
 # $2 - minimum Wine version (required)
 # $3 - minimum Vulkan API version (required)
 # $4 - [dxgi,][d3d9,][d3d10core,][d3d10,]d3d11 (required)
-helper_dxvk_d9vk()
+helper_dxvk()
 {
     _W_package_archive="${1}"
     _W_min_wine_version="${2}"
     _W_min_vulkan_version="${3}"
     _W_dll_overrides="$(echo "${4}" | sed 's/,/ /g')"
+    # dxvk repository, for d3d9/d3d10/d3d11 support
+    _W_repository="doitsujin/dxvk"
 
     _W_supported_overrides="dxgi d3d9 d3d10core d3d10 d3d11"
     _W_invalid_overrides="$(echo "${_W_dll_overrides}" | awk -vvalid_overrides_regex="$(echo "${_W_supported_overrides}" | sed 's/ /|/g')" '{ gsub(valid_overrides_regex,""); sub("[ ]*",""); print $0 }')"
@@ -7004,33 +7006,9 @@ helper_dxvk_d9vk()
     fi
 
     _W_dll_overrides="$(echo "${_W_dll_overrides}" | sed 's/d3d10 /&d3d10_1 /')"
-
-    case "${_W_package_archive}" in
-        d9vk*)
-            # dvk9 repository, for d3d9/d3d10/d3d11 support
-            _W_repository="Joshua-Ashton/d9vk"
-            ;;
-        dxvk*)
-            # dxvk repository, for d3d9/d3d10/d3d11 support
-            _W_repository="doitsujin/dxvk"
-            ;;
-        *)
-            w_die "parameter (1): unsupported package archive repository: '${_W_package_archive}'; supported: d9vk dxvk"
-            ;;
-    esac
-
-    case "${_W_package_archive}" in
-        *master*)
-            _W_package_dir="build/dxvk-release"
-            _W_package_version="master"
-            w_warn "Using master ${_W_repository} build"
-            ;;
-        *)
-            _W_package_dir="${_W_package_archive%.tar.gz}"
-            _W_package_version="${_W_package_dir#*-}"
-            w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"
-            ;;
-    esac
+    _W_package_dir="${_W_package_archive%.tar.gz}"
+    _W_package_version="${_W_package_dir#*-}"
+    w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"
     w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support"
 
     if w_wine_version_in ",${_W_min_wine_version}" ; then
@@ -7062,6 +7040,7 @@ helper_dxvk_d9vk()
         w_call d3dcompiler_43
         w_call d3dx9
     fi
+    w_call d3dcompiler_47
 
     unset _W_d3d9_support _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
         _W_package_archive _W_package_dir _W_package_version \
@@ -7084,7 +7063,7 @@ load_dxvk0054()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.54/dxvk-0.54.tar.gz" 1c2f186baaa01d2de7b832f6f05021bdd29eccb65fc197c8b15adfd4e08f9640
-    helper_dxvk_d9vk "${file1}" "3.10" "1.1.72" "dxgi,d3d11"
+    helper_dxvk "${file1}" "3.10" "1.1.72" "dxgi,d3d11"
 }
 
 w_metadata dxvk0060 dlls \
@@ -7100,7 +7079,7 @@ load_dxvk0060()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.60/dxvk-0.60.tar.gz" 27d6f700241d3ec3b6c002c3d739bb0e3f210ec916ecb5a62d9204e9e50f2c4a
-    helper_dxvk_d9vk "${file1}" "3.10" "1.1.72" "dxgi,d3d11"
+    helper_dxvk "${file1}" "3.10" "1.1.72" "dxgi,d3d11"
 }
 
 w_metadata dxvk0061 dlls \
@@ -7116,7 +7095,7 @@ load_dxvk0061()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.61/dxvk-0.61.tar.gz" d04388f026dc0d8b276b08f7db74fb3556cbbc8f762401eb5ef52629ee39ded1
-    helper_dxvk_d9vk "${file1}"  "3.10" "1.1.72" "dxgi,d3d11"
+    helper_dxvk "${file1}"  "3.10" "1.1.72" "dxgi,d3d11"
 }
 
 w_metadata dxvk0062 dlls \
@@ -7132,7 +7111,7 @@ load_dxvk0062()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.62/dxvk-0.62.tar.gz" b9dbb57908e24b094b68f665ad729b6ee277eecc8ba04a6e6e4f8a4d2dfd94e3
-    helper_dxvk_d9vk "${file1}"  "3.10" "1.1.72" "dxgi,d3d11"
+    helper_dxvk "${file1}"  "3.10" "1.1.72" "dxgi,d3d11"
 }
 
 w_metadata dxvk0063 dlls \
@@ -7148,7 +7127,7 @@ load_dxvk0063()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.63/dxvk-0.63.tar.gz" 696df816bd9640770dee14f932bc641a16261fccf76be7c28d812a64ca6040fa
-    helper_dxvk_d9vk "${file1}"  "3.18" "1.1.80" "dxgi,d3d11"
+    helper_dxvk "${file1}"  "3.18" "1.1.80" "dxgi,d3d11"
 }
 
 w_metadata dxvk0064 dlls \
@@ -7164,7 +7143,7 @@ load_dxvk0064()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.64/dxvk-0.64.tar.gz" 2e03e40ff0a9d36f96a06137f3fa9110ebaea230d0bf6c22cf6399e16e97fb9c
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.80" "dxgi,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.80" "dxgi,d3d11"
 }
 
 w_metadata dxvk0065 dlls \
@@ -7180,7 +7159,7 @@ load_dxvk0065()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.65/dxvk-0.65.tar.gz" 7b4eb42e693f925d0aff90bae261b20c50428602382ee94a3e3860b2ad1ebad0
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.80" "dxgi,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.80" "dxgi,d3d11"
 }
 
 w_metadata dxvk0070 dlls \
@@ -7199,7 +7178,7 @@ load_dxvk0070()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.70/dxvk-0.70.tar.gz" 310546d530be494a35cae49b707fef4b073269d811aac25bdf72899ed1df4e9f
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.80" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.80" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0071 dlls \
@@ -7218,7 +7197,7 @@ load_dxvk0071()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.71/dxvk-0.71.tar.gz" fbe66337d1450f366961a7699253cd7a96c12a88c2fcda64b79be1cbb13d37d5
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.80" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.80" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0072 dlls \
@@ -7237,7 +7216,7 @@ load_dxvk0072()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.72/dxvk-0.72.tar.gz" bc84f48f99cf5add3c8919a43d7a9c0bf208c994dc58326a636b56b8db650c52
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0080 dlls \
@@ -7259,7 +7238,7 @@ load_dxvk0080()
     # 2017/11/17: 7058a834bb006cad5462933110449b434df561e67d83f68d3965ecc74e2e1cbc
     # See: https://github.com/doitsujin/dxvk/issues/773
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.80/dxvk-0.80.tar.gz" 7058a834bb006cad5462933110449b434df561e67d83f68d3965ecc74e2e1cbc
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0081 dlls \
@@ -7278,7 +7257,7 @@ load_dxvk0081()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.81/dxvk-0.81.tar.gz" 9bf6eda9ae4ee74b509e07dfe9cc003dfa4bba192b519dacdd542a57f6a43869
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0090 dlls \
@@ -7297,7 +7276,7 @@ load_dxvk0090()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.90/dxvk-0.90.tar.gz" 15bce7b282065054ff9233b33738bf1d2c74b16829361cbd6843bc2f5dfe4509
-    helper_dxvk_d9vk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0091 dlls \
@@ -7316,7 +7295,7 @@ load_dxvk0091()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.91/dxvk-0.91.tar.gz" 5296106ac3a8c631d7f26fa46dbff4be1332cda14fa493fd89ccf97e050c4855
-    helper_dxvk_d9vk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0092 dlls \
@@ -7335,7 +7314,7 @@ load_dxvk0092()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.92/dxvk-0.92.tar.gz" e22c0ae4693aac88562c7a9a97b3316e086b9048c9f8f9e128923ac1611a5c49
-    helper_dxvk_d9vk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0093 dlls \
@@ -7354,7 +7333,7 @@ load_dxvk0093()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.93/dxvk-0.93.tar.gz" 4d964e4e10e67ba7705312496e472ae9859520a78d8742d6d377886318c95e53
-    helper_dxvk_d9vk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0094 dlls \
@@ -7373,7 +7352,7 @@ load_dxvk0094()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.94/dxvk-0.94.tar.gz" 1f06bfac5b435b62b972806fb3bbd86f7ccae2399b4451e85ae414e03d3712a3
-    helper_dxvk_d9vk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0095 dlls \
@@ -7392,7 +7371,7 @@ load_dxvk0095()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.95/dxvk-0.95.tar.gz" 1eea48149f6e94c3c74ecddd92df4f9daa67ab28d0fca548bde5cd40f0e486bf
-    helper_dxvk_d9vk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0096 dlls \
@@ -7411,7 +7390,7 @@ load_dxvk0096()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.96/dxvk-0.96.tar.gz" 9d054c1e7a4f59825c651b14d3cfbf0d8c724763f485b3d59c89f1d7194b2206
-    helper_dxvk_d9vk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1000 dlls \
@@ -7430,7 +7409,7 @@ load_dxvk1000()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0/dxvk-1.0.tar.gz" 8c8d26544609532201c10e6f5309bf5e913b5ca5b985932928ef9ab238de6dc2
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1001 dlls \
@@ -7449,7 +7428,7 @@ load_dxvk1001()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0.1/dxvk-1.0.1.tar.gz" 739847cdd14b302dac600c66bc6617d7814945df6d4d7b6c91fecfa910e3b1b1
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1002 dlls \
@@ -7468,7 +7447,7 @@ load_dxvk1002()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0.2/dxvk-1.0.2.tar.gz" f9504b188488d1102cba7e82c28681708f39e151af1c1ef7ebeac82d729c01ac
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1003 dlls \
@@ -7487,7 +7466,7 @@ load_dxvk1003()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0.3/dxvk-1.0.3.tar.gz" 984d28ab3a112be207d6339da19113d1117e56731ed413d0e202e6fd1391a6ae
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1011 dlls \
@@ -7506,7 +7485,7 @@ load_dxvk1011()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.1.1/dxvk-1.1.1.tar.gz" 346c523953f72ac5885071c4384039faf01f6f43a88d5b0c12d94bfaa9598c1d
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1020 dlls \
@@ -7525,7 +7504,7 @@ load_dxvk1020()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.2/dxvk-1.2.tar.gz" 414751a810143ced34d1f4f0eb2a40e79b4c9726318994b244b70d1b3a6f8b32
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1021 dlls \
@@ -7544,7 +7523,7 @@ load_dxvk1021()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.2.1/dxvk-1.2.1.tar.gz" 192beca0a34d13f101e9c2545d9533cf84830a23b566bed185c022ed754c3daa
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1022 dlls \
@@ -7563,7 +7542,7 @@ load_dxvk1022()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.2.2/dxvk-1.2.2.tar.gz" dfe620a387222dc117a6722171e0bca400755a3e1c6459350c710dfda40b6701
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1023 dlls \
@@ -7582,7 +7561,7 @@ load_dxvk1023()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.2.3/dxvk-1.2.3.tar.gz" 29ce345b3d962dbd8ec8bfda190635a21f62124e3e46f06e89aa2f3b1e230321
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1030 dlls \
@@ -7601,7 +7580,7 @@ load_dxvk1030()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3/dxvk-1.3.tar.gz" d15fac6503ea614986237052d554d7cbd2dbf5f3486feb6217e64bae83cfc2cf
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1031 dlls \
@@ -7620,7 +7599,7 @@ load_dxvk1031()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3.1/dxvk-1.3.1.tar.gz" 2f6636dbd591ea9de20b30a33c9c8c0985a4939f6503f90ca5c7edafd01524a3
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1032 dlls \
@@ -7639,7 +7618,7 @@ load_dxvk1032()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3.2/dxvk-1.3.2.tar.gz" aa70890a17b48be27648d15cb837b5167c99f75ee32ae0c94a85ec1f1fdc4675
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1033 dlls \
@@ -7658,7 +7637,7 @@ load_dxvk1033()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3.3/dxvk-1.3.3.tar.gz" 828171ad1dbb6b51f367fa46cf33f8db4a0b1b990cd2e95654d6a65500d230b7
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1034 dlls \
@@ -7677,7 +7656,7 @@ load_dxvk1034()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3.4/dxvk-1.3.4.tar.gz" 4683e2ad4221b16572b0d939da5a05ab9a16b2b62c2f4e0c8bf3b2cdb27918ff
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1040 dlls \
@@ -7696,7 +7675,7 @@ load_dxvk1040()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4/dxvk-1.4.tar.gz" bf22785de1ce728bbdcfb4615035924112b4718049ca2cade5861b03735181de
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1041 dlls \
@@ -7715,7 +7694,7 @@ load_dxvk1041()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.1/dxvk-1.4.1.tar.gz" 574ec4dc5201e45d70472228f0c6695426f0392503ec7a47d6092600aac53a07
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1042 dlls \
@@ -7734,7 +7713,7 @@ load_dxvk1042()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.2/dxvk-1.4.2.tar.gz" 5adfd71ee0299798af4402f09f113f88929af429b6889af334cff5b84b84dbe6
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1043 dlls \
@@ -7753,7 +7732,7 @@ load_dxvk1043()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.3/dxvk-1.4.3.tar.gz" e4b9e7fc8faf2dd1ddf5206e14939a822034a85778d54a6950767d68909726f7
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1044 dlls \
@@ -7772,7 +7751,7 @@ load_dxvk1044()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.4/dxvk-1.4.4.tar.gz" a845285c8dfc63c7d00c14520b58fc6048796fef69fea49617edb46662a0ba31
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1045 dlls \
@@ -7791,7 +7770,7 @@ load_dxvk1045()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.5/dxvk-1.4.5.tar.gz" 566c93dce84c3c2f39938428ddcca27a5bb2f5068eb4f868ff2126389b965cd1
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1046 dlls \
@@ -7812,7 +7791,7 @@ load_dxvk1046()
     # Original sha256sum: 1aa069f5ea7d3d6e374bda332d12f9207f1a21e9811c4d4d82487416420ee73e
     # Upstream later rebuilt with commit 1ae7d4b30283d2eb06b467c581aafdbbd9d36cdf: c9e3a96d8c5e693e20f69f27ac3f8b55198449fddd24205195476d6af7e8a339
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.6/dxvk-1.4.6.tar.gz" c9e3a96d8c5e693e20f69f27ac3f8b55198449fddd24205195476d6af7e8a339
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1050 dlls \
@@ -7822,17 +7801,17 @@ w_metadata dxvk1050 dlls \
     media="download" \
     file1="dxvk-1.5.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1050()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5/dxvk-1.5.tar.gz" 90cfae0bb43fed1e46442d20e2ab3bf448ebdff1e9f4f59841dc922aa3a36d3b
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1051 dlls \
@@ -7842,17 +7821,17 @@ w_metadata dxvk1051 dlls \
     media="download" \
     file1="dxvk-1.5.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1051()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.1/dxvk-1.5.1.tar.gz" 474ce9995edd47a3bd347a8f3263f35cf8df2676f5b16668bf38efa298d75c01
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1052 dlls \
@@ -7862,17 +7841,17 @@ w_metadata dxvk1052 dlls \
     media="download" \
     file1="dxvk-1.5.2.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1052()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.2/dxvk-1.5.2.tar.gz" 684ba886b5ed922c2417753d8178f923c695258c69cc8f778bb59b99bbf62477
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1053 dlls \
@@ -7882,17 +7861,17 @@ w_metadata dxvk1053 dlls \
     media="download" \
     file1="dxvk-1.5.3.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1053()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.3/dxvk-1.5.3.tar.gz" b845c9c492e32648dee44d058c189eff8534e5490a80a3b2a921248bc72e33bd
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1054 dlls \
@@ -7902,17 +7881,17 @@ w_metadata dxvk1054 dlls \
     media="download" \
     file1="dxvk-1.5.4.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1054()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.4/dxvk-1.5.4.tar.gz" 8e4fd15525def9bcaa9cc1b4496f76a2664ba4806b02a5ac0eddd703d7bbdea7
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1055 dlls \
@@ -7922,17 +7901,17 @@ w_metadata dxvk1055 dlls \
     media="download" \
     file1="dxvk-1.5.5.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1055()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.5/dxvk-1.5.5.tar.gz" f4c57274ac85d71b192e2a0ac095f285e26cc054c87c6c34c081f919147539eb
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1060 dlls \
@@ -7942,15 +7921,17 @@ w_metadata dxvk1060 dlls \
     media="download" \
     file1="dxvk-1.6.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1060()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.6/dxvk-1.6.tar.gz" a493e0802e02629244672c44ad92c40fa0813b38908677ae14ee07feefcf7227
-    helper_dxvk_d9vk "${file1}" "5.3" "1.1.113" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.3" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1061 dlls \
@@ -7960,15 +7941,17 @@ w_metadata dxvk1061 dlls \
     media="download" \
     file1="dxvk-1.6.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1061()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.6.1/dxvk-1.6.1.tar.gz" cdef8735313ed9ccb7af23b37bcceaad54553e29505c269246d5e347f1359136
-    helper_dxvk_d9vk "${file1}" "5.3" "1.1.113" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.3" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1070 dlls \
@@ -7978,15 +7961,17 @@ w_metadata dxvk1070 dlls \
     media="download" \
     file1="dxvk-1.7.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1070()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.7/dxvk-1.7.tar.gz" 67d78239906c24bd50a5ecbc2fd792c1721e274a7a60dd22f74b21b08ca4c7a1
-    helper_dxvk_d9vk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1071 dlls \
@@ -7996,15 +7981,17 @@ w_metadata dxvk1071 dlls \
     media="download" \
     file1="dxvk-1.7.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1071()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.7.1/dxvk-1.7.1.tar.gz" 6ce66c4e01196ed022604e90383593aea02c9016bde92c6840aa58805d5fc588
-    helper_dxvk_d9vk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1072 dlls \
@@ -8014,15 +8001,17 @@ w_metadata dxvk1072 dlls \
     media="download" \
     file1="dxvk-1.7.2.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1072()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.7.2/dxvk-1.7.2.tar.gz" 1662f6bda93faf4f6c8b57d656779b08925889dd6b794114be874d6deb97e15b
-    helper_dxvk_d9vk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1073 dlls \
@@ -8032,15 +8021,17 @@ w_metadata dxvk1073 dlls \
     media="download" \
     file1="dxvk-1.7.3.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1073()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.7.3/dxvk-1.7.3.tar.gz" e4c2444256b7ad63455fa6329638e3f42900ec7462dc9c26da56187a2040aba0
-    helper_dxvk_d9vk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1080 dlls \
@@ -8050,15 +8041,17 @@ w_metadata dxvk1080 dlls \
     media="download" \
     file1="dxvk-1.8.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1080()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.8/dxvk-1.8.tar.gz" e84f7ac494ac7f5013976744470899226d145e29617c407ff52870055bda476e
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1081 dlls \
@@ -8068,15 +8061,17 @@ w_metadata dxvk1081 dlls \
     media="download" \
     file1="dxvk-1.8.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1081()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.8.1/dxvk-1.8.1.tar.gz" 756a09c46f8279ade84456e3af038f64613a51e00a2d4cfffa4c91c10ede60e8
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1090 dlls \
@@ -8086,15 +8081,17 @@ w_metadata dxvk1090 dlls \
     media="download" \
     file1="dxvk-1.9.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1090()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9/dxvk-1.9.tar.gz" 433868f8783887192a04b788203d6b4effe3168be762dd60df1c1b564421a6ed
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1091 dlls \
@@ -8104,15 +8101,17 @@ w_metadata dxvk1091 dlls \
     media="download" \
     file1="dxvk-1.9.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1091()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9.1/dxvk-1.9.1.tar.gz" ef7591d6effcca8a8352cea4fa50fe73aa1f10fd89cb475f2f14236e4340a007
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1092 dlls \
@@ -8122,15 +8121,17 @@ w_metadata dxvk1092 dlls \
     media="download" \
     file1="dxvk-1.9.2.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1092()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9.2/dxvk-1.9.2.tar.gz" 24bcee655767f4731b8d3883dd93ba4edc7f1e87421e15fab19499d57236b8e9
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1093 dlls \
@@ -8140,15 +8141,17 @@ w_metadata dxvk1093 dlls \
     media="download" \
     file1="dxvk-1.9.3.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1093()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9.3/dxvk-1.9.3.tar.gz" cfcf4fac1f6bfc5a09183e77362a0af7fead4e54961bb548aef3e6cddadbe9bf
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1094 dlls \
@@ -8158,15 +8161,17 @@ w_metadata dxvk1094 dlls \
     media="download" \
     file1="dxvk-1.9.4.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1094()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9.4/dxvk-1.9.4.tar.gz" 854f564c3b58a4cdf7b16eb9a4b6bc6ddc0f83d68c4f979a529fc23f7a770502
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1100 dlls \
@@ -8176,15 +8181,17 @@ w_metadata dxvk1100 dlls \
     media="download" \
     file1="dxvk-1.10.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1100()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.10/dxvk-1.10.tar.gz" a15bc7c1df66158a205c498883b0b216390d58f4a128657990af357431b9ce77
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1101 dlls \
@@ -8194,15 +8201,17 @@ w_metadata dxvk1101 dlls \
     media="download" \
     file1="dxvk-1.10.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1101()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.10.1/dxvk-1.10.1.tar.gz" dc349482cb0a73d4e29c82f8e9ff6031e09e176e84a97ffe91eac64422b307aa
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 #----------------------------------------------------------------
@@ -8213,9 +8222,11 @@ w_metadata dxvk dlls \
     year="2017" \
     media="download" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk()
 {
@@ -8223,7 +8234,7 @@ load_dxvk()
     _W_dxvk_version="$(w_get_github_latest_release doitsujin dxvk)"
     _W_dxvk_version="${_W_dxvk_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/doitsujin/dxvk/releases/download/v${_W_dxvk_version}/dxvk-${_W_dxvk_version}.tar.gz"
-    helper_dxvk_d9vk "dxvk-${_W_dxvk_version}.tar.gz" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "dxvk-${_W_dxvk_version}.tar.gz" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
     unset _W_dxvk_version
 }
 
