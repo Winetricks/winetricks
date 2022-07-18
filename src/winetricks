@@ -182,13 +182,21 @@ else
     W_TMP_EARLY="/tmp"
 fi
 
+# shellcheck disable=SC2039,SC3037
+W_ECHO_PARAM="$(echo "-e")"
+if [ "${W_ECHO_PARAM}" = "-e" ] ; then
+    W_ECHO_PARAM=""
+else
+    W_ECHO_PARAM="-e"
+fi
+
 #---- Public Functions ----
 
 # Ask permission to continue
 w_askpermission()
 {
     echo "------------------------------------------------------"
-    echo "$@"
+    echo ${W_ECHO_PARAM} "$@"
     echo "------------------------------------------------------"
 
     if test "${W_OPT_UNATTENDED}"; then
@@ -228,7 +236,7 @@ w_info()
     # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
         echo "------------------------------------------------------"
-        echo "$@"
+        echo ${W_ECHO_PARAM} "$@"
         echo "------------------------------------------------------"
     fi
 
@@ -245,7 +253,7 @@ w_warn()
     # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
         echo "------------------------------------------------------"
-        echo "warning: $*"
+        echo ${W_ECHO_PARAM} "warning: $*"
         echo "------------------------------------------------------"
     fi
 
@@ -268,7 +276,7 @@ w_warn()
 w_warn_cancel()
 {
     echo "------------------------------------------------------" >&2
-    echo "$@" >&2
+    echo ${W_ECHO_PARAM} "$@" >&2
     echo "------------------------------------------------------" >&2
 
     if test "${W_OPT_UNATTENDED}"; then
