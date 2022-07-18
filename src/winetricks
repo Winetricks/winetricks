@@ -22265,16 +22265,21 @@ load_isolate_home()
 {
     w_skip_windows isolate_home && return
 
-    _olddir="$(pwd)"
-    w_try_cd "${WINEPREFIX}/drive_c/users/${USER}"
-    for x in *; do
-        if test -h "${x}" && test -d "${x}"; then
-            rm -f "${x}"
-            mkdir -p "${x}"
+    LANG=C find "${WINEPREFIX}/drive_c/users/${USER}" -type l | while IFS= read -r _W_symlink; do
+        # handle chained symlinks, which ultimately resolve outside $HOME, by using first symlink
+        _W_target="$(readlink "${_W_symlink}")"
+        if echo "${_W_target}" | grep -q "^${_W_symlink}"; then
+            echo "leaving symlink pointing inside the prefix: ${_W_symlink} -> ${_W_target}"
+        elif test -f "${_W_target}"; then
+            echo "ignoring file symlink: ${_W_symlink} -> ${_W_target}"
+        elif echo "${_W_target}" | grep -q "^${HOME}"; then
+            echo "removing directory symlink ${_W_symlink} -> ${_W_target} ..."
+            w_try rm -f "${_W_symlink}"
+            w_try mkdir -p "${_W_symlink}"
+        else
+            echo "leaving data directory symlink not pointing to \$HOME: ${_W_symlink} -> ${_W_target}"
         fi
     done
-    w_try_cd "${_olddir}"
-    unset _olddir
 
     # Workaround for:
     # https://bugs.winehq.org/show_bug.cgi?id=22450 (sandbox verb)
