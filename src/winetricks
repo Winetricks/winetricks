@@ -19126,49 +19126,6 @@ load_fifa11_demo()
 
 #----------------------------------------------------------------
 
-w_metadata hon games \
-    title="Heroes of Newerth" \
-    publisher="S2 Games" \
-    year="2018" \
-    media="download" \
-    file1="HoNClient.exe" \
-    installed_exe1="${W_PROGRAMS_X86_WIN}/Heroes of Newerth/hon.exe"
-
-load_hon()
-{
-    # 2017/03/28: 0f3c3431a88964647fc4d9540490e43afedc2e48573c260892882ecf48172317
-    # 2018/06/03: d4c82a3c5fdaee193675838e2fe6ade6b9fcdc4bdaf57848300c0eb09e71a945
-    w_download http://dl.heroesofnewerth.com/installers/win32/HoNClient.exe d4c82a3c5fdaee193675838e2fe6ade6b9fcdc4bdaf57848300c0eb09e71a945
-
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run, ${file1}
-        winwait, Installer Language
-        if ( w_opt_unattended > 0 ) {
-            send {Enter}
-            winwait, Heroes of Newerth
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth
-            winwait, Heroes of Newerth, License
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth, License
-            winwait, Heroes of Newerth, Install Location
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth, Install Location
-            winwait, Heroes of Newerth, Start Menu
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth, Start Menu
-            winwait, Heroes of Newerth, Finish
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth, Finish
-        }
-        winwaitclose, Heroes of Newerth, Finish
-    "
-}
-
-#----------------------------------------------------------------
-
 w_metadata hordesoforcs2_demo games \
     title="Hordes of Orcs 2 Demo" \
     publisher="Freeverse" \
