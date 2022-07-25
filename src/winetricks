@@ -15271,17 +15271,24 @@ load_ie8()
     fi
 
     # Replace the fake DLLs by copies from the bundle
-    for dll in browseui inseng itircl itss jscript mshtml shdoclc shdocvw shlwapi urlmon; do
-        test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
-            w_try mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak &&
-            w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_CACHE}"/ie8/IE8-WindowsXP-x86-ENU.exe -F ${dll}.dll
-        if [ "${W_ARCH}" = "win64" ]; then
+
+    if [ "${W_ARCH}" = "win32" ]; then
+        for dll in browseui inseng itircl itss jscript mshtml shdoclc shdocvw shlwapi urlmon; do
+            test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
+                w_try mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak &&
+                w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_CACHE}"/ie8/IE8-WindowsXP-x86-ENU.exe -F ${dll}.dll
+        done
+    else
+        for dll in browseui inseng jscript mshtml shdocvw shlwapi urlmon; do
+            test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
+                w_try mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak &&
+                w_try_cabextract --directory="${W_CACHE}"/ie8 "${W_CACHE}"/ie8/IE8-WindowsServer2003-x64-ENU.exe -F wow/w${dll}.dll &&
+                w_try mv "${W_CACHE}"/ie8/wow/w${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll
             test -f "${W_SYSTEM64_DLLS}"/${dll}.dll &&
                 w_try mv "${W_SYSTEM64_DLLS}"/${dll}.dll "${W_SYSTEM64_DLLS}"/${dll}.dll.bak
                 w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_CACHE}"/ie8/IE8-WindowsServer2003-x64-ENU.exe -F ${dll}.dll
-        fi
-
-    done
+        done
+    fi
 
     # KLUDGE: if / is writable (as on OS X?), having a Z: mapping to it
     # causes ie7 to put temporary directories on Z:\.
@@ -15354,15 +15361,19 @@ _EOF_
     fi
 
     # Seeing is believing
-    case ${WINETRICKS_GUI} in
-        none)
-            w_warn "To start ie8, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
-            ;;
-        *)
-            w_warn "Starting ie8.  To start it later, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
-            "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" http://www.example.com > /dev/null 2>&1 &
-            ;;
-    esac
+    if [ "${WINETRICKS_GUI}" != "none" ]; then
+        if [ "${W_ARCH}" = "win32" ]; then
+            w_warn "Starting ie8 ..."
+        else
+            w_warn "Starting ie8 (64-bit) ..."
+        fi
+        "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" http://www.example.com > /dev/null 2>&1 &
+    fi
+    if [ "${W_ARCH}" = "win32" ]; then
+        w_warn "To start ie8, from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
+    else
+        w_warn "To start ie8 (32-bit), from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_X86_WIN}\\\\Internet Explorer\\\\iexplore.exe'\nTo start ie8 (64-bit), from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
+    fi
 
     w_set_winver 'default'
 
