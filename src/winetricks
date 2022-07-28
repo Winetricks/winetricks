@@ -10777,17 +10777,19 @@ w_metadata ie8_kb2936068 dlls \
 
 load_ie8_kb2936068()
 {
-    # If we really need win64 support, should check if there's an x64 version of the hotfix
-    w_package_unsupported_win64
-
     w_call ie8
 
-    w_download https://download.microsoft.com/download/3/8/C/38CE0ABB-01FD-4C0A-A569-BC5E82C34A17/IE8-WindowsXP-KB2936068-x86-ENU.exe 8bda23c78cdcd9d01c364a01c6d639dfb2d11550a5521b8a81c808c1a2b1824e
-
-    w_set_winver winxp
-
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try_ms_installer "${WINE}" IE8-WindowsXP-KB2936068-x86-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
+    if [ "${W_ARCH}" = "win32" ]; then
+        w_download https://download.microsoft.com/download/3/8/C/38CE0ABB-01FD-4C0A-A569-BC5E82C34A17/IE8-WindowsXP-KB2936068-x86-ENU.exe 8bda23c78cdcd9d01c364a01c6d639dfb2d11550a5521b8a81c808c1a2b1824e
+        w_set_winver winxp
+        w_try_cd "${W_CACHE}/${W_PACKAGE}"
+        w_try_ms_installer "${WINE}" IE8-WindowsXP-KB2936068-x86-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
+    else
+        w_download https://download.microsoft.com/download/4/C/5/4C5B97EA-8E28-4CBB-AF27-0AB0D386F4E9/IE8-WindowsServer2003.WindowsXP-KB2936068-x64-ENU.exe 40f42f2d98259dde860bd0dbe71b9a0c623c03e0feff738f67920e4be0845598
+        w_set_winver win2k3
+        w_try_cd "${W_CACHE}/${W_PACKAGE}"
+        w_try_ms_installer "${WINE}" IE8-WindowsServer2003.WindowsXP-KB2936068-x64-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
+    fi
 
     w_set_winver 'default'
 }
