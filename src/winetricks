@@ -16596,6 +16596,101 @@ load_winamp()
 
 #----------------------------------------------------------------
 
+w_metadata winrar apps \
+    title="WinRAR 6.11" \
+    publisher="RARLAB" \
+    year="1993" \
+    media="download" \
+    file1="winrar-x32-611.exe" \
+    installed_exe1="${W_PROGRAMS_WIN}/WinRAR/WinRAR.exe"
+
+load_winrar()
+{
+    _W_winrar_url="https://www.win-rar.com/fileadmin/winrar-versions"
+    _W_winrar_ver="611"
+    if [ "${W_ARCH}" = "win32" ]; then
+        _W_winrar_exe="winrar-x32-${_W_winrar_ver}.exe"
+    else
+        _W_winrar_exe="winrar-x64-${_W_winrar_ver}.exe"
+    fi
+    case ${LANG} in
+        da*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}dk.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 0d42fef9e9dc906cbf75d230dbfc902e1c95a2d5fbf6994d53686ac80300733a
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" cb1f96cb804d1f89447a53968c3e3a83409b7b3fb6876e0be614b4932c674251
+            fi
+            ;;
+        de*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}d.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 3ed5607cefe225ad72b407be7ca2c1dddfde765ac6d78406b104d674f0444e2d
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 7247dc5ea61348bd2b9bea59b19ab05dbb2db67f6001e921a3456de7274ccf9f
+            fi
+            ;;
+        pl*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}pl.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 2011f899d3a2b48aade49642d2f0b6f0d79730cece119a305c83fa17d317107e
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 9171eab706208f6febe4dcd2b475cbc2894b834ad112c89eb0a494bb3643360c
+            fi
+            ;;
+        pt*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}pt.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" d3e37bbfa6ea268093c37f2ce4fc7a14833eaf7c01b51cf25be1714f37435e02
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 1e9c9a49426a2292ee5a97ff8a77b34598966ce45b1bffc9464e7110b236471b
+            fi
+            ;;
+        ru*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}ru.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 6d70cbf9b7a8de9e825e619128ef3555600b14a062ff90cf2ab47edd3ca6ecf2
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" f32ad8fc89a9bcfc1477e60de6d1ac9681f6eae6ff033aacdb6e0b75e7712910
+            fi
+            ;;
+        uk*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}uk.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" d4e9cb5e4d488ee47f6b1bb694a792fb7f661e401128fe59bc8cb63372003d5f
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" c54197b003c39e2ae27c33319302c893f8ed9d04f22166f79ab1ff1dc82b6ccf
+            fi
+            ;;
+        zh_CN*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}sc.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" cfcebea91ee1837950bed722a92d240bbdcafc7e1fcb76e9fc5d9ce4acea6ccd
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" a364612c5acc56c057fec0428220eca991b58a47bd3a7ae4c1b4e0a644ad79da
+            fi
+            ;;
+        zh_TW*|zh_HK*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}tc.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 7ffbd880bc92442c84413397028ef65a16cde9fa87eff0a55dc5a93c61d68b84
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 126ac1b858f769d5dffb39cff603bf0ec79dc21b8d7b79e92e29463d1786996a
+            fi
+            ;;
+        *)
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 6124fce45e0413021160eaf4b4652ae6b6bdd4967082094f7d457207aa349f1f
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 3023edb4fc3f7c2ebad157b182b62848423f6fa20d180b0df689cbb503a49684
+            fi
+            ;;
+    esac
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "${WINE}" "${_W_winrar_exe}" ${W_OPT_UNATTENDED:+/S}
+}
+
+#----------------------------------------------------------------
 w_metadata wme9 apps \
     title="MS Windows Media Encoder 9 (broken in Wine)" \
     publisher="Microsoft" \
