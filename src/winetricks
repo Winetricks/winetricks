@@ -16315,22 +16315,22 @@ load_steam()
 
 #----------------------------------------------------------------
 
-w_metadata uplay apps \
-    title="Uplay" \
+w_metadata ubisoftconnect apps \
+    title="Ubisoft Connect" \
     publisher="Ubisoft" \
-    year="2013" \
+    year="2020" \
     media="download" \
-    file1="UplayInstaller.exe" \
-    installed_exe1="${W_PROGRAMS_X86_WIN}/Ubisoft/Ubisoft Game Launcher/Uplay.exe"
+    file1="UbisoftConnectInstaller.exe" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Ubisoft/Ubisoft Game Launcher/UbisoftConnect.exe"
 
-load_uplay()
+load_ubisoftconnect()
 {
     # Changes too frequently, don't check anymore
-    w_download https://static3.cdn.ubi.com/orbit/launcher_installer/UplayInstaller.exe
+    w_download https://ubistatic3-a.akamaihd.net/orbit/launcher_installer/UbisoftConnectInstaller.exe
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # NSIS installer
-    w_try "${WINE}" UplayInstaller.exe ${W_OPT_UNATTENDED:+ /S}
+    w_try "${WINE}" UbisoftConnectInstaller.exe ${W_OPT_UNATTENDED:+ /S}
 }
 
 #----------------------------------------------------------------
