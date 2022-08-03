@@ -3610,6 +3610,7 @@ winetricks_mainmenu()
             _W_msg_taskmgr='Run taskmgr'
             _W_msg_explorer='Run explorer'
             _W_msg_uninstaller='Run uninstaller'
+            _W_msg_winecmd='Run a Wine cmd shell'
             _W_msg_shell='Run a commandline shell (for debugging)'
             _W_msg_folder='Browse files'
             _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
@@ -3624,6 +3625,7 @@ winetricks_mainmenu()
             _W_msg_taskmgr='taskmgr starten'
             _W_msg_explorer='explorer starten'
             _W_msg_uninstaller='uninstaller starten'
+            _W_msg_winecmd='Starten Sie Wine cmd'
             _W_msg_shell='Eine Kommandozeile zum debuggen starten'
             _W_msg_folder='Ordner durchsuchen'
             _W_msg_annihilate="ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen"
@@ -3638,6 +3640,7 @@ winetricks_mainmenu()
             _W_msg_taskmgr='Uruchomić menedżer zadań'
             _W_msg_explorer='Uruchomić explorer'
             _W_msg_uninstaller='Uruchomić program odinstalowujący'
+            _W_msg_winecmd='Uruchomić Wine cmd'
             _W_msg_shell='Uruchomić powłokę wiersza poleceń (dla debugowania)'
             _W_msg_folder='Przeglądać pliki'
             _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
@@ -3652,6 +3655,7 @@ winetricks_mainmenu()
             _W_msg_taskmgr='Executar taskmgr'
             _W_msg_explorer='Executar explorer'
             _W_msg_uninstaller='Executar desinstalador'
+            _W_msg_winecmd='Executar Wine cmd'
             _W_msg_shell='Executar linha de comandos shell (para depuração)'
             _W_msg_folder='Gerenciar arquivos'
             _W_msg_annihilate="Apagar TODOS OS DADOS E APLICATIVOS DENTRO DESTE WINEPREFIX"
@@ -3666,6 +3670,7 @@ winetricks_mainmenu()
             _W_msg_taskmgr='Запустить taskmgr (менеджер задач)'
             _W_msg_explorer='Запустить explorer'
             _W_msg_uninstaller='Запустить uninstaller (деинсталлятор)'
+            _W_msg_winecmd='Запустить винную команду'
             _W_msg_shell='Запустить графический терминал (для отладки)'
             _W_msg_folder='Проводник файлов'
             _W_msg_annihilate="Удалить ВСЕ ДАННЫЕ И ПРИЛОЖЕНИЯ В ЭТОМ WINEPREFIX"
@@ -3680,6 +3685,7 @@ winetricks_mainmenu()
             _W_msg_taskmgr='Запустити taskmgr'
             _W_msg_explorer='Запустити explorer'
             _W_msg_uninstaller='Встановлення/видалення програм'
+            _W_msg_winecmd='Запустіть оболонку Wine cmd'
             _W_msg_shell='Запуск командної оболонки (для налагодження)'
             _W_msg_folder='Перегляд файлів'
             _W_msg_annihilate="Видалити УСІ ДАНІ ТА ПРОГРАМИ З ЦЬОГО WINEPREFIX"
@@ -3694,6 +3700,7 @@ winetricks_mainmenu()
             _W_msg_taskmgr='运行任务管理器'
             _W_msg_explorer='运行资源管理器'
             _W_msg_uninstaller='运行卸载程序'
+            _W_msg_winecmd='运行 Wine cmd'
             _W_msg_shell='运行命令提示窗口 (作为调试)'
             _W_msg_folder='浏览容器中的文件'
             _W_msg_annihilate="删除容器中所有数据和应用程序"
@@ -3708,6 +3715,7 @@ winetricks_mainmenu()
             _W_msg_taskmgr='執行工作管理員'
             _W_msg_explorer='執行檔案總管'
             _W_msg_uninstaller='執行解除安裝程式'
+            _W_msg_winecmd='運行 Wine cmd'
             _W_msg_shell='執行命令提示視窗 (作為偵錯)'
             _W_msg_folder='瀏覽容器中的檔案'
             _W_msg_annihilate="刪除容器中所有資料和應用程式"
@@ -3722,6 +3730,7 @@ winetricks_mainmenu()
             _W_msg_taskmgr='Run taskmgr'
             _W_msg_explorer='Run explorer'
             _W_msg_uninstaller='Run uninstaller'
+            _W_msg_winecmd='Run a Wine cmd shell'
             _W_msg_shell='Run a commandline shell (for debugging)'
             _W_msg_folder='Browse files'
             _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
@@ -3750,6 +3759,7 @@ winetricks_mainmenu()
                     FALSE taskmgr     '${_W_msg_taskmgr}' \
                     FALSE explorer    '${_W_msg_explorer}' \
                     FALSE uninstaller '${_W_msg_uninstaller}' \
+                    FALSE cmd         '${_W_msg_winecmd}' \
                     FALSE shell       '${_W_msg_shell}' \
                     FALSE folder      '${_W_msg_folder}' \
                     FALSE annihilate  '${_W_msg_annihilate}' \
@@ -3773,6 +3783,7 @@ winetricks_mainmenu()
                     taskmgr     "${_W_msg_taskmgr}" off \
                     explorer    "${_W_msg_explorer}" off \
                     uninstaller "${_W_msg_uninstaller}" off \
+                    cmd         "${_W_msg_winecmd}" off \
                     shell       "${_W_msg_shell}" off \
                     folder      "${_W_msg_folder}" off \
                     annihilate  "${_W_msg_annihilate}" off \
@@ -4937,10 +4948,13 @@ winetricks_cleanup()
         kill $(cat "${WINETRICKS_WORKDIR}/dd-pid")
     fi
     test "${WINETRICKS_CACHE_SYMLINK}" && rm -f "${WINETRICKS_CACHE_SYMLINK}"
-    test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${WINETRICKS_WORKDIR}"
-    # if $W_TMP_EARLY was created by mktemp, remove it (but not if W_OPT_NOCLEAN is set to 1):
-    test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP_EARLY}"
-    test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${WINEPREFIX}"/wrapper.cfg
+
+    if [ "${W_OPT_NOCLEAN}" = 1 ]; then
+        rm -rf "${WINETRICKS_WORKDIR}"
+        rm -rf "${W_TMP_EARLY}"
+        rm -rf "${WINEPREFIX}/wrapper.cfg"
+        rm -rf "${WINEPREFIX}/no_win64_warnings"
+    fi
 }
 
 winetricks_set_unattended()
@@ -5064,12 +5078,36 @@ winetricks_set_wineprefix()
         W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
         W_COMMONFILES="$(w_pathconv -u "${W_COMMONFILES_WIN}")"
 
-        # 64-bit prefixes still have plenty of issues:
-        case ${LANG} in
-            ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
-            pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
-            *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
+        # 64-bit prefixes still have plenty of issues/a lot of verbs only install 32-bit libraries
+        # Allow the user to disable that (globally, or per prefix).
+        if test -f "${W_CACHE}/no_win64_warnings"; then
+            echo "${W_CACHE}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+            _W_no_win64_warnings=1
+        elif test -f "${WINEPREFIX}/no_win64_warnings"; then
+            echo "${WINEPREFIX}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+            _W_no_win64_warnings=1
+        elif test -f "${W_TMP_EARLY}/no_win64_warnings"; then
+            echo "${W_TMP_EARLY}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+            _W_no_win64_warnings=1
+        else
+            _W_no_win64_warnings=0
+        fi
+
+        # In case of GUI, only warn once per prefix, per session (i.e., don't warn next time)
+        # Can't use ${W_TMP} because that is cleared out after each verb (by w_call())
+        case ${WINETRICKS_GUI} in
+            none) true ;;
+            *) touch "${W_TMP_EARLY}/no_win64_warnings" ;;
         esac
+
+        if [ "${_W_no_win64_warnings}" = 0 ]; then
+            case ${LANG} in
+                ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
+                pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
+                *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
+            esac
+        fi
+
     else
         WINE64="false"
         WINE_ARCH="${WINE}"
@@ -6990,12 +7028,14 @@ load_dxtrans()
 # $2 - minimum Wine version (required)
 # $3 - minimum Vulkan API version (required)
 # $4 - [dxgi,][d3d9,][d3d10core,][d3d10,]d3d11 (required)
-helper_dxvk_d9vk()
+helper_dxvk()
 {
     _W_package_archive="${1}"
     _W_min_wine_version="${2}"
     _W_min_vulkan_version="${3}"
     _W_dll_overrides="$(echo "${4}" | sed 's/,/ /g')"
+    # dxvk repository, for d3d9/d3d10/d3d11 support
+    _W_repository="doitsujin/dxvk"
 
     _W_supported_overrides="dxgi d3d9 d3d10core d3d10 d3d11"
     _W_invalid_overrides="$(echo "${_W_dll_overrides}" | awk -vvalid_overrides_regex="$(echo "${_W_supported_overrides}" | sed 's/ /|/g')" '{ gsub(valid_overrides_regex,""); sub("[ ]*",""); print $0 }')"
@@ -7004,33 +7044,9 @@ helper_dxvk_d9vk()
     fi
 
     _W_dll_overrides="$(echo "${_W_dll_overrides}" | sed 's/d3d10 /&d3d10_1 /')"
-
-    case "${_W_package_archive}" in
-        d9vk*)
-            # dvk9 repository, for d3d9/d3d10/d3d11 support
-            _W_repository="Joshua-Ashton/d9vk"
-            ;;
-        dxvk*)
-            # dxvk repository, for d3d9/d3d10/d3d11 support
-            _W_repository="doitsujin/dxvk"
-            ;;
-        *)
-            w_die "parameter (1): unsupported package archive repository: '${_W_package_archive}'; supported: d9vk dxvk"
-            ;;
-    esac
-
-    case "${_W_package_archive}" in
-        *master*)
-            _W_package_dir="build/dxvk-release"
-            _W_package_version="master"
-            w_warn "Using master ${_W_repository} build"
-            ;;
-        *)
-            _W_package_dir="${_W_package_archive%.tar.gz}"
-            _W_package_version="${_W_package_dir#*-}"
-            w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"
-            ;;
-    esac
+    _W_package_dir="${_W_package_archive%.tar.gz}"
+    _W_package_version="${_W_package_dir#*-}"
+    w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"
     w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support"
 
     if w_wine_version_in ",${_W_min_wine_version}" ; then
@@ -7062,6 +7078,7 @@ helper_dxvk_d9vk()
         w_call d3dcompiler_43
         w_call d3dx9
     fi
+    w_call d3dcompiler_47
 
     unset _W_d3d9_support _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
         _W_package_archive _W_package_dir _W_package_version \
@@ -7084,7 +7101,7 @@ load_dxvk0054()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.54/dxvk-0.54.tar.gz" 1c2f186baaa01d2de7b832f6f05021bdd29eccb65fc197c8b15adfd4e08f9640
-    helper_dxvk_d9vk "${file1}" "3.10" "1.1.72" "dxgi,d3d11"
+    helper_dxvk "${file1}" "3.10" "1.1.72" "dxgi,d3d11"
 }
 
 w_metadata dxvk0060 dlls \
@@ -7100,7 +7117,7 @@ load_dxvk0060()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.60/dxvk-0.60.tar.gz" 27d6f700241d3ec3b6c002c3d739bb0e3f210ec916ecb5a62d9204e9e50f2c4a
-    helper_dxvk_d9vk "${file1}" "3.10" "1.1.72" "dxgi,d3d11"
+    helper_dxvk "${file1}" "3.10" "1.1.72" "dxgi,d3d11"
 }
 
 w_metadata dxvk0061 dlls \
@@ -7116,7 +7133,7 @@ load_dxvk0061()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.61/dxvk-0.61.tar.gz" d04388f026dc0d8b276b08f7db74fb3556cbbc8f762401eb5ef52629ee39ded1
-    helper_dxvk_d9vk "${file1}"  "3.10" "1.1.72" "dxgi,d3d11"
+    helper_dxvk "${file1}"  "3.10" "1.1.72" "dxgi,d3d11"
 }
 
 w_metadata dxvk0062 dlls \
@@ -7132,7 +7149,7 @@ load_dxvk0062()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.62/dxvk-0.62.tar.gz" b9dbb57908e24b094b68f665ad729b6ee277eecc8ba04a6e6e4f8a4d2dfd94e3
-    helper_dxvk_d9vk "${file1}"  "3.10" "1.1.72" "dxgi,d3d11"
+    helper_dxvk "${file1}"  "3.10" "1.1.72" "dxgi,d3d11"
 }
 
 w_metadata dxvk0063 dlls \
@@ -7148,7 +7165,7 @@ load_dxvk0063()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.63/dxvk-0.63.tar.gz" 696df816bd9640770dee14f932bc641a16261fccf76be7c28d812a64ca6040fa
-    helper_dxvk_d9vk "${file1}"  "3.18" "1.1.80" "dxgi,d3d11"
+    helper_dxvk "${file1}"  "3.18" "1.1.80" "dxgi,d3d11"
 }
 
 w_metadata dxvk0064 dlls \
@@ -7164,7 +7181,7 @@ load_dxvk0064()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.64/dxvk-0.64.tar.gz" 2e03e40ff0a9d36f96a06137f3fa9110ebaea230d0bf6c22cf6399e16e97fb9c
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.80" "dxgi,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.80" "dxgi,d3d11"
 }
 
 w_metadata dxvk0065 dlls \
@@ -7180,7 +7197,7 @@ load_dxvk0065()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.65/dxvk-0.65.tar.gz" 7b4eb42e693f925d0aff90bae261b20c50428602382ee94a3e3860b2ad1ebad0
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.80" "dxgi,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.80" "dxgi,d3d11"
 }
 
 w_metadata dxvk0070 dlls \
@@ -7199,7 +7216,7 @@ load_dxvk0070()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.70/dxvk-0.70.tar.gz" 310546d530be494a35cae49b707fef4b073269d811aac25bdf72899ed1df4e9f
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.80" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.80" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0071 dlls \
@@ -7218,7 +7235,7 @@ load_dxvk0071()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.71/dxvk-0.71.tar.gz" fbe66337d1450f366961a7699253cd7a96c12a88c2fcda64b79be1cbb13d37d5
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.80" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.80" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0072 dlls \
@@ -7237,7 +7254,7 @@ load_dxvk0072()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.72/dxvk-0.72.tar.gz" bc84f48f99cf5add3c8919a43d7a9c0bf208c994dc58326a636b56b8db650c52
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0080 dlls \
@@ -7259,7 +7276,7 @@ load_dxvk0080()
     # 2017/11/17: 7058a834bb006cad5462933110449b434df561e67d83f68d3965ecc74e2e1cbc
     # See: https://github.com/doitsujin/dxvk/issues/773
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.80/dxvk-0.80.tar.gz" 7058a834bb006cad5462933110449b434df561e67d83f68d3965ecc74e2e1cbc
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0081 dlls \
@@ -7278,7 +7295,7 @@ load_dxvk0081()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.81/dxvk-0.81.tar.gz" 9bf6eda9ae4ee74b509e07dfe9cc003dfa4bba192b519dacdd542a57f6a43869
-    helper_dxvk_d9vk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.18" "1.1.84" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0090 dlls \
@@ -7297,7 +7314,7 @@ load_dxvk0090()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.90/dxvk-0.90.tar.gz" 15bce7b282065054ff9233b33738bf1d2c74b16829361cbd6843bc2f5dfe4509
-    helper_dxvk_d9vk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0091 dlls \
@@ -7316,7 +7333,7 @@ load_dxvk0091()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.91/dxvk-0.91.tar.gz" 5296106ac3a8c631d7f26fa46dbff4be1332cda14fa493fd89ccf97e050c4855
-    helper_dxvk_d9vk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0092 dlls \
@@ -7335,7 +7352,7 @@ load_dxvk0092()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.92/dxvk-0.92.tar.gz" e22c0ae4693aac88562c7a9a97b3316e086b9048c9f8f9e128923ac1611a5c49
-    helper_dxvk_d9vk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "3.19" "1.1.87" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0093 dlls \
@@ -7354,7 +7371,7 @@ load_dxvk0093()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.93/dxvk-0.93.tar.gz" 4d964e4e10e67ba7705312496e472ae9859520a78d8742d6d377886318c95e53
-    helper_dxvk_d9vk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0094 dlls \
@@ -7373,7 +7390,7 @@ load_dxvk0094()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.94/dxvk-0.94.tar.gz" 1f06bfac5b435b62b972806fb3bbd86f7ccae2399b4451e85ae414e03d3712a3
-    helper_dxvk_d9vk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0095 dlls \
@@ -7392,7 +7409,7 @@ load_dxvk0095()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.95/dxvk-0.95.tar.gz" 1eea48149f6e94c3c74ecddd92df4f9daa67ab28d0fca548bde5cd40f0e486bf
-    helper_dxvk_d9vk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk0096 dlls \
@@ -7411,7 +7428,7 @@ load_dxvk0096()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v0.96/dxvk-0.96.tar.gz" 9d054c1e7a4f59825c651b14d3cfbf0d8c724763f485b3d59c89f1d7194b2206
-    helper_dxvk_d9vk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.0" "1.1.93" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1000 dlls \
@@ -7430,7 +7447,7 @@ load_dxvk1000()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0/dxvk-1.0.tar.gz" 8c8d26544609532201c10e6f5309bf5e913b5ca5b985932928ef9ab238de6dc2
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1001 dlls \
@@ -7449,7 +7466,7 @@ load_dxvk1001()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0.1/dxvk-1.0.1.tar.gz" 739847cdd14b302dac600c66bc6617d7814945df6d4d7b6c91fecfa910e3b1b1
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1002 dlls \
@@ -7468,7 +7485,7 @@ load_dxvk1002()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0.2/dxvk-1.0.2.tar.gz" f9504b188488d1102cba7e82c28681708f39e151af1c1ef7ebeac82d729c01ac
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1003 dlls \
@@ -7487,7 +7504,7 @@ load_dxvk1003()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.0.3/dxvk-1.0.3.tar.gz" 984d28ab3a112be207d6339da19113d1117e56731ed413d0e202e6fd1391a6ae
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.101" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1011 dlls \
@@ -7506,7 +7523,7 @@ load_dxvk1011()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.1.1/dxvk-1.1.1.tar.gz" 346c523953f72ac5885071c4384039faf01f6f43a88d5b0c12d94bfaa9598c1d
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1020 dlls \
@@ -7525,7 +7542,7 @@ load_dxvk1020()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.2/dxvk-1.2.tar.gz" 414751a810143ced34d1f4f0eb2a40e79b4c9726318994b244b70d1b3a6f8b32
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1021 dlls \
@@ -7544,7 +7561,7 @@ load_dxvk1021()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.2.1/dxvk-1.2.1.tar.gz" 192beca0a34d13f101e9c2545d9533cf84830a23b566bed185c022ed754c3daa
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1022 dlls \
@@ -7563,7 +7580,7 @@ load_dxvk1022()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.2.2/dxvk-1.2.2.tar.gz" dfe620a387222dc117a6722171e0bca400755a3e1c6459350c710dfda40b6701
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1023 dlls \
@@ -7582,7 +7599,7 @@ load_dxvk1023()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.2.3/dxvk-1.2.3.tar.gz" 29ce345b3d962dbd8ec8bfda190635a21f62124e3e46f06e89aa2f3b1e230321
-    helper_dxvk_d9vk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.5" "1.1.104" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1030 dlls \
@@ -7601,7 +7618,7 @@ load_dxvk1030()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3/dxvk-1.3.tar.gz" d15fac6503ea614986237052d554d7cbd2dbf5f3486feb6217e64bae83cfc2cf
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1031 dlls \
@@ -7620,7 +7637,7 @@ load_dxvk1031()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3.1/dxvk-1.3.1.tar.gz" 2f6636dbd591ea9de20b30a33c9c8c0985a4939f6503f90ca5c7edafd01524a3
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1032 dlls \
@@ -7639,7 +7656,7 @@ load_dxvk1032()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3.2/dxvk-1.3.2.tar.gz" aa70890a17b48be27648d15cb837b5167c99f75ee32ae0c94a85ec1f1fdc4675
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1033 dlls \
@@ -7658,7 +7675,7 @@ load_dxvk1033()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3.3/dxvk-1.3.3.tar.gz" 828171ad1dbb6b51f367fa46cf33f8db4a0b1b990cd2e95654d6a65500d230b7
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1034 dlls \
@@ -7677,7 +7694,7 @@ load_dxvk1034()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.3.4/dxvk-1.3.4.tar.gz" 4683e2ad4221b16572b0d939da5a05ab9a16b2b62c2f4e0c8bf3b2cdb27918ff
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1040 dlls \
@@ -7696,7 +7713,7 @@ load_dxvk1040()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4/dxvk-1.4.tar.gz" bf22785de1ce728bbdcfb4615035924112b4718049ca2cade5861b03735181de
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1041 dlls \
@@ -7715,7 +7732,7 @@ load_dxvk1041()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.1/dxvk-1.4.1.tar.gz" 574ec4dc5201e45d70472228f0c6695426f0392503ec7a47d6092600aac53a07
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1042 dlls \
@@ -7734,7 +7751,7 @@ load_dxvk1042()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.2/dxvk-1.4.2.tar.gz" 5adfd71ee0299798af4402f09f113f88929af429b6889af334cff5b84b84dbe6
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1043 dlls \
@@ -7753,7 +7770,7 @@ load_dxvk1043()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.3/dxvk-1.4.3.tar.gz" e4b9e7fc8faf2dd1ddf5206e14939a822034a85778d54a6950767d68909726f7
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1044 dlls \
@@ -7772,7 +7789,7 @@ load_dxvk1044()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.4/dxvk-1.4.4.tar.gz" a845285c8dfc63c7d00c14520b58fc6048796fef69fea49617edb46662a0ba31
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1045 dlls \
@@ -7791,7 +7808,7 @@ load_dxvk1045()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.5/dxvk-1.4.5.tar.gz" 566c93dce84c3c2f39938428ddcca27a5bb2f5068eb4f868ff2126389b965cd1
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1046 dlls \
@@ -7812,7 +7829,7 @@ load_dxvk1046()
     # Original sha256sum: 1aa069f5ea7d3d6e374bda332d12f9207f1a21e9811c4d4d82487416420ee73e
     # Upstream later rebuilt with commit 1ae7d4b30283d2eb06b467c581aafdbbd9d36cdf: c9e3a96d8c5e693e20f69f27ac3f8b55198449fddd24205195476d6af7e8a339
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.4.6/dxvk-1.4.6.tar.gz" c9e3a96d8c5e693e20f69f27ac3f8b55198449fddd24205195476d6af7e8a339
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1050 dlls \
@@ -7822,17 +7839,17 @@ w_metadata dxvk1050 dlls \
     media="download" \
     file1="dxvk-1.5.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1050()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5/dxvk-1.5.tar.gz" 90cfae0bb43fed1e46442d20e2ab3bf448ebdff1e9f4f59841dc922aa3a36d3b
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1051 dlls \
@@ -7842,17 +7859,17 @@ w_metadata dxvk1051 dlls \
     media="download" \
     file1="dxvk-1.5.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1051()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.1/dxvk-1.5.1.tar.gz" 474ce9995edd47a3bd347a8f3263f35cf8df2676f5b16668bf38efa298d75c01
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1052 dlls \
@@ -7862,17 +7879,17 @@ w_metadata dxvk1052 dlls \
     media="download" \
     file1="dxvk-1.5.2.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1052()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.2/dxvk-1.5.2.tar.gz" 684ba886b5ed922c2417753d8178f923c695258c69cc8f778bb59b99bbf62477
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1053 dlls \
@@ -7882,17 +7899,17 @@ w_metadata dxvk1053 dlls \
     media="download" \
     file1="dxvk-1.5.3.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1053()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.3/dxvk-1.5.3.tar.gz" b845c9c492e32648dee44d058c189eff8534e5490a80a3b2a921248bc72e33bd
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1054 dlls \
@@ -7902,17 +7919,17 @@ w_metadata dxvk1054 dlls \
     media="download" \
     file1="dxvk-1.5.4.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1054()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.4/dxvk-1.5.4.tar.gz" 8e4fd15525def9bcaa9cc1b4496f76a2664ba4806b02a5ac0eddd703d7bbdea7
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1055 dlls \
@@ -7922,17 +7939,17 @@ w_metadata dxvk1055 dlls \
     media="download" \
     file1="dxvk-1.5.5.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1055()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.5.5/dxvk-1.5.5.tar.gz" f4c57274ac85d71b192e2a0ac095f285e26cc054c87c6c34c081f919147539eb
-    helper_dxvk_d9vk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+    helper_dxvk "${file1}" "4.20" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1060 dlls \
@@ -7942,15 +7959,17 @@ w_metadata dxvk1060 dlls \
     media="download" \
     file1="dxvk-1.6.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1060()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.6/dxvk-1.6.tar.gz" a493e0802e02629244672c44ad92c40fa0813b38908677ae14ee07feefcf7227
-    helper_dxvk_d9vk "${file1}" "5.3" "1.1.113" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.3" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1061 dlls \
@@ -7960,15 +7979,17 @@ w_metadata dxvk1061 dlls \
     media="download" \
     file1="dxvk-1.6.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1061()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.6.1/dxvk-1.6.1.tar.gz" cdef8735313ed9ccb7af23b37bcceaad54553e29505c269246d5e347f1359136
-    helper_dxvk_d9vk "${file1}" "5.3" "1.1.113" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.3" "1.1.113" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1070 dlls \
@@ -7978,15 +7999,17 @@ w_metadata dxvk1070 dlls \
     media="download" \
     file1="dxvk-1.7.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1070()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.7/dxvk-1.7.tar.gz" 67d78239906c24bd50a5ecbc2fd792c1721e274a7a60dd22f74b21b08ca4c7a1
-    helper_dxvk_d9vk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1071 dlls \
@@ -7996,15 +8019,17 @@ w_metadata dxvk1071 dlls \
     media="download" \
     file1="dxvk-1.7.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1071()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.7.1/dxvk-1.7.1.tar.gz" 6ce66c4e01196ed022604e90383593aea02c9016bde92c6840aa58805d5fc588
-    helper_dxvk_d9vk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1072 dlls \
@@ -8014,15 +8039,17 @@ w_metadata dxvk1072 dlls \
     media="download" \
     file1="dxvk-1.7.2.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1072()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.7.2/dxvk-1.7.2.tar.gz" 1662f6bda93faf4f6c8b57d656779b08925889dd6b794114be874d6deb97e15b
-    helper_dxvk_d9vk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1073 dlls \
@@ -8032,15 +8059,17 @@ w_metadata dxvk1073 dlls \
     media="download" \
     file1="dxvk-1.7.3.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1073()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.7.3/dxvk-1.7.3.tar.gz" e4c2444256b7ad63455fa6329638e3f42900ec7462dc9c26da56187a2040aba0
-    helper_dxvk_d9vk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.8" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1080 dlls \
@@ -8050,15 +8079,17 @@ w_metadata dxvk1080 dlls \
     media="download" \
     file1="dxvk-1.8.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1080()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.8/dxvk-1.8.tar.gz" e84f7ac494ac7f5013976744470899226d145e29617c407ff52870055bda476e
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1081 dlls \
@@ -8068,15 +8099,17 @@ w_metadata dxvk1081 dlls \
     media="download" \
     file1="dxvk-1.8.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1081()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.8.1/dxvk-1.8.1.tar.gz" 756a09c46f8279ade84456e3af038f64613a51e00a2d4cfffa4c91c10ede60e8
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1090 dlls \
@@ -8086,15 +8119,17 @@ w_metadata dxvk1090 dlls \
     media="download" \
     file1="dxvk-1.9.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1090()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9/dxvk-1.9.tar.gz" 433868f8783887192a04b788203d6b4effe3168be762dd60df1c1b564421a6ed
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1091 dlls \
@@ -8104,15 +8139,17 @@ w_metadata dxvk1091 dlls \
     media="download" \
     file1="dxvk-1.9.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1091()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9.1/dxvk-1.9.1.tar.gz" ef7591d6effcca8a8352cea4fa50fe73aa1f10fd89cb475f2f14236e4340a007
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1092 dlls \
@@ -8122,15 +8159,17 @@ w_metadata dxvk1092 dlls \
     media="download" \
     file1="dxvk-1.9.2.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1092()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9.2/dxvk-1.9.2.tar.gz" 24bcee655767f4731b8d3883dd93ba4edc7f1e87421e15fab19499d57236b8e9
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1093 dlls \
@@ -8140,15 +8179,17 @@ w_metadata dxvk1093 dlls \
     media="download" \
     file1="dxvk-1.9.3.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1093()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9.3/dxvk-1.9.3.tar.gz" cfcf4fac1f6bfc5a09183e77362a0af7fead4e54961bb548aef3e6cddadbe9bf
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1094 dlls \
@@ -8158,15 +8199,17 @@ w_metadata dxvk1094 dlls \
     media="download" \
     file1="dxvk-1.9.4.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1094()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.9.4/dxvk-1.9.4.tar.gz" 854f564c3b58a4cdf7b16eb9a4b6bc6ddc0f83d68c4f979a529fc23f7a770502
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1100 dlls \
@@ -8176,15 +8219,17 @@ w_metadata dxvk1100 dlls \
     media="download" \
     file1="dxvk-1.10.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1100()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.10/dxvk-1.10.tar.gz" a15bc7c1df66158a205c498883b0b216390d58f4a128657990af357431b9ce77
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 w_metadata dxvk1101 dlls \
@@ -8194,15 +8239,37 @@ w_metadata dxvk1101 dlls \
     media="download" \
     file1="dxvk-1.10.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk1101()
 {
     # https://github.com/doitsujin/dxvk
     w_download "https://github.com/doitsujin/dxvk/releases/download/v1.10.1/dxvk-1.10.1.tar.gz" dc349482cb0a73d4e29c82f8e9ff6031e09e176e84a97ffe91eac64422b307aa
-    helper_dxvk_d9vk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
+}
+
+w_metadata dxvk1102 dlls \
+    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.10.2)" \
+    publisher="Philip Rebohle" \
+    year="2017" \
+    media="download" \
+    file1="dxvk-1.10.2.tar.gz" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+
+load_dxvk1102()
+{
+    # https://github.com/doitsujin/dxvk
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v1.10.2/dxvk-1.10.2.tar.gz" bf97df2b8923cd8e6c646bd66bdb3d0894da1be05a6498c2dbc15b4d2e530c83
+    helper_dxvk "${file1}" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
 }
 
 #----------------------------------------------------------------
@@ -8213,9 +8280,11 @@ w_metadata dxvk dlls \
     year="2017" \
     media="download" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10_1.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file6="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk()
 {
@@ -8223,7 +8292,7 @@ load_dxvk()
     _W_dxvk_version="$(w_get_github_latest_release doitsujin dxvk)"
     _W_dxvk_version="${_W_dxvk_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/doitsujin/dxvk/releases/download/v${_W_dxvk_version}/dxvk-${_W_dxvk_version}.tar.gz"
-    helper_dxvk_d9vk "dxvk-${_W_dxvk_version}.tar.gz" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "dxvk-${_W_dxvk_version}.tar.gz" "5.14" "1.2.140" "dxgi,d3d9,d3d10core,d3d10,d3d11"
     unset _W_dxvk_version
 }
 
@@ -8532,7 +8601,7 @@ load_dotnet11()
     # https://www.microsoft.com/en-us/download/details.aspx?id=26
     w_download https://web.archive.org/web/20210505032023/http://download.microsoft.com/download/a/a/c/aac39226-8825-44ce-90e3-bf8203e74006/dotnetfx.exe ba0e58ec93f2ffd54fc7c627eeca9502e11ab3c6fc85dcbeff113bd61d995bce
 
-    w_call remove_mono
+    w_call remove_mono internal
     w_call corefonts
     w_call fontfix
 
@@ -8591,7 +8660,7 @@ load_dotnet11sp1()
 
     w_download https://msassist.com/files/dotNETframework/NDP1.1sp1-KB867460-X86.exe 2c0a35409ff0873cfa28b70b8224e9aca2362241c1f0ed6f622fef8d4722fd9a
 
-    w_call remove_mono
+    w_call remove_mono internal
     w_call dotnet11
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
@@ -8644,7 +8713,7 @@ w_metadata dotnet20 dlls \
 
 load_dotnet20()
 {
-    w_call remove_mono
+    w_call remove_mono internal
     w_call fontfix
 
     if [ "${W_ARCH}" = "win32" ]; then
@@ -8731,7 +8800,7 @@ load_dotnet20sdk()
     # https://www.microsoft.com/en-us/download/details.aspx?id=19988
     w_download https://web.archive.org/web/20111102051348/https://download.microsoft.com/download/c/4/b/c4b15d7d-6f37-4d5a-b9c6-8f07e7d46635/setup.exe 1d7337bfbb2c65f43c82d188688ce152af403bcb67a2cc2a3cc68a580ecd8200
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_call dotnet20
 
@@ -8797,7 +8866,7 @@ w_metadata dotnet20sp1 dlls \
 
 load_dotnet20sp1()
 {
-    w_call remove_mono
+    w_call remove_mono internal
 
     # Not sure when exactly it was fixed, but it works with 4.0+, and doesn't in 3.0
     # Given that 3.x is deprecated, not worth looking into.
@@ -8869,7 +8938,7 @@ w_metadata dotnet20sp2 dlls \
 
 load_dotnet20sp2()
 {
-    w_call remove_mono
+    w_call remove_mono internal
 
     # Not sure when exactly it was fixed, but it works with 4.0+, and doesn't in 3.0
     # Given that 3.x is deprecated, not worth looking into.
@@ -8944,7 +9013,7 @@ load_dotnet30()
     # 2020/04/12: couldn't find a working mirror, so back to archive.org for now:
     w_download https://web.archive.org/web/20061130220825/http://download.microsoft.com/download/3/F/0/3F0A922C-F239-4B9B-9CB0-DF53621C57D9/dotnetfx3.exe 6cf8921e00f52bbd888aa7a520a7bac47e818e2a850bcc44494c64d6cbfafdac
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     if test -f /proc/sys/kernel/yama/ptrace_scope; then
         case $(cat /proc/sys/kernel/yama/ptrace_scope) in
@@ -9038,7 +9107,7 @@ load_dotnet30sp1()
     # 2020/10/19: w_download https://download.microsoft.com/download/2/5/2/2526f55d-32bc-410f-be18-164ba67ae07d/XPSEP%20XP%20and%20Server%202003%2032%20bit.msi 630c86a202c40cbcd430701977d4f1fefa6151624ef9a4870040dff45e547dea "XPSEP XP and Server 2003 32 bit.msi"
     w_download https://web.archive.org/web/20200810211554if_/https://download.microsoft.com/download/2/5/2/2526f55d-32bc-410f-be18-164ba67ae07d/XPSEP%20XP%20and%20Server%202003%2032%20bit.msi 630c86a202c40cbcd430701977d4f1fefa6151624ef9a4870040dff45e547dea "XPSEP XP and Server 2003 32 bit.msi"
 
-    w_call remove_mono
+    w_call remove_mono internal
     w_call dotnet30
     w_wineserver -w
     w_call dotnet20sp1
@@ -9095,7 +9164,7 @@ load_dotnet35()
     # https://www.microsoft.com/en-us/download/details.aspx?id=21
     w_download https://download.microsoft.com/download/6/0/f/60fc5854-3cb8-4892-b6db-bd4f42510f28/dotnetfx35.exe 3e3a4104bad9a0c270ed5cbe8abb986de9afaf0281a98998bdbdc8eaab85c3b6
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_set_winver winxp
 
@@ -9136,7 +9205,7 @@ load_dotnet35sp1()
     # Official version. See https://dotnet.microsoft.com/en-us/download/dotnet-framework/net35-sp1
     w_download https://download.microsoft.com/download/2/0/e/20e90413-712f-438c-988e-fdaa79a8ac3d/dotnetfx35.exe 0582515bde321e072f8673e829e175ed2e7a53e803127c50253af76528e66bc1
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_set_winver winxp
 
@@ -9194,7 +9263,7 @@ load_dotnet40()
     # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net40
     w_download https://download.microsoft.com/download/9/5/A/95A9616B-7A37-4AF6-BC36-D6EA96C8DAAE/dotNetFx40_Full_x86_x64.exe 65e064258f2e418816b304f646ff9e87af101e4c9552ab064bb74d281c38659f
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_call winxp
 
@@ -9299,7 +9368,7 @@ load_dotnet45()
     # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net45
     w_download https://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe a04d40e217b97326d46117d961ec4eda455e087b90637cb33dd6cc4a2c228d83
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
 
@@ -9359,7 +9428,7 @@ load_dotnet452()
     # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net452
     w_download https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe 6c2c589132e830a185c5f40f82042bee3022e721a216680bd9b3995ba86f3781
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     # See https://appdb.winehq.org/objectManager.php?sClass=version&iId=25478 for Focht's recipe
 
@@ -9413,7 +9482,7 @@ load_dotnet46()
     # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net46
     w_download https://download.microsoft.com/download/6/F/9/6F9673B1-87D1-46C4-BF04-95F24C3EB9DA/enu_netfx/NDP46-KB3045557-x86-x64-AllOS-ENU_exe/NDP46-KB3045557-x86-x64-AllOS-ENU.exe b21d33135e67e3486b154b11f7961d8e1cfd7a603267fb60febb4a6feab5cf87
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_call dotnet45
     w_set_winver win7
@@ -9460,7 +9529,7 @@ load_dotnet461()
     # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net461
     w_download https://download.microsoft.com/download/E/4/1/E4173890-A24A-4936-9FC9-AF930FE3FA40/NDP461-KB3102436-x86-x64-AllOS-ENU.exe beaa901e07347d056efe04e8961d5546c7518fab9246892178505a7ba631c301
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_call dotnet46
     w_set_winver win7
@@ -9510,7 +9579,7 @@ load_dotnet462()
     w_download https://download.visualstudio.microsoft.com/download/pr/8e396c75-4d0d-41d3-aea8-848babc2736a/80b431456d8866ebe053eb8b81a168b3/NDP462-KB3151800-x86-x64-AllOS-ENU.exe b4cbb4bc9a3983ec3be9f80447e0d619d15256a9ce66ff414ae6e3856705e237
     file_package="NDP462-KB3151800-x86-x64-AllOS-ENU.exe"
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_call dotnet461
     w_set_winver win7
@@ -9561,7 +9630,7 @@ load_dotnet471()
     # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net471
     w_download https://download.visualstudio.microsoft.com/download/pr/4312fa21-59b0-4451-9482-a1376f7f3ba4/9947fce13c11105b48cba170494e787f/NDP471-KB4033342-x86-x64-AllOS-ENU.exe df6e700d37ff416e2e1d8463dededdf76522ceaf5bb4cc3f197a7f2b9eccc4ad
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_call dotnet462
     w_set_winver win7
@@ -9610,7 +9679,7 @@ load_dotnet472()
     # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net472
     w_download https://download.visualstudio.microsoft.com/download/pr/1f5af042-d0e4-4002-9c59-9ba66bcf15f6/089f837de42708daacaae7c04b7494db/NDP472-KB4054530-x86-x64-AllOS-ENU.exe 5cb624b97f9fd6d3895644c52231c9471cd88aacb57d6e198d3024a1839139f6
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_call dotnet462
     w_set_winver win7
@@ -9660,7 +9729,7 @@ load_dotnet48()
     # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net48
     w_download https://download.visualstudio.microsoft.com/download/pr/7afca223-55d2-470a-8edc-6a1739ae3252/abd170b4b0ec15ad0222a809b761a036/ndp48-x86-x64-allos-enu.exe 95889d6de3f2070c07790ad6cf2000d33d9a1bdfc6a381725ab82ab1c314fd53
 
-    w_call remove_mono
+    w_call remove_mono internal
 
     w_call dotnet40
     w_set_winver win7
@@ -10746,17 +10815,19 @@ w_metadata ie8_kb2936068 dlls \
 
 load_ie8_kb2936068()
 {
-    # If we really need win64 support, should check if there's an x64 version of the hotfix
-    w_package_unsupported_win64
-
     w_call ie8
 
-    w_download https://download.microsoft.com/download/3/8/C/38CE0ABB-01FD-4C0A-A569-BC5E82C34A17/IE8-WindowsXP-KB2936068-x86-ENU.exe 8bda23c78cdcd9d01c364a01c6d639dfb2d11550a5521b8a81c808c1a2b1824e
-
-    w_set_winver winxp
-
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try_ms_installer "${WINE}" IE8-WindowsXP-KB2936068-x86-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
+    if [ "${W_ARCH}" = "win32" ]; then
+        w_download https://download.microsoft.com/download/3/8/C/38CE0ABB-01FD-4C0A-A569-BC5E82C34A17/IE8-WindowsXP-KB2936068-x86-ENU.exe 8bda23c78cdcd9d01c364a01c6d639dfb2d11550a5521b8a81c808c1a2b1824e
+        w_set_winver winxp
+        w_try_cd "${W_CACHE}/${W_PACKAGE}"
+        w_try_ms_installer "${WINE}" IE8-WindowsXP-KB2936068-x86-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
+    else
+        w_download https://download.microsoft.com/download/4/C/5/4C5B97EA-8E28-4CBB-AF27-0AB0D386F4E9/IE8-WindowsServer2003.WindowsXP-KB2936068-x64-ENU.exe 40f42f2d98259dde860bd0dbe71b9a0c623c03e0feff738f67920e4be0845598
+        w_set_winver win2k3
+        w_try_cd "${W_CACHE}/${W_PACKAGE}"
+        w_try_ms_installer "${WINE}" IE8-WindowsServer2003.WindowsXP-KB2936068-x64-ENU.exe ${W_OPT_UNATTENDED:+/quiet /forcerestart}
+    fi
 
     w_set_winver 'default'
 }
@@ -15240,17 +15311,24 @@ load_ie8()
     fi
 
     # Replace the fake DLLs by copies from the bundle
-    for dll in browseui inseng itircl itss jscript mshtml shdoclc shdocvw shlwapi urlmon; do
-        test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
-            w_try mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak &&
-            w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_CACHE}"/ie8/IE8-WindowsXP-x86-ENU.exe -F ${dll}.dll
-        if [ "${W_ARCH}" = "win64" ]; then
+
+    if [ "${W_ARCH}" = "win32" ]; then
+        for dll in browseui inseng itircl itss jscript mshtml shdoclc shdocvw shlwapi urlmon; do
+            test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
+                w_try mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak &&
+                w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_CACHE}"/ie8/IE8-WindowsXP-x86-ENU.exe -F ${dll}.dll
+        done
+    else
+        for dll in browseui inseng jscript mshtml shdocvw shlwapi urlmon; do
+            test -f "${W_SYSTEM32_DLLS}"/${dll}.dll &&
+                w_try mv "${W_SYSTEM32_DLLS}"/${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll.bak &&
+                w_try_cabextract --directory="${W_CACHE}"/ie8 "${W_CACHE}"/ie8/IE8-WindowsServer2003-x64-ENU.exe -F wow/w${dll}.dll &&
+                w_try mv "${W_CACHE}"/ie8/wow/w${dll}.dll "${W_SYSTEM32_DLLS}"/${dll}.dll
             test -f "${W_SYSTEM64_DLLS}"/${dll}.dll &&
                 w_try mv "${W_SYSTEM64_DLLS}"/${dll}.dll "${W_SYSTEM64_DLLS}"/${dll}.dll.bak
                 w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_CACHE}"/ie8/IE8-WindowsServer2003-x64-ENU.exe -F ${dll}.dll
-        fi
-
-    done
+        done
+    fi
 
     # KLUDGE: if / is writable (as on OS X?), having a Z: mapping to it
     # causes ie7 to put temporary directories on Z:\.
@@ -15323,15 +15401,19 @@ _EOF_
     fi
 
     # Seeing is believing
-    case ${WINETRICKS_GUI} in
-        none)
-            w_warn "To start ie8, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
-            ;;
-        *)
-            w_warn "Starting ie8.  To start it later, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
-            "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" http://www.example.com > /dev/null 2>&1 &
-            ;;
-    esac
+    if [ "${WINETRICKS_GUI}" != "none" ]; then
+        if [ "${W_ARCH}" = "win32" ]; then
+            w_warn "Starting ie8 ..."
+        else
+            w_warn "Starting ie8 (64-bit) ..."
+        fi
+        "${WINE}" "${W_PROGRAMS_WIN}\\Internet Explorer\\iexplore.exe" http://www.example.com > /dev/null 2>&1 &
+    fi
+    if [ "${W_ARCH}" = "win32" ]; then
+        w_warn "To start ie8, from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
+    else
+        w_warn "To start ie8 (32-bit), from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_X86_WIN}\\\\Internet Explorer\\\\iexplore.exe'\nTo start ie8 (64-bit), from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
+    fi
 
     w_set_winver 'default'
 
@@ -16473,7 +16555,7 @@ load_vc2010express()
     # Uninstall wine-mono, installer doesn't attempt to install native .Net if mono is installed,
     # Then the installer throws an exception and fails
     # See https://github.com/Winetricks/winetricks/issues/1165
-    w_call remove_mono
+    w_call remove_mono internal
 
     # dotnet40 leaves winver at win2k, which causes vc2010 to abort on
     # start because it looks for c:\users\$LOGNAME\Application Data
@@ -16565,6 +16647,101 @@ load_winamp()
 
 #----------------------------------------------------------------
 
+w_metadata winrar apps \
+    title="WinRAR 6.11" \
+    publisher="RARLAB" \
+    year="1993" \
+    media="download" \
+    file1="winrar-x32-611.exe" \
+    installed_exe1="${W_PROGRAMS_WIN}/WinRAR/WinRAR.exe"
+
+load_winrar()
+{
+    _W_winrar_url="https://www.win-rar.com/fileadmin/winrar-versions"
+    _W_winrar_ver="611"
+    if [ "${W_ARCH}" = "win32" ]; then
+        _W_winrar_exe="winrar-x32-${_W_winrar_ver}.exe"
+    else
+        _W_winrar_exe="winrar-x64-${_W_winrar_ver}.exe"
+    fi
+    case ${LANG} in
+        da*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}dk.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 0d42fef9e9dc906cbf75d230dbfc902e1c95a2d5fbf6994d53686ac80300733a
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" cb1f96cb804d1f89447a53968c3e3a83409b7b3fb6876e0be614b4932c674251
+            fi
+            ;;
+        de*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}d.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 3ed5607cefe225ad72b407be7ca2c1dddfde765ac6d78406b104d674f0444e2d
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 7247dc5ea61348bd2b9bea59b19ab05dbb2db67f6001e921a3456de7274ccf9f
+            fi
+            ;;
+        pl*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}pl.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 2011f899d3a2b48aade49642d2f0b6f0d79730cece119a305c83fa17d317107e
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 9171eab706208f6febe4dcd2b475cbc2894b834ad112c89eb0a494bb3643360c
+            fi
+            ;;
+        pt*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}pt.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" d3e37bbfa6ea268093c37f2ce4fc7a14833eaf7c01b51cf25be1714f37435e02
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 1e9c9a49426a2292ee5a97ff8a77b34598966ce45b1bffc9464e7110b236471b
+            fi
+            ;;
+        ru*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}ru.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 6d70cbf9b7a8de9e825e619128ef3555600b14a062ff90cf2ab47edd3ca6ecf2
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" f32ad8fc89a9bcfc1477e60de6d1ac9681f6eae6ff033aacdb6e0b75e7712910
+            fi
+            ;;
+        uk*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}uk.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" d4e9cb5e4d488ee47f6b1bb694a792fb7f661e401128fe59bc8cb63372003d5f
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" c54197b003c39e2ae27c33319302c893f8ed9d04f22166f79ab1ff1dc82b6ccf
+            fi
+            ;;
+        zh_CN*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}sc.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" cfcebea91ee1837950bed722a92d240bbdcafc7e1fcb76e9fc5d9ce4acea6ccd
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" a364612c5acc56c057fec0428220eca991b58a47bd3a7ae4c1b4e0a644ad79da
+            fi
+            ;;
+        zh_TW*|zh_HK*)
+            _W_winrar_exe="${_W_winrar_exe%.exe}tc.exe"
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 7ffbd880bc92442c84413397028ef65a16cde9fa87eff0a55dc5a93c61d68b84
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 126ac1b858f769d5dffb39cff603bf0ec79dc21b8d7b79e92e29463d1786996a
+            fi
+            ;;
+        *)
+            if [ "${W_ARCH}" = "win32" ]; then
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 6124fce45e0413021160eaf4b4652ae6b6bdd4967082094f7d457207aa349f1f
+            else
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 3023edb4fc3f7c2ebad157b182b62848423f6fa20d180b0df689cbb503a49684
+            fi
+            ;;
+    esac
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "${WINE}" "${_W_winrar_exe}" ${W_OPT_UNATTENDED:+/S}
+}
+
+#----------------------------------------------------------------
 w_metadata wme9 apps \
     title="MS Windows Media Encoder 9 (broken in Wine)" \
     publisher="Microsoft" \
@@ -19121,49 +19298,6 @@ load_fifa11_demo()
             controlclick, Button1, FIFA 11, Click the Finish button to exit the Setup Wizard.
         }
         WinWaitClose
-    "
-}
-
-#----------------------------------------------------------------
-
-w_metadata hon games \
-    title="Heroes of Newerth" \
-    publisher="S2 Games" \
-    year="2018" \
-    media="download" \
-    file1="HoNClient.exe" \
-    installed_exe1="${W_PROGRAMS_X86_WIN}/Heroes of Newerth/hon.exe"
-
-load_hon()
-{
-    # 2017/03/28: 0f3c3431a88964647fc4d9540490e43afedc2e48573c260892882ecf48172317
-    # 2018/06/03: d4c82a3c5fdaee193675838e2fe6ade6b9fcdc4bdaf57848300c0eb09e71a945
-    w_download http://dl.heroesofnewerth.com/installers/win32/HoNClient.exe d4c82a3c5fdaee193675838e2fe6ade6b9fcdc4bdaf57848300c0eb09e71a945
-
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_ahk_do "
-        SetTitleMatchMode, 2
-        run, ${file1}
-        winwait, Installer Language
-        if ( w_opt_unattended > 0 ) {
-            send {Enter}
-            winwait, Heroes of Newerth
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth
-            winwait, Heroes of Newerth, License
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth, License
-            winwait, Heroes of Newerth, Install Location
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth, Install Location
-            winwait, Heroes of Newerth, Start Menu
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth, Start Menu
-            winwait, Heroes of Newerth, Finish
-            sleep 1000
-            controlclick, Button2, Heroes of Newerth, Finish
-        }
-        winwaitclose, Heroes of Newerth, Finish
     "
 }
 
@@ -22308,16 +22442,21 @@ load_isolate_home()
 {
     w_skip_windows isolate_home && return
 
-    _olddir="$(pwd)"
-    w_try_cd "${WINEPREFIX}/drive_c/users/${USER}"
-    for x in *; do
-        if test -h "${x}" && test -d "${x}"; then
-            rm -f "${x}"
-            mkdir -p "${x}"
+    LANG=C find "${WINEPREFIX}/drive_c/users/${USER}" -type l | while IFS= read -r _W_symlink; do
+        # handle chained symlinks, which ultimately resolve outside $HOME, by using first symlink
+        _W_target="$(readlink "${_W_symlink}")"
+        if echo "${_W_target}" | grep -q "^${_W_symlink}"; then
+            echo "leaving symlink pointing inside the prefix: ${_W_symlink} -> ${_W_target}"
+        elif test -f "${_W_target}"; then
+            echo "ignoring file symlink: ${_W_symlink} -> ${_W_target}"
+        elif echo "${_W_target}" | grep -q "^${HOME}"; then
+            echo "removing directory symlink ${_W_symlink} -> ${_W_target} ..."
+            w_try rm -f "${_W_symlink}"
+            w_try mkdir -p "${_W_symlink}"
+        else
+            echo "leaving data directory symlink not pointing to \$HOME: ${_W_symlink} -> ${_W_target}"
         fi
     done
-    w_try_cd "${_olddir}"
-    unset _olddir
 
     # Workaround for:
     # https://bugs.winehq.org/show_bug.cgi?id=22450 (sandbox verb)
@@ -22392,7 +22531,7 @@ load_remove_mono()
         for uuid in ${mono_uuid}; do
             "${WINE_ARCH}" uninstaller --remove "${uuid}"
         done
-    else
+    elif [ -z "$1" ] || [ "$1" != "internal" ]; then
         # Bail out if mono isn't installed, so we don't break .Net setups
         w_warn "Mono does not appear to be installed."
         return
@@ -22847,12 +22986,12 @@ winetricks_shell()
 
         case ${WINETRICKS_GUI} in
             none)
-                ${SHELL}
+                WINEDEBUG=-all ${SHELL} "${@}"
                 ;;
             *)
                 for term in gnome-terminal konsole Terminal xterm; do
                     if test "$(command -v ${term} 2>/dev/null)"; then
-                        ${term}
+                        WINEDEBUG=-all ${term} -e "${@}"
                         break
                     fi
                 done
@@ -22911,6 +23050,7 @@ execute_command()
         explorer) "${WINE}" explorer & ;;
         uninstaller) "${WINE}" uninstaller ;;
         shell) winetricks_shell ;;
+        winecmd) winetricks_shell "${WINE}" "cmd.exe" ;;
 
         # These have to come before *=disabled to avoid looking like DLLs
         cfc=disable*) w_call cfc=disabled ;;
