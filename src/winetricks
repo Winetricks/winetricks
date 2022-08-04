@@ -182,14 +182,14 @@ else
     W_TMP_EARLY="/tmp"
 fi
 
+W_TEXT_LINE="------------------------------------------------------"
+
 #---- Public Functions ----
 
 # Ask permission to continue
 w_askpermission()
 {
-    echo "------------------------------------------------------"
-    echo "$@"
-    echo "------------------------------------------------------"
+    printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}"
 
     if test "${W_OPT_UNATTENDED}"; then
         _W_timeout="--timeout 5"
@@ -227,9 +227,7 @@ w_info()
 {
     # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-        echo "------------------------------------------------------"
-        echo "$@"
-        echo "------------------------------------------------------"
+        printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}"
     fi
 
     case ${WINETRICKS_GUI} in
@@ -244,9 +242,7 @@ w_warn()
 {
     # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-        echo "------------------------------------------------------"
-        echo "warning: $*"
-        echo "------------------------------------------------------"
+        printf '%s\nwarning: %b\n%s\n' "${W_TEXT_LINE}" "${*}" "${W_TEXT_LINE}"
     fi
 
     if test "${W_OPT_UNATTENDED}"; then
@@ -267,9 +263,7 @@ w_warn()
 # If user cancels, exit status is 1
 w_warn_cancel()
 {
-    echo "------------------------------------------------------" >&2
-    echo "$@" >&2
-    echo "------------------------------------------------------" >&2
+    printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}" >&2
 
     if test "${W_OPT_UNATTENDED}"; then
         _W_timeout="--timeout 5"
