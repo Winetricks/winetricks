@@ -599,6 +599,7 @@ w_try()
     en_ms_5="exit status ${status} - user selected 'Cancel'"
     en_ms_105="exit status ${status} - normal, user selected 'restart now'"
     en_ms_194="exit status ${status} - normal, user selected 'restart later'"
+    en_ms_236="exit status ${status} - newer version detected"
 
     en_abort="Note: command $* returned status ${status}. Aborting."
     pl_abort="Informacja: poelcenie $* zwróciło status ${status}. Przerywam."
@@ -611,6 +612,7 @@ w_try()
             0) ;;
             105) echo "${en_ms_105}" ;;
             194) echo "${en_ms_194}" ;;
+            236) echo "${en_ms_236}" ;;
 
             # Fatal
             5) w_die "${en_ms_5}" ;;
