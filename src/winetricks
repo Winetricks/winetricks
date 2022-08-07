@@ -12569,13 +12569,13 @@ load_vcrun2005()
     w_override_dlls native,builtin atl80 msvcm80 msvcp80 msvcr80 vcomp
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q}
+    w_try_ms_installer "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q}
 
     if [ "${W_ARCH}" = "win64" ] ;then
         # Originally: 0551a61c85b718e1fa015b0c3e3f4c4eea0637055536c00e7969286b4fa663e0
         # 2021/05/25: 4487570bd86e2e1aac29db2a1d0a91eb63361fcaac570808eb327cd4e0e2240d
         w_download https://download.microsoft.com/download/8/B/4/8B42259F-5D70-43F4-AC2E-4B208FD8D66A/vcredist_x64.EXE 4487570bd86e2e1aac29db2a1d0a91eb63361fcaac570808eb327cd4e0e2240d
-        w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
+        w_try_ms_installer "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
     fi
 }
 
@@ -12641,7 +12641,7 @@ load_vcrun2008()
     w_override_dlls native,builtin atl90 msvcm90 msvcp90 msvcr90 vcomp90
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q}
+    w_try_ms_installer "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
@@ -12649,7 +12649,7 @@ load_vcrun2008()
             # 2016/11/15: b811f2c047a3e828517c234bd4aa4883e1ec591d88fad21289ae68a6915a6665
             # 2021/05/23: c5e273a4a16ab4d5471e91c7477719a2f45ddadb76c7f98a38fa5074a6838654
             w_download https://download.microsoft.com/download/5/D/8/5D8C65CB-C849-4025-8E95-C3966CAFD8AE/vcredist_x64.exe c5e273a4a16ab4d5471e91c7477719a2f45ddadb76c7f98a38fa5074a6838654
-            w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
+            w_try_ms_installer "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 }
@@ -12706,7 +12706,7 @@ load_vcrun2010()
 
     w_override_dlls native,builtin msvcp100 msvcr100 vcomp100 atl100
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" vcredist_x86.exe ${W_OPT_UNATTENDED:+/q}
+    w_try_ms_installer "${WINE}" vcredist_x86.exe ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
@@ -12715,7 +12715,7 @@ load_vcrun2010()
             # Originally: c6cd2d3f0b11dc2a604ffdc4dd97861a83b77e21709ba71b962a47759c93f4c8
             # 2021/04/24: 2fddbc3aaaab784c16bc673c3bae5f80929d5b372810dbc28649283566d33255
             w_download https://download.microsoft.com/download/A/8/0/A80747C3-41BD-45DF-B505-E9710D2744E0/vcredist_x64.exe 2fddbc3aaaab784c16bc673c3bae5f80929d5b372810dbc28649283566d33255
-            w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
+            w_try_ms_installer "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 }
@@ -12770,14 +12770,14 @@ load_vcrun2012()
 
     w_override_dlls native,builtin atl110 msvcp110 msvcr110 vcomp110
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
-    w_try "${WINE}" vcredist_x86.exe ${W_OPT_UNATTENDED:+/q}
+    w_try_ms_installer "${WINE}" vcredist_x86.exe ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
             # Also install the 64-bit version
             # 2015/10/19: 681be3e5ba9fd3da02c09d7e565adfa078640ed66a0d58583efad2c1e3cc4064
             w_download https://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x64.exe 681be3e5ba9fd3da02c09d7e565adfa078640ed66a0d58583efad2c1e3cc4064
-            w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
+            w_try_ms_installer "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 }
@@ -12834,7 +12834,7 @@ load_vcrun2013()
 
     w_override_dlls native,builtin atl120 msvcp120 msvcr120 vcomp120
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
-    w_try "${WINE}" vcredist_x86.exe ${W_OPT_UNATTENDED:+/q}
+    w_try_ms_installer "${WINE}" vcredist_x86.exe ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
@@ -12842,7 +12842,7 @@ load_vcrun2013()
             # 2015/10/19: e554425243e3e8ca1cd5fe550db41e6fa58a007c74fad400274b128452f38fb8
             # 2019/03/24: 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
             w_download https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
-            w_try "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
+            w_try_ms_installer "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 }
@@ -12909,7 +12909,7 @@ load_vcrun2015()
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'ucrtbase.dll'
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
-    w_try "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
+    w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
@@ -12919,7 +12919,7 @@ load_vcrun2015()
             # Also replace 64-bit ucrtbase.dll
             w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2015/vc_redist.x64.exe -F 'a10'
             w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
-            w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
+            w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 
@@ -12990,7 +12990,7 @@ load_vcrun2017()
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'ucrtbase.dll'
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
+    w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
@@ -13003,7 +13003,7 @@ load_vcrun2017()
             # Also replace 64-bit ucrtbase.dll
             w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2017/vc_redist.x64.exe -F 'a10'
             w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
-            w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
+            w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 
@@ -13050,7 +13050,7 @@ load_vcrun2019()
     fi
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
-    w_try "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
+    w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
 
     case "${W_ARCH}" in
         win64)
@@ -13074,7 +13074,7 @@ load_vcrun2019()
             w_override_dlls native,builtin vcruntime140_1
 
             w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 296f96cd102250636bcd23ab6e6cf70935337b1bbb3507fe8521d8d9cfaa932f
-            w_try "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
+            w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 
