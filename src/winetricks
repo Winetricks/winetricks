@@ -20172,8 +20172,10 @@ w_metadata nfsshift_demo games \
 
 load_nfsshift_demo()
 {
-    #w_download http://cdn.needforspeed.com/data/downloads/shift/NFSSHIFTPCDEMO.exe 5ad011e7dd42e3404e3191009cd81c05b891e7c138d61f958fce9506ff8c9de3
-    w_download http://www.legendaryreviews.com/download-center/demos/NFSSHIFTPCDEMO.exe 5ad011e7dd42e3404e3191009cd81c05b891e7c138d61f958fce9506ff8c9de3
+    # Originally at http://cdn.needforspeed.com/data/downloads/shift/NFSSHIFTPCDEMO.exe
+    # 2011/11/12: http://www.legendaryreviews.com/download-center/demos/NFSSHIFTPCDEMO.exe
+    # 2022/08/15: https://download.nvidia.com/downloads/nZone/demos/SHIFTDemo.exe
+    w_download https://download.nvidia.com/downloads/nZone/demos/SHIFTDemo.exe 5ad011e7dd42e3404e3191009cd81c05b891e7c138d61f958fce9506ff8c9de3 NFSSHIFTPCDEMO.exe
 
     w_try cp "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_TMP}"
 
