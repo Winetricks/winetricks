@@ -106,7 +106,7 @@ test_linkcheck() {
     # Check for uses of variables in w_download when w_linkcheck_ignore isn't set
     # Using w_download https://example.com/${file1} breaks src/linkcheck.sh
     # FIXME: technically '$' is valid in a URL, if there's actually a URL using it this will need a tweak
-    if grep "^ *w_download " src/winetricks | grep -E "ftp|http" | grep -v "w_linkcheck_ignore=1" | sed "s/^ *//"  | tr -d "\\\\" | cut -d " " -f2 | grep "\\$"; then
+    if grep "^ *w_download " src/winetricks | grep -E "ftp|http" | grep -v "w_linkcheck_ignore=1" | sed "s/^ *//"  | tr -d "\\\\" | grep "\\$"; then
         w_die "Do not use variables in these URLs, it breaks src/linkcheck.sh"
     else
         echo "linkcheck checks passed"
