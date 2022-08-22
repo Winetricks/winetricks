@@ -16564,10 +16564,6 @@ load_vc2010express()
     # Formerly at: ftp://www.daba.lv/pub/Programmeeshana/VisualStudio/VS2010Express1.iso a9d5dcdf55e539a06547a8ebbc63d55dc167113e09ee9e42096ab9098313039b
     w_download https://debian.fmi.uni-sofia.bg/~aangelov/VS2010Express1.iso a9d5dcdf55e539a06547a8ebbc63d55dc167113e09ee9e42096ab9098313039b
 
-    # Unpack ISO
-    w_try_7z "${W_TMP}" "${W_CACHE}"/vc2010express/VS2010Express1.iso
-    w_try_cd "${W_TMP}"/VCExpress
-
     # Uninstall wine-mono, installer doesn't attempt to install native .Net if mono is installed,
     # Then the installer throws an exception and fails
     # See https://github.com/Winetricks/winetricks/issues/1165
@@ -16580,6 +16576,11 @@ load_vc2010express()
     if w_workaround_wine_bug 12501 "Installing mspatcha to work around bug in SQL Server install"; then
         w_call mspatcha
     fi
+
+    # Unpack ISO
+    # This must happen after w_call or W_TMP will be blown away
+    w_try_7z "${W_TMP}" "${W_CACHE}"/vc2010express/VS2010Express1.iso
+    w_try_cd "${W_TMP}"/VCExpress
 
     w_try ${WINE} setup.exe ${W_OPT_UNATTENDED:+/q}
 }
