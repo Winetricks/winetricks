@@ -16073,7 +16073,10 @@ load_origin()
     # Origin requirements
     w_call vcrun2010
     w_call vcrun2019
-    w_call d3dcompiler_47
+
+    if w_wine_version_in ,6.3 ; then
+        w_call d3dcompiler_47
+    fi
 
     # Avoids "An unexpected error has occurred. Please try again in a few moments. Error: 327684:3"
     # Games won't registor correctly unless disabled
