@@ -820,7 +820,7 @@ w_try_regedit64()
 
 w_try_regsvr()
 {
-    w_try "${WINE}" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
+    w_try "${WINE}" "${W_SYSTEM64_DLLS_WIN32}/regsvr32" ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
 w_try_regsvr64()
