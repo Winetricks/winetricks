@@ -803,7 +803,7 @@ w_try_regedit32()
     esac
 
     # shellcheck disable=SC2086
-    w_try "${WINE_MULTI}" ${cmdc} regedit ${W_OPT_UNATTENDED:+/S} "$@"
+    w_try "${WINE_MULTI}" ${cmdc} "${W_SYSTEM32_DLLS_WIN}/regedit" ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
 w_try_regedit64()
