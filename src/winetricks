@@ -802,8 +802,13 @@ w_try_regedit32()
         *) unset cmdc ;;
     esac
 
-    # shellcheck disable=SC2086
-    w_try "${WINE_MULTI}" ${cmdc} regedit ${W_OPT_UNATTENDED:+/S} "$@"
+    if [ "${W_ARCH}" = "win64" ]; then
+        # shellcheck disable=SC2086
+        w_try "${WINE}" ${cmdc} "${W_SYSTEM32_DLLS_WIN}\\regedit.exe" ${W_OPT_UNATTENDED:+/S} "$@"
+    else
+        # shellcheck disable=SC2086
+        w_try "${WINE}" ${cmdc} "C:\\windows\\regedit.exe" ${W_OPT_UNATTENDED:+/S} "$@"
+    fi
 }
 
 w_try_regedit64()
