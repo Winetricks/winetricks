@@ -830,7 +830,7 @@ w_try_regsvr()
 
 w_try_regsvr64()
 {
-    w_try "${WINE64}" regsvr32 ${W_OPT_UNATTENDED:+/S} "$@"
+    w_try "${WINE64}" "${W_SYSTEM64_DLLS_WIN64}\\regsvr32.exe" ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
 w_try_unrar()
