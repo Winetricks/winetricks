@@ -820,7 +820,7 @@ w_try_regedit64()
     esac
 
     # shellcheck disable=SC2086
-    w_try "${WINE64}" ${cmdc} regedit ${W_OPT_UNATTENDED:+/S} "$@"
+    w_try "${WINE64}" ${cmdc} "C:\\windows\\regedit.exe" ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
 w_try_regsvr()
