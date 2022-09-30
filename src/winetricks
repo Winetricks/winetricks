@@ -16116,21 +16116,48 @@ load_origin()
         w_call corefonts
     fi
 
+    if w_workaround_wine_bug 44258 "Origin crashes on start."; then
+        w_override_app_dlls igoproxy.exe disabled d3d10
+        w_override_app_dlls igoproxy.exe disabled d3d10_1
+        w_override_app_dlls igoproxy.exe disabled d3d10core
+        w_override_app_dlls igoproxy.exe disabled d3d11
+        w_override_app_dlls igoproxy.exe disabled d3d12
+        w_override_app_dlls igoproxy.exe disabled dxgi
+        w_override_app_dlls igoproxy.exe disabled vulkan-1
+        w_override_app_dlls igoproxy.exe disabled winevulkan
+
+        if [ "${W_ARCH}" = "win64" ]; then
+            w_override_app_dlls igoproxy64.exe disabled d3d10
+            w_override_app_dlls igoproxy64.exe disabled d3d10_1
+            w_override_app_dlls igoproxy64.exe disabled d3d10core
+            w_override_app_dlls igoproxy64.exe disabled d3d11
+            w_override_app_dlls igoproxy64.exe disabled d3d12
+            w_override_app_dlls igoproxy64.exe disabled dxgi
+            w_override_app_dlls igoproxy64.exe disabled vulkan-1
+            w_override_app_dlls igoproxy64.exe disabled winevulkan
+        fi
+    fi
+
     if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly."; then
         w_override_dlls disabled libglesv2
     fi
 
+    # Avoids "An unexpected error has occurred. Please try again in a few moments. Error: 327684:3"
+    # Games won't register correctly unless disabled
+    if w_workaround_wine_bug 52781 "Origin does not notice games exiting, does not allow them to be relaunched."; then
+        w_override_app_dlls origin.exe disabled gameux
+    fi
+
     # Origin requirements
     w_call vcrun2010
+    w_call vcrun2013
     w_call vcrun2019
 
     if w_wine_version_in ,6.3 ; then
         w_call d3dcompiler_47
     fi
 
-    # Avoids "An unexpected error has occurred. Please try again in a few moments. Error: 327684:3"
-    # Games won't registor correctly unless disabled
-    w_override_app_dlls origin.exe disabled gameux
+    w_warn "Origin In-game overlay must be disabled"
 }
 
 #----------------------------------------------------------------
