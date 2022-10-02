@@ -14842,6 +14842,24 @@ load_dxdiag()
 
 #----------------------------------------------------------------
 
+w_metadata dxwnd apps \
+    title="Window hooker to run fullscreen programs in window and much more..." \
+    publisher="ghotik" \
+    year="2011" \
+    media="download" \
+    file1"v2_05_88_build.rar" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/dxwnd/dxwnd.exe" \
+    homepage="https://dxwnd.sourceforge.io"
+
+load_dxwnd()
+{
+    # 2022/10/02 v2_05_88_build.rar a80ad1246493b3b34fba2131494052423ac298a39592d4e06a685568b829922e
+    w_download https://versaweb.dl.sourceforge.net/project/dxwnd/Latest%20build/v2_05_88_build.rar a80ad1246493b3b34fba2131494052423ac298a39592d4e06a685568b829922e
+    w_try_7z "${W_PROGRAMS_X86_UNIX}"/dxwnd "${W_CACHE}"/"${W_PACKAGE}"/"${file1}" -aoa
+}
+
+#----------------------------------------------------------------
+
 w_metadata emu8086 apps \
     title="emu8086" \
     publisher="emu8086.com" \
