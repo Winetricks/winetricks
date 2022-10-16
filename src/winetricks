@@ -5179,10 +5179,11 @@ winetricks_set_wineprefix()
     esac
 
     W_WINDIR_UNIX="${W_DRIVE_C}/windows"
+    W_WINDIR_WIN="C:\\windows"
 
     # FIXME: get fonts path from SHGetFolderPath
     # See also https://blogs.msdn.microsoft.com/oldnewthing/20031103-00/?p=41973/
-    W_FONTSDIR_WIN="c:\\windows\\Fonts"
+    W_FONTSDIR_WIN="${W_WINDIR_WIN}\\Fonts"
 
     # FIXME: just convert path from Windows to Unix?
     # Did the user rename Fonts to fonts?
@@ -8612,7 +8613,7 @@ w_metadata dotnet11 dlls \
     media="download" \
     conflicts="dotnet20sdk" \
     file1="dotnetfx.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/ndpsetup.ico"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/v1.1.4322/ndpsetup.ico"
 
 load_dotnet11()
 {
@@ -8672,7 +8673,7 @@ w_metadata dotnet11sp1 dlls \
     year="2004" \
     media="download" \
     file1="NDP1.1sp1-KB867460-X86.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v1.1.4322/CONFIG/web_hightrust.config.default"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/v1.1.4322/CONFIG/web_hightrust.config.default"
 
 load_dotnet11sp1()
 {
@@ -8730,7 +8731,7 @@ w_metadata dotnet20 dlls \
     media="download" \
     conflicts="dotnet20sp1 dotnet20sp2 dotnet30sp1 dotnet35" \
     file1="dotnetfx.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v2.0.50727/MSBuild.exe"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/v2.0.50727/MSBuild.exe"
 
 load_dotnet20()
 {
@@ -8883,7 +8884,7 @@ w_metadata dotnet20sp1 dlls \
     media="download" \
     conflicts="dotnet20sp2" \
     file1="NetFx20SP1_x86.exe" \
-    installed_file1="c:/windows/dotnet20sp1.installed.workaround"
+    installed_file1="${W_WINDIR_WIN}/dotnet20sp1.installed.workaround"
 
 load_dotnet20sp1()
 {
@@ -8955,7 +8956,7 @@ w_metadata dotnet20sp2 dlls \
     media="download" \
     conflicts="dotnet11" \
     file1="NetFx20SP2_x86.exe" \
-    installed_file1="c:/windows/winsxs/manifests/x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.3053_x-ww_b80fa8ca.cat"
+    installed_file1="${W_WINDIR_WIN}/winsxs/manifests/x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.3053_x-ww_b80fa8ca.cat"
 
 load_dotnet20sp2()
 {
@@ -9018,7 +9019,7 @@ w_metadata dotnet30 dlls \
     media="download" \
     conflicts="dotnet11 dotnet30sp1 dotnet35 dotnet35sp1" \
     file1="dotnetfx3.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v3.0/Microsoft .NET Framework 3.0/logo.bmp"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/v3.0/Microsoft .NET Framework 3.0/logo.bmp"
 
 load_dotnet30()
 {
@@ -9103,7 +9104,7 @@ w_metadata dotnet30sp1 dlls \
     media="download" \
     conflicts="dotnet11 dotnet20sdk" \
     file1="NetFx30SP1_x86.exe" \
-    installed_file1="c:/windows/dotnet30sp1.installed.workaround"
+    installed_file1="${W_WINDIR_WIN}/dotnet30sp1.installed.workaround"
 
 load_dotnet30sp1()
 {
@@ -9173,7 +9174,7 @@ w_metadata dotnet35 dlls \
     media="download" \
     conflicts="dotnet11 dotnet20sdk dotnet20sp2 dotnet30" \
     file1="dotnetfx35.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v3.5/MSBuild.exe"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/v3.5/MSBuild.exe"
 
 load_dotnet35()
 {
@@ -9215,7 +9216,7 @@ w_metadata dotnet35sp1 dlls \
     media="download" \
     conflicts="dotnet11 dotnet20sp1" \
     file1="dotnetfx35.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v3.5/msbuild.exe.config"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/v3.5/msbuild.exe.config"
 
 load_dotnet35sp1()
 {
@@ -9267,7 +9268,7 @@ w_metadata dotnet40 dlls \
     media="download" \
     conflicts="dotnet20sdk" \
     file1="dotNetFx40_Full_x86_x64.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v4.0.30319/ngen.exe"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/v4.0.30319/ngen.exe"
 
 load_dotnet40()
 {
@@ -9374,7 +9375,7 @@ w_metadata dotnet45 dlls \
     media="download" \
     conflicts="dotnet20sdk" \
     file1="dotnetfx45_full_x86_x64.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v4.0.30319/Microsoft.Windows.ApplicationServer.Applications.45.man"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/v4.0.30319/Microsoft.Windows.ApplicationServer.Applications.45.man"
 
 load_dotnet45()
 {
@@ -9434,7 +9435,7 @@ w_metadata dotnet452 dlls \
     media="download" \
     conflicts="dotnet20sdk dotnet46 dotnet462" \
     file1="NDP452-KB2901907-x86-x64-AllOS-ENU.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/v4.0.30319/Microsoft.Windows.ApplicationServer.Applications.45.man"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/v4.0.30319/Microsoft.Windows.ApplicationServer.Applications.45.man"
 
 load_dotnet452()
 {
@@ -9491,7 +9492,7 @@ w_metadata dotnet46 dlls \
     media="download" \
     file1="NDP46-KB3045557-x86-x64-AllOS-ENU.exe" \
     conflicts="dotnet20sdk" \
-    installed_file1="c:/windows/Migration/WTR/netfx45_upgradecleanup.inf"
+    installed_file1="${W_WINDIR_WIN}/Migration/WTR/netfx45_upgradecleanup.inf"
 
 load_dotnet46()
 {
@@ -9538,7 +9539,7 @@ w_metadata dotnet461 dlls \
     media="download" \
     file1="NDP461-KB3102436-x86-x64-AllOS-ENU.exe" \
     conflicts="dotnet20sdk" \
-    installed_file1="c:/windows/dotnet461.installed.workaround"
+    installed_file1="${W_WINDIR_WIN}/dotnet461.installed.workaround"
 
 load_dotnet461()
 {
@@ -9587,7 +9588,7 @@ w_metadata dotnet462 dlls \
     year="2016" \
     media="download" \
     conflicts="dotnet20sdk" \
-    installed_file1="c:/windows/dotnet462.installed.workaround"
+    installed_file1="${W_WINDIR_WIN}/dotnet462.installed.workaround"
 
 load_dotnet462()
 {
@@ -9639,7 +9640,7 @@ w_metadata dotnet471 dlls \
     media="download" \
     file1="NDP471-KB4033342-x86-x64-AllOS-ENU.exe" \
     conflicts="dotnet20sdk dotnet30sp1" \
-    installed_file1="c:/windows/dotnet471.installed.workaround"
+    installed_file1="${W_WINDIR_WIN}/dotnet471.installed.workaround"
 
 load_dotnet471()
 {
@@ -9688,7 +9689,7 @@ w_metadata dotnet472 dlls \
     year="2018" \
     media="download" \
     conflicts="dotnet20sdk" \
-    installed_file1="c:/windows/dotnet472.installed.workaround"
+    installed_file1="${W_WINDIR_WIN}/dotnet472.installed.workaround"
 
 load_dotnet472()
 {
@@ -9738,7 +9739,7 @@ w_metadata dotnet48 dlls \
     media="download" \
     file1="ndp48-x86-x64-allos-enu.exe" \
     conflicts="dotnet20sdk" \
-    installed_file1="c:/windows/dotnet48.installed.workaround"
+    installed_file1="${W_WINDIR_WIN}/dotnet48.installed.workaround"
 
 load_dotnet48()
 {
@@ -10391,7 +10392,7 @@ w_metadata glidewrapper dlls \
     year="2005" \
     media="download" \
     file1="GlideWrapper084c.exe" \
-    installed_file1="c:/windows/glide3x.dll"
+    installed_file1="${W_WINDIR_WIN}/glide3x.dll"
 
 load_glidewrapper()
 {
@@ -10832,7 +10833,7 @@ w_metadata ie8_kb2936068 dlls \
     year="2014" \
     media="download" \
     file1="IE8-WindowsXP-KB2936068-x86-ENU.exe" \
-    installed_file1="c:/windows/KB2936068-IE8.log"
+    installed_file1="${W_WINDIR_WIN}/KB2936068-IE8.log"
 
 load_ie8_kb2936068()
 {
@@ -11911,7 +11912,7 @@ w_metadata quicktime72 dlls \
     year="2010" \
     media="download" \
     file1="QuickTimeInstaller.exe" \
-    installed_file1="c:/windows/Installer/{95A890AA-B3B1-44B6-9C18-A8F7AB3EE7FC}/QTPlayer.ico"
+    installed_file1="${W_WINDIR_WIN}/Installer/{95A890AA-B3B1-44B6-9C18-A8F7AB3EE7FC}/QTPlayer.ico"
 
 load_quicktime72()
 {
@@ -11950,7 +11951,7 @@ w_metadata quicktime76 dlls \
     year="2010" \
     media="download" \
     file1="QuickTimeInstaller.exe" \
-    installed_file1="c:/windows/Installer/{57752979-A1C9-4C02-856B-FBB27AC4E02C}/QTPlayer.ico"
+    installed_file1="${W_WINDIR_WIN}/Installer/{57752979-A1C9-4C02-856B-FBB27AC4E02C}/QTPlayer.ico"
 
 load_quicktime76()
 {
@@ -12555,7 +12556,7 @@ w_metadata vcrun2005 dlls \
     year="2011" \
     media="download" \
     file1="vcredist_x86.EXE" \
-    installed_file1="c:/windows/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.6195_x-ww_150c9e8b/mfc80.dll|c:/windows/winsxs/x86_microsoft.vc80.mfc_1fc8b3b9a1e18e3b_8.0.50727.6195_none_deadbeef/mfc80.dll"
+    installed_file1="${W_WINDIR_WIN}/winsxs/x86_Microsoft.VC80.MFC_1fc8b3b9a1e18e3b_8.0.50727.6195_x-ww_150c9e8b/mfc80.dll|${W_WINDIR_WIN}/winsxs/x86_microsoft.vc80.mfc_1fc8b3b9a1e18e3b_8.0.50727.6195_none_deadbeef/mfc80.dll"
 
 load_vcrun2005()
 {
@@ -13128,7 +13129,7 @@ w_metadata vjrun20 dlls \
     year="2007" \
     media="download" \
     file1="vjredist.exe" \
-    installed_file1="c:/windows/Microsoft.NET/Framework/VJSharp/VJSharpSxS10.dll"
+    installed_file1="${W_WINDIR_WIN}/Microsoft.NET/Framework/VJSharp/VJSharpSxS10.dll"
 
 load_vjrun20()
 {
@@ -14781,7 +14782,7 @@ w_metadata colorprofile apps \
     year="2005" \
     media="download" \
     file1="ColorProfile.exe" \
-    installed_exe1="c:/windows/system32/spool/drivers/color/sRGB Color Space Profile.icm"
+    installed_exe1="${W_WINDIR_WIN}/system32/spool/drivers/color/sRGB Color Space Profile.icm"
 
 load_colorprofile()
 {
@@ -15220,7 +15221,7 @@ w_metadata ie7 dlls \
     media="download" \
     conflicts="ie6 ie8" \
     file1="IE7-WindowsXP-x86-enu.exe" \
-    installed_file1="c:/windows/ie7.log"
+    installed_file1="${W_WINDIR_WIN}/ie7.log"
 
 load_ie7()
 {
@@ -15328,7 +15329,7 @@ w_metadata ie8 dlls \
     media="download" \
     conflicts="ie6 ie7" \
     file1="IE8-WindowsXP-x86-ENU.exe" \
-    installed_file1="c:/windows/ie8_main.log"
+    installed_file1="${W_WINDIR_WIN}/ie8_main.log"
 
 load_ie8()
 {
@@ -15639,7 +15640,7 @@ w_metadata mspaint apps \
     year="2010" \
     media="download" \
     file1="windowsxp-kb978706-x86-enu_f4e076b3867c2f08b6d258316aa0e11d6822b8d7.exe" \
-    installed_file1="c:/windows/mspaint.exe"
+    installed_file1="${W_WINDIR_WIN}/mspaint.exe"
 
 load_mspaint()
 {
@@ -16522,7 +16523,7 @@ w_metadata utorrent apps \
     year="2011" \
     media="manual_download" \
     file1="utorrent_2.2.1.exe" \
-    installed_exe1="c:/windows/utorrent.exe"
+    installed_exe1="${W_WINDIR_WIN}/utorrent.exe"
 
 load_utorrent()
 {
