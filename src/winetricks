@@ -12895,7 +12895,7 @@ w_metadata vcrun2015 dlls \
     publisher="Microsoft" \
     year="2015" \
     media="download" \
-    conflicts="vcrun2017 vcrun2019 ucrtbase2019" \
+    conflicts="vcrun2017 vcrun2019 ucrtbase2019 vcrun2022" \
     file1="vc_redist.x86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/mfc140.dll"
 
@@ -12974,7 +12974,7 @@ w_metadata vcrun2017 dlls \
     publisher="Microsoft" \
     year="2017" \
     media="download" \
-    conflicts="vcrun2015 vcrun2019 ucrtbase2019" \
+    conflicts="vcrun2015 vcrun2019 ucrtbase2019 vcrun2022" \
     file1="vc_redist.x86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/mfc140.dll"
 
@@ -13025,7 +13025,7 @@ w_metadata vcrun2019 dlls \
     publisher="Microsoft" \
     year="2019" \
     media="download" \
-    conflicts="vcrun2015 vcrun2017" \
+    conflicts="vcrun2015 vcrun2017 vcrun2022" \
     file1="vc_redist.x86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/mfc140.dll"
 
@@ -13117,6 +13117,43 @@ load_ucrtbase2019()
 
             w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a10'
             w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
+            ;;
+    esac
+}
+
+#----------------------------------------------------------------
+
+w_metadata vcrun2022 dlls \
+    title="Visual C++ 2015-2022 libraries (concrt140.dll,mfc140.dll,mfc140chs.dll,mfc140cht.dll,mfc140deu.dll,mfc140enu.dll,mfc140esn.dll,mfc140fra.dll,mfc140ita.dll,mfc140jpn.dll,mfc140kor.dll,mfc140rus.dll,mfc140u.dll,mfcm140.dll,mfcm140u.dll,msvcp140.dll,msvcp140_1.dll,msvcp140_2.dll,msvcp140_atomic_wait.dll,msvcp140_codecvt_ids.dll,vcamp140.dll,vccorlib140.dll,vcomp140.dll,vcruntime140.dll,vcruntime140_1.dll)" \
+    publisher="Microsoft" \
+    year="2022" \
+    media="download" \
+    conflicts="vcrun2015 vcrun2017 vcrun2019" \
+    file1="vc_redist.x86.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/vcruntime140.dll"
+
+load_vcrun2022()
+{
+    # https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
+    # 2022-08-05: 14.32.31332 @ https://download.visualstudio.microsoft.com/download/pr/7331f052-6c2d-4890-8041-8058fee5fb0f/CF92A10C62FFAB83B4A2168F5F9A05E5588023890B5C0CC7BA89ED71DA527B0F/VC_redist.x86.exe
+
+    w_override_dlls native,builtin concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids vcamp140 vccorlib140 vcomp140 vcruntime140
+
+    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe cf92a10c62ffab83b4a2168f5f9a05e5588023890b5c0cc7ba89ed71da527b0f
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
+
+    case "${W_ARCH}" in
+        win64)
+            # Also install the 64-bit version
+            # 2022-08-05: 14.32.31332 @ https://download.visualstudio.microsoft.com/download/pr/7331f052-6c2d-4890-8041-8058fee5fb0f/CE6593A1520591E7DEA2B93FD03116E3FC3B3821A0525322B0A430FAA6B3C0B4/VC_redist.x64.exe
+
+            # vcruntime140_1 is only shipped on x64:
+            w_override_dlls native,builtin vcruntime140_1
+
+            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe ce6593a1520591e7dea2b93fd03116e3fc3b3821a0525322b0a430faa6b3c0b4
+            w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 }
