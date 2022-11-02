@@ -16492,6 +16492,15 @@ load_steam()
         w_warn "Steam needs to be launched with -noreactlogin"
     fi
 
+    if [ "$(uname -s)" = "Darwin" ] && w_workaround_wine_bug 49839 "Steamwebhelper.exe crashes when running Steam."; then
+        w_warn "Steam must be launched with -allosarches -cef-force-32bit -cef-in-process-gpu -no-cef-sandbox"
+    fi
+
+    # vulkandriverquery & vulkandriverquery64 crash a lot on macOS
+    if [ "$(uname -s)" = "Darwin" ]; then
+        w_call nocrashdialog
+    fi
+
     # Otherwise Steam Store and Library don't show
     w_call corefonts
 }
