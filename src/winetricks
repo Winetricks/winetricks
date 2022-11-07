@@ -16487,8 +16487,8 @@ load_steam()
         w_override_dlls disabled gameoverlayrenderer
     fi
 
-    if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly." 7.0,; then
-        w_override_dlls disabled libglesv2
+    if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly."; then
+        w_override_app_dlls steamwebhelper.exe disabled libglesv2
         w_warn "Steam needs to be launched with -noreactlogin"
     fi
 
