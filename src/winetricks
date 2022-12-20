@@ -14722,14 +14722,14 @@ w_metadata autohotkey apps \
     publisher="autohotkey.org" \
     year="2010" \
     media="download" \
-    file1="AutoHotkey104805_Install.exe" \
+    file1="AutoHotkey_1.1.36.01_setup.exe" \
     installed_exe1="${W_PROGRAMS_X86_WIN}/AutoHotkey/AutoHotkey.exe"
 
 load_autohotkey()
 {
-    w_download https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.0.48.05/AutoHotkey104805_Install.exe 4311c3e7c29ed2d67f415138360210bc2f55ff78758b20b003b91d775ee207b9
+    w_download https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.1.36.01/AutoHotkey_1.1.36.01_setup.exe 62734d219f14a942986e62d6c0fef0c2315bc84acd963430aed788c36e67e1ff
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" AutoHotkey104805_Install.exe ${W_OPT_UNATTENDED:+/S}
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
