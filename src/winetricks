@@ -22660,11 +22660,7 @@ load_native_mdac()
 {
     # Set those overrides globally so user programs get MDAC's ODBC
     # instead of Wine's unixodbc
-
-    # https://github.com/Winetricks/winetricks/issues/1447
-    if w_wine_version_in 4.22, ; then
-        w_override_dlls native,builtin msado15
-    fi
+    w_override_dlls native,builtin msado15
 
     # For a while, this wasn't set (i.e., it was set to `builtin`, not `native,builtin`)
     # See:
