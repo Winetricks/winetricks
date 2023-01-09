@@ -17411,17 +17411,6 @@ load_aoe3_demo()
         }
         WinWaitClose
     "
-
-    if w_workaround_wine_bug 24912 "Killing off lingering installer" ,4.19; then
-        # kill off lingering installer
-        w_ahk_do "
-            SetTitleMatchMode, 2
-            WinKill,Empires
-        "
-        # or should we just do w_wineserver -k, like fable_tlc does?
-        # shellcheck disable=SC2046
-        kill $(pgrep -f IDriver)
-    fi
 }
 
 #----------------------------------------------------------------
