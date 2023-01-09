@@ -5955,10 +5955,6 @@ w_metadata d3dcompiler_43 dlls \
 
 load_d3dcompiler_43()
 {
-    if w_workaround_wine_bug 24013 "Native d3dcompiler_43 may cause some d3d10 apps to crash, see https://bugs.winehq.org/show_bug.cgi?id=24013" 4.20,; then
-        :
-    fi
-
     dllname=d3dcompiler_43
 
     helper_directx_Jun2010
