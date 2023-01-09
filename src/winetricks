@@ -429,18 +429,12 @@ w_detect_mingw()
     # builtin=mingw (wine-4.11+)
 
     # See https://github.com/Winetricks/winetricks/issues/1461
-    if w_wine_version_in 4.10, ; then
-        if grep -obUa "Wine placeholder DLL" "$(w_winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine placeholder DLL'; then
-            _W_no_mingw=1
-        elif grep -obUa "Wine builtin DLL" "$(w_winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine builtin DLL'; then
-            _W_mingw=1
-        else
-            w_warn "Unable to detect wine dlls, please file an issue on Github!"
-        fi
-    else
-        # FIXME: better message here (at least, easier to grep/recognize
-        echo "w_detect_mingw: mingw detection unimplemented for wine<4.11"
+    if grep -obUa "Wine placeholder DLL" "$(w_winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine placeholder DLL'; then
         _W_no_mingw=1
+    elif grep -obUa "Wine builtin DLL" "$(w_winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine builtin DLL'; then
+        _W_mingw=1
+    else
+        w_warn "Unable to detect wine dlls, please file an issue on Github!"
     fi
 }
 
