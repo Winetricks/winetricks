@@ -9356,7 +9356,7 @@ load_dotnet40_kb2468871()
     fi
 
     w_try_cd "${W_TMP}"
-    w_try "${WINE}" msiexec /p NDP40-KB2468871.msp
+    WINEDLLOVERRIDES="ngen.exe=n" w_try "${WINE}" msiexec /p NDP40-KB2468871.msp
 
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
