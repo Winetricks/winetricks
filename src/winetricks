@@ -9066,17 +9066,8 @@ load_dotnet30()
     # OK if this fails, that just means you have an older Wine.
     "${WINE}" sc delete "FontCache3.0.0.0"
 
-    # Not sure when exactly it was fixed, but it works with 4.0+, and doesn't in 3.0
-    # Given that 3.x is deprecated, not worth looking into.
-    # See https://github.com/Winetricks/winetricks/pull/1271
-    # https://bugs.winehq.org/show_bug.cgi?id=47484, et al
-    if w_wine_version_in 4.0, ; then
-        WINEDLLOVERRIDES="mscorsvw.exe=b;${WINEDLLOVERRIDES}"
-        export WINEDLLOVERRIDES
-    else
-        WINEDLLOVERRIDES="ngen.exe,mscorsvw.exe=b;${WINEDLLOVERRIDES}"
-        export WINEDLLOVERRIDES
-    fi
+    WINEDLLOVERRIDES="ngen.exe,mscorsvw.exe=b;${WINEDLLOVERRIDES}"
+    export WINEDLLOVERRIDES
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_warn "Installing .NET 3.0 runtime silently, as otherwise it gets hidden behind taskbar. Installation usually takes about 3 minutes."
