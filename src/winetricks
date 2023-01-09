@@ -9253,7 +9253,8 @@ load_dotnet35sp1()
     w_try rm "${WINETRICKS_CACHE_SYMLINK}"
     w_try_cd "${W_TMP}"
     w_try ln -s "${W_CACHE}/${W_PACKAGE}/${file1}" .
-    w_try_ms_installer "${WINE}" dotnetfx35.exe /lang:ENU ${W_OPT_UNATTENDED:+/q}
+
+    WINEDLLOVERRIDES="ngen.exe=n" w_try_ms_installer "${WINE}" dotnetfx35.exe /lang:ENU ${W_OPT_UNATTENDED:+/q}
     w_try rm dotnetfx35.exe
 
     w_set_winver 'default'
