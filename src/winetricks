@@ -8905,18 +8905,6 @@ load_dotnet30sp1()
     # I can't find a 64-bit installer anywhere
     w_package_unsupported_win64
 
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=47436" 4.8 4.15
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=48277" 4.16 4.21
-
-    # And a third way, but only with mingw enabled in wine-4.12.1 through wine-4.14
-    w_package_broken_mingw  "https://bugs.winehq.org/show_bug.cgi?id=47484" 4.12.1 4.14
-
-    # crashes on install:
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=49831" 5.17 6.0
-
-    # XpsFilt.dll doesn't get installed (not sure what version exactly causes it, bug 49831 muddies things):
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=50463" 5.17 6.0
-
     # FIXME: URL?
     w_download https://download.microsoft.com/download/8/F/E/8FEEE89D-9E4F-4BA3-993E-0FFEA8E21E1B/NetFx30SP1_x86.exe 3100df4d4db3965ead9520c887a534115cf6fc7ba100abde45226958b865695b
     # Recipe from https://bugs.winehq.org/show_bug.cgi?id=25060#c10
@@ -8928,10 +8916,6 @@ load_dotnet30sp1()
     w_wineserver -w
     w_call dotnet20sp1
     w_wineserver -w
-
-    if w_workaround_wine_bug 47436 "Installing native prntvpt" 4.11,4.15 ;then
-        w_call prntvpt
-    fi
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
