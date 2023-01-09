@@ -18923,11 +18923,6 @@ load_dragonage()
     else
         cp -f "${ini}" "${ini}.old"
     fi
-
-    if w_workaround_wine_bug 22557 "Setting UseVSync=0 to avoid black menu" ,4.15; then
-        sed 's,UseVSync=1,UseVSync=0,' < "${ini}" > "${ini}.new"
-        mv -f "${ini}.new" "${ini}"
-    fi
 }
 
 #----------------------------------------------------------------
