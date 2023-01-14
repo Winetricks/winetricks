@@ -16759,8 +16759,6 @@ load_wmp9()
 {
     w_skip_windows wmp9 && return
 
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=52772" 6.6
-
     # Not really expected to work well yet; see
     # https://appdb.winehq.org/appview.php?versionId=1449
 
@@ -16784,15 +16782,18 @@ load_wmp9()
     # Wine's pidgen is too stubby, crashes, see Wine bug 31111
     w_override_app_dlls MPSetup.exe native pidgen
 
-    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    # The installer doesn't work in modern wine, in either 32 or 64-bit prefixes.
+    # https://bugs.winehq.org/show_bug.cgi?id=52772
+    # Luckily, it's just a wrapper for the real installer, which does still work:
+    w_try_cd "${W_TMP}"
+    w_try_cabextract "${W_CACHE}/${W_PACKAGE}/MPSetup.exe"
     if [ "${W_ARCH}" = "win64" ]; then
-        w_try_cabextract -d "${W_TMP}" ./MPSetup.exe
-        w_try_cd "${W_TMP}"
+        # https://github.com/Winetricks/winetricks/issues/1087
         w_try sed -i 's/IsWow64Process/IsNow64Process/' setup_wm.exe
         w_try "${WINE}" setup_wm.exe ${W_OPT_UNATTENDED:+/Quiet}
         w_warn "wm9codecs is not supported in win64 prefixes. If you need those codecs, reinstall wmp9 in a 32-bit prefix."
     else
-        w_try "${WINE}" MPSetup.exe ${W_OPT_UNATTENDED:+/q}
+        w_try "${WINE}" setup_wm.exe ${W_OPT_UNATTENDED:+/Quiet}
         load_wm9codecs
     fi
 
