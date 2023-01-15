@@ -9648,6 +9648,56 @@ load_dotnetcoredesktop3()
 
 #----------------------------------------------------------------
 
+w_metadata dotnet6 dlls \
+    title="MS .NET Runtime 6.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-6.0.13-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet6()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/6.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/5f095cbb-af6c-4d20-909d-87db53879370/d4c6f380a9a68fc853bd891189f3c975/dotnet-runtime-6.0.13-win-x86.exe 4ae439fe745e6ac404e346662b32d5f305aa2512b751fe6a4acb4c59e3a50a36
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/436bce6a-f3e7-448e-9279-d58f1e39ab8a/9f5c7ed377294cc8e028e900540632d5/dotnet-runtime-6.0.13-win-x64.exe 59f853f718cb9d089e28393443d0db303934822290af4bf4023a0bf419cb0f9c
+        w_try "${WINE}" "" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop6 dlls \
+    title="MS .NET Desktop Runtime 6.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-6.0.13-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop6()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/6.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/d37ab8e6-095b-4f42-bea5-f519b3c62b68/3b87e1c571a3fc49607acc821d3f107a/windowsdesktop-runtime-6.0.13-win-x86.exe bf8f4a1dedf6a056e6139b28d8a9c23cf8893c7e26de8a82528efb652f6f6068
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/4c5e26cf-2512-4518-9480-aac8679b0d08/523f1967fd98b0cf4f9501855d1aa063/windowsdesktop-runtime-6.0.13-win-x64.exe a2e875d7734b468225da5786616bab5bede1b8c4e71c5dd2e4faffa83b34dec5
+        w_try "${WINE}" "windowsdesktop-runtime-6.0.13-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata dotnet_verifier dlls \
     title="MS .NET Verifier" \
     publisher="Microsoft" \
