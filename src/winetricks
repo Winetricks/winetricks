@@ -10231,7 +10231,7 @@ w_metadata glut dlls \
 
 load_glut()
 {
-    w_download https://press.liacs.nl/researchdownloads/glut.win32/glut-3.7.6-bin.zip 788e97653bfd527afbdc69e1b7c6bcf9cb45f33d13ddf9d676dc070da92f80d4
+    w_download https://downloads.sourceforge.net/colladaloader/glut-3.7.6-bin.zip 788e97653bfd527afbdc69e1b7c6bcf9cb45f33d13ddf9d676dc070da92f80d4
     # FreeBSD unzip rm -rf's inside the target directory before extracting:
     w_try_unzip "${W_TMP}" "${W_CACHE}"/glut/glut-3.7.6-bin.zip
     w_try mv "${W_TMP}/glut-3.7.6-bin" "${W_DRIVE_C}"
