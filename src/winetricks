@@ -11234,21 +11234,20 @@ load_msxml4()
 w_metadata msxml6 dlls \
     title="MS XML Core Services 6.0 sp2" \
     publisher="Microsoft" \
-    year="2009" \
+    year="2014" \
     media="download" \
-    file1="msxml6-KB973686-enu-amd64.exe" \
+    file1="msxml6-KB2957482-enu-amd64.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/msxml6.dll"
 
 load_msxml6()
 {
     # Service Pack 2
-    # https://www.microsoft.com/en-us/download/details.aspx?id=9774
+    # https://www.microsoft.com/en-us/download/details.aspx?id=43253
 
     # 64bit exe also includes 32bit dlls
-    # Originally here: https://download.microsoft.com/download/1/5/8/158F681A-E595-472B-B15E-62B649B1B6FF/msxml6-KB973686-enu-amd64.exe
-    w_download https://web.archive.org/web/20190122095451/https://download.microsoft.com/download/1/5/8/158F681A-E595-472B-B15E-62B649B1B6FF/msxml6-KB973686-enu-amd64.exe 0e5c4af488e88e8defb59de80271671d8283d5744b2eebdb351bbd4950fb0883
+    w_download https://download.microsoft.com/download/2/7/7/277681BE-4048-4A58-ABBA-259C465B1699/msxml6-KB2957482-enu-amd64.exe 260cd870851ffc3c6d10b71691f134e20d8d03ac26073bb36951eacb7aa85897
 
-    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}"/msxml6/msxml6-KB973686-enu-amd64.exe
+    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}"/msxml6/msxml6-KB2957482-enu-amd64.exe
     w_try_cabextract --directory="${W_TMP}" "${W_TMP}"/msxml6.msi
     w_try_cp_dll "${W_TMP}"/msxml6.dll.86F857F6_A743_463D_B2FE_98CB5F727E09 "${W_SYSTEM32_DLLS}"/msxml6.dll
     w_try_cp_dll "${W_TMP}"/msxml6r.dll.86F857F6_A743_463D_B2FE_98CB5F727E09 "${W_SYSTEM32_DLLS}"/msxml6r.dll
