@@ -101,7 +101,7 @@ crawl_one() {
     base=${urlfile%.url}
     url="$(cat "${urlfile}")"
 
-    curl --connect-timeout 60 --retry 10 -s -S -I "${url}" 2>&1 |
+    curl --connect-timeout 60 --retry-connrefused --retry 10 -s -S -I "${url}" 2>&1 |
         tr -d '\015' |
         grep . |
         sort > "${base}.log"
