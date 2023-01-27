@@ -11397,13 +11397,13 @@ w_metadata openal dlls \
     publisher="Creative" \
     year="2023" \
     media="download" \
-    file1="oalinst.zip" \
+    file1="https://www.openal.org/downloads/oalinst.zip" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/OpenAL32.dll"
 
 load_openal()
 {
     # Official version
-    w_download https://www.openal.org/downloads/${file1} d165bcb7628fd950d14847585468cc11943b2a1da92a59a839d397c68f9d4b06
+    w_download https://www.openal.org/downloads/oalinst.zip d165bcb7628fd950d14847585468cc11943b2a1da92a59a839d397c68f9d4b06
 
     w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
     w_try "${WINE}" "${W_TMP}/oalinst.exe" /silent
