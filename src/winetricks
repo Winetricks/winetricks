@@ -8599,6 +8599,7 @@ load_dotnet20()
         w_download https://download.lenovo.com/ibmdl/pub/pc/pccbbs/thinkvantage_en/dotnetfx.exe 46693d9b74d12454d117cc61ff2e9481cabb100b4d74eb5367d3cf88b89a0e71
 
         # Needed for https://bugs.winehq.org/show_bug.cgi?id=12401
+        w_store_winver
         w_set_winver win2k
 
         # if dotnet11 if installed there is a warning dialog, but it still verifies
@@ -8631,7 +8632,7 @@ load_dotnet20()
             w_try_ms_installer "${WINE}" dotnetfx.exe ${W_OPT_UNATTENDED:+/q /c:"install.exe /q"}
         fi
 
-        w_set_winver 'default'
+        w_restore_winver
 
         # We can't stop installing dotnet20 in win2k mode until Wine supports
         # reparse/junction points
