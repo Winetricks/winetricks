@@ -17079,6 +17079,7 @@ load_wmp11()
         wmp_exe=wmp11-64.exe
     fi
 
+    w_store_winver
     w_set_winver winxp
 
     # remove builtin placeholders to allow update
@@ -17102,7 +17103,7 @@ load_wmp11()
     w_try_regedit /D "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\Cdr4_2K"
     w_try_regedit /D "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\Cdralw2k"
 
-    w_set_winver 'default'
+    w_restore_winver
 }
 
 #----------------------------------------------------------------
