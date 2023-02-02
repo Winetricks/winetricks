@@ -15301,6 +15301,7 @@ w_metadata ie8 dlls \
 
 load_ie8()
 {
+    w_store_winver
     if [ "${W_ARCH}" = "win32" ]; then
         # Bundled in Windows 7, so refuses to install. Works with XP:
         w_set_winver winxp
@@ -15457,7 +15458,7 @@ _EOF_
         w_warn "To start ie8 (32-bit), from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_X86_WIN}\\\\Internet Explorer\\\\iexplore.exe'\nTo start ie8 (64-bit), from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
     fi
 
-    w_set_winver 'default'
+    w_restore_winver
 
     unset _W_restore_z
 }
