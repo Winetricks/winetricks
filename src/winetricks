@@ -9047,6 +9047,7 @@ load_dotnet35sp1()
 
     w_call remove_mono internal
 
+    w_store_winver
     w_set_winver winxp
 
     w_override_dlls native mscoree mscorwks
@@ -9067,7 +9068,7 @@ load_dotnet35sp1()
     WINEDLLOVERRIDES="ngen.exe=n" w_try_ms_installer "${WINE}" dotnetfx35.exe /lang:ENU ${W_OPT_UNATTENDED:+/q}
     w_try rm dotnetfx35.exe
 
-    w_set_winver 'default'
+    w_restore_winver
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
