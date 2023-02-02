@@ -8813,6 +8813,7 @@ load_dotnet20sp2()
     export WINEDLLOVERRIDES
 
     w_warn "Setting Windows version so installer works"
+    w_store_winver
     w_set_winver winxp
 
     if [ "${W_ARCH}" = "win32" ]; then
@@ -8838,7 +8839,7 @@ load_dotnet20sp2()
         rm -f "${W_SYSTEM32_DLLS}"/msvc?80.dll
     fi
 
-    w_set_winver 'default'
+    w_restore_winver
     w_override_dlls native mscorwks
 
     W_NGEN_CMD="w_try ${WINE} ${W_DRIVE_C}/windows/Microsoft.NET/Framework/v2.0.50727/ngen.exe executequeueditems"
