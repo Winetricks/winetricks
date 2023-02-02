@@ -9107,6 +9107,7 @@ load_dotnet40()
 
     w_call remove_mono internal
 
+    w_store_winver
     w_call winxp
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
@@ -9132,7 +9133,7 @@ load_dotnet40()
         # *) w_warn "
     esac
 
-    w_set_winver 'default'
+    w_restore_winver
 }
 
 verify_dotnet40()
