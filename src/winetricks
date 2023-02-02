@@ -2370,6 +2370,28 @@ w_set_winver()
     w_wineserver -w
 }
 
+# Restore a previously set winver. If not found, use default
+w_restore_winver()
+{
+    if [ -z "${_W_user_winver}" ]; then
+        _W_user_winver="default"
+    fi
+
+    w_set_winver "${_W_user_winver}"
+
+    unset ${_W_user_winver}
+}
+
+# Get the current winver from winecfg, store it in a variable to be restored with w_restore_winver
+w_store_winver()
+{
+    # Only set if not set already; for cases where a verb changes the version multiple times
+    # or calls a second verb that changes the version
+    if [ -z "${_W_user_winver}" ]; then
+        _W_user_winver="$(${WINE} winecfg /v | tr -d '\r')"
+    fi
+}
+
 w_unset_winver()
 {
     w_warn "w_unset_winver() is deprecated, use \'w_set_winver default\' instead"
