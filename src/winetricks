@@ -13193,6 +13193,7 @@ load_windowscodecs()
     w_override_dlls native windowscodecs windowscodecsext
 
     # Previously this was winxp, but that didn't work for 64-bit, see https://github.com/Winetricks/winetricks/issues/970
+    w_store_winver
     w_set_winver win2k3
 
     # Always run the WIC installer in passive mode.
@@ -13207,7 +13208,7 @@ load_windowscodecs()
         w_try "${WINE}" "${EXE}" /passive
     fi
 
-    w_set_winver 'default'
+    w_restore_winver
 }
 
 #----------------------------------------------------------------
