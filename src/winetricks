@@ -16965,6 +16965,7 @@ load_wmp9()
 
     w_call wsh57
 
+    w_store_winver
     w_set_winver winxp
 
     # See also https://support.microsoft.com/en-us/help/18612/windows-media-player
@@ -16996,7 +16997,7 @@ load_wmp9()
         load_wm9codecs
     fi
 
-    w_set_winver 'default'
+    w_restore_winver
 }
 
 #----------------------------------------------------------------
