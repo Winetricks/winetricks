@@ -15136,6 +15136,7 @@ load_ie6()
     done
 
     # The installer doesn't want to install iexplore.exe in XP mode.
+    w_store_winver
     w_set_winver win2k
 
     # Workaround https://bugs.winehq.org/show_bug.cgi?id=21009
@@ -15171,7 +15172,7 @@ load_ie6()
     done
 
     # Set Windows version back to the default. Leave at win2k for better rendering (is there a bug for that?)
-    w_set_winver 'default'
+    w_restore_winver
 
     # the ie6 we use these days lacks pngfilt, so grab that
     w_call pngfilt
