@@ -13565,6 +13565,9 @@ load_xvid()
     # 2022/09/08: https://s3.amazonaws.com/moviecodec/files/Xvid-1.3.2-20110601.exe
     w_download https://s3.amazonaws.com/moviecodec/files/Xvid-1.3.2-20110601.exe 74b23965cebe59e388eab6dba224b6b751ef4519454cc12086ade51c81f0a33c
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    # This will give a warning about Windows Media Player being out of date.
+    # Turns out it's not checking the wmp version, but the presence of ${W_SYSTEM32_DLLS}/l3codecp.acm
+    # http://websvn.xvid.org/cvs/viewvc.cgi/trunk/xvidextra/src/installer/xvid.xml?view=diff&pathrev=2159&r1=2006&r2=2007
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+ --mode unattended --decode_divx 1 --decode_3ivx 1 --decode_other 1}
 }
 
