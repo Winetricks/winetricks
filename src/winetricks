@@ -10845,10 +10845,11 @@ load_mdac27()
     w_download https://web.archive.org/web/20060718123742/http://ftp.gunadarma.ac.id/pub/driver/itegno/USB%20Software/MDAC/MDAC_TYP.EXE 36d2a3099e6286ae3fab181a502a95fbd825fa5ddb30bf09b345abc7f1f620b4
 
     load_native_mdac
+    w_store_winver
     w_set_winver nt40
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q /C:"setup /qnt"}
-    w_set_winver 'default'
+    w_restore_winver
 }
 
 #----------------------------------------------------------------
