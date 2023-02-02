@@ -8901,6 +8901,7 @@ load_dotnet30()
         ln -sf "${W_SYSTEM32_DLLS}/spupdsvc.exe" "${LANGPACKS_BASE_PATH}/dotnetfx3langpack${lang}.exe"
     done
 
+    w_store_winver
     w_set_winver winxp
 
     # Delete FontCache 3.0 service, it's in Wine for Mono, breaks native .NET
@@ -8915,7 +8916,7 @@ load_dotnet30()
     w_try "${WINE}" "${file1}" /q /c:"install.exe /q"
 
     w_override_dlls native mscorwks
-    w_set_winver 'default'
+    w_restore_winver
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
