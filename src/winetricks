@@ -13298,6 +13298,7 @@ load_wmi()
     # 2019/12/22: all ftp mirrors I found are dead, so use wayback machine for original MS url
     w_download https://web.archive.org/web/20051221074940/https://download.microsoft.com/download/platformsdk/wmi9x/1.5/W9X/EN-US/wmi9x.exe 1d5d94050354b164c6a19531df151e0703d5eb39cebf4357ee2cfc340c2509d0
 
+    w_store_winver
     w_set_winver win98
     w_override_dlls native,builtin wbemprox wmiutils
 
@@ -13306,7 +13307,7 @@ load_wmi()
     w_try "${WINE}" wmi9x.exe ${W_OPT_UNATTENDED:+/S}
     w_killall "WinMgmt.exe"
 
-    w_set_winver 'default'
+    w_restore_winver
 }
 
 #----------------------------------------------------------------
