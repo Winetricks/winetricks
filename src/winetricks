@@ -1798,10 +1798,10 @@ _EOF_
 
 w_ahk_do()
 {
-    if ! test -f "${W_CACHE}/ahk/AutoHotkey.exe"; then
-        w_download_to ahk https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.0.48.05/AutoHotkey104805_Install.exe 4311c3e7c29ed2d67f415138360210bc2f55ff78758b20b003b91d775ee207b9
-        w_try_7z "${W_CACHE}/ahk" "${W_CACHE}/ahk/AutoHotkey104805_Install.exe" AutoHotkey.exe AU3_Spy.exe
-        chmod +x "${W_CACHE}/ahk/AutoHotkey.exe"
+    if ! test -f "${W_CACHE}/ahk/AutoHotkeyU32.exe"; then
+        w_download_to ahk https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.1.36.01/AutoHotkey_1.1.36.01_setup.exe 62734d219f14a942986e62d6c0fef0c2315bc84acd963430aed788c36e67e1ff
+        w_try_7z "${W_CACHE}/ahk" "${W_CACHE}/ahk/AutoHotkey_1.1.36.01_setup.exe" AutoHotkeyU32.exe
+        chmod +x "${W_CACHE}/ahk/AutoHotkeyU32.exe"
     fi
 
     # Previously this used printf + sed, but that was broken with BSD sed (FreeBSD/OS X):
@@ -1811,7 +1811,7 @@ w_ahk_do()
 w_opt_unattended = ${W_OPT_UNATTENDED:-0}
 $@
 _EOF_
-    w_try "${WINE}" "${W_CACHE_WIN}\\ahk\\AutoHotkey.exe" "${W_TMP_WIN}\\${W_PACKAGE}.ahk"
+    w_try "${WINE}" "${W_CACHE_WIN}\\ahk\\AutoHotkeyU32.exe" "${W_TMP_WIN}\\${W_PACKAGE}.ahk"
 }
 
 # Function to protect Wine-specific sections of code.
