@@ -8960,6 +8960,7 @@ load_dotnet30sp1()
     "${WINE}" reg add "HKLM\\Software\\Microsoft\\Net Framework Setup\\NDP\\v3.0" /v Version /t REG_SZ /d "3.0" /f
     "${WINE}" reg add "HKLM\\Software\\Microsoft-\\Net Framework Setup\\NDP\\v3.0" /v SP /t REG_DWORD /d 0001 /f
 
+    w_store_winver
     w_set_winver winxp
 
     "${WINE}" sc delete FontCache3.0.0.0
@@ -8967,7 +8968,7 @@ load_dotnet30sp1()
     w_try_ms_installer "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q}
 
     w_override_dlls native mscorwks
-    w_set_winver 'default'
+    w_restore_winver
 
     # Doesn't install any ngen.exe
     # W_NGEN_CMD=""
