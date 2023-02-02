@@ -12982,6 +12982,7 @@ load_vcrun2019()
     w_download https://aka.ms/vs/16/release/vc_redist.x86.exe 4c6c420cf4cbf2c9c9ed476e96580ae92a97b2822c21329a2e49e8439ac5ad30
 
     if w_workaround_wine_bug 50894 "Working around failing wusa.exe lookup via C:\windows\SysNative"; then
+        w_store_winver
         w_set_winver winxp
     fi
 
@@ -13016,7 +13017,7 @@ load_vcrun2019()
 
     w_call ucrtbase2019
 
-    w_set_winver 'default'
+    w_restore_winver
 }
 
 #----------------------------------------------------------------
