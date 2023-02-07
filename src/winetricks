@@ -4033,6 +4033,10 @@ winetricks_showmenu()
                         installed=TRUE
                         echo "${code}" >> "${WINETRICKS_WORKDIR}"/installed.txt
                     fi
+                    if [ "${#title}" -gt 100 ]; then
+                        title=$(printf "%s" "${title}" | head -c 90)
+                        title="${title} ..."
+                    fi
                     printf %s " ${installed} \
                         ${code} \
                         \"${title}\" \
