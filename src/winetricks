@@ -5823,13 +5823,13 @@ w_metadata cnc_ddraw dlls \
     publisher="CnCNet" \
     year="2021" \
     media="download" \
-    file1="cnc-ddraw.zip" \
+    file1="cnc-ddraw-v5.0.0.0.zip" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/Shaders/readme.txt"
 
 load_cnc_ddraw()
 {
     # Note: only works if ddraw.ini contains settings for the executable
-    w_download https://github.com/CnCNet/cnc-ddraw/releases/download/v4.6.0.0/cnc-ddraw.zip 1633d30bc80ecae60db97e881a4c804911e300dcb280d58ea8b8ddda2e1dd1ac
+    w_download https://github.com/CnCNet/cnc-ddraw/releases/download/v5.0.0.0/cnc-ddraw.zip 9f37010bf87aafbe3d97a95f4253460a8f0869fb52bb45bcffbb73182b4b00fe cnc-ddraw-v5.0.0.0.zip
     w_try_unzip "${W_SYSTEM32_DLLS}" "${W_CACHE}/${W_PACKAGE}/${file1}"
 
     w_override_dlls native,builtin ddraw
