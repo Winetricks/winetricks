@@ -4034,7 +4034,8 @@ winetricks_showmenu()
                         echo "${code}" >> "${WINETRICKS_WORKDIR}"/installed.txt
                     fi
                     if [ "${#title}" -gt 100 ]; then
-                        title=$(printf "%s" "${title}" | head -c 90)
+                        # Small hysteresis of a few characters to not shorten descriptions that are close to the limit
+                        title=$(printf "%s" "${title}" | head -c 95)
                         title="${title} ..."
                     fi
                     printf %s " ${installed} \
