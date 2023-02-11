@@ -2394,7 +2394,7 @@ w_restore_winver()
 
     w_set_winver "${_W_user_winver}"
 
-    unset ${_W_user_winver}
+    unset "${_W_user_winver}"
 }
 
 # Get the current winver from winecfg, store it in a variable to be restored with w_restore_winver
@@ -3332,6 +3332,7 @@ winetricks_prefixmenu()
             _W_msg_help="View help"
             ;;
     esac
+
     case "${W_OPT_UNATTENDED}" in
         1) _W_cmd_unattended=attended; _W_msg_unattended="${_W_msg_unattended0}" ;;
         *) _W_cmd_unattended=unattended; _W_msg_unattended="${_W_msg_unattended1}" ;;
@@ -3647,7 +3648,7 @@ winetricks_mainmenu()
                     shell       "${_W_msg_shell}" off \
                     folder      "${_W_msg_folder}" off \
                     annihilate  "${_W_msg_annihilate}" off \
-                    ${_W_cmd_unattended} "${_W_msg_unattended}" off \
+                    "${_W_cmd_unattended}" "${_W_msg_unattended}" off \
 
             ;;
     esac
@@ -4464,18 +4465,18 @@ winetricks_cache_iso()
     winetricks_detect_optical_drive
 
     # Horrible hack for Gentoo - make sure we can read from the drive
-    if ! test -r ${WINETRICKS_DEV}; then
+    if ! test -r "${WINETRICKS_DEV}"; then
         case "${WINETRICKS_SUDO}" in
-            gksu*|kdesudo) ${WINETRICKS_SUDO} "chmod 666 ${WINETRICKS_DEV}" ;;
+            gksu*|kdesudo) ${WINETRICKS_SUDO} chmod 666 "${WINETRICKS_DEV}" ;;
             kdesu) ${WINETRICKS_SUDO} -c "chmod 666 ${WINETRICKS_DEV}" ;;
-            *) ${WINETRICKS_SUDO} chmod 666 ${WINETRICKS_DEV} ;;
+            *) ${WINETRICKS_SUDO} chmod 666 "${WINETRICKS_DEV}" ;;
         esac
     fi
 
     while true; do
         # Wait for user to insert disc.
         # Sleep long to make it less likely to close the drive during insertion.
-        while ! dd if=${WINETRICKS_DEV} of=/dev/null count=1; do
+        while ! dd if="${WINETRICKS_DEV}" of=/dev/null count=1; do
             sleep 5
         done
 
@@ -4484,7 +4485,7 @@ winetricks_cache_iso()
             break
         fi
         # Otherwise try and read it straight from unmounted volume
-        _W_volname=$(winetricks_volname ${WINETRICKS_DEV})
+        _W_volname="$(winetricks_volname "${WINETRICKS_DEV}")"
         if test "${_W_expected_volname}" != "${_W_volname}"; then
             case ${LANG} in
                 da*)  w_warn "Forkert disk [${_W_volname}] indsat. Indsæt venligst disken [${_W_expected_volname}]" ;;
@@ -4506,9 +4507,9 @@ winetricks_cache_iso()
 
     # Copy disc to .iso file, display progress every 5 seconds
     # Use conv=noerror,sync to replace unreadable blocks with zeroes
-    case ${WINETRICKS_OPT_DD} in
+    case "${WINETRICKS_OPT_DD}" in
         dd)
-            ${WINETRICKS_OPT_DD} if=${WINETRICKS_DEV} of="${W_CACHE}"/temp.iso bs=2048 conv=noerror,sync &
+            "${WINETRICKS_OPT_DD}" if="${WINETRICKS_DEV}" of="${W_CACHE}"/temp.iso bs=2048 conv=noerror,sync &
             WINETRICKS_DD_PID=$!
             ;;
         ddrescue)
@@ -4516,7 +4517,7 @@ winetricks_cache_iso()
                 w_die "Please install ddrescue first."
             fi
 
-            ${WINETRICKS_OPT_DD} -v -b 2048 ${WINETRICKS_DEV} "${W_CACHE}"/temp.iso &
+            "${WINETRICKS_OPT_DD}" -v -b 2048 "${WINETRICKS_DEV}" "${W_CACHE}"/temp.iso &
             WINETRICKS_DD_PID=$!
             ;;
     esac
@@ -4543,7 +4544,7 @@ winetricks_cache_iso()
 
     mv "${W_CACHE}"/temp.iso "${WINETRICKS_IMG}"
 
-    eject ${WINETRICKS_DEV} || true    # punt if eject not found (as on cygwin)
+    eject "${WINETRICKS_DEV}" || true    # punt if eject not found (as on cygwin)
 }
 
 winetricks_load_vcdmount()
@@ -4676,16 +4677,16 @@ _EOF_
             # WINETRICKS_IMG may contain spaces and needs to be quoted
             case "${WINETRICKS_SUDO}" in
                 gksu*|kdesudo)
-                    w_try ${WINETRICKS_SUDO} "mkdir -p ${W_ISO_MOUNT_ROOT}"
-                    w_try ${WINETRICKS_SUDO} "mount -o ro,loop,uid=${_W_USERID},unhide '${WINETRICKS_IMG}' ${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" "mkdir -p ${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" "mount -o ro,loop,uid=${_W_USERID},unhide '${WINETRICKS_IMG}' ${W_ISO_MOUNT_ROOT}"
                     ;;
                 kdesu)
-                    w_try ${WINETRICKS_SUDO} -c "mkdir -p ${W_ISO_MOUNT_ROOT}"
-                    w_try ${WINETRICKS_SUDO} -c "mount -o ro,loop,uid=${_W_USERID},unhide '${WINETRICKS_IMG}' ${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" -c "mkdir -p ${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" -c "mount -o ro,loop,uid=${_W_USERID},unhide '${WINETRICKS_IMG}' ${W_ISO_MOUNT_ROOT}"
                     ;;
                 *)
-                    w_try ${WINETRICKS_SUDO} mkdir -p "${W_ISO_MOUNT_ROOT}"
-                    w_try ${WINETRICKS_SUDO} mount -o ro,loop,uid="${_W_USERID}",unhide "${WINETRICKS_IMG}" "${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" mkdir -p "${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" mount -o ro,loop,uid="${_W_USERID}",unhide "${WINETRICKS_IMG}" "${W_ISO_MOUNT_ROOT}"
                     ;;
             esac
 
@@ -5008,7 +5009,7 @@ winetricks_set_wineprefix()
     W_APPDATA_UNIX="$(w_pathconv -u "${W_APPDATA_WIN}")"
 
     case "${W_APPDATA_WIN}" in
-        "") w_info "$(winetricks_print_wineprefix_info)" ; w_die "${WINE} cmd.exe /c echo '%AppData%' returned empty string, error message \"$(cat ${W_TMP_EARLY}/early_wine.err.txt)\" ";;
+        "") w_info "$(winetricks_print_wineprefix_info)" ; w_die "${WINE} cmd.exe /c echo '%AppData%' returned empty string, error message \"$(cat "${W_TMP_EARLY}"/early_wine.err.txt)\" ";;
         %*) w_info "$(winetricks_print_wineprefix_info)" ; w_die "${WINE} cmd.exe /c echo '%AppData%' returned unexpanded string '${W_PROGRAMS_WIN}' ... this can be caused by a corrupt wineprefix (\`wineboot -u\` may help), by an old wine, or by not owning ${WINEPREFIX}" ;;
     esac
 
@@ -15902,7 +15903,7 @@ load_office2007pro()
 <PIDKEY Value="${W_KEY}" />
 </Configuration>
 __EOF__
-        "${WINE}" ${W_ISO_MOUNT_LETTER}:setup.exe /config "${W_TMP_WIN}"\\config.xml
+        "${WINE}" "${W_ISO_MOUNT_LETTER}":setup.exe /config "${W_TMP_WIN}"\\config.xml
 
         status=$?
         case ${status} in
@@ -15918,7 +15919,7 @@ __EOF__
         esac
 
     else
-        w_try "${WINE}" ${W_ISO_MOUNT_LETTER}:setup.exe
+        w_try "${WINE}" "${W_ISO_MOUNT_LETTER}":setup.exe
     fi
 }
 
@@ -16641,7 +16642,7 @@ load_vc2005expresssp1()
 
     w_download https://web.archive.org/web/20110624054336/https://download.microsoft.com/download/7/7/3/7737290f-98e8-45bf-9075-85cc6ae34bf1/VS80sp1-KB926748-X86-INTL.exe a959d1ea52674b5338473be32a1370f9ec80df84629a2ed3471aa911b42d9e50
 
-    w_try ${WINE} "${W_CACHE}"/vc2005expresssp1/VS80sp1-KB926748-X86-INTL.exe ${W_OPT_UNATTENDED:+/q}
+    w_try "${WINE}" "${W_CACHE}"/vc2005expresssp1/VS80sp1-KB926748-X86-INTL.exe ${W_OPT_UNATTENDED:+/q}
 }
 
 #----------------------------------------------------------------
@@ -16767,7 +16768,7 @@ load_vc2010express()
     w_try_7z "${W_TMP}" "${W_CACHE}"/vc2010express/VS2010Express1.iso
     w_try_cd "${W_TMP}"/VCExpress
 
-    w_try ${WINE} setup.exe ${W_OPT_UNATTENDED:+/q}
+    w_try "${WINE}" setup.exe ${W_OPT_UNATTENDED:+/q}
 }
 
 #----------------------------------------------------------------
@@ -18215,7 +18216,7 @@ load_cod1()
         WinWait, Insert CD, Please insert the Call of Duty cd 2
         "
 
-    "${WINE}" eject ${W_ISO_MOUNT_LETTER}:
+    "${WINE}" eject "${W_ISO_MOUNT_LETTER}":
     w_mount CoD2
 
     w_ahk_do "
@@ -18226,7 +18227,7 @@ load_cod1()
         WinWait, Insert CD, Please insert the Call of Duty cd 1
     "
 
-    "${WINE}" eject ${W_ISO_MOUNT_LETTER}:
+    "${WINE}" eject "${W_ISO_MOUNT_LETTER}":
     w_mount CoD1
 
     w_ahk_do "
@@ -18248,7 +18249,7 @@ load_cod1()
         }
         WinWaitClose
     "
-    "${WINE}" eject ${W_ISO_MOUNT_LETTER}:
+    "${WINE}" eject "${W_ISO_MOUNT_LETTER}":
 
     if w_workaround_wine_bug 21558; then
         # Work around a buffer overflow - not really Wine's fault
@@ -21249,7 +21250,7 @@ load_trainztcc_2004()
     w_read_key
     # yup, they got the volume name wrong
     w_mount TRS2006DVD
-    w_try_cd ${W_ISO_MOUNT_ROOT}/TRS2004_SP4_DVD_Installer_BUILD_2370/Installer/Disk1
+    w_try_cd "${W_ISO_MOUNT_ROOT}/TRS2004_SP4_DVD_Installer_BUILD_2370/Installer/Disk1"
     w_ahk_do "
         SetTitleMatchMode, 2
         SetWinDelay 500
@@ -21280,7 +21281,7 @@ load_trainztcc_2004()
     "
 
     # And, while we're at it, also install the accompanying paint shed app
-    w_try_cd ${W_ISO_MOUNT_ROOT}/TRAINZ_PAINTSHED
+    w_try_cd "${W_ISO_MOUNT_ROOT}/TRAINZ_PAINTSHED"
     w_ahk_do "
         SetTitleMatchMode, 2
         SetWinDelay 500
@@ -23373,7 +23374,7 @@ if ! test "${WINETRICKS_LIB}"; then
 
             # GUI case
             # No non-option arguments given, so read them from GUI, and loop until user quits
-            if [ ${WINETRICKS_GUI} = "none" ]; then
+            if [ "${WINETRICKS_GUI}" = "none" ]; then
                 winetricks_detect_gui --gui
             fi
             winetricks_detect_sudo
