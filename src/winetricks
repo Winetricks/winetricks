@@ -2333,9 +2333,7 @@ Usage: 'w_override_app_dlls app mode dll ...'." ;;
 
     echo "Using ${_W_mode} override for following DLLs when running ${_W_app}: $*"
     (
-        echo REGEDIT4
-        echo ""
-        echo "[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\${_W_app}\\DllOverrides]"
+        printf 'REGEDIT4\n\n[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\%s\\DllOverrides]\n' "${_W_app}"
     ) > "${W_TMP}"/override-dll.reg
 
     while test "$1" != ""; do
