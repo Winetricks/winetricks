@@ -192,11 +192,12 @@ w_askpermission()
     printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}"
 
     if test "${W_OPT_UNATTENDED}"; then
-        _W_timeout="--timeout 5"
+        _W_timeout="--timeout"
+        _W_timeout_length="5"
     fi
 
     case ${WINETRICKS_GUI} in
-        zenity) ${WINETRICKS_GUI} "${_W_timeout}" --question --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
+        zenity) ${WINETRICKS_GUI} "${_W_timeout}" "${_W_timeout_length}" --question --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
         kdialog) ${WINETRICKS_GUI} --title winetricks --warningcontinuecancel "$@" ;;
         none)
             if [ -n "${_W_timeout}" ]; then
@@ -230,11 +231,20 @@ w_info()
         printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}"
     fi
 
-    case ${WINETRICKS_GUI} in
-        zenity) ${WINETRICKS_GUI} --timeout=3 --info --width=400 --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')" --no-wrap;;
-        kdialog) ${WINETRICKS_GUI} --title winetricks --msgbox "$@" ;;
-        none) ;;
-    esac
+    # kdialog doesn't allow a timeout unless you use --passivepopup
+    if test "${W_OPT_UNATTENDED}"; then
+        case ${WINETRICKS_GUI} in
+            zenity) ${WINETRICKS_GUI} --timeout 5 --info --width=400 --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
+            kdialog) ${WINETRICKS_GUI} --passivepopup "$@" 5 --title winetricks;;
+            none) ;;
+        esac
+    else
+        case ${WINETRICKS_GUI} in
+            zenity) ${WINETRICKS_GUI} --info --width=400 --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
+            kdialog) ${WINETRICKS_GUI} --title winetricks --error "$@";;
+            none) ;;
+        esac
+    fi
 }
 
 # Display warning message to stderr (since it is called inside redirected code)
@@ -245,15 +255,20 @@ w_warn()
         printf '%s\nwarning: %b\n%s\n' "${W_TEXT_LINE}" "${*}" "${W_TEXT_LINE}"
     fi
 
+    # kdialog doesn't allow a timeout unless you use --passivepopup
     if test "${W_OPT_UNATTENDED}"; then
-        _W_timeout="--timeout 5"
+        case ${WINETRICKS_GUI} in
+            zenity) ${WINETRICKS_GUI} --timeout 5 --error --width=400 --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
+            kdialog) ${WINETRICKS_GUI} --passivepopup "$@" 5 --title winetricks;;
+            none) ;;
+        esac
+    else
+        case ${WINETRICKS_GUI} in
+            zenity) ${WINETRICKS_GUI} --error --width=400 --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
+            kdialog) ${WINETRICKS_GUI} --title winetricks --error "$@";;
+            none) ;;
+        esac
     fi
-
-    case ${WINETRICKS_GUI} in
-        zenity) ${WINETRICKS_GUI} "${_W_timeout}" --error --width=400 --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
-        kdialog) ${WINETRICKS_GUI} --title winetricks --error "$@" ;;
-        none) ;;
-    esac
 
     unset _W_timeout
 }
@@ -266,12 +281,13 @@ w_warn_cancel()
     printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}" >&2
 
     if test "${W_OPT_UNATTENDED}"; then
-        _W_timeout="--timeout 5"
+        _W_timeout="--timeout"
+        _W_timeout_length="5"
     fi
 
     # Zenity has no cancel button, but will set status to 1 if you click the go-away X
     case ${WINETRICKS_GUI} in
-        zenity) ${WINETRICKS_GUI} "${_W_timeout}" --error --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
+        zenity) ${WINETRICKS_GUI} "${_W_timeout}" "${_W_timeout_length}" --error --title=winetricks --text="$(echo "$@" | sed 's,\\\\,\\\\\\\\,g')";;
         kdialog) ${WINETRICKS_GUI} --title winetricks --warningcontinuecancel "$@" ;;
         none) ;;
     esac
