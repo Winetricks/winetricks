@@ -217,7 +217,6 @@ w_askpermission()
             pt*) w_die "Operação cancelada, saindo." ;;
             *) w_die "Operation cancelled, quitting." ;;
         esac
-        exec false
     fi
 
     unset _W_timeout
@@ -2913,7 +2912,7 @@ winetricks_download_setup()
             # torify needs --async-dns=false, see https://github.com/tatsuhiro-t/aria2/issues/613
             aria2c_torify_opts="--async-dns=false"
             if [ ! -x "$(command -v torify 2>/dev/null)" ]; then
-                w_die "--torify was used, but torify is not installed, please install it." ; exit 1
+                w_die "--torify was used, but torify is not installed, please install it."
             fi ;;
         *) torify=
             aria2c_torify_opts="" ;;
