@@ -41,16 +41,6 @@ fi
 datadir="${TOP}/output/links.d"
 mkdir -p "${datadir}"
 
-# ftp.microsoft.com resolves to two different IP addresses, one of which is broken
-ftp_microsoft_com=64.4.17.176
-
-w_download() {
-    # shellcheck disable=SC2016
-    url="$(echo "$1" | sed -e 's,$ftp_microsoft_com,'${ftp_microsoft_com}',;s, ,%20,g')"
-    urlkey="$(echo "${url}" | tr / _)"
-    echo "${url}" > "${datadir}/${urlkey}.url"
-}
-
 # Extract list of URLs from winetricks
 extract_all() {
     # w_linkcheck_ignore=1 is a stupid hack to tell linkcheck.sh to ignore a URL (e.g., because it contains a variable)
