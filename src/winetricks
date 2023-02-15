@@ -703,7 +703,7 @@ w_try_cabextract()
         w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt-get install cabextract' or 'sudo yum install cabextract')."
     fi
 
-    w_try cabextract -q "$@"
+    w_try cabextract -q --keep-symlinks "$@"
 }
 
 w_try_cd()
