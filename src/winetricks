@@ -2401,7 +2401,7 @@ w_store_winver()
     # Only set if not set already; for cases where a verb changes the version multiple times
     # or calls a second verb that changes the version
     if [ -z "${_W_user_winver}" ]; then
-        _W_user_winver="$(${WINE} winecfg /v | tr -d '\r')"
+        _W_user_winver=$("${WINE}" winecfg /v | tr -d '\r')
     fi
 }
 
