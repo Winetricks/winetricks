@@ -565,7 +565,7 @@ w_package_warn_win64()
         case ${LANG} in
             pt*) w_warn "Este pacote (${W_PACKAGE}) talvez não funcione completamente em 64-bit. Em prefixo 32-bit talvez funcione melhor." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działać lepiej." ;;
-            ru*) w_warn "Данный пакет может работать не полностью в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
+            ru*) w_warn "Данный пакет может быть не полностью работоспособным в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
             zh_CN*) w_warn "(${W_PACKAGE}) 可能在64位环境下工作有问题，安装在32位环境可能会更好。" ;;
             zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 可能在64元環境下工作有問題，安装在32元環境可能會更好。" ;;
             *) w_warn "This package (${W_PACKAGE}) may not fully work on a 64-bit installation. 32-bit prefixes may work better." ;;
@@ -3036,7 +3036,7 @@ winetricks_latest_version_check()
         case ${LANG} in
             pl*) w_warn "GitHub nie działa? Wersja '${latest_version}' nie wydaje się być prawdiłową wersją" ;;
             pt*) w_warn "Github offline? versão '${latest_version}' não parece uma versão válida" ;;
-            ru*) w_warn "Отсутствует подключение к Github? версия '${latest_version}' может быть неактуальной" ;;
+            ru*) w_warn "Отсутствует подключение к Github? Версия '${latest_version}' может быть неактуальной" ;;
             zh_CN*) w_warn "GitHub 无法访问？${latest_version} 似乎不是个有效的版本号。" ;;
             zh_TW*|zh_HK*) w_warn "GitHub 宕機了？${latest_version} 似乎不是個有效的版本號。" ;;
             *) w_warn "Github down? version '${latest_version}' doesn't appear to be a valid version" ;;
@@ -3063,8 +3063,8 @@ winetricks_latest_version_check()
                     w_warn "Você pode atualizar com o sistema de atualizações da sua distribuição, --self-update, ou manualmente."
                     ;;
                 ru*)
-                    w_warn "Запущен winetricks-${WINETRICKS_VERSION}, последняя версия winetricks-${latest_version}!"
-                    w_warn "Вы можете ее обновить с помощью менеджера пакетов, --self-update или вручную."
+                    w_warn "Запущен winetricks-${WINETRICKS_VERSION}, последняя версия: winetricks-${latest_version}!"
+                    w_warn "Вы можете выполнить обновление с помощью менеджера пакетов, параметра --self-update или вручную."
                     ;;
                 zh_CN*)
                     w_warn "你正在使用 winetricks-${WINETRICKS_VERSION}，最新版本是 winetricks-${latest_version}!"
@@ -3241,13 +3241,13 @@ winetricks_get_prefix_var()
 winetricks_prefixmenu()
 {
     case ${LANG} in
-        ru*) _W_msg_title="Winetricks - выберите путь wine (wineprefix)"
+        ru*) _W_msg_title="Winetricks - выберите путь wine (префикс)"
             _W_msg_body='Что вы хотите сделать?'
             _W_msg_apps='Установить программу'
             _W_msg_games='Установить игру'
             _W_msg_benchmarks='Установить приложение для оценки производительности'
-            _W_msg_default="Выберите путь для wine по умолчанию"
-            _W_msg_mkprefix="Создать новый путь wine"
+            _W_msg_default="Использовать префикс по умолчанию"
+            _W_msg_mkprefix="Создать новый префикс wine"
             _W_msg_unattended0="Отключить автоматическую установку"
             _W_msg_unattended1="Включить автоматическую установку"
             _W_msg_help="Просмотр справки (в веб-браузере)"
@@ -3519,20 +3519,20 @@ winetricks_mainmenu()
             _W_msg_folder='Gerenciar arquivos'
             _W_msg_annihilate="Apagar TODOS OS DADOS E APLICATIVOS DENTRO DESTE WINEPREFIX"
             ;;
-        ru*) _W_msg_title="Winetricks - текущий путь для wine (wineprefix) \"${WINEPREFIX}\""
-            _W_msg_body='Что вы хотите сделать с этим wineprefix?'
+        ru*) _W_msg_title="Winetricks — текущий префикс: \"${WINEPREFIX}\""
+            _W_msg_body='Что вы хотите сделать с этим префиксом?'
             _W_msg_dlls="Установить библиотеку DLL или компонент Windows"
             _W_msg_fonts='Установить шрифт'
             _W_msg_settings='Поменять настройки'
             _W_msg_winecfg='Запустить winecfg (редактор настроек wine)'
             _W_msg_regedit='Запустить regedit (редактор реестра)'
             _W_msg_taskmgr='Запустить taskmgr (менеджер задач)'
-            _W_msg_explorer='Запустить explorer'
-            _W_msg_uninstaller='Запустить uninstaller (деинсталлятор)'
-            _W_msg_winecmd='Запустить винную команду'
+            _W_msg_explorer='Запустить explorer (Проводник)'
+            _W_msg_uninstaller='Запустить uninstaller (установка и удаление программ)'
+            _W_msg_winecmd='Запустить wine cmd (командную строку)'
             _W_msg_shell='Запустить графический терминал (для отладки)'
-            _W_msg_folder='Проводник файлов'
-            _W_msg_annihilate="Удалить ВСЕ ДАННЫЕ И ПРИЛОЖЕНИЯ В ЭТОМ WINEPREFIX"
+            _W_msg_folder='Запустить winefile (проводник файлов)'
+            _W_msg_annihilate="Удалить ВСЕ ДАННЫЕ И ПРИЛОЖЕНИЯ в этом префиксе"
             ;;
         uk*) _W_msg_title="Winetricks - поточний prefix \"${WINEPREFIX}\""
             _W_msg_body='Що Ви хочете зробити для цього wineprefix?'
@@ -3669,7 +3669,7 @@ winetricks_settings_menu()
         pt*) _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
             _W_msg_body='Quais configurações você gostaria de alterar?'
             ;;
-        ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"${WINEPREFIX}\""
+        ru*) _W_msg_title="Winetricks - текущий префикс: \"${WINEPREFIX}\""
             _W_msg_body='Какие настройки вы хотите изменить?'
             ;;
         uk*) _W_msg_title="Winetricks - поточний prefix \"${WINEPREFIX}\""
@@ -3859,8 +3859,8 @@ winetricks_showmenu()
             _W_msg_body='Quais pacotes você gostaria de instalar?'
             _W_cached="em cache"
             ;;
-        ru*) _W_msg_title="Winetricks - текущий путь wine (wineprefix) \"${WINEPREFIX}\""
-            _W_msg_body='Какое приложение(я) вы хотите установить?'
+        ru*) _W_msg_title="Winetricks - текущий префикс: \"${WINEPREFIX}\""
+            _W_msg_body='Какое приложение вы хотите установить?'
             _W_cached="в кэше"
             ;;
         uk*) _W_msg_title="Winetricks - поточний prefix \"${WINEPREFIX}\""
