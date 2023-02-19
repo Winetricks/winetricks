@@ -93,7 +93,9 @@ else
 fi
 
 # create local tarball, identical to github's generated one
-git archive --prefix="winetricks-${version}/" -o "${tmpdir}/${version}.tar.gz" "${version}"
+git -c tar.tar.gz.command='gzip -cn' \
+    archive --format=tar.gz --prefix="winetricks-${version}/" \
+    -o "${tmpdir}/${version}.tar.gz" "${version}"
 
 # create a detached signature of the tarball
 gpg --armor --default-key 0x267BCC1F053F0749 --detach-sign "${tmpdir}/${version}.tar.gz"
