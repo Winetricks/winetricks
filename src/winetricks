@@ -39,7 +39,10 @@ WINETRICKS_VERSION=20230212-next
 # - xz is used by some verbs to decompress tar archives.
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog/xmessage.
 #
-# On Ubuntu, the following line can be used to install all the prerequisites:
+# On Ubuntu (20.04 and newer), the following line can be used to install all the prerequisites:
+#    sudo apt install aria2 binutils cabextract fuseiso p7zip-full pkexec tor unrar unzip wine xdg-utils xz-utils zenity
+#
+# On older Ubuntu, the following line can be used to install all the prerequisites:
 #    sudo apt install aria2 binutils cabextract fuseiso p7zip-full policykit-1 tor unrar unzip wine xdg-utils xz-utils zenity
 #
 # On Fedora, these commands can be used (RPM Fusion is used to install unrar):
