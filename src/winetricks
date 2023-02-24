@@ -8218,7 +8218,7 @@ load_dxvk()
 # $1 - dxvk-nvapi archive name (required)
 # $2 - minimum Wine version (required)
 # $3 - nvapi,[nvapi64] (required)
-helper_dxvk-nvapi()
+helper_dxvk_nvapi()
 {
     _W_package_archive="${1}"
     _W_min_wine_version="${2}"
@@ -8261,7 +8261,7 @@ helper_dxvk-nvapi()
         _W_repository _W_supported_overrides
 }
 
-w_metadata dxvk-nvapi0061 dlls \
+w_metadata dxvk_nvapi0061 dlls \
     title="Alternative NVAPI Vulkan implementation on top of DXVK for Linux / Wine (0.6.1)" \
     publisher="Jens Peters" \
     year="2023" \
@@ -8270,7 +8270,7 @@ w_metadata dxvk-nvapi0061 dlls \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/nvapi.dll" \
     installed_file2="${W_SYSTEM32_DLLS_WIN}/nvapi64.dll"
 
-load_dxvk-nvapi0061()
+load_dxvk_nvapi0061()
 {
     w_download "https://github.com/jp7677/dxvk-nvapi/releases/download/v0.6.1/dxvk-nvapi-v0.6.1.tar.gz" c05196dd1ba10522e23ae8e30fec9c7e8ce624467558b1b3000499bf5b3d83aa
     helper_dxvk "${file1}" "7.1" "nvapi,nvapi64"
