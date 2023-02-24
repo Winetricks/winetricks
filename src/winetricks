@@ -8361,6 +8361,69 @@ load_dxvk()
 
 #----------------------------------------------------------------
 
+# $1 - dxvk-nvapi archive name (required)
+# $2 - minimum Wine version (required)
+# $3 - nvapi,[nvapi64] (required)
+helper_dxvk-nvapi()
+{
+    _W_package_archive="${1}"
+    _W_min_wine_version="${2}"
+    _W_dll_overrides="$(echo "${3}" | sed 's/,/ /g')"
+    # dxvk-nvapi repository, for (partial) NVAPI support
+    _W_repository="jp7677/dxvk-nvapi"
+
+    _W_supported_overrides="nvapi nvapi64"
+    _W_invalid_overrides="$(echo "${_W_dll_overrides}" | awk -vvalid_overrides_regex="$(echo "${_W_supported_overrides}" | sed 's/ /|/g')" '{ gsub(valid_overrides_regex,""); sub("[ ]*",""); print $0 }')"
+    if [ "${_W_invalid_overrides}" != "" ]; then
+        w_die "parameter (4) unsupported dll override: '${_W_invalid_overrides}' ; supported dll overrides: ${_W_supported_overrides}"
+    fi
+
+    _W_package_dir="${_W_package_archive%.tar.gz}"
+    _W_package_version="v${_W_package_dir#*-v}"
+    w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"
+    w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support"
+
+    if [ "${_W_package_archive##*.}" = "zip" ]; then
+        w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    else
+        w_try_cd "${W_TMP}"
+        w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    fi
+
+    for _W_dll in ${_W_dll_overrides}; do
+        w_try mv "${W_TMP}/${_W_package_dir}/x32/${_W_dll}.dll" "${W_SYSTEM32_DLLS}/"
+    done
+    if test "${W_ARCH}" = "win64"; then
+        for _W_dll in ${_W_dll_overrides}; do
+            w_try mv "${W_TMP}/${_W_package_dir}/x64/${_W_dll}.dll" "${W_SYSTEM64_DLLS}/"
+        done
+    fi
+    # shellcheck disable=SC2086
+    w_override_dlls native ${_W_dll_overrides}
+    w_call dxvk
+
+    unset _W_dll _W_dll_overrides _W_invalid_overrides _W_min_wine_version \
+        _W_package_archive _W_package_dir _W_package_version \
+        _W_repository _W_supported_overrides
+}
+
+w_metadata dxvk-nvapi0061 dlls \
+    title="Alternative NVAPI Vulkan implementation on top of DXVK for Linux / Wine (0.6.1)" \
+    publisher="Jens Peters" \
+    year="2023" \
+    media="download" \
+    file1="dxvk-nvapi-v0.6.1.tar.gz" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/nvapi.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/nvapi64.dll"
+
+load_dxvk-nvapi0061()
+{
+    w_download "https://github.com/jp7677/dxvk-nvapi/releases/download/v0.6.1/dxvk-nvapi-v0.6.1.tar.gz" c05196dd1ba10522e23ae8e30fec9c7e8ce624467558b1b3000499bf5b3d83aa
+    helper_dxvk "${file1}" "7.1" "nvapi,nvapi64"
+}
+
+#----------------------------------------------------------------
+
 # $1 - vkd3d-proton archive name (required)
 helper_vkd3d_proton()
 {
