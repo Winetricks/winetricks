@@ -23148,7 +23148,11 @@ winetricks_shell()
             *)
                 for term in gnome-terminal konsole Terminal xterm; do
                     if test "$(command -v ${term} 2>/dev/null)"; then
-                        WINEDEBUG=-all ${term} -e "${@}"
+                        if [ -n "${*}" ]; then
+                            WINEDEBUG=-all ${term} -e "${*}"
+                        else
+                            WINEDEBUG=-all ${term}
+                        fi
                         break
                     fi
                 done
