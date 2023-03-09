@@ -41,6 +41,14 @@ fi
 datadir="${TOP}/output/links.d"
 mkdir -p "${datadir}"
 
+# This is used by url-script-fragment.tmp below in extract_all()
+# shellcheck disable=SC2317
+w_download() {
+    url="${1}"
+    urlkey="$(echo "${url}" | tr / _)"
+    echo "${url}" > "${datadir}/${urlkey}.url"
+}
+
 # Extract list of URLs from winetricks
 extract_all() {
     # w_linkcheck_ignore=1 is a stupid hack to tell linkcheck.sh to ignore a URL (e.g., because it contains a variable)
