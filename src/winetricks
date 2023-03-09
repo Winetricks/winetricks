@@ -10247,7 +10247,7 @@ load_galliumnine09()
 w_metadata galliumnine dlls \
     title="Gallium Nine Standalone (latest)" \
     publisher="Gallium Nine Team" \
-    year="2019" \
+    year="2023" \
     media="download" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9-nine.dll" \
     installed_file2="${W_SYSTEM32_DLLS_WIN}/ninewinecfg.exe" \
@@ -10255,6 +10255,11 @@ w_metadata galliumnine dlls \
 
 load_galliumnine()
 {
+    if w_wine_version_in ,5.7 ; then
+        w_call galliumnine08
+        return
+    fi
+
     _W_galliumnine_version="$(w_get_github_latest_release iXit wine-nine-standalone)"
     w_linkcheck_ignore=1 w_download "https://github.com/iXit/wine-nine-standalone/releases/download/${_W_galliumnine_version}/gallium-nine-standalone-${_W_galliumnine_version}.tar.gz"
     helper_galliumnine "gallium-nine-standalone-${_W_galliumnine_version}.tar.gz"
