@@ -1064,6 +1064,34 @@ w_expand_env()
     winetricks_early_wine_arch cmd.exe /c echo "%$1%"
 }
 
+# Determine what architecture a binary file is built for
+winetricks_get_file_arch()
+{
+    _W_file="$1"
+    # macOS uses Mach-O binaries, not ELF
+    if [ "$(uname -s)" = "Darwin" ]; then
+        _W_lipo_output="$(lipo -archs "${_W_file}")"
+        case "${_W_lipo_output}" in
+            "arm64")  _W_file_arch="arm64" ;;
+            "i386")   _W_file_arch="i386" ;;
+            "x86_64") _W_file_arch="x86_64" ;;
+            *)        w_die "Unknown file arch: ${_W_lipo_output}" ;;
+        esac
+    else
+        # Assume ELF binaries for everything else
+        _W_ob_output="$(od -An -t x1 -j 0x12 -N 1 "${_W_file}" | tr -d "[:space:]")"
+        case "${_W_ob_output}" in
+            "3e")      _W_file_arch="x86_64" ;;
+            "03"|"06") _W_file_arch="i386" ;;
+            "b7")      _W_file_arch="aarch64" ;;
+            "28")      _W_file_arch="aarch32" ;;
+            *)         w_die "Unknown file arch: ${_W_ob_output}";;
+        esac
+    fi
+
+    echo "${_W_file_arch}"
+}
+
 # Get the latest tagged release from github.com API
 w_get_github_latest_release()
 {
@@ -5011,13 +5039,28 @@ winetricks_set_wineprefix()
     # Using the variable W_SYSTEM32_DLLS instead of SYSTEM32 because some stuff does go under system32 for both arch's
     # e.g., spool/drivers/color
     if test -d "${W_DRIVE_C}/windows/syswow64"; then
+        # Check the bitness of wineserver + wine binary, used later to determine if we're on a WOW setup (no wine64)
+        # https://github.com/Winetricks/winetricks/issues/2030
+        _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINESERVER}")"
+        _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE}")"
+
+        # determine wow64 type (new/old)
+        # FIXME: check what upstream is calling them
+        if [ "${_W_wineserver_binary_arch}" = "${_W_wine_binary_arch}" ]; then
+            _W_wow64_style="new"
+        else
+            _W_wow64_style="classic"
+        fi
+
         # Probably need fancier handling/checking, but for a basic start:
         # Note 'wine' may be named 'wine-stable'/'wine-staging'/etc.):
         # WINE64 = wine64, available on 64-bit prefixes
-        # WINE_ARCH = the native wine for the prefix (wine for 32-bit, wine64 for 64-bit)
+        # WINE_ARCH = the native wine for the prefix (wine for 32-bit or new wow mode, wine64 for classic wow mode)
         # WINE_MULTI = generic wine, new name
         if [ -n "${WINE64}" ]; then
             true
+        elif [ "${_W_wow64_style}" = "new" ]; then
+            WINE64="${WINE}"
         elif [ "${WINE%??}64" = "${WINE}" ]; then
             WINE64="${WINE}"
         elif command -v "${WINE}64" >/dev/null 2>&1; then
@@ -5086,9 +5129,14 @@ winetricks_set_wineprefix()
                 pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
                 *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
             esac
+
+            if [ "${_W_wow64_style}" = "new" ]; then
+                w_warn "You apppear to be using Wine's new wow64 mode. Note that this is EXPERIMENTAL and not yet fully supported. If reporting an issue, be sure to mention this."
+            fi
         fi
 
     else
+        _W_wow64_style="none"
         WINE64="false"
         WINE_ARCH="${WINE}"
         WINE_MULTI="${WINE}"
