@@ -6898,7 +6898,7 @@ helper_dxvk()
     _W_dll_overrides="$(echo "${_W_dll_overrides}" | sed 's/d3d10 /&d3d10_1 /')"
     _W_package_dir="${_W_package_archive%.tar.gz}"
     _W_package_version="${_W_package_dir#*-}"
-    w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"  # TODO wrong url - d8vk release tags are d8vk-vX.X 
+    w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/${_W_package_version}"  # TODO wrong url - d8vk release tags are d8vk-vX.X
     w_warn "Please refer to current ${_W_repository#*/} base graphics driver requirements... See: https://github.com/${_W_repository}/wiki/Driver-support"
 
     if w_wine_version_in ",${_W_min_wine_version}" ; then
