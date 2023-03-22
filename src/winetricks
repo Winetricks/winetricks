@@ -216,7 +216,7 @@ w_askpermission()
 
     if test $? -ne 0; then
         case ${LANG} in
-		    bg*) w_die "Операцията е отменена, излизане." ;;
+            bg*) w_die "Операцията е отменена, излизане." ;;
             uk*) w_die "Операція скасована." ;;
             pl*) w_die "Anulowano operację, opuszczanie." ;;
             pt*) w_die "Operação cancelada, saindo." ;;
@@ -577,7 +577,7 @@ w_package_unsupported_win64()
 {
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
-		    bg*) w_warn "Пакетът (${W_PACKAGE}) не работи на 64-битовите инсталации. Трябва да използвате папка, създадена с WINEARCH=win32." ;;
+            bg*) w_warn "Пакетът (${W_PACKAGE}) не работи на 64-битовите инсталации. Трябва да използвате папка, създадена с WINEARCH=win32." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) não funciona em instalação de 64-bit. Você precisa usar um prefixo feito com WINEARCH=win32." ;;
             ru*) w_warn "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
@@ -595,7 +595,7 @@ w_package_warn_win64()
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
             bg*) w_warn "Пакетът (${W_PACKAGE}) вероятно няма да работи на 64-битовите инсталации. 32-битовите папки може да работят по-добре." ;;
-			pt*) w_warn "Este pacote (${W_PACKAGE}) talvez não funcione completamente em 64-bit. Em prefixo 32-bit talvez funcione melhor." ;;
+            pt*) w_warn "Este pacote (${W_PACKAGE}) talvez não funcione completamente em 64-bit. Em prefixo 32-bit talvez funcione melhor." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działać lepiej." ;;
             ru*) w_warn "Данный пакет может быть не полностью работоспособным в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
             zh_CN*) w_warn "(${W_PACKAGE}) 可能在64位环境下工作有问题，安装在32位环境可能会更好。" ;;
@@ -643,7 +643,7 @@ w_try()
     en_ms_236="exit status ${status} - newer version detected"
 
     bg_abort="Важно: командата $* върна статуса ${status}. Прекратяване."
-	en_abort="Note: command $* returned status ${status}. Aborting."
+    en_abort="Note: command $* returned status ${status}. Aborting."
     pl_abort="Informacja: poelcenie $* zwróciło status ${status}. Przerywam."
     pt_abort="Nota: comando $* retornou o status ${status}. Cancelando."
     ru_abort="Важно: команда $* вернула статус ${status}. Прерывание."
@@ -666,7 +666,7 @@ w_try()
             *)
                 case ${LANG} in
                     bg*) w_die "${bg_abort}" ;;
-					pl*) w_die "${pl_abort}" ;;
+                    pl*) w_die "${pl_abort}" ;;
                     pt*) w_die "${pt_abort}" ;;
                     ru*) w_die "${ru_abort}" ;;
                     *) w_die "${en_abort}" ;;
