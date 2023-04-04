@@ -963,7 +963,7 @@ w_read_key()
     if ! test -f "${_W_keyfile}"; then
         # read key from user
         case ${LANG} in
-            bg*)  _W_keymsg="Моля, въведете ключа за приложението „${W_PACKAGE}“"
+            bg*)  _W_keymsg="Моля, въведете ключа за приложението '${W_PACKAGE}'"
                 _W_nokeymsg="Няма въведен ключ"
                 ;;
             da*) _W_keymsg="Angiv venligst registrerings-nøglen for pakken '${W_PACKAGE}'"
@@ -3009,7 +3009,7 @@ winetricks_dl_url_to_stdout()
 
 winetricks_dl_warning() {
     case ${LANG} in
-        bg*) _W_countrymsg="Вашият IP адрес е от Русия. Ако възникне грешка със сертификата по време на изтеглянето, моля, рестартирайте с „--torify“ или изтеглете файловете ръчно, например с VPN." ;;
+        bg*) _W_countrymsg="Вашият IP адрес е от Русия. Ако възникне грешка със сертификата по време на изтеглянето, моля, рестартирайте с '--torify' или изтеглете файловете ръчно, например с VPN." ;;
         ru*) _W_countrymsg="Скрипт определил, что ваш IP-адрес принадлежит России. Если во время загрузки файлов вы увидите ошибки несоответствия сертификата, перезапустите скрипт с опцией '--torify' или скачайте файлы вручную, например, используя VPN." ;;
         pl*) _W_countrymsg="Wykryto, że twój adres IP należy do Rosji. W wypadku problemów z pobieraniem, uruchom z parametrem '--torify' lub pobierz plik manualnie, np. z użyciem VPN." ;;
         *)  _W_countrymsg="Your IP address has been determined to belong to Russia. If you encounter a certificate error while downloading, please relaunch with the '--torify' option, or download files manually, for instance using VPN." ;;
@@ -3078,7 +3078,7 @@ winetricks_latest_version_check()
     # Check that $latest_version is an actual number in case github is down
     if ! echo "${latest_version}" | grep -q -E "[0-9]{8}" || [ -z "${latest_version}" ] ; then
         case ${LANG} in
-            bg*) w_warn "„Github“ не работи? Версия ${latest_version} не е валидна" ;;
+            bg*) w_warn "Github не работи? Версия ${latest_version} не е валидна" ;;
             pl*) w_warn "GitHub nie działa? Wersja '${latest_version}' nie wydaje się być prawdiłową wersją" ;;
             pt*) w_warn "Github offline? versão '${latest_version}' não parece uma versão válida" ;;
             ru*) w_warn "Отсутствует подключение к Github? Версия '${latest_version}' может быть неактуальной" ;;
@@ -5457,11 +5457,11 @@ winetricks_usage()
 Команди:
 list                  показва категориите
 list-all              показва всички категории и техните глаголи
-apps list             показва глаголите в категория „приложения“
-benchmarks list       показва глаголите в категория „еталонни тестове“
-dlls list             показва глаголите в категория „DLL файлове“
-fonts list            показва глаголите в категория „шрифтове“
-settings list         показва глаголите в категория „настройки“
+apps list             показва глаголите в категория 'приложения'
+benchmarks list       показва глаголите в категория 'еталонни тестове'
+dlls list             показва глаголите в категория 'DLL файлове'
+fonts list            показва глаголите в категория 'шрифтове'
+settings list         показва глаголите в категория 'настройки'
 list-cached           показва кешираните-и-готови-за-инсталиране глаголи
 list-download         показва глаголите, които се изтеглят автоматично
 list-manual-download  показва глаголите, които се изтеглят от потребителя
@@ -12074,7 +12074,7 @@ load_quicktime72()
         # in QuickTimePlayer.
 
         case ${LANG} in
-            bg*) w_warn "В настройките на „Quicktime“, включете „Разширени“ / „Безопасен режим (gdi)“, иначе видеоклиповете няма да се възпроизвеждат." ;;
+            bg*) w_warn "В настройките на Quicktime, включете Разширени / Безопасен режим (gdi), иначе видеоклиповете няма да се възпроизвеждат." ;;
             ru*) w_warn "В настройках Quicktime включите Дополнительно / Безопасный режим (только gdi), иначе видеофайлы не будут воспроизводиться." ;;
             pt*) w_warn "Nas preferências do Quicktime, marque Advanced / Safe Mode (gdi), ou os vídeos não irão reproduzir." ;;
             *) w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play." ;;
@@ -12114,7 +12114,7 @@ load_quicktime76()
         # in QuickTimePlayer.
 
         case ${LANG} in
-            bg*) w_warn "В настройките на „Quicktime“, включете „Разширени“ / „Безопасен режим (gdi)“, иначе видеоклиповете няма да се възпроизвеждат." ;;
+            bg*) w_warn "В настройките на Quicktime, включете Разширени / Безопасен режим (gdi), иначе видеоклиповете няма да се възпроизвеждат." ;;
             ru*) w_warn "В настройках Quicktime включите Дополнительно / Безопасный режим (только gdi), иначе видеофайлы не будут воспроизводиться." ;;
             pt*) w_warn "Nas preferências do Quicktime, marque Advanced / Safe Mode (gdi), ou os vídeos não irão reproduzir." ;;
             *) w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play." ;;
@@ -17052,9 +17052,9 @@ load_winrar()
     case ${LANG} in
         bg*)
             if [ "${W_ARCH}" = "win32" ]; then
-                w_download "${_W_winrar_url}/${_W_winrar_exe}" 6124fce45e0413021160eaf4b4652ae6b6bdd4967082094f7d457207aa349f1f
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 91fd68051f6adb05f8fc92621b7ddd42c8a0d32b0db7ee4c1a35262442ccd96c
             else
-                w_download "${_W_winrar_url}/${_W_winrar_exe}" 3023edb4fc3f7c2ebad157b182b62848423f6fa20d180b0df689cbb503a49684
+                w_download "${_W_winrar_url}/${_W_winrar_exe}" 08359eeb32aab2cc5421b73d7f5072a6d33bb613f8b5bce5675e70be01aee832
             fi
             ;;
         da*)
@@ -18996,7 +18996,7 @@ winetricks_stats_init()
             zenity)
                 case ${LANG} in
                 bg*)
-                    title="Еднократен въпрос относно подпомагането на развитието на „Winetricks“"
+                    title="Еднократен въпрос относно подпомагането на развитието на Winetricks"
                     question="Искате ли да включите изпращането на статистически данни? Може да го изключите по всяко време с командата winetricks --optout"
                     thanks="Благодаря! Този въпрос няма да се появи отново. Запомнете, може да го изключите по всяко време с командата winetricks --optout"
                     declined="Добре. Този въпрос няма да се появи отново."
