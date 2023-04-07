@@ -6919,7 +6919,7 @@ helper_dxvk()
         w_try mv "${W_TMP}/${_W_package_dir}/x32/${_W_dll}.dll" "${W_SYSTEM32_DLLS}/"
         [ "${_W_dll}" = "d3d9" ] && _W_d3d9_support="1"
     done
-    if test "${W_ARCH}" = "win64" && -d "${W_TMP}/${_W_package_dir}/x64"; then
+    if test "${W_ARCH}" = "win64" && test -d "${W_TMP}/${_W_package_dir}/x64"; then
         for _W_dll in ${_W_dll_overrides}; do
             w_try mv "${W_TMP}/${_W_package_dir}/x64/${_W_dll}.dll" "${W_SYSTEM64_DLLS}/"
         done
