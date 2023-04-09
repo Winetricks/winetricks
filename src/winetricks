@@ -6912,7 +6912,8 @@ helper_dxvk()
         w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
     else
         w_try_cd "${W_TMP}"
-        w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}" --one-top-level
+        w_try_mkdir "${_W_package_dir}"
+        w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}" -C "${_W_package_dir}"
     fi
 
     for _W_dll in ${_W_dll_overrides}; do
