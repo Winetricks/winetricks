@@ -18103,7 +18103,10 @@ _EOF_
         w_die "you want a virtual desktop of ${size}? I don't understand."
         ;;
     esac
+
     w_try_regedit "${W_TMP_WIN}"/vd.reg
+
+    w_wineserver -w
 }
 
 #----------------------------------------------------------------
