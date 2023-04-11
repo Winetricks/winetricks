@@ -7069,8 +7069,7 @@ helper_dxvk()
     if [ "${_W_package_archive##*.}" = "zip" ]; then
         w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
     else
-        w_try_cd "${W_TMP}"
-        w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+        w_try tar -C "${W_TMP}" -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
     fi
 
     for _W_dll in ${_W_dll_overrides}; do
