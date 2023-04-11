@@ -8390,15 +8390,12 @@ helper_dxvk_nvapi()
         w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
     fi
 
-    for _W_dll in ${_W_dll_overrides}; do
-        w_try mv "${W_TMP}/${_W_package_dir}/x32/${_W_dll}.dll" "${W_SYSTEM32_DLLS}/"
-    done
+    w_try mv "${W_TMP}/x32/nvapi.dll" "${W_SYSTEM32_DLLS}/"
 
     if test "${W_ARCH}" = "win64"; then
-        for _W_dll in ${_W_dll_overrides}; do
-            w_try mv "${W_TMP}/${_W_package_dir}/x64/${_W_dll}.dll" "${W_SYSTEM64_DLLS}/"
-        done
+        w_try mv "${W_TMP}/x64/nvapi64.dll" "${W_SYSTEM64_DLLS}/"
     fi
+
     # shellcheck disable=SC2086
     w_override_dlls native ${_W_dll_overrides}
     w_call dxvk
