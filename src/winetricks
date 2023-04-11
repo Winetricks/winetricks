@@ -8439,8 +8439,23 @@ load_d8vk()
     # https://github.com/AlpyneDreams/d8vk
     _W_dxvk_version="$(w_get_github_latest_release AlpyneDreams d8vk)"
     w_linkcheck_ignore=1 w_download "https://github.com/AlpyneDreams/d8vk/releases/download/${_W_dxvk_version}/${_W_dxvk_version}.tar.gz"
-    helper_dxvk "${_W_dxvk_version}.tar.gz" "7.1" "1.3.204" "d3d8,d3d9" "AlpyneDreams/d8vk"  # Not completely sure on min Vulkan version
+    helper_dxvk "${_W_dxvk_version}.tar.gz" "7.1" "1.3.204" "d3d8,d3d9" "AlpyneDreams/d8vk"
     unset _W_dxvk_version
+}
+
+w_metadata d8vk0010 dlls \
+    title="Direct3D 8 to Vulkan translation for DXVK" \
+    publisher="Jeffery Ellison" \
+    year="2023" \
+    media="download" \
+    file1="d8vk-v0.10.tar.gz" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d8.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+
+load_d8vk0010()
+{
+    w_download "https://github.com/AlpyneDreams/d8vk/releases/download/d8vk-v0.10/d8vk-v0.10.tar.gz" 43e3d1051b31d91541fba1a6c59d0991208869203e66779bfab8a861eb545eb1
+    helper_dxvk "${file1}" "7.1" "1.3.204" "d3d8,d3d9" "AlpyneDreams/d8vk"
 }
 
 #----------------------------------------------------------------
