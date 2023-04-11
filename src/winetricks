@@ -7055,7 +7055,7 @@ helper_dxvk()
 
     _W_dll_overrides="$(echo "${_W_dll_overrides}" | sed 's/d3d10 /&d3d10_1 /')"
     _W_package_dir="${_W_package_archive%.tar.gz}"
-    _W_package_version="v${_W_package_dir#*-}"
+    _W_package_version="${_W_package_dir#*-}"
     w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://github.com/${_W_repository}/releases/tag/v${_W_package_version}"  # TODO wrong url - d8vk release tags are d8vk-vX.X
     w_warn "Please refer to current ${_W_repository#*/} base graphics driver requirements... See: https://github.com/${_W_repository}/wiki/Driver-support"
 
@@ -7069,7 +7069,9 @@ helper_dxvk()
     if [ "${_W_package_archive##*.}" = "zip" ]; then
         w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
     else
-        w_try tar -C "${W_TMP}" -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+        w_try_cd "${W_TMP}"
+        w_try_mkdir "${_W_package_dir}"
+        w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}" -C "${_W_package_dir}"
     fi
 
     for _W_dll in ${_W_dll_overrides}; do
