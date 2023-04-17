@@ -2414,7 +2414,7 @@ w_set_winver()
             fi
             ;;
         # These are the same:
-        nt351|nt40|vista|win10|win20|win2k|win30|win31|win7|win8|win81|win95|win98|winme) : ;;
+        nt351|nt40|vista|win10|win11|win20|win2k|win30|win31|win7|win8|win81|win95|win98|winme) : ;;
         *) w_die "Unsupported Windows version ${_W_winver}";;
     esac
 
@@ -18973,6 +18973,17 @@ w_metadata win10 settings \
 load_win10()
 {
     w_set_winver win10
+}
+
+#----------------------------------------------------------------
+
+w_metadata win11 settings \
+    title_uk="Встановити версію Windows 11" \
+    title="Set Windows version to Windows 11"
+
+load_win11()
+{
+    w_set_winver win11
 }
 
 #----------------------------------------------------------------
