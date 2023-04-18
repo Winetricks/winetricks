@@ -5806,13 +5806,6 @@ helper_winxpsp3()
 {
     filename=$1
 
-    # 2017/03/15: helper was renamed from winxpsp3 to winxpsp3, to match win2k/win7 service pack helpers
-    # To minimize user impact, renaming directory automagically.
-    # This could be removed after a transition period (1 year or so):
-    if [ -d "${W_CACHE}/xpsp3" ] ; then
-        w_try mv "${W_CACHE}/xpsp3" "${W_CACHE}/winxpsp3"
-    fi
-
     # Formerly at:
     # https://www.microsoft.com/en-us/download/details.aspx?id=24
     # https://download.microsoft.com/download/d/3/0/d30e32d8-418a-469d-b600-f32ce3edf42d/WindowsXP-KB936929-SP3-x86-ENU.exe
