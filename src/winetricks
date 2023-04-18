@@ -3552,6 +3552,7 @@ winetricks_mainmenu()
             _W_msg_explorer='Стартиране на explorer'
             _W_msg_uninstaller='Стартиране на uninstaller'
             _W_msg_winecmd='Стартиране на терминала'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Стартиране на терминала (за отстраняване на неизправности)'
             _W_msg_folder='Търсене на файлове'
             _W_msg_annihilate="Изтриване на ВСИЧКИ ДАННИ И ПРИЛОЖЕНИЯ В ТАЗИ ПАПКА"
@@ -3567,6 +3568,7 @@ winetricks_mainmenu()
             _W_msg_explorer='Run explorer'
             _W_msg_uninstaller='Run uninstaller'
             _W_msg_winecmd='Run a Wine cmd shell'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Run a commandline shell (for debugging)'
             _W_msg_folder='Browse files'
             _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
@@ -3582,6 +3584,7 @@ winetricks_mainmenu()
             _W_msg_explorer='explorer starten'
             _W_msg_uninstaller='uninstaller starten'
             _W_msg_winecmd='Starten Sie Wine cmd'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Eine Kommandozeile zum debuggen starten'
             _W_msg_folder='Ordner durchsuchen'
             _W_msg_annihilate="ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen"
@@ -3597,6 +3600,7 @@ winetricks_mainmenu()
             _W_msg_explorer='Uruchomić explorer'
             _W_msg_uninstaller='Uruchomić program odinstalowujący'
             _W_msg_winecmd='Uruchomić Wine cmd'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Uruchomić powłokę wiersza poleceń (dla debugowania)'
             _W_msg_folder='Przeglądać pliki'
             _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
@@ -3612,6 +3616,7 @@ winetricks_mainmenu()
             _W_msg_explorer='Executar explorer'
             _W_msg_uninstaller='Executar desinstalador'
             _W_msg_winecmd='Executar Wine cmd'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Executar linha de comandos shell (para depuração)'
             _W_msg_folder='Gerenciar arquivos'
             _W_msg_annihilate="Apagar TODOS OS DADOS E APLICATIVOS DENTRO DESTE WINEPREFIX"
@@ -3627,6 +3632,7 @@ winetricks_mainmenu()
             _W_msg_explorer='Запустить explorer (Проводник)'
             _W_msg_uninstaller='Запустить uninstaller (установка и удаление программ)'
             _W_msg_winecmd='Запустить wine cmd (командную строку)'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Запустить графический терминал (для отладки)'
             _W_msg_folder='Запустить winefile (проводник файлов)'
             _W_msg_annihilate="Удалить ВСЕ ДАННЫЕ И ПРИЛОЖЕНИЯ в этом префиксе"
@@ -3642,6 +3648,7 @@ winetricks_mainmenu()
             _W_msg_explorer='Запустити explorer'
             _W_msg_uninstaller='Встановлення/видалення програм'
             _W_msg_winecmd='Запустіть оболонку Wine cmd'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Запуск командної оболонки (для налагодження)'
             _W_msg_folder='Перегляд файлів'
             _W_msg_annihilate="Видалити УСІ ДАНІ ТА ПРОГРАМИ З ЦЬОГО WINEPREFIX"
@@ -3657,6 +3664,7 @@ winetricks_mainmenu()
             _W_msg_explorer='运行资源管理器'
             _W_msg_uninstaller='运行卸载程序'
             _W_msg_winecmd='运行 Wine cmd'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='运行命令提示窗口 (作为调试)'
             _W_msg_folder='浏览容器中的文件'
             _W_msg_annihilate="删除容器中所有数据和应用程序"
@@ -3672,6 +3680,7 @@ winetricks_mainmenu()
             _W_msg_explorer='執行檔案總管'
             _W_msg_uninstaller='執行解除安裝程式'
             _W_msg_winecmd='運行 Wine cmd'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='執行命令提示視窗 (作為偵錯)'
             _W_msg_folder='瀏覽容器中的檔案'
             _W_msg_annihilate="刪除容器中所有資料和應用程式"
@@ -3687,6 +3696,7 @@ winetricks_mainmenu()
             _W_msg_explorer='Run explorer'
             _W_msg_uninstaller='Run uninstaller'
             _W_msg_winecmd='Run a Wine cmd shell'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Run a commandline shell (for debugging)'
             _W_msg_folder='Browse files'
             _W_msg_annihilate="Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX"
@@ -3716,6 +3726,7 @@ winetricks_mainmenu()
                     FALSE explorer    '${_W_msg_explorer}' \
                     FALSE uninstaller '${_W_msg_uninstaller}' \
                     FALSE winecmd     '${_W_msg_winecmd}' \
+                    FALSE wine_misc_exe '${_W_msg_wine_misc_exe}' \
                     FALSE shell       '${_W_msg_shell}' \
                     FALSE folder      '${_W_msg_folder}' \
                     FALSE annihilate  '${_W_msg_annihilate}' \
@@ -3740,6 +3751,7 @@ winetricks_mainmenu()
                     explorer    "${_W_msg_explorer}" off \
                     uninstaller "${_W_msg_uninstaller}" off \
                     winecmd     "${_W_msg_winecmd}" off \
+                    wine_misc_exe "${_W_msg_wine_misc_exe}" off \
                     shell       "${_W_msg_shell}" off \
                     folder      "${_W_msg_folder}" off \
                     annihilate  "${_W_msg_annihilate}" off \
@@ -19111,6 +19123,21 @@ load_winxp()
 
 #---- Main Program ----
 
+# In GUI mode, allow a user to select an arbitrary executable and start it
+winetricks_misc_exe()
+{
+    _W_title="Select the exectuable to run"
+    _W_filter="*.exe *.msi *.msu"
+
+    case "${WINETRICKS_GUI}" in
+        *zenity) _W_exe="$("${WINETRICKS_GUI}" --file-selection --file-filter="${_W_filter}" --title="${_W_title}")" ;;
+        *kdialog) _W_exe="$("${WINETRICKS_GUI}" --getopenfilename "${HOME}" "${_W_filter}")" ;;
+        *) w_die "winetricks_misc_exe only support zenity/kdialog at this time" ;;
+    esac
+    # Using start.exe so that .exe/.msi/.msu will work without extra fuss
+    "${WINE}" start.exe "$(w_winepath -w "${_W_exe}")"
+}
+
 winetricks_stats_save()
 {
     # Save opt-in status
@@ -19353,6 +19380,7 @@ execute_command()
         uninstaller) "${WINE}" uninstaller ;;
         shell) winetricks_shell ;;
         winecmd) winetricks_shell "${WINE}" "cmd.exe" ;;
+        wine_misc_exe) winetricks_misc_exe ;;
 
         # These have to come before *=disabled to avoid looking like DLLs
         cfc=disable*) w_call cfc=disabled ;;
