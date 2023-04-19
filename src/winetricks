@@ -9973,6 +9973,56 @@ load_dotnetdesktop6()
 
 #----------------------------------------------------------------
 
+w_metadata dotnet7 dlls \
+    title="MS .NET Runtime 7.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.5-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet7()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/da45af44-e437-41b5-a5de-be6698557272/e4aaf2eafc2e983c275189f4a4161bae/dotnet-runtime-7.0.5-win-x86.exe 372d868a6464954ba4b231626023fdafdde296e6f5402729614690b8734d682a
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/4b99bbc8-917a-417c-907b-d408341726a5/78b225344fbb9b80d3da3681e1d20d68/dotnet-runtime-7.0.5-win-x64.exe 4ea7291115899841bb2991aa08b529f03b23299611c856a6ad2e9373d02a1c6b
+        w_try "${WINE}" "dotnet-runtime-7.0.5-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop7 dlls \
+    title="MS .NET Desktop Runtime 7.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.5-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop7()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/dffb1939-cef1-4db3-a579-5475a3061cdd/578b208733c914c7b7357f6baa4ecfd6/windowsdesktop-runtime-7.0.5-win-x64.exe 96b5715a35f651e095cefb8d9346f21ad67a09e2693db763ac4321d97f8e0dd2
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/dffb1939-cef1-4db3-a579-5475a3061cdd/578b208733c914c7b7357f6baa4ecfd6/windowsdesktop-runtime-7.0.5-win-x64.exe 0be75f316589ca0e3daa2ef6586efb7aa7f585126e72edde6d114cb8082c3ca0
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.5-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata dotnet_verifier dlls \
     title="MS .NET Verifier" \
     publisher="Microsoft" \
