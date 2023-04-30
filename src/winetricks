@@ -13398,11 +13398,12 @@ w_metadata vcrun2022 dlls \
 load_vcrun2022()
 {
     # https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
-    # 2022-08-05: 14.32.31332 @ https://download.visualstudio.microsoft.com/download/pr/7331f052-6c2d-4890-8041-8058fee5fb0f/CF92A10C62FFAB83B4A2168F5F9A05E5588023890B5C0CC7BA89ED71DA527B0F/VC_redist.x86.exe
+    # 2022-08-05: 14.32.31332 @ https://download.visualstudio.microsoft.com/download/pr/7331f052-6c2d-4890-8041-8058fee5fb0f/CF92A10C62FFAB83B4A2168F5F9A05E5588023890B5C0CC7BA89ED71DA527B0F/VC_redist.x86.exe cf92a10c62ffab83b4a2168f5f9a05e5588023890b5c0cc7ba89ed71da527b0f
+    # 2023-04-30: 14.34.31938 @ https://download.visualstudio.microsoft.com/download/pr/b2519016-4a13-4120-936c-cae003d567c4/8AE59D82845159DB3A70763F5CB1571E45EBF6A1ADFECC47574BA17B019483A0/VC_redist.x86.exe 8ae59d82845159db3a70763f5cb1571e45ebf6a1adfecc47574ba17b019483a0
 
     w_override_dlls native,builtin concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids vcamp140 vccorlib140 vcomp140 vcruntime140
 
-    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe cf92a10c62ffab83b4a2168f5f9a05e5588023890b5c0cc7ba89ed71da527b0f
+    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe 8ae59d82845159db3a70763f5cb1571e45ebf6a1adfecc47574ba17b019483a0
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
@@ -13410,12 +13411,13 @@ load_vcrun2022()
     case "${W_ARCH}" in
         win64)
             # Also install the 64-bit version
-            # 2022-08-05: 14.32.31332 @ https://download.visualstudio.microsoft.com/download/pr/7331f052-6c2d-4890-8041-8058fee5fb0f/CE6593A1520591E7DEA2B93FD03116E3FC3B3821A0525322B0A430FAA6B3C0B4/VC_redist.x64.exe
+            # 2022/08/05: 14.32.31332 @ https://download.visualstudio.microsoft.com/download/pr/7331f052-6c2d-4890-8041-8058fee5fb0f/CE6593A1520591E7DEA2B93FD03116E3FC3B3821A0525322B0A430FAA6B3C0B4/VC_redist.x64.exe 8ae59d82845159db3a70763f5cb1571e45ebf6a1adfecc47574ba17b019483a0
+            # 2023/04/30: 14.34.31938 @ https://download.visualstudio.microsoft.com/download/pr/8b92f460-7e03-4c75-a139-e264a770758d/26C2C72FBA6438F5E29AF8EBC4826A1E424581B3C446F8C735361F1DB7BEFF72/VC_redist.x64.exe 26c2c72fba6438f5e29af8ebc4826a1e424581b3c446f8c735361f1db7beff72
 
             # vcruntime140_1 is only shipped on x64:
             w_override_dlls native,builtin vcruntime140_1
 
-            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe ce6593a1520591e7dea2b93fd03116e3fc3b3821a0525322b0a430faa6b3c0b4
+            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe 26c2c72fba6438f5e29af8ebc4826a1e424581b3c446f8c735361f1db7beff72
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
