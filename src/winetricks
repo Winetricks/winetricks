@@ -10009,7 +10009,7 @@ w_metadata dotnetdesktop7 dlls \
 load_dotnetdesktop7()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/dffb1939-cef1-4db3-a579-5475a3061cdd/578b208733c914c7b7357f6baa4ecfd6/windowsdesktop-runtime-7.0.5-win-x64.exe 96b5715a35f651e095cefb8d9346f21ad67a09e2693db763ac4321d97f8e0dd2
+    w_download https://download.visualstudio.microsoft.com/download/pr/eb64dcd1-d277-4798-ada1-600805c9e2dc/fc73c843d66f3996e7ef22468f4902e6/windowsdesktop-runtime-7.0.5-win-x86.exe 96b5715a35f651e095cefb8d9346f21ad67a09e2693db763ac4321d97f8e0dd2
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
