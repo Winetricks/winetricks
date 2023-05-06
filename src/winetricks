@@ -5001,7 +5001,7 @@ winetricks_set_wineprefix()
 
     if [ "$(uname -s)" = "Darwin" ] && [ "$(uname -m)" = "arm64" ] && grep -q "Bad CPU type in executable" "${W_TMP_EARLY}"/early_wine.err.txt; then
         # FIXME: this should really go in w_warn()/winetricks_detect_gui()
-        if [ -n "${W_OPT_UNATTENDED}" ]; then
+        if [ -z "${W_OPT_UNATTENDED}" ]; then
             osascript -e 'tell app "System Events" to display dialog "Wine failed to run with the error \"Bad CPU type in executable.\" You probably need to install Rosetta2"'
         fi
         w_die "Wine failed to run with the error 'Bad CPU type in executable'. You probably need to install Rosetta2"
