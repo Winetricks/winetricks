@@ -9942,7 +9942,7 @@ load_dotnet6()
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
         w_download https://download.visualstudio.microsoft.com/download/pr/436bce6a-f3e7-448e-9279-d58f1e39ab8a/9f5c7ed377294cc8e028e900540632d5/dotnet-runtime-6.0.13-win-x64.exe 59f853f718cb9d089e28393443d0db303934822290af4bf4023a0bf419cb0f9c
-        w_try "${WINE}" "" ${W_OPT_UNATTENDED:+/quiet}
+        w_try "${WINE}" "dotnet-runtime-6.0.13-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
