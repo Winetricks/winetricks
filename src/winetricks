@@ -9928,21 +9928,21 @@ w_metadata dotnet6 dlls \
     publisher="Microsoft" \
     year="2023" \
     media="download" \
-    file1="dotnet-runtime-6.0.13-win-x86.exe" \
+    file1="dotnet-runtime-6.0.16-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnet6()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/6.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/5f095cbb-af6c-4d20-909d-87db53879370/d4c6f380a9a68fc853bd891189f3c975/dotnet-runtime-6.0.13-win-x86.exe 4ae439fe745e6ac404e346662b32d5f305aa2512b751fe6a4acb4c59e3a50a36
+    w_download https://download.visualstudio.microsoft.com/download/pr/78caa28b-2982-43ed-8b9c-20e3369f0795/c771e9fd12a67068436115cf295740f7/dotnet-runtime-6.0.16-win-x86.exe 03f8beb982dcf92cdcc55b374e2f0a3adb64c7399eee228f23fd8ff0e3ead0d0
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/436bce6a-f3e7-448e-9279-d58f1e39ab8a/9f5c7ed377294cc8e028e900540632d5/dotnet-runtime-6.0.13-win-x64.exe 59f853f718cb9d089e28393443d0db303934822290af4bf4023a0bf419cb0f9c
-        w_try "${WINE}" "dotnet-runtime-6.0.13-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/456fdf02-f100-4664-916d-fd46c192efea/619bbd8426537632b7598b4c7c467cf1/dotnet-runtime-6.0.16-win-x64.exe 2d8416f924f140b5dd14ac781d8782a70168866fc992fe84a946d0d15c0c4925
+        w_try "${WINE}" "dotnet-runtime-6.0.16-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -9953,21 +9953,21 @@ w_metadata dotnetdesktop6 dlls \
     publisher="Microsoft" \
     year="2023" \
     media="download" \
-    file1="windowsdesktop-runtime-6.0.13-win-x86.exe" \
+    file1="windowsdesktop-runtime-6.0.16-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnetdesktop6()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/6.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/d37ab8e6-095b-4f42-bea5-f519b3c62b68/3b87e1c571a3fc49607acc821d3f107a/windowsdesktop-runtime-6.0.13-win-x86.exe bf8f4a1dedf6a056e6139b28d8a9c23cf8893c7e26de8a82528efb652f6f6068
+    w_download https://download.visualstudio.microsoft.com/download/pr/ea0e40d2-e326-453b-8cac-2719cbbefeca/b26458b139a500d3067ec25987030497/windowsdesktop-runtime-6.0.16-win-x86.exe e054954dea30f74a3093951062dd0bf792175935d150ef5e6945fe52c36cee9a
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/4c5e26cf-2512-4518-9480-aac8679b0d08/523f1967fd98b0cf4f9501855d1aa063/windowsdesktop-runtime-6.0.13-win-x64.exe a2e875d7734b468225da5786616bab5bede1b8c4e71c5dd2e4faffa83b34dec5
-        w_try "${WINE}" "windowsdesktop-runtime-6.0.13-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/85473c45-8d91-48cb-ab41-86ec7abc1000/83cd0c82f0cde9a566bae4245ea5a65b/windowsdesktop-runtime-6.0.16-win-x64.exe 1c1e90c6732a6389c9ebddd73bdca565d2f35671c2e7113e1704cb0a183e744a
+        w_try "${WINE}" "windowsdesktop-runtime-6.0.16-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
