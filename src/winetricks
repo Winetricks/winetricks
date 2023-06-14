@@ -8428,7 +8428,7 @@ helper_vkd3d_proton()
 {
     _W_package_archive="${1}"
 
-    _W_dll_overrides="d3d12"
+    _W_dll_overrides="d3d12 d3d12core"
 
     case "${_W_package_archive}" in
         vkd3d-proton*)
@@ -8486,7 +8486,8 @@ w_metadata vkd3d dlls \
     publisher="Hans-Kristian Arntzen " \
     year="2020" \
     media="download" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d12.dll"
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d12.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d12core.dll"
 
 load_vkd3d()
 {
