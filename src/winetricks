@@ -5013,8 +5013,8 @@ winetricks_set_wineprefix()
     if test -d "${W_DRIVE_C}/windows/syswow64"; then
         # Probably need fancier handling/checking, but for a basic start:
         # Note 'wine' may be named 'wine-stable'/'wine-staging'/etc.):
-        # WINE64 = wine64, available on 64-bit prefixes
-        # WINE_ARCH = the native wine for the prefix (wine for 32-bit, wine64 for 64-bit)
+        # WINE64 = wine64, available on 64-bit prefixes (unless using new WOW64 mode in which case wine is used for both 32-bit and 64-bit)
+        # WINE_ARCH = the native wine for the prefix (wine for 32-bit, wine64 for 64-bit, unless using new WOW64 mode in which case wine is used for both 32-bit and 64-bit)
         # WINE_MULTI = generic wine, new name
         if [ -n "${WINE64}" ]; then
             true
@@ -5022,6 +5022,9 @@ winetricks_set_wineprefix()
             WINE64="${WINE}"
         elif command -v "${WINE}64" >/dev/null 2>&1; then
             WINE64="${WINE}64"
+        elif command -v "${WINE}" >/dev/null 2>&1; then
+            # new WOW64 mode uses wine both both 32-bit and 64-bit
+            WINE64="${WINE}"
         else
             # Handle case where wine binaries (or binary wrappers) have a suffix
             WINE64="$(dirname "${WINE}")/"
