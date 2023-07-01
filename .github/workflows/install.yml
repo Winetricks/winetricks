@@ -1,11 +1,12 @@
 on: [push, pull_request]
+name: install
 jobs:
   macos:
     name: make install (with prefix)
     runs-on: macos-latest
     steps:
       - name: checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       # OSX doesn't allow writing to /usr/bin, so skip the non-PREFIX check
       - name: run make install (with PREFIX)
         run: time make install PREFIX="$(mktemp -d)"
@@ -14,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: run make install (with PREFIX)
         run: time make install PREFIX="$(mktemp -d)"
       - name: run make install (without PREFIX)
