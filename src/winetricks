@@ -16403,104 +16403,60 @@ w_metadata origin apps \
     year="2011" \
     media="download" \
     file1="OriginSetup.exe" \
+    file2="version_v2.dll" \
     installed_file1="${W_PROGRAMS_X86_WIN}/Origin/Origin.exe" \
     homepage="https://www.origin.com/"
 
-helper_origin_dl()
-{
-    # Skipping checksum as this changes too often
-    w_download_to origin https://origin-a.akamaihd.net/Origin-Client-Download/origin/live/OriginSetup.exe
-}
-
 load_origin()
 {
-    # Need to force wine-6.0 as Origin doesn't run below WineCX21 (wine32on64)
-    if [ "$(uname -s)" = "Darwin" ] && w_wine_version_in ,6.0 ; then
-        w_die "${W_PACKAGE} requires wine version 6.0 (or newer)"
-    fi
+    w_download_to origin https://taskinoz.com/downloads/OriginSetup-10.5.119.52718.exe ed6ee5174f697744ac7c5783ff9021da603bbac42ae9836cd468d432cadc9779 OriginSetup.exe
+    w_download_to origin https://github.com/p0358/Fuck_off_EA_App/releases/download/v2/version.dll 5f0bbb15f7cff8540642c28739db0cd6b15e77e5935f4e6701351eea86d929ab version_v2.dll
 
-    if [ "${WINETRICKS_FORCE}" != 1 ] && w_workaround_wine_bug 44691 "Installer fails under wine, manually unpacking it instead" 6.7,; then
-        w_call originupdater
-        w_warn "${W_PACKAGE} might fail, to update use the originupdate verb"
-    else
-        helper_origin_dl
-        w_try_cd "${W_CACHE}/${W_PACKAGE}"
-        w_try "${WINE}" "${file1}" /NoLaunch ${W_OPT_UNATTENDED:+/SILENT}
-    fi
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" /NoLaunch ${W_OPT_UNATTENDED:+/SILENT}
 
     if w_workaround_wine_bug 32342 "QtWebEngineProcess.exe crashes when updating or launching Origin (missing fonts)"; then
         w_call corefonts
     fi
 
-    if w_workaround_wine_bug 44258 "Origin crashes on start."; then
-        w_override_app_dlls igoproxy.exe disabled d3d10
-        w_override_app_dlls igoproxy.exe disabled d3d10_1
-        w_override_app_dlls igoproxy.exe disabled d3d10core
-        w_override_app_dlls igoproxy.exe disabled d3d11
-        w_override_app_dlls igoproxy.exe disabled d3d12
-        w_override_app_dlls igoproxy.exe disabled dxgi
-        w_override_app_dlls igoproxy.exe disabled vulkan-1
-        w_override_app_dlls igoproxy.exe disabled winevulkan
-
-        if [ "${W_ARCH}" = "win64" ]; then
-            w_override_app_dlls igoproxy64.exe disabled d3d10
-            w_override_app_dlls igoproxy64.exe disabled d3d10_1
-            w_override_app_dlls igoproxy64.exe disabled d3d10core
-            w_override_app_dlls igoproxy64.exe disabled d3d11
-            w_override_app_dlls igoproxy64.exe disabled d3d12
-            w_override_app_dlls igoproxy64.exe disabled dxgi
-            w_override_app_dlls igoproxy64.exe disabled vulkan-1
-            w_override_app_dlls igoproxy64.exe disabled winevulkan
-        fi
+    if w_workaround_wine_bug 36863 "Disabling Origin In-game overlay."; then
+        w_override_dlls disabled igoproxy.exe
+        w_override_dlls disabled igoproxy64.exe
     fi
 
     if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly."; then
-        w_override_dlls disabled libglesv2
+        w_override_app_dlls Origin.exe disabled libglesv2
     fi
 
     # Avoids "An unexpected error has occurred. Please try again in a few moments. Error: 327684:3"
     # Games won't register correctly unless disabled
     if w_workaround_wine_bug 52781 "Origin does not notice games exiting, does not allow them to be relaunched."; then
-        w_override_app_dlls origin.exe disabled gameux
+        w_override_app_dlls Origin.exe disabled gameux
     fi
 
-    # Origin requirements
-    w_call vcrun2010
-    w_call vcrun2013
-    w_call vcrun2019
-
-    if w_wine_version_in ,6.3 ; then
-        w_call d3dcompiler_47
+    if [ "$(uname -s)" = "Darwin" ]; then
+        w_override_app_dlls EALink.exe disabled d3d10
+        w_override_app_dlls EALink.exe disabled d3d10core
+        w_override_app_dlls EALink.exe disabled d3d12
+        w_override_app_dlls EALink.exe disabled d3d11
+        w_override_app_dlls EALink.exe disabled dxgi
+        w_override_app_dlls Origin.exe disabled dxgi
     fi
 
-    w_warn "Origin In-game overlay must be disabled"
-}
+    w_warn "Workaround Forced EA app upgrade."
+    w_try cp -f "${W_CACHE}/${W_PACKAGE}/version_v2.dll" "${W_PROGRAMS_X86_UNIX}/Origin/version.dll"
+    w_override_app_dlls Origin.exe native version
 
-#----------------------------------------------------------------
+    w_warn "Pretend EA app is installed"
+    cat > "${W_TMP}"/ea-app.reg <<_EOF_
+REGEDIT4
 
-w_metadata originupdater apps \
-    title="EA Origin (updater)" \
-    publisher="EA" \
-    media="download" \
-    file1="../origin/OriginSetup.exe" \
-    homepage="https://www.origin.com/"
+[HKEY_LOCAL_MACHINE\\Software\\Electronic Arts\\EA Desktop]
+"InstallSuccessful"="true"
 
-load_originupdater()
-{
-    # Need to force wine-6.0 as Origin doesn't run below WineCX21 (wine32on64)
-    if [ "$(uname -s)" = "Darwin" ] && w_wine_version_in ,6.0 ; then
-        w_die "${W_PACKAGE} requires wine version 6.0 (or newer)"
-    fi
+_EOF_
+    w_try_regedit "${W_TMP}"/ea-app.reg
 
-    # Remove cached installer as the checksum changes too often that is even more critical for the updater function
-    w_try rm -f "${W_CACHE}/origin/OriginSetup.exe"
-
-    helper_origin_dl
-
-    w_try rm -rf "${W_PROGRAMS_X86_UNIX}"/Origin
-    w_try_7z "${W_CACHE}"/origin "${W_CACHE}"/origin/OriginSetup.exe update
-    w_try_7z "${W_PROGRAMS_X86_UNIX}"/Origin "${W_CACHE}"/origin/update/OriginUpdate_*_*_*_*.zip -aoa
-    w_try rm -rf "${W_CACHE}"/origin/update
 }
 
 #----------------------------------------------------------------
