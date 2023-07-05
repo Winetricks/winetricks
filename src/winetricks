@@ -5366,6 +5366,7 @@ winetricks_wine_setup()
                 "${WINE}server" \
                 "$(command -v wineserver 2> /dev/null)" \
                 "$(dirname "${WINE}")/server/wineserver" \
+                "$(dirname "${WINE}")/wineserver" \
                 /usr/bin/wineserver-development \
                 /usr/lib/wine/wineserver \
                 /usr/lib/i386-kfreebsd-gnu/wine/wineserver \
