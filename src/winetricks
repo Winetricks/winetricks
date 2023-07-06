@@ -16773,6 +16773,22 @@ load_steam()
 
 #----------------------------------------------------------------
 
+w_metadata textractor520 apps \
+    title="Textractor 5.2.0" \
+    publisher="Akash Mozumdar" \
+    year="2022" \
+    media="manual_download" \
+    file1="Textractor-5.2.0-Setup.exe"
+
+load_textractor520()
+{
+    w_download "https://github.com/artikash/textractor/releases/download/v5.2.0/Textractor-5.2.0-Setup.exe"
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "${WINE}" "${file1}"
+}
+
+#----------------------------------------------------------------
+
 w_metadata ubisoftconnect apps \
     title="Ubisoft Connect" \
     publisher="Ubisoft" \
