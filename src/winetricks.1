@@ -27,7 +27,7 @@ Set country code to CC and don't detect your IP address
 when retrying downloads
 .TP
 .B
-\-\-force
+\-f, \-\-force
 Don't check whether packages were already installed
 .TP
 .B
@@ -35,8 +35,20 @@ Don't check whether packages were already installed
 Show GUI diagnostics even when driven by the command-line interface
 .TP
 .B
+\-\-gui=OPT
+Set OPT to kdialog or zenity to override GUI engine
+.TP
+.B
 \-\-isolate
 Install each app or game in its own bottle
+.TP
+.B
+\-\-self\-update
+Update this application to the last version
+.TP
+.B
+\-\-update\-rollback
+Rollback the last self update
 .TP
 .B
 \-k, \-\-keep_isos
@@ -51,6 +63,14 @@ Don't install each app or game in its own bottle (default)
 Don't delete temp directories (useful during debugging)
 .TP
 .B
+\-\-optin
+Opt in to reporting which verbs you use to the Winetricks maintainers
+.TP
+.B
+\-\-optout
+Opt out of reporting which verbs you use to the Winetricks maintainers
+.TP
+.B
 \-q, \-\-unattended
 Don't ask any questions, just install automatically
 .TP
@@ -59,8 +79,16 @@ Don't ask any questions, just install automatically
 Retry hard when caching scratched discs
 .TP
 .B
+\-t, \-\-torify
+Run downloads under torify, if available
+.TP
+.B
 \-v, \-\-verbose
 Echo all commands as they are executed
+.TP
+.B
+\-\-verify
+Run (automated) GUI tests for verbs, if available
 .TP
 .B
 \-h, \-\-help
@@ -83,10 +111,6 @@ list verbs in category 'benchmarks'
 .B
 dlls list
 list verbs in category 'dlls'
-.TP
-.B
-games list
-list verbs in category 'games'
 .TP
 .B
 fonts list
@@ -172,16 +196,19 @@ See <https://www.gnu.org/licenses/>.
 .SH BUGS
 .PP
 Bugs may be reported at
-.I https://github.com/Winetricks/winetricks
+.I https://github.com/Winetricks/winetricks/issues
 .PP
 .SH AVAILABILITY
 The most recent version of
 .B winetricks
 can be downloaded from
-.I https://github.com/Winetricks/winetricks/releases
+.I https://github.com/Winetricks/winetricks/releases/latest
 .PP
 The latest snapshot of the code may be obtained via git; see
 .I https://github.com/Winetricks/winetricks/
+.PP
+Documentation for Winetricks can be found at
+.I https://github.com/Winetricks/winetricks/wiki
 .PP
 For further information about
 .B winetricks
