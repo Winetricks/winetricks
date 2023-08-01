@@ -6223,6 +6223,25 @@ load_binkw32()
 
 #----------------------------------------------------------------
 
+w_metadata d2gl dlls \
+    title="Diablo 2 LoD Glide to OpenGL Wrapper" \
+    publisher="Bayaraa" \
+    year="2023" \
+    media="download" \
+    file1="D2GL.v1.3.3.zip" \
+    installed_file1="${W_PROGRAMS_X86_WIN}/Diablo II/glide3x.dll" \
+    homepage="https://github.com/bayaraa/d2gl"
+
+load_d2gl()
+{
+    w_download https://github.com/bayaraa/d2gl/releases/download/v1.3.3/D2GL.v1.3.3.zip 33862ab74f314f9e72f992dd8850f8bfd0d6533ef0e4a0015867fc6524125ea2
+    w_try_unzip "${W_PROGRAMS_X86_UNIX}/Diablo II" "${W_CACHE}/${W_PACKAGE}/${file1}"
+
+    w_warn "Run Diablo II using game.exe -3dfx"
+}
+
+#----------------------------------------------------------------
+
 w_metadata d3dcompiler_42 dlls \
     title="MS d3dcompiler_42.dll" \
     publisher="Microsoft" \
