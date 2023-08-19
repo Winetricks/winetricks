@@ -19221,6 +19221,8 @@ winetricks_stats_log_command()
 winetricks_shell()
 {
     (
+        _W_escape() { printf "'%s'\\n" "$(printf '%s' "$1" | sed -e "s/'/'\\\\''/g")"; }
+
         w_try_cd "${W_DRIVE_C}"
         export WINE
 
@@ -19232,7 +19234,14 @@ winetricks_shell()
                 for term in gnome-terminal konsole Terminal xterm; do
                     if test "$(command -v ${term} 2>/dev/null)"; then
                         if [ -n "${*}" ]; then
-                            WINEDEBUG=-all ${term} -e "${*}"
+                            # Convert the list of arguments into a single
+                            # string while single quoting each argument.
+                            _W_args=""
+                            for arg in "$@"; do
+                                _W_args="${_W_args}$(_W_escape "${arg}") "
+                            done
+
+                            WINEDEBUG=-all ${term} -e "${_W_args}"
                         else
                             WINEDEBUG=-all ${term}
                         fi
