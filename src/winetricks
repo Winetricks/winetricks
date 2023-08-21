@@ -18761,8 +18761,10 @@ load_remove_mono()
         "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
         "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4" /f || true
 
-        w_try rm -f "${W_WINDIR_UNIX}/system32/mscoree.dll"
-        if [ "${W_ARCH}" = "win64" ]; then
+        if grep --quiet --text "WINE_MONO_OVERRIDES" ${W_WINDIR_UNIX}/system32/mscoree.dll; then
+            w_try rm -f "${W_WINDIR_UNIX}/system32/mscoree.dll"
+        fi
+        if grep --quiet --text "WINE_MONO_OVERRIDES" ${W_WINDIR_UNIX}/syswow64/mscoree.dll; then
             w_try rm -f "${W_WINDIR_UNIX}/syswow64/mscoree.dll"
         fi
     elif [ -z "$1" ] || [ "$1" != "internal" ]; then
