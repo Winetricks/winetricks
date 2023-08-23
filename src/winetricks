@@ -13209,7 +13209,7 @@ w_metadata mfc140 dlls \
 
 load_mfc140()
 {
-    w_download_to vcrun2015 https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe fdd1e1f0dcae2d0aa0720895eff33b927d13076e64464bb7c7e5843b7667cd14
+    w_download_to vcrun2015 https://download.microsoft.com/download/6/D/F/6DF3FF94-F7F9-4F0B-838C-A328D1A7D0EE/vc_redist.x86.exe dafb8b5f4b46bfaf7faa1d0ad05211f5c9855f0005cd603f8b5037b6a708d6b6
 
     w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2015/vc_redist.x86.exe -F 'a11'
     w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/a11"
@@ -13220,7 +13220,7 @@ load_mfc140()
     w_try_cp_dll "${W_TMP}/win32"/mfcm140u.dll "${W_SYSTEM32_DLLS}"/mfcm140u.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download_to vcrun2015 https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe 5eea714e1f22f1875c1cb7b1738b0c0b1f02aec5ecb95f0fdb1c5171c6cd93a3
+        w_download_to vcrun2015 https://download.microsoft.com/download/6/D/F/6DF3FF94-F7F9-4F0B-838C-A328D1A7D0EE/vc_redist.x64.exe d7257265dbc0635c96dd67ddf938a09abe0866cb2d4fa05f8b758c8644e724e4
 
         w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2015/vc_redist.x64.exe -F 'a11'
         w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/a11"
