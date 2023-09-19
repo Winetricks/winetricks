@@ -3552,7 +3552,7 @@ winetricks_mainmenu()
             _W_msg_explorer='Стартиране на explorer'
             _W_msg_uninstaller='Стартиране на uninstaller'
             _W_msg_winecmd='Стартиране на терминала'
-            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
+            _W_msg_wine_misc_exe='Стартиране на изпълним файл (.exe/.msi/.msu)'
             _W_msg_shell='Стартиране на терминала (за отстраняване на неизправности)'
             _W_msg_folder='Търсене на файлове'
             _W_msg_annihilate="Изтриване на ВСИЧКИ ДАННИ И ПРИЛОЖЕНИЯ В ТАЗИ ПАПКА"
@@ -3933,6 +3933,11 @@ winetricks_settings_menu()
                     # Begin 'title' strings localization code
                     # shellcheck disable=SC2154
                     case ${LANG} in
+                    bg*)
+                        case "${title_bg}" in
+                            "") ;;
+                            *) title="${title_bg}";;
+                        esac
                     uk*)
                         case "${title_uk}" in
                             "") ;;
@@ -5515,6 +5520,8 @@ winetricks_usage()
     --update-rollback Отменя последното обновяване на това приложение
 -k, --keep_isos       Кешира .iso файловете (позволява инсталация без диск)
     --no-clean        Не изтрива временните директории (полезно е за отстраняване на неизправности)
+    --optin           Включва докладването за използваните глаголи към разработчиците на Winetricks
+    --optout          Изключва докладването за използваните глаголи към разработчиците на Winetricks
 -q, --unattended      Не задава въпроси, инсталира автоматично
 -r, --ddrescue        Повтаря опитите за кеширане на одраскани дискове
 -t  --torify          Стартира изтегляне с torify, ако е налично
@@ -17857,12 +17864,15 @@ load_wglgears()
 # DirectInput settings
 
 w_metadata mwo=force settings \
+    title_bg="Задайте принудително DirectInput MouseWarpOverride (необходимо за някои игри)" \
     title_uk="Встановити примусове DirectInput MouseWarpOverride (необхідно для деяких ігор)" \
     title="Set DirectInput MouseWarpOverride to force (needed by some games)"
 w_metadata mwo=enabled settings \
+    title_bg="Включете DirectInput MouseWarpOverride (по подразбиране)" \
     title_uk="Увімкнути DirectInput MouseWarpOverride (за замовчуванням)" \
     title="Set DirectInput MouseWarpOverride to enabled (default)"
 w_metadata mwo=disable settings \
+    title_bg="Изключете DirectInput MouseWarpOverride" \
     title_uk="Вимкнути DirectInput MouseWarpOverride" \
     title="Set DirectInput MouseWarpOverride to disable"
 
@@ -17892,6 +17902,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata fontfix settings \
+    title_bg="Проверете за неработещи шрифтове" \
     title_uk="Перевірка шрифтів" \
     title="Check for broken fonts"
 
@@ -17914,15 +17925,19 @@ load_fontfix()
 #----------------------------------------------------------------
 
 w_metadata fontsmooth=disable settings \
+    title_bg="Изключете изглаждането на шрифта" \
     title_uk="Вимкнути згладжування шрифту" \
     title="Disable font smoothing"
 w_metadata fontsmooth=bgr settings \
+    title_bg="Включете подпикселното изглаждане на шрифта за BGR LCD монитори" \
     title_uk="Увімкнути субпіксельне згладжування шрифту для BGR LCD моніторів" \
     title="Enable subpixel font smoothing for BGR LCDs"
 w_metadata fontsmooth=rgb settings \
+    title_bg="Включете подпикселното изглаждане на шрифта за RGB LCD монитори" \
     title_uk="Увімкнути субпіксельне згладжування шрифту для RGB LCD моніторів" \
     title="Enable subpixel font smoothing for RGB LCDs"
 w_metadata fontsmooth=gray settings \
+    title_bg="Включете подпикселното изглаждане на шрифта" \
     title_uk="Увімкнути субпіксельне згладжування шрифту" \
     title="Enable subpixel font smoothing"
 
@@ -17955,9 +17970,11 @@ _EOF_
 # Mac Driver settings
 
 w_metadata macdriver=mac settings \
+    title_bg="Включете драйвера на Mac - Quartz (по подразбиране)" \
     title_uk="Увімкнути рідний Mac Quartz драйвер (за замовчуванням)" \
     title="Enable the Mac native Quartz driver (default)"
 w_metadata macdriver=x11 settings \
+    title_bg="Изключете драйвера на Mac - Quartz и включете драйвера на X11" \
     title_uk="Вимкнути рідний Mac Quartz драйвер та використовувати замість нього X11" \
     title="Disable the Mac native Quartz driver, use X11 instead"
 
@@ -17977,10 +17994,13 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata mackeyremap=both settings \
+    title_bg="Включете преназначаването на клавишите Opt->Alt и Cmd->Ctrl за драйвера на Mac" \
     title="Enable mapping opt->alt and cmd->ctrl keys for the Mac native driver"
 w_metadata mackeyremap=left settings \
+    title_bg="Включете преназначаването на левите клавиши Opt->Alt и Cmd->Ctrl за драйвера на Mac" \
     title="Enable mapping of left opt->alt and cmd->ctrl keys for the Mac native driver"
 w_metadata mackeyremap=none settings \
+    title_bg="Не преназначавайте клавишите за драйвера на Mac (по подразбиране)" \
     title="Do not remap keys for the Mac native driver (default)"
 
 load_mackeyremap()
@@ -18012,9 +18032,11 @@ _EOF_
 # X11 Driver settings
 
 w_metadata grabfullscreen=y settings \
+    title_bg="Задайте принудително прихващане на курсора за прозорци на цял екран (необходимо за някои игри)" \
     title_uk="Примусове захоплення курсору для повноекранних вікон (необхідно для деяких ігор)" \
     title="Force cursor clipping for full-screen windows (needed by some games)"
 w_metadata grabfullscreen=n settings \
+    title_bg="Изключете прихващането на курсора за прозорци на цял екран (по подразбиране)" \
     title_uk="Вимкнути примусове захоплення курсору для повноекранних вікон (за замовчуванням)" \
     title="Disable cursor clipping for full-screen windows (default)"
 
@@ -18037,21 +18059,25 @@ _EOF_
 }
 
 w_metadata windowmanagerdecorated=y settings \
+    title_bg="Позволете на мениджъра на прозорците да декорира прозорците (по подразбиране)" \
     title_uk="Дозволити менеджеру вікон декорувати вікна (за замовчуванням)" \
     title="Allow the window manager to decorate windows (default)"
 w_metadata windowmanagerdecorated=n settings \
+    title_bg="Не позволявайте на мениджъра на прозорците да декорира прозорците" \
     title_uk="Не дозволяти менеджеру вікон декорувати вікна" \
     title="Prevent the window manager from decorating windows"
 
 #----------------------------------------------------------------
 
 w_metadata usetakefocus=y settings \
+    title_bg="Включете UseTakeFocus" \
     title_cz="Aktivovat UseTakeFocus" \
     title_uk="Увімкнути фокусування на вікні" \
     title_sk="Aktivovať UseTakeFocus" \
     title_tlh="Qorwagh buSchoH \'e\' chu\'" \
     title="Enable UseTakeFocus"
 w_metadata usetakefocus=n settings \
+    title_bg="Изключете UseTakeFocus (по подразбиране)" \
     title_cz="Deaktivovat UseTakeFocus (výchozí)" \
     title_uk="Вимкнути фокусування на вікні (за замовчуванням)" \
     title_sk="Deaktivovať UseTakeFocus (výchozí)" \
@@ -18098,9 +18124,11 @@ _EOF_
 }
 
 w_metadata windowmanagermanaged=y settings \
+    title_bg="Позволете на мениджъра на прозорците да управлява прозорците (по подразбиране)" \
     title_uk="Дозволити менеджеру вікон керування вікнами (за замовчуванням)" \
     title="Allow the window manager to control windows (default)"
 w_metadata windowmanagermanaged=n settings \
+    title_bg="Не позволявайте на мениджъра на прозорците да управлява прозорците" \
     title_uk="Не дозволяти менеджеру вікон керування вікнами" \
     title="Prevent the window manager from controlling windows"
 
@@ -18127,21 +18155,27 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata vd=off settings \
+    title_bg="Изключете виртуалния работен плот" \
     title_uk="Вимкнути віртуальний робочий стіл" \
     title="Disable virtual desktop"
 w_metadata vd=640x480 settings \
+    title_bg="Включете виртуалния работен плот с разделителна способност 640x480" \
     title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 640x480" \
     title="Enable virtual desktop, set size to 640x480"
 w_metadata vd=800x600 settings \
+    title_bg="Включете виртуалния работен плот с разделителна способност 800x600" \
     title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 800x600" \
     title="Enable virtual desktop, set size to 800x600"
 w_metadata vd=1024x768 settings \
+    title_bg="Включете виртуалния работен плот с разделителна способност 1024x768" \
     title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 1024x768" \
     title="Enable virtual desktop, set size to 1024x768"
 w_metadata vd=1280x1024 settings \
+    title_bg="Включете виртуалния работен плот с разделителна способност 1280x1024" \
     title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 1280x1024" \
     title="Enable virtual desktop, set size to 1280x1024"
 w_metadata vd=1440x900 settings \
+    title_bg="Включете виртуалния работен плот с разделителна способност 1440x900" \
     title_uk="Увімкнути віртуальний робочий стіл та встановити розмір 1440x900" \
     title="Enable virtual desktop, set size to 1440x900"
 
@@ -18185,8 +18219,10 @@ _EOF_
 # MIME-type file associations settings
 
 w_metadata mimeassoc=on settings \
+    title_bg="Включете експортирането на файловите асоциации от MIME към работния плот (по подразбиране)" \
     title="Enable exporting MIME-type file associations to the native desktop (default)"
 w_metadata mimeassoc=off settings \
+    title_bg="Изключете експортирането на файловите асоциации от MIME към работния плот" \
     title="Disable exporting MIME-type file associations to the native desktop"
 
 load_mimeassoc()
@@ -18242,9 +18278,11 @@ _EOF_
 # CheckFloatConstants settings
 
 w_metadata cfc=enabled settings \
+    title_bg="Включете CheckFloatConstants" \
     title_uk="Увімкнути CheckFloatConstants" \
     title="Enable CheckFloatConstants"
 w_metadata cfc=disabled settings \
+    title_bg="Изключете CheckFloatConstants (по подразбиране)" \
     title_uk="Вимкнути CheckFloatConstants (за замовчуванням)" \
     title="Disable CheckFloatConstants (default)"
 
@@ -18256,12 +18294,15 @@ load_cfc()
 # CSMT settings
 
 w_metadata csmt=force settings \
+    title_bg="Включете принудително сериализацията на командите от OpenGL или Vulkan между няколко командни потока в приложението" \
     title_uk="Увімкнути та примусити серіалізацію команд OpenGL або Vulkan між кількома потоками команд в одній програмі" \
     title="Enable and force serialisation of OpenGL or Vulkan commands between multiple command streams in the same application"
 w_metadata csmt=on settings \
+    title_bg="Включете Command Stream Multithreading (по подразбиране)" \
     title_uk="Увімкнути Command Stream Multithreading (за замовчуванням)" \
     title="Enable Command Stream Multithreading (default)"
 w_metadata csmt=off settings \
+    title_bg="Изключете Command Stream Multithreading"\
     title_uk="Вимкнути Command Stream Multithreading"\
     title="Disable Command Stream Multithreading"
 
@@ -18289,15 +18330,19 @@ _EOF_
 # DirectDraw settings
 
 w_metadata gsm=0 settings \
+    title_bg="Задайте MaxShaderModelGS на 0" \
     title_uk="Встановити MaxShaderModelGS на 0" \
     title="Set MaxShaderModelGS to 0"
 w_metadata gsm=1 settings \
+    title_bg="Задайте MaxShaderModelGS на 1" \
     title_uk="Встановити MaxShaderModelGS на 1" \
     title="Set MaxShaderModelGS to 1"
 w_metadata gsm=2 settings \
+    title_bg="Задайте MaxShaderModelGS на 2" \
     title_uk="Встановити MaxShaderModelGS на 2" \
     title="Set MaxShaderModelGS to 2"
 w_metadata gsm=3 settings \
+    title_bg="Задайте MaxShaderModelGS на 3" \
     title_uk="Встановити MaxShaderModelGS на 3" \
     title="Set MaxShaderModelGS to 3"
 
@@ -18309,6 +18354,7 @@ load_gsm()
 #----------------------------------------------------------------
 
 w_metadata npm=repack settings \
+    title_bg="Задайте NonPower2Mode на repack" \
     title_uk="Встановити NonPower2Mode на repack" \
     title="Set NonPower2Mode to repack"
 
@@ -18320,9 +18366,11 @@ load_npm()
 #----------------------------------------------------------------
 
 w_metadata orm=fbo settings \
+    title_bg="Задайте OffscreenRenderingMode=fbo (по подразбиране)" \
     title_uk="Встановити OffscreenRenderingMode=fbo (за замовчуванням)" \
     title="Set OffscreenRenderingMode=fbo (default)"
 w_metadata orm=backbuffer settings \
+    title_bg="Задайте OffscreenRenderingMode=backbuffer" \
     title_uk="Встановити OffscreenRenderingMode=backbuffer" \
     title="Set OffscreenRenderingMode=backbuffer"
 
@@ -18334,15 +18382,19 @@ load_orm()
 #----------------------------------------------------------------
 
 w_metadata psm=0 settings \
+    title_bg="Задайте MaxShaderModelPS на 0" \
     title_uk="Встановити MaxShaderModelPS на 0" \
     title="Set MaxShaderModelPS to 0"
 w_metadata psm=1 settings \
+    title_bg="Задайте MaxShaderModelPS на 1" \
     title_uk="Встановити MaxShaderModelPS на 1" \
     title="Set MaxShaderModelPS to 1"
 w_metadata psm=2 settings \
+    title_bg="Задайте MaxShaderModelPS на 2" \
     title_uk="Встановити MaxShaderModelPS на 2" \
     title="Set MaxShaderModelPS to 2"
 w_metadata psm=3 settings \
+    title_bg="Задайте MaxShaderModelPS на 3" \
     title_uk="Встановити MaxShaderModelPS на 3" \
     title="Set MaxShaderModelPS to 3"
 
@@ -18354,12 +18406,15 @@ load_psm()
 #----------------------------------------------------------------
 
 w_metadata shader_backend=glsl settings \
+    title_bg="Задайте shader_backend на glsl" \
     title_uk="Встановити shader_backend на glsl" \
     title="Set shader_backend to glsl"
 w_metadata shader_backend=arb settings \
+    title_bg="Задайте shader_backend на arb" \
     title_uk="Встановити shader_backend на arb" \
     title="Set shader_backend to arb"
 w_metadata shader_backend=none settings \
+    title_bg="Задайте shader_backend на none" \
     title_uk="Встановити shader_backend на none" \
     title="Set shader_backend to none"
 
@@ -18371,9 +18426,11 @@ load_shader_backend()
 #----------------------------------------------------------------
 
 w_metadata ssm=disabled settings \
+    title_bg="Изключете Struct Shader Math (по подразбиране)" \
     title_uk="Вимкнути Struct Shader Math (за замовчуванням)" \
     title="Disable Struct Shader Math (default)"
 w_metadata ssm=enabled settings \
+    title_bg="Включете Struct Shader Math"\
     title_uk="Увімкнути Struct Shader Math"\
     title="Enable Struct Shader Math"
 
@@ -18399,15 +18456,19 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata renderer=gdi settings \
+    title_bg="Задайте renderer на gdi" \
     title_uk="Встановити renderer на gdi" \
     title="Set renderer to gdi"
 w_metadata renderer=gl settings \
+    title_bg="Задайте renderer на gl" \
     title_uk="Встановити renderer на gl" \
     title="Set renderer to gl"
 w_metadata renderer=no3d settings \
+    title_bg="Задайте renderer на no3d" \
     title_uk="Встановити renderer на no3d" \
     title="Set renderer to no3d"
 w_metadata renderer=vulkan settings \
+    title_bg="Задайте renderer на vulkan" \
     title_uk="Встановити renderer на vulkan" \
     title="Set renderer to vulkan"
 
@@ -18419,21 +18480,27 @@ load_renderer()
 #----------------------------------------------------------------=
 
 w_metadata rtlm=auto settings \
+    title_bg="Задайте RenderTargetLockMode на auto (по подразбиране)" \
     title_uk="Встановити RenderTargetLockMode на авто (за замовчуванням)" \
     title="Set RenderTargetLockMode to auto (default)"
 w_metadata rtlm=disabled settings \
+    title_bg="Задайте RenderTargetLockMode на disabled" \
     title_uk="Вимкнути RenderTargetLockMode" \
     title="Set RenderTargetLockMode to disabled"
 w_metadata rtlm=readdraw settings \
+    title_bg="Задайте RenderTargetLockMode на readdraw" \
     title_uk="Встановити RenderTargetLockMode на readdraw" \
     title="Set RenderTargetLockMode to readdraw"
 w_metadata rtlm=readtex settings \
+    title_bg="Задайте RenderTargetLockMode на readtex" \
     title_uk="Встановити RenderTargetLockMode на readtex" \
     title="Set RenderTargetLockMode to readtex"
 w_metadata rtlm=texdraw settings \
+    title_bg="Задайте RenderTargetLockMode на texdraw" \
     title_uk="Встановити RenderTargetLockMode на texdraw" \
     title="Set RenderTargetLockMode to texdraw"
 w_metadata rtlm=textex settings \
+    title_bg="Задайте RenderTargetLockMode на textex" \
     title_uk="Встановити RenderTargetLockMode на textex" \
     title="Set RenderTargetLockMode to textex"
 
@@ -18445,6 +18512,7 @@ load_rtlm()
 #----------------------------------------------------------------
 
 w_metadata set_mididevice settings \
+    title_bg="Задайте устройството MIDImap към стойността, посочена в променливата на средата MIDI_DEVICE" \
     title="Set MIDImap device to the value specified in the MIDI_DEVICE environment variable"
 
 load_set_mididevice()
@@ -18467,15 +18535,19 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata videomemorysize=default settings \
+    title_bg="Оставете на Wine да открие паметта на видеокартата" \
     title_uk="Дати можливість Wine визначити розмір відеопам'яті" \
     title="Let Wine detect amount of video card memory"
 w_metadata videomemorysize=512 settings \
+    title_bg="Кажете на Wine, че видеокартата има 512 МБ памет" \
     title_uk="Повідомити Wine про 512МБ відеопам'яті" \
     title="Tell Wine your video card has 512MB RAM"
 w_metadata videomemorysize=1024 settings \
+    title_bg="Кажете на Wine, че видеокартата има 1024 МБ памет" \
     title_uk="Повідомити Wine про 1024МБ відеопам'яті" \
     title="Tell Wine your video card has 1024MB RAM"
 w_metadata videomemorysize=2048 settings \
+    title_bg="Кажете на Wine, че видеокартата има 2048 МБ памет" \
     title_uk="Повідомити Wine про 2048МБ відеопам'яті" \
     title="Tell Wine your video card has 2048MB RAM"
 
@@ -18511,15 +18583,19 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata vsm=0 settings \
+    title_bg="Задайте MaxShaderModelVS на 0" \
     title_uk="Встановити MaxShaderModelVS на 0" \
     title="Set MaxShaderModelVS to 0"
 w_metadata vsm=1 settings \
+    title_bg="Задайте MaxShaderModelVS на 1" \
     title_uk="Встановити MaxShaderModelVS на 1" \
     title="Set MaxShaderModelVS to 1"
 w_metadata vsm=2 settings \
+    title_bg="Задайте MaxShaderModelVS на 2" \
     title_uk="Встановити MaxShaderModelVS на 2" \
     title="Set MaxShaderModelVS to 2"
 w_metadata vsm=3 settings \
+    title_bg="Задайте MaxShaderModelVS на 3" \
     title_uk="Встановити MaxShaderModelVS на 3" \
     title="Set MaxShaderModelVS to 3"
 
@@ -18534,8 +18610,10 @@ load_vsm()
 #----------------------------------------------------------------
 
 w_metadata autostart_winedbg=enabled settings \
+    title_bg="Стартирайте автоматично winedbg при възникване на необработено изключение (по подразбиране)" \
     title="Automatically launch winedbg when an unhandled exception occurs (default)"
 w_metadata autostart_winedbg=disabled settings \
+    title_bg="Не позволявайте стартирането на winedbg при възникване на необработено изключение" \
     title="Prevent winedbg from launching when an unhandled exception occurs"
 
 load_autostart_winedbg()
@@ -18564,6 +18642,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata heapcheck settings \
+    title_bg="Включете кумулативната проверка с GlobalFlag" \
     title_uk="Увімкнути накопичувальну перевірку GlobalFlag" \
     title="Enable heap checking with GlobalFlag"
 
@@ -18582,6 +18661,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata nocrashdialog settings \
+    title_bg="Изключете диалоговия прозорец за срив" \
     title_uk="Вимкнути діалог про помилку" \
     title="Disable crash dialog"
 
@@ -18600,6 +18680,7 @@ _EOF_
 }
 
 w_metadata set_userpath settings \
+    title_bg="задайте потребителската променлива PATH в папката, посочена от местоположенията в променливата на средата WINEPATH с разделител ';'" \
     title_uk="" \
     title="set user PATH variable in wine prefix specified by native and/or wine paths in WINEPATH environment variable with ';' as path separator"
 
@@ -18621,9 +18702,11 @@ _EOF_
 # settings->misc
 
 w_metadata alldlls=default settings \
+    title_bg="Премахнете всички замени на DLL файловете" \
     title_uk="Видалити всі перевизначення DLL" \
     title="Remove all DLL overrides"
 w_metadata alldlls=builtin settings \
+    title_bg="Заменете DLL файловете" \
     title_uk="Перевизначити найбільш поширені DLL на вбудовані" \
     title="Override most common DLLs to builtin"
 
@@ -18638,6 +18721,7 @@ load_alldlls()
 #----------------------------------------------------------------
 
 w_metadata bad settings \
+    title_bg="Фалшив глагол, който винаги връща false" \
     title="Fake verb that always returns false"
 
 load_bad()
@@ -18648,6 +18732,7 @@ load_bad()
 #----------------------------------------------------------------
 
 w_metadata forcemono settings \
+    title_bg="Задайте принудително Mono вместо .NET (за отстраняване на грешки)" \
     title_uk="Примусове використання mono замість .NET (для налагодження)" \
     title="Force using Mono instead of .NET (for debugging)"
 
@@ -18660,6 +18745,7 @@ load_forcemono()
 #----------------------------------------------------------------
 
 w_metadata good settings \
+    title_bg="Фалшив глагол, който винаги връща true" \
     title="Fake verb that always returns true"
 
 load_good()
@@ -18670,8 +18756,10 @@ load_good()
 #----------------------------------------------------------------
 
 w_metadata hidewineexports=enable settings \
+    title_bg="Включете скриване на експортирането на Wine от приложенията (wine-staging)" \
     title="Enable hiding Wine exports from applications (wine-staging)"
 w_metadata hidewineexports=disable settings \
+    title_bg="Изключете скриване на експортирането на Wine от приложенията (wine-staging)" \
     title="Disable hiding Wine exports from applications (wine-staging)"
 
 load_hidewineexports()
@@ -18706,6 +18794,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata hosts settings \
+    title_bg="Добавете празни файлове в C:\\windows\\system32\\drivers\\etc\\{hosts,services}" \
     title_uk="Додати порожні файли у C:\\windows\\system32\\drivers\\etc\\{hosts,services}" \
     title="Add empty C:\\windows\\system32\\drivers\\etc\\{hosts,services} files"
 
@@ -18727,6 +18816,7 @@ load_hosts()
 #----------------------------------------------------------------
 
 w_metadata isolate_home settings \
+    title_bg="Премахнете връзките на папката към \$HOME" \
     title_uk="Видалити посилання на вино преміум на \$HOME" \
     title="Remove wineprefix links to \$HOME"
 
@@ -18759,6 +18849,7 @@ load_isolate_home()
 #----------------------------------------------------------------
 
 w_metadata native_mdac settings \
+    title_bg="Заменете odbc32, odbccp32 и oledb32" \
     title_uk="Перевизначити odbc32, odbccp32 та oledb32" \
     title="Override odbc32, odbccp32 and oledb32"
 
@@ -18791,6 +18882,7 @@ load_native_mdac()
 #----------------------------------------------------------------
 
 w_metadata native_oleaut32 settings \
+    title_bg="Заменете oleaut32" \
     title_uk="Перевизначити oleaut32" \
     title="Override oleaut32"
 
@@ -18802,6 +18894,7 @@ load_native_oleaut32()
 #----------------------------------------------------------------
 
 w_metadata remove_mono settings \
+    title_bg="Премахнете wine-mono" \
     title_uk="Видалити вбудоване wine-mono" \
     title="Remove builtin wine-mono"
 
@@ -18838,6 +18931,7 @@ load_remove_mono()
 #----------------------------------------------------------------
 
 w_metadata sandbox settings \
+    title_bg="Добавете папката в пясъчника - премахнете връзките към \$HOME" \
     title_uk="Пісочниця wineprefix - видалити посилання до HOME" \
     title="Sandbox the wineprefix - remove links to \$HOME"
 
@@ -18862,18 +18956,23 @@ load_sandbox()
 #----------------------------------------------------------------
 
 w_metadata sound=alsa settings \
+    title_bg="Задайте звуковия драйвер на ALSA" \
     title_uk="Встановити звуковий драйвер ALSA" \
     title="Set sound driver to ALSA"
 w_metadata sound=coreaudio settings \
+    title_bg="Задайте звуковия драйвер на Mac CoreAudio" \
     title_uk="Встановити звуковий драйвер Mac CoreAudio" \
     title="Set sound driver to Mac CoreAudio"
 w_metadata sound=disabled settings \
+    title_bg="Задайте звуковия драйвер на disabled" \
     title_uk="Вимкнути звуковий драйвер" \
     title="Set sound driver to disabled"
 w_metadata sound=oss settings \
+    title_bg="Задайте звуковия драйвер на OSS" \
     title_uk="Встановити звуковий драйвер OSS" \
     title="Set sound driver to OSS"
 w_metadata sound=pulse settings \
+    title_bg="Задайте звуковия драйвер на PulseAudio" \
     title_uk="Встановити звуковий драйвер PulseAudio" \
     title="Set sound driver to PulseAudio"
 
@@ -18894,6 +18993,7 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata nt351 settings \
+    title_bg="Задайте Windows NT 3.51" \
     title_uk="Встановити версію Windows NT 3.51" \
     title="Set Windows version to Windows NT 3.51"
 
@@ -18906,6 +19006,7 @@ load_nt351()
 #----------------------------------------------------------------
 
 w_metadata nt40 settings \
+    title_bg="Задайте Windows NT 4.0" \
     title_uk="Встановити версію Windows NT 4.0" \
     title="Set Windows version to Windows NT 4.0"
 
@@ -18918,6 +19019,7 @@ load_nt40()
 #----------------------------------------------------------------
 
 w_metadata vista settings \
+    title_bg="Задайте Windows Vista" \
     title_uk="Встановити версію Windows Vista" \
     title="Set Windows version to Windows Vista"
 
@@ -18929,6 +19031,7 @@ load_vista()
 #----------------------------------------------------------------
 
 w_metadata win20 settings \
+    title_bg="Задайте Windows 2.0" \
     title_uk="Встановити версію Windows 2.0" \
     title="Set Windows version to Windows 2.0"
 
@@ -18941,6 +19044,7 @@ load_win20()
 #----------------------------------------------------------------
 
 w_metadata win2k settings \
+    title_bg="Задайте Windows 2000" \
     title_uk="Встановити версію Windows 2000" \
     title="Set Windows version to Windows 2000"
 
@@ -18953,6 +19057,7 @@ load_win2k()
 #----------------------------------------------------------------
 
 w_metadata win2k3 settings \
+    title_bg="Задайте Windows 2003" \
     title_uk="Встановити версію Windows 2003" \
     title="Set Windows version to Windows 2003"
 
@@ -18964,6 +19069,7 @@ load_win2k3()
 #----------------------------------------------------------------
 
 w_metadata win2k8 settings \
+    title_bg="Задайте Windows 2008" \
     title_uk="Встановити версію Windows 2008" \
     title="Set Windows version to Windows 2008"
 
@@ -18975,6 +19081,7 @@ load_win2k8()
 #----------------------------------------------------------------
 
 w_metadata win2k8r2 settings \
+    title_bg="Задайте Windows 2008 R2" \
     title_uk="Встановити версію Windows 2008 R2" \
     title="Set Windows version to Windows 2008 R2"
 
@@ -18986,6 +19093,7 @@ load_win2k8r2()
 #----------------------------------------------------------------
 
 w_metadata win30 settings \
+    title_bg="Задайте Windows 3.0" \
     title_uk="Встановити версію Windows 3.0" \
     title="Set Windows version to Windows 3.0"
 
@@ -18998,6 +19106,7 @@ load_win30()
 #----------------------------------------------------------------
 
 w_metadata win31 settings \
+    title_bg="Задайте Windows 3.1" \
     title_uk="Встановити версію Windows 3.1" \
     title="Set Windows version to Windows 3.1"
 
@@ -19010,6 +19119,7 @@ load_win31()
 #----------------------------------------------------------------
 
 w_metadata win7 settings \
+    title_bg="Задайте Windows 7" \
     title_uk="Встановити версію Windows 7" \
     title="Set Windows version to Windows 7"
 
@@ -19021,6 +19131,7 @@ load_win7()
 #----------------------------------------------------------------
 
 w_metadata win8 settings \
+    title_bg="Задайте Windows 8" \
     title_uk="Встановити версію Windows 8" \
     title="Set Windows version to Windows 8"
 
@@ -19032,6 +19143,7 @@ load_win8()
 #----------------------------------------------------------------
 
 w_metadata win81 settings \
+    title_bg="Задайте Windows 8.1" \
     title_uk="Встановити версію Windows 8.1" \
     title="Set Windows version to Windows 8.1"
 
@@ -19043,6 +19155,7 @@ load_win81()
 #----------------------------------------------------------------
 
 w_metadata win10 settings \
+    title_bg="Задайте Windows 10" \
     title_uk="Встановити версію Windows 10" \
     title="Set Windows version to Windows 10"
 
@@ -19054,6 +19167,7 @@ load_win10()
 #----------------------------------------------------------------
 
 w_metadata win11 settings \
+    title_bg="Задайте Windows 11" \
     title_uk="Встановити версію Windows 11" \
     title="Set Windows version to Windows 11"
 
@@ -19065,6 +19179,7 @@ load_win11()
 #----------------------------------------------------------------
 
 w_metadata win95 settings \
+    title_bg="Задайте Windows 95" \
     title_uk="Встановити версію Windows 95" \
     title="Set Windows version to Windows 95"
 
@@ -19077,6 +19192,7 @@ load_win95()
 #----------------------------------------------------------------
 
 w_metadata win98 settings \
+    title_bg="Задайте Windows 98" \
     title_uk="Встановити версію Windows 98" \
     title="Set Windows version to Windows 98"
 
@@ -19089,6 +19205,7 @@ load_win98()
 #----------------------------------------------------------------
 
 w_metadata winme settings \
+    title_bg="Задайте Windows ME" \
     title_uk="Встановити версію Windows ME" \
     title="Set Windows version to Windows ME"
 
@@ -19102,6 +19219,7 @@ load_winme()
 
 # Really, we should support other values, since winetricks did
 w_metadata winver= settings \
+    title_bg="Задайте Windows 7 (по подразбиране)" \
     title_uk="Встановити версію Windows за замовчуванням (Windows 7)" \
     title="Set Windows version to default (win7)"
 
@@ -19113,6 +19231,7 @@ load_winver()
 #----------------------------------------------------------------
 
 w_metadata winxp settings \
+    title_bg="Задайте Windows XP" \
     title_uk="Встановити версію Windows XP" \
     title="Set Windows version to Windows XP"
 
