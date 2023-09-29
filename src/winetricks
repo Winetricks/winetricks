@@ -1566,6 +1566,7 @@ w_download_to()
                 -L \
                 -o "${_W_file}" \
                 -C - \
+                --fail \
                 --retry "${WINETRICKS_DOWNLOADER_RETRIES}" \
                 ${_W_cookiejar:+--cookie "${_W_cookiejar}"} \
                 ${_W_agent:+--user-agent "${_W_agent}"} \
