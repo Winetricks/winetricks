@@ -1551,6 +1551,7 @@ w_download_to()
                 --retry-connrefused \
                 --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
                 --tries "${WINETRICKS_DOWNLOADER_RETRIES}" \
+                --header "Accept: */*" \
                 ${_W_cookiejar:+--load-cookies "${_W_cookiejar}"} \
                 ${_W_agent:+--user-agent="${_W_agent}"} \
                 "${_W_url}"
