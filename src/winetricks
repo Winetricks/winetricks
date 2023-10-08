@@ -12594,6 +12594,33 @@ load_tabctl32()
 
 #----------------------------------------------------------------
 
+w_metadata uiribbon dlls \
+    title="Windows UIRibbon" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/uiribbon.dll|${W_SYSTEM32_DLLS_WIN}/uiribbonres.dll"
+
+load_uiribbon()
+{
+    helper_win7sp1 x86_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_74e4460571772695/uiribbon.dll
+    helper_win7sp1 x86_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_74e4460571772695/uiribbonres.dll
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_74e4460571772695/uiribbon.dll" "${W_SYSTEM32_DLLS}/uiribbon.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_74e4460571772695/uiribbonres.dll" "${W_SYSTEM32_DLLS}/uiribbonres.dll"
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_d102e18929d497cb/uiribbon.dll
+        helper_win7sp1_x64 amd64_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_d102e18929d497cb/uiribbonres.dll
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_d102e18929d497cb/uiribbon.dll" "${W_SYSTEM64_DLLS}/uiribbon.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_d102e18929d497cb/uiribbonres.dll" "${W_SYSTEM64_DLLS}/uiribbonres.dll"
+    fi
+
+    w_override_dlls native,builtin uiribbon
+}
+
+#----------------------------------------------------------------
+
 w_metadata updspapi dlls \
     title="Windows Update Service API" \
     publisher="Microsoft" \
