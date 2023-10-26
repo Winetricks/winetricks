@@ -16793,7 +16793,7 @@ w_metadata steam apps \
     publisher="Valve" \
     year="2010" \
     media="download" \
-    file1="SteamInstall.msi" \
+    file1="SteamSetup.exe" \
     installed_exe1="${W_PROGRAMS_X86_WIN}/Steam/Steam.exe"
 
 load_steam()
@@ -16813,12 +16813,11 @@ load_steam()
     fi
 
     if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly." 7.0,; then
-        w_override_dlls disabled libglesv2
-        w_warn "Steam needs to be launched with -noreactlogin"
+        w_override_app_dlls steamwebhelper.exe disabled libglesv2
     fi
 
     if [ "$(uname -s)" = "Darwin" ] && w_workaround_wine_bug 49839 "Steamwebhelper.exe crashes when running Steam."; then
-        w_warn "Steam must be launched with -allosarches -cef-force-32bit -cef-in-process-gpu -no-cef-sandbox"
+        w_warn "Steam must be launched with -allosarches -cef-force-32bit -cef-in-process-gpu -cef-disable-sandbox"
     fi
 
     # vulkandriverquery & vulkandriverquery64 crash a lot on macOS
