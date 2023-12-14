@@ -5053,9 +5053,9 @@ winetricks_set_wineprefix()
     if test -d "${W_DRIVE_C}/windows/syswow64"; then
         # Check the bitness of wineserver + wine binary, used later to determine if we're on a WOW setup (no wine64)
         # https://github.com/Winetricks/winetricks/issues/2030
-        WINESERVER_BIN="$(which ${WINESERVER})"
+        WINESERVER_BIN="$(which "${WINESERVER}")"
         _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINESERVER_BIN}")"
-        WINE_BIN="$(which ${WINE})"
+        WINE_BIN="$(which "${WINE}")"
         _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BIN}")"
 
         # determine wow64 type (new/old)
