@@ -6163,6 +6163,28 @@ load_crypt32()
 
 #----------------------------------------------------------------
 
+w_metadata crypt32_winxp dlls \
+    title="MS crypt32" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/crypt32.dll"
+
+load_crypt32()
+{
+    w_package_warn_win64 # Only the 32-bit DLL is installed
+
+    w_call msasn1
+
+    helper_winxpsp3 i386/crypt32.dl_
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/crypt32.dl_
+
+    w_override_dlls native crypt32
+}
+
+#----------------------------------------------------------------
+
 w_metadata binkw32 dlls \
     title="RAD Game Tools binkw32.dll" \
     publisher="RAD Game Tools, Inc." \
