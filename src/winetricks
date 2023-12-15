@@ -1551,6 +1551,7 @@ w_download_to()
                 --retry-connrefused \
                 --timeout "${WINETRICKS_DOWNLOADER_TIMEOUT}" \
                 --tries "${WINETRICKS_DOWNLOADER_RETRIES}" \
+                --header "Accept: */*" \
                 ${_W_cookiejar:+--load-cookies "${_W_cookiejar}"} \
                 ${_W_agent:+--user-agent="${_W_agent}"} \
                 "${_W_url}"
@@ -1565,6 +1566,7 @@ w_download_to()
                 -L \
                 -o "${_W_file}" \
                 -C - \
+                --fail \
                 --retry "${WINETRICKS_DOWNLOADER_RETRIES}" \
                 ${_W_cookiejar:+--cookie "${_W_cookiejar}"} \
                 ${_W_agent:+--user-agent "${_W_agent}"} \
@@ -5060,8 +5062,10 @@ winetricks_set_wineprefix()
     if test -d "${W_DRIVE_C}/windows/syswow64"; then
         # Check the bitness of wineserver + wine binary, used later to determine if we're on a WOW setup (no wine64)
         # https://github.com/Winetricks/winetricks/issues/2030
-        _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINESERVER}")"
-        _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE}")"
+        WINESERVER_BIN="$(which "${WINESERVER}")"
+        _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINESERVER_BIN}")"
+        WINE_BIN="$(which "${WINE}")"
+        _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BIN}")"
 
         # determine wow64 type (new/old)
         # FIXME: check what upstream is calling them
@@ -6150,6 +6154,31 @@ load_comdlg32ocx()
 w_metadata crypt32 dlls \
     title="MS crypt32" \
     publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X64.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/crypt32.dll"
+
+load_crypt32()
+{
+    w_call msasn1
+
+    helper_win7sp1 x86_microsoft-windows-crypt32-dll_31bf3856ad364e35_6.1.7601.17514_none_5d772bc73c15dfe5/crypt32.dll
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-crypt32-dll_31bf3856ad364e35_6.1.7601.17514_none_5d772bc73c15dfe5/crypt32.dll" "${W_SYSTEM32_DLLS}/crypt32.dll"
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-crypt32-dll_31bf3856ad364e35_6.1.7601.17514_none_b995c74af473511b/crypt32.dll
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-crypt32-dll_31bf3856ad364e35_6.1.7601.17514_none_b995c74af473511b/crypt32.dll" "${W_SYSTEM64_DLLS}/crypt32.dll"
+    fi
+
+    w_override_dlls native crypt32
+}
+
+#----------------------------------------------------------------
+
+w_metadata crypt32_winxp dlls \
+    title="MS crypt32" \
+    publisher="Microsoft" \
     year="2004" \
     media="download" \
     file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
@@ -6157,6 +6186,8 @@ w_metadata crypt32 dlls \
 
 load_crypt32()
 {
+    w_package_warn_win64 # Only the 32-bit DLL is installed
+
     w_call msasn1
 
     helper_winxpsp3 i386/crypt32.dl_
@@ -8406,6 +8437,40 @@ load_dxvk2010()
     helper_dxvk "${file1}" "7.1" "1.3.204" "dxgi,d3d9,d3d10core,d3d11"
 }
 
+w_metadata dxvk2020 dlls \
+    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (2.2)" \
+    publisher="Philip Rebohle" \
+    year="2023" \
+    media="download" \
+    file1="dxvk-2.2.tar.gz" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+
+load_dxvk2020()
+{
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v2.2/dxvk-2.2.tar.gz" fcbede6da370d138f275ca05bc887f5a562f27cd8bd00f436706a7142cb51630
+    helper_dxvk "${file1}" "7.1" "1.3.204" "dxgi,d3d9,d3d10core,d3d11"
+}
+
+w_metadata dxvk2030 dlls \
+    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (2.3)" \
+    publisher="Philip Rebohle" \
+    year="2023" \
+    media="download" \
+    file1="dxvk-2.3.tar.gz" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+
+load_dxvk2030()
+{
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v2.3/dxvk-2.3.tar.gz" 8059c06fc84a864122cc572426f780f35921eb4e3678dc337e9fd79ee5a427c0
+    helper_dxvk "${file1}" "7.1" "1.3.204" "dxgi,d3d9,d3d10core,d3d11"
+}
+
 #----------------------------------------------------------------
 
 w_metadata dxvk dlls \
@@ -10047,21 +10112,21 @@ w_metadata dotnet7 dlls \
     publisher="Microsoft" \
     year="2023" \
     media="download" \
-    file1="dotnet-runtime-7.0.5-win-x86.exe" \
+    file1="dotnet-runtime-7.0.14-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnet7()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/da45af44-e437-41b5-a5de-be6698557272/e4aaf2eafc2e983c275189f4a4161bae/dotnet-runtime-7.0.5-win-x86.exe 372d868a6464954ba4b231626023fdafdde296e6f5402729614690b8734d682a
+    w_download https://download.visualstudio.microsoft.com/download/pr/91a03ec1-d418-4d81-b664-545e2057b67f/b8b8066ac5d54b8c6c31960d678b5b30/dotnet-runtime-7.0.14-win-x86.exe 5ad4892fea92784c56cbb4f4a939a4f492addbbb01b2151344c99832157c000f16750c4852fd0c55f9fb9b305deeba266c426b2622486e2b51d214aee22c498e
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/4b99bbc8-917a-417c-907b-d408341726a5/78b225344fbb9b80d3da3681e1d20d68/dotnet-runtime-7.0.5-win-x64.exe 4ea7291115899841bb2991aa08b529f03b23299611c856a6ad2e9373d02a1c6b
-        w_try "${WINE}" "dotnet-runtime-7.0.5-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/7f25ba8c-e2f3-4432-83c2-8ab41e361a3e/5201929d4c9b5752a47a9cf4d2b494e0/dotnet-runtime-7.0.14-win-x64.exe 6ae850b7ba826d7d5bee7c299c444fe93b89f9721250e3d6d2bf35435dc00138fe0839884483ed96058b27d44db9283fb61b65d929ca117c1888acb30a58ab2d
+        w_try "${WINE}" "dotnet-runtime-7.0.14-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -10072,21 +10137,21 @@ w_metadata dotnetdesktop7 dlls \
     publisher="Microsoft" \
     year="2023" \
     media="download" \
-    file1="windowsdesktop-runtime-7.0.5-win-x86.exe" \
+    file1="windowsdesktop-runtime-7.0.14-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnetdesktop7()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/eb64dcd1-d277-4798-ada1-600805c9e2dc/fc73c843d66f3996e7ef22468f4902e6/windowsdesktop-runtime-7.0.5-win-x86.exe 96b5715a35f651e095cefb8d9346f21ad67a09e2693db763ac4321d97f8e0dd2
+    w_download https://download.visualstudio.microsoft.com/download/pr/84986c79-dd13-4bbc-abef-294638d5864a/75d29754580986fef26b5d64ec880075/windowsdesktop-runtime-7.0.14-win-x86.exe 6784176e4e341c66fb49321acef2261a4067360dee11a1c51989c701eac707bc58848abce8ef6cd934135924317e1432dcb1504f03c184648685545c9356f1f5
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/dffb1939-cef1-4db3-a579-5475a3061cdd/578b208733c914c7b7357f6baa4ecfd6/windowsdesktop-runtime-7.0.5-win-x64.exe 0be75f316589ca0e3daa2ef6586efb7aa7f585126e72edde6d114cb8082c3ca0
-        w_try "${WINE}" "windowsdesktop-runtime-7.0.5-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/515cc796-e9f2-4b5c-be7f-b42f115a65a7/b0b146fcbf1d1c135807ff24b3d88093/windowsdesktop-runtime-7.0.14-win-x64.exe cb43e9852e719cc2b42a7e3f265e816e20629980f3f0eee6b655558efefb7c8749aedcc9cd7c1f7cbaed5e228ff6d7d2a9fe3cc5434c9a19869dd50921c3bea5
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.14-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -12567,6 +12632,33 @@ load_tabctl32()
 
 #----------------------------------------------------------------
 
+w_metadata uiribbon dlls \
+    title="Windows UIRibbon" \
+    publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X86.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/uiribbon.dll|${W_SYSTEM32_DLLS_WIN}/uiribbonres.dll"
+
+load_uiribbon()
+{
+    helper_win7sp1 x86_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_74e4460571772695/uiribbon.dll
+    helper_win7sp1 x86_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_74e4460571772695/uiribbonres.dll
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_74e4460571772695/uiribbon.dll" "${W_SYSTEM32_DLLS}/uiribbon.dll"
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_74e4460571772695/uiribbonres.dll" "${W_SYSTEM32_DLLS}/uiribbonres.dll"
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_d102e18929d497cb/uiribbon.dll
+        helper_win7sp1_x64 amd64_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_d102e18929d497cb/uiribbonres.dll
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_d102e18929d497cb/uiribbon.dll" "${W_SYSTEM64_DLLS}/uiribbon.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-uiribbon_31bf3856ad364e35_6.1.7601.17514_none_d102e18929d497cb/uiribbonres.dll" "${W_SYSTEM64_DLLS}/uiribbonres.dll"
+    fi
+
+    w_override_dlls native,builtin uiribbon
+}
+
+#----------------------------------------------------------------
+
 w_metadata updspapi dlls \
     title="Windows Update Service API" \
     publisher="Microsoft" \
@@ -14900,7 +14992,7 @@ w_metadata vlgothic fonts \
 
 load_vlgothic()
 {
-    w_download "https://ja.osdn.net/projects/vlgothic/downloads/62375/VLGothic-20141206.tar.xz" 982040db2f9cb73d7c6ab7d9d163f2ed46d1180f330c9ba2fae303649bf8102d
+    w_download "https://mirrors.gigenet.com/OSDN/vlgothic/62375/VLGothic-20141206.tar.xz" 982040db2f9cb73d7c6ab7d9d163f2ed46d1180f330c9ba2fae303649bf8102d
 
     w_try_cd "${W_TMP}"
     w_try tar -Jxf "${W_CACHE}/vlgothic/VLGothic-20141206.tar.xz"
@@ -16802,7 +16894,7 @@ w_metadata steam apps \
     publisher="Valve" \
     year="2010" \
     media="download" \
-    file1="SteamInstall.msi" \
+    file1="SteamSetup.exe" \
     installed_exe1="${W_PROGRAMS_X86_WIN}/Steam/Steam.exe"
 
 load_steam()
@@ -16822,12 +16914,11 @@ load_steam()
     fi
 
     if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly." 7.0,; then
-        w_override_dlls disabled libglesv2
-        w_warn "Steam needs to be launched with -noreactlogin"
+        w_override_app_dlls steamwebhelper.exe disabled libglesv2
     fi
 
     if [ "$(uname -s)" = "Darwin" ] && w_workaround_wine_bug 49839 "Steamwebhelper.exe crashes when running Steam."; then
-        w_warn "Steam must be launched with -allosarches -cef-force-32bit -cef-in-process-gpu -no-cef-sandbox"
+        w_warn "Steam must be launched with -allosarches -cef-force-32bit -cef-in-process-gpu -cef-disable-sandbox"
     fi
 
     # vulkandriverquery & vulkandriverquery64 crash a lot on macOS
@@ -18910,18 +19001,17 @@ load_remove_mono()
         for uuid in ${mono_uuid}; do
             "${WINE_ARCH}" uninstaller --remove "${uuid}"
         done
+        "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
+        "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4" /f || true
+
+        if grep --quiet --text "WINE_MONO_OVERRIDES" "${W_WINDIR_UNIX}/system32/mscoree.dll"; then
+            w_try rm -f "${W_WINDIR_UNIX}/system32/mscoree.dll"
+        fi
+        if grep --quiet --text "WINE_MONO_OVERRIDES" "${W_WINDIR_UNIX}/syswow64/mscoree.dll"; then
+            w_try rm -f "${W_WINDIR_UNIX}/syswow64/mscoree.dll"
+        fi
     elif [ -z "$1" ] || [ "$1" != "internal" ]; then
-        # Bail out if mono isn't installed, so we don't break .Net setups
         w_warn "Mono does not appear to be installed."
-        return
-    fi
-
-    "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
-    "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4" /f || true
-
-    w_try rm -f "${W_WINDIR_UNIX}/system32/mscoree.dll"
-    if [ "${W_ARCH}" = "win64" ]; then
-        w_try rm -f "${W_WINDIR_UNIX}/syswow64/mscoree.dll"
     fi
 }
 
