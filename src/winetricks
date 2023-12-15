@@ -6143,6 +6143,31 @@ load_comdlg32ocx()
 w_metadata crypt32 dlls \
     title="MS crypt32" \
     publisher="Microsoft" \
+    year="2011" \
+    media="download" \
+    file1="../win7sp1/windows6.1-KB976932-X64.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/crypt32.dll"
+
+load_crypt32()
+{
+    w_call msasn1
+
+    helper_win7sp1 x86_microsoft-windows-crypt32-dll_31bf3856ad364e35_6.1.7601.17514_none_5d772bc73c15dfe5/crypt32.dll
+    w_try_cp_dll "${W_TMP}/x86_microsoft-windows-crypt32-dll_31bf3856ad364e35_6.1.7601.17514_none_5d772bc73c15dfe5/crypt32.dll" "${W_SYSTEM32_DLLS}/crypt32.dll"
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        helper_win7sp1_x64 amd64_microsoft-windows-crypt32-dll_31bf3856ad364e35_6.1.7601.17514_none_b995c74af473511b/crypt32.dll
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-crypt32-dll_31bf3856ad364e35_6.1.7601.17514_none_b995c74af473511b/crypt32.dll" "${W_SYSTEM64_DLLS}/crypt32.dll"
+    fi
+
+    w_override_dlls native crypt32
+}
+
+#----------------------------------------------------------------
+
+w_metadata crypt32_winxp dlls \
+    title="MS crypt32" \
+    publisher="Microsoft" \
     year="2004" \
     media="download" \
     file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
@@ -6150,6 +6175,8 @@ w_metadata crypt32 dlls \
 
 load_crypt32()
 {
+    w_package_warn_win64 # Only the 32-bit DLL is installed
+
     w_call msasn1
 
     helper_winxpsp3 i386/crypt32.dl_
