@@ -18904,18 +18904,17 @@ load_remove_mono()
         for uuid in ${mono_uuid}; do
             "${WINE_ARCH}" uninstaller --remove "${uuid}"
         done
+        "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
+        "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4" /f || true
+
+        if grep --quiet --text "WINE_MONO_OVERRIDES" "${W_WINDIR_UNIX}/system32/mscoree.dll"; then
+            w_try rm -f "${W_WINDIR_UNIX}/system32/mscoree.dll"
+        fi
+        if grep --quiet --text "WINE_MONO_OVERRIDES" "${W_WINDIR_UNIX}/syswow64/mscoree.dll"; then
+            w_try rm -f "${W_WINDIR_UNIX}/syswow64/mscoree.dll"
+        fi
     elif [ -z "$1" ] || [ "$1" != "internal" ]; then
-        # Bail out if mono isn't installed, so we don't break .Net setups
         w_warn "Mono does not appear to be installed."
-        return
-    fi
-
-    "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
-    "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4" /f || true
-
-    w_try rm -f "${W_WINDIR_UNIX}/system32/mscoree.dll"
-    if [ "${W_ARCH}" = "win64" ]; then
-        w_try rm -f "${W_WINDIR_UNIX}/syswow64/mscoree.dll"
     fi
 }
 
