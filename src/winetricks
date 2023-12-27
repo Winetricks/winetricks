@@ -10116,7 +10116,7 @@ load_dotnet7()
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-         w_download https://download.visualstudio.microsoft.com/download/pr/5e3be9c1-4b4c-4605-b3bc-18ef04b3c8d5/b1f864adc9c81ab6680385a4270b3887/dotnet-runtime-7.0.14-win-x64.exe 0f52b4e0c33713f8ff7681708fce9074bb7177f51c395139ce243319930bc932
+        w_download https://download.visualstudio.microsoft.com/download/pr/5e3be9c1-4b4c-4605-b3bc-18ef04b3c8d5/b1f864adc9c81ab6680385a4270b3887/dotnet-runtime-7.0.14-win-x64.exe 0f52b4e0c33713f8ff7681708fce9074bb7177f51c395139ce243319930bc932
         w_try "${WINE}" "dotnet-runtime-7.0.14-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
