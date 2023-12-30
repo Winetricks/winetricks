@@ -15755,7 +15755,7 @@ load_ie7()
         shdocvw.dll shell32.dll urlmon.dll vbscript.dll webcheck.dll \
         wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
         plugin.ocx proctexe.ocx tdc.ocx webcheck.dll wshom.ocx; do
-        "${WINE}" regsvr32 /i ${i} > /dev/null 2>&1
+        w_try_regsvr32 /i ${i} > /dev/null 2>&1
     done
 
     # Builtin ieproxy is in system32, but ie7's lives in Program Files. Native
