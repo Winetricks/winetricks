@@ -10955,7 +10955,9 @@ load_icodecs()
 
     # Apparently some codecs are missing, see https://github.com/Winetricks/winetricks/issues/302
     # Download at https://www.moviecodec.com/download-codec-packs/indeo-codecs-legacy-package-31/
-    w_download https://s3.amazonaws.com/moviecodec/files/iv5setup.exe 51bec25488b5b94eb3ce49b0a117618c9526161fd0753817a7a724ce25ff0cad
+    # 2017/05/24: https://s3.amazonaws.com/moviecodec/files/iv5setup.exe 51bec25488b5b94eb3ce49b0a117618c9526161fd0753817a7a724ce25ff0cad
+    # 2023/12/30: https://download.civforum.de/civ2/iv5setup.exe
+    w_download https://download.civforum.de/civ2/iv5setup.exe 51bec25488b5b94eb3ce49b0a117618c9526161fd0753817a7a724ce25ff0cad
 
     # Extract the installer so that we can create and use a pre-recorded
     # Install Shield response file for unattended installations
