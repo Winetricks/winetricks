@@ -6175,7 +6175,7 @@ w_metadata crypt32_winxp dlls \
     file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/crypt32.dll"
 
-load_crypt32()
+load_crypt32_winxp()
 {
     w_package_warn_win64 # Only the 32-bit DLL is installed
 
