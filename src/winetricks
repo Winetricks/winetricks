@@ -15658,7 +15658,7 @@ load_ie6()
         shdocvw.dll shell32.dll vbscript.dll webcheck.dll \
         wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
         plugin.ocx proctexe.ocx tdc.ocx webcheck.dll wshom.ocx; do
-        "${WINE}" regsvr32 /i ${i} > /dev/null 2>&1
+        w_try_regsvr32 /i ${i} > /dev/null 2>&1
     done
 
     # Set Windows version back to the default. Leave at win2k for better rendering (is there a bug for that?)
