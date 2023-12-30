@@ -4969,7 +4969,7 @@ winetricks_cleanup()
     fi
     test "${WINETRICKS_CACHE_SYMLINK}" && rm -f "${WINETRICKS_CACHE_SYMLINK}"
 
-    if [ "${W_OPT_NOCLEAN}" = 1 ]; then
+    if [ -z "${W_OPT_NOCLEAN}" ]; then
         rm -rf "${WINETRICKS_WORKDIR}"
         rm -rf "${W_TMP_EARLY}"
         rm -rf "${WINEPREFIX}/wrapper.cfg"
