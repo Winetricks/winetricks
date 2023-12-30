@@ -28,6 +28,8 @@ The ```winetricks``` package should be used if it is available and up to date. T
 
 Note: packaged Debian / Ubuntu winetricks versions are typically outdated, so a manual installation is recommended.
 
+## Manual Install
+
 If the package is unavailable, outdated, or the latest version is desired, a manual installation of winetricks can be done.
 It is _highly_ recommended to uninstall any previously installed version of winetricks first.
 
@@ -38,8 +40,17 @@ E.g. for Debian / Ubuntu:
 sudo apt-get purge winetricks
 ```
 
-Then, for Ubuntu, use a shell script to download the current winetricks script(s).
-E.g.:
+### Installing The Latest Stable Release
+
+Download the latest release from [Github](https://github.com/Winetricks/winetricks/releases/latest).
+
+Extract the archive and `cd` into the extracted folder.
+
+Run `sudo make install` to install Winetricks system-wide.
+
+### Scripted Install
+
+You can use a shell script to download the current winetricks script(s):
 
 ```
 #!/bin/sh
@@ -124,7 +135,6 @@ su root sh -c 'mv update_winetricks /usr/bin/'
 ```
 
 To use ```curl``` instead of ```wget```: substitute all ```wget``` calls with ```curl -O```, in the winetricks update script.
-
 
 # Updating
 Using the traditional Unix crontab...
