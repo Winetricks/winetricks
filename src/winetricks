@@ -18995,13 +18995,23 @@ load_remove_mono()
     # extracted to /usr/share/wine/mono, or equivalent), only 'Wine Mono Windows Support' will be installed.
     # If using the old .msi installer, *both* tarballs are installed.
     #
-    # So, we uninstall anything that has 'Wine Mono' in the name to handle both cases.
-    # If wine uninstaller can't find the application it will return 0 anyway.
-    mono_uuid="$("${WINE_ARCH}" uninstaller --list | grep 'Wine Mono' | cut -f1 -d\|)"
-    if test "${mono_uuid}"; then
-        for uuid in ${mono_uuid}; do
-            "${WINE_ARCH}" uninstaller --remove "${uuid}"
-        done
+    # Sometime later, the installer name was updated to 'Wine Mono Runtime'
+    #
+    # And then in 8.22, uninstaller now returns an error rather than 0 if an uninstaller can't be found
+    # That can be avoided with the --silent option, but that option doesn't exist in older versions.
+    #
+    # So, now, loop through and try to uninstaller them one at a time.
+
+    mono_install_found=0
+    for mono_installer_desc in 'Wine Mono Windows Support' 'Wine Mono Runtime' 'Wine Mono'; do
+        mono_uuid="$(WINEDEBUG=-all "${WINE_ARCH}" uninstaller --list 2>&1 | grep "${mono_installer_desc}" | cut -f1 -d\|)"
+        if test "${mono_uuid}"; then
+            "${WINE_ARCH}" uninstaller --remove "${mono_uuid}"
+            mono_install_found=1
+        fi
+    done
+
+    if [ "${mono_install_found}" -eq 1 ]; then
         "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v3.5" /f || true
         "${WINE_ARCH}" reg delete "HKLM\\Software\\Microsoft\\NET Framework Setup\\NDP\\v4" /f || true
 
