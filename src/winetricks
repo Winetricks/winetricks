@@ -12920,8 +12920,8 @@ load_vcrun6sp6()
     w_download https://www.ddsystem.com.br/update/setup/vb6+sp6/VS6SP6.EXE 7fa1d1778824b55a5fceb02f45c399b5d4e4dce7403661e67e587b5f455edbf3
 
     # extract the files instead of using installer to avoid https://github.com/Winetricks/winetricks/issues/1806
-    w_try_cabextract "${W_CACHE}/${W_PACKAGE}/${file1}" -d "${W_TMP}" -F vcredist.exe
-    w_try_cabextract "${W_TMP}/vcredist.exe" -d "${W_TMP}"
+    w_try_cabextract -d "${W_TMP}" -F vcredist.exe "${W_CACHE}/${W_PACKAGE}/${file1}"
+    w_try_cabextract -d "${W_TMP}" "${W_TMP}/vcredist.exe"
 
     for dll in asycfilt.dll comcat.dll mfc42.dll mfc42u.dll msvcirt.dll msvcp60.dll msvcrt.dll oleaut32.dll olepro32.dll stdole2.tlb; do
         w_try mv "${W_TMP}/${dll}" "${W_SYSTEM32_DLLS}"
