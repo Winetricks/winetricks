@@ -15913,10 +15913,14 @@ load_ie8()
         wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
         plugin.ocx proctexe.ocx tdc.ocx uxtheme.dll webcheck.dll wshom.ocx; do
         w_try_regsvr32 /i ${i} > /dev/null 2>&1
-        if [ "${W_ARCH}" = "win64" ]; then
-            w_try_regsvr64 /i ${i} > /dev/null 2>&1
-        fi
     done
+
+    # only a few dlls register for win64?
+    if [ "${W_ARCH}" = "win64" ]; then
+        for i in browseui.dll shdocvw.dll shell32.dll urlmon.dll; do
+            w_try_regsvr64 /i ${i} > /dev/null 2>&1
+        done
+    fi
 
     if w_workaround_wine_bug 25648 "Setting TabProcGrowth=0 to avoid hang"; then
         cat > "${W_TMP}"/set-tabprocgrowth.reg <<_EOF_
@@ -15957,7 +15961,7 @@ _EOF_
     if [ "${W_ARCH}" = "win32" ]; then
         w_warn "To start ie8, from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
     else
-        w_warn "To start ie8 (32-bit), from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_X86_WIN}\\\\Internet Explorer\\\\iexplore.exe'\nTo start ie8 (64-bit), from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
+        w_warn "To start ie8 (32-bit), from a terminal shell, use the command \"${WINE}\" '${W_PROGRAMS_X86_WIN}\\\\Internet Explorer\\\\iexplore.exe'\nTo start ie8 (64-bit), from a terminal shell, use the command \"${WINE64}\" '${W_PROGRAMS_WIN}\\\\Internet Explorer\\\\iexplore.exe'"
     fi
 
     w_restore_winver
