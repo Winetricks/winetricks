@@ -11794,12 +11794,12 @@ load_msxml3()
     fi
 
     # Install newer version, which includes the x64 DLL if applicable
-    helper_win7sp1 wow64_microsoft-windows-msxml30_31bf3856ad364e35_6.1.7601.17514_none_f0e8f05be1d66e78/msxml3.dll
-    w_try_cp_dll "${W_TMP}/wow64_microsoft-windows-msxml30_31bf3856ad364e35_6.1.7601.17514_none_f0e8f05be1d66e78/msxml3.dll" "${W_SYSTEM32_DLLS}/crypt32.dll"
+    helper_win7sp1_x64 wow64_microsoft-windows-msxml30_31bf3856ad364e35_6.1.7601.17514_none_f0e8f05be1d66e78/msxml3.dll
+    w_try_cp_dll "${W_TMP}/wow64_microsoft-windows-msxml30_31bf3856ad364e35_6.1.7601.17514_none_f0e8f05be1d66e78/msxml3.dll" "${W_SYSTEM32_DLLS}/msxml3.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-msxml30_31bf3856ad364e35_6.1.7601.17514_none_e6944609ad75ac7d/msxml3.dll
-        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-msxml30_31bf3856ad364e35_6.1.7601.17514_none_e6944609ad75ac7d/msxml3.dll" "${W_SYSTEM64_DLLS}/crypt32.dll"
+        w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-msxml30_31bf3856ad364e35_6.1.7601.17514_none_e6944609ad75ac7d/msxml3.dll" "${W_SYSTEM64_DLLS}/msxml3.dll"
     fi
 }
 
