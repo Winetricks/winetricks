@@ -10155,6 +10155,54 @@ load_dotnetdesktop7()
     fi
 }
 
+w_metadata dotnet8 dlls \
+    title="MS .NET Runtime 8.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.14-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet8()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/8c884ea1-2ae5-4359-82a4-8ce8fb309b0e/53a67e660c7b331577c95b02f87935fe/dotnet-runtime-8.0.1-win-x86.exe 72e874984f60e5712110a9b063525081d63a169d00ab966c394768378a04f6c1
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/cede7e69-dbd4-4908-9bfb-12fa4660e2b9/d9ed17179d0275abee5afd29d5460b48/dotnet-runtime-8.0.1-win-x64.exe e26c7a340c4ee0b367b0a1195cc0e94cdf7790acf13ab372a683874df45e0cb0
+        w_try "${WINE}" "dotnet-runtime-8.0.1-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop8 dlls \
+    title="MS .NET Desktop Runtime 8.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-8.0.1-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop8()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/ca725693-6de7-4a4d-b8a4-4390b0387c66/ce13f2f016152d9b5f2d3c6537cc415b/windowsdesktop-runtime-8.0.1-win-x86.exe af41eecdd90e99205418987a5855ba2c982df6859385d5abcd110d0c27d1d076
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/f18288f6-1732-415b-b577-7fb46510479a/a98239f751a7aed31bc4aa12f348a9bf/windowsdesktop-runtime-8.0.1-win-x64.exe 63a738d7980972e40ac0bd665b267347243ea470eebfe2edf77bed7893c223e7
+        w_try "${WINE}" "windowsdesktop-runtime-8.0.1-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
 #----------------------------------------------------------------
 
 w_metadata dotnet_verifier dlls \
