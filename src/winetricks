@@ -11945,6 +11945,141 @@ load_openal()
     w_try "${WINE}" "${W_TMP}/oalinst.exe" /silent
 }
 
+
+#----------------------------------------------------------------
+
+# $1 - otvdm archive name (required)
+helper_otvdm()
+{
+    _W_package_archive="${1}"
+    _W_package_dir="${_W_package_archive%.zip}"
+
+    w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/otvdm.exe" "${W_SYSTEM32_DLLS}/otvdm.exe"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/libwine.dll" "${W_SYSTEM32_DLLS}/libwine.dll"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/avifile.dll16" "${W_SYSTEM32_DLLS}/avifile.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/comm.drv16" "${W_SYSTEM32_DLLS}/comm.drv16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/commctrl.dll16" "${W_SYSTEM32_DLLS}/commctrl.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/commdlg.dll16" "${W_SYSTEM32_DLLS}/commdlg.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/compobj.dll16" "${W_SYSTEM32_DLLS}/compobj.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ctl3d.dll16" "${W_SYSTEM32_DLLS}/ctl3d.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ctl3dv2.dll16" "${W_SYSTEM32_DLLS}/ctl3dv2.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ddeml.dll16" "${W_SYSTEM32_DLLS}/ddeml.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/dispdib.dll16" "${W_SYSTEM32_DLLS}/dispdib.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/display.drv16" "${W_SYSTEM32_DLLS}/display.drv16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/gdi.exe16" "${W_SYSTEM32_DLLS}/gdi.exe16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/keyboard.drv16" "${W_SYSTEM32_DLLS}/keyboard.drv16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/krnl386.exe16" "${W_SYSTEM32_DLLS}/krnl386.exe16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/lzexpand.dll16" "${W_SYSTEM32_DLLS}/lzexpand.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/mmsystem.dll16" "${W_SYSTEM32_DLLS}/mmsystem.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/mouse.drv16" "${W_SYSTEM32_DLLS}/mouse.drv16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/msacm.dll16" "${W_SYSTEM32_DLLS}/msacm.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/msvideo.dll16" "${W_SYSTEM32_DLLS}/msvideo.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/nddeapi.dll16" "${W_SYSTEM32_DLLS}/nddeapi.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ole2.dll16" "${W_SYSTEM32_DLLS}/ole2.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ole2conv.dll16" "${W_SYSTEM32_DLLS}/ole2conv.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ole2disp.dll16" "${W_SYSTEM32_DLLS}/ole2disp.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ole2nls.dll16" "${W_SYSTEM32_DLLS}/ole2nls.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ole2prox.dll16" "${W_SYSTEM32_DLLS}/ole2prox.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ole2thk.dll16" "${W_SYSTEM32_DLLS}/ole2thk.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/olecli.dll16" "${W_SYSTEM32_DLLS}/olecli.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/olesvr.dll16" "${W_SYSTEM32_DLLS}/olesvr.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/regedit.exe16" "${W_SYSTEM32_DLLS}/regedit.exe16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/rmpatch.dll16" "${W_SYSTEM32_DLLS}/rmpatch.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/shell.dll16" "${W_SYSTEM32_DLLS}/shell.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/sound.drv16" "${W_SYSTEM32_DLLS}/sound.drv16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/storage.dll16" "${W_SYSTEM32_DLLS}/storage.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/system.drv16" "${W_SYSTEM32_DLLS}/system.drv16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/timer.drv16" "${W_SYSTEM32_DLLS}/timer.drv16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/toolhelp.dll16" "${W_SYSTEM32_DLLS}/toolhelp.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/typelib.dll16" "${W_SYSTEM32_DLLS}/typelib.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/user.exe16" "${W_SYSTEM32_DLLS}/user.exe16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/ver.dll16" "${W_SYSTEM32_DLLS}/ver.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/wifeman.dll16" "${W_SYSTEM32_DLLS}/wifeman.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/win87em.dll16" "${W_SYSTEM32_DLLS}/win87em.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/wing.dll16" "${W_SYSTEM32_DLLS}/wing.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/winnls.dll16" "${W_SYSTEM32_DLLS}/winnls.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/winoldap.mod16" "${W_SYSTEM32_DLLS}/winoldap.mod16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/winsock.dll16" "${W_SYSTEM32_DLLS}/winsock.dll16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/winspool.drv16" "${W_SYSTEM32_DLLS}/winspool.drv16"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/wow32.dll" "${W_SYSTEM32_DLLS}/wow32.dll"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/vm86.dll" "${W_SYSTEM32_DLLS}/vm86.dll"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/whpxvm.dll" "${W_SYSTEM32_DLLS}/whpxvm.dll"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/haxmvm.dll" "${W_SYSTEM32_DLLS}/haxmvm.dll"
+    w_try_cp_dll "${W_TMP}/${_W_package_dir}/dll/gvm.dll" "${W_SYSTEM32_DLLS}/gvm.dll"
+
+    w_override_dlls native,builtin avifile.dll16
+    w_override_dlls native,builtin comm.drv16
+    w_override_dlls native,builtin commctrl.dll16
+    w_override_dlls native,builtin commdlg.dll16
+    w_override_dlls native,builtin compobj.dll16
+    w_override_dlls native,builtin ctl3d.dll16
+    w_override_dlls native,builtin ctl3dv2.dll16
+    w_override_dlls native,builtin ddeml.dll16
+    w_override_dlls native,builtin dispdib.dll16
+    w_override_dlls native,builtin display.drv16
+    w_override_dlls native,builtin gdi.exe16
+    w_override_dlls native,builtin keyboard.drv16
+    w_override_dlls native,builtin krnl386.exe16
+    w_override_dlls native,builtin lzexpand.dll16
+    w_override_dlls native,builtin mmsystem.dll16
+    w_override_dlls native,builtin mouse.drv16
+    w_override_dlls native,builtin msacm.dll16
+    w_override_dlls native,builtin msvideo.dll16
+    w_override_dlls native,builtin nddeapi.dll16
+    w_override_dlls native,builtin ole2.dll16
+    w_override_dlls native,builtin ole2conv.dll16
+    w_override_dlls native,builtin ole2disp.dll16
+    w_override_dlls native,builtin ole2nls.dll16
+    w_override_dlls native,builtin ole2prox.dll16
+    w_override_dlls native,builtin ole2thk.dll16
+    w_override_dlls native,builtin olecli.dll16
+    w_override_dlls native,builtin olesvr.dll16
+    w_override_dlls native,builtin regedit.exe16
+    w_override_dlls native,builtin rmpatch.dll16
+    w_override_dlls native,builtin shell.dll16
+    w_override_dlls native,builtin sound.drv16
+    w_override_dlls native,builtin storage.dll16
+    w_override_dlls native,builtin system.drv16
+    w_override_dlls native,builtin timer.drv16
+    w_override_dlls native,builtin toolhelp.dll16
+    w_override_dlls native,builtin typelib.dll16
+    w_override_dlls native,builtin user.exe16
+    w_override_dlls native,builtin ver.dll16
+    w_override_dlls native,builtin wifeman.dll16
+    w_override_dlls native,builtin win87em.dll16
+    w_override_dlls native,builtin wing.dll16
+    w_override_dlls native,builtin winnls.dll16
+    w_override_dlls native,builtin winoldap.mod16
+    w_override_dlls native,builtin winsock.dll16
+    w_override_dlls native,builtin winspool.drv16
+    w_override_dlls native,builtin wow32
+}
+
+w_metadata otvdm090 dlls \
+    title="Otvdm - A modified version of winevdm as Win16 emulator" \
+    publisher="otya128" \
+    year="2024" \
+    media="download" \
+    file1="otvdm-v0.9.0.zip"
+
+load_otvdm090()
+{
+    w_download "https://github.com/otya128/winevdm/releases/download/v0.9.0/otvdm-v0.9.0.zip" 842b11aed5fa81f3e1d4272e0ee7d37f1a5a8f936de825309dda672835e16fd4
+    helper_otvdm "${file1}"
+}
+
+w_metadata otvdm dlls \
+    title="Otvdm - A modified version of winevdm as Win16 emulator" \
+    publisher="otya128" \
+    year="2024" \
+    media="download"
+
+load_otvdm()
+{
+    w_call otvdm090
+}
+
 #----------------------------------------------------------------
 
 w_metadata pdh dlls \
