@@ -10155,8 +10155,710 @@ load_dotnetdesktop7()
     fi
 }
 
+#----------------------------------------------------------------
+
+w_metadata dotnet700 dlls \
+    title="MS .NET Runtime 7.0.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.0-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet700()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/75c0d7c7-9f30-46fd-9675-a301f0e051f4/ec04d5cc40aa6537a4af21fad6bf8ba9/dotnet-runtime-7.0.0-win-x86.exe 1b15e42d546057c662ae8c967f03f723cf2a5e664cb32dbffb41e23c9439839c
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/87bc5966-97cc-498c-8381-bff4c43aafc6/baca88b989e7d2871e989d33a667d8e9/dotnet-runtime-7.0.0-win-x64.exe 3958d8d50b22a2a3f63cd62532501df889662ba64de3636d64279ddb5e84694a
+        w_try "${WINE}" "dotnet-runtime-7.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop700 dlls \
+    title="MS .NET Desktop Runtime 7.0.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.0-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop700()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/d05a833c-2cf9-4d06-89ae-a0f3e10c5c91/c668ff42e23c2f67aa3d80227860585f/windowsdesktop-runtime-7.0.0-win-x86.exe e83256e38c5c475698b28b7e34f7a65d2dc3a2d493dcc55ecaf2c8623c3c403d
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/5b2fbe00-507e-450e-8b52-43ab052aadf2/79d54c3a19ce3fce314f2367cf4e3b21/windowsdesktop-runtime-7.0.0-win-x64.exe 126da8120849613fd9c88b37256486b37fd100158846bc05e651dd053634ecfe
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet701 dlls \
+    title="MS .NET Runtime 7.0.1 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.1-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet701()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/84313d3e-457a-482e-824c-9f1a4ee5260e/65b74b1137f0923e11372521ed595151/dotnet-runtime-7.0.1-win-x86.exe ea6ce83810c9008f16012098080e56274a4ee409b6934b271957c2e01529d5f2
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/31036f6e-2dfd-4468-bd24-81b0c3bef0c2/364a812be1b32e22a16f911fa32b7a62/dotnet-runtime-7.0.1-win-x64.exe d8959c4ec3c94803d248af1a6cf5fa7ba9a059726373941864c8e3ae58708a9b
+        w_try "${WINE}" "dotnet-runtime-7.0.1-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop701 dlls \
+    title="MS .NET Desktop Runtime 7.0.1 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.1-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop701()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/ccdf433a-4112-49d5-8ade-183dac308ac6/eec9e7b2843844a78d34c9c9916a63e5/windowsdesktop-runtime-7.0.1-win-x86.exe 72277cb5afe64e8afc68073a9726cd153715646db7ab5e9c5a782a1fd76a591c
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/04f1126b-2f97-45b8-838d-1844484af007/f9e892ad558abd3db479e16f65c762f3/windowsdesktop-runtime-7.0.1-win-x64.exe 9fa9e18db9580422b9bf9f48dc3ef122d396b5ce4cf02d226c1135969c0db6de
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.1-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet702 dlls \
+    title="MS .NET Runtime 7.0.2 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.2-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet702()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/edd6eb5f-7154-421f-b07e-93da5cc320f9/94529bbb5e7b0532a88d2cc26272d012/dotnet-runtime-7.0.2-win-x86.exe a1c70d404b5383268c6d6a31e87a3202346395982fe2e91ab88e1b9291e8e93f
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/df7da01f-1f17-4728-92b7-778e9607da8f/7c18246830f8c78591f02f25aa368dcf/dotnet-runtime-7.0.2-win-x64.exe 41542356ae632ff81343de796a883b65e8868a54ca8b2073ad5756f2ad1150db
+        w_try "${WINE}" "dotnet-runtime-7.0.2-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop702 dlls \
+    title="MS .NET Desktop Runtime 7.0.2 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.2-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop702()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/f63a565f-28cc-4cb0-94f4-e78bc2412801/f4e19159c0a2980b880ee6f1a73a1199/windowsdesktop-runtime-7.0.2-win-x86.exe 5d0cce44fbcbb26bc2ce0fb01018064ec86ec8dc9c04cdebeda627fa160ede5f
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/8d4ae76c-10d6-450c-b1c2-76b7b2156dc3/9207c5d5d0b608d8ec0622efa4419ed6/windowsdesktop-runtime-7.0.2-win-x64.exe f9837b126eac04dda9cabd96cf3c1684240476dc723272f9a9d692cc4fac500a
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.2-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet703 dlls \
+    title="MS .NET Runtime 7.0.3 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.3-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet703()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/9dd2da29-ca47-40fb-81a0-96fe26ea8ea2/e8f7e09a6d4848b8c4a13282d964b9e1/dotnet-runtime-7.0.3-win-x86.exe 53a651916909ad6ce9c3bc0771dd1747240b6d731c3b20b9a8ac1c5fb651cd9f
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/c69813b7-2ece-4c2e-8c45-e33006985e18/61cc8fe4693a662b2da55ad932a46446/dotnet-runtime-7.0.3-win-x64.exe 3e0750132fa386ab03e2c6a9e4d558899ab996f355b11d1adb778c22e4604496
+        w_try "${WINE}" "dotnet-runtime-7.0.3-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop703 dlls \
+    title="MS .NET Desktop Runtime 7.0.3 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.3-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop703()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/fb8bf100-9e1c-472c-8bc8-aa16fff44f53/8d36f5a56edff8620f9c63c1e73ba88c/windowsdesktop-runtime-7.0.3-win-x86.exe 3c96006c4e0e8ef7bae63a01da93895f20dc746e58cad88de33067a844de767d
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/3ebf014d-fcb9-4200-b3fe-76ba2000b027/840f2f95833ce400a9949e35f1581d28/windowsdesktop-runtime-7.0.3-win-x64.exe de75107c3e8ffd5c5f8954758fcd10b710d1f427569f99a07a7523e08a6c01c4
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.3-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet704 dlls \
+    title="MS .NET Runtime 7.0.4 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.4-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet704()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/a44ad7c4-c079-4299-a5a5-669d53707f76/9a94eeb3cdf9529d40e8020a3b8f6c61/dotnet-runtime-7.0.4-win-x86.exe 427a7264881a87920ded7c0068290721b773c0e05598c3ed85347f8f087901d2
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/7e842a78-9877-4b82-8450-f3311b406a6f/83352282a0bdf1e5f9dfc5fcc88dc83f/dotnet-runtime-7.0.4-win-x64.exe 52dd495ef79142d9ec1bd2a1bbad29ccc2860adecce6b4da3b95c945d6baba72
+        w_try "${WINE}" "dotnet-runtime-7.0.4-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop704 dlls \
+    title="MS .NET Desktop Runtime 7.0.4 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.4-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop704()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/9c8d474f-e58f-4ab2-ab3c-f6c2c8616910/41b492e1c41083c823d56162c700de57/windowsdesktop-runtime-7.0.4-win-x86.exe 9a0cb50f0e2721257080807886e1b36a35dc520883e7e8d3f884baddff98b462
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/b6a55627-12de-482a-aea8-17d635f4b775/d8798c0c796a945c657d04438cf9b84d/windowsdesktop-runtime-7.0.4-win-x64.exe ac38c72627f81b9835f019119dbbb120a0572a165923900fad4e408a97d2bf71
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.4-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet705 dlls \
+    title="MS .NET Runtime 7.0.5 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.5-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet705()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/da45af44-e437-41b5-a5de-be6698557272/e4aaf2eafc2e983c275189f4a4161bae/dotnet-runtime-7.0.5-win-x86.exe 372d868a6464954ba4b231626023fdafdde296e6f5402729614690b8734d682a
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/4b99bbc8-917a-417c-907b-d408341726a5/78b225344fbb9b80d3da3681e1d20d68/dotnet-runtime-7.0.5-win-x64.exe 4ea7291115899841bb2991aa08b529f03b23299611c856a6ad2e9373d02a1c6b
+        w_try "${WINE}" "dotnet-runtime-7.0.5-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop705 dlls \
+    title="MS .NET Desktop Runtime 7.0.5 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.5-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop705()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/eb64dcd1-d277-4798-ada1-600805c9e2dc/fc73c843d66f3996e7ef22468f4902e6/windowsdesktop-runtime-7.0.5-win-x86.exe 96b5715a35f651e095cefb8d9346f21ad67a09e2693db763ac4321d97f8e0dd2
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/dffb1939-cef1-4db3-a579-5475a3061cdd/578b208733c914c7b7357f6baa4ecfd6/windowsdesktop-runtime-7.0.5-win-x64.exe 0be75f316589ca0e3daa2ef6586efb7aa7f585126e72edde6d114cb8082c3ca0
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.5-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet707 dlls \
+    title="MS .NET Runtime 7.0.7 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.7-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet707()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/aea8eb78-3a87-44ff-8edd-d29a0a9bb1bd/e71b7e5d33ecec8e38392ac390c3ca02/dotnet-runtime-7.0.7-win-x86.exe 00821f0c88184d5472e7fa62ef15c473842ed70939899bbd17e5137dbb4b351e
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/ce1d21d9-d3fb-451f-84b1-95f365bcbc2c/23748d17eed2e1c63fdbb6b29d147c2d/dotnet-runtime-7.0.7-win-x64.exe b606cf3de32423cfba20e6cdc9f3025c761388be91a5825d5f2b9c2626d45fe4
+        w_try "${WINE}" "dotnet-runtime-7.0.7-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop707 dlls \
+    title="MS .NET Desktop Runtime 7.0.7 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.7-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop707()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/8a184836-3d12-41c7-b509-7d0d8d63dbf8/5d3bb50e730873808363dea2e9b8a2fd/windowsdesktop-runtime-7.0.7-win-x86.exe cca8206df1f53f6dc7cf774fdb302e0c5bd3427796701f990427c5717cab6a89
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/342ba160-3776-4ffa-91dd-e3cd9dc0f817/ba649d6b80b27ca164d80bd488cdb51f/windowsdesktop-runtime-7.0.7-win-x64.exe 8a55e39aea721a3b43010ea48152a8c1c30ed26b2a55bb93bd43c76827e0daee
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.7-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet708 dlls \
+    title="MS .NET Runtime 7.0.8 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.8-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet708()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/c5cd3312-a224-4de7-83b2-f46f77e9f91a/6e53825dbaa1b53f085404e5b2216d7d/dotnet-runtime-7.0.8-win-x86.exe a0b2b8edd7fca71466e658c2314c91f18496e7e8f04e115ed20f6c357ccd3fe9
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/ea347520-6aab-4b2f-9cf4-e24209d3e83c/c41fcd4e47d16f1ddf065ce32b0452c1/dotnet-runtime-7.0.8-win-x64.exe 835428929d1716642ec962e3c1e6e6bba7e999b8c19fd60739440e126b8bdba2
+        w_try "${WINE}" "dotnet-runtime-7.0.8-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop708 dlls \
+    title="MS .NET Desktop Runtime 7.0.8 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.8-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop708()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/b59c30b1-05b8-46ef-9384-a94d58dc5016/8cb385cf8552abaa5876710c5c2f9492/windowsdesktop-runtime-7.0.8-win-x86.exe 36db0e5c3957a1d83f096b0c5199785e602aaa3183d17f44862d8ca1b7a58405
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/53868e57-c621-476a-885b-dea78ac6edba/f1d5957ba91bde28370f0e782b3d6177/windowsdesktop-runtime-7.0.8-win-x64.exe f895c10c76b2d61e3b7e59e677b37ef69b2ccb0c0616d365dd6a5544e6aef2d2
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.8-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet709 dlls \
+    title="MS .NET Runtime 7.0.9 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.9-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet709()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/305a85f5-2b0d-459b-b2ea-caf71b98d25d/805edc610efa49432e5e268bbba4eacb/dotnet-runtime-7.0.9-win-x86.exe 20ef82ac7797cd7732baf263a512f94c8785e7daa97ead6d6de3ee143dc276e5
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/73058888-02a4-4f6d-b3cd-845531c2d7d0/a785e54b7f12046c00714b2ba759e173/dotnet-runtime-7.0.9-win-x64.exe 1b736bdbf969c1fa212c15f421fe22c01d371f721d121c537cf42b9c311b5d5a
+        w_try "${WINE}" "dotnet-runtime-7.0.9-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop709 dlls \
+    title="MS .NET Desktop Runtime 7.0.9 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.9-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop709()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/139b19d0-2d39-48ce-b59a-aec437509c20/ea6a2711eec53660c3b14d78b9fb2963/windowsdesktop-runtime-7.0.9-win-x86.exe dc578a035c2d446ea329ff820b7870be141c0a6201f3cc73d063216aba2f4318
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/7727acb3-25ca-473b-a392-75afeb33cab7/f11f0477fd2fcfbb3111881377d0c9bb/windowsdesktop-runtime-7.0.9-win-x64.exe abfc759d139ba5ad73ac351c8f098fc6067e07babeba8465c9465056905abb35
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.9-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet7010 dlls \
+    title="MS .NET Runtime 7.0.10 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.10-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet7010()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/254a93dc-9249-4160-be48-b0500a0eb8f1/24718e72d2ad7835073cdc9f22bb3a59/dotnet-runtime-7.0.10-win-x86.exe 98349ddf888dedc851d9f4f6e04ff6651dc81d86efc95ef6e539cafd0239931d
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/3811bb07-e655-45c7-9817-7faaba076977/6bdd137ea2e7f9c42e427a5216539fbc/dotnet-runtime-7.0.10-win-x64.exe 525adcc847741e21bd7ec45da3a83377901bfbdff57329258a769f53bea8cc3a
+        w_try "${WINE}" "dotnet-runtime-7.0.10-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop7010 dlls \
+    title="MS .NET Desktop Runtime 7.0.10 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.10-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop7010()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/9812249d-fc42-41ab-bd2e-6e858d5dd5a7/95fa5a1a77eace4482bcb98ede190003/windowsdesktop-runtime-7.0.10-win-x86.exe cdb463d2024e1b82e099815a62673c6153356dec22b9484067c877497d09f8fb
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/747f4a98-2586-4bc6-b828-34f35e384a7d/44225cfd9d365855ec77d00c4812133c/windowsdesktop-runtime-7.0.10-win-x64.exe ee8a1ee89bc046ad94933818b18465eacfdbee3bcaedc9f67e0158b17b20fce6
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.10-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet7011 dlls \
+    title="MS .NET Runtime 7.0.11 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.11-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet7011()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/f7e3cc3a-6980-4613-ac0c-bf5027d34c00/bd9470f2839426866692b9e25165cbc2/dotnet-runtime-7.0.11-win-x86.exe 4d74fce5cf1194ec4e73bff8e75769fe3816e5935418922eeea064f02200312f
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/e05aedd4-c6e1-4cf8-91d6-4df84e51adb9/cadaaa83f7403cff53d5d8a491ac8049/dotnet-runtime-7.0.11-win-x64.exe bf9c9fce4fc14a452e744501e817f5cbe4a38ee8671dceb145d47fa0ee3974d1
+        w_try "${WINE}" "dotnet-runtime-7.0.11-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop7011 dlls \
+    title="MS .NET Desktop Runtime 7.0.11 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.11-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop7011()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/8390b217-55b7-497e-ba1b-b70f0a93cf29/39ab1928787ffc939d95e97c1f5a33e4/windowsdesktop-runtime-7.0.11-win-x86.exe 9e3802fa0578282a65d8df72ba0308660fe80a67dd023e02e94dc2d3c11834e5
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/2ce1cbbe-71d1-44e7-8e80-d9ae336b9b17/a2706bca3474eef8ef95e10a12ecc2a4/windowsdesktop-runtime-7.0.11-win-x64.exe 18fe3d95562af9dc53a4e5c9ab8b79f4c94a2c557d2cfa19bb6a017287311e2f
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.11-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet7012 dlls \
+    title="MS .NET Runtime 7.0.12 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.12-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet7012()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/fc5aab43-a18e-4cdc-bdaf-a26a09bfdac2/d7ccd0e3180d0bcf5700ea77cadb409d/dotnet-runtime-7.0.12-win-x86.exe 223df29f515ff147ab354d30a647f88c1863496a2bd5e1cabad76e4eea771ea6
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/1d1b78d3-b079-4b47-9b17-f3def75babad/6a66a2c9ad5ee028ae35dd8d6a3add1a/dotnet-runtime-7.0.12-win-x64.exe 09eaff0578141441a6a2fffd8aa9f1d09754036e9e7435d4756be0c422f6324e
+        w_try "${WINE}" "dotnet-runtime-7.0.12-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop7012 dlls \
+    title="MS .NET Desktop Runtime 7.0.12 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.12-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop7012()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/7e606599-560e-47c9-9ff1-60af4beaffb5/377fdff249559470cf483880f16acaf0/windowsdesktop-runtime-7.0.12-win-x86.exe 2d2458dfe6f2a2aecace3f873fc70b35c835a1ac51a6da85b6c2608e9fec4931
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/f9ea536d-8e1f-4247-88b8-e79e33fa0873/c06e39f73a3bb1ec8833bb1cde98fce3/windowsdesktop-runtime-7.0.12-win-x64.exe c290c2f0d7a4a2c4de2a5dda5329266f873485520a000f78c5f40a52e72b1bc0
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.12-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet7013 dlls \
+    title="MS .NET Runtime 7.0.13 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.13-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet7013()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/91a03ec1-d418-4d81-b664-545e2057b67f/b8b8066ac5d54b8c6c31960d678b5b30/dotnet-runtime-7.0.13-win-x86.exe 1eee5d66600c550e9a2ea4574306951c83902752b3d8962d2a4e87e890c6889b
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/7f25ba8c-e2f3-4432-83c2-8ab41e361a3e/5201929d4c9b5752a47a9cf4d2b494e0/dotnet-runtime-7.0.13-win-x64.exe 9026bfe9c4ca7aa2858151a4b6cc6e23ba4fe069e60840be0377d09ede9fb372
+        w_try "${WINE}" "dotnet-runtime-7.0.13-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop7013 dlls \
+    title="MS .NET Desktop Runtime 7.0.13 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.13-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop7013()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/84986c79-dd13-4bbc-abef-294638d5864a/75d29754580986fef26b5d64ec880075/windowsdesktop-runtime-7.0.13-win-x86.exe 650edfb29b3647a8f03cc0ea95561f544845c15de000c2badf732e984a59f686
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/515cc796-e9f2-4b5c-be7f-b42f115a65a7/b0b146fcbf1d1c135807ff24b3d88093/windowsdesktop-runtime-7.0.13-win-x64.exe 5613b839c4839506d48b2848135e36702f5413bc335b2043a57b27d3134b6947
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.13-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet7014 dlls \
+    title="MS .NET Runtime 7.0.14 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-7.0.14-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet7014()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/de4e320a-79ea-4304-9acf-975d91251aae/bf49bfe95aa6b22b66eb9af462dee480/dotnet-runtime-7.0.14-win-x86.exe aec1444479216f0175472ade3ed4195276a294029c697d41c4a5e92c8760d734
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/5e3be9c1-4b4c-4605-b3bc-18ef04b3c8d5/b1f864adc9c81ab6680385a4270b3887/dotnet-runtime-7.0.14-win-x64.exe 0f52b4e0c33713f8ff7681708fce9074bb7177f51c395139ce243319930bc932
+        w_try "${WINE}" "dotnet-runtime-7.0.14-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop7014 dlls \
+    title="MS .NET Desktop Runtime 7.0.14 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-7.0.14-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop7014()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/3a87d4cf-87c7-4432-89af-37f21dc651a7/7996e26d189d21afa4fe54a02062df5d/windowsdesktop-runtime-7.0.14-win-x86.exe 956da197039167099ccbb30b71efc9cf3ea4bdcb844016ca0de7c1e41c217e61
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/8f5b0079-2bb4-49cd-874e-0f58703eff6e/7010b5f213a2c436a307eb385dbb16ff/windowsdesktop-runtime-7.0.14-win-x64.exe 863d7c749f8c3d9d9e444813b3f8b829ce6aed79dd2c70a9c29532a9d3688821
+        w_try "${WINE}" "windowsdesktop-runtime-7.0.14-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata dotnet8 dlls \
-    title="MS .NET Runtime 8.0 LTS" \
+    title="MS .NET Runtime 8.0.1 LTS" \
     publisher="Microsoft" \
     year="2023" \
     media="download" \
@@ -10181,16 +10883,16 @@ load_dotnet8()
 #----------------------------------------------------------------
 
 w_metadata dotnetdesktop8 dlls \
-    title="MS .NET Desktop Runtime 8.0 LTS" \
+    title="MS .NET Desktop Runtime 8.0.1 LTS" \
     publisher="Microsoft" \
     year="2023" \
     media="download" \
-    file1="dotnet-runtime-8.0.1-win-x86.exe" \
+    file1="windowsdesktop-runtime-8.0.1-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnetdesktop8()
 {
-    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/8.0
     w_download https://download.visualstudio.microsoft.com/download/pr/ca725693-6de7-4a4d-b8a4-4390b0387c66/ce13f2f016152d9b5f2d3c6537cc415b/windowsdesktop-runtime-8.0.1-win-x86.exe af41eecdd90e99205418987a5855ba2c982df6859385d5abcd110d0c27d1d076
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
@@ -10200,6 +10902,56 @@ load_dotnetdesktop8()
         # Also install the 64-bit version
         w_download https://download.visualstudio.microsoft.com/download/pr/f18288f6-1732-415b-b577-7fb46510479a/a98239f751a7aed31bc4aa12f348a9bf/windowsdesktop-runtime-8.0.1-win-x64.exe 63a738d7980972e40ac0bd665b267347243ea470eebfe2edf77bed7893c223e7
         w_try "${WINE}" "windowsdesktop-runtime-8.0.1-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnet800 dlls \
+    title="MS .NET Runtime 8.0.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="dotnet-runtime-8.0.0-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnet800()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/593685c9-7e98-455a-8e34-4b8ad1be9489/6ccf85c6fc244428d61f74ca3aee0645/dotnet-runtime-8.0.0-win-x86.exe c63b3db09f9c9c0538829e89d6df726f1a085d87cc878e67c038dd4324ac635c
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/7f4d5cbc-4449-4ea5-9578-c467821f251f/b9b19f89d0642bf78f4b612c6a741637/dotnet-runtime-8.0.0-win-x64.exe 413e91a477c91f7ec5fb7af389ec986abf95e5077ed5c56b47dc92a62998f9da
+        w_try "${WINE}" "dotnet-runtime-8.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata dotnetdesktop800 dlls \
+    title="MS .NET Desktop Runtime 8.0.0 LTS" \
+    publisher="Microsoft" \
+    year="2023" \
+    media="download" \
+    file1="windowsdesktop-runtime-8.0.0-win-x86.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
+
+load_dotnetdesktop800()
+{
+    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+    w_download https://download.visualstudio.microsoft.com/download/pr/f9e3b581-059d-429f-9f0d-1d1167ff7e32/bd7661030cd5d66cd3eee0fd20b24540/windowsdesktop-runtime-8.0.0-win-x86.exe 1614494021621ec8e13a33b71f25ab21b111dc3606a7c19814c583d6ccda4872
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Also install the 64-bit version
+        w_download https://download.visualstudio.microsoft.com/download/pr/b280d97f-25a9-4ab7-8a12-8291aa3af117/a37ed0e68f51fcd973e9f6cb4f40b1a7/windowsdesktop-runtime-8.0.0-win-x64.exe 3ecc517ba3f469e4e6760e607b1093543053d730c08b1b5dfda33575cbfc16f1
+        w_try "${WINE}" "windowsdesktop-runtime-8.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
