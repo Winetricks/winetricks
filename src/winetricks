@@ -2950,10 +2950,26 @@ _EOF_
 
 #---- Private Functions ----
 
+export INTERNET="no"
+internet_check() {
+  hasinternet=$(getent hosts cloudflare.com)
+  # Check for internet connection
+  if [ "${hasinternet}" != '' ]; then
+    export INTERNET="yes"
+  fi
+}
+
 # Determines downloader to use, etc.
 # I.e., things common to w_download_to(), winetricks_download_to_stdout(), and winetricks_stats_report())
 winetricks_download_setup()
 {
+    if [ "${INTERNET}" = "no" ] ; then
+        internet_check
+        if [ "${INTERNET}" = "no" ] ; then
+            w_die "No internet connection found, aborting download attempt."
+        fi
+    fi
+
     # shellcheck disable=SC2104
     case "${WINETRICKS_DOWNLOADER}" in
         aria2c|curl|wget|fetch) : ;;
