@@ -5137,19 +5137,24 @@ winetricks_set_wineprefix()
         W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
         W_COMMONFILES="$(w_pathconv -u "${W_COMMONFILES_WIN}")"
 
-        # 64-bit prefixes still have plenty of issues/a lot of verbs only install 32-bit libraries
-        # Allow the user to disable that (globally, or per prefix).
-        if test -f "${W_CACHE}/no_win64_warnings"; then
-            echo "${W_CACHE}/no_win64_warnings exists, not issuing 64-bit prefix warning"
-            _W_no_win64_warnings=1
-        elif test -f "${WINEPREFIX}/no_win64_warnings"; then
-            echo "${WINEPREFIX}/no_win64_warnings exists, not issuing 64-bit prefix warning"
-            _W_no_win64_warnings=1
-        elif test -f "${W_TMP_EARLY}/no_win64_warnings"; then
-            echo "${W_TMP_EARLY}/no_win64_warnings exists, not issuing 64-bit prefix warning"
-            _W_no_win64_warnings=1
-        else
-            _W_no_win64_warnings=0
+        # check if user has exported env variable or not
+        # if set, use value directly later when determining if win64 warnings should be displayed or not
+        # if empty, then fallback to checking for location-specific files and set accordingly
+        if test -z "${W_NO_WIN64_WARNINGS}"; then
+            # 64-bit prefixes still have plenty of issues/a lot of verbs only install 32-bit libraries
+            # Allow the user to disable that (globally, or per prefix).
+            if test -f "${W_CACHE}/no_win64_warnings"; then
+                echo "${W_CACHE}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+                W_NO_WIN64_WARNINGS=1
+            elif test -f "${WINEPREFIX}/no_win64_warnings"; then
+                echo "${WINEPREFIX}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+                W_NO_WIN64_WARNINGS=1
+            elif test -f "${W_TMP_EARLY}/no_win64_warnings"; then
+                echo "${W_TMP_EARLY}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+                W_NO_WIN64_WARNINGS=1
+            else
+                W_NO_WIN64_WARNINGS=0
+            fi
         fi
 
         # In case of GUI, only warn once per prefix, per session (i.e., don't warn next time)
@@ -5159,7 +5164,7 @@ winetricks_set_wineprefix()
             *) touch "${W_TMP_EARLY}/no_win64_warnings" ;;
         esac
 
-        if [ "${_W_no_win64_warnings}" = 0 ]; then
+        if [ "${W_NO_WIN64_WARNINGS}" = 0 ]; then
             case ${LANG} in
                 bg*) w_warn "Използвате 64-битова папка. Повечето програми са за 32-битова архитектура. Ако възникнат проблеми, моля, използвайте 32-битова папка, преди да ги докладвате." ;;
                 ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
