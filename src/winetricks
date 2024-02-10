@@ -193,7 +193,7 @@ W_TEXT_LINE="------------------------------------------------------"
 # Ask permission to continue
 w_askpermission()
 {
-    printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}"
+    printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}" >&2
 
     if test "${W_OPT_UNATTENDED}"; then
         _W_timeout="--timeout"
@@ -208,7 +208,7 @@ w_askpermission()
                 # -t / TMOUT don't seem to be portable, so just assume yes in unattended mode
                 w_info "Unattended mode, not prompting for confirmation"
             else
-                printf %s "Press Y or N, then Enter: "
+                printf %s "Press Y or N, then Enter: " >&2
                 read -r response
                 test "${response}" = Y || test "${response}" = y
             fi
@@ -232,7 +232,7 @@ w_info()
 {
     # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-        printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}"
+        printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}" >&2
     fi
 
     # kdialog doesn't allow a timeout unless you use --passivepopup
@@ -254,9 +254,9 @@ w_info()
 # Display warning message to stderr (since it is called inside redirected code)
 w_warn()
 {
-    # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
+    # If $WINETRICKS_SUPER_QUIET is set, w_warn is a no-op:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-        printf '%s\nwarning: %b\n%s\n' "${W_TEXT_LINE}" "${*}" "${W_TEXT_LINE}"
+        printf '%s\nwarning: %b\n%s\n' "${W_TEXT_LINE}" "${*}" "${W_TEXT_LINE}" >&2
     fi
 
     # kdialog doesn't allow a timeout unless you use --passivepopup
@@ -618,7 +618,7 @@ w_try()
     export WINEDLLOVERRIDES
     # If $WINETRICKS_SUPER_QUIET is set, make w_try quiet
     if [ -z "${WINETRICKS_SUPER_QUIET}" ]; then
-        printf '%s\n' "Executing $*"
+        printf '%s\n' "Executing $*" >&2
     fi
 
     # On Vista, we need to jump through a few hoops to run commands in Cygwin.
@@ -999,7 +999,7 @@ w_read_key()
             *zenity) W_KEY=$(zenity --entry --text "${_W_keymsg}") ;;
             *kdialog) W_KEY=$(kdialog --inputbox "${_W_keymsg}") ;;
             *xmessage) w_die "sorry, can't read key from GUI with xmessage" ;;
-            none) printf %s "${_W_keymsg}": ; read -r W_KEY ;;
+            none) printf %s "${_W_keymsg}": >&2 ; read -r W_KEY ;;
         esac
 
         if test "${W_KEY}" = ""; then
