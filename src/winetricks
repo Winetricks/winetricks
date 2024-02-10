@@ -39,11 +39,11 @@ WINETRICKS_VERSION=20240105-next
 # - xz is used by some verbs to decompress tar archives.
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog/xmessage.
 #
-# On Ubuntu (20.04 and newer), the following line can be used to install all the prerequisites:
-#    sudo apt install aria2 binutils cabextract fuseiso p7zip-full pkexec tor unrar unzip wine xdg-utils xz-utils zenity
+# On Ubuntu (23.04 and newer), the following line can be used to install all the prerequisites:
+#    sudo apt install 7zip aria2 binutils cabextract fuseiso pkexec tor unrar-free unzip wine xdg-utils xz-utils zenity
 #
 # On older Ubuntu, the following line can be used to install all the prerequisites:
-#    sudo apt install aria2 binutils cabextract fuseiso p7zip-full policykit-1 tor unrar unzip wine xdg-utils xz-utils zenity
+#    sudo apt install aria2 binutils cabextract fuseiso p7zip-full policykit-1 tor unrar-free unzip wine xdg-utils xz-utils zenity
 #
 # On Fedora, these commands can be used (RPM Fusion is used to install unrar):
 #    sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
@@ -698,7 +698,7 @@ w_try_7z()
     if [ -z "${WINETRICKS_FORCE_WIN_7Z}" ] && [ -x "$(command -v 7z 2>/dev/null)" ] ; then
         w_try 7z x "${filename}" -o"${destdir}" "$@"
     else
-        w_warn "Cannot find 7z. Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt-get install p7zip-full' or 'sudo yum install p7zip-plugins')."
+        w_warn "Cannot find 7z. Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt install 7zip' or 'sudo yum install p7zip-plugins')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
 
         # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
@@ -718,7 +718,7 @@ w_try_ar()
     if [ -z "${WINETRICKS_FORCE_WIN_7Z}" ] && [ -x "$(command -v ar 2>/dev/null)" ]; then
         w_try ar x "$@"
     else
-        w_warn "Cannot find ar. Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt-get install binutils' or 'sudo yum install binutils')."
+        w_warn "Cannot find ar. Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt install binutils' or 'sudo yum install binutils')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
 
         # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
@@ -734,7 +734,7 @@ w_try_cabextract()
 {
     # Not always installed, but shouldn't be fatal unless it's being used
     if test ! -x "$(command -v cabextract 2>/dev/null)"; then
-        w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt-get install cabextract' or 'sudo yum install cabextract')."
+        w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt install cabextract' or 'sudo yum install cabextract')."
     fi
 
     w_try cabextract -q "$@"
@@ -900,7 +900,7 @@ w_try_unrar()
     if [ -z "${WINETRICKS_FORCE_WIN_7Z}" ] && [ -x "$(command -v unrar 2>/dev/null)" ]; then
         w_try unrar x "$@"
     else
-        w_warn "Cannot find unrar. Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt-get install unrar' or 'sudo yum install unrar')."
+        w_warn "Cannot find unrar. Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt install unrar-free' or 'sudo yum install unrar')."
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
 
         # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
@@ -931,7 +931,7 @@ w_try_unzip()
             1|*) w_warn "Unzip failed, trying Windows 7-Zip instead." ;;
         esac
     else
-        w_warn "Cannot find unzip. Using Windows 7-Zip instead. (You can avoid this by installing unzip, e.g. 'sudo apt-get install unzip' or 'sudo yum install unzip')."
+        w_warn "Cannot find unzip. Using Windows 7-Zip instead. (You can avoid this by installing unzip, e.g. 'sudo apt install unzip' or 'sudo yum install unzip')."
     fi
 
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
@@ -1018,7 +1018,7 @@ w_verify_cabextract_available()
     # This should be called by verb_a, to give a proper warning
 
     if test ! -x "$(command -v cabextract 2>/dev/null)"; then
-        w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt-get install cabextract' or 'sudo yum install cabextract')."
+        w_die "Cannot find cabextract.  Please install it (e.g. 'sudo apt install cabextract' or 'sudo yum install cabextract')."
     fi
 
     w_try_cabextract -q -v >/dev/null 2>&1
