@@ -872,7 +872,7 @@ w_try_regedit64()
     w_try "${WINE64}" ${cmdc} "C:\\windows\\regedit.exe" ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
-w_try_regsvr()
+w_try_regsvr32()
 {
     w_try "${WINE}" "${W_SYSTEM32_DLLS_WIN}\\regsvr32.exe" ${W_OPT_UNATTENDED:+/S} "$@"
 }
@@ -5333,7 +5333,7 @@ load_amstream()
 
     w_override_dlls native,builtin amstream
 
-    w_try_regsvr amstream.dll
+    w_try_regsvr32 amstream.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_6b778d68f75a1a54/amstream.dll
@@ -5545,9 +5545,9 @@ load_comctl32ocx()
 {
     helper_vb6sp6 "${W_SYSTEM32_DLLS}" comctl32.ocx mscomctl.ocx mscomct2.ocx
 
-    w_try_regsvr comctl32.ocx
-    w_try_regsvr mscomctl.ocx
-    w_try_regsvr mscomct2.ocx
+    w_try_regsvr32 comctl32.ocx
+    w_try_regsvr32 mscomctl.ocx
+    w_try_regsvr32 mscomct2.ocx
 }
 
 #----------------------------------------------------------------
@@ -5564,7 +5564,7 @@ load_comdlg32ocx()
 {
     helper_vb6sp6 "${W_TMP}" ComDlg32.ocx
     w_try mv "${W_TMP}/ComDlg32.ocx" "${W_SYSTEM32_DLLS}/comdlg32.ocx"
-    w_try_regsvr comdlg32.ocx
+    w_try_regsvr32 comdlg32.ocx
 }
 
 #----------------------------------------------------------------
@@ -6313,7 +6313,7 @@ load_devenum()
     w_try_cabextract -d "${W_TMP}" -L -F 'dxnt.cab' "${W_CACHE}/directx9/${DIRECTX_NAME}"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'devenum.dll' "${W_TMP}/dxnt.cab"
     w_override_dlls native devenum
-    w_try_regsvr devenum.dll
+    w_try_regsvr32 devenum.dll
 }
 
 #----------------------------------------------------------------
@@ -6333,7 +6333,7 @@ load_dinput()
     w_try_cabextract -d "${W_TMP}" -L -F 'dxnt.cab' "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dinput.dll' "${W_TMP}/dxnt.cab"
     w_override_dlls native dinput
-    w_try_regsvr dinput
+    w_try_regsvr32 dinput
 }
 
 #----------------------------------------------------------------
@@ -6437,10 +6437,10 @@ load_directplay()
 
     w_override_dlls native dplaysvr.exe dplayx dpmodemx dpnet dpnhpast dpnhupnp dpnsvr.exe dpwsockx
 
-    w_try_regsvr dplayx.dll
-    w_try_regsvr dpnet.dll
-    w_try_regsvr dpnhpast.dll
-    w_try_regsvr dpnhupnp.dll
+    w_try_regsvr32 dplayx.dll
+    w_try_regsvr32 dpnet.dll
+    w_try_regsvr32 dpnhpast.dll
+    w_try_regsvr32 dpnhupnp.dll
 }
 
 #----------------------------------------------------------------
@@ -6481,9 +6481,9 @@ load_dpvoice()
         w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvacm.dll' "${x}"
     done
     w_override_dlls native dpvoice dpvvox dpvacm
-    w_try_regsvr dpvoice.dll
-    w_try_regsvr dpvvox.dll
-    w_try_regsvr dpvacm.dll
+    w_try_regsvr32 dpvoice.dll
+    w_try_regsvr32 dpvvox.dll
+    w_try_regsvr32 dpvacm.dll
 }
 
 #----------------------------------------------------------------
@@ -6503,8 +6503,8 @@ load_dsdmo()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dsdmo.dll' "${W_TMP}/dxnt.cab"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dsdmoprp.dll' "${W_TMP}/dxnt.cab"
-    w_try_regsvr dsdmo.dll
-    w_try_regsvr dsdmoprp.dll
+    w_try_regsvr32 dsdmo.dll
+    w_try_regsvr32 dsdmoprp.dll
 }
 
 #----------------------------------------------------------------
@@ -6602,7 +6602,7 @@ load_dxtrans()
     helper_winxpsp3 i386/dxtrans.dl_
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/dxtrans.dl_
     w_override_dlls native,builtin dxtrans
-    w_try_regsvr dxtrans.dll
+    w_try_regsvr32 dxtrans.dll
 }
 
 #----------------------------------------------------------------
@@ -7814,7 +7814,7 @@ load_dmband()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmband.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmband
-    w_try_regsvr dmband.dll
+    w_try_regsvr32 dmband.dll
 }
 
 #----------------------------------------------------------------
@@ -7835,7 +7835,7 @@ load_dmcompos()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmcompos.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmcompos
-    w_try_regsvr dmcompos.dll
+    w_try_regsvr32 dmcompos.dll
 }
 
 #----------------------------------------------------------------
@@ -7856,7 +7856,7 @@ load_dmime()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmime.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmime
-    w_try_regsvr dmime.dll
+    w_try_regsvr32 dmime.dll
 }
 
 #----------------------------------------------------------------
@@ -7877,7 +7877,7 @@ load_dmloader()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmloader.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmloader
-    w_try_regsvr dmloader.dll
+    w_try_regsvr32 dmloader.dll
 }
 
 #----------------------------------------------------------------
@@ -7898,7 +7898,7 @@ load_dmscript()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmscript.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmscript
-    w_try_regsvr dmscript.dll
+    w_try_regsvr32 dmscript.dll
 }
 
 #----------------------------------------------------------------
@@ -7919,7 +7919,7 @@ load_dmstyle()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmstyle.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmstyle
-    w_try_regsvr dmstyle.dll
+    w_try_regsvr32 dmstyle.dll
 }
 
 #----------------------------------------------------------------
@@ -7940,7 +7940,7 @@ load_dmsynth()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmsynth.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmsynth
-    w_try_regsvr dmsynth.dll
+    w_try_regsvr32 dmsynth.dll
 }
 
 #----------------------------------------------------------------
@@ -7961,7 +7961,7 @@ load_dmusic()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmusic.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmusic
-    w_try_regsvr dmusic.dll
+    w_try_regsvr32 dmusic.dll
 }
 
 #----------------------------------------------------------------
@@ -7982,7 +7982,7 @@ load_dswave()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dswave.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dswave
-    w_try_regsvr dswave.dll
+    w_try_regsvr32 dswave.dll
 }
 
 #----------------------------------------------------------------
@@ -9468,7 +9468,7 @@ load_dxdiagn()
     helper_win7sp1 x86_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_25cb021dbc0611db/dxdiagn.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_25cb021dbc0611db/dxdiagn.dll" "${W_SYSTEM32_DLLS}/dxdiagn.dll"
     w_override_dlls native,builtin dxdiagn
-    w_try_regsvr dxdiagn.dll
+    w_try_regsvr32 dxdiagn.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_81e99da174638311/dxdiagn.dll
@@ -9495,7 +9495,7 @@ load_dxdiagn_feb2010()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dxdiagn.dll' "${W_TMP}/dxnt.cab"
     w_override_dlls native dxdiagn
-    w_try_regsvr dxdiagn.dll
+    w_try_regsvr32 dxdiagn.dll
 }
 
 #----------------------------------------------------------------
@@ -10205,7 +10205,7 @@ load_icodecs()
     # https://support.britannica.com/other/touchthesky/win/issues/TSTUw_150.htm
     # https://appdb.winehq.org/objectManager.php?sClass=version&iId=7091
     w_override_dlls native,builtin ir50_32
-    w_try_regsvr ir50_32
+    w_try_regsvr32 ir50_32
 
     # Apparently some codecs are missing, see https://github.com/Winetricks/winetricks/issues/302
     # Download at https://www.moviecodec.com/download-codec-packs/indeo-codecs-legacy-package-31/
@@ -10332,7 +10332,7 @@ load_itircl()
     w_try_cabextract -d "${W_TMP}" -F hhupd.exe "${W_CACHE}"/hhw/htmlhelp.exe
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -F itircl.dll "${W_TMP}"/hhupd.exe
     w_override_dlls native itircl
-    w_try_regsvr itircl.dll
+    w_try_regsvr32 itircl.dll
 }
 
 #----------------------------------------------------------------
@@ -10353,7 +10353,7 @@ load_itss()
     w_try_cabextract -d "${W_TMP}" -F hhupd.exe "${W_CACHE}"/hhw/htmlhelp.exe
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -F itss.dll "${W_TMP}"/hhupd.exe
     w_override_dlls native itss
-    w_try_regsvr itss.dll
+    w_try_regsvr32 itss.dll
 }
 
 #----------------------------------------------------------------
@@ -10500,7 +10500,7 @@ load_l3codecx()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'l3codecx.ax' "${W_TMP}/dxnt.cab"
 
-    w_try_regsvr l3codecx.ax
+    w_try_regsvr32 l3codecx.ax
 }
 
 #----------------------------------------------------------------
@@ -10861,7 +10861,7 @@ load_msdxmocx()
     w_download http://hell.pl/agnus/windows95/mpfull.exe a39b2b9735cedd513fcb78f8634695d35073e9d7e865e536a0da6db38c7225e4
 
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_CACHE}/${W_PACKAGE}/${file1}"
-    w_try_regsvr msdxm.ocx
+    w_try_regsvr32 msdxm.ocx
 }
 
 #----------------------------------------------------------------
@@ -10878,7 +10878,7 @@ load_msflxgrd()
 {
     helper_vb6sp6 "${W_TMP}" MSFlxGrd.ocx
     w_try mv "${W_TMP}/MSFlxGrd.ocx" "${W_SYSTEM32_DLLS}/msflxgrd.ocx"
-    w_try_regsvr msflxgrd.ocx
+    w_try_regsvr32 msflxgrd.ocx
 }
 
 #----------------------------------------------------------------
@@ -10895,7 +10895,7 @@ load_mshflxgd()
 {
     helper_vb6sp6 "${W_TMP}" MShflxgd.ocx
     w_try mv "${W_TMP}/MShflxgd.ocx" "${W_SYSTEM32_DLLS}/mshflxgd.ocx"
-    w_try_regsvr mshflxgd.ocx
+    w_try_regsvr32 mshflxgd.ocx
 }
 
 #----------------------------------------------------------------
@@ -10968,7 +10968,7 @@ load_msmask()
 {
     helper_vb6sp6 "${W_TMP}" msmask32.ocx
     w_try mv "${W_TMP}/msmask32.ocx" "${W_SYSTEM32_DLLS}/msmask32.ocx"
-    w_try_regsvr msmask32.ocx
+    w_try_regsvr32 msmask32.ocx
 }
 
 #----------------------------------------------------------------
@@ -11459,7 +11459,7 @@ load_pngfilt()
 
     helper_winxpsp3 i386/pngfilt.dl_
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/pngfilt.dl_
-    w_try_regsvr pngfilt.dll
+    w_try_regsvr32 pngfilt.dll
 }
 
 #----------------------------------------------------------------
@@ -11569,7 +11569,7 @@ load_prntvpt()
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll" "${W_SYSTEM32_DLLS}/prntvpt.dll"
 
     w_override_dlls native,builtin prntvpt
-    w_try_regsvr prntvpt.dll
+    w_try_regsvr32 prntvpt.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_7180ae1eb5ce8062/prntvpt.dll
@@ -11664,7 +11664,7 @@ load_qasf()
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_1cc4e9c15ccc8ae8/qasf.dll" "${W_SYSTEM32_DLLS}/qasf.dll"
 
     w_override_dlls native,builtin qasf
-    w_try_regsvr qasf.dll
+    w_try_regsvr32 qasf.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_78e385451529fc1e/qasf.dll
@@ -11688,7 +11688,7 @@ load_qcap()
     helper_win7sp1 x86_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_bae08d1e7dcccf2a/qcap.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_bae08d1e7dcccf2a/qcap.dll" "${W_SYSTEM32_DLLS}/qcap.dll"
     w_override_dlls native,builtin qcap
-    w_try_regsvr qcap.dll
+    w_try_regsvr32 qcap.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_16ff28a2362a4060/qcap.dll
@@ -11712,7 +11712,7 @@ load_qdvd()
     helper_win7sp1 x86_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_562994bd321aac67/qdvd.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_562994bd321aac67/qdvd.dll" "${W_SYSTEM32_DLLS}/qdvd.dll"
     w_override_dlls native,builtin qdvd
-    w_try_regsvr qdvd.dll
+    w_try_regsvr32 qdvd.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_b2483040ea781d9d/qdvd.dll
@@ -11736,7 +11736,7 @@ load_qedit()
     helper_win7sp1 x86_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_5ca34698a5a970d2/qedit.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_5ca34698a5a970d2/qedit.dll" "${W_SYSTEM32_DLLS}/qedit.dll"
     w_override_dlls native,builtin qedit
-    w_try_regsvr qedit.dll
+    w_try_regsvr32 qedit.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_b8c1e21c5e06e208/qedit.dll
@@ -11760,7 +11760,7 @@ load_quartz()
     helper_win7sp1 x86_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_a877a1cc4c284497/quartz.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_a877a1cc4c284497/quartz.dll" "${W_SYSTEM32_DLLS}/quartz.dll"
     w_override_dlls native,builtin quartz
-    w_try_regsvr quartz.dll
+    w_try_regsvr32 quartz.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_04963d500485b5cd/quartz.dll
@@ -11788,7 +11788,7 @@ load_quartz_feb2010()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F quartz.dll "${W_TMP}/dxnt.cab"
 
     w_override_dlls native,builtin quartz
-    w_try_regsvr quartz.dll
+    w_try_regsvr32 quartz.dll
 }
 
 #----------------------------------------------------------------
@@ -11941,7 +11941,7 @@ w_metadata richtx32 dlls \
 load_richtx32()
 {
     helper_vb6sp6 "${W_SYSTEM32_DLLS}" richtx32.ocx
-    w_try_regsvr richtx32.ocx
+    w_try_regsvr32 richtx32.ocx
 }
 
 #----------------------------------------------------------------
@@ -11967,7 +11967,7 @@ load_sapi()
     helper_win7sp1 x86_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_d809b28230ecfe46/sapi.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_d809b28230ecfe46/sapi.dll" "${W_SYSTEM32_DLLS}/sapi.dll"
     w_override_dlls native sapi
-    w_try_regsvr sapi.dll
+    w_try_regsvr32 sapi.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_34284e05e94a6f7c/sapi.dll
@@ -12121,7 +12121,7 @@ load_tabctl32()
 {
     helper_vb6sp6 "${W_TMP}" TabCtl32.ocx
     w_try mv "${W_TMP}/TabCtl32.ocx" "${W_SYSTEM32_DLLS}/tabctl32.ocx"
-    w_try_regsvr tabctl32.ocx
+    w_try_regsvr32 tabctl32.ocx
 }
 
 #----------------------------------------------------------------
@@ -13390,7 +13390,7 @@ load_wsh57()
 
     # Wine doesn't provide the other dll's (yet?)
     w_override_dlls native,builtin jscript scrrun vbscript cscript.exe wscript.exe
-    w_try_regsvr dispex.dll jscript.dll scrobj.dll scrrun.dll vbscript.dll wshcon.dll wshext.dll
+    w_try_regsvr32 dispex.dll jscript.dll scrobj.dll scrrun.dll vbscript.dll wshcon.dll wshext.dll
 }
 
 #----------------------------------------------------------------
@@ -13429,12 +13429,12 @@ load_xact()
 
     # Register xactengine?_?.dll
     for x in "${W_SYSTEM32_DLLS}"/xactengine* ; do
-        w_try_regsvr "$(basename "${x}")"
+        w_try_regsvr32 "$(basename "${x}")"
     done
 
     # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
     for x in 0 1 2 3 4 5 6 7 ; do
-        w_try_regsvr "$(basename "${W_SYSTEM32_DLLS}/xaudio2_${x}")"
+        w_try_regsvr32 "$(basename "${W_SYSTEM32_DLLS}/xaudio2_${x}")"
     done
 }
 
