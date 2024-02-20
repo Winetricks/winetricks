@@ -1064,6 +1064,16 @@ w_expand_env()
     winetricks_early_wine_arch cmd.exe /c echo "%$1%"
 }
 
+w_expand_env32()
+{
+    winetricks_early_wine "${W_SYSTEM32_DLLS_WIN}\\cmd.exe" /c echo "%$1%"
+}
+
+w_expand_env64()
+{
+    WINE=${WINE64} winetricks_early_wine "${W_SYSTEM64_DLLS_WIN64}\\cmd.exe" /c echo "%$1%"
+}
+
 # Get the latest tagged release from github.com API
 w_get_github_latest_release()
 {
@@ -5063,9 +5073,6 @@ winetricks_set_wineprefix()
         WINE_MULTI="${WINE}"
         W_ARCH=win64
 
-        W_PROGRAMS_WIN="$(w_expand_env ProgramFiles)"
-        W_PROGRAMS_UNIX="$(w_pathconv -u "${W_PROGRAMS_WIN}")"
-
         # Common variable for 32-bit dlls on win32/win64:
         W_SYSTEM32_DLLS="${W_WINDIR_UNIX}/syswow64"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\syswow64"
@@ -5074,18 +5081,21 @@ winetricks_set_wineprefix()
         W_SYSTEM64_DLLS_WIN32="C:\\windows\\sysnative" # path to access 64-bit dlls from 32-bit apps
         W_SYSTEM64_DLLS_WIN64="C:\\windows\\system32"  # path to access 64-bit dlls from 64-bit apps
 
+        W_PROGRAMS_WIN="$(w_expand_env64 ProgramFiles)"
+        W_PROGRAMS_UNIX="$(w_pathconv -u "${W_PROGRAMS_WIN}")"
+
         # There's also ProgramW6432, which =%ProgramFiles%(but only available when running under a 64 bit OS)
         # See https://ss64.com/nt/syntax-variables.html
-        W_PROGRAMW6432_WIN="$(w_expand_env ProgramW6432)"
+        W_PROGRAMW6432_WIN="$(w_expand_env64 ProgramW6432)"
         W_PROGRAMW6432_UNIX="$(w_pathconv -u "${W_PROGRAMW6432_WIN}")"
 
         # 64-bit Windows has a second directory for program files
-        W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN} (x86)"
-        W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX} (x86)"
+        W_PROGRAMS_X86_WIN="$(w_expand_env32 ProgramFiles)"
+        W_PROGRAMS_X86_UNIX="$(w_pathconv -u "${W_PROGRAMS_X86_WIN}")"
 
-        W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles\(x86\))"
+        W_COMMONFILES_X86_WIN="$(w_expand_env64 CommonProgramFiles\(x86\))"
         W_COMMONFILES_X86="$(w_pathconv -u "${W_COMMONFILES_X86_WIN}")"
-        W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
+        W_COMMONFILES_WIN="$(w_expand_env64 CommonProgramW6432)"
         W_COMMONFILES="$(w_pathconv -u "${W_COMMONFILES_WIN}")"
 
         # 64-bit prefixes still have plenty of issues/a lot of verbs only install 32-bit libraries
@@ -5130,9 +5140,6 @@ winetricks_set_wineprefix()
         WINE_MULTI="${WINE}"
         W_ARCH=win32
 
-        W_PROGRAMS_WIN="$(w_expand_env ProgramFiles)"
-        W_PROGRAMS_UNIX="$(w_pathconv -u "${W_PROGRAMS_WIN}")"
-
         # Common variable for 32-bit dlls on win32/win64:
         W_SYSTEM32_DLLS="${W_WINDIR_UNIX}/system32"
         W_SYSTEM32_DLLS_WIN="C:\\windows\\system32"
@@ -5143,19 +5150,22 @@ winetricks_set_wineprefix()
         W_SYSTEM64_DLLS_WIN32="C:\\does-not-exist-on-win32" # path to access 64-bit dlls from 32-bit apps
         W_SYSTEM64_DLLS_WIN64="C:\\does-not-exist-on-win32"  # path to access 64-bit dlls from 64-bit apps
 
+        W_PROGRAMS_WIN="$(w_expand_env32 ProgramFiles)"
+        W_PROGRAMS_UNIX="$(w_pathconv -u "${W_PROGRAMS_WIN}")"
+
         W_PROGRAMS_X86_WIN="${W_PROGRAMS_WIN}"
         W_PROGRAMS_X86_UNIX="${W_PROGRAMS_UNIX}"
 
-        W_COMMONFILES_X86_WIN="$(w_expand_env CommonProgramFiles)"
+        W_COMMONFILES_X86_WIN="$(w_expand_env32 CommonProgramFiles)"
         W_COMMONFILES_X86="$(w_pathconv -u "${W_COMMONFILES_X86_WIN}")"
-        W_COMMONFILES_WIN="$(w_expand_env CommonProgramFiles)"
+        W_COMMONFILES_WIN="$(w_expand_env32 CommonProgramFiles)"
         W_COMMONFILES="$(w_pathconv -u "${W_COMMONFILES_WIN}")"
     fi
 
     ## Arch independent variables:
 
     # Note: using AppData since it's arch independent
-    W_APPDATA_WIN="$(w_expand_env AppData)"
+    W_APPDATA_WIN="$(w_expand_env32 AppData)"
     W_APPDATA_UNIX="$(w_pathconv -u "${W_APPDATA_WIN}")"
 
     case "${W_APPDATA_WIN}" in
