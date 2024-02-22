@@ -6064,17 +6064,32 @@ load_cmd()
 
 w_metadata cnc_ddraw dlls \
     title="Reimplentation of ddraw for CnC games" \
-    homepage="https://github.com/CnCNet/cnc-ddraw" \
+    homepage="https://github.com/FunkyFr3sh/cnc-ddraw" \
     publisher="CnCNet" \
     year="2021" \
     media="download" \
-    file1="cnc-ddraw-v5.0.0.0.zip" \
+    file1="cnc-ddraw-v6.2.0.0.zip" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/Shaders/readme.txt"
 
 load_cnc_ddraw()
 {
     # Note: only works if ddraw.ini contains settings for the executable
-    w_download https://github.com/CnCNet/cnc-ddraw/releases/download/v5.0.0.0/cnc-ddraw.zip 9f37010bf87aafbe3d97a95f4253460a8f0869fb52bb45bcffbb73182b4b00fe cnc-ddraw-v5.0.0.0.zip
+    # 2018/12/11 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/1.3.4.0/cnc-ddraw.zip
+    # 2020/02/03 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/1.3.5.0/cnc-ddraw.zip
+    # 2021/09/29 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v4.4.4.0/cnc-ddraw.zip
+    # 2022/03/27 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v4.4.7.0/cnc-ddraw.zip
+    # 2022/09/18 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v4.4.9.0/cnc-ddraw.zip
+    # 2022/10/03 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v4.6.0.0/cnc-ddraw.zip
+    # 2023/02/08 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v5.0.0.0/cnc-ddraw.zip
+    # 2023/08/15 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v5.6.0.0/cnc-ddraw.zip
+    # 2023/08/24 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v5.7.0.0/cnc-ddraw.zip
+    # 2023/09/26 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v5.8.0.0/cnc-ddraw.zip
+    # 2023/10/20 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v5.9.0.0/cnc-ddraw.zip
+    # 2023/11/04 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.0.0.0/cnc-ddraw.zip
+    # 2024/02/03 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.1.0.0d/cnc-ddraw.zip
+    # 2024/02/21 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.2.0.0/cnc-ddraw.zip
+
+    w_download https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.2.0.0/cnc-ddraw.zip e5677ba52c31ffa93421a16edacff0c4d1f03e107aea6fc860861b43e3356119 cnc-ddraw-v6.2.0.0.zip
     w_try_unzip "${W_SYSTEM32_DLLS}" "${W_CACHE}/${W_PACKAGE}/${file1}"
 
     w_override_dlls native,builtin ddraw
