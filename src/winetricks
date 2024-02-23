@@ -1078,7 +1078,7 @@ w_expand_env()
     winetricks_early_wine_arch cmd.exe /c echo "%$1%"
 }
 
-# Determine what architecture a binary file is built for
+# Determine what architecture a binary file is built for, silently continue in case of failure.
 winetricks_get_file_arch()
 {
     _W_file="$1"
@@ -1089,7 +1089,7 @@ winetricks_get_file_arch()
             "arm64")  _W_file_arch="arm64" ;;
             "i386")   _W_file_arch="i386" ;;
             "x86_64") _W_file_arch="x86_64" ;;
-            *)        w_die "Unknown file arch: ${_W_lipo_output}" ;;
+            *)        _W_file_arch="" ;;
         esac
     else
         # Assume ELF binaries for everything else
@@ -1099,7 +1099,7 @@ winetricks_get_file_arch()
             "03"|"06") _W_file_arch="i386" ;;
             "b7")      _W_file_arch="aarch64" ;;
             "28")      _W_file_arch="aarch32" ;;
-            *)         w_die "Unknown file arch: ${_W_ob_output}";;
+            *)         _W_file_arch="" ;;
         esac
     fi
 
@@ -5097,8 +5097,39 @@ winetricks_set_wineprefix()
         WINEBOOT_BIN="$(dirname "${WINESERVER_BIN}")/$(basename "${WINESERVER_BIN}"|sed 's,wineserver,wineboot,')"
 
         _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINESERVER_BIN}")"
+        if [ -z "${_W_wineserver_binary_arch}" ]; then
+            # wineserver might be a script calling a binary in Wine's bindir.
+            if [ -z "${WINE_BINDIR}" ] && [ -x "${WINEBOOT_BIN}" ]; then
+                WINE_BINDIR="$(dirname "$(${READLINK_F} "${WINEBOOT_BIN}" 2>/dev/null)" 2>/dev/null)"
+            fi
+            # wineserver in Wine's bindir might be a script calling wineserver64 preferably over wineserver32 (Debian).
+            # Try these before testing wineserver itself
+            if [ -x "${WINE_BINDIR}/wineserver64" ]; then
+                _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wineserver64")"
+            elif [ -x "${WINE_BINDIR}/wineserver32" ]; then
+                _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wineserver32")"
+            elif [ -x "${WINE_BINDIR}/wineserver" ]; then
+                _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wineserver")"
+            fi
+        fi
+        if [ -z "${_W_wineserver_binary_arch}" ]; then
+            w_warn "Unknown file arch of ${WINESERVER_BIN}."
+        fi
+
         WINE_BIN="$(which "${WINE}")"
         _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BIN}")"
+        if [ -z "${_W_wine_binary_arch}" ]; then
+            # wine might be a script calling a binary in Wine's bindir.
+            if [ -z "${WINE_BINDIR}" ] && [ -x "${WINEBOOT_BIN}" ]; then
+                WINE_BINDIR="$(dirname "$(${READLINK_F} "${WINEBOOT_BIN}" 2>/dev/null)" 2>/dev/null)"
+            fi
+            if [ -x "${WINE_BINDIR}/wine" ]; then
+                _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wine")"
+            fi
+        fi
+        if [ -z "${_W_wine_binary_arch}" ]; then
+            w_warn "Unknown file arch of ${WINE_BIN}."
+        fi
 
         # determine wow64 type (new/old)
         # FIXME: check what upstream is calling them
