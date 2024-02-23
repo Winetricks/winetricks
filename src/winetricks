@@ -5063,6 +5063,19 @@ winetricks_set_wineprefix()
         # Check the bitness of wineserver + wine binary, used later to determine if we're on a WOW setup (no wine64)
         # https://github.com/Winetricks/winetricks/issues/2030
         WINESERVER_BIN="$(which "${WINESERVER}")"
+
+        # wineboot often is a link pointing to wineapploader in Wine's bindir. If we don't find binaries we may look for them there later
+        if [ -n "${READLINK_F}" ]; then
+            true
+        elif [ "$(uname -s)" = "Darwin" ]; then
+            # readlink exists on MacOS, but does not support "-f" on MacOS < 12.3
+            # Use perl instead
+            READLINK_F="perl -MCwd=abs_path -le 'print abs_path readlink(shift);'"
+        else
+            READLINK_F="readlink -f"
+        fi
+        WINEBOOT_BIN="$(dirname "${WINESERVER_BIN}")/$(basename "${WINESERVER_BIN}"|sed 's,wineserver,wineboot,')"
+
         _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINESERVER_BIN}")"
         WINE_BIN="$(which "${WINE}")"
         _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BIN}")"
