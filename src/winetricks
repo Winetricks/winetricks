@@ -5122,10 +5122,18 @@ winetricks_set_wineprefix()
         elif command -v "${WINE}64" >/dev/null 2>&1; then
             WINE64="${WINE}64"
         else
-            # Handle case where wine binaries (or binary wrappers) have a suffix
-            WINE64="$(dirname "${WINE}")/"
-            [ "${WINE64}" = "./" ] && WINE64=""
-            WINE64="${WINE64}$(basename "${WINE}" | sed 's/^wine/wine64/')"
+            if [ -x "${WINEBOOT_BIN}" ]; then
+                WINE_BINDIR="$(dirname "$(${READLINK_F} "${WINEBOOT_BIN}" 2>/dev/null)" 2>/dev/null)"
+                if [ -x "${WINE_BINDIR}/wine64" ]; then
+                    # Workaround case where wine is in path, but wine64 is only in Wine's bindir
+                    WINE64="${WINE_BINDIR}/wine64"
+                fi
+            else
+                # Handle case where wine binaries (or binary wrappers) have a suffix
+                WINE64="$(dirname "${WINE}")/"
+                [ "${WINE64}" = "./" ] && WINE64=""
+                WINE64="${WINE64}$(basename "${WINE}" | sed 's/^wine/wine64/')"
+            fi
         fi
         WINE_ARCH="${WINE64}"
         WINE_MULTI="${WINE}"
