@@ -1332,6 +1332,36 @@ w_dotnet_verify()
     w_info ".Net Verifier returned ${dn_status}"
 }
 
+# Workaround for "You do not have sufficient rights to run this application" error if the username is "guest".
+w_replace_username_guest()
+{
+    if [ -n "${WINEUSERNAME}" ]; then
+        WINEUSERNAME_COPY="${WINEUSERNAME}"
+    else
+        WINEUSERNAME="${USERNAME}"
+    fi
+
+    if echo "${WINEUSERNAME}" | grep -q -i "^guest$"; then
+        TMP_USERNAME="$(basename "$(mktemp -u)")"
+        w_try ln -s "${W_DRIVE_C}/users/${WINEUSERNAME}" "${W_DRIVE_C}/users/${TMP_USERNAME}"
+        export WINEUSERNAME="${TMP_USERNAME}"
+    fi
+}
+
+# Restore username if it has been changed in w_replace_username_guest
+w_restore_username()
+{
+    if [ -n "${TMP_USERNAME}" ]; then
+        w_try rm "${W_DRIVE_C}/users/${TMP_USERNAME}"
+    fi
+
+    if [ -z "${WINEUSERNAME_COPY}" ]; then
+        unset WINEUSERNAME
+    else
+        WINEUSERNAME="${WINEUSERNAME_COPY}"
+    fi
+}
+
 # Checks if the user can run the self-update/rollback commands
 winetricks_check_update_availability()
 {
@@ -9180,8 +9210,10 @@ load_dotnet20sp1()
         w_set_winver winxp
     fi
 
+    w_replace_username_guest
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try_ms_installer "${WINE}" "${exe}" ${W_OPT_UNATTENDED:+/q}
+    w_restore_username
 
     if [ "${W_ARCH}" = "win32" ]; then
         # We can't stop installing dotnet20sp1 in win2k mode until Wine supports
@@ -9241,8 +9273,10 @@ load_dotnet20sp2()
         exe="NetFx20SP2_x64.exe"
     fi
 
+    w_replace_username_guest
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try_ms_installer "${WINE}" "${exe}" ${W_OPT_UNATTENDED:+ /q /c:"install.exe /q"}
+    w_restore_username
 
     if [ "${W_ARCH}" = "win32" ]; then
         # We can't stop installing dotnet20sp1 in win2k mode until Wine supports
@@ -9326,9 +9360,11 @@ load_dotnet30()
     WINEDLLOVERRIDES="ngen.exe,mscorsvw.exe=b;${WINEDLLOVERRIDES}"
     export WINEDLLOVERRIDES
 
+    w_replace_username_guest
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_warn "Installing .NET 3.0 runtime silently, as otherwise it gets hidden behind taskbar. Installation usually takes about 3 minutes."
     w_try "${WINE}" "${file1}" /q /c:"install.exe /q"
+    w_restore_username
 
     w_override_dlls native mscorwks
     w_restore_winver
@@ -9380,7 +9416,9 @@ load_dotnet30sp1()
 
     "${WINE}" sc delete FontCache3.0.0.0
 
+    w_replace_username_guest
     w_try_ms_installer "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q}
+    w_restore_username
 
     w_override_dlls native mscorwks
     w_restore_winver
@@ -9426,8 +9464,10 @@ load_dotnet35()
     w_override_dlls native mscoree mscorwks
     w_wineserver -w
 
+    w_replace_username_guest
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try_ms_installer "${WINE}" "${file1}" /lang:ENU ${W_OPT_UNATTENDED:+/q}
+    w_restore_username
 
     w_restore_winver
 
@@ -9480,8 +9520,10 @@ load_dotnet35sp1()
     w_try_cd "${W_TMP}"
     w_try ln -s "${W_CACHE}/${W_PACKAGE}/${file1}" .
 
+    w_replace_username_guest
     WINEDLLOVERRIDES="ngen.exe=n" w_try_ms_installer "${WINE}" dotnetfx35.exe /lang:ENU ${W_OPT_UNATTENDED:+/q}
     w_try rm dotnetfx35.exe
+    w_restore_username
 
     w_restore_winver
 
