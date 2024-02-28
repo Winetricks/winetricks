@@ -5113,7 +5113,9 @@ winetricks_set_wineprefix()
 
         # determine wow64 type (new/old)
         # FIXME: check what upstream is calling them
-        if [ "${_W_wineserver_binary_arch}" = "${_W_wine_binary_arch}" ]; then
+        if [ -z "${_W_wineserver_binary_arch}" ] || [ -z "${_W_wine_binary_arch}" ]; then
+            _W_wow64_style="unknown"
+        elif [ "${_W_wineserver_binary_arch}" = "${_W_wine_binary_arch}" ]; then
             _W_wow64_style="new"
         else
             _W_wow64_style="classic"
@@ -5199,6 +5201,8 @@ winetricks_set_wineprefix()
 
             if [ "${_W_wow64_style}" = "new" ]; then
                 w_warn "You apppear to be using Wine's new wow64 mode. Note that this is EXPERIMENTAL and not yet fully supported. If reporting an issue, be sure to mention this."
+            elif [ "${_W_wow64_style}" = "unknown" ]; then
+                w_warn "WoW64 type could not be detected."
             fi
         fi
 
