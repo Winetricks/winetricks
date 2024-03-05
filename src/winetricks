@@ -19301,6 +19301,33 @@ load_remove_mono()
 
 #----------------------------------------------------------------
 
+w_metadata cades dlls \
+    title="CAdES Plugin" \
+    publisher="CryptoPro" \
+    year="2024" \
+    media="download" \
+    file1="cades-win32.msi" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/cades.dll"
+
+
+load_cades()
+{
+    w_download https://cryptopro.ru/sites/default/files/products/cades/release_2_0_13642/cades-win32.msi d3c1f5d4e24d5b3011166c4bea7054eca91fa2477c312bac64312c86b72d6d38
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "${WINE}" msiexec /i cades-win32.msi ${W_OPT_UNATTENDED:+/q}
+    w_try_cp_dll "${W_WINDIR_UNIX}/winsxs/x86_cryptopro.pki.cades_a6d31b994cfcddc4_2.0.13742.0_none_deadbeef/cades.dll" "${W_SYSTEM32_DLLS}/cades.dll"
+    case "${W_ARCH}" in
+        win64)
+            #Also install 64-bit version
+            w_download https://cryptopro.ru/sites/default/files/products/cades/release_2_0_13642/cades-x64.msi f02bf53d3501fa0839870bb440c53d5a846af43c142effd0fb8531dd0ed6c7cf
+            w_try "${WINE}" msiexec /i cades-x64.msi ${W_OPT_UNATTENDED:+/q}
+            w_try_cp_dll "${W_WINDIR_UNIX}/winsxs/amd64_cryptopro.pki.cades_a6d31b994cfcddc4_2.0.13635.0_none_deadbeef/cades.dll" "${W_SYSTEM64_DLLS}/cades.dll"
+            ;;
+    esac
+}
+
+#----------------------------------------------------------------
+
 w_metadata sandbox settings \
     title_bg="Добавете папката в пясъчника - премахнете връзките към \$HOME" \
     title_uk="Пісочниця wineprefix - видалити посилання до HOME" \
