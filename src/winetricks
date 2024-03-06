@@ -5062,13 +5062,6 @@ winetricks_set_wineprefix()
             test -x "${WINE64}" || WINE64="${WINE}"
         fi
 
-        # if we can't detect wine64 command, it is the new wow64 mode
-        if echo "${WINE64}" | grep -q "wine64" ; then
-            _W_wow64_style="classic"
-        else
-            _W_wow64_style="new"
-        fi
-
         WINE_ARCH="${WINE64}"
         WINE_MULTI="${WINE}"
         W_ARCH=win64
@@ -5128,13 +5121,9 @@ winetricks_set_wineprefix()
                 *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
             esac
 
-            if [ "${_W_wow64_style}" = "new" ]; then
-                w_warn "You apppear to be using Wine's new wow64 mode. Note that this is EXPERIMENTAL and not yet fully supported. If reporting an issue, be sure to mention this."
-            fi
         fi
 
     else
-        _W_wow64_style="none"
         WINE64="false"
         WINE_ARCH="${WINE}"
         WINE_MULTI="${WINE}"
