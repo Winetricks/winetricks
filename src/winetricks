@@ -6135,7 +6135,7 @@ w_metadata cnc_ddraw dlls \
     publisher="CnCNet" \
     year="2021" \
     media="download" \
-    file1="cnc-ddraw-v6.2.0.0.zip" \
+    file1="cnc-ddraw-v7.0.0.0.zip" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/Shaders/readme.txt"
 
 load_cnc_ddraw()
@@ -6155,9 +6155,19 @@ load_cnc_ddraw()
     # 2023/11/04 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.0.0.0/cnc-ddraw.zip
     # 2024/02/03 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.1.0.0d/cnc-ddraw.zip
     # 2024/02/21 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.2.0.0/cnc-ddraw.zip
+    # 2024/03/11 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.3.0.0/cnc-ddraw.zip
+    # 2024/05/13 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.4.0.0/cnc-ddraw.zip
+    # 2024/05/24 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.5.0.0/cnc-ddraw.zip
+    # 2024/06/06 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.6.0.0/cnc-ddraw.zip
+    # 2024/07/11 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.7.0.0/cnc-ddraw.zip
+    # 2024/08/20 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.8.0.0/cnc-ddraw.zip
+    # 2024/09/21 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.9.0.0/cnc-ddraw.zip
+    # 2024/11/02 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v7.0.0.0/cnc-ddraw.zip
 
-    w_download https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.2.0.0/cnc-ddraw.zip e5677ba52c31ffa93421a16edacff0c4d1f03e107aea6fc860861b43e3356119 cnc-ddraw-v6.2.0.0.zip
-    w_try_unzip "${W_SYSTEM32_DLLS}" "${W_CACHE}/${W_PACKAGE}/${file1}"
+    w_download https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v7.0.0.0/cnc-ddraw.zip f9640f69c2b8c012b97720ce0a9aac483989563908fc19446b9d1ba16e7239d6 "${file1}"
+    w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
+    w_try_cp_dll "${W_TMP}/ddraw.dll" "${W_SYSTEM32_DLLS}/ddraw.dll"
+    w_try cp -R "${W_TMP}"/* "${W_SYSTEM32_DLLS}/"
 
     w_override_dlls native,builtin ddraw
 }
