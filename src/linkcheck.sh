@@ -1,4 +1,6 @@
 #!/bin/sh
+# shellcheck disable=SC2317
+
 # Link checker for winetricks.
 #
 # Copyright (C) 2011-2013 Dan Kegel
@@ -42,11 +44,14 @@ datadir="${TOP}/output/links.d"
 mkdir -p "${datadir}"
 
 # This is used by url-script-fragment.tmp below in extract_all()
-# shellcheck disable=SC2317
 w_download() {
     url="${1}"
     urlkey="$(echo "${url}" | tr / _)"
     echo "${url}" > "${datadir}/${urlkey}.url"
+}
+w_download_to() {
+    shift
+    w_download "$@"
 }
 
 # Extract list of URLs from winetricks
@@ -57,7 +62,11 @@ extract_all() {
 
     # https://github.com/koalaman/shellcheck/issues/861
     # shellcheck disable=SC1003
-    grep '^ *w_download ' "${shwinetricks}" | grep -E 'ftp|http' | grep -v "w_linkcheck_ignore=1" | sed 's/^ *//' | tr -d '\\' > url-script-fragment.tmp
+    grep -E '^[^#]*w_download(_to)? .*(http|ftp)s?://' "${shwinetricks}"    \
+        | grep -vE "(w_linkcheck_ignore|WINETRICKS_SUPER_QUIET)=(TRUE|1)"   \
+        | sed 's/^.*w_download/w_download/'                                 \
+        | sed -E "s/\\$/%24/g"                                              \
+        | tr -d '\\' > url-script-fragment.tmp
 
     # shellcheck disable=SC1091
     . ./url-script-fragment.tmp
