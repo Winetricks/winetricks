@@ -9480,8 +9480,31 @@ load_dotnet35sp1()
     w_try_cd "${W_TMP}"
     w_try ln -s "${W_CACHE}/${W_PACKAGE}/${file1}" .
 
+    # Workaround for "You do not have sufficient rights to run this application" error if the username is "guest".
+    if [ -n "${WINEUSERNAME}" ]; then
+        WINEUSERNAME_COPY="${WINEUSERNAME}"
+    else
+        WINEUSERNAME="${USERNAME}"
+    fi
+
+    if "$(echo "${WINEUSERNAME}" | grep -q -i "^guest$")"; then
+        TMP_USERNAME="$(basename "$(mktemp -u)")"
+        w_try ln -s "${W_DRIVE_C}/users/${WINEUSERNAME}" "${W_DRIVE_C}/users/${TMP_USERNAME}"
+        export WINEUSERNAME="${TMP_USERNAME}"
+    fi
+
     WINEDLLOVERRIDES="ngen.exe=n" w_try_ms_installer "${WINE}" dotnetfx35.exe /lang:ENU ${W_OPT_UNATTENDED:+/q}
     w_try rm dotnetfx35.exe
+
+    if [ -n "${TMP_USERNAME}" ]; then
+        w_try rm "${W_DRIVE_C}/users/${TMP_USERNAME}"
+    fi
+
+    if [ -z "${WINEUSERNAME_COPY}" ]; then
+        unset WINEUSERNAME
+    else
+        WINEUSERNAME="${WINEUSERNAME_COPY}"
+    fi
 
     w_restore_winver
 
