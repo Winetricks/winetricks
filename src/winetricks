@@ -3941,6 +3941,12 @@ winetricks_settings_menu()
                             *) title="${title_bg}";;
                         esac
                     ;;
+                    ru*)
+                        case "${title_ru}" in
+                            "") ;;
+                            *) title="${title_ru}";;
+                        esac
+                    ;;
                     uk*)
                         case "${title_uk}" in
                             "") ;;
@@ -18224,6 +18230,50 @@ load_wglgears()
 ####
 # settings->desktop
 #----------------------------------------------------------------
+w_metadata graphics=wayland settings \
+    title_uk="Встановити графічний драйвер Wayland" \
+    title_ru="Установить графический драйвер Wayland" \
+    title="Set graphics driver to Wayland"
+w_metadata graphics=x11 settings \
+    title_uk="Встановити графічний драйвер X11" \
+    title_ru="Установить графический драйвер X11" \
+    title="Set graphics driver to X11"
+w_metadata graphics=mac settings \
+    title_uk="Встановити графічний драйвер Quartz (для macOS)" \
+    title_ru="Установить графический драйвер Quartz (для macOS)" \
+    title="Set graphics driver to Quartz (for macOS)"
+w_metadata graphics=default settings \
+    title_uk="Встановити графічний драйвер за замовчуванням" \
+    title_ru="Установить графический драйвер по умолчанию" \
+    title="Set graphics driver to default"
+
+load_graphics() {
+    case "$1" in
+        default )
+            arg='-'
+            ;;
+        wayland )
+            arg='"wayland,x11"'
+            ;;
+        mac )
+            arg='"mac,x11"'
+            ;;
+        * )
+            arg="\"$1\""
+            ;;
+    esac
+    echo "Setting graphics driver to ${arg}"
+    cat > "${W_TMP}"/set-graphics.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Wine\\Drivers]
+"Graphics"=${arg}
+
+_EOF_
+    w_try_regedit "${W_TMP_WIN}"\\set-graphics.reg
+}
+
+#----------------------------------------------------------------
 # DirectInput settings
 
 w_metadata mwo=force settings \
@@ -18327,31 +18377,6 @@ REGEDIT4
 
 _EOF_
     w_try_regedit "${W_TMP_WIN}"\\fontsmooth.reg
-}
-
-#----------------------------------------------------------------
-# Mac Driver settings
-
-w_metadata macdriver=mac settings \
-    title_bg="Включете драйвера на Mac - Quartz (по подразбиране)" \
-    title_uk="Увімкнути рідний Mac Quartz драйвер (за замовчуванням)" \
-    title="Enable the Mac native Quartz driver (default)"
-w_metadata macdriver=x11 settings \
-    title_bg="Изключете драйвера на Mac - Quartz и включете драйвера на X11" \
-    title_uk="Вимкнути рідний Mac Quartz драйвер та використовувати замість нього X11" \
-    title="Disable the Mac native Quartz driver, use X11 instead"
-
-load_macdriver()
-{
-    echo "Setting MacDriver to ${arg}"
-    cat > "${W_TMP}"/set-mac.reg <<_EOF_
-REGEDIT4
-
-[HKEY_CURRENT_USER\\Software\\Wine\\Drivers]
-"Graphics"="${arg}"
-
-_EOF_
-    w_try_regedit "${W_TMP}"/set-mac.reg
 }
 
 #----------------------------------------------------------------
@@ -19872,13 +19897,15 @@ execute_command()
         winecmd) winetricks_shell "${WINE}" "cmd.exe" ;;
         wine_misc_exe) winetricks_misc_exe ;;
 
-        # These have to come before *=disabled to avoid looking like DLLs
+        # These have to come before *=disabled and *=default to avoid looking like DLLs
         cfc=disable*) w_call cfc=disabled ;;
         fontsmooth=disable*) w_call fontsmooth=disable ;;
+        graphics=default) w_call graphics=default ;;
         mwo=disable*) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
         rtlm=disable*) w_call rtlm=disabled ;;
         sound=disable*) w_call sound=disabled ;;
         ssm=disable*) w_call ssm=disabled ;;
+        videomemorysize=default) w_call videomemorysize=default ;;
 
         # Hacks for backwards compatibility
         # 2017/03/22: add deprecation notices
@@ -19963,6 +19990,8 @@ execute_command()
         ie6_full) w_warn "Calling ie6_full is deprecated, please use ie6 instead" ; w_call ie6 ;;
         # FIXME: use wsh57 instead?
         jscript) w_warn "Calling jscript is deprecated, please use wsh57 instead" ; w_call wsh57 ;;
+        macdriver=mac) w_warn "Calling macdriver=mac is deprecated, please use graphics=mac instead" ; w_call graphics=mac ;;
+        macdriver=x11) w_warn "Calling macdriver=x11 is deprecated, please use graphics=x11 instead" ; w_call graphics=x11 ;;
         npm-repack) w_warn "Calling npm-repack is deprecated, please use npm=repack instead" ; w_call npm=repack ;;
         oss) w_warn "Calling oss is deprecated, please use sound=oss instead" ; w_call sound=oss ;;
         psdkwin7) w_warn "psdkwin7 has been removed, use psdkwin71 instead"; w_call psdkwin71 ;;
