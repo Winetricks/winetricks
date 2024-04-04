@@ -16941,6 +16941,24 @@ _EOF_
 
 #----------------------------------------------------------------
 
+w_metadata procexp apps \
+    title="Process Explorer" \
+    publisher="Steve P. Miller" \
+    year="2006" \
+    media="download" \
+
+load_procexp()
+{
+    w_download https://download.sysinternals.com/files/ProcessExplorer.zip c50bddaaacb26c5654f845962f9ee34db6ce26b62f94a03bb59f3b5a6eea1922
+    w_try_unzip "${W_TMP}" "${W_CACHE}"/procexp/ProcessExplorer.zip
+    if [ "${W_ARCH}" = "win64" ] ; then
+        w_try cp "${W_TMP}"/procexp64.exe "${W_WINDIR_UNIX}"
+    fi
+    w_try cp "${W_TMP}"/procexp.exe "${W_WINDIR_UNIX}"
+}
+
+#----------------------------------------------------------------
+
 w_metadata protectionid apps \
     title="Protection ID" \
     publisher="CDKiLLER & TippeX" \
