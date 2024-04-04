@@ -7106,6 +7106,23 @@ load_dsdmo()
 
 #----------------------------------------------------------------
 
+w_metadata depends apps \
+    title="Dependency Walker" \
+    publisher="Steve P. Miller" \
+    year="2006" \
+    media="download" \
+
+load_depends()
+{
+    w_download https://www.dependencywalker.com/depends22_x86.zip 03d73abba0e856c81ba994505373fdb94a13b84eb29e6c268be1bf21b7417ca3
+    w_try_unzip "${W_TMP}" "${W_CACHE}"/depends/depends22_x86.zip
+    w_try cp "${W_TMP}"/depends.* "${W_DRIVE_C}/windows"
+    # depends.exe uses mfc42
+    w_call mfc42
+}
+
+#----------------------------------------------------------------
+
 w_metadata dxsdk_aug2006 apps \
     title="MS DirectX SDK, August 2006 (developers only)" \
     publisher="Microsoft" \
