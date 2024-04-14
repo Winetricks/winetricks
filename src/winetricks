@@ -12292,6 +12292,81 @@ load_pngfilt()
 
 #----------------------------------------------------------------
 
+w_metadata powershell_core apps \
+    title="PowerShell Core" \
+    publisher="Microsoft" \
+    year="2024" \
+    media="download" \
+    file1="PowerShell-7.2.19-win-x64.msi" \
+    file2="PowerShell-7.2.19-win-x86.msi"
+
+
+# Function to download and install PowerShell Core
+load_powershell_core()
+{
+    #w_package_unsupported_win32
+
+    # Download PowerShell Core 7.2.x MSI (Latest LTS Version to support win32)
+    if [ "${W_ARCH}" = "win64" ]; then
+        # https://github.com/PowerShell/PowerShell/releases/v7.2.19
+        w_download https://github.com/PowerShell/PowerShell/releases/download/v7.2.19/PowerShell-7.2.19-win-x64.msi 965e10fc77dbce6ef622f1c0fcddc03bebd2b3629f1a3253cc17a8ffc71a6522
+        msi="PowerShell-7.2.19-win-x64.msi"
+    elif [ "${W_ARCH}" = "win32" ]; then
+        # https://github.com/PowerShell/PowerShell/releases/v7.2.19
+        w_download https://github.com/PowerShell/PowerShell/releases/download/v7.2.19/PowerShell-7.2.19-win-x86.msi cbf214d41bc8be4b1ce5ba566dbfee5f335971c48231825e90af7954356ce797
+        msi="PowerShell-7.2.19-win-x86.msi"
+    fi
+
+    # Change directory to the cache directory where the MSI file is downloaded
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    
+    # Install PowerShell Core using Wine's msiexec
+    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "$msi" ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
+}
+
+#----------------------------------------------------------------
+
+w_metadata powershell apps \
+    title="PowerShell Wrapper For Wine" \
+    publisher="ProjectSynchro" \
+    year="2024" \
+    media="download" \
+    file1="powershell32.exe " \
+    file2="powershell64.exe " \
+    file3="profile.ps1"
+
+load_powershell()
+{
+    w_do_call powershell_core
+
+    # Download PowerShell Wrapper profile.ps1
+    w_download https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.0.0/profile.ps1 6500dea4152d516543fb482d222b6141cf9b2e6b53bd25493b6a31fd1fad0f1a
+
+    #Download PowerShell Wrapper 32bit exe
+        w_download https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.0.0/powershell32.exe 80f4ca2c9aa6cb04971f87d32542f766a714e0fdeb4eaddf6a5a67ca5032f3e0
+   
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Download PowerShell Wrapper 64bit exe
+        w_download https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.0.0/powershell64.exe 10fb7b504b22492117f817f79a965ed9618ecb809efe12f56f87688a30c38391
+    fi
+
+    # Change directories to cache
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+
+    # Install profile.ps1 for wrapper
+    w_try cp "profile.ps1" "${W_PROGRAMS_UNIX}/PowerShell/7"
+
+    # Install PWSH Wrapper
+    w_try_cp_dll "powershell32.exe" "${W_SYSTEM32_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try_cp_dll "powershell64.exe" "${W_SYSTEM64_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+    fi
+
+    w_override_dlls native powershell.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata prntvpt dlls \
     title="prntvpt.dll" \
     publisher="Microsoft" \
