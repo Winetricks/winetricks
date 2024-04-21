@@ -102,6 +102,8 @@ BLACKLIST="${BLACKLIST}|ffdshow|python26|python27"
 BLACKLIST="${BLACKLIST}|dirac"
 # https://bugs.winehq.org/show_bug.cgi?id=50061 / https://github.com/Winetricks/winetricks/issues/1644
 BLACKLIST="${BLACKLIST}|quicktime76"
+# https://bugs.winehq.org/show_bug.cgi?id=56209
+BLACKLIST="${BLACKLIST}|vb5run"
 
 # Tests that fail under Xvfb
 XVFB_DOTNET_BLACKLIST="dotnet11|dotnet11sp1|dotnet20|dotnet20sdk|dotnet20sp1|dotnet30|dotnet40|dotnet46"
