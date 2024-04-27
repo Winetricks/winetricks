@@ -559,6 +559,20 @@ w_package_broken_win64()
     w_package_broken "${bug_link}" "${bad_version}" "${good_version}"
 }
 
+# Warn user if package is broken on (new style) wow64
+w_package_broken_wow64() {
+    bug_link="$1"
+    bad_version="$2"  # Optional, for upstream regressions
+    good_version="$3" # Optional, if it's been fixed upstream
+
+    _w_get_broken_messages
+
+    if [ "${_W_wow64_style}" = "new" ]; then
+        w_warn "This package (${W_PACKAGE}) does not work on a new-style WoW64 prefix. See ${bug_link}. You must either use a 32-bit or old style WoW64 WINEPREFIX. Use --force to try anyway."
+        _w_force_continue_check 32
+    fi
+}
+
 # Some packages don't support win32, die with an appropriate message
 # Returns 64 (for tests/winetricks-test)
 w_package_unsupported_win32()
