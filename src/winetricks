@@ -11049,6 +11049,8 @@ w_metadata icodecs dlls \
 
 load_icodecs()
 {
+    w_package_broken_wow64 "https://bugs.winehq.org/show_bug.cgi?id=54670"
+
     # Note: this codec is insecure, see
     # https://support.microsoft.com/kb/954157
     # Original source, ftp://download.intel.com/support/createshare/camerapack/codinstl.exe, had same checksum
