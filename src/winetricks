@@ -12340,36 +12340,39 @@ w_metadata powershell apps \
     publisher="ProjectSynchro" \
     year="2024" \
     media="download" \
-    file1="powershell32.exe " \
-    file2="powershell64.exe " \
+    file1="powershell32.exe" \
+    file2="powershell64.exe" \
     file3="profile.ps1"
 
 load_powershell()
 {
     w_do_call powershell_core
 
-    # Download PowerShell Wrapper profile.ps1
-    w_download https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.0.1/profile.ps1 85c7d4bc526a0b427cb8fbc77cff8a43b0475b2bf7397889cbe1ab224d1579a1
+    #Specify version here, and build download URLS from it.
+    _load_powershell_version='2.0.1'
 
     # Download PowerShell Wrapper 32bit exe
-    w_download https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.0.1/powershell32.exe e0c4192877ba2bce7830dc83745bfa54567e2a67c4e84b56953404d3ef0bca30
-   
+    w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v${_load_powershell_version}/${file1}" e0c4192877ba2bce7830dc83745bfa54567e2a67c4e84b56953404d3ef0bca30
+
     if [ "${W_ARCH}" = "win64" ]; then
         # Download PowerShell Wrapper 64bit exe
-        w_download https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.0.1/powershell64.exe f78286af89c7dbd7fe9f275bcbc02c1e6c806fce6f86e314340fc092dd413b6f
+        w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v${_load_powershell_version}/${file2}" f78286af89c7dbd7fe9f275bcbc02c1e6c806fce6f86e314340fc092dd413b6f
     fi
+
+    # Download PowerShell Wrapper profile.ps1
+    w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v${_load_powershell_version}/${file3}" 85c7d4bc526a0b427cb8fbc77cff8a43b0475b2bf7397889cbe1ab224d1579a1
 
     # Change directories to cache
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
-    # Install profile.ps1 for wrapper
-    w_try cp "profile.ps1" "${W_PROGRAMS_UNIX}/PowerShell/7"
-
     # Install PWSH Wrapper
-    w_try_cp_dll "powershell32.exe" "${W_SYSTEM32_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+    w_try_cp_dll "${file1}" "${W_SYSTEM32_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
     if [ "${W_ARCH}" = "win64" ]; then
-        w_try_cp_dll "powershell64.exe" "${W_SYSTEM64_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+        w_try_cp_dll "${file2}" "${W_SYSTEM64_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
     fi
+
+   # Install profile.ps1 for wrapper
+    w_try cp "${file3}" "${W_PROGRAMS_UNIX}/PowerShell/7/${file3}"
 
     w_override_dlls native powershell.exe
 }
