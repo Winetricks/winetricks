@@ -12305,24 +12305,32 @@ w_metadata powershell_core apps \
 # Function to download and install PowerShell Core
 load_powershell_core()
 {
-    # Uncomment below and remove win32 download when PowerShell Core v7.2 LTS goes EOL
+    # Uncomment below and remove win32 download elif and file when PowerShell Core v7.2 LTS goes EOL
     #w_package_unsupported_win32
+
+    # Derive version number from file1
+    _load_powershell_core_regex='[0-9]+\.[0-9]+\.[0-9]+'
+
+    if echo "${file1}" | grep -E -o "${_load_powershell_core_regex}" >/dev/null; then
+        _load_powershell_core_version=$(echo "${file1}" | grep -E -o "${_load_powershell_core_regex}")
+    fi
+
     # Download PowerShell Core 7.2.x MSI (Latest LTS Version to support win32)
     if [ "${W_ARCH}" = "win64" ]; then
         # https://github.com/PowerShell/PowerShell/releases/v7.2.19
-        w_download https://github.com/PowerShell/PowerShell/releases/download/v7.2.19/"${file2}" 965e10fc77dbce6ef622f1c0fcddc03bebd2b3629f1a3253cc17a8ffc71a6522
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v${_load_powershell_core_version}/${file2}" 965e10fc77dbce6ef622f1c0fcddc03bebd2b3629f1a3253cc17a8ffc71a6522
         msi="${file2}"
     elif [ "${W_ARCH}" = "win32" ]; then
         # https://github.com/PowerShell/PowerShell/releases/v7.2.19
-        w_download https://github.com/PowerShell/PowerShell/releases/download/v7.2.19/"${file1}" cbf214d41bc8be4b1ce5ba566dbfee5f335971c48231825e90af7954356ce797
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v${_load_powershell_core_version}/${file1}" cbf214d41bc8be4b1ce5ba566dbfee5f335971c48231825e90af7954356ce797
         msi="${file1}"
     fi
 
     # Change directory to the cache directory where the MSI file is downloaded
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    
+
     # Install PowerShell Core using Wine's msiexec
-    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "$msi" ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
+    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${msi}" ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
 }
 
 #----------------------------------------------------------------
