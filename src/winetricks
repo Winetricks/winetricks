@@ -12349,14 +12349,14 @@ load_powershell()
     w_do_call powershell_core
 
     #Specify version here, and build download URLS from it.
-    _load_powershell_version='2.0.1'
+    _load_powershell_version='2.1.0'
 
     # Download PowerShell Wrapper 32bit exe
-    w_download "https://github.com/${publisher}/powershell-wrapper-for-wine/releases/download/v${_load_powershell_version}/${file1}" e0c4192877ba2bce7830dc83745bfa54567e2a67c4e84b56953404d3ef0bca30
+    w_download "https://github.com/${publisher}/powershell-wrapper-for-wine/releases/download/v${_load_powershell_version}/${file1}" 379c7252eed3039e9c10cf21a706ca35f87df5315e9501819120d845729768de
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Download PowerShell Wrapper 64bit exe
-        w_download "https://github.com/${publisher}/powershell-wrapper-for-wine/releases/download/v${_load_powershell_version}/${file2}" f78286af89c7dbd7fe9f275bcbc02c1e6c806fce6f86e314340fc092dd413b6f
+        w_download "https://github.com/${publisher}/powershell-wrapper-for-wine/releases/download/v${_load_powershell_version}/${file2}" 325619aa9afa8e84123d303c76a38e5af8b359de520d4096289790265037706c
     fi
 
     # Download PowerShell Wrapper profile.ps1
