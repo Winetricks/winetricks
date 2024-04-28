@@ -12297,24 +12297,25 @@ w_metadata powershell_core apps \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="PowerShell-7.2.19-win-x64.msi" \
-    file2="PowerShell-7.2.19-win-x86.msi"
+    file1="PowerShell-7.2.19-win-x86.msi" \
+    file2="PowerShell-7.2.19-win-x64.msi"
+    
 
 
 # Function to download and install PowerShell Core
 load_powershell_core()
 {
+    # Uncomment below and remove win32 download when PowerShell Core v7.2 LTS goes EOL
     #w_package_unsupported_win32
-
     # Download PowerShell Core 7.2.x MSI (Latest LTS Version to support win32)
     if [ "${W_ARCH}" = "win64" ]; then
         # https://github.com/PowerShell/PowerShell/releases/v7.2.19
-        w_download https://github.com/PowerShell/PowerShell/releases/download/v7.2.19/PowerShell-7.2.19-win-x64.msi 965e10fc77dbce6ef622f1c0fcddc03bebd2b3629f1a3253cc17a8ffc71a6522
-        msi="PowerShell-7.2.19-win-x64.msi"
+        w_download https://github.com/PowerShell/PowerShell/releases/download/v7.2.19/"${file2}" 965e10fc77dbce6ef622f1c0fcddc03bebd2b3629f1a3253cc17a8ffc71a6522
+        msi="${file2}"
     elif [ "${W_ARCH}" = "win32" ]; then
         # https://github.com/PowerShell/PowerShell/releases/v7.2.19
-        w_download https://github.com/PowerShell/PowerShell/releases/download/v7.2.19/PowerShell-7.2.19-win-x86.msi cbf214d41bc8be4b1ce5ba566dbfee5f335971c48231825e90af7954356ce797
-        msi="PowerShell-7.2.19-win-x86.msi"
+        w_download https://github.com/PowerShell/PowerShell/releases/download/v7.2.19/"${file1}" cbf214d41bc8be4b1ce5ba566dbfee5f335971c48231825e90af7954356ce797
+        msi="${file1}"
     fi
 
     # Change directory to the cache directory where the MSI file is downloaded
@@ -12342,8 +12343,8 @@ load_powershell()
     # Download PowerShell Wrapper profile.ps1
     w_download https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.0.1/profile.ps1 85c7d4bc526a0b427cb8fbc77cff8a43b0475b2bf7397889cbe1ab224d1579a1
 
-    #Download PowerShell Wrapper 32bit exe
-        w_download https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.0.1/powershell32.exe e0c4192877ba2bce7830dc83745bfa54567e2a67c4e84b56953404d3ef0bca30
+    # Download PowerShell Wrapper 32bit exe
+    w_download https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.0.1/powershell32.exe e0c4192877ba2bce7830dc83745bfa54567e2a67c4e84b56953404d3ef0bca30
    
     if [ "${W_ARCH}" = "win64" ]; then
         # Download PowerShell Wrapper 64bit exe
