@@ -7131,6 +7131,25 @@ load_dsdmo()
 
 #----------------------------------------------------------------
 
+w_metadata dbgview apps \
+    title="Debug monitor" \
+    publisher="Mark Russinovich" \
+    year="2019" \
+    media="download" \
+
+load_dbgview()
+{
+    w_download https://download.sysinternals.com/files/DebugView.zip 05cfa3dde3d98eb333d0582556f4f520e6207fe8d335bd1e910d90692798f913
+    w_try_unzip "${W_TMP}" "${W_CACHE}"/dbgview/DebugView.zip
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try cp "${W_TMP}"/dbgview64.exe "${W_WINDIR_UNIX}"
+    fi
+    w_try cp "${W_TMP}"/Dbgview.exe "${W_WINDIR_UNIX}"
+    w_try cp "${W_TMP}"/Dbgview.chm "${W_WINDIR_UNIX}"
+}
+
+#----------------------------------------------------------------
+
 w_metadata depends apps \
     title="Dependency Walker" \
     publisher="Steve P. Miller" \
