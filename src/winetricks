@@ -12346,7 +12346,7 @@ w_metadata powershell apps \
 
 load_powershell()
 {
-    w_do_call powershell_core
+    #w_do_call powershell_core
 
     # Specify version here, and build download URLS from it.
     _load_powershell_version='2.1.0'
@@ -12372,7 +12372,11 @@ load_powershell()
     fi
 
     # Install profile.ps1 for wrapper
-    w_try cp "${file3}" "${W_PROGRAMS_UNIX}/PowerShell/7/${file3}"
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try cp "${file3}" "${W_PROGRAMW6432_UNIX}/PowerShell/7/${file3}"
+    else
+        w_try cp "${file3}" "${W_PROGRAMS_UNIX}/PowerShell/7/${file3}"
+    fi
 
     w_override_dlls native powershell.exe
 }
