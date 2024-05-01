@@ -12348,7 +12348,7 @@ load_powershell()
 {
     w_do_call powershell_core
 
-    #Specify version here, and build download URLS from it.
+    # Specify version here, and build download URLS from it.
     _load_powershell_version='2.1.0'
 
     # Download PowerShell Wrapper 32bit exe
@@ -12371,7 +12371,7 @@ load_powershell()
         w_try_cp_dll "${file2}" "${W_SYSTEM64_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
     fi
 
-   # Install profile.ps1 for wrapper
+    # Install profile.ps1 for wrapper
     w_try cp "${file3}" "${W_PROGRAMS_UNIX}/PowerShell/7/${file3}"
 
     w_override_dlls native powershell.exe
