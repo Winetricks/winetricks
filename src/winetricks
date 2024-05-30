@@ -17678,6 +17678,41 @@ load_winamp()
 
 #----------------------------------------------------------------
 
+w_metadata winlinkexpress apps \
+    title="Winlink Express 1.7.15.0 (Winlink Radio Messaging System client app)" \
+    publisher="Winlink Global Radio Email" \
+    year="2024" \
+    media="download" \
+    file1="Winlink_Express_install_1-7-15-0.zip" \
+    file2="Winlink_Express_install.exe" \
+    installed_exe1="c:/RMS Express/RMS Express.exe" \
+    homepage="https://winlink.org"
+
+load_winlinkexpress()
+{
+    if [ ! -d "${W_WINDIR_UNIX}/Microsoft.NET/Framework/v4.0.30319" ]; then
+        #echo -e '\n    NOTE!!! You must install wine-mono before continuing.'
+        #echo -e '        (dotnet46 also works but is not recommended)'
+        #echo -e '         Cancelling Winlink Express installation...\n'
+        w_warn "\n    NOTE!!! You must install wine-mono before continuing.\n        (dotnet46 also works but is not recommended)\n         Cancelling Winlink Express installation...\n"
+        return
+    fi
+
+    load_sound alsa
+    w_set_winver win10
+    w_download https://web.archive.org/web/20240529202203/https://downloads.winlink.org/User%20Programs/Winlink_Express_install_1-7-15-0.zip d520f9c89b4024ffb2d7e36fa28bd3e91a861b61fc9cff660b94edd8ebe7d540
+    w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
+    w_try "${WINE}" "${W_TMP}/${file2}" ${W_OPT_UNATTENDED:+/VERYSILENT}
+
+    #echo -e '\n          NOTE!!! RUN THIS COMMAND TO ENABLE COM PORTS FOR'
+    #echo -e '\n          RADIO-TO-COMPUTER \"USB CAT CONTROL\" CONNECTIONS:'
+    #echo -e '\n                 sudo usermod -a -G dialout \$USER'
+    #echo -e '\n                 (then log out and log in again)\n'
+    w_warn "\n          NOTE!!! RUN THIS COMMAND TO ENABLE COM PORTS FOR\n          RADIO-TO-COMPUTER \"USB CAT CONTROL\" CONNECTIONS:\n                 sudo usermod -a -G dialout \$USER\n                 (then log out and log in again)\n"
+}
+
+#----------------------------------------------------------------
+
 w_metadata winrar apps \
     title="WinRAR 6.11" \
     publisher="RARLAB" \
