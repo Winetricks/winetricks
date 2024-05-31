@@ -17689,14 +17689,12 @@ w_metadata winlinkexpress apps \
 
 load_winlinkexpress()
 {
-    # check for wine-mono or dotnet46
-    if [ ! -d "${W_WINDIR_UNIX}/Microsoft.NET/Framework/v4.0.30319" ]; then
-        w_warn "\n    NOTE!!! You must install wine-mono before continuing.\n        dotnet46 also works but is not recommended.\n\n     You can download a wine-mono .msi file from\n https://github.com/madewokherd/wine-mono/releases/latest/\n and install it with \"wine msiexec /i wine-mono-*-x86.msi\"\n\n         Cancelling Winlink Express installation..."
-        return
-    fi
+    # wine-mono is faster and more reliable to install than dotnet46, but wine-mono doesn't yet support the ARDOP_Win.exe modem packaged with Winlink Express.
+    # Users running low-end systems, ARM-x64 emulators, or versions of Wine which break dotnet46 compatability may wish to install wine-mono instead of dotnet46 and use ARDOPC for Linux.
+    w_call dotnet46
 
-    # vb6run and pdh_nt4 are required for VARA Winlink modems
-    # since winetricks requires static links with hard-coded SHA256's, and since VARA doesn't auto-update, the user must manually install VARA modems for now
+    # vb6run and pdh_nt4 are required for VARA modems, which interface with Winlink Express.
+    # Users must manually install VARA modems after Winlink Express installation for now (since VARA modems do not have auto-update features and since winetricks relies on static links with SHA256 hashes).
     w_call vb6run
     w_call pdh_nt4
 
