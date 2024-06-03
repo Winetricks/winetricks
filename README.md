@@ -17,7 +17,7 @@ https://github.com/Winetricks/winetricks/releases
 The ```winetricks``` package should be used if it is available and up to date. The package is available in most mainstream (Unix-like) Operating Systems:
 
 * Arch: https://www.archlinux.org/packages/multilib/x86_64/winetricks/
-* Debian: https://packages.debian.org/sid/winetricks
+* Debian: https://packages.debian.org/search?searchon=names&keywords=winetricks
 * Fedora: https://fedoraproject.org/wiki/Wine#Packages
 * FreeBSD: https://www.freebsd.org/cgi/ports.cgi?query=winetricks&stype=all
 * Gentoo: https://packages.gentoo.org/packages/app-emulation/winetricks
