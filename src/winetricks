@@ -15198,6 +15198,23 @@ load_lucida()
 
 #----------------------------------------------------------------
 
+w_metadata micross fonts \
+    title="MS Sans Serif font" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    installed_file1="${W_FONTSDIR_WIN}/micross.ttf"
+
+load_micross()
+{
+    helper_winxpsp3 i386/micross.tt_
+    w_try_cabextract --directory="${W_FONTSDIR_UNIX}" "${W_TMP}"/i386/micross.tt_
+    w_register_font micross.ttf "Microsoft Sans Serif"
+}
+
+#----------------------------------------------------------------
+
 w_metadata opensymbol fonts \
     title="OpenSymbol fonts (replacement for Wingdings)" \
     publisher="libreoffice.org" \
