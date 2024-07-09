@@ -15220,9 +15220,9 @@ load_micross()
 w_metadata opensymbol fonts \
     title="OpenSymbol fonts (replacement for Wingdings)" \
     publisher="libreoffice.org" \
-    year="2023" \
+    year="2022" \
     media="download" \
-    file1="fonts-opensymbol_102.12+LibO24.2.0-1~bpo12+1_all.deb" \
+    file1="fonts-opensymbol_102.11+LibO7.0.4-4+deb11u4~bpo10+1_all.deb" \
     installed_file1="${W_FONTSDIR_WIN}/opens___.ttf"
 
 load_opensymbol()
@@ -15230,7 +15230,7 @@ load_opensymbol()
     # The OpenSymbol fonts are a replacement for the Windows Wingdings font from OpenOffice.org.
     # Need to w_download Debian since I can't find a standalone download from OpenOffice
     # Note: The source download package on debian is for _all_ of OpenOffice, which is 266 MB.
-    w_download http://ftp.us.debian.org/debian/pool/main/libr/libreoffice/fonts-opensymbol_102.12+LibO24.2.0-1~bpo12+1_all.deb 08687cba8b0fed3d8c6ff714c4ec17a66c57157c65a1e09c0fadff10aee29ca5
+    w_download https://archive.debian.org/debian/pool/main/libr/libreoffice/fonts-opensymbol_102.11+LibO7.0.4-4+deb11u4~bpo10+1_all.deb 66ba490cbd482b81a8f2d55850af6a7f2d1cc9dab341881359fcdc77cd1c4283
     w_try_cd "${W_TMP}"
     w_try_ar "${W_CACHE}/${W_PACKAGE}/${file1}" data.tar.xz
     w_try tar -Jxf "${W_TMP}/data.tar.xz" ./usr/share/fonts/truetype/libreoffice/opens___.ttf
