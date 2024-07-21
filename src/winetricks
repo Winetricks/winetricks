@@ -1464,9 +1464,13 @@ w_download_to()
         w_try_mkdir "${_W_cache}"
     fi
 
-    # Try download twice
+    # Try download twice, unless ${WINETRICKS_NO_ARCHIVE_ORG} is set (e.g., by winetricks-test)
     checksum_ok=""
-    tries=0
+    if [ -n "${WINETRICKS_NO_ARCHIVE_ORG}" ]; then
+        tries=1
+    else
+        tries=0
+    fi
     # Set olddir before entering the loop, otherwise second try will overwrite
     _W_dl_olddir=$(pwd)
     while test ${tries} -lt 2 ; do
