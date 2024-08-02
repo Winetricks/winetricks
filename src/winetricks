@@ -12448,6 +12448,54 @@ load_powershell_core()
 
 #----------------------------------------------------------------
 
+w_metadata powershell dlls \
+    title="PowerShell Wrapper For Wine" \
+    publisher="ProjectSynchro" \
+    year="2024" \
+    media="download" \
+    file1="powershell32.exe" \
+    file2="powershell64.exe" \
+    file3="profile.ps1"
+
+load_powershell()
+{
+    # shellcheck disable=SC2154
+    # Disable SC2154 due to shellcheck not knowing metadata is sourced before this function is run
+
+    w_do_call powershell_core
+
+    # Download PowerShell Wrapper 32bit exe
+    w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.1.0/powershell32.exe" 379c7252eed3039e9c10cf21a706ca35f87df5315e9501819120d845729768de
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Download PowerShell Wrapper 64bit exe
+        w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.1.0/powershell64.exe" 325619aa9afa8e84123d303c76a38e5af8b359de520d4096289790265037706c
+    fi
+
+    # Download PowerShell Wrapper profile.ps1
+    w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.1.0/profile.ps1" 85c7d4bc526a0b427cb8fbc77cff8a43b0475b2bf7397889cbe1ab224d1579a1
+
+    # Change directories to cache
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+
+    # Install PWSH Wrapper
+    w_try_cp_dll "${file1}" "${W_SYSTEM32_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try_cp_dll "${file2}" "${W_SYSTEM64_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+    fi
+
+    # Install profile.ps1 for wrapper
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try cp "${file3}" "${W_PROGRAMW6432_UNIX}/PowerShell/7/${file3}"
+    else
+        w_try cp "${file3}" "${W_PROGRAMS_UNIX}/PowerShell/7/${file3}"
+    fi
+
+    w_override_dlls native powershell.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata prntvpt dlls \
     title="prntvpt.dll" \
     publisher="Microsoft" \
