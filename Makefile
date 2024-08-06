@@ -57,7 +57,7 @@ install:
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/applications
 	$(INSTALL_DATA) src/winetricks.desktop $(DESTDIR)$(PREFIX)/share/applications/winetricks.desktop
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/metainfo
-	$(INSTALL_DATA) src/winetricks.appdata.xml $(DESTDIR)$(PREFIX)/share/metainfo/winetricks.appdata.xml
+	$(INSTALL_DATA) src/io.github.winetricks.Winetricks.metainfo.xml $(DESTDIR)$(PREFIX)/share/metainfo/io.github.winetricks.Winetricks.metainfo.xml
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps
 	$(INSTALL_DATA) src/winetricks.svg $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/winetricks.svg
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/bash-completion/completions
