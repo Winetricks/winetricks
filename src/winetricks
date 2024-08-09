@@ -12413,6 +12413,92 @@ load_pngfilt()
 
 #----------------------------------------------------------------
 
+w_metadata powershell_core dlls \
+    title="PowerShell Core" \
+    publisher="Microsoft" \
+    year="2024" \
+    media="download" \
+    file1="PowerShell-7.2.21-win-x86.msi" \
+    file2="PowerShell-7.2.21-win-x64.msi"
+
+load_powershell_core()
+{
+    # Uncomment below and remove win32 download elif and file when PowerShell Core v7.2 LTS goes EOL
+    #w_package_unsupported_win32
+
+    # Download PowerShell Core 7.2.x MSI (Latest LTS Version to support win32)
+    # https://github.com/PowerShell/PowerShell/releases/v7.2.21
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x64.msi" 407640b11c89d66ec7892229e68b1d74b26f0e820b52da268c67fd166c2b46ad
+        # Disable SC2154 due to shellcheck not knowing metadata is sourced before this function is run
+        # shellcheck disable=SC2154
+        msi="${file2}"
+    elif [ "${W_ARCH}" = "win32" ]; then
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x86.msi" cdfd69f6997eabe5abdc38869eedfd90761416261bf95531300f652d0932bf0a
+        # shellcheck disable=SC2154
+        msi="${file1}"
+    fi
+
+    # Change directory to the cache directory where the MSI file is downloaded
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+
+    # Install PowerShell Core using Wine's msiexec
+    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${msi}" ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
+}
+
+#----------------------------------------------------------------
+
+w_metadata powershell dlls \
+    title="PowerShell Wrapper For Wine" \
+    publisher="ProjectSynchro" \
+    year="2024" \
+    media="download" \
+    file1="powershell32.exe" \
+    file2="powershell64.exe" \
+    file3="profile.ps1"
+
+load_powershell()
+{
+    w_do_call powershell_core
+
+    # Download PowerShell Wrapper 32bit exe
+    w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.1.0/powershell32.exe" 379c7252eed3039e9c10cf21a706ca35f87df5315e9501819120d845729768de
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Download PowerShell Wrapper 64bit exe
+        w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.1.0/powershell64.exe" 325619aa9afa8e84123d303c76a38e5af8b359de520d4096289790265037706c
+    fi
+
+    # Download PowerShell Wrapper profile.ps1
+    w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.1.0/profile.ps1" 85c7d4bc526a0b427cb8fbc77cff8a43b0475b2bf7397889cbe1ab224d1579a1
+
+    # Change directories to cache
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+
+    # Install PWSH Wrapper
+
+    # Disable SC2154 due to shellcheck not knowing metadata is sourced before this function is run
+    # shellcheck disable=SC2154
+    w_try_cp_dll "${file1}" "${W_SYSTEM32_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+    if [ "${W_ARCH}" = "win64" ]; then
+        # shellcheck disable=SC2154
+        w_try_cp_dll "${file2}" "${W_SYSTEM64_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+    fi
+
+    # Install profile.ps1 for wrapper
+    if [ "${W_ARCH}" = "win64" ]; then
+        # shellcheck disable=SC2154
+        w_try cp "${file3}" "${W_PROGRAMW6432_UNIX}/PowerShell/7/${file3}"
+    else
+        # shellcheck disable=SC2154
+        w_try cp "${file3}" "${W_PROGRAMS_UNIX}/PowerShell/7/${file3}"
+    fi
+
+    w_override_dlls native powershell.exe
+}
+
+#----------------------------------------------------------------
+
 w_metadata prntvpt dlls \
     title="prntvpt.dll" \
     publisher="Microsoft" \
