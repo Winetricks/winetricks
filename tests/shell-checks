@@ -47,7 +47,7 @@ trap 'rm -fr "$temp"' EXIT
 
 # tests using bashate
 test_bashate() {
-    bashate="$(command -v bashate)"
+    bashate="$(command -v bashate || true)"
 
     #echo "======================== Begin bashate version info ==========================="
     "${bashate}" --help > /dev/null || w_die "bashate must be installed!"
@@ -90,7 +90,7 @@ test_formatting() {
 
 # tests using shellcheck
 test_shellcheck() {
-    shellcheck="$(command -v shellcheck)"
+    shellcheck="$(command -v shellcheck || true)"
 
     echo "======================== Begin shellcheck version info ==========================="
     "${shellcheck}" --version > /dev/null || w_die "shellcheck must be installed!"
