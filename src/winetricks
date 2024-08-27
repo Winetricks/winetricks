@@ -193,7 +193,7 @@ W_TEXT_LINE="------------------------------------------------------"
 # Ask permission to continue
 w_askpermission()
 {
-    printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}"
+    printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}" >&2
 
     if test "${W_OPT_UNATTENDED}"; then
         _W_timeout="--timeout"
@@ -208,7 +208,7 @@ w_askpermission()
                 # -t / TMOUT don't seem to be portable, so just assume yes in unattended mode
                 w_info "Unattended mode, not prompting for confirmation"
             else
-                printf %s "Press Y or N, then Enter: "
+                printf %s "Press Y or N, then Enter: " >&2
                 read -r response
                 test "${response}" = Y || test "${response}" = y
             fi
@@ -232,7 +232,7 @@ w_info()
 {
     # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-        printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}"
+        printf '%s\n%b\n%s\n' "${W_TEXT_LINE}" "${@}" "${W_TEXT_LINE}" >&2
     fi
 
     # kdialog doesn't allow a timeout unless you use --passivepopup
@@ -254,9 +254,9 @@ w_info()
 # Display warning message to stderr (since it is called inside redirected code)
 w_warn()
 {
-    # If $WINETRICKS_SUPER_QUIET is set, w_info is a no-op:
+    # If $WINETRICKS_SUPER_QUIET is set, w_warn is a no-op:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-        printf '%s\nwarning: %b\n%s\n' "${W_TEXT_LINE}" "${*}" "${W_TEXT_LINE}"
+        printf '%s\nwarning: %b\n%s\n' "${W_TEXT_LINE}" "${*}" "${W_TEXT_LINE}" >&2
     fi
 
     # kdialog doesn't allow a timeout unless you use --passivepopup
@@ -559,6 +559,20 @@ w_package_broken_win64()
     w_package_broken "${bug_link}" "${bad_version}" "${good_version}"
 }
 
+# Warn user if package is broken on (new style) wow64
+w_package_broken_wow64() {
+    bug_link="$1"
+    bad_version="$2"  # Optional, for upstream regressions
+    good_version="$3" # Optional, if it's been fixed upstream
+
+    _w_get_broken_messages
+
+    if [ "${_W_wow64_style}" = "new" ]; then
+        w_warn "This package (${W_PACKAGE}) does not work on a new-style WoW64 prefix. See ${bug_link}. You must either use a 32-bit or old style WoW64 WINEPREFIX. Use --force to try anyway."
+        _w_force_continue_check 32
+    fi
+}
+
 # Some packages don't support win32, die with an appropriate message
 # Returns 64 (for tests/winetricks-test)
 w_package_unsupported_win32()
@@ -618,7 +632,7 @@ w_try()
     export WINEDLLOVERRIDES
     # If $WINETRICKS_SUPER_QUIET is set, make w_try quiet
     if [ -z "${WINETRICKS_SUPER_QUIET}" ]; then
-        printf '%s\n' "Executing $*"
+        printf '%s\n' "Executing $*" >&2
     fi
 
     # On Vista, we need to jump through a few hoops to run commands in Cygwin.
@@ -999,7 +1013,7 @@ w_read_key()
             *zenity) W_KEY=$(zenity --entry --text "${_W_keymsg}") ;;
             *kdialog) W_KEY=$(kdialog --inputbox "${_W_keymsg}") ;;
             *xmessage) w_die "sorry, can't read key from GUI with xmessage" ;;
-            none) printf %s "${_W_keymsg}": ; read -r W_KEY ;;
+            none) printf %s "${_W_keymsg}": >&2 ; read -r W_KEY ;;
         esac
 
         if test "${W_KEY}" = ""; then
@@ -1064,7 +1078,7 @@ w_expand_env()
     winetricks_early_wine_arch cmd.exe /c echo "%$1%"
 }
 
-# Determine what architecture a binary file is built for
+# Determine what architecture a binary file is built for, silently continue in case of failure.
 winetricks_get_file_arch()
 {
     _W_file="$1"
@@ -1075,7 +1089,7 @@ winetricks_get_file_arch()
             "arm64")  _W_file_arch="arm64" ;;
             "i386")   _W_file_arch="i386" ;;
             "x86_64") _W_file_arch="x86_64" ;;
-            *)        w_die "Unknown file arch: ${_W_lipo_output}" ;;
+            *)        _W_file_arch="" ;;
         esac
     else
         # Assume ELF binaries for everything else
@@ -1085,7 +1099,7 @@ winetricks_get_file_arch()
             "03"|"06") _W_file_arch="i386" ;;
             "b7")      _W_file_arch="aarch64" ;;
             "28")      _W_file_arch="aarch32" ;;
-            *)         w_die "Unknown file arch: ${_W_ob_output}";;
+            *)         _W_file_arch="" ;;
         esac
     fi
 
@@ -2350,7 +2364,7 @@ w_override_all_dlls()
         newdev ninput normaliz npmshtml npptools ntdsapi \
         ntprint objsel odbc32 odbccp32 odbccu32 ole32 oleacc \
         oleaut32 olecli32 oledb32 oledlg olepro32 olesvr32 \
-        olethk32 opcservices openal32 opencl packager pdh \
+        olethk32 opcservices opencl packager pdh \
         photometadatahandler pidgen powrprof printui prntvpt \
         propsys psapi pstorec qcap qedit qmgr qmgrprxy \
         quartz query qwave rasapi32 rasdlg regapi resutils \
@@ -3941,6 +3955,12 @@ winetricks_settings_menu()
                             *) title="${title_bg}";;
                         esac
                     ;;
+                    ru*)
+                        case "${title_ru}" in
+                            "") ;;
+                            *) title="${title_ru}";;
+                        esac
+                    ;;
                     uk*)
                         case "${title_uk}" in
                             "") ;;
@@ -5062,14 +5082,60 @@ winetricks_set_wineprefix()
     if test -d "${W_DRIVE_C}/windows/syswow64"; then
         # Check the bitness of wineserver + wine binary, used later to determine if we're on a WOW setup (no wine64)
         # https://github.com/Winetricks/winetricks/issues/2030
-        WINESERVER_BIN="$(which "${WINESERVER}")"
+        WINESERVER_BIN="$(command -v "${WINESERVER}")"
+
+        # wineboot often is a link pointing to wineapploader in Wine's bindir. If we don't find binaries we may look for them there later
+        if [ -n "${READLINK_F}" ]; then
+            true
+        elif [ "$(uname -s)" = "Darwin" ]; then
+            # readlink exists on MacOS, but does not support "-f" on MacOS < 12.3
+            # Use perl instead
+            READLINK_F="perl -MCwd=abs_path -le 'print abs_path readlink(shift);'"
+        else
+            READLINK_F="readlink -f"
+        fi
+        WINEBOOT_BIN="$(dirname "${WINESERVER_BIN}")/$(basename "${WINESERVER_BIN}"|sed 's,wineserver,wineboot,')"
+
         _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINESERVER_BIN}")"
-        WINE_BIN="$(which "${WINE}")"
+        if [ -z "${_W_wineserver_binary_arch}" ]; then
+            # wineserver might be a script calling a binary in Wine's bindir.
+            if [ -z "${WINE_BINDIR}" ] && [ -x "${WINEBOOT_BIN}" ]; then
+                WINE_BINDIR="$(dirname "$(${READLINK_F} "${WINEBOOT_BIN}" 2>/dev/null)" 2>/dev/null)"
+            fi
+            # wineserver in Wine's bindir might be a script calling wineserver64 preferably over wineserver32 (Debian).
+            # Try these before testing wineserver itself
+            if [ -x "${WINE_BINDIR}/wineserver64" ]; then
+                _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wineserver64")"
+            elif [ -x "${WINE_BINDIR}/wineserver32" ]; then
+                _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wineserver32")"
+            elif [ -x "${WINE_BINDIR}/wineserver" ]; then
+                _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wineserver")"
+            fi
+        fi
+        if [ -z "${_W_wineserver_binary_arch}" ]; then
+            w_warn "Unknown file arch of ${WINESERVER_BIN}."
+        fi
+
+        WINE_BIN="$(command -v "${WINE}")"
         _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BIN}")"
+        if [ -z "${_W_wine_binary_arch}" ]; then
+            # wine might be a script calling a binary in Wine's bindir.
+            if [ -z "${WINE_BINDIR}" ] && [ -x "${WINEBOOT_BIN}" ]; then
+                WINE_BINDIR="$(dirname "$(${READLINK_F} "${WINEBOOT_BIN}" 2>/dev/null)" 2>/dev/null)"
+            fi
+            if [ -x "${WINE_BINDIR}/wine" ]; then
+                _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wine")"
+            fi
+        fi
+        if [ -z "${_W_wine_binary_arch}" ]; then
+            w_warn "Unknown file arch of ${WINE_BIN}."
+        fi
 
         # determine wow64 type (new/old)
         # FIXME: check what upstream is calling them
-        if [ "${_W_wineserver_binary_arch}" = "${_W_wine_binary_arch}" ]; then
+        if [ -z "${_W_wineserver_binary_arch}" ] || [ -z "${_W_wine_binary_arch}" ]; then
+            _W_wow64_style="unknown"
+        elif [ "${_W_wineserver_binary_arch}" = "${_W_wine_binary_arch}" ]; then
             _W_wow64_style="new"
         else
             _W_wow64_style="classic"
@@ -5089,10 +5155,18 @@ winetricks_set_wineprefix()
         elif command -v "${WINE}64" >/dev/null 2>&1; then
             WINE64="${WINE}64"
         else
-            # Handle case where wine binaries (or binary wrappers) have a suffix
-            WINE64="$(dirname "${WINE}")/"
-            [ "${WINE64}" = "./" ] && WINE64=""
-            WINE64="${WINE64}$(basename "${WINE}" | sed 's/^wine/wine64/')"
+            if [ -x "${WINEBOOT_BIN}" ]; then
+                WINE_BINDIR="$(dirname "$(${READLINK_F} "${WINEBOOT_BIN}" 2>/dev/null)" 2>/dev/null)"
+                if [ -x "${WINE_BINDIR}/wine64" ]; then
+                    # Workaround case where wine is in path, but wine64 is only in Wine's bindir
+                    WINE64="${WINE_BINDIR}/wine64"
+                fi
+            else
+                # Handle case where wine binaries (or binary wrappers) have a suffix
+                WINE64="$(dirname "${WINE}")/"
+                [ "${WINE64}" = "./" ] && WINE64=""
+                WINE64="${WINE64}$(basename "${WINE}" | sed 's/^wine/wine64/')"
+            fi
         fi
         WINE_ARCH="${WINE64}"
         WINE_MULTI="${WINE}"
@@ -5123,19 +5197,24 @@ winetricks_set_wineprefix()
         W_COMMONFILES_WIN="$(w_expand_env CommonProgramW6432)"
         W_COMMONFILES="$(w_pathconv -u "${W_COMMONFILES_WIN}")"
 
-        # 64-bit prefixes still have plenty of issues/a lot of verbs only install 32-bit libraries
-        # Allow the user to disable that (globally, or per prefix).
-        if test -f "${W_CACHE}/no_win64_warnings"; then
-            echo "${W_CACHE}/no_win64_warnings exists, not issuing 64-bit prefix warning"
-            _W_no_win64_warnings=1
-        elif test -f "${WINEPREFIX}/no_win64_warnings"; then
-            echo "${WINEPREFIX}/no_win64_warnings exists, not issuing 64-bit prefix warning"
-            _W_no_win64_warnings=1
-        elif test -f "${W_TMP_EARLY}/no_win64_warnings"; then
-            echo "${W_TMP_EARLY}/no_win64_warnings exists, not issuing 64-bit prefix warning"
-            _W_no_win64_warnings=1
-        else
-            _W_no_win64_warnings=0
+        # check if user has exported env variable or not
+        # if set, use value directly later when determining if win64 warnings should be displayed or not
+        # if empty, then fallback to checking for location-specific files and set accordingly
+        if test -z "${W_NO_WIN64_WARNINGS}"; then
+            # 64-bit prefixes still have plenty of issues/a lot of verbs only install 32-bit libraries
+            # Allow the user to disable that (globally, or per prefix).
+            if test -f "${W_CACHE}/no_win64_warnings"; then
+                echo "${W_CACHE}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+                W_NO_WIN64_WARNINGS=1
+            elif test -f "${WINEPREFIX}/no_win64_warnings"; then
+                echo "${WINEPREFIX}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+                W_NO_WIN64_WARNINGS=1
+            elif test -f "${W_TMP_EARLY}/no_win64_warnings"; then
+                echo "${W_TMP_EARLY}/no_win64_warnings exists, not issuing 64-bit prefix warning"
+                W_NO_WIN64_WARNINGS=1
+            else
+                W_NO_WIN64_WARNINGS=0
+            fi
         fi
 
         # In case of GUI, only warn once per prefix, per session (i.e., don't warn next time)
@@ -5145,7 +5224,7 @@ winetricks_set_wineprefix()
             *) touch "${W_TMP_EARLY}/no_win64_warnings" ;;
         esac
 
-        if [ "${_W_no_win64_warnings}" = 0 ]; then
+        if [ "${W_NO_WIN64_WARNINGS}" = 0 ]; then
             case ${LANG} in
                 bg*) w_warn "Използвате 64-битова папка. Повечето програми са за 32-битова архитектура. Ако възникнат проблеми, моля, използвайте 32-битова папка, преди да ги докладвате." ;;
                 ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
@@ -5154,7 +5233,9 @@ winetricks_set_wineprefix()
             esac
 
             if [ "${_W_wow64_style}" = "new" ]; then
-                w_warn "You apppear to be using Wine's new wow64 mode. Note that this is EXPERIMENTAL and not yet fully supported. If reporting an issue, be sure to mention this."
+                w_warn "You appear to be using Wine's new wow64 mode. Note that this is EXPERIMENTAL and not yet fully supported. If reporting an issue, be sure to mention this."
+            elif [ "${_W_wow64_style}" = "unknown" ]; then
+                w_warn "WoW64 type could not be detected."
             fi
         fi
 
@@ -7105,6 +7186,42 @@ load_dsdmo()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dsdmoprp.dll' "${W_TMP}/dxnt.cab"
     w_try_regsvr dsdmo.dll
     w_try_regsvr dsdmoprp.dll
+}
+
+#----------------------------------------------------------------
+
+w_metadata dbgview apps \
+    title="Debug monitor" \
+    publisher="Mark Russinovich" \
+    year="2019" \
+    media="download" \
+
+load_dbgview()
+{
+    w_download https://download.sysinternals.com/files/DebugView.zip 05cfa3dde3d98eb333d0582556f4f520e6207fe8d335bd1e910d90692798f913
+    w_try_unzip "${W_TMP}" "${W_CACHE}"/dbgview/DebugView.zip
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try cp "${W_TMP}"/dbgview64.exe "${W_WINDIR_UNIX}"
+    fi
+    w_try cp "${W_TMP}"/Dbgview.exe "${W_WINDIR_UNIX}"
+    w_try cp "${W_TMP}"/Dbgview.chm "${W_WINDIR_UNIX}"
+}
+
+#----------------------------------------------------------------
+
+w_metadata depends apps \
+    title="Dependency Walker" \
+    publisher="Steve P. Miller" \
+    year="2006" \
+    media="download" \
+
+load_depends()
+{
+    w_download https://www.dependencywalker.com/depends22_x86.zip 03d73abba0e856c81ba994505373fdb94a13b84eb29e6c268be1bf21b7417ca3
+    w_try_unzip "${W_TMP}" "${W_CACHE}"/depends/depends22_x86.zip
+    w_try cp "${W_TMP}"/depends.* "${W_WINDIR_UNIX}"
+    # depends.exe uses mfc42
+    w_call mfc42
 }
 
 #----------------------------------------------------------------
@@ -11021,6 +11138,8 @@ w_metadata icodecs dlls \
 
 load_icodecs()
 {
+    w_package_broken_wow64 "https://bugs.winehq.org/show_bug.cgi?id=54670"
+
     # Note: this codec is insecure, see
     # https://support.microsoft.com/kb/954157
     # Original source, ftp://download.intel.com/support/createshare/camerapack/codinstl.exe, had same checksum
@@ -11830,7 +11949,7 @@ load_msftedit()
 #----------------------------------------------------------------
 
 w_metadata msvcrt40 dlls \
-    title="fixme" \
+    title="MS Visual C++ Runtime Library Version 4.0" \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
@@ -12260,6 +12379,8 @@ w_metadata physx dlls \
 
 load_physx()
 {
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=56606" 9.5
+
     w_get_sha256sum "${W_PROGRAMS_X86_UNIX}/NVIDIA Corporation/PhysX/Engine/86C5F4F22ECD/APEX_Particles_x64.dll"
     if [ "${_W_gotsha256sum}"x = "b3991e0165a9802b60e2f7d14c1be5f879071999ae74a38263cec9bf043a9eaa"x ] ; then
         w_warn "${W_PACKAGE} is already installed - not updating"
@@ -12291,6 +12412,92 @@ load_pngfilt()
     helper_winxpsp3 i386/pngfilt.dl_
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/pngfilt.dl_
     w_try_regsvr pngfilt.dll
+}
+
+#----------------------------------------------------------------
+
+w_metadata powershell_core dlls \
+    title="PowerShell Core" \
+    publisher="Microsoft" \
+    year="2024" \
+    media="download" \
+    file1="PowerShell-7.2.21-win-x86.msi" \
+    file2="PowerShell-7.2.21-win-x64.msi"
+
+load_powershell_core()
+{
+    # Uncomment below and remove win32 download elif and file when PowerShell Core v7.2 LTS goes EOL
+    #w_package_unsupported_win32
+
+    # Download PowerShell Core 7.2.x MSI (Latest LTS Version to support win32)
+    # https://github.com/PowerShell/PowerShell/releases/v7.2.21
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x64.msi" 407640b11c89d66ec7892229e68b1d74b26f0e820b52da268c67fd166c2b46ad
+        # Disable SC2154 due to shellcheck not knowing metadata is sourced before this function is run
+        # shellcheck disable=SC2154
+        msi="${file2}"
+    elif [ "${W_ARCH}" = "win32" ]; then
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x86.msi" cdfd69f6997eabe5abdc38869eedfd90761416261bf95531300f652d0932bf0a
+        # shellcheck disable=SC2154
+        msi="${file1}"
+    fi
+
+    # Change directory to the cache directory where the MSI file is downloaded
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+
+    # Install PowerShell Core using Wine's msiexec
+    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${msi}" ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
+}
+
+#----------------------------------------------------------------
+
+w_metadata powershell dlls \
+    title="PowerShell Wrapper For Wine" \
+    publisher="ProjectSynchro" \
+    year="2024" \
+    media="download" \
+    file1="powershell32.exe" \
+    file2="powershell64.exe" \
+    file3="profile.ps1"
+
+load_powershell()
+{
+    w_do_call powershell_core
+
+    # Download PowerShell Wrapper 32bit exe
+    w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.1.1/powershell32.exe" 0e1f4c7c2e0e4091a2178bc14f91c6710b9a75b92ac0162485f9c5657135f0ed
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        # Download PowerShell Wrapper 64bit exe
+        w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.1.1/powershell64.exe" 2650affad2620c4c8993ae020df135010097bc74cb9bd4d1dc05b4971956e652
+    fi
+
+    # Download PowerShell Wrapper profile.ps1
+    w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/v2.1.1/profile.ps1" 85c7d4bc526a0b427cb8fbc77cff8a43b0475b2bf7397889cbe1ab224d1579a1
+
+    # Change directories to cache
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+
+    # Install PWSH Wrapper
+
+    # Disable SC2154 due to shellcheck not knowing metadata is sourced before this function is run
+    # shellcheck disable=SC2154
+    w_try_cp_dll "${file1}" "${W_SYSTEM32_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+    if [ "${W_ARCH}" = "win64" ]; then
+        # shellcheck disable=SC2154
+        w_try_cp_dll "${file2}" "${W_SYSTEM64_DLLS}/WindowsPowerShell/v1.0/powershell.exe"
+    fi
+
+    # Install profile.ps1 for wrapper
+    if [ "${W_ARCH}" = "win64" ]; then
+        # shellcheck disable=SC2154
+        w_try cp "${file3}" "${W_PROGRAMW6432_UNIX}/PowerShell/7/${file3}"
+    else
+        # shellcheck disable=SC2154
+        w_try cp "${file3}" "${W_PROGRAMS_UNIX}/PowerShell/7/${file3}"
+    fi
+
+    w_override_dlls native powershell.exe
 }
 
 #----------------------------------------------------------------
@@ -13801,9 +14008,10 @@ load_vcrun2022()
     # 2023/07/04: 14.36.32532 @ https://download.visualstudio.microsoft.com/download/pr/eaab1f82-787d-4fd7-8c73-f782341a0c63/5365A927487945ECB040E143EA770ADBB296074ECE4021B1D14213BDE538C490/VC_redist.x86.exe 5365a927487945ecb040e143ea770adbb296074ece4021b1d14213bde538c490
     # 2023/12/30: c61cef97487536e766130fa8714dd1b4143f6738bfb71806018eee1b5fe6f057
     # 2024/02/11: 510fc8c2112e2bc544fb29a72191eabcc68d3a5a7468d35d7694493bc8593a79
+    # 2024/06/10: a32dd41eaab0c5e1eaa78be3c0bb73b48593de8d97a7510b97de3fd993538600
     w_override_dlls native,builtin concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids vcamp140 vccorlib140 vcomp140 vcruntime140
 
-    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe 510fc8c2112e2bc544fb29a72191eabcc68d3a5a7468d35d7694493bc8593a79
+    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe a32dd41eaab0c5e1eaa78be3c0bb73b48593de8d97a7510b97de3fd993538600
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
@@ -13816,10 +14024,11 @@ load_vcrun2022()
             # 2023/07/04: 14.36.32532 @ https://download.visualstudio.microsoft.com/download/pr/eaab1f82-787d-4fd7-8c73-f782341a0c63/917C37D816488545B70AFFD77D6E486E4DD27E2ECE63F6BBAAF486B178B2B888/VC_redist.x64.exe 917c37d816488545b70affd77d6e486e4dd27e2ece63f6bbaaf486b178b2b888
             # 2023/12/30: 4dfe83c91124cd542f4222fe2c396cabeac617bb6f59bdcbdf89fd6f0df0a32f
             # 2024/02/11: 1ad7988c17663cc742b01bef1a6df2ed1741173009579ad50a94434e54f56073
+            # 2024/06/10: 3642e3f95d50cc193e4b5a0b0ffbf7fe2c08801517758b4c8aeb7105a091208a
             # vcruntime140_1 is only shipped on x64:
             w_override_dlls native,builtin vcruntime140_1
 
-            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe 1ad7988c17663cc742b01bef1a6df2ed1741173009579ad50a94434e54f56073
+            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe 3642e3f95d50cc193e4b5a0b0ffbf7fe2c08801517758b4c8aeb7105a091208a
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
@@ -15080,12 +15289,29 @@ load_lucida()
 
 #----------------------------------------------------------------
 
+w_metadata micross fonts \
+    title="MS Sans Serif font" \
+    publisher="Microsoft" \
+    year="2004" \
+    media="download" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    installed_file1="${W_FONTSDIR_WIN}/micross.ttf"
+
+load_micross()
+{
+    helper_winxpsp3 i386/micross.tt_
+    w_try_cabextract --directory="${W_FONTSDIR_UNIX}" "${W_TMP}"/i386/micross.tt_
+    w_register_font micross.ttf "Microsoft Sans Serif"
+}
+
+#----------------------------------------------------------------
+
 w_metadata opensymbol fonts \
     title="OpenSymbol fonts (replacement for Wingdings)" \
     publisher="libreoffice.org" \
     year="2022" \
     media="download" \
-    file1="fonts-opensymbol_102.12+LibO7.6.4~rc1-1~bpo12+1_all.deb" \
+    file1="fonts-opensymbol_102.11+LibO7.0.4-4+deb11u4~bpo10+1_all.deb" \
     installed_file1="${W_FONTSDIR_WIN}/opens___.ttf"
 
 load_opensymbol()
@@ -15093,7 +15319,7 @@ load_opensymbol()
     # The OpenSymbol fonts are a replacement for the Windows Wingdings font from OpenOffice.org.
     # Need to w_download Debian since I can't find a standalone download from OpenOffice
     # Note: The source download package on debian is for _all_ of OpenOffice, which is 266 MB.
-    w_download http://ftp.us.debian.org/debian/pool/main/libr/libreoffice/fonts-opensymbol_102.12+LibO7.6.4~rc1-1~bpo12+1_all.deb e35e57a0a703fe656230a30c7675a5c5c4772a11c6f650634765234d1f0fa35f
+    w_download https://archive.debian.org/debian/pool/main/libr/libreoffice/fonts-opensymbol_102.11+LibO7.0.4-4+deb11u4~bpo10+1_all.deb 66ba490cbd482b81a8f2d55850af6a7f2d1cc9dab341881359fcdc77cd1c4283
     w_try_cd "${W_TMP}"
     w_try_ar "${W_CACHE}/${W_PACKAGE}/${file1}" data.tar.xz
     w_try tar -Jxf "${W_TMP}/data.tar.xz" ./usr/share/fonts/truetype/libreoffice/opens___.ttf
@@ -16898,6 +17124,24 @@ _EOF_
 
 #----------------------------------------------------------------
 
+w_metadata procexp apps \
+    title="Process Explorer" \
+    publisher="Steve P. Miller" \
+    year="2006" \
+    media="download" \
+
+load_procexp()
+{
+    w_download https://download.sysinternals.com/files/ProcessExplorer.zip c50bddaaacb26c5654f845962f9ee34db6ce26b62f94a03bb59f3b5a6eea1922
+    w_try_unzip "${W_TMP}" "${W_CACHE}"/procexp/ProcessExplorer.zip
+    if [ "${W_ARCH}" = "win64" ] ; then
+        w_try cp "${W_TMP}"/procexp64.exe "${W_WINDIR_UNIX}"
+    fi
+    w_try cp "${W_TMP}"/procexp.exe "${W_WINDIR_UNIX}"
+}
+
+#----------------------------------------------------------------
+
 w_metadata protectionid apps \
     title="Protection ID" \
     publisher="CDKiLLER & TippeX" \
@@ -18227,6 +18471,54 @@ load_wglgears()
 ####
 # settings->desktop
 #----------------------------------------------------------------
+w_metadata graphics=wayland settings \
+    title_bg="Задайте графичния драйвер Wayland" \
+    title_uk="Встановити графічний драйвер Wayland" \
+    title_ru="Установить графический драйвер Wayland" \
+    title="Set graphics driver to Wayland"
+w_metadata graphics=x11 settings \
+    title_bg="Задайте графичния драйвер X11" \
+    title_uk="Встановити графічний драйвер X11" \
+    title_ru="Установить графический драйвер X11" \
+    title="Set graphics driver to X11"
+w_metadata graphics=mac settings \
+    title_bg="Задайте графичния драйвер Quartz (за macOS)" \
+    title_uk="Встановити графічний драйвер Quartz (для macOS)" \
+    title_ru="Установить графический драйвер Quartz (для macOS)" \
+    title="Set graphics driver to Quartz (for macOS)"
+w_metadata graphics=default settings \
+    title_bg="Задайте графичния драйвер по подразбиране" \
+    title_uk="Встановити графічний драйвер за замовчуванням" \
+    title_ru="Установить графический драйвер по умолчанию" \
+    title="Set graphics driver to default"
+
+load_graphics() {
+    case "$1" in
+        default )
+            arg='-'
+            ;;
+        wayland )
+            arg='"wayland,x11"'
+            ;;
+        mac )
+            arg='"mac,x11"'
+            ;;
+        * )
+            arg="\"$1\""
+            ;;
+    esac
+    echo "Setting graphics driver to ${arg}"
+    cat > "${W_TMP}"/set-graphics.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Wine\\Drivers]
+"Graphics"=${arg}
+
+_EOF_
+    w_try_regedit "${W_TMP_WIN}"\\set-graphics.reg
+}
+
+#----------------------------------------------------------------
 # DirectInput settings
 
 w_metadata mwo=force settings \
@@ -18330,31 +18622,6 @@ REGEDIT4
 
 _EOF_
     w_try_regedit "${W_TMP_WIN}"\\fontsmooth.reg
-}
-
-#----------------------------------------------------------------
-# Mac Driver settings
-
-w_metadata macdriver=mac settings \
-    title_bg="Включете драйвера на Mac - Quartz (по подразбиране)" \
-    title_uk="Увімкнути рідний Mac Quartz драйвер (за замовчуванням)" \
-    title="Enable the Mac native Quartz driver (default)"
-w_metadata macdriver=x11 settings \
-    title_bg="Изключете драйвера на Mac - Quartz и включете драйвера на X11" \
-    title_uk="Вимкнути рідний Mac Quartz драйвер та використовувати замість нього X11" \
-    title="Disable the Mac native Quartz driver, use X11 instead"
-
-load_macdriver()
-{
-    echo "Setting MacDriver to ${arg}"
-    cat > "${W_TMP}"/set-mac.reg <<_EOF_
-REGEDIT4
-
-[HKEY_CURRENT_USER\\Software\\Wine\\Drivers]
-"Graphics"="${arg}"
-
-_EOF_
-    w_try_regedit "${W_TMP}"/set-mac.reg
 }
 
 #----------------------------------------------------------------
@@ -19875,13 +20142,15 @@ execute_command()
         winecmd) winetricks_shell "${WINE}" "cmd.exe" ;;
         wine_misc_exe) winetricks_misc_exe ;;
 
-        # These have to come before *=disabled to avoid looking like DLLs
+        # These have to come before *=disabled and *=default to avoid looking like DLLs
         cfc=disable*) w_call cfc=disabled ;;
         fontsmooth=disable*) w_call fontsmooth=disable ;;
+        graphics=default) w_call graphics=default ;;
         mwo=disable*) w_call mwo=disable ;;   # FIXME: relax matching so we can handle these spelling differences in verb instead of here
         rtlm=disable*) w_call rtlm=disabled ;;
         sound=disable*) w_call sound=disabled ;;
         ssm=disable*) w_call ssm=disabled ;;
+        videomemorysize=default) w_call videomemorysize=default ;;
 
         # Hacks for backwards compatibility
         # 2017/03/22: add deprecation notices
@@ -19966,6 +20235,8 @@ execute_command()
         ie6_full) w_warn "Calling ie6_full is deprecated, please use ie6 instead" ; w_call ie6 ;;
         # FIXME: use wsh57 instead?
         jscript) w_warn "Calling jscript is deprecated, please use wsh57 instead" ; w_call wsh57 ;;
+        macdriver=mac) w_warn "Calling macdriver=mac is deprecated, please use graphics=mac instead" ; w_call graphics=mac ;;
+        macdriver=x11) w_warn "Calling macdriver=x11 is deprecated, please use graphics=x11 instead" ; w_call graphics=x11 ;;
         npm-repack) w_warn "Calling npm-repack is deprecated, please use npm=repack instead" ; w_call npm=repack ;;
         oss) w_warn "Calling oss is deprecated, please use sound=oss instead" ; w_call sound=oss ;;
         psdkwin7) w_warn "psdkwin7 has been removed, use psdkwin71 instead"; w_call psdkwin71 ;;
