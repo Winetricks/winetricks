@@ -1113,6 +1113,9 @@ w_get_github_latest_release()
     org="$1"
     repo="$2"
 
+    # release.json might still exists from the previous verb
+    w_try rm -f "${W_TMP_EARLY}/release.json"
+
     WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://api.github.com/repos/${org}/${repo}/releases/latest" "" "release.json" >/dev/null 2>&1
 
     # aria2c condenses the json (https://github.com/aria2/aria2/issues/1389)
