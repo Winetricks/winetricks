@@ -9655,6 +9655,9 @@ load_dotnet40()
 
     # Avoid a popup on WINEPREFIX updates, see https://bugs.winehq.org/show_bug.cgi?id=41727#c5
     "${WINE}" reg add "HKLM\\Software\\Microsoft\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
+    if [ "${W_ARCH}" = "win64" ]; then
+        "${WINE}" reg add "HKLM\\Software\\Wow6432Node\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
+    fi
 
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
@@ -9758,6 +9761,9 @@ load_dotnet45()
 
     # Avoid a popup on WINEPREFIX updates, see https://bugs.winehq.org/show_bug.cgi?id=41727#c5
     "${WINE}" reg add "HKLM\\Software\\Microsoft\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
+    if [ "${W_ARCH}" = "win64" ]; then
+        "${WINE}" reg add "HKLM\\Software\\Wow6432Node\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
+    fi
 
     w_warn "Setting Windows version to 2003, otherwise applications using .NET 4.5 will subtly fail"
     w_set_winver win2k3
