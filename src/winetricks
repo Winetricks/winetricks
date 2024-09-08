@@ -10313,21 +10313,21 @@ w_metadata dotnet8 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="dotnet-runtime-8.0.2-win-x86.exe" \
+    file1="dotnet-runtime-8.0.8-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnet8()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/8.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/e4987764-bda2-4a72-8820-52605f30e899/f5b412fec80d7f4b20fc4ac7740f7279/dotnet-runtime-8.0.2-win-x86.exe b765676fc2f85cb393cabf2bef5dd118578a2a8761be97454352c0c2634957a4
+    w_download https://download.visualstudio.microsoft.com/download/pr/c2083daf-6d33-404f-a7d6-dd3bb012a945/e241d0aff000f63ef8a49c3c7da08087/dotnet-runtime-8.0.8-win-x86.exe d8c1f60bba67f9b1bed4b823b1354d9b255531ebe5fc72569a4023a33b6a3b67
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/a4bc7333-6e30-4e2d-b300-0b4f23537e5b/4b81af6d46a02fba5d9ce030af438c67/dotnet-runtime-8.0.2-win-x64.exe ec10da69116d12691abcb374929cf9eec65e4607095ff1ff035989848fd1db00
-        w_try "${WINE}" "dotnet-runtime-8.0.2-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/cc913baa-9bce-482e-bdfc-56c4b6fafd10/e3f24f2ab2fc02b395c1b67f5193b8d1/dotnet-runtime-8.0.8-win-x64.exe 2f902081294e31c82f7ffae4b58483d05515fb3c979ec08b9d9942c5088ff542
+        w_try "${WINE}" "dotnet-runtime-8.0.8-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -10338,21 +10338,21 @@ w_metadata dotnetdesktop8 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="windowsdesktop-runtime-8.0.2-win-x86.exe" \
+    file1="windowsdesktop-runtime-8.0.8-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnetdesktop8()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/8.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/9b77b480-7e32-4321-b417-a41e0f8ea952/3922bbf5538277b1d41e9b49ee443673/windowsdesktop-runtime-8.0.2-win-x86.exe 548bcca012cde72bfa68e693ee3dab175c3aa7926d3a3621c8f6f3b12904b909
+    w_downloadhttps://download.visualstudio.microsoft.com/download/pr/bd1c2e28-44dd-47bb-a55c-aedd1f3e8cc4/0a15fac821e64cf7b8ec6d99e54e0997/windowsdesktop-runtime-8.0.8-win-x86.exe ea91f1d50cfacff95eabb57c5dff47843174f349f55d11d44d09850960da58dd
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/84ba33d4-4407-4572-9bfa-414d26e7c67c/bb81f8c9e6c9ee1ca547396f6e71b65f/windowsdesktop-runtime-8.0.2-win-x64.exe 52099c00372c1ef6c78878f98f6994777170c8f8556bc3b42a6c291a268ce750
-        w_try "${WINE}" "windowsdesktop-runtime-8.0.2-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/907765b0-2bf8-494e-93aa-5ef9553c5d68/a9308dc010617e6716c0e6abd53b05ce/windowsdesktop-runtime-8.0.8-win-x64.exe 1d8fc3eaad1285d701a77216e923c8be404dc2254d51779503828a3b3e1cdeb1
+        w_try "${WINE}" "windowsdesktop-runtime-8.0.8-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
