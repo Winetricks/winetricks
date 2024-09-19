@@ -1,5 +1,4 @@
 #!/bin/sh
-
 # Link checker for winetricks.
 #
 # Copyright (C) 2011-2013 Dan Kegel
