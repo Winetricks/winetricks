@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck disable=SC2317
 
 # Link checker for winetricks.
 #
@@ -44,11 +43,13 @@ datadir="${TOP}/output/links.d"
 mkdir -p "${datadir}"
 
 # This is used by url-script-fragment.tmp below in extract_all()
+# shellcheck disable=SC2317
 w_download() {
     url="${1}"
     urlkey="$(echo "${url}" | tr / _)"
     echo "${url}" > "${datadir}/${urlkey}.url"
 }
+# shellcheck disable=SC2317
 w_download_to() {
     shift
     w_download "$@"
