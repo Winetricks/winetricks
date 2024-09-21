@@ -14417,7 +14417,7 @@ w_metadata xaudio29 dlls \
 
 load_xaudio29()
 {
-    w_download https://www.nuget.org/api/v2/package/Microsoft.XAudio2.Redist/1.2.11 4552e0b5b59de0cdbc6c217261c45f5968f7bbf1e8ab5f208e4bca6fd8fc5780 microsoft.xaudio2.redist.1.2.11.nupkg
+    w_download https://globalcdn.nuget.org/packages/microsoft.xaudio2.redist.1.2.11.nupkg 4552e0b5b59de0cdbc6c217261c45f5968f7bbf1e8ab5f208e4bca6fd8fc5780
 
     w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
     w_try_cp_dll "${W_TMP}/build/native/release/bin/x86/xaudio2_9redist.dll" "${W_SYSTEM32_DLLS}/xaudio2_9.dll"
