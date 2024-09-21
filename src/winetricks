@@ -10352,7 +10352,7 @@ w_metadata dotnetdesktop8 dlls \
 load_dotnetdesktop8()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/8.0
-    w_downloadhttps://download.visualstudio.microsoft.com/download/pr/bd1c2e28-44dd-47bb-a55c-aedd1f3e8cc4/0a15fac821e64cf7b8ec6d99e54e0997/windowsdesktop-runtime-8.0.8-win-x86.exe ea91f1d50cfacff95eabb57c5dff47843174f349f55d11d44d09850960da58dd
+    w_download https://download.visualstudio.microsoft.com/download/pr/bd1c2e28-44dd-47bb-a55c-aedd1f3e8cc4/0a15fac821e64cf7b8ec6d99e54e0997/windowsdesktop-runtime-8.0.8-win-x86.exe ea91f1d50cfacff95eabb57c5dff47843174f349f55d11d44d09850960da58dd
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
