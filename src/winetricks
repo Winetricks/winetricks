@@ -17936,8 +17936,9 @@ load_wm9codecs()
 
     # See https://www.microsoft.com/en-us/download/details.aspx?id=507
     # Used by direct calls from load_wmp9, so we have to specify cache directory.
-    # http://birds.camden.rutgers.edu/
-    w_download_to wm9codecs http://birds.camden.rutgers.edu/WM9Codecs9x.exe f25adf6529745a772c4fdd955505e7fcdc598b8a031bb0ce7e5856da5e5fcc95
+    # Formerly at http://birds.camden.rutgers.edu/, but recently switched to a new SSL cert that isn't in debian's ca-certificates
+    # 2024/09/22: switched to https://am.net/lib/tools/Microsoft/MPlayer/WM9Codecs9x.exe
+    w_download_to wm9codecs https://am.net/lib/tools/Microsoft/MPlayer/WM9Codecs9x.exe f25adf6529745a772c4fdd955505e7fcdc598b8a031bb0ce7e5856da5e5fcc95
     w_try_cd "${W_CACHE}/wm9codecs"
     w_set_winver win2k
     w_try "${WINE}" WM9Codecs9x.exe ${W_OPT_UNATTENDED:+/q}
