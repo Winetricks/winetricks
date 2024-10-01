@@ -26,7 +26,7 @@ WINETRICKS_VERSION=20240105-next
 #
 # Uses the following non-POSIX system tools:
 # - wine is used to execute Win32 apps except on Cygwin.
-# - ar, cabextract, unrar, unzip, and 7z are needed by some verbs.
+# - cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - aria2c, wget, curl, or fetch is needed for downloading.
 # - fuseiso, archivemount (Linux), or hdiutil (macOS) is used to mount .iso images.
 # - perl is used for displaying download progress for wget when using zenity
@@ -720,27 +720,6 @@ w_try_7z()
 
         # errors out if there is a space between -o and path
         w_try "${WINE}" "${W_PROGRAMS_X86_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "${filename}")" -y -o"$(w_pathconv -w "${destdir}")" "$@"
-    fi
-}
-
-w_try_ar()
-{
-    # $1 - ar file (.deb) to extract (keeping internal paths, in cwd)
-    # $2 - file to extract (optional)
-
-    # Not always installed, use Windows 7-zip as a fallback:
-    if [ -z "${WINETRICKS_FORCE_WIN_7Z}" ] && [ -x "$(command -v ar 2>/dev/null)" ]; then
-        w_try ar x "$@"
-    else
-        w_warn "Cannot find ar. Using Windows 7-zip instead. (You can avoid this by installing binutils, e.g. 'sudo apt install binutils' or 'sudo yum install binutils')."
-        WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
-
-        # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
-        w_try_cd "${PWD}"
-
-        # -t* prevents 7-zip from decompressing .tar.xz to .tar, see
-        # https://sourceforge.net/p/sevenzip/discussion/45798/thread/8cd16946/?limit=25
-        w_try "${WINE}" "${W_PROGRAMS_X86_WIN}\\7-Zip\\7z.exe" -t* x "$(w_pathconv -w "$1")"
     fi
 }
 
@@ -15323,19 +15302,16 @@ w_metadata opensymbol fonts \
     publisher="libreoffice.org" \
     year="2022" \
     media="download" \
-    file1="fonts-opensymbol_102.11+LibO7.0.4-4+deb11u4~bpo10+1_all.deb" \
+    file1="opens___.ttf" \
     installed_file1="${W_FONTSDIR_WIN}/opens___.ttf"
 
 load_opensymbol()
 {
-    # The OpenSymbol fonts are a replacement for the Windows Wingdings font from OpenOffice.org.
-    # Need to w_download Debian since I can't find a standalone download from OpenOffice
-    # Note: The source download package on debian is for _all_ of OpenOffice, which is 266 MB.
-    w_download https://archive.debian.org/debian/pool/main/libr/libreoffice/fonts-opensymbol_102.11+LibO7.0.4-4+deb11u4~bpo10+1_all.deb 66ba490cbd482b81a8f2d55850af6a7f2d1cc9dab341881359fcdc77cd1c4283
-    w_try_cd "${W_TMP}"
-    w_try_ar "${W_CACHE}/${W_PACKAGE}/${file1}" data.tar.xz
-    w_try tar -Jxf "${W_TMP}/data.tar.xz" ./usr/share/fonts/truetype/libreoffice/opens___.ttf
-    w_try_cp_font_files "usr/share/fonts/truetype/libreoffice" "${W_FONTSDIR_UNIX}"
+    # w_download http://ftp.us.debian.org/debian/pool/main/libr/libreoffice/fonts-opensymbol_102.12+LibO7.6.4~rc1-1~bpo12+1_all.deb e35e57a0a703fe656230a30c7675a5c5c4772a11c6f650634765234d1f0fa35f
+
+    # 30.09.2024 download file directly from git repo instead of downloading entire deb package
+    w_download "https://raw.githubusercontent.com/apache/openoffice/5f13fa00702a0abe48858d443bc306f5c5ba26d8/main/extras/source/truetype/symbol/opens___.ttf" 86f6a40ca61adfc5942fb4d2fc360ffba9abd972a7e21c1ee91e494299ff0cbc
+    w_try_cp_font_files "${W_CACHE}/${W_PACKAGE}/" "${W_FONTSDIR_UNIX}"
     w_register_font opens___.ttf "OpenSymbol"
 }
 
