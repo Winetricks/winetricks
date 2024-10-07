@@ -105,8 +105,22 @@ test_shellcheck() {
 test_linkcheck() {
     # Check for uses of variables in w_download when w_linkcheck_ignore isn't set
     # Using w_download https://example.com/${file1} breaks src/linkcheck.sh
-    # FIXME: technically '$' is valid in a URL, if there's actually a URL using it this will need a tweak
-    if grep "^ *w_download " src/winetricks | grep -E "ftp|http" | grep -v "w_linkcheck_ignore=1" | sed "s/^ *//"  | tr -d "\\\\" | grep "\\$"; then
+    # Escaped '$', as in '\$' are allowed
+
+    test_func() {
+        # No comment, only with protocol, skip flagged as ignored, remove indention
+        # and flags, fix double space, get n-th arg, find vars '$' and ignore '\$'.
+        func_name=${1}
+        url_arg=${2}
+        grep -E '^[^#]*'"${func_name}"' .*(http|ftp)s?://' "src/winetricks"     \
+            | grep -vE "(w_linkcheck_ignore|WINETRICKS_SUPER_QUIET)=(TRUE|1)"   \
+            | sed 's/^.*'"${func_name}"'/'"${func_name}"'/'                     \
+            | tr -s " "                                                         \
+            | cut -d " " -f "${url_arg}"                                        \
+            | grep -E "([^\\\\\]+\\$)"
+    }
+
+    if ( test_func "w_download_to" 3 ) || ( test_func "w_download" 2 ); then
         w_die "Do not use variables in these URLs, it breaks src/linkcheck.sh"
     else
         echo "linkcheck checks passed"
