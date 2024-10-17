@@ -13840,7 +13840,8 @@ load_vcrun2017()
     # 2017/10/02: 2da11e22a276be85970eaed255daf3d92af84e94142ec04252326a882e57303e
     # 2019/03/17: 7355962b95d6a5441c304cd2b86baf37bc206f63349f4a02289bcfb69ef142d3
     # 2019/08/14: 54ad46ae80984aa48cae6361213692c96b3639e322730d28c7fb93b183c761da
-    w_download https://aka.ms/vs/15/release/vc_redist.x86.exe 54ad46ae80984aa48cae6361213692c96b3639e322730d28c7fb93b183c761da
+    # 2024/10/17: 251640e8039d34290133b2c6e3e6fe098e61e2756d5a4c45fdcec9e4dee6c187
+    w_download https://aka.ms/vs/15/release/vc_redist.x86.exe 251640e8039d34290133b2c6e3e6fe098e61e2756d5a4c45fdcec9e4dee6c187
 
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait ucrtbase vcamp140 vcomp140 vccorlib140 vcruntime140 vcruntime140_1
 
@@ -13864,7 +13865,8 @@ load_vcrun2017()
             # 2017/10/02: 7434bf559290cccc3dd3624f10c9e6422cce9927d2231d294114b2f929f0e465
             # 2019/03/17: b192e143d55257a0a2f76be42e44ff8ee14014f3b1b196c6e59829b6b3ec453c
             # 2019/08/14: 5b0cbb977f2f5253b1ebe5c9d30edbda35dbd68fb70de7af5faac6423db575b5
-            w_download https://aka.ms/vs/15/release/vc_redist.x64.exe 5b0cbb977f2f5253b1ebe5c9d30edbda35dbd68fb70de7af5faac6423db575b5
+            # 2024/10/17: 7cf24eba2bd67ea6229b7dd131e06f4e92ebefc06e36fe401cdd227d7ed78264
+            w_download https://aka.ms/vs/15/release/vc_redist.x64.exe 7cf24eba2bd67ea6229b7dd131e06f4e92ebefc06e36fe401cdd227d7ed78264
             # Also replace 64-bit ucrtbase.dll
             w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2017/vc_redist.x64.exe -F 'a10'
             w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
@@ -13904,9 +13906,10 @@ load_vcrun2019()
     # 2021/10/23: 80c7969f4e05002a0cd820b746e0acb7406d4b85e52ef096707315b390927824
     # 2022/01/18: 4c6c420cf4cbf2c9c9ed476e96580ae92a97b2822c21329a2e49e8439ac5ad30
     # 2023/12/30: 29f649c08928b31e6bb11d449626da14b5e99b5303fe2b68afa63732ef29c946
+    # 2024/10/17: 49545cb0f6499c4a65e1e8d5033441eeeb4edfae465a68489a70832c6a4f6399
     w_override_dlls native,builtin api-ms-win-crt-private-l1-1-0 api-ms-win-crt-conio-l1-1-0 api-ms-win-crt-heap-l1-1-0 api-ms-win-crt-locale-l1-1-0 api-ms-win-crt-math-l1-1-0 api-ms-win-crt-runtime-l1-1-0 api-ms-win-crt-stdio-l1-1-0 api-ms-win-crt-time-l1-1-0 atl140 concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids vcamp140 vccorlib140 vcomp140 vcruntime140
 
-    w_download https://aka.ms/vs/16/release/vc_redist.x86.exe 29f649c08928b31e6bb11d449626da14b5e99b5303fe2b68afa63732ef29c946
+    w_download https://aka.ms/vs/16/release/vc_redist.x86.exe 49545cb0f6499c4a65e1e8d5033441eeeb4edfae465a68489a70832c6a4f6399
 
     if w_workaround_wine_bug 50894 "Working around failing wusa.exe lookup via C:\windows\SysNative"; then
         w_store_winver
@@ -13934,11 +13937,12 @@ load_vcrun2019()
             # 2021/10/23: 9b9dd72c27ab1db081de56bb7b73bee9a00f60d14ed8e6fde45dab3e619b5f04
             # 2022/01/18: 296f96cd102250636bcd23ab6e6cf70935337b1bbb3507fe8521d8d9cfaa932f
             # 2023/12/30: cee28f29f904524b7f645bcec3dfdfe38f8269b001144cd909f5d9232890d33b
+            # 2024/10/17: 5d9999036f2b3a930f83b7fe3e2186b12e79ae7c007d538f52e3582e986a37c3
 
             # vcruntime140_1 is only shipped on x64:
             w_override_dlls native,builtin vcruntime140_1
 
-            w_download https://aka.ms/vs/16/release/vc_redist.x64.exe cee28f29f904524b7f645bcec3dfdfe38f8269b001144cd909f5d9232890d33b
+            w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 5d9999036f2b3a930f83b7fe3e2186b12e79ae7c007d538f52e3582e986a37c3
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
@@ -14000,9 +14004,10 @@ load_vcrun2022()
     # 2023/12/30: c61cef97487536e766130fa8714dd1b4143f6738bfb71806018eee1b5fe6f057
     # 2024/02/11: 510fc8c2112e2bc544fb29a72191eabcc68d3a5a7468d35d7694493bc8593a79
     # 2024/06/10: a32dd41eaab0c5e1eaa78be3c0bb73b48593de8d97a7510b97de3fd993538600
+    # 2024/10/17: ed1967c2ac27d806806d121601b526f84e497ae1b99ed139c0c4c6b50147df4a
     w_override_dlls native,builtin concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids vcamp140 vccorlib140 vcomp140 vcruntime140
 
-    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe a32dd41eaab0c5e1eaa78be3c0bb73b48593de8d97a7510b97de3fd993538600
+    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe ed1967c2ac27d806806d121601b526f84e497ae1b99ed139c0c4c6b50147df4a
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
@@ -14016,10 +14021,11 @@ load_vcrun2022()
             # 2023/12/30: 4dfe83c91124cd542f4222fe2c396cabeac617bb6f59bdcbdf89fd6f0df0a32f
             # 2024/02/11: 1ad7988c17663cc742b01bef1a6df2ed1741173009579ad50a94434e54f56073
             # 2024/06/10: 3642e3f95d50cc193e4b5a0b0ffbf7fe2c08801517758b4c8aeb7105a091208a
+            # 2024/10/17: 814e9da5ec5e5d6a8fa701999d1fc3baddf7f3adc528e202590e9b1cb73e4a11
             # vcruntime140_1 is only shipped on x64:
             w_override_dlls native,builtin vcruntime140_1
 
-            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe 3642e3f95d50cc193e4b5a0b0ffbf7fe2c08801517758b4c8aeb7105a091208a
+            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe 814e9da5ec5e5d6a8fa701999d1fc3baddf7f3adc528e202590e9b1cb73e4a11
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
