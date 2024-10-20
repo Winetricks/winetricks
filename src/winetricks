@@ -1473,7 +1473,7 @@ w_download_to()
                         ;;
                 esac
 
-                if test "${WINETRICKS_FORCE}" != 1; then
+                if test "${WINETRICKS_FORCE}" != 1 || test "${WINETRICKS_CACHED_ACCEPTABLE}" = 1; then
                     case ${LANG} in
                         bg*) w_warn "Контролната сума на ${_W_cache}/${_W_file} не съвпада, повторен опит за изтегляне" ;;
                         pl*) w_warn "Niezgodność sum kontrolnych dla ${_W_cache}/${_W_file}, pobieram ponownie" ;;
@@ -1607,8 +1607,14 @@ w_download_to()
             # downloaded successfully, exit from loop
             break
         elif test ${tries} = 2; then
-            test -f "${_W_file}" && rm "${_W_file}"
-            w_die "Downloading ${_W_url} failed"
+            if test "${WINETRICKS_CACHED_ACCEPTABLE}" = 1 && test -s "${_W_cache}/${_W_file}".bak; then
+                w_warn "Checksum for ${_W_cache}/${_W_file} did not match and downloading ${_W_url} failed, but --cached-acceptable was used, so ignoring and trying anyway."
+                mv -f "${_W_cache}/${_W_file}".bak "${_W_cache}/${_W_file}"
+                checksum_ok=1
+            else
+                test -f "${_W_file}" && rm "${_W_file}"
+                w_die "Downloading ${_W_url} failed"
+            fi
         fi
         # Download from the Wayback Machine on second try
         _W_url="https://web.archive.org/web/2000/${_W_url}"
@@ -5584,42 +5590,43 @@ winetricks_usage()
 Изпълнява глаголите. Всеки глагол инсталира приложение или променя настройка.
 
 Опции:
-    --country=CC      Променя държавния код (СС) и не засича Вашия IP адрес
--f, --force           Не проверява за инсталираните пакети
-    --gui             Показва графична диагностика
-    --gui=OPT         Избира kdialog или zenity (OPT)
-    --isolate         Инсталира всяко приложение или игра в отделна бутилка (ПАПКА)
-    --self-update     Обновява това приложение
-    --update-rollback Отменя последното обновяване на това приложение
--k, --keep_isos       Кешира .iso файловете (позволява инсталация без диск)
-    --no-clean        Не изтрива временните директории (полезно е за отстраняване на неизправности)
-    --optin           Включва докладването за използваните глаголи към разработчиците на Winetricks
-    --optout          Изключва докладването за използваните глаголи към разработчиците на Winetricks
--q, --unattended      Не задава въпроси, инсталира автоматично
--r, --ddrescue        Повтаря опитите за кеширане на одраскани дискове
--t  --torify          Стартира изтегляне с torify, ако е налично
-    --verify          Стартира автоматични графични тестове за глаголи, ако е налично
--v, --verbose         Изписва всички изпълнени команди
--h, --help            Показва това съобщение и излиза
--V, --version         Показва версията и излиза
+    --country=CC        Променя държавния код (СС) и не засича Вашия IP адрес
+-f, --force             Не проверява за инсталираните пакети
+    --cached-acceptable Fall back to old cached file if downloading new file fails
+    --gui               Показва графична диагностика
+    --gui=OPT           Избира kdialog или zenity (OPT)
+    --isolate           Инсталира всяко приложение или игра в отделна бутилка (ПАПКА)
+    --self-update       Обновява това приложение
+    --update-rollback   Отменя последното обновяване на това приложение
+-k, --keep_isos         Кешира .iso файловете (позволява инсталация без диск)
+    --no-clean          Не изтрива временните директории (полезно е за отстраняване на неизправности)
+    --optin             Включва докладването за използваните глаголи към разработчиците на Winetricks
+    --optout            Изключва докладването за използваните глаголи към разработчиците на Winetricks
+-q, --unattended        Не задава въпроси, инсталира автоматично
+-r, --ddrescue          Повтаря опитите за кеширане на одраскани дискове
+-t  --torify            Стартира изтегляне с torify, ако е налично
+    --verify            Стартира автоматични графични тестове за глаголи, ако е налично
+-v, --verbose           Изписва всички изпълнени команди
+-h, --help              Показва това съобщение и излиза
+-V, --version           Показва версията и излиза
 
 Команди:
-list                  показва категориите
-list-all              показва всички категории и техните глаголи
-apps list             показва глаголите в категория 'приложения'
-benchmarks list       показва глаголите в категория 'еталонни тестове'
-dlls list             показва глаголите в категория 'DLL файлове'
-fonts list            показва глаголите в категория 'шрифтове'
-settings list         показва глаголите в категория 'настройки'
-list-cached           показва кешираните-и-готови-за-инсталиране глаголи
-list-download         показва глаголите, които се изтеглят автоматично
-list-manual-download  показва глаголите, които се изтеглят от потребителя
-list-installed        показва инсталираните глаголи
-arch=32|64            създава папка с 32 или 64-битова архитектура, тази опция
-                      трябва да бъде зададена преди prefix=foobar и няма да работи
-                      с папката по подразбиране.
-prefix=foobar         избира ПАПКА=${W_PREFIXES_ROOT}/foobar
-annihilate            Изтрива ВСИЧКИ ДАННИ И ПРИЛОЖЕНИЯ В ТАЗИ ПАПКА
+list                    показва категориите
+list-all                показва всички категории и техните глаголи
+apps list               показва глаголите в категория 'приложения'
+benchmarks list         показва глаголите в категория 'еталонни тестове'
+dlls list               показва глаголите в категория 'DLL файлове'
+fonts list              показва глаголите в категория 'шрифтове'
+settings list           показва глаголите в категория 'настройки'
+list-cached             показва кешираните-и-готови-за-инсталиране глаголи
+list-download           показва глаголите, които се изтеглят автоматично
+list-manual-download    показва глаголите, които се изтеглят от потребителя
+list-installed          показва инсталираните глаголи
+arch=32|64              създава папка с 32 или 64-битова архитектура, тази опция
+                        трябва да бъде зададена преди prefix=foobar и няма да работи
+                        с папката по подразбиране.
+prefix=foobar           избира ПАПКА=${W_PREFIXES_ROOT}/foobar
+annihilate              Изтрива ВСИЧКИ ДАННИ И ПРИЛОЖЕНИЯ В ТАЗИ ПАПКА
 _EOF_
             ;;
         da*)
@@ -5627,39 +5634,40 @@ _EOF_
 Brug: $0 [tilvalg] [verbum|sti-til-verbum] ...
 Kører de angivne verber.  Hvert verbum installerer et program eller ændrer en indstilling.
 Tilvalg:
-    --country=CC      Set country code to CC and don't detect your IP address
--f, --force           Don't check whether packages were already installed
-    --gui             Show gui diagnostics even when driven by commandline
-    --isolate         Install each app or game in its own bottle (WINEPREFIX)
-    --self-update     Update this application to the last version
-    --update-rollback Rollback the last self update
--k, --keep_isos       lagr iso'er lokalt (muliggør senere installation uden disk)
-    --no-clean        Don't delete temp directories (useful during debugging)
--q, --unattended      stil ingen spørgsmål, installér bare automatisk
--r, --ddrescue        brug alternativ disk-tilgangsmetode (hjælper i tilfælde af en ridset disk)
--t, --torify          Run downloads under torify, if available
-    --verify          Run (automated) GUI tests for verbs, if available
--v, --verbose         vis alle kommandoer som de bliver udført
--V, --version         vis programversionen og afslut
--h  --help            vis denne besked og afslut
+    --country=CC        Set country code to CC and don't detect your IP address
+-f, --force             Don't check whether packages were already installed
+    --cached-acceptable Fall back to old cached file if downloading new file fails
+    --gui               Show gui diagnostics even when driven by commandline
+    --isolate           Install each app or game in its own bottle (WINEPREFIX)
+    --self-update       Update this application to the last version
+    --update-rollback   Rollback the last self update
+-k, --keep_isos         lagr iso'er lokalt (muliggør senere installation uden disk)
+    --no-clean          Don't delete temp directories (useful during debugging)
+-q, --unattended        stil ingen spørgsmål, installér bare automatisk
+-r, --ddrescue          brug alternativ disk-tilgangsmetode (hjælper i tilfælde af en ridset disk)
+-t, --torify            Run downloads under torify, if available
+    --verify            Run (automated) GUI tests for verbs, if available
+-v, --verbose           vis alle kommandoer som de bliver udført
+-V, --version           vis programversionen og afslut
+-h  --help              vis denne besked og afslut
 
 Diverse verber:
-list                  vis en liste over alle verber
-list-all              list all categories and their verbs
-apps list             list verbs in category 'applications'
-benchmarks list       list verbs in category 'benchmarks'
-dlls list             list verbs in category 'dlls'
-fonts list            list verbs in category 'fonts'
-settings list         list verbs in category 'settings'
-list-cached           vis en liste over verber for allerede-hentede installationsprogrammer
-list-download         vis en liste over verber for programmer der kan hentes
-list-manual-download  list applications which can be downloaded with some help from the user
-list-installed        list already-installed applications
-arch=32|64            create wineprefix with 32 or 64 bit, this option must be
-                      given before prefix=foobar and will not work in case of
-                      the default wineprefix.
-prefix=foobar         select WINEPREFIX=${W_PREFIXES_ROOT}/foobar
-annihilate            Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX
+list                    vis en liste over alle verber
+list-all                list all categories and their verbs
+apps list               list verbs in category 'applications'
+benchmarks list         list verbs in category 'benchmarks'
+dlls list               list verbs in category 'dlls'
+fonts list              list verbs in category 'fonts'
+settings list           list verbs in category 'settings'
+list-cached             vis en liste over verber for allerede-hentede installationsprogrammer
+list-download           vis en liste over verber for programmer der kan hentes
+list-manual-download    list applications which can be downloaded with some help from the user
+list-installed          list already-installed applications
+arch=32|64              create wineprefix with 32 or 64 bit, this option must be
+                        given before prefix=foobar and will not work in case of
+                        the default wineprefix.
+prefix=foobar           select WINEPREFIX=${W_PREFIXES_ROOT}/foobar
+annihilate              Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX
 _EOF_
             ;;
         de*)
@@ -5669,39 +5677,40 @@ Angegebene Verben ausführen.
 Jedes Verb installiert eine Anwendung oder ändert eine Einstellung.
 
 Optionen:
-    --country=CC      Ländercode auf CC setzen und IP Adresse nicht auslesen
--f, --force           Nicht prüfen ob Pakete bereits installiert wurden
-    --gui             GUI Diagnosen anzeigen, auch wenn von der Kommandozeile gestartet
-    --isolate         Jedes Programm oder Spiel in eigener Bottle (WINEPREFIX) installieren
-    --self-update     Dieses Programm auf die neueste Version aktualisieren
-    --update-rollback Rollback des letzten Self Update
--k, --keep_isos       ISOs local speichern (erlaubt spätere Installation ohne Disk)
-    --no-clean        Temp Verzeichnisse nicht löschen (nützlich beim debuggen)
--q, --unattended      Keine Fragen stellen, alles automatisch installieren
--r, --ddrescue        Alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
--t  --torify          Wenn möglich Downloads unter torify ausführen
-    --verify          Wenn möglich automatische GUI Tests für Verben starten
--v, --verbose         Alle ausgeführten Kommandos anzeigen
--h, --help            Diese Hilfemeldung anzeigen
--V, --version         Programmversion anzeigen und Beenden
+    --country=CC        Ländercode auf CC setzen und IP Adresse nicht auslesen
+-f, --force             Nicht prüfen ob Pakete bereits installiert wurden
+    --cached-acceptable Fall back to old cached file if downloading new file fails
+    --gui               GUI Diagnosen anzeigen, auch wenn von der Kommandozeile gestartet
+    --isolate           Jedes Programm oder Spiel in eigener Bottle (WINEPREFIX) installieren
+    --self-update       Dieses Programm auf die neueste Version aktualisieren
+    --update-rollback   Rollback des letzten Self Update
+-k, --keep_isos         ISOs local speichern (erlaubt spätere Installation ohne Disk)
+    --no-clean          Temp Verzeichnisse nicht löschen (nützlich beim debuggen)
+-q, --unattended        Keine Fragen stellen, alles automatisch installieren
+-r, --ddrescue          Alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
+-t  --torify            Wenn möglich Downloads unter torify ausführen
+    --verify            Wenn möglich automatische GUI Tests für Verben starten
+-v, --verbose           Alle ausgeführten Kommandos anzeigen
+-h, --help              Diese Hilfemeldung anzeigen
+-V, --version           Programmversion anzeigen und Beenden
 
 Kommandos:
-list                  Kategorien auflisten
-list-all              Alle Kategorien und deren Verben auflisten
-apps list             Verben der Kategorie 'Anwendungen' auflisten
-benchmarks list       Verben der Kategorie 'Benchmarks' auflisten
-dlls list             Verben der Kategorie 'DLLs' auflisten
-fonts list            list verbs in category 'fonts'
-settings list         Verben der Kategorie 'Einstellungen' auflisten
-list-cached           Verben für bereits gecachte Installers auflisten
-list-download         Verben für automatisch herunterladbare Anwendungen auflisten
-list-manual-download  Verben für vom Benutzer herunterladbare Anwendungen auflisten
-list-installed        Bereits installierte Verben auflisten
-arch=32|64            Neues wineprefix mit 32 oder 64 bit erstellen, diese Option
-                      muss vor prefix=foobar angegeben werden und funktioniert
-                      nicht im Falle des Standard Wineprefix.
-prefix=foobar         WINEPREFIX=${W_PREFIXES_ROOT}/foobar auswählen
-annihilate            ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen
+list                    Kategorien auflisten
+list-all                Alle Kategorien und deren Verben auflisten
+apps list               Verben der Kategorie 'Anwendungen' auflisten
+benchmarks list         Verben der Kategorie 'Benchmarks' auflisten
+dlls list               Verben der Kategorie 'DLLs' auflisten
+fonts list              list verbs in category 'fonts'
+settings list           Verben der Kategorie 'Einstellungen' auflisten
+list-cached             Verben für bereits gecachte Installers auflisten
+list-download           Verben für automatisch herunterladbare Anwendungen auflisten
+list-manual-download    Verben für vom Benutzer herunterladbare Anwendungen auflisten
+list-installed          Bereits installierte Verben auflisten
+arch=32|64              Neues wineprefix mit 32 oder 64 bit erstellen, diese Option
+                        muss vor prefix=foobar angegeben werden und funktioniert
+                        nicht im Falle des Standard Wineprefix.
+prefix=foobar           WINEPREFIX=${W_PREFIXES_ROOT}/foobar auswählen
+annihilate              ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen
 _EOF_
             ;;
         *)
@@ -5710,42 +5719,43 @@ Usage: $0 [options] [command|verb|path-to-verb] ...
 Executes given verbs.  Each verb installs an application or changes a setting.
 
 Options:
-    --country=CC      Set country code to CC and don't detect your IP address
--f, --force           Don't check whether packages were already installed
-    --gui             Show gui diagnostics even when driven by commandline
-    --gui=OPT         Set OPT to kdialog or zenity to override GUI engine
-    --isolate         Install each app or game in its own bottle (WINEPREFIX)
-    --self-update     Update this application to the last version
-    --update-rollback Rollback the last self update
--k, --keep_isos       Cache isos (allows later installation without disc)
-    --no-clean        Don't delete temp directories (useful during debugging)
-    --optin           Opt in to reporting which verbs you use to the Winetricks maintainers
-    --optout          Opt out of reporting which verbs you use to the Winetricks maintainers
--q, --unattended      Don't ask any questions, just install automatically
--r, --ddrescue        Retry hard when caching scratched discs
--t  --torify          Run downloads under torify, if available
-    --verify          Run (automated) GUI tests for verbs, if available
--v, --verbose         Echo all commands as they are executed
--h, --help            Display this message and exit
--V, --version         Display version and exit
+    --country=CC        Set country code to CC and don't detect your IP address
+-f, --force             Don't check whether packages were already installed
+    --cached-acceptable Fall back to old cached file if downloading new file fails
+    --gui               Show gui diagnostics even when driven by commandline
+    --gui=OPT           Set OPT to kdialog or zenity to override GUI engine
+    --isolate           Install each app or game in its own bottle (WINEPREFIX)
+    --self-update       Update this application to the last version
+    --update-rollback   Rollback the last self update
+-k, --keep_isos         Cache isos (allows later installation without disc)
+    --no-clean          Don't delete temp directories (useful during debugging)
+    --optin             Opt in to reporting which verbs you use to the Winetricks maintainers
+    --optout            Opt out of reporting which verbs you use to the Winetricks maintainers
+-q, --unattended        Don't ask any questions, just install automatically
+-r, --ddrescue          Retry hard when caching scratched discs
+-t  --torify            Run downloads under torify, if available
+    --verify            Run (automated) GUI tests for verbs, if available
+-v, --verbose           Echo all commands as they are executed
+-h, --help              Display this message and exit
+-V, --version           Display version and exit
 
 Commands:
-list                  list categories
-list-all              list all categories and their verbs
-apps list             list verbs in category 'applications'
-benchmarks list       list verbs in category 'benchmarks'
-dlls list             list verbs in category 'dlls'
-fonts list            list verbs in category 'fonts'
-settings list         list verbs in category 'settings'
-list-cached           list cached-and-ready-to-install verbs
-list-download         list verbs which download automatically
-list-manual-download  list verbs which download with some help from the user
-list-installed        list already-installed verbs
-arch=32|64            create wineprefix with 32 or 64 bit, this option must be
-                      given before prefix=foobar and will not work in case of
-                      the default wineprefix.
-prefix=foobar         select WINEPREFIX=${W_PREFIXES_ROOT}/foobar
-annihilate            Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX
+list                    list categories
+list-all                list all categories and their verbs
+apps list               list verbs in category 'applications'
+benchmarks list         list verbs in category 'benchmarks'
+dlls list               list verbs in category 'dlls'
+fonts list              list verbs in category 'fonts'
+settings list           list verbs in category 'settings'
+list-cached             list cached-and-ready-to-install verbs
+list-download           list verbs which download automatically
+list-manual-download    list verbs which download with some help from the user
+list-installed          list already-installed verbs
+arch=32|64              create wineprefix with 32 or 64 bit, this option must be
+                        given before prefix=foobar and will not work in case of
+                        the default wineprefix.
+prefix=foobar           select WINEPREFIX=${W_PREFIXES_ROOT}/foobar
+annihilate              Delete ALL DATA AND APPLICATIONS INSIDE THIS WINEPREFIX
 _EOF_
             ;;
     esac
@@ -5756,6 +5766,7 @@ winetricks_handle_option()
     case "$1" in
         --country=*) W_COUNTRY="${1##--country=}" ;;
         -f|--force) WINETRICKS_FORCE=1;;
+        --cached-acceptable) WINETRICKS_CACHED_ACCEPTABLE=1;;
         --gui*) winetricks_detect_gui "${1##--gui=}";;
         -h|--help) winetricks_usage ; exit 0 ;;
         --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
