@@ -7274,17 +7274,17 @@ load_dxtrans()
 # $1 - dxvk archive name (required)
 # $2 - minimum Wine version (required)
 # $3 - minimum Vulkan API version (required)
-# $4 - [dxgi,][d3d9,][d3d10core,][d3d10,]d3d11 (required)
+# $4 - [dxgi,][d3d8,][d3d9,][d3d10core,][d3d10,]d3d11 (required)
 helper_dxvk()
 {
     _W_package_archive="${1}"
     _W_min_wine_version="${2}"
     _W_min_vulkan_version="${3}"
     _W_dll_overrides="$(echo "${4}" | sed 's/,/ /g')"
-    # dxvk repository, for d3d9/d3d10/d3d11 support
+    # dxvk repository, for d3d8/d3d9/d3d10/d3d11 support
     _W_repository="doitsujin/dxvk"
 
-    _W_supported_overrides="dxgi d3d9 d3d10core d3d10 d3d11"
+    _W_supported_overrides="dxgi d3d8 d3d9 d3d10core d3d10 d3d11"
     _W_invalid_overrides="$(echo "${_W_dll_overrides}" | awk -vvalid_overrides_regex="$(echo "${_W_supported_overrides}" | sed 's/ /|/g')" '{ gsub(valid_overrides_regex,""); sub("[ ]*",""); print $0 }')"
     if [ "${_W_invalid_overrides}" != "" ]; then
         w_die "parameter (4) unsupported dll override: '${_W_invalid_overrides}' ; supported dll overrides: ${_W_supported_overrides}"
@@ -8611,14 +8611,15 @@ load_dxvk2030()
 #----------------------------------------------------------------
 
 w_metadata dxvk dlls \
-    title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (latest)" \
+    title="Vulkan-based D3D8/D3D9/D3D10/D3D11 implementation for Linux / Wine (latest)" \
     publisher="Philip Rebohle" \
-    year="2023" \
+    year="2024" \
     media="download" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
-    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
-    installed_file4="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d8.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
 
 load_dxvk()
 {
@@ -8626,7 +8627,7 @@ load_dxvk()
     _W_dxvk_version="$(w_get_github_latest_release doitsujin dxvk)"
     _W_dxvk_version="${_W_dxvk_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/doitsujin/dxvk/releases/download/v${_W_dxvk_version}/dxvk-${_W_dxvk_version}.tar.gz"
-    helper_dxvk "dxvk-${_W_dxvk_version}.tar.gz" "7.1" "1.3.204" "dxgi,d3d9,d3d10core,d3d11"
+    helper_dxvk "dxvk-${_W_dxvk_version}.tar.gz" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
     unset _W_dxvk_version
 }
 
