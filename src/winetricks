@@ -16309,6 +16309,9 @@ load_ie8()
     # Bundled updspapi cannot work on Wine
     w_override_dlls builtin updspapi
 
+    # IE8 page loading is slow
+    w_override_dlls builtin wininet
+
     # See https://bugs.winehq.org/show_bug.cgi?id=16013
     # Find instructions to create this file in dlls/wintrust/tests/crypt.c
     w_download https://github.com/Winetricks/winetricks/raw/master/files/winetest.cat 5d18ab44fc289100ccf4b51cf614cc2d36f7ca053e557e2ba973811293c97d38
