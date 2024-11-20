@@ -15648,16 +15648,16 @@ load_3m_library()
 #----------------------------------------------------------------
 
 w_metadata 7zip apps \
-    title="7-Zip 19.00" \
+    title="7-Zip 24.08" \
     publisher="Igor Pavlov" \
-    year="2019" \
+    year="2024" \
     media="download" \
-    file1="7z1900.exe" \
+    file1="7z2408.exe" \
     installed_exe1="${W_PROGRAMS_X86_WIN}/7-Zip/7zFM.exe"
 
 load_7zip()
 {
-    w_download https://www.7-zip.org/a/7z1900.exe 759aa04d5b03ebeee13ba01df554e8c962ca339c74f56627c8bed6984bb7ef80
+    w_download https://www.7-zip.org/a/7z2408.exe faa87251336d864b877a5e6c3e9c9a5e250318be2fdfc8a42ceadb3a956e0405
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/S}
 }
