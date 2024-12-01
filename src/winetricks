@@ -7320,7 +7320,6 @@ helper_dxvk()
 
     for _W_dll in ${_W_dll_overrides}; do
         w_try mv "${W_TMP}/${_W_package_dir}/x32/${_W_dll}.dll" "${W_SYSTEM32_DLLS}/"
-        [ "${_W_dll}" = "d3d9" ] && _W_d3d9_support="1"
     done
 
     if test "${W_ARCH}" = "win64"; then
@@ -7330,13 +7329,8 @@ helper_dxvk()
     fi
     # shellcheck disable=SC2086
     w_override_dlls native ${_W_dll_overrides}
-    if [ -n "${_W_d3d9_support}" ]; then
-        w_call d3dcompiler_43
-        w_call d3dx9
-    fi
-    w_call d3dcompiler_47
 
-    unset _W_d3d9_support _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
+    unset _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
         _W_package_archive _W_package_dir _W_package_version \
         _W_repository _W_supported_overrides
 }
