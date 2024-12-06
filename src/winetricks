@@ -15650,7 +15650,7 @@ load_3m_library()
 #----------------------------------------------------------------
 
 w_metadata 7zip apps \
-    title="7-Zip 24.08" \
+    title="7-Zip 24.09" \
     publisher="Igor Pavlov" \
     year="2024" \
     media="download" \
@@ -15659,7 +15659,7 @@ w_metadata 7zip apps \
 
 load_7zip()
 {
-    w_download https://www.7-zip.org/a/7z2408.exe faa87251336d864b877a5e6c3e9c9a5e250318be2fdfc8a42ceadb3a956e0405
+    w_download https://www.7-zip.org/a/7z2409.exe e35e4374100b52e697e002859aefdd5533bcbf4118e5d2210fae6de318947c41
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/S}
 }
