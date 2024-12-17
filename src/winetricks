@@ -15726,17 +15726,31 @@ load_3m_library()
 
 #----------------------------------------------------------------
 
-w_metadata 7zip apps \
-    title="7-Zip 24.09" \
-    publisher="Igor Pavlov" \
-    year="2024" \
-    media="download" \
-    file1="7z2408.exe" \
-    installed_exe1="${W_PROGRAMS_X86_WIN}/7-Zip/7zFM.exe"
+if [ "$(grep -s "${WINEPREFIX}/system.reg")" = "#arch=32" ]; then
+    w_metadata 7zip apps \
+        title="7-Zip 24.09" \
+        publisher="Igor Pavlov" \
+        year="2024" \
+        media="download" \
+        file1="7z2409.exe" \
+        installed_exe1="${W_PROGRAMS_X86_WIN}/7-Zip/7zFM.exe"
+elif [ "$(grep -s "${WINEPREFIX}/system.reg")" = "#arch=64" ]; then
+    w_metadata 7zip apps \
+        title="7-Zip 24.09" \
+        publisher="Igor Pavlov" \
+        year="2024" \
+        media="download" \
+        file1="7z2409-x64.exe" \
+        installed_exe1="${W_PROGRAMS_WIN}/7-Zip/7zFM.exe"
+fi
 
 load_7zip()
 {
-    w_download https://www.7-zip.org/a/7z2409.exe e35e4374100b52e697e002859aefdd5533bcbf4118e5d2210fae6de318947c41
+    if [ "$(grep -s "${WINEPREFIX}/system.reg")" = "#arch=32" ]; then
+        w_download https://www.7-zip.org/a/"${file1}" e35e4374100b52e697e002859aefdd5533bcbf4118e5d2210fae6de318947c41
+    elif [ "$(grep -s "${WINEPREFIX}/system.reg")" = "#arch=64" ]; then
+        w_download https://www.7-zip.org/a/"${file1}" bdd1a33de78618d16ee4ce148b849932c05d0015491c34887846d431d29f308e
+    fi
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/S}
 }
