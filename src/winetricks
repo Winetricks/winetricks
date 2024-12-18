@@ -6175,8 +6175,10 @@ load_cnc_ddraw()
     # 2024/06/06 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.6.0.0/cnc-ddraw.zip
     # 2024/07/11 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.7.0.0/cnc-ddraw.zip
     # 2024/08/20 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.8.0.0/cnc-ddraw.zip
+    # 2024/09/21 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.9.0.0/cnc-ddraw.zip
+    # 2024/11/02 https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v7.0.0.0/cnc-ddraw.zip
 
-    w_download https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v6.8.0.0/cnc-ddraw.zip 61002fcc8bc117a0bd95aabda275104496f578f9711760ac8451dc02d6471f82 ${file1}
+    w_download https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v7.0.0.0/cnc-ddraw.zip f9640f69c2b8c012b97720ce0a9aac483989563908fc19446b9d1ba16e7239d6 ${file1}
     w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
     w_try_cp_dll "${W_TMP}/ddraw.dll" "${W_SYSTEM32_DLLS}/ddraw.dll"
     w_try cp -R "${W_TMP}"/* "${W_SYSTEM32_DLLS}/"
