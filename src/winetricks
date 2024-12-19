@@ -28,10 +28,7 @@ WINETRICKS_VERSION=20240105-next
 # - wine is used to execute Win32 apps except on Cygwin.
 # - cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - aria2c, wget, curl, or fetch is needed for downloading.
-# - fuseiso, archivemount (Linux), or hdiutil (macOS) is used to mount .iso images.
 # - perl is used for displaying download progress for wget when using zenity
-# - pkexec, sudo, or kdesu (gksu/gksudo/kdesudo are deprecated upstream but also still supported)
-#   are used to mount .iso images if the user cached them with -k option.
 # - sha256sum, sha256, or shasum (OSX 10.5 does not support these, 10.6+ is required)
 # - torify is used with option "--torify" if sites are blocked in single countries.
 # - xdg-open (if present) or open (for OS X) is used to open download pages
@@ -40,14 +37,14 @@ WINETRICKS_VERSION=20240105-next
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog/xmessage.
 #
 # On Ubuntu (23.04 and newer), the following line can be used to install all the prerequisites:
-#    sudo apt install 7zip aria2 binutils cabextract fuseiso pkexec tor unrar-free unzip wine xdg-utils xz-utils zenity
+#    sudo apt install 7zip aria2 binutils cabextract pkexec tor unrar-free unzip wine xdg-utils xz-utils zenity
 #
 # On older Ubuntu, the following line can be used to install all the prerequisites:
-#    sudo apt install aria2 binutils cabextract fuseiso p7zip-full policykit-1 tor unrar-free unzip wine xdg-utils xz-utils zenity
+#    sudo apt install aria2 binutils cabextract p7zip-full policykit-1 tor unrar-free unzip wine xdg-utils xz-utils zenity
 #
 # On Fedora, these commands can be used (RPM Fusion is used to install unrar):
 #    sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-#    sudo dnf install binutils cabextract fuseiso p7zip-plugins polkit tor unrar unzip wget wine xdg-utils xz zenity
+#    sudo dnf install binutils cabextract p7zip-plugins polkit tor unrar unzip wget wine xdg-utils xz zenity
 #
 # See https://github.com/Winetricks/winetricks for documentation and tutorials,
 # including how to contribute changes to winetricks.
@@ -1783,105 +1780,6 @@ w_question()
 
 #----------------------------------------------------------------
 
-
-# Usage: w_mount "volume name" [filename-to-check [discnum]]
-# Some games have two volumes with identical volume names.
-# For these, please specify discnum 1 for first disc, discnum 2 for 2nd, etc.,
-# else caching can't work.
-# FIXME: should take mount option 'unhide' for poorly mastered discs
-w_mount()
-{
-    if test "$3"; then
-        WINETRICKS_IMG="${W_CACHE}/${W_PACKAGE}/$1-$3.iso"
-    else
-        WINETRICKS_IMG="${W_CACHE}/${W_PACKAGE}/$1.iso"
-    fi
-    w_try_mkdir "${W_CACHE}/${W_PACKAGE}"
-
-    if test -f "${WINETRICKS_IMG}"; then
-        winetricks_mount_cached_iso
-    else
-        if test "${WINETRICKS_OPT_KEEPISOS}" = 0 || test "$2"; then
-            while true; do
-                winetricks_mount_real_volume "$1"
-                if test "$2" = "" || test -f "${W_ISO_MOUNT_ROOT}/$2"; then
-                    break
-                else
-                    w_warn "Wrong disc inserted, $2 not found."
-                fi
-            done
-        fi
-
-        case "${WINETRICKS_OPT_KEEPISOS}" in
-            1)
-                winetricks_cache_iso "$1"
-                winetricks_mount_cached_iso
-                ;;
-        esac
-    fi
-}
-
-w_umount()
-{
-    if test "${WINE}" = ""; then
-        # Windows
-        winetricks_load_vcdmount
-        w_try_cd "${VCD_DIR}"
-        w_try vcdmount.exe /u
-    else
-        if test "${W_USE_USERMOUNT}"; then
-            # FUSE-based tools or hdiutil
-            if test -d "${W_ISO_USER_MOUNT_ROOT}"; then
-                "${WINE}" eject "${W_ISO_MOUNT_LETTER}:"
-                cat > "${W_TMP}"/unset_type_cdrom.reg <<_EOF_
-REGEDIT4
-
-[HKEY_LOCAL_MACHINE\\Software\\Wine\\Drives]
-"${W_ISO_MOUNT_LETTER}:"=-
-_EOF_
-                w_try_regedit "${W_TMP}"/unset_type_cdrom.reg
-                rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
-                rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
-
-                case "${WINETRICKS_ISO_MOUNT}" in
-                    hdiutil)
-                        "${WINETRICKS_ISO_MOUNT}" detach "${W_ISO_USER_MOUNT_ROOT}"
-                        ;;
-                    *)
-                        # -uz lazy unmount in case executable still running
-                        fusermount -uz "${W_ISO_USER_MOUNT_ROOT}"
-                        ;;
-                esac
-                w_try rmdir "${W_ISO_USER_MOUNT_ROOT}"
-            fi
-            W_ISO_MOUNT_ROOT=/mnt/winetricks
-        else
-            # sudo + umount
-            echo "Running ${WINETRICKS_SUDO} umount ${W_ISO_MOUNT_ROOT}"
-
-            case "${WINETRICKS_SUDO}" in
-                gksu*|kdesudo)
-                    # -l lazy unmount in case executable still running
-                    "${WINETRICKS_SUDO}" "umount -l ${W_ISO_MOUNT_ROOT}"
-                    w_try "${WINETRICKS_SUDO}" "rm -rf ${W_ISO_MOUNT_ROOT}"
-                    ;;
-                kdesu)
-                    "${WINETRICKS_SUDO}" -c "umount -l ${W_ISO_MOUNT_ROOT}"
-                    w_try "${WINETRICKS_SUDO}" -c "rm -rf ${W_ISO_MOUNT_ROOT}"
-                    ;;
-                *)
-                    "${WINETRICKS_SUDO}" umount -l "${W_ISO_MOUNT_ROOT}"
-                    w_try "${WINETRICKS_SUDO}" rm -rf "${W_ISO_MOUNT_ROOT}"
-                    ;;
-            esac
-
-            "${WINE}" eject "${W_ISO_MOUNT_LETTER}:"
-            rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
-            rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
-        fi
-    fi
-}
-
 w_ahk_do()
 {
     if ! test -f "${W_CACHE}/ahk/AutoHotkeyU32.exe"; then
@@ -2847,9 +2745,6 @@ w_do_call()
         test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP}"
         w_try_mkdir -q "${W_TMP}"
 
-        # Reset whether use of user mount tool
-        unset W_USE_USERMOUNT
-
         # Calling subshell must explicitly propagate error code with exit $?
     ) || exit $?
 }
@@ -3237,71 +3132,6 @@ winetricks_detect_gui()
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
         echo "winetricks GUI enabled, using ${WINETRICKS_GUI} ${WINETRICKS_GUI_VERSION##kdialog }"
     fi
-}
-
-# Detect which sudo to use
-winetricks_detect_sudo()
-{
-    WINETRICKS_SUDO=sudo
-    if test "${WINETRICKS_GUI}" = "none"; then
-        return
-    fi
-
-    if test x"${DISPLAY}" != x""; then
-        # This should be the default option because some of GUI sudo programs are unmaintained
-        # See https://github.com/Winetricks/winetricks/issues/912
-        if test -x "$(command -v pkexec 2>/dev/null)"; then
-            # Maintained and recommended, part of Polkit, desktop-independent
-            # Usage: pkexec command ...
-            WINETRICKS_SUDO=pkexec
-        # Austin said "gksu*/kdesu* should stay (at least for a while)" in Feb 2018
-        # See https://github.com/Winetricks/winetricks/pull/915#issuecomment-362984379
-        elif test -x "$(command -v gksudo 2>/dev/null)"; then
-            # Unmaintained [2009], part of gksu
-            # Usage: gksudo "command ..."
-            WINETRICKS_SUDO=gksudo
-        elif test -x "$(command -v kdesudo 2>/dev/null)"; then
-            # Unmaintained [2015] (latest is for KDE4, no KF5 version available)
-            # https://cgit.kde.org/kdesudo.git/
-            # Usage: kdesudo "command ..."
-            WINETRICKS_SUDO=kdesudo
-        # fall back to the su versions if sudo isn't available (Fedora, etc.):
-        elif test -x "$(command -v gksu 2>/dev/null)"; then
-            # Unmaintained [2009]
-            # Usage: gksu "command ..."
-            WINETRICKS_SUDO=gksu
-        elif test -x "$(command -v kdesu 2>/dev/null)"; then
-            # Maintained, KF5 version available
-            # https://cgit.kde.org/kdesu.git/
-            # Usage: kdesu -c "command ..."
-            WINETRICKS_SUDO=kdesu
-        fi
-    fi
-}
-
-# Detect which iso mount tool to use
-winetricks_detect_iso_mount()
-{
-    if test -x "$(command -v fuseiso 2>/dev/null)"; then
-        # File/dir names are converted to lowercase
-        WINETRICKS_ISO_MOUNT=fuseiso
-    elif test -x "$(command -v archivemount 2>/dev/null)"; then
-        # File/dir names may be uppercase and we may need
-        # case-insensitive operations
-        #   e.g. w_try "$WINE" cmd /c "copy $W_ISO_MOUNT_LETTER:\\DOC.PDF C:\\doc.pdf"
-        # This tool had path issue in 0.8.8 or older versions
-        #   e.g. office2013pro works in 0.8.9 or later but doesn't work in 0.8.8
-        WINETRICKS_ISO_MOUNT=archivemount
-    elif test -x "$(command -v hdiutil 2>/dev/null)"; then
-        # File/dir names may be uppercase (same as archivemount)
-        WINETRICKS_ISO_MOUNT=hdiutil
-    else
-        WINETRICKS_ISO_MOUNT=none
-    fi
-    # Notes about other tools:
-    #   fuseiso9660: may append ";1" to filenames
-    #   unar: the drive icon is not "optical drive + disc" in Wine Explorer
-    #         and "wine eject" command fails
 }
 
 winetricks_get_prefix_var()
@@ -4465,502 +4295,6 @@ winetricks_die_if_user_not_dirowner()
     fi
 }
 
-# See
-# https://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf (iso9660)
-# https://www.ecma-international.org/publications/files/ECMA-ST/Ecma-167.pdf
-# http://www.osta.org/specs/pdf/udf102.pdf
-# https://www.ecma-international.org/publications/techreports/E-TR-071.htm
-
-# Usage: read_bytes offset count device
-winetricks_read_bytes()
-{
-    dd status=noxfer if="$3" bs=1 skip="$1" count="$2" 2>/dev/null
-}
-
-# Usage: read_hex offset count device
-winetricks_read_hex()
-{
-    od -j "$1" -N "$2" -t x1 "$3"     | # offset $1, count $2, single byte hex format, file $3
-        sed 's/^[^ ]* //'             | # remove address
-        sed '$d'                        # remove final line which is just final offset
-}
-
-# Usage: read_decimal offset device
-# Reads single four byte word, outputs in decimal.
-# Uses default endianness.
-# udf uses little endian words, so this only works on little endian machines.
-winetricks_read_decimal()
-{
-    od -j "$1" -N 4  -t u4 "$2"          | # offset $1, byte count 4, four byte decimal format, file $2
-        sed 's/^[^ ]* //'             | # remove address
-        sed '$d'                        # remove final line which is just final offset
-}
-
-winetricks_read_udf_volume_name()
-{
-    # "Anchor volume descriptor pointer" starts at sector 256
-
-    # AVDP Layout (ECMA-167 3/10.2):
-    # size   offset   contents
-    # 16     0        descriptor tag (id = 2)
-    # 16     8        main (primary?) volume descriptor sequence extent
-    # ...
-
-    # descriptor tag layout (ECMA-167 3/7.2):
-    # size   offset   contents
-    # 2      0        TagIdentifier
-    # ...
-
-    # extent layout (ECMA-167 3/7.1):
-    # size   offset   contents
-    # 4      0        length (in bytes)
-    # 8      4        location (in 2k sectors)
-
-    # primary volume descriptor layout (ECMA-167 3/10.1):
-    # size   offset   contents
-    # 16     0        descriptor tag (id = 1)
-    # ...
-    # 32     24       volume identifier (dstring)
-
-    # 1. check the 16 bit TagIdentifier of the descriptor tag, make sure it's 2
-    tagid=$(winetricks_read_hex 524288 2 "$1")
-    : echo "tagid is ${tagid}"
-    case "${tagid}" in
-        "02 00") : echo "Found AVDP" ;;
-        *) echo "Did not find AVDP (tagid was ${tagid})"; exit 1;;
-    esac
-
-    # 2. read the location of the main volume descriptor:
-    offset=$(winetricks_read_decimal 524308 "$1")
-    : echo "MVD is at sector ${offset}"
-    offset=$((offset * 2048))
-    : echo "MVD is at byte ${offset}"
-
-    # 3. check the TagIdentifier of the MVD's descriptor tag, make sure it's 1
-    tagid=$(winetricks_read_hex ${offset} 2 "$1")
-    : echo "tagid is ${tagid}"
-    case "${tagid}" in
-        "01 00") : echo Found MVD ;;
-        *) echo Did not find MVD; exit 1;;
-    esac
-
-    # 4. Read whether the name is in 8 or 16 bit chars
-    offset=$((offset + 24))
-    width=$(winetricks_read_hex ${offset} 1 "$1")
-
-    offset=$((offset + 1))
-
-    # 5. Profit!
-    case ${width} in
-        08)   winetricks_read_bytes ${offset} 30 "$1" | sed 's/  *$//' ;;
-        10)  winetricks_read_bytes ${offset} 30 "$1" | tr -d '\000' | sed 's/  *$//' ;;
-        *) echo "Unhandled dvd volname character width '${width}'"; exit 1;;
-    esac
-
-    echo ""
-}
-
-winetricks_read_iso9660_volume_name()
-{
-    winetricks_read_bytes 32808 30 "$1" | sed 's/  *$//'
-}
-
-winetricks_read_volume_name()
-{
-    # ECMA-119 says that CD-ROMs have sector size 2k, and at sector 16 have:
-    # size  offset contents
-    #  1    0      Volume descriptor type (1 for primary volume descriptor)
-    #  5    1      Standard identifier ("CD001" for iso9660)
-    # ECMA-167, section 9.1.2, has a table of standard identifiers:
-    # "BEA01": ecma-167 9.2, Beginning Extended Area Descriptor
-    # "CD001": ecma-119
-    # "CDW02": ecma-168
-
-    std_id=$(winetricks_read_bytes 32769 5 "$1")
-    : echo "std_id is ${std_id}"
-
-    case ${std_id} in
-        CD001) winetricks_read_iso9660_volume_name "$1" ;;
-        BEA01) winetricks_read_udf_volume_name "$1" ;;
-        *) echo "Unrecognized disk type ${std_id}"; exit 1 ;;
-    esac
-}
-
-winetricks_volname()
-{
-    x=$(volname "$1" 2> /dev/null| sed 's/  *$//')
-    if test -z "${x}"; then
-        # UDF?  See https://bugs.launchpad.net/bugs/678419
-        x=$(winetricks_read_volume_name "$1")
-    fi
-    echo "${x}"
-}
-
-# Really, should take a volume name as argument, and use 'mount' to get
-# mount point if system automounted it.
-winetricks_detect_optical_drive()
-{
-    case "${WINETRICKS_DEV}" in
-        "") ;;
-        *) return ;;
-    esac
-
-    for WINETRICKS_DEV in /dev/cdrom /dev/dvd /dev/sr0; do
-        test -b ${WINETRICKS_DEV} && break
-    done
-
-    case "${WINETRICKS_DEV}" in
-        "x") w_die "can't find cd/dvd drive" ;;
-    esac
-}
-
-winetricks_cache_iso()
-{
-    # WINETRICKS_IMG has already been set by w_mount
-    _W_expected_volname="$1"
-
-    winetricks_die_if_user_not_dirowner "${W_CACHE}"
-    winetricks_detect_optical_drive
-
-    # Horrible hack for Gentoo - make sure we can read from the drive
-    if ! test -r "${WINETRICKS_DEV}"; then
-        case "${WINETRICKS_SUDO}" in
-            gksu*|kdesudo) ${WINETRICKS_SUDO} chmod 666 "${WINETRICKS_DEV}" ;;
-            kdesu) ${WINETRICKS_SUDO} -c "chmod 666 ${WINETRICKS_DEV}" ;;
-            *) ${WINETRICKS_SUDO} chmod 666 "${WINETRICKS_DEV}" ;;
-        esac
-    fi
-
-    while true; do
-        # Wait for user to insert disc.
-        # Sleep long to make it less likely to close the drive during insertion.
-        while ! dd if="${WINETRICKS_DEV}" of=/dev/null count=1; do
-            sleep 5
-        done
-
-        # Some distributions automount discs in /media, take advantage of that
-        if test -d "/media/_W_expected_volname"; then
-            break
-        fi
-        # Otherwise try and read it straight from unmounted volume
-        _W_volname="$(winetricks_volname "${WINETRICKS_DEV}")"
-        if test "${_W_expected_volname}" != "${_W_volname}"; then
-            case ${LANG} in
-                bg*)  w_warn "Дискът [${_W_volname}] е неправилен. Моля, използвайте [${_W_expected_volname}]" ;;
-                da*)  w_warn "Forkert disk [${_W_volname}] indsat. Indsæt venligst disken [${_W_expected_volname}]" ;;
-                de*)  w_warn "Falsche Disk [${_W_volname}] eingelegt. Bitte legen Sie Disk [${_W_expected_volname}] ein!" ;;
-                pl*)  w_warn "Umieszczono zły dysk [${_W_volname}]. Proszę włożyć dysk [${_W_expected_volname}]" ;;
-                pt*)  w_warn "Disco errado [${_W_volname}] inserido. Por favor insira o disco [${_W_expected_volname}]" ;;
-                ru*)  w_warn "Неверный диск [${_W_volname}]. Пожалуйста, вставьте диск [${_W_expected_volname}]" ;;
-                uk*)  w_warn "Неправильний диск [${_W_volname}]. Будь ласка, вставте диск [${_W_expected_volname}]" ;;
-                zh_CN*)    w_warn " [${_W_volname}] 光盘插入错误，请插入光盘 [${_W_expected_volname}]" ;;
-                zh_TW*|zh_HK*)    w_warn " [${_W_volname}] 光碟插入錯誤，請插入光碟 [${_W_expected_volname}]" ;;
-                *)    w_warn "Wrong disc [${_W_volname}] inserted.  Please insert disc [${_W_expected_volname}]" ;;
-            esac
-
-            sleep 10
-        else
-            break
-        fi
-    done
-
-    # Copy disc to .iso file, display progress every 5 seconds
-    # Use conv=noerror,sync to replace unreadable blocks with zeroes
-    case "${WINETRICKS_OPT_DD}" in
-        dd)
-            "${WINETRICKS_OPT_DD}" if="${WINETRICKS_DEV}" of="${W_CACHE}"/temp.iso bs=2048 conv=noerror,sync &
-            WINETRICKS_DD_PID=$!
-            ;;
-        ddrescue)
-            if [ ! -x "$(command -v ddrescue)" ]; then
-                w_die "Please install ddrescue first."
-            fi
-
-            "${WINETRICKS_OPT_DD}" -v -b 2048 "${WINETRICKS_DEV}" "${W_CACHE}"/temp.iso &
-            WINETRICKS_DD_PID=$!
-            ;;
-    esac
-
-    echo "${WINETRICKS_DD_PID}" > "${WINETRICKS_WORKDIR}"/dd-pid
-
-    # Note: if user presses ^C, winetricks_cleanup will call winetricks_iso_cleanup
-    # FIXME: add progress bar for kde, too
-    case ${WINETRICKS_GUI} in
-        none|kdialog)
-            while ps -p "${WINETRICKS_DD_PID}" > /dev/null 2>&1; do
-                sleep 5
-                ls -l "${W_CACHE}"/temp.iso
-            done
-            ;;
-        zenity)
-            while ps -p "${WINETRICKS_DD_PID}" > /dev/null 2>&1; do
-                echo 1
-                sleep 2
-            done | ${WINETRICKS_GUI} --title "Copying to ${_W_expected_volname}.iso" --progress --pulsate --auto-kill
-            ;;
-    esac
-    rm "${WINETRICKS_WORKDIR}"/dd-pid
-
-    mv "${W_CACHE}"/temp.iso "${WINETRICKS_IMG}"
-
-    eject "${WINETRICKS_DEV}" || true    # punt if eject not found (as on cygwin)
-}
-
-winetricks_load_vcdmount()
-{
-    if test "${WINE}" != ""; then
-        return
-    fi
-
-    # Call only on real Windows.
-    # Sets VCD_DIR and W_ISO_MOUNT_ROOT
-
-    # The only free mount tool I know for Windows Vista is Virtual CloneDrive,
-    # which can be downloaded at
-    # http://www.slysoft.com/en/virtual-clonedrive.html
-    # FIXME: actually install it here
-
-    # Locate vcdmount.exe.
-    VCD_DIR="Elaborate Bytes/VirtualCloneDrive"
-    if test ! -x "${W_PROGRAMS_UNIX}/${VCD_DIR}/vcdmount.exe" && test ! -x "${W_PROGRAMS_X86_UNIX}/${VCD_DIR}/vcdmount.exe"; then
-        w_warn "Installing Virtual CloneDrive"
-        w_download_to vcd http://static.slysoft.com/SetupVirtualCloneDrive.exe
-        # have to use cmd else vista won't let cygwin run .exe's?
-        chmod +x "${W_CACHE}"/vcd/SetupVirtualCloneDrive.exe
-        w_try_cd "${W_CACHE}/vcd"
-        cmd /c SetupVirtualCloneDrive.exe
-    fi
-    if test -x "${W_PROGRAMS_UNIX}/${VCD_DIR}/vcdmount.exe"; then
-        VCD_DIR="${W_PROGRAMS_UNIX}/${VCD_DIR}"
-    elif test -x "${W_PROGRAMS_X86_UNIX}/${VCD_DIR}/vcdmount.exe"; then
-        VCD_DIR="${W_PROGRAMS_X86_UNIX}/${VCD_DIR}"
-    else
-        w_die "can't find Virtual CloneDrive?"
-    fi
-    # FIXME: Use WMI to locate the drive named
-    # "ELBY CLONEDRIVE..." using WMI as described in
-    # https://delphihaven.wordpress.com/2009/07/05/using-wmi-to-get-a-drive-friendly-name/
-}
-
-winetricks_mount_cached_iso()
-{
-    # On entry, WINETRICKS_IMG is already set
-    w_umount
-
-    if test "${WINE}" = ""; then
-        winetricks_load_vcdmount
-        my_img_win="$(w_pathconv -w "${WINETRICKS_IMG}" | tr '\012' ' ' | sed 's/ $//')"
-        w_try_cd "${VCD_DIR}"
-        w_try vcdmount.exe /l="${letter}" "${my_img_win}"
-
-        tries=0
-        while test ${tries} -lt 20; do
-            for W_ISO_MOUNT_LETTER in e f g h i j k; do
-                # let user blacklist drive letters
-                echo "${WINETRICKS_MOUNT_LETTER_IGNORE}" | grep -q "${W_ISO_MOUNT_LETTER}" && continue
-                W_ISO_MOUNT_ROOT=/cygdrive/${W_ISO_MOUNT_LETTER}
-                if find ${W_ISO_MOUNT_ROOT} -iname 'setup*' -o -iname '*.exe' -o -iname '*.msi'; then
-                    break 2
-                fi
-            done
-            tries=$((tries + 1))
-            echo "Waiting for mount to finish mounting"
-            sleep 1
-        done
-    else
-        if test "${W_USE_USERMOUNT}"; then
-            # Linux (FUSE-based tools), macOS (hdiutil)
-            if test "${WINETRICKS_ISO_MOUNT}" = "none"; then
-                # If no tools found, fall back to sudo + mount
-                w_warn "No user mount tools detected, using sudo + mount"
-                unset W_USE_USERMOUNT
-                winetricks_mount_cached_iso
-                return
-            fi
-            echo "Running mkdir -p ${W_ISO_USER_MOUNT_ROOT}"
-            mkdir -p "${W_ISO_USER_MOUNT_ROOT}"
-            if test $? -ne 0; then
-                w_warn "mkdir -p ${W_ISO_USER_MOUNT_ROOT} failed, falling back to sudo + mount"
-                unset W_USE_USERMOUNT
-                winetricks_mount_cached_iso
-                return
-            fi
-            case "${WINETRICKS_ISO_MOUNT}" in
-                fuseiso)
-                    echo "Running ${WINETRICKS_ISO_MOUNT} ${WINETRICKS_IMG} ${W_ISO_USER_MOUNT_ROOT}"
-                    ${WINETRICKS_ISO_MOUNT} "${WINETRICKS_IMG}" "${W_ISO_USER_MOUNT_ROOT}"
-                    ;;
-                archivemount)
-                    echo "Running ${WINETRICKS_ISO_MOUNT} ${WINETRICKS_IMG} ${W_ISO_USER_MOUNT_ROOT} -o readonly"
-                    ${WINETRICKS_ISO_MOUNT} "${WINETRICKS_IMG}" "${W_ISO_USER_MOUNT_ROOT}" -o readonly
-                    ;;
-                hdiutil)
-                    echo "Running ${WINETRICKS_ISO_MOUNT} attach -mountpoint ${W_ISO_USER_MOUNT_ROOT} ${WINETRICKS_IMG}"
-                    ${WINETRICKS_ISO_MOUNT} attach -mountpoint "${W_ISO_USER_MOUNT_ROOT}" "${WINETRICKS_IMG}"
-                    ;;
-                *)
-                    w_warn "Unknown ISO mount tool ${WINETRICKS_ISO_MOUNT}, using sudo + mount"
-                    unset W_USE_USERMOUNT
-                    winetricks_mount_cached_iso
-                    return
-                    ;;
-            esac
-            if test $? -ne 0; then
-                w_warn "${WINETRICKS_ISO_MOUNT} failed, falling back to sudo + mount"
-                unset W_USE_USERMOUNT
-                winetricks_mount_cached_iso
-                return
-            fi
-
-            echo "Mounting as drive ${W_ISO_MOUNT_LETTER}:"
-            # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
-            rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"*
-            ln -sf "${WINETRICKS_IMG}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
-            ln -sf "${W_ISO_USER_MOUNT_ROOT}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
-            # Gotta set the type to "cdrom", else "wine eject" will fail
-            cat > "${W_TMP}"/set_type_cdrom.reg <<_EOF_
-REGEDIT4
-
-[HKEY_LOCAL_MACHINE\\Software\\Wine\\Drives]
-"${W_ISO_MOUNT_LETTER}:"="cdrom"
-_EOF_
-            w_try_regedit "${W_TMP}"/set_type_cdrom.reg
-            # The new drive is not recognized without waiting
-            # FIXME: not sure if the duration is appropriate
-            sleep 5
-
-            W_ISO_MOUNT_ROOT="${W_ISO_USER_MOUNT_ROOT}"
-        else
-            # Linux (sudo + mount)
-            _W_USERID=$(id -u)
-            # WINETRICKS_IMG may contain spaces and needs to be quoted
-            case "${WINETRICKS_SUDO}" in
-                gksu*|kdesudo)
-                    w_try "${WINETRICKS_SUDO}" "mkdir -p ${W_ISO_MOUNT_ROOT}"
-                    w_try "${WINETRICKS_SUDO}" "mount -o ro,loop,uid=${_W_USERID},unhide '${WINETRICKS_IMG}' ${W_ISO_MOUNT_ROOT}"
-                    ;;
-                kdesu)
-                    w_try "${WINETRICKS_SUDO}" -c "mkdir -p ${W_ISO_MOUNT_ROOT}"
-                    w_try "${WINETRICKS_SUDO}" -c "mount -o ro,loop,uid=${_W_USERID},unhide '${WINETRICKS_IMG}' ${W_ISO_MOUNT_ROOT}"
-                    ;;
-                *)
-                    w_try "${WINETRICKS_SUDO}" mkdir -p "${W_ISO_MOUNT_ROOT}"
-                    w_try "${WINETRICKS_SUDO}" mount -o ro,loop,uid="${_W_USERID}",unhide "${WINETRICKS_IMG}" "${W_ISO_MOUNT_ROOT}"
-                    ;;
-            esac
-
-            echo "Mounting as drive ${W_ISO_MOUNT_LETTER}:"
-            # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
-            rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"*
-            ln -sf "${WINETRICKS_IMG}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
-            ln -sf "${W_ISO_MOUNT_ROOT}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
-            unset _W_USERID
-        fi
-    fi
-}
-
-# List the currently mounted UDF or iso9660 filesystems that match the given pattern
-# Output format:
-#   dev mountpoint
-#   dev mountpoint
-#   ...
-# Mount points may contain spaces.
-
-winetricks_list_mounts()
-{
-    mount | grep -E 'udf|iso9660' | sed 's,^\([^ ]*\) on \(.*\) type .*,\1 \2,'| grep "$1\$"
-}
-
-# Return success and set _W_dev _W_mountpoint if volume $1 is mounted
-# Note: setting variables as a way of returning results from a
-# shell function exposed several bugs in most shells (except ksh!)
-# related to implicit subshells.  It would be better to output
-# one string to stdout instead.
-winetricks_is_mounted()
-{
-    # First, check for matching mountpoint
-    _W_tmp="$(winetricks_list_mounts "$1")"
-    if test "${_W_tmp}"; then
-        _W_dev=$(echo "${_W_tmp}" | sed 's/ .*//')
-        _W_mountpoint="$(echo "${_W_tmp}" | sed 's/^[^ ]* //')"
-        # Volume found!
-        return "${TRUE}"
-    fi
-
-    # If that fails, read volume name the hard way for each volume
-    # Have to use file to return results from implicit subshell
-    rm -f "${W_TMP_EARLY}/_W_tmp.${LOGNAME}"
-    winetricks_list_mounts . | while true; do
-        IFS= read -r _W_tmp
-
-        _W_dev=$(echo "${_W_tmp}" | sed 's/ .*//')
-        test "${_W_dev}" || break
-        _W_mountpoint="$(echo "${_W_tmp}" | sed 's/^[^ ]* //')"
-        _W_volname=$(winetricks_volname "${_W_dev}")
-        if test "$1" = "${_W_volname}"; then
-            # Volume found!  Want to return from function here, but can't
-            echo "${_W_tmp}" > "${W_TMP_EARLY}/_W_tmp.${LOGNAME}"
-            break
-        fi
-    done
-
-    if test -f "${W_TMP_EARLY}/_W_tmp.${LOGNAME}"; then
-        # Volume found!  Return from function.
-        _W_dev=$(sed 's/ .*//' "${W_TMP_EARLY}/_W_tmp.${LOGNAME}")
-        _W_mountpoint="$(sed 's/^[^ ]* //' "${W_TMP_EARLY}/_W_tmp.${LOGNAME}")"
-        rm -f "${W_TMP_EARLY}/_W_tmp.${LOGNAME}"
-        return "${TRUE}"
-    fi
-
-    # Volume not found
-    unset _W_dev _W_mountpoint _W_volname
-    return "${FALSE}"
-}
-
-winetricks_mount_real_volume()
-{
-    _W_expected_volname="$1"
-
-    # Wait for user to insert disc.
-
-    case ${LANG} in
-        bg*) _W_mountmsg="Моля, използвайте ${_W_expected_volname} (изисква се от пакета ${W_PACKAGE})" ;;
-        da*)_W_mountmsg="Indsæt venligst disken '${_W_expected_volname}' (krævet af pakken '${W_PACKAGE}')" ;;
-        de*)_W_mountmsg="Bitte Disk '${_W_expected_volname}' einlegen (für Paket '${W_PACKAGE}')" ;;
-        pl*)  _W_mountmsg="Proszę włożyć dysk '${_W_expected_volname}' (potrzebny paczce '${W_PACKAGE}')" ;;
-        pt*)  _W_mountmsg="Por favor insira o volume '${_W_expected_volname}' (necessário para o pacote '${W_PACKAGE}')" ;;
-        ru*)  _W_mountmsg="Пожалуйста, вставьте том '${_W_expected_volname}' (требуется для пакета '${W_PACKAGE}')" ;;
-        uk*)  _W_mountmsg="Будь ласка, вставте том '${_W_expected_volname}' (потрібний для пакунка '${W_PACKAGE}')" ;;
-        zh_CN*)  _W_mountmsg="请插入卷 '${_W_expected_volname}' (为包 '${W_PACKAGE} 所需')" ;;
-        zh_TW*|zh_HK*)  _W_mountmsg="請插入卷 '${_W_expected_volname}' (為包 '${W_PACKAGE} 所需')" ;;
-        *)  _W_mountmsg="Please insert volume '${_W_expected_volname}' (needed for package '${W_PACKAGE}')" ;;
-    esac
-
-    if test "${WINE}" = ""; then
-        # Assume already mounted, just get drive letter
-        W_ISO_MOUNT_LETTER=$(awk '/iso/ {print $1}' < /proc/mounts | tr -d :)
-        W_ISO_MOUNT_ROOT=$(awk '/iso/ {print $2}' < /proc/mounts)
-    else
-        while ! winetricks_is_mounted "${_W_expected_volname}"; do
-            w_try w_warn_cancel "${_W_mountmsg}"
-            # In non-gui case, give user two seconds to futz with disc drive before spamming him again
-            sleep 2
-        done
-        WINETRICKS_DEV=${_W_dev}
-        W_ISO_MOUNT_ROOT="${_W_mountpoint}"
-
-        # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
-        rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"*
-        ln -sf "${WINETRICKS_DEV}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
-        ln -sf "${W_ISO_MOUNT_ROOT}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
-    fi
-
-    # FIXME: need to remount some discs with unhide option,
-    # add that as option to w_mount
-
-    unset _W_mountmsg
-}
-
 winetricks_cleanup()
 {
     # We don't want to run this multiple times, so unfortunately we have to run it here:
@@ -5387,13 +4721,6 @@ winetricks_init()
     # Delete work directory after each run, on exit either graceful or abrupt
     trap winetricks_cleanup EXIT HUP INT QUIT ABRT
 
-    # Whether to always cache cached iso's (1) or only use cache if present (0)
-    # Can be inherited from environment or set via -k, defaults to off
-    WINETRICKS_OPT_KEEPISOS=${WINETRICKS_OPT_KEEPISOS:-0}
-
-    # what program to use to make disc image (dd or ddrescue)
-    WINETRICKS_OPT_DD=${WINETRICKS_OPT_DD:-dd}
-
     # whether to use shared wineprefix (1) or unique wineprefix for each app (0)
     WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-0}
 
@@ -5478,11 +4805,6 @@ winetricks_wine_setup()
     fi
 
     winetricks_latest_version_check
-
-    # Overridden for windows
-    W_ISO_MOUNT_ROOT=/mnt/winetricks
-    W_ISO_USER_MOUNT_ROOT="${HOME}"/winetricks-iso
-    W_ISO_MOUNT_LETTER=i
 
     ######################
     # System-specific variables
@@ -5591,12 +4913,10 @@ winetricks_usage()
     --isolate         Инсталира всяко приложение или игра в отделна бутилка (ПАПКА)
     --self-update     Обновява това приложение
     --update-rollback Отменя последното обновяване на това приложение
--k, --keep_isos       Кешира .iso файловете (позволява инсталация без диск)
     --no-clean        Не изтрива временните директории (полезно е за отстраняване на неизправности)
     --optin           Включва докладването за използваните глаголи към разработчиците на Winetricks
     --optout          Изключва докладването за използваните глаголи към разработчиците на Winetricks
 -q, --unattended      Не задава въпроси, инсталира автоматично
--r, --ddrescue        Повтаря опитите за кеширане на одраскани дискове
 -t  --torify          Стартира изтегляне с torify, ако е налично
     --verify          Стартира автоматични графични тестове за глаголи, ако е налично
 -v, --verbose         Изписва всички изпълнени команди
@@ -5633,10 +4953,8 @@ Tilvalg:
     --isolate         Install each app or game in its own bottle (WINEPREFIX)
     --self-update     Update this application to the last version
     --update-rollback Rollback the last self update
--k, --keep_isos       lagr iso'er lokalt (muliggør senere installation uden disk)
     --no-clean        Don't delete temp directories (useful during debugging)
 -q, --unattended      stil ingen spørgsmål, installér bare automatisk
--r, --ddrescue        brug alternativ disk-tilgangsmetode (hjælper i tilfælde af en ridset disk)
 -t, --torify          Run downloads under torify, if available
     --verify          Run (automated) GUI tests for verbs, if available
 -v, --verbose         vis alle kommandoer som de bliver udført
@@ -5675,10 +4993,8 @@ Optionen:
     --isolate         Jedes Programm oder Spiel in eigener Bottle (WINEPREFIX) installieren
     --self-update     Dieses Programm auf die neueste Version aktualisieren
     --update-rollback Rollback des letzten Self Update
--k, --keep_isos       ISOs local speichern (erlaubt spätere Installation ohne Disk)
     --no-clean        Temp Verzeichnisse nicht löschen (nützlich beim debuggen)
 -q, --unattended      Keine Fragen stellen, alles automatisch installieren
--r, --ddrescue        Alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
 -t  --torify          Wenn möglich Downloads unter torify ausführen
     --verify          Wenn möglich automatische GUI Tests für Verben starten
 -v, --verbose         Alle ausgeführten Kommandos anzeigen
@@ -5717,12 +5033,10 @@ Options:
     --isolate         Install each app or game in its own bottle (WINEPREFIX)
     --self-update     Update this application to the last version
     --update-rollback Rollback the last self update
--k, --keep_isos       Cache isos (allows later installation without disc)
     --no-clean        Don't delete temp directories (useful during debugging)
     --optin           Opt in to reporting which verbs you use to the Winetricks maintainers
     --optout          Opt out of reporting which verbs you use to the Winetricks maintainers
 -q, --unattended      Don't ask any questions, just install automatically
--r, --ddrescue        Retry hard when caching scratched discs
 -t  --torify          Run downloads under torify, if available
     --verify          Run (automated) GUI tests for verbs, if available
 -v, --verbose         Echo all commands as they are executed
@@ -5759,13 +5073,11 @@ winetricks_handle_option()
         --gui*) winetricks_detect_gui "${1##--gui=}";;
         -h|--help) winetricks_usage ; exit 0 ;;
         --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
-        -k|--keep_isos) WINETRICKS_OPT_KEEPISOS=1 ;;
         --no-clean) W_OPT_NOCLEAN=1 ;;
         --no-isolate) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
         --optin) WINETRICKS_STATS_REPORT=1;;
         --optout) WINETRICKS_STATS_REPORT=0;;
         -q|--unattended) winetricks_set_unattended 1 ;;
-        -r|--ddrescue) WINETRICKS_OPT_DD=ddrescue ;;
         --self-update) winetricks_selfupdate;;
         -t|--torify)  WINETRICKS_OPT_TORIFY=1 ;;
         --update-rollback) winetricks_selfupdate_rollback;;
@@ -19798,17 +19110,6 @@ if ! test "${WINETRICKS_LIB}"; then
 
     case "$1" in
         die) w_die "we who are about to die salute you." ;;
-        volnameof=*)
-            # Debug code.  Remove later?
-            # Since Linux's volname command can't handle DVDs, winetricks has its own,
-            # implemented using dd, old gum, and some string I had laying around.
-            # You can try it like this:
-            #  winetricks volnameof=/dev/sr0
-            # or
-            #  winetricks volnameof=foo.iso
-            # This will read the volname from the given image and put it to stdout.
-            winetricks_volname "${1#volnameof=}"
-            ;;
         "")
             if [ -z "${DISPLAY}" ]; then
                 if [ "$(uname -s)" = "Darwin" ]; then
@@ -19825,8 +19126,6 @@ if ! test "${WINETRICKS_LIB}"; then
             if [ "${WINETRICKS_GUI}" = "none" ]; then
                 winetricks_detect_gui --gui
             fi
-            winetricks_detect_sudo
-            test -z "${WINETRICKS_ISO_MOUNT}" && winetricks_detect_iso_mount
             while true; do
                 case ${WINETRICKS_CURMENU} in
                     main) verbs=$(winetricks_mainmenu) ;;
@@ -19892,8 +19191,6 @@ if ! test "${WINETRICKS_LIB}"; then
         *)
             winetricks_stats_init
             # Command-line case
-            winetricks_detect_sudo
-            test -z "${WINETRICKS_ISO_MOUNT}" && winetricks_detect_iso_mount
             # User gave command-line arguments, so just run those verbs and exit
             for verb; do
                 case ${verb} in
