@@ -15731,14 +15731,20 @@ w_metadata 7zip apps \
     publisher="Igor Pavlov" \
     year="2024" \
     media="download" \
-    file1="7z2408.exe" \
-    installed_exe1="${W_PROGRAMS_X86_WIN}/7-Zip/7zFM.exe"
+    file1="7z2409.exe" \
+    installed_exe1="${W_PROGRAMS_WIN}/7-Zip/7zFM.exe"
 
 load_7zip()
 {
-    w_download https://www.7-zip.org/a/7z2409.exe e35e4374100b52e697e002859aefdd5533bcbf4118e5d2210fae6de318947c41
+    if [ "${W_ARCH}" = "win32" ]; then
+        w_download https://www.7-zip.org/a/7z2409.exe e35e4374100b52e697e002859aefdd5533bcbf4118e5d2210fae6de318947c41
+        _W_installer_exe=7z2409.exe
+    elif [ "${W_ARCH}" = "win64" ]; then
+        w_download https://www.7-zip.org/a/7z2409-x64.exe bdd1a33de78618d16ee4ce148b849932c05d0015491c34887846d431d29f308e
+        _W_installer_exe=7z2409-x64.exe
+    fi
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/S}
+    w_try "${WINE}" "${_W_installer_exe}" ${W_OPT_UNATTENDED:+/S}
 }
 
 #----------------------------------------------------------------
