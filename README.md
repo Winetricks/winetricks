@@ -5,7 +5,7 @@ Homepage of Winetricks, previously hosted at <https://code.google.com/p/winetric
 
 Winetricks is an easy way to work around problems in Wine.
 
-It has a menu of supported games/apps for which it can do all the workarounds automatically. It also allows the installation of missing DLLs and tweaking of various Wine settings.
+It has a menu of supported applications for which it can do all the workarounds automatically. It also allows the installation of missing DLLs and tweaking of various Wine settings.
 
 The latest version can be downloaded here:
 https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
