@@ -15415,7 +15415,7 @@ load_ie8()
     w_call msls31
 
     # Change the override to the native so we are sure we use and register them
-    w_override_dlls native,builtin ieframe ieproxy itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
+    w_override_dlls native,builtin ieframe ieproxy iertutil itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
 
     # IE8 installer will check the version number of iexplore.exe which causes IE8 installer to fail on wine-1.9.0+
     w_override_dlls native iexplore.exe
