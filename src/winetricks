@@ -12796,9 +12796,11 @@ load_vcrun2015()
         w_set_winver winxp
     fi
 
-    # Setup will refuse to install ucrtbase because builtin's version number is higher, so manually replace it
-    # See https://bugs.winehq.org/show_bug.cgi?id=46317
-    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2015/vc_redist.x86.exe -F 'a10'
+    # Setup will refuse to install msvcp140 & ucrtbase because builtin's version number is higher, so manually replace them
+    # See https://bugs.winehq.org/show_bug.cgi?id=46317 and
+    # https://bugs.winehq.org/show_bug.cgi?id=57518
+    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x86.exe -F 'a10'
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'msvcp140.dll'
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'ucrtbase.dll'
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
@@ -12809,8 +12811,9 @@ load_vcrun2015()
             # Also install the 64-bit version
             # 2022/09/16: d7257265dbc0635c96dd67ddf938a09abe0866cb2d4fa05f8b758c8644e724e4
             w_download https://download.microsoft.com/download/6/D/F/6DF3FF94-F7F9-4F0B-838C-A328D1A7D0EE/vc_redist.x64.exe d7257265dbc0635c96dd67ddf938a09abe0866cb2d4fa05f8b758c8644e724e4
-            # Also replace 64-bit ucrtbase.dll
-            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2015/vc_redist.x64.exe -F 'a10'
+            # Also replace 64-bit msvcp140.dll & ucrtbase.dll
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a10'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win32/a10" -F 'msvcp140.dll'
             w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
@@ -12879,9 +12882,11 @@ load_vcrun2017()
         w_set_winver winxp
     fi
 
-    # Setup will refuse to install ucrtbase because builtin's version number is higher, so manually replace it
-    # See https://bugs.winehq.org/show_bug.cgi?id=46317
-    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/vcrun2017/vc_redist.x86.exe -F 'a10'
+    # Setup will refuse to install msvcp140 & ucrtbase because builtin's version number is higher, so manually replace them
+    # See https://bugs.winehq.org/show_bug.cgi?id=46317 and
+    # https://bugs.winehq.org/show_bug.cgi?id=57518
+    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x86.exe -F 'a10'
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'msvcp140.dll'
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'ucrtbase.dll'
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
@@ -12896,8 +12901,9 @@ load_vcrun2017()
             # 2019/08/14: 5b0cbb977f2f5253b1ebe5c9d30edbda35dbd68fb70de7af5faac6423db575b5
             # 2024/10/17: 7cf24eba2bd67ea6229b7dd131e06f4e92ebefc06e36fe401cdd227d7ed78264
             w_download https://aka.ms/vs/15/release/vc_redist.x64.exe 7cf24eba2bd67ea6229b7dd131e06f4e92ebefc06e36fe401cdd227d7ed78264
-            # Also replace 64-bit ucrtbase.dll
-            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/vcrun2017/vc_redist.x64.exe -F 'a10'
+            # Also replace 64-bit msvcp140.dll & ucrtbase.dll
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a10'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'msvcp140.dll'
             w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
@@ -12945,6 +12951,11 @@ load_vcrun2019()
         w_set_winver winxp
     fi
 
+    # Setup will refuse to install msvcp140 because the builtin's version number is higher, so manually replace it
+    # See https://bugs.winehq.org/show_bug.cgi?id=57518
+    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x86.exe -F 'a10'
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'msvcp140.dll'
+
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
 
@@ -12972,6 +12983,11 @@ load_vcrun2019()
             w_override_dlls native,builtin vcruntime140_1
 
             w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 5d9999036f2b3a930f83b7fe3e2186b12e79ae7c007d538f52e3582e986a37c3
+
+            # Also replace 64-bit msvcp140.dll
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a11'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a11" -F 'msvcp140.dll'
+
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
@@ -13039,6 +13055,11 @@ load_vcrun2022()
 
     w_download https://aka.ms/vs/17/release/vc_redist.x86.exe dd1a8be03398367745a87a5e35bebdab00fdad080cf42af0c3f20802d08c25d4
 
+    # Setup will refuse to install msvcp140 because the builtin's version number is higher, so manually replace it
+    # See https://bugs.winehq.org/show_bug.cgi?id=57518
+    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x86.exe -F 'a10'
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'msvcp140.dll'
+
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
 
@@ -13057,6 +13078,11 @@ load_vcrun2022()
             w_override_dlls native,builtin vcruntime140_1
 
             w_download https://aka.ms/vs/17/release/vc_redist.x64.exe 1821577409c35b2b9505ac833e246376cc68a8262972100444010b57226f0940
+
+            # Also replace 64-bit msvcp140.dll
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a11'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a11" -F 'msvcp140.dll'
+
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
