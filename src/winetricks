@@ -1051,7 +1051,7 @@ w_pathconv()
 # Expand an environment variable and print it to stdout
 w_expand_env()
 {
-    winetricks_early_wine_arch cmd.exe /c "chcp 65001 > nul && echo %$1%"
+    winetricks_early_wine_arch cmd.exe /c "chcp 65001 > nul & echo %$1%"
 }
 
 # Determine what architecture a binary file is built for, silently continue in case of failure.
