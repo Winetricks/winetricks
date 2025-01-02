@@ -17,6 +17,10 @@ forcemono                Force using Mono instead of .NET (for debugging)
 good                     Fake verb that always returns true
 grabfullscreen=n         Disable cursor clipping for full-screen windows (default)
 grabfullscreen=y         Force cursor clipping for full-screen windows (needed by some games)
+graphics=default         Set graphics driver to default
+graphics=mac             Set graphics driver to Quartz (for macOS)
+graphics=wayland         Set graphics driver to Wayland
+graphics=x11             Set graphics driver to X11
 gsm=0                    Set MaxShaderModelGS to 0
 gsm=1                    Set MaxShaderModelGS to 1
 gsm=2                    Set MaxShaderModelGS to 2
@@ -26,8 +30,6 @@ hidewineexports=disable  Disable hiding Wine exports from applications (wine-sta
 hidewineexports=enable   Enable hiding Wine exports from applications (wine-staging)
 hosts                    Add empty C:\windows\system32\driverstc\{hosts,services} files
 isolate_home             Remove wineprefix links to /home/austin
-macdriver=mac            Enable the Mac native Quartz driver (default)
-macdriver=x11            Disable the Mac native Quartz driver, use X11 instead
 mackeyremap=both         Enable mapping opt->alt and cmd->ctrl keys for the Mac native driver
 mackeyremap=left         Enable mapping of left opt->alt and cmd->ctrl keys for the Mac native driver
 mackeyremap=none         Do not remap keys for the Mac native driver (default)
