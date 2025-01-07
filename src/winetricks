@@ -4361,11 +4361,17 @@ winetricks_set_wineprefix()
     # Note: these are arch independent, but are needed by some arch dependent variables
     # Defining here to avoid having two arch checks:
     if ! test "$1"; then
-        WINEPREFIX="${WINETRICKS_ORIGINAL_WINEPREFIX}"
+        NEW_WINEPREFIX="${WINETRICKS_ORIGINAL_WINEPREFIX}"
     else
-        WINEPREFIX="${W_PREFIXES_ROOT}/$1"
+        NEW_WINEPREFIX="${W_PREFIXES_ROOT}/$1"
     fi
 
+    if test "${WINEPREFIX}" = "${NEW_WINEPREFIX}"; then
+        # A previous verb already set the prefix
+        return
+    fi
+
+    WINEPREFIX="${NEW_WINEPREFIX}"
     export WINEPREFIX
     w_try_mkdir "$(dirname "${WINEPREFIX}")"
 
