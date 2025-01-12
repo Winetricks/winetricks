@@ -4402,7 +4402,13 @@ winetricks_set_wineprefix()
     if test -d "${W_DRIVE_C}/windows/syswow64"; then
         # Check the bitness of wineserver + wine binary, used later to determine if we're on a WOW setup (no wine64)
         # https://github.com/Winetricks/winetricks/issues/2030
-        WINESERVER_BIN="$(command -v "${WINESERVER}")"
+        # WINE_BIN and WINESERVER_BIN can be set outside Winetricks in case
+        # the `wine` and `wineserver` executables and the actual Wine binaries
+        # are located in different locations (usually the case for wrappers);
+        # this helps to avoid spurious "unknown file arch" warnings.
+        if [ -z "${WINESERVER_BIN}" ]; then
+            WINESERVER_BIN="$(command -v "${WINESERVER}")"
+        fi
 
         # wineboot often is a link pointing to wineapploader in Wine's bindir. If we don't find binaries we may look for them there later
         if [ -n "${READLINK_F}" ]; then
@@ -4436,7 +4442,9 @@ winetricks_set_wineprefix()
             w_warn "Unknown file arch of ${WINESERVER_BIN}."
         fi
 
-        WINE_BIN="$(command -v "${WINE}")"
+        if [ -z "${WINE_BIN}" ]; then
+            WINE_BIN="$(command -v "${WINE}")"
+        fi
         _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BIN}")"
         if [ -z "${_W_wine_binary_arch}" ]; then
             # wine might be a script calling a binary in Wine's bindir.
