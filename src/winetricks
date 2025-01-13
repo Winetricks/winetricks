@@ -4873,7 +4873,10 @@ winetricks_wine_setup()
                     WINETRICKS_ORIGINAL_WINEPREFIX="${HOME}/.wine"
                 fi
                 _abswine="$(command -v "${WINE}" 2>/dev/null)"
-                if ! test -x "${_abswine}"; then
+                if test -x "${_abswine}"; then
+                    WINE=${_abswine}
+                    export WINE
+                else
                     w_die "WINE is ${WINE}, which is neither on the path nor an executable file"
                 fi
                 unset _abswine
