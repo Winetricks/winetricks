@@ -4442,10 +4442,7 @@ winetricks_set_wineprefix()
             w_warn "Unknown file arch of ${WINESERVER_BIN}."
         fi
 
-        if [ -z "${WINE_BIN}" ]; then
-            WINE_BIN="$(command -v "${WINE}")"
-        fi
-        _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BIN}")"
+        _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE}")"
         if [ -z "${_W_wine_binary_arch}" ]; then
             # wine might be a script calling a binary in Wine's bindir.
             if [ -z "${WINE_BINDIR}" ] && [ -x "${WINEBOOT_BIN}" ]; then
@@ -4456,7 +4453,7 @@ winetricks_set_wineprefix()
             fi
         fi
         if [ -z "${_W_wine_binary_arch}" ]; then
-            w_warn "Unknown file arch of ${WINE_BIN}."
+            w_warn "Unknown file arch of ${WINE}."
         fi
 
         # determine wow64 type (new/old)
@@ -4826,7 +4823,7 @@ winetricks_wine_setup()
             W_DRIVE_C="C:/"
             ;;
         *)
-            WINE="${WINE:-wine}"
+            WINE=${WINE:-${WINE_BIN:-wine}}
             # Find wineserver.
             # Some distributions (Debian before wine 1.8-2) don't have it on the path.
             for x in \
