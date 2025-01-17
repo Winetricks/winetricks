@@ -9346,21 +9346,21 @@ w_metadata dotnet9 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="dotnet-runtime-9.0.0-win-x86.exe" \
+    file1="dotnet-runtime-9.0.1-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnet9()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/9.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/0e89cce9-dc02-423c-a657-0c2b421edf21/af2e916785775fe7e023b953af404db5/dotnet-runtime-9.0.0-win-x86.exe 23ea08b36404c0328ba25bb3f023dfe3bc7de055ddd96c36472937b7b8f4d784
+    w_download https://download.visualstudio.microsoft.com/download/pr/21eed405-253a-4ac5-8eed-e54d36bffdaa/3692b7badff8c4311474b4511c3ab929/dotnet-runtime-9.0.1-win-x86.exe dfae88d99d529ce3a363e5098f00cde8fc4f0d605adb256a7cb6cbcf50a6322c
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/99bd07c2-c95c-44dc-9d47-36d3b18df240/bdf26c62f69c1b783687c1dce83ccf7a/dotnet-runtime-9.0.0-win-x64.exe d49c026086cf2f496d3f0470e6b0bf58e695261cc76f4e9fca9869f63f9d4ca1
-        w_try "${WINE}" "dotnet-runtime-9.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/24046c49-1b56-4c1b-9c15-75c94d7a841a/d089fe00210b8113c33ea96e1e932fb7/dotnet-runtime-9.0.1-win-x64.exe 9c7b9ba935e5271c7709e9a23f4d67c396c5ca113588c3dea2de67a41588759a
+        w_try "${WINE}" "dotnet-runtime-9.0.1-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -9371,21 +9371,21 @@ w_metadata dotnetdesktop9 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="windowsdesktop-runtime-9.0.0-win-x86.exe" \
+    file1="windowsdesktop-runtime-9.0.1-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnetdesktop9()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/9.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/8dfbde7b-c316-418d-934a-d3246253f342/69c6a35b77a4f01b95588e1df2bddf9a/windowsdesktop-runtime-9.0.0-win-x86.exe f9f7e182a3516ec7ebba4f2a1d68b016ce7786a460bb7353641031dc4c6e9834
+    w_download https://download.visualstudio.microsoft.com/download/pr/dcd86c7a-9e55-4cc0-8c71-b99ece1350c4/7cc9c0996933075f56ad69c1169e0c1c/windowsdesktop-runtime-9.0.1-win-x86.exe 4da96170ecd146355b7fff658c05fa76d96f870bad2783707bab28513668b55a
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/685792b6-4827-4dca-a971-bce5d7905170/1bf61b02151bc56e763dc711e45f0e1e/windowsdesktop-runtime-9.0.0-win-x64.exe f8695b6ea8b98ff075160a9200adf3a9c26585bc05f14f2a1e3c755a31f488b3
-        w_try "${WINE}" "windowsdesktop-runtime-9.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/ae0291d4-bcdc-4e56-a952-4f7d84bf2673/1bc4a93f466aab309776931e5a5c4eb4/windowsdesktop-runtime-9.0.1-win-x64.exe fe0cf37987f11dbb50bb7f58d2fe5fa75777b81f6dedc1481940ea5a566671e8
+        w_try "${WINE}" "windowsdesktop-runtime-9.0.1-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
