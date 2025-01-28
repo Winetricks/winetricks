@@ -11409,7 +11409,7 @@ w_metadata physx dlls \
 
 load_physx()
 {
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=56606" 9.5
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=56606" 9.5 9.10
 
     w_get_sha256sum "${W_PROGRAMS_X86_UNIX}/NVIDIA Corporation/PhysX/Engine/86C5F4F22ECD/APEX_Particles_x64.dll"
     if [ "${_W_gotsha256sum}"x = "b3991e0165a9802b60e2f7d14c1be5f879071999ae74a38263cec9bf043a9eaa"x ] ; then
