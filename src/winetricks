@@ -4551,7 +4551,7 @@ winetricks_set_wineprefix()
             fi
 
             # In unattended mode, do NOT show any Win64 warnings
-            if [ -n "${W_OPT_UNATTENDED}" ]; then
+            if [ "${W_OPT_UNATTENDED}" = "1" ]; then
                 W_NO_WIN64_WARNINGS=1
             fi
         fi
