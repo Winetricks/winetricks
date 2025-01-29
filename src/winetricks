@@ -4549,6 +4549,11 @@ winetricks_set_wineprefix()
             else
                 W_NO_WIN64_WARNINGS=0
             fi
+
+            # In unattended mode, do NOT show any Win64 warnings
+            if [ -n "${W_OPT_UNATTENDED}" ]; then
+                W_NO_WIN64_WARNINGS=1
+            fi
         fi
 
         # In case of GUI, only warn once per prefix, per session (i.e., don't warn next time)
