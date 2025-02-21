@@ -11421,24 +11421,24 @@ load_peverify()
 w_metadata physx dlls \
     title="PhysX" \
     publisher="Nvidia" \
-    year="2021" \
+    year="2024" \
     media="download" \
-    file1="PhysX_9.21.0713_SystemSoftware.exe" \
+    file1="PhysX_9.23.1019_SystemSoftware.exe" \
 
 load_physx()
 {
     w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=56606" 9.5 9.10
 
     w_get_sha256sum "${W_PROGRAMS_X86_UNIX}/NVIDIA Corporation/PhysX/Engine/86C5F4F22ECD/APEX_Particles_x64.dll"
-    if [ "${_W_gotsha256sum}"x = "b3991e0165a9802b60e2f7d14c1be5f879071999ae74a38263cec9bf043a9eaa"x ] ; then
+    if [ "${_W_gotsha256sum}"x = "10bc05958e874739064d1acaf7720a9bb4f5bdc0f219e6aeb6ece6f202d194a1"x ] ; then
         w_warn "${W_PACKAGE} is already installed - not updating"
         unset _W_gotsha256sum
         return
     else
         unset _W_gotsha256sum
-        w_download https://us.download.nvidia.com/Windows/9.21.0713/PhysX_9.21.0713_SystemSoftware.exe 26d62c5c347c15cb27c3be92bf10706113511b48b28aecc09f61ee58b3b62778
+        w_download https://us.download.nvidia.com/Windows/9.23.1019/PhysX_9.23.1019_SystemSoftware.exe 9b42b84e881769d681e09f62a1b51532616b2e6a2d5d99d0ccae6eb5fbbc208c
         w_try_cd "${W_CACHE}/${W_PACKAGE}"
-        w_try "${WINE}" PhysX_9.21.0713_SystemSoftware.exe ${W_OPT_UNATTENDED:+/s}
+        w_try "${WINE}" PhysX_9.23.1019_SystemSoftware.exe ${W_OPT_UNATTENDED:+/s}
     fi
 }
 
