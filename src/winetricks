@@ -15641,16 +15641,18 @@ load_ie8()
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
     # FIXME: whittle down this list
-    for i in actxprxy.dll browseui.dll browsewm.dll cdfview.dll ddraw.dll \
-        dispex.dll dsound.dll iedkcs32.dll iepeers.dll iesetup.dll \
-        imgutil.dll inetcomm.dll isetup.dll jscript.dll laprxy.dll \
-        mlang.dll msctf.dll mshtml.dll mshtmled.dll msi.dll msimtf.dll msident.dll \
-        msoeacct.dll msrating.dll mstime.dll msxml3.dll occache.dll \
-        ole32.dll oleaut32.dll olepro32.dll pngfilt.dll quartz.dll \
-        rpcrt4.dll rsabase.dll rsaenh.dll scrobj.dll scrrun.dll \
-        shdocvw.dll shell32.dll urlmon.dll vbscript.dll webcheck.dll \
-        wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
-        plugin.ocx proctexe.ocx tdc.ocx uxtheme.dll webcheck.dll wshom.ocx; do
+
+    # The list has been divided to avoid errors when installing the dll using "/i"
+    # And removed the dll files that cannot be installed or registered
+    for i in actxprxy.dll ddraw.dll dispex.dll dsound.dll iedkcs32.dll \
+        iepeers.dll inetcomm.dll jscript.dll mlang.dll msctf.dll mshtmled.dll \
+        msi.dll msimtf.dll msident.dll mstime.dll msxml3.dll ole32.dll \
+        oleaut32.dll olepro32.dll quartz.dll rpcrt4.dll rsabase.dll rsaenh.dll \
+        scrobj.dll scrrun.dll vbscript.dll hhctrl.ocx tdc.ocx wshom.ocx; do
+        w_try_regsvr32 ${i} > /dev/null 2>&1
+    done
+
+    for i in browseui.dll shdocvw.dll shell32.dll urlmon.dll; do
         w_try_regsvr32 /i ${i} > /dev/null 2>&1
     done
 
