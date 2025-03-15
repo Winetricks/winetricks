@@ -12759,6 +12759,7 @@ load_vcrun2013()
     w_download https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x86.exe 89f4e593ea5541d1c53f983923124f9fd061a1c0c967339109e375c661573c17
 
     w_override_dlls native,builtin atl120 msvcp120 msvcr120 vcomp120
+    rm -f "${W_SYSTEM32_DLLS}"/msvcp120.dll "${W_SYSTEM32_DLLS}"/msvcr120.dll "${W_SYSTEM32_DLLS}"/vcomp120.dll
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try_ms_installer "${WINE}" vcredist_x86.exe ${W_OPT_UNATTENDED:+/q}
 
@@ -12768,6 +12769,7 @@ load_vcrun2013()
             # 2015/10/19: e554425243e3e8ca1cd5fe550db41e6fa58a007c74fad400274b128452f38fb8
             # 2019/03/24: 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
             w_download https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
+            rm -f "${W_SYSTEM64_DLLS}"/msvcp120.dll "${W_SYSTEM64_DLLS}"/msvcr120.dll "${W_SYSTEM64_DLLS}"/vcomp120.dll
             w_try_ms_installer "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
