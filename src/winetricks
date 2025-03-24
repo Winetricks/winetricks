@@ -11469,23 +11469,23 @@ w_metadata powershell_core dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="PowerShell-7.2.21-win-x86.msi" \
-    file2="PowerShell-7.2.21-win-x64.msi"
+    file1="PowerShell-7.4.7-win-x86.msi" \
+    file2="PowerShell-7.4.7-win-x64.msi"
 
 load_powershell_core()
 {
-    # Uncomment below and remove win32 download elif and file when PowerShell Core v7.2 LTS goes EOL
+    # Uncomment below and remove win32 download elif and file when PowerShell Core's 32bit support goes EOL
     #w_package_unsupported_win32
 
-    # Download PowerShell Core 7.2.x MSI (Latest LTS Version to support win32)
-    # https://github.com/PowerShell/PowerShell/releases/v7.2.21
+    # Download PowerShell Core 7.4.x MSI (Latest LTS Release)
+    # https://github.com/PowerShell/PowerShell/releases/v7.4.7
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x64.msi" 407640b11c89d66ec7892229e68b1d74b26f0e820b52da268c67fd166c2b46ad
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.4.7/PowerShell-7.4.7-win-x64.msi" 217b5575398d5e4a0ac67aff7b468c696a66c3e209685cf338032fc0a5f032ec
         # Disable SC2154 due to shellcheck not knowing metadata is sourced before this function is run
         # shellcheck disable=SC2154
         msi="${file2}"
     elif [ "${W_ARCH}" = "win32" ]; then
-        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x86.msi" cdfd69f6997eabe5abdc38869eedfd90761416261bf95531300f652d0932bf0a
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.4.7/PowerShell-7.4.7-win-x86.msi" 2d9d4a1433e63c84d62ce70aef8ce4d7a9dd177f197a69a9f6a9180e83706d24
         # shellcheck disable=SC2154
         msi="${file1}"
     fi
