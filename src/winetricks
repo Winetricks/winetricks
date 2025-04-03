@@ -15837,7 +15837,9 @@ load_nook()
 {
     # Dates from curl --head
     # 2012/03/07: sha256sum 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
-    w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
+    # This file is no longer in the source, we are downloading from the web archive
+    # w_download downloads the oldest snapshot, instead we change the link to the newest one with the same sha
+    w_download https://web.archive.org/web/20230716074105/http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # Exits with 199 for some reason..
