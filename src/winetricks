@@ -16338,7 +16338,8 @@ w_metadata utorrent3 apps \
 load_utorrent3()
 {
     # 2017/03/26: sha256sum 482cfc0759f484ad4e6547cc160ef3f08057cb05969242efd75a51525ab9bd92
-    w_download https://download-new.utorrent.com/endpoint/utorrent/os/windows/track/stable/ 482cfc0759f484ad4e6547cc160ef3f08057cb05969242efd75a51525ab9bd92 uTorrent.exe
+    # 2025/04/03: bf4ee47d0df1870104f4fada8a68c2fb29e94fea9284c7bb6a6b385a718d8a18
+    w_download https://download-new.utorrent.com/endpoint/utorrent/os/windows/track/stable/ bf4ee47d0df1870104f4fada8a68c2fb29e94fea9284c7bb6a6b385a718d8a18 uTorrent.exe
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     # If you don't use /PERFORMINSTALL, it just runs µTorrent
