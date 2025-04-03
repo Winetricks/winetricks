@@ -8063,7 +8063,9 @@ load_dotnet11sp1()
     # The installer itself doesn't support 64-bit
     w_package_unsupported_win64
 
-    w_download https://msassist.com/files/dotNETframework/NDP1.1sp1-KB867460-X86.exe 2c0a35409ff0873cfa28b70b8224e9aca2362241c1f0ed6f622fef8d4722fd9a
+    # This file is no longer in the source, we are downloading from the web archive
+    # w_download downloads the oldest snapshot, instead we change the link to the newest one with the same sha
+    w_download https://web.archive.org/web/20240910105856/https://msassist.com/files/dotNETframework/NDP1.1sp1-KB867460-X86.exe 2c0a35409ff0873cfa28b70b8224e9aca2362241c1f0ed6f622fef8d4722fd9a
 
     w_call remove_mono internal
     w_call dotnet11
