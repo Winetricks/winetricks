@@ -16379,7 +16379,8 @@ load_steam()
     # 2018/06/01: 3bc6942fe09f10ed3447bccdcf4a70ed369366fef6b2c7f43b541f1a3c5d1c51
     # 2021/03/27: 874788b45dfc043289ba05387e83f27b4a046004a88a4c5ee7c073187ff65b9d
     # 2022/03/27: 3b616cb0beaacffb53884b5ba0453312d2577db598d2a877a3b251125fb281a1
-    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 3b616cb0beaacffb53884b5ba0453312d2577db598d2a877a3b251125fb281a1
+    # 2025/04/03: 7d3654531c32d941b8cae81c4137fc542172bfa9635f169cb392f245a0a12bcb
+    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 7d3654531c32d941b8cae81c4137fc542172bfa9635f169cb392f245a0a12bcb
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     w_try "${WINE}" SteamSetup.exe ${W_OPT_UNATTENDED:+ /S}
