@@ -14866,7 +14866,9 @@ w_metadata adobe_diged4 apps \
 
 load_adobe_diged4()
 {
-    w_download https://download.adobe.com/pub/adobe/digitaleditions/ADE_4.5_Installer.exe a21a9d5389728fdac6a7288953dddeea774ef2bee07f1caf7ea20bbed8f5a2c6
+    # 2020/11/26: a21a9d5389728fdac6a7288953dddeea774ef2bee07f1caf7ea20bbed8f5a2c6
+    # 2025/04/03: db40676c6925f64ab79c3d8b7a24be0973b07ef1c14eec6ec8c44f47cfe665b8
+    w_download https://download.adobe.com/pub/adobe/digitaleditions/ADE_4.5_Installer.exe db40676c6925f64ab79c3d8b7a24be0973b07ef1c14eec6ec8c44f47cfe665b8
 
     if w_workaround_wine_bug 32323; then
         w_call corefonts
