@@ -16336,7 +16336,9 @@ w_metadata sketchup apps \
 
 load_sketchup()
 {
-    w_download https://dl.google.com/sketchup/GoogleSketchUpWEN.exe e50c1b36131d72437eb32a124a5208fad22dc22b843683cfb520e1ef172b8352
+    # This file is no longer in the source, we are downloading from the web archive
+    # w_download downloads the oldest snapshot, instead we change the link to the newest one with the same sha
+    w_download https://web.archive.org/web/20160324215618/https://dl.google.com/sketchup/GoogleSketchUpWEN.exe e50c1b36131d72437eb32a124a5208fad22dc22b843683cfb520e1ef172b8352
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_ahk_do "
