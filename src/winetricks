@@ -15106,6 +15106,21 @@ load_iceweasel()
     w_try_unzip "${W_PROGRAMS_X86_UNIX}" "${W_CACHE}/${W_PACKAGE}/${file1}"
 }
 
+#----------------------------------------------------------------
+
+w_metadata imgburn apps \
+    title="Imgburn 2.5.8.0" \
+    publisher="LIGHTNING UK!" \
+    year="2013" \
+    media="download" \
+    file1="SetupImgBurn_2.5.8.0.exe" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/ImgBurn/ImgBurn.exe"
+
+load_imgburn()
+{
+    w_download https://download.imgburn.com/SetupImgBurn_2.5.8.0.exe 49aa06eaffe431f05687109fee25f66781abbe1108f3f8ca78c79bdec8753420
+    w_try "${WINE}" "${W_CACHE}/${W_PACKAGE}/${file1}"
+}
 
 #----------------------------------------------------------------
 
