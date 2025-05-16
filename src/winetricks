@@ -9917,6 +9917,7 @@ load_galliumnine010()
     w_package_broken "https://github.com/iXit/wine-nine-standalone/issues/149" "" 5.7
 
     w_download "https://github.com/iXit/wine-nine-standalone/releases/download/v0.10/gallium-nine-standalone-v0.10.tar.gz" 42126d753b1e0f139a98b096982a864b29e4b63be25903036255d0493bdc8f8d
+    w_warn "Gallium Nine is Deprecated and will be removed in Mesa3D 25.2 release https://cgit.freedesktop.org/mesa/mesa/commit/?id=6b6cb825e92ad3bf33b1e032151e32c7b79d8323"
     helper_galliumnine "${file1}"
 }
 
@@ -9924,7 +9925,7 @@ load_galliumnine010()
 w_metadata galliumnine dlls \
     title="Gallium Nine Standalone (latest)" \
     publisher="Gallium Nine Team" \
-    year="2023" \
+    year="2024" \
     media="download" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9-nine.dll" \
     installed_file2="${W_SYSTEM32_DLLS_WIN}/ninewinecfg.exe" \
@@ -9939,6 +9940,7 @@ load_galliumnine()
 
     _W_galliumnine_version="$(w_get_github_latest_release iXit wine-nine-standalone)"
     w_linkcheck_ignore=1 w_download "https://github.com/iXit/wine-nine-standalone/releases/download/${_W_galliumnine_version}/gallium-nine-standalone-${_W_galliumnine_version}.tar.gz"
+    w_warn "Gallium Nine is deprecated and will be removed in Mesa3D 25.2 release https://cgit.freedesktop.org/mesa/mesa/commit/?id=6b6cb825e92ad3bf33b1e032151e32c7b79d8323"
     helper_galliumnine "gallium-nine-standalone-${_W_galliumnine_version}.tar.gz"
     unset _W_galliumnine_version
 }
