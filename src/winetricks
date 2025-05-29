@@ -7715,6 +7715,26 @@ load_dxvk_nvapi009()
 
 #----------------------------------------------------------------
 
+w_metadata dxvk_nvapi dlls \
+    title="Alternative NVAPI Vulkan implementation on top of DXVK for Linux / Wine (latest)" \
+    publisher="Jens Peters" \
+    year="2025" \
+    media="download" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/nvapi.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/nvapi64.dll"
+
+load_dxvk_nvapi()
+{
+    # https://github.com/jp7677/dxvk-nvapi
+    _W_dxvk_nvapi_version="$(w_get_github_latest_release jp7677 dxvk-nvapi)"
+    _W_dxvk_nvapi_version="${_W_dxvk_nvapi_version#v}"
+    w_linkcheck_ignore=1 w_download "https://github.com/jp7677/dxvk-nvapi/releases/download/v${_W_dxvk_nvapi_version}/dxvk-nvapi-v${_W_dxvk_nvapi_version}.tar.gz"
+    helper_dxvk_nvapi "dxvk-nvapi-v${_W_dxvk_nvapi_version}.tar.gz" "7.1" "nvapi,nvapi64"
+    unset _W_dxvk_nvapi_version
+}
+
+#----------------------------------------------------------------
+
 # $1 - vkd3d-proton archive name (required)
 helper_vkd3d_proton()
 {
