@@ -6578,7 +6578,9 @@ w_metadata dxsdk_jun2010 apps \
 
 load_dxsdk_jun2010()
 {
-    w_download https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe 9f818a977c32b254af5d649a4cec269ed8762f8a49ae67a9f01101a7237ae61a
+    # 2017/11/13: 9f818a977c32b254af5d649a4cec269ed8762f8a49ae67a9f01101a7237ae61a
+    # 2025/04/03: 705271dc83bfee54d9b94e028426e288d5f070784b7446d164f48ecfbb2a02cb
+    w_download https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe 705271dc83bfee54d9b94e028426e288d5f070784b7446d164f48ecfbb2a02cb
 
     # Without dotnet20, install aborts halfway through
     w_call dotnet20
@@ -8096,7 +8098,9 @@ load_dotnet11sp1()
     # The installer itself doesn't support 64-bit
     w_package_unsupported_win64
 
-    w_download https://msassist.com/files/dotNETframework/NDP1.1sp1-KB867460-X86.exe 2c0a35409ff0873cfa28b70b8224e9aca2362241c1f0ed6f622fef8d4722fd9a
+    # This file is no longer in the source, we are downloading from the web archive
+    # w_download downloads the oldest snapshot, instead we change the link to the newest one with the same sha
+    w_download https://web.archive.org/web/20240910105856/https://msassist.com/files/dotNETframework/NDP1.1sp1-KB867460-X86.exe 2c0a35409ff0873cfa28b70b8224e9aca2362241c1f0ed6f622fef8d4722fd9a
 
     w_call remove_mono internal
     w_call dotnet11
@@ -13217,7 +13221,10 @@ w_metadata vstools2019 apps \
 load_vstools2019()
 {
     w_call dotnet472
-    w_download https://aka.ms/vs/16/release/installer e653e715ddb8a08873e50a2fe091fca2ce77726b8b6ed2b99ed916d0e03c1fbe vstools2019.zip
+
+    # 2021/12/17: e653e715ddb8a08873e50a2fe091fca2ce77726b8b6ed2b99ed916d0e03c1fbe
+    # 2025/04/03: 0f0cc11f000593a064d419462a8467b529fed8075b21a605a40785baa3d2f611
+    w_download https://aka.ms/vs/16/release/installer 0f0cc11f000593a064d419462a8467b529fed8075b21a605a40785baa3d2f611 vstools2019.zip
     w_try_unzip "${W_TMP}/vs_installer_16" "${W_CACHE}/${W_PACKAGE}/vstools2019.zip"
     w_try "${WINE}" "${W_TMP}"/vs_installer_16/Contents/vs_installer.exe install \
         --channelId VisualStudio.16.Release \
@@ -14802,7 +14809,9 @@ w_metadata adobe_diged4 apps \
 
 load_adobe_diged4()
 {
-    w_download https://download.adobe.com/pub/adobe/digitaleditions/ADE_4.5_Installer.exe a21a9d5389728fdac6a7288953dddeea774ef2bee07f1caf7ea20bbed8f5a2c6
+    # 2020/11/26: a21a9d5389728fdac6a7288953dddeea774ef2bee07f1caf7ea20bbed8f5a2c6
+    # 2025/04/03: db40676c6925f64ab79c3d8b7a24be0973b07ef1c14eec6ec8c44f47cfe665b8
+    w_download https://download.adobe.com/pub/adobe/digitaleditions/ADE_4.5_Installer.exe db40676c6925f64ab79c3d8b7a24be0973b07ef1c14eec6ec8c44f47cfe665b8
 
     if w_workaround_wine_bug 32323; then
         w_call corefonts
@@ -15890,7 +15899,9 @@ load_nook()
 {
     # Dates from curl --head
     # 2012/03/07: sha256sum 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
-    w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
+    # This file is no longer in the source, we are downloading from the web archive
+    # w_download downloads the oldest snapshot, instead we change the link to the newest one with the same sha
+    w_download https://web.archive.org/web/20230716074105/http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # Exits with 199 for some reason..
@@ -16109,7 +16120,9 @@ w_metadata procexp apps \
 
 load_procexp()
 {
-    w_download https://download.sysinternals.com/files/ProcessExplorer.zip c50bddaaacb26c5654f845962f9ee34db6ce26b62f94a03bb59f3b5a6eea1922
+    # 2024/04/04: c50bddaaacb26c5654f845962f9ee34db6ce26b62f94a03bb59f3b5a6eea1922
+    # 2025/04/03: 54336cd4f4608903b1f89a43ca88f65c2f209f4512a5201cebd2b38ddc855f24
+    w_download https://download.sysinternals.com/files/ProcessExplorer.zip 54336cd4f4608903b1f89a43ca88f65c2f209f4512a5201cebd2b38ddc855f24
     w_try_unzip "${W_TMP}" "${W_CACHE}"/procexp/ProcessExplorer.zip
     if [ "${W_ARCH}" = "win64" ] ; then
         w_try cp "${W_TMP}"/procexp64.exe "${W_WINDIR_UNIX}"
@@ -16264,7 +16277,9 @@ w_metadata sketchup apps \
 
 load_sketchup()
 {
-    w_download https://dl.google.com/sketchup/GoogleSketchUpWEN.exe e50c1b36131d72437eb32a124a5208fad22dc22b843683cfb520e1ef172b8352
+    # This file is no longer in the source, we are downloading from the web archive
+    # w_download downloads the oldest snapshot, instead we change the link to the newest one with the same sha
+    w_download https://web.archive.org/web/20160324215618/https://dl.google.com/sketchup/GoogleSketchUpWEN.exe e50c1b36131d72437eb32a124a5208fad22dc22b843683cfb520e1ef172b8352
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_ahk_do "
@@ -16311,7 +16326,8 @@ load_steam()
     # 2018/06/01: 3bc6942fe09f10ed3447bccdcf4a70ed369366fef6b2c7f43b541f1a3c5d1c51
     # 2021/03/27: 874788b45dfc043289ba05387e83f27b4a046004a88a4c5ee7c073187ff65b9d
     # 2022/03/27: 3b616cb0beaacffb53884b5ba0453312d2577db598d2a877a3b251125fb281a1
-    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 3b616cb0beaacffb53884b5ba0453312d2577db598d2a877a3b251125fb281a1
+    # 2025/04/03: 7d3654531c32d941b8cae81c4137fc542172bfa9635f169cb392f245a0a12bcb
+    w_download http://media.steampowered.com/client/installer/SteamSetup.exe 7d3654531c32d941b8cae81c4137fc542172bfa9635f169cb392f245a0a12bcb
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     w_try "${WINE}" SteamSetup.exe ${W_OPT_UNATTENDED:+ /S}
@@ -16390,7 +16406,8 @@ w_metadata utorrent3 apps \
 load_utorrent3()
 {
     # 2017/03/26: sha256sum 482cfc0759f484ad4e6547cc160ef3f08057cb05969242efd75a51525ab9bd92
-    w_download https://download-new.utorrent.com/endpoint/utorrent/os/windows/track/stable/ 482cfc0759f484ad4e6547cc160ef3f08057cb05969242efd75a51525ab9bd92 uTorrent.exe
+    # 2025/04/03: bf4ee47d0df1870104f4fada8a68c2fb29e94fea9284c7bb6a6b385a718d8a18
+    w_download https://download-new.utorrent.com/endpoint/utorrent/os/windows/track/stable/ bf4ee47d0df1870104f4fada8a68c2fb29e94fea9284c7bb6a6b385a718d8a18 uTorrent.exe
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     # If you don't use /PERFORMINSTALL, it just runs µTorrent
