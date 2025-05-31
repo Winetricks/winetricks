@@ -716,7 +716,7 @@ w_try_7z()
         w_try_cd "${PWD}"
 
         # errors out if there is a space between -o and path
-        w_try "${WINE}" "${W_PROGRAMS_X86_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "${filename}")" -y -o"$(w_pathconv -w "${destdir}")" "$@"
+        w_try "${WINE}" "${W_PROGRAMS_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "${filename}")" -y -o"$(w_pathconv -w "${destdir}")" "$@"
     fi
 }
 
