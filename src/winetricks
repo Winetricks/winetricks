@@ -14878,21 +14878,21 @@ load_autohotkey()
 #----------------------------------------------------------------
 
 w_metadata busybox apps \
-    title="BusyBox FRP-4621-gf3c5e8bc3" \
+    title="BusyBox FRP-5579-g5749feb35" \
     publisher="Ron Yorston / Busybox authors" \
-    year="2021" \
+    year="2025" \
     media="download" \
-    file1="busybox-w32-FRP-4621-gf3c5e8bc3.exe" \
+    file1="busybox-w32-FRP-5579-g5749feb35.exe" \
     installed_exe1="${W_SYSTEM32_DLLS_WIN}/busybox.exe"
 
 load_busybox()
 {
-    w_download https://frippery.org/files/busybox/busybox-w32-FRP-4621-gf3c5e8bc3.exe 58c9da9ba094eade662572f9a725a6af44350dc3ff5a7897696926c651fdb582
+    w_download https://frippery.org/files/busybox/busybox-w32-FRP-5579-g5749feb35.exe 497607849a3e581615e46292d9063313d9a27a54380aad60ba2c5328838e3bb6
 
     if test "${W_ARCH}" = "win64"; then
-        w_download https://frippery.org/files/busybox/busybox-w64-FRP-4621-gf3c5e8bc3.exe 7109bc6f129ab7ce466f7b3175ca830316184b431d16a965ade17b93c035ec7c
+        w_download https://frippery.org/files/busybox/busybox-w64-FRP-5579-g5749feb35.exe 1255109d6335adf8374888f9c9fc70221f098cb6bf03f183e710e71179ecad78
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
-        w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/busybox-w64-FRP-4621-gf3c5e8bc3.exe" "${W_SYSTEM64_DLLS}/busybox.exe"
+        w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/busybox-w64-FRP-5579-g5749feb35.exe" "${W_SYSTEM64_DLLS}/busybox.exe"
     else
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
     fi
