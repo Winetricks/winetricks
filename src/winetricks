@@ -9589,11 +9589,39 @@ load_dxdiagn_feb2010()
 
 #----------------------------------------------------------------
 
+w_metadata dsoal dlls \
+    title="A DirectSound DLL replacer that enables surround sound, HRTF, and EAX support via OpenAL Soft" \
+    homepage="https://github.com/kcat/dsoal" \
+    publisher="kcat" \
+    year="2019" \
+    media="download" \
+    conflicts="dsound" \
+    file1="DSOAL.7z" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/dsoal-aldrv.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/dsound.dll"
+
+load_dsoal()
+{
+    w_download https://github.com/kcat/dsoal/releases/download/latest-master/DSOAL.7z "" "DSOAL.7z"
+    w_try_7z "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/DSOAL.7z"
+    w_try_cp_dll "${W_TMP}/DSOAL/Win32/dsoal-aldrv.dll" "${W_SYSTEM32_DLLS}/dsoal-aldrv.dll"
+    w_try_cp_dll "${W_TMP}/DSOAL/Win32/dsound.dll" "${W_SYSTEM32_DLLS}/dsound.dll"
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try_cp_dll "${W_TMP}/DSOAL/Win64/dsoal-aldrv.dll" "${W_SYSTEM64_DLLS}/dsoal-aldrv.dll"
+        w_try_cp_dll "${W_TMP}/DSOAL/Win64/dsound.dll" "${W_SYSTEM64_DLLS}/dsound.dll"
+    fi
+    w_override_dlls native dsoal-aldrv
+    w_override_dlls native dsound
+}
+
+#----------------------------------------------------------------
+
 w_metadata dsound dlls \
     title="MS DirectSound from DirectX user redistributable" \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
+    conflicts="dsoal" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dsound.dll"
 
