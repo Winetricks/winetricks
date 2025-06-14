@@ -6323,6 +6323,7 @@ w_metadata dinput dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
+    conflicts="dinputto8" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dinput.dll"
 
@@ -6356,6 +6357,26 @@ load_dinput8()
     # Don't try to register native dinput8; it doesn't export DllRegisterServer().
     #w_try_regsvr32 dinput8
     w_override_dlls native dinput8
+}
+
+#----------------------------------------------------------------
+
+w_metadata dinputto8 dlls \
+    title="A dll module that is designed to improve compatibility in games using DirectInput 1-7 by converting all API calls to their equivalent DirectInput 8" \
+    homepage="https://github.com/elishacloud/dinputto8" \
+    publisher="Elisha Riedlinger" \
+    year="2018" \
+    media="download" \
+    conflicts="dinput" \
+    file1="dinput.dll" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/dinput.dll"
+
+load_dinputto8()
+{
+    _W_dinputto8_version="$(w_get_github_latest_release elishacloud dinputto8)"
+    w_linkcheck_ignore=1 w_download_to "${W_PACKAGE}/${W_PACKAGE}-${_W_dinputto8_version}" "https://github.com/elishacloud/dinputto8/releases/download/${_W_dinputto8_version}/dinput.dll" "" "dinput.dll"
+    w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/${W_PACKAGE}-${_W_dinputto8_version}/dinput.dll" "${W_SYSTEM32_DLLS}/dinput.dll"
+    w_override_dlls native dinput
 }
 
 #----------------------------------------------------------------
