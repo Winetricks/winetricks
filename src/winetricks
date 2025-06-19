@@ -18781,6 +18781,20 @@ load_winme()
 
 #----------------------------------------------------------------
 
+w_metadata winmetadata settings \
+    title="Install Windows.winmd file"
+    file1="Windows.winmd"
+
+load_winmetadata()
+{
+    echo "${W_SYSTEM64_DLLS_UNIX}/WinMetadata/"
+    w_download "https://github.com/microsoft/windows-rs/raw/master/crates/libs/bindgen/default/${file1}" aea3e9828927aedd1ace2b927911e826f386d5c52dc6bd4151c10d314cb1adbf "${file1}"
+    w_try_mkdir -q "${W_SYSTEM64_DLLS}/WinMetadata/"
+    w_try cp -f "${W_CACHE}"/winmetadata/${file1} "${W_SYSTEM64_DLLS}/WinMetadata/"
+}
+
+#----------------------------------------------------------------
+
 # Really, we should support other values, since winetricks did
 w_metadata winver= settings \
     title_bg="Задайте Windows 7 (по подразбиране)" \
