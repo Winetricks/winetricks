@@ -5316,6 +5316,24 @@ helper_win7sp1_x64()
 # dlls
 #######################
 
+#----------------------------------------------------------------
+
+w_metadata affinity dlls \
+    title="Copy patched wintypes.dll to Affinity application directories, install Windows.winmd file"
+    file1="Windows.winmd"
+
+load_affinity()
+{
+    w_download "https://github.com/microsoft/windows-rs/raw/master/crates/libs/bindgen/default/${file1}" aea3e9828927aedd1ace2b927911e826f386d5c52dc6bd4151c10d314cb1adbf "${file1}"
+    w_try_mkdir -q "${W_SYSTEM64_DLLS}/WinMetadata/"
+    w_try cp -f "${W_CACHE}"/${W_PACKAGE}/${file1} "${W_SYSTEM64_DLLS}/WinMetadata/"
+
+    w_download "https://github.com/ElementalWarrior/wine-wintypes.dll-for-affinity/raw/refs/heads/master/wintypes_shim.dll.so" a5cae5038f3f147a6e1e8973a1af097da38fe28869ebf1da94243d64bfebbff6 "wintypes.dll"
+    w_try cp -f "${W_CACHE}/${W_PACKAGE}/wintypes.dll" "${W_PROGRAMS_UNIX}/Affinity/Photo 2/"
+    w_try cp -f "${W_CACHE}/${W_PACKAGE}/wintypes.dll" "${W_PROGRAMS_UNIX}/Affinity/Designer 2/"
+    w_try cp -f "${W_CACHE}/${W_PACKAGE}/wintypes.dll" "${W_PROGRAMS_UNIX}/Affinity/Publisher 2/"
+}
+
 #---------------------------------------------------------
 
 w_metadata amstream dlls \
