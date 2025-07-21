@@ -11092,6 +11092,32 @@ load_msls31()
 
 #----------------------------------------------------------------
 
+w_metadata msls31_x64 dlls \
+    title="MS Line Services (both 32-bit and 64-bit versions)" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
+    file1="IE8-WindowsServer2003-x64-ENU.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/msls31.dll" \
+    installed_file2="${W_SYSTEM64_DLLS_WIN}/msls31.dll"    
+
+load_msls31_x64()
+{
+    # Needed by native RichEdit and Internet Explorer
+    # Installs newer version of msls31.dll as well as both 32-bit and 64-bit versions as needed
+
+    w_download https://download.microsoft.com/download/7/5/4/754D6601-662D-4E39-9788-6F90D8E5C097/IE8-WindowsServer2003-x64-ENU.exe bcff753e92ceabf31cfefaa6def146335c7cb27a50b95cd4f4658a0c3326f499
+       
+    w_try_cabextract --directory="${W_CACHE}"/ie8 "${W_CACHE}"/ie8/IE8-WindowsServer2003-x64-ENU.exe -F wow/wmsls31.dll
+    w_try_cp_dll "${W_CACHE}"/ie8/wow/wmsls31.dll "${W_SYSTEM32_DLLS}"/msls31.dll
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_CACHE}"/ie8/IE8-WindowsServer2003-x64-ENU.exe -F msls31.dll
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata msmask dlls \
     title="MS Masked Edit Control" \
     publisher="Microsoft" \
