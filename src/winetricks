@@ -11531,17 +11531,43 @@ w_metadata msls31 dlls \
     publisher="Microsoft" \
     year="2001" \
     media="download" \
+    file1="IE8-WindowsServer2003-x64-ENU.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/msls31.dll" \
+    installed_file2="${W_SYSTEM64_DLLS_WIN}/msls31.dll"
+
+load_msls31()
+{
+    # Needed by native RichEdit and Internet Explorer
+    # Installs newer version of msls31.dll as well as both 32-bit and 64-bit versions as needed
+
+    w_download https://download.microsoft.com/download/7/5/4/754D6601-662D-4E39-9788-6F90D8E5C097/IE8-WindowsServer2003-x64-ENU.exe bcff753e92ceabf31cfefaa6def146335c7cb27a50b95cd4f4658a0c3326f499
+
+    w_try_cabextract --directory="${W_CACHE}"/msls31 "${W_CACHE}"/msls31/IE8-WindowsServer2003-x64-ENU.exe -F wow/wmsls31.dll
+    w_try_cp_dll "${W_CACHE}"/msls31/wow/wmsls31.dll "${W_SYSTEM32_DLLS}"/msls31.dll
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_CACHE}"/msls31/IE8-WindowsServer2003-x64-ENU.exe -F msls31.dll
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata msls31_nt4 dlls \
+    title="MS Line Services (32-bit only)" \
+    publisher="Microsoft" \
+    year="2001" \
+    media="download" \
     file1="InstMsiW.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/msls31.dll"
 
-load_msls31()
+load_msls31_nt4()
 {
     # Needed by native RichEdit and Internet Explorer
     # Originally at https://download.microsoft.com/download/WindowsInstaller/Install/2.0/NT45/EN-US/InstMsiW.exe
     # Old mirror at https://ftp.hp.com/pub/softlib/software/msi/InstMsiW.exe
     w_download https://web.archive.org/web/20160710055851if_/http://download.microsoft.com/download/WindowsInstaller/Install/2.0/NT45/EN-US/InstMsiW.exe 4c3516c0b5c2b76b88209b22e3bf1cb82d8e2de7116125e97e128952372eed6b
 
-    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}"/msls31/InstMsiW.exe
+    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}"/msls31_nt4/InstMsiW.exe
     w_try_cp_dll "${W_TMP}"/msls31.dll "${W_SYSTEM32_DLLS}"
 }
 
