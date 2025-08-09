@@ -4290,7 +4290,7 @@ winetricks_die_if_user_not_dirowner()
     fi
     _W_nuser=$(id -u)
     _W_nowner=$(stat -c '%u' "${_W_checkdir}")
-    if test x"${_W_nuser}" != x"${_W_nowner}"; then
+    if test "${_W_nuser}" != "${_W_nowner}"; then
         w_die "You ($(id -un)) don't own ${_W_checkdir}.  Don't run this tool as another user!"
     fi
 }
