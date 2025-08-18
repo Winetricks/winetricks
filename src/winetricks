@@ -11605,23 +11605,23 @@ w_metadata powershell_core dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="PowerShell-7.2.21-win-x86.msi" \
-    file2="PowerShell-7.2.21-win-x64.msi"
+    file1="PowerShell-7.4.11-win-x86.msi" \
+    file2="PowerShell-7.4.11-win-x64.msi"
 
 load_powershell_core()
 {
-    # Uncomment below and remove win32 download elif and file when PowerShell Core v7.2 LTS goes EOL
+    # Uncomment below and remove win32 download elif and file when PowerShell Core's 32bit support goes EOL
     #w_package_unsupported_win32
 
-    # Download PowerShell Core 7.2.x MSI (Latest LTS Version to support win32)
-    # https://github.com/PowerShell/PowerShell/releases/v7.2.21
+    # Download PowerShell Core 7.4.x MSI (Latest LTS Release)
+    # https://github.com/PowerShell/PowerShell/releases/v7.4.11
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x64.msi" 407640b11c89d66ec7892229e68b1d74b26f0e820b52da268c67fd166c2b46ad
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.4.11/PowerShell-7.4.11-win-x64.msi" 9579011c463a3ad6abf890736a97e2fbba9a7b4e09ce851576ccf263e15bdc97
         # Disable SC2154 due to shellcheck not knowing metadata is sourced before this function is run
         # shellcheck disable=SC2154
         msi="${file2}"
     elif [ "${W_ARCH}" = "win32" ]; then
-        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x86.msi" cdfd69f6997eabe5abdc38869eedfd90761416261bf95531300f652d0932bf0a
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.4.11/PowerShell-7.4.11-win-x86.msi" beaed5a0860421383afd18b7d4c2b2663f62b6a89b4e30ac0894575aa65226f8
         # shellcheck disable=SC2154
         msi="${file1}"
     fi
@@ -11630,7 +11630,7 @@ load_powershell_core()
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # Install PowerShell Core using Wine's msiexec
-    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${msi}" ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
+    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${msi}" ENABLE_PSREMOTING=0 REGISTER_MANIFEST=1 DISABLE_TELEMETRY=1 USE_MU=0 ENABLE_MU=0 LAUNCHAPPONEXIT=0
 }
 
 #----------------------------------------------------------------
