@@ -4290,7 +4290,7 @@ winetricks_die_if_user_not_dirowner()
     fi
     _W_nuser=$(id -u)
     _W_nowner=$(stat -c '%u' "${_W_checkdir}")
-    if test x"${_W_nuser}" != x"${_W_nowner}"; then
+    if test "${_W_nuser}" != "${_W_nowner}"; then
         w_die "You ($(id -un)) don't own ${_W_checkdir}.  Don't run this tool as another user!"
     fi
 }
@@ -4548,6 +4548,11 @@ winetricks_set_wineprefix()
                 W_NO_WIN64_WARNINGS=1
             else
                 W_NO_WIN64_WARNINGS=0
+            fi
+
+            # In unattended mode, do NOT show any Win64 warnings
+            if [ "${W_OPT_UNATTENDED}" = "1" ]; then
+                W_NO_WIN64_WARNINGS=1
             fi
         fi
 
@@ -7668,6 +7673,24 @@ load_dxvk2062()
     helper_dxvk "${file1}" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
 }
 
+w_metadata dxvk2070 dlls \
+    title="Vulkan-based D3D8/D3D9/D3D10/D3D11 implementation for Linux / Wine (2.7)" \
+    publisher="Philip Rebohle" \
+    year="2025" \
+    media="download" \
+    file1="dxvk-2.7.tar.gz" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d8.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+
+load_dxvk2070()
+{
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v2.7/dxvk-2.7.tar.gz" 1e569b0f7a1121d9fcee1614314fcb0c22e71c51d0b9df121e3eb81ae8c0346d
+    helper_dxvk "${file1}" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
+}
+
 #----------------------------------------------------------------
 
 w_metadata dxvk dlls \
@@ -9453,21 +9476,21 @@ w_metadata dotnet9 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="dotnet-runtime-9.0.1-win-x86.exe" \
+    file1="dotnet-runtime-9.0.7-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnet9()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/9.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/21eed405-253a-4ac5-8eed-e54d36bffdaa/3692b7badff8c4311474b4511c3ab929/dotnet-runtime-9.0.1-win-x86.exe dfae88d99d529ce3a363e5098f00cde8fc4f0d605adb256a7cb6cbcf50a6322c
+    w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.7/dotnet-runtime-9.0.7-win-x86.exe a4d077890c9820d9968a3c310973dceeae6ce949f4af3dae50611c0457196c82
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/24046c49-1b56-4c1b-9c15-75c94d7a841a/d089fe00210b8113c33ea96e1e932fb7/dotnet-runtime-9.0.1-win-x64.exe 9c7b9ba935e5271c7709e9a23f4d67c396c5ca113588c3dea2de67a41588759a
-        w_try "${WINE}" "dotnet-runtime-9.0.1-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.7/dotnet-runtime-9.0.7-win-x64.exe 482a02fa01dd822d67d5286049ed7cc74fe8eda01848612cd070e0b0583de9c4
+        w_try "${WINE}" "dotnet-runtime-9.0.7-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -9478,21 +9501,21 @@ w_metadata dotnetdesktop9 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="windowsdesktop-runtime-9.0.1-win-x86.exe" \
+    file1="windowsdesktop-runtime-9.0.7-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnetdesktop9()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/9.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/dcd86c7a-9e55-4cc0-8c71-b99ece1350c4/7cc9c0996933075f56ad69c1169e0c1c/windowsdesktop-runtime-9.0.1-win-x86.exe 4da96170ecd146355b7fff658c05fa76d96f870bad2783707bab28513668b55a
+    w_download https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/9.0.7/windowsdesktop-runtime-9.0.7-win-x86.exe 3e5c3181836cc55e7fc4feb6378bba3d7ed11a322e22e8b4ad91bf9ba7a1a63a
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/ae0291d4-bcdc-4e56-a952-4f7d84bf2673/1bc4a93f466aab309776931e5a5c4eb4/windowsdesktop-runtime-9.0.1-win-x64.exe fe0cf37987f11dbb50bb7f58d2fe5fa75777b81f6dedc1481940ea5a566671e8
-        w_try "${WINE}" "windowsdesktop-runtime-9.0.1-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/9.0.7/windowsdesktop-runtime-9.0.7-win-x64.exe 508e14881c88eb98d224fe9438e7f1ff39fb4b45ada7cd4bffc27b41c35d46d5
+        w_try "${WINE}" "windowsdesktop-runtime-9.0.7-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -9602,7 +9625,10 @@ w_metadata dsoal dlls \
 
 load_dsoal()
 {
-    w_download https://github.com/kcat/dsoal/releases/download/latest-master/DSOAL.7z "" "DSOAL.7z"
+    if [ -e "${W_CACHE}/${W_PACKAGE}/DSOAL.7z" ]; then
+        w_warn "${W_PACKAGE} is already downloaded in ${W_CACHE}/${W_PACKAGE}/DSOAL.7z. This does not prevent the installation of this package. However, the downloaded version may be out-of-date. If you want a more up-to-date version, delete ${W_CACHE}/${W_PACKAGE}/DSOAL.7z."
+    fi
+    w_download https://github.com/kcat/dsoal/releases/download/latest-master/DSOAL.7z
     w_try_7z "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/DSOAL.7z"
     w_try_cp_dll "${W_TMP}/DSOAL/Win32/dsoal-aldrv.dll" "${W_SYSTEM32_DLLS}/dsoal-aldrv.dll"
     w_try_cp_dll "${W_TMP}/DSOAL/Win32/dsound.dll" "${W_SYSTEM32_DLLS}/dsound.dll"
@@ -11610,23 +11636,23 @@ w_metadata powershell_core dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="PowerShell-7.2.21-win-x86.msi" \
-    file2="PowerShell-7.2.21-win-x64.msi"
+    file1="PowerShell-7.4.11-win-x86.msi" \
+    file2="PowerShell-7.4.11-win-x64.msi"
 
 load_powershell_core()
 {
-    # Uncomment below and remove win32 download elif and file when PowerShell Core v7.2 LTS goes EOL
+    # Uncomment below and remove win32 download elif and file when PowerShell Core's 32bit support goes EOL
     #w_package_unsupported_win32
 
-    # Download PowerShell Core 7.2.x MSI (Latest LTS Version to support win32)
-    # https://github.com/PowerShell/PowerShell/releases/v7.2.21
+    # Download PowerShell Core 7.4.x MSI (Latest LTS Release)
+    # https://github.com/PowerShell/PowerShell/releases/v7.4.11
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x64.msi" 407640b11c89d66ec7892229e68b1d74b26f0e820b52da268c67fd166c2b46ad
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.4.11/PowerShell-7.4.11-win-x64.msi" 9579011c463a3ad6abf890736a97e2fbba9a7b4e09ce851576ccf263e15bdc97
         # Disable SC2154 due to shellcheck not knowing metadata is sourced before this function is run
         # shellcheck disable=SC2154
         msi="${file2}"
     elif [ "${W_ARCH}" = "win32" ]; then
-        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x86.msi" cdfd69f6997eabe5abdc38869eedfd90761416261bf95531300f652d0932bf0a
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.4.11/PowerShell-7.4.11-win-x86.msi" beaed5a0860421383afd18b7d4c2b2663f62b6a89b4e30ac0894575aa65226f8
         # shellcheck disable=SC2154
         msi="${file1}"
     fi
@@ -11635,7 +11661,7 @@ load_powershell_core()
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # Install PowerShell Core using Wine's msiexec
-    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${msi}" ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
+    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${msi}" ENABLE_PSREMOTING=0 REGISTER_MANIFEST=1 DISABLE_TELEMETRY=1 USE_MU=0 ENABLE_MU=0 LAUNCHAPPONEXIT=0
 }
 
 #----------------------------------------------------------------
@@ -13208,9 +13234,10 @@ load_vcrun2022()
     # 2024/10/17: ed1967c2ac27d806806d121601b526f84e497ae1b99ed139c0c4c6b50147df4a
     # 2024/11/20: dd1a8be03398367745a87a5e35bebdab00fdad080cf42af0c3f20802d08c25d4
     # 2025/03/30: c4e3992f3883005881cf3937f9e33f1c7d792ac1c860ea9c52d8f120a16a7eb1
+    # 2025/04/14: 0c09f2611660441084ce0df425c51c11e147e6447963c3690f97e0b25c55ed64
     w_override_dlls native,builtin concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids vcamp140 vccorlib140 vcomp140 vcruntime140
 
-    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe c4e3992f3883005881cf3937f9e33f1c7d792ac1c860ea9c52d8f120a16a7eb1
+    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe 0c09f2611660441084ce0df425c51c11e147e6447963c3690f97e0b25c55ed64
 
     # Setup will refuse to install msvcp140 because the builtin's version number is higher, so manually replace it
     # See https://bugs.winehq.org/show_bug.cgi?id=57518
@@ -13232,10 +13259,11 @@ load_vcrun2022()
             # 2024/10/17: 814e9da5ec5e5d6a8fa701999d1fc3baddf7f3adc528e202590e9b1cb73e4a11
             # 2024/11/20: 1821577409c35b2b9505ac833e246376cc68a8262972100444010b57226f0940
             # 2025/03/30: 8f9fb1b3cfe6e5092cf1225ecd6659dab7ce50b8bf935cb79bfede1f3c895240
+            # 2025/07/14: cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b
             # vcruntime140_1 is only shipped on x64:
             w_override_dlls native,builtin vcruntime140_1
 
-            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe 8f9fb1b3cfe6e5092cf1225ecd6659dab7ce50b8bf935cb79bfede1f3c895240
+            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b
 
             # Also replace 64-bit msvcp140.dll
             w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a12'
