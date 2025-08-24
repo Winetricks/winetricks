@@ -6308,6 +6308,7 @@ w_metadata devenum dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
+    conflicts="quartz" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/devenum.dll"
 
@@ -11892,6 +11893,7 @@ w_metadata quartz dlls \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
+    conflicts="devenum quartz_feb2010" \
     file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/quartz.dll"
 
