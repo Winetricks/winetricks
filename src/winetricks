@@ -896,7 +896,7 @@ w_try_unrar()
         # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
         w_try_cd "${PWD}"
 
-        w_try "${WINE}" "${W_PROGRAMS_X86_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "$1")"
+        w_try "${WINE}" "${W_PROGRAMS_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "$1")"
     fi
 }
 
@@ -930,7 +930,7 @@ w_try_unzip()
     w_try_cd "${PWD}"
 
     # errors out if there is a space between -o and path
-    w_try "${WINE}" "${W_PROGRAMS_X86_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "${zipfile}")" -o"$(w_pathconv -w "${destdir}")" "$@"
+    w_try "${WINE}" "${W_PROGRAMS_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "${zipfile}")" -o"$(w_pathconv -w "${destdir}")" "$@"
 }
 
 ### End of w_try ###
@@ -16287,7 +16287,7 @@ load_psdk2003()
     # Unpack ISO (how handy that 7z can do this!)
     # Only the Windows version of 7z can handle .img files?
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
-    w_try_cd "${W_PROGRAMS_X86_UNIX}"/7-Zip
+    w_try_cd "${W_PROGRAMS_UNIX}"/7-Zip
     w_try "${WINE}" 7z.exe x -y -o"${W_TMP_WIN}" "${W_CACHE_WIN}\\psdk2003\\5.2.3790.1830.15.PlatformSDK_Svr2003SP1_rtm.img"
 
     w_try_cd "${W_TMP}/Setup"
@@ -16621,7 +16621,7 @@ load_vc2005trial()
     # Unpack ISO (how handy that 7z can do this!)
     # Only the Windows version of 7z can handle .img files?
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
-    w_try_cd "${W_PROGRAMS_X86_UNIX}"/7-Zip
+    w_try_cd "${W_PROGRAMS_UNIX}"/7-Zip
     w_try "${WINE}" 7z.exe x -y -o"${W_TMP_WIN}" "${W_CACHE_WIN}\\vc2005trial\\En_vs_2005_vsts_180_Trial.img"
 
     w_try_cd "${W_TMP}"
