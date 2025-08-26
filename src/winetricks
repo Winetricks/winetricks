@@ -13609,7 +13609,7 @@ load_xact()
     w_override_dlls native,builtin xactengine2_0 xactengine2_10 xactengine2_1 xactengine2_2 xactengine2_3 xactengine2_4 xactengine2_5 xactengine2_6 xactengine2_7 xactengine2_8 xactengine2_9 xactengine3_0 xactengine3_1 xactengine3_2 xactengine3_3 xactengine3_4 xactengine3_5 xactengine3_6 xactengine3_7
 
     # Register xactengine?_?.dll
-    for x in "${W_SYSTEM32_DLLS}"/xactengine* ; do
+    for x in "${W_SYSTEM32_DLLS}"/xactengine*.dll ; do
         w_try_regsvr32 "$(basename "${x}")"
     done
 
@@ -13656,7 +13656,7 @@ load_xact_x64()
     w_override_dlls native,builtin xactengine2_0 xactengine2_10 xactengine2_1 xactengine2_2 xactengine2_3 xactengine2_4 xactengine2_5 xactengine2_6 xactengine2_7 xactengine2_8 xactengine2_9 xactengine3_0 xactengine3_1 xactengine3_2 xactengine3_3 xactengine3_4 xactengine3_5 xactengine3_6 xactengine3_7
 
     # Register xactengine?_?.dll
-    for x in "${W_SYSTEM64_DLLS}"/xactengine* ; do
+    for x in "${W_SYSTEM64_DLLS}"/xactengine*.dll ; do
         w_try_regsvr64 "$(basename "${x}")"
     done
 
