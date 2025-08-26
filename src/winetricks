@@ -254,7 +254,10 @@ w_warn()
 {
     # If $WINETRICKS_SUPER_QUIET is set, w_warn is a no-op:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-        printf '%s\nwarning: %b\n%s\n' "${W_TEXT_LINE}" "${*}" "${W_TEXT_LINE}" >&2
+        case ${LANG} in
+            fr*) printf '%s\nAvertissement : %b\n%s\n' "${W_TEXT_LINE}" "${*}" "${W_TEXT_LINE}" >&2 ;;
+            *) printf '%s\nwarning: %b\n%s\n' "${W_TEXT_LINE}" "${*}" "${W_TEXT_LINE}" >&2 ;;
+        esac
     fi
 
     # kdialog doesn't allow a timeout unless you use --passivepopup
@@ -318,7 +321,10 @@ _w_force_continue_check()
 {
     exitval="${1:-99}"
     if [ "${WINETRICKS_FORCE}" = 1 ]; then
-        w_warn "--force was used, so trying anyway. Caveat emptor."
+        case ${LANG} in
+          fr*) w_warn "--force a été utilisé, donc j'essaie quand même. Acheteur, prenez garde." ;;
+            *) w_warn "--force was used, so trying anyway. Caveat emptor." ;;
+        esac
     else
         exit "${exitval}"
     fi
@@ -454,7 +460,10 @@ w_package_broken()
     broken_no_version_known="${broken_no_version_known:-${broken_no_version_known_default}}"
 
     if [ -z "${bug_link}" ] ; then
-        w_die "Bug report link required!"
+        case ${LANG} in
+          fr*) w_die "Lien vers le rapport de bogue requis !" ;;
+            *) w_die "Bug report link required!" ;;
+        esac
     fi
 
     if [ -n "${good_version}" ] && [ -n "${bad_version}" ]; then
@@ -502,7 +511,10 @@ w_detect_mingw()
     elif grep -obUa "Wine builtin DLL" "$(w_winepath -u "c:\\windows\\system32\\kernelbase.dll" 2>/dev/null)" | grep -q '64:Wine builtin DLL'; then
         _W_mingw=1
     else
-        w_warn "Unable to detect wine dlls, please file an issue on Github!"
+        case ${LANG} in
+          fr*) w_warn "Impossible de détecter les dlls wine, veuillez signaler le problème sur Github !" ;;
+            *) w_warn "Unable to detect wine dlls, please file an issue on Github!" ;;
+        esac
     fi
 }
 
@@ -520,7 +532,10 @@ w_package_broken_mingw()
     _w_get_broken_messages
 
     if [ -z "${_W_mingw}" ]; then
-        echo "Not using a mingw build, nothing to do"
+            case ${LANG} in
+              fr*) echo "N'utilise pas de compilation mingw, rien à faire" ;;
+                *) echo "Not using a mingw build, nothing to do" ;;
+            esac
         return
     fi
 
@@ -546,7 +561,10 @@ w_package_broken_no_mingw()
     _w_get_broken_messages
 
     if [ -z "${_W_no_mingw}" ]; then
-        echo "Using a mingw build, nothing to do"
+            case ${LANG} in
+                fr*) echo "En utilisant une compilation mingw, rien à faire" ;;
+                  *) echo "Using a mingw build, nothing to do" ;;
+            esac
         return
     fi
 
@@ -570,7 +588,10 @@ w_package_broken_win64()
     _w_get_broken_messages
 
     if [ "${W_ARCH}" != "win64" ]; then
-        echo "Not using a 64-bit prefix, nothing to do"
+            case ${LANG} in
+              fr*) echo "Si vous n'utilisez pas de préfixe 64 bits, vous n'avez rien à faire." ;;
+                *) echo "Not using a 64-bit prefix, nothing to do" ;;
+            esac
         return
     fi
 
@@ -591,7 +612,10 @@ w_package_broken_wow64() {
     _w_get_broken_messages
 
     if [ "${_W_wow64_style}" = "new" ]; then
-        w_warn "This package (${W_PACKAGE}) does not work on a new-style WoW64 prefix. See ${bug_link}. You must either use a 32-bit or old style WoW64 WINEPREFIX. Use --force to try anyway."
+        case ${LANG} in
+          fr*) w_warn "Ce paquet (${W_PACKAGE}) ne fonctionne pas avec le préfixe WoW64 de nouvelle génération. Voir ${bug_link}. Vous devez utiliser soit un WINEPREFIX 32 bits, soit un WINEPREFIX WoW64 de l'ancienne génération. Utilisez --force pour essayer quand même." ;;
+            *) w_warn "This package (${W_PACKAGE}) does not work on a new-style WoW64 prefix. See ${bug_link}. You must either use a 32-bit or old style WoW64 WINEPREFIX. Use --force to try anyway."
+        esac
         _w_force_continue_check 32
     fi
 }
@@ -601,7 +625,10 @@ w_package_broken_wow64() {
 w_package_unsupported_win32()
 {
     if [ "${W_ARCH}" = "win32" ] ; then
-        w_warn "This package (${W_PACKAGE}) does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64."
+        case ${LANG} in
+          fr*) w_warn "Ce paquet (${W_PACKAGE}) ne fonctionne pas sur une installation 32 bits. Vous devez utiliser un préfixe créé avec WINEARCH=win64." ;;
+            *) w_warn "This package (${W_PACKAGE}) does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64." ;;
+        esac
         _w_force_continue_check 64
     fi
 }
@@ -615,6 +642,7 @@ w_package_unsupported_win64()
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
             bg*) w_warn "Пакетът (${W_PACKAGE}) не работи на 64-битовите инсталации. Трябва да използвате папка, създадена с WINEARCH=win32." ;;
+            fr*) w_warn "Ce paquet (${W_PACKAGE}) ne fonctionne pas sur une installation 64 bits. Vous devez utiliser un préfixe créé avec WINEARCH=win32." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) não funciona em instalação de 64-bit. Você precisa usar um prefixo feito com WINEARCH=win32." ;;
             ru*) w_warn "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
@@ -632,6 +660,7 @@ w_package_warn_win64()
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
             bg*) w_warn "Пакетът (${W_PACKAGE}) вероятно няма да работи на 64-битовите инсталации. 32-битовите папки може да работят по-добре." ;;
+            fr*) w_warn "Ce paquet (${W_PACKAGE}) peut ne pas fonctionner correctement sur une installation 64 bits. Les préfixes 32 bits peuvent fonctionner mieux." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) talvez não funcione completamente em 64-bit. Em prefixo 32-bit talvez funcione melhor." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działać lepiej." ;;
             ru*) w_warn "Данный пакет может быть не полностью работоспособным в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
@@ -655,7 +684,10 @@ w_try()
     export WINEDLLOVERRIDES
     # If $WINETRICKS_SUPER_QUIET is set, make w_try quiet
     if [ -z "${WINETRICKS_SUPER_QUIET}" ]; then
-        printf '%s\n' "Executing $*" >&2
+        case ${LANG} in
+          fr*) printf '%s\n' "Exécution de $*" >&2;;
+            *) printf '%s\n' "Executing $*" >&2 ;;
+        esac
     fi
 
     # On Vista, we need to jump through a few hoops to run commands in Cygwin.
@@ -681,6 +713,7 @@ w_try()
 
     bg_abort="Важно: командата $* върна статуса ${status}. Прекратяване."
     en_abort="Note: command $* returned status ${status}. Aborting."
+    fr_abort="Remarque : la commande $* a renvoyé le statut ${status}. Abandon."
     pl_abort="Informacja: poelcenie $* zwróciło status ${status}. Przerywam."
     pt_abort="Nota: comando $* retornou o status ${status}. Cancelando."
     ru_abort="Важно: команда $* вернула статус ${status}. Прерывание."
@@ -703,6 +736,7 @@ w_try()
             *)
                 case ${LANG} in
                     bg*) w_die "${bg_abort}" ;;
+                    fr*) w_die "${fr_abort}" ;;
                     pl*) w_die "${pl_abort}" ;;
                     pt*) w_die "${pt_abort}" ;;
                     ru*) w_die "${ru_abort}" ;;
@@ -735,7 +769,10 @@ w_try_7z()
     if [ -z "${WINETRICKS_FORCE_WIN_7Z}" ] && [ -x "$(command -v 7z 2>/dev/null)" ] ; then
         w_try 7z x "${filename}" -o"${destdir}" "$@"
     else
-        w_warn "Cannot find 7z. Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt install 7zip' or 'sudo yum install p7zip-plugins')."
+        case ${LANG} in
+          fr*) w_warn "Impossible de trouver 7z. Utilisation de Windows 7-Zip à la place. (Vous pouvez éviter cela en installant 7z, par exemple 'sudo apt install 7zip' ou 'sudo yum install p7zip-plugins')." ;;
+            *) w_warn "Cannot find 7z. Using Windows 7-Zip instead. (You can avoid this by installing 7z, e.g. 'sudo apt install 7zip' or 'sudo yum install p7zip-plugins')." ;;
+        esac
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
 
         # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
@@ -916,7 +953,11 @@ w_try_unrar()
     if [ -z "${WINETRICKS_FORCE_WIN_7Z}" ] && [ -x "$(command -v unrar 2>/dev/null)" ]; then
         w_try unrar x "$@"
     else
-        w_warn "Cannot find unrar. Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt install unrar-free' or 'sudo yum install unrar')."
+        case ${LANG} in
+          fr*) w_warn "Impossible de trouver unrar. Utilisation de Windows 7-Zip à la place. (Vous pouvez éviter cela en installant unrar, par exemple 'sudo apt install unrar-free' ou 'sudo yum install unrar')." ;;
+            *) w_warn "Cannot find unrar. Using Windows 7-Zip instead. (You can avoid this by installing unrar, e.g. 'sudo apt install unrar-free' or 'sudo yum install unrar')." ;;
+        esac
+
         WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
 
         # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
@@ -947,7 +988,11 @@ w_try_unzip()
             1|*) w_warn "Unzip failed, trying Windows 7-Zip instead." ;;
         esac
     else
-        w_warn "Cannot find unzip. Using Windows 7-Zip instead. (You can avoid this by installing unzip, e.g. 'sudo apt install unzip' or 'sudo yum install unzip')."
+        case ${LANG} in
+          fr*) w_warn "Impossible de trouver unzip. Utilisation de Windows 7-Zip à la place. (Vous pouvez éviter cela en installant unzip, par exemple 'sudo apt install unzip' ou 'sudo yum install unzip')." ;;
+            *) w_warn "Cannot find unzip. Using Windows 7-Zip instead. (You can avoid this by installing unzip, e.g. 'sudo apt install unzip' or 'sudo yum install unzip')." ;;
+        esac
+
     fi
 
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
@@ -1917,8 +1962,11 @@ Usage: 'w_override_dlls mode[,mode] dll ...'." ;;
     esac
 
     shift
+    case ${LANG} in
+      fr*) echo "Utilisation de la redéfinition ${_W_mode} pour les DLL suivantes : $*" ;;
+        *) echo "Using ${_W_mode} override for following DLLs: $*" ;;
+    esac
 
-    echo "Using ${_W_mode} override for following DLLs: $*"
     cat > "${W_TMP}"/override-dll.reg <<_EOF_
 REGEDIT4
 
@@ -2338,8 +2386,10 @@ w_override_app_dlls()
         w_die "w_override_app_dlls: unknown mode ${_W_mode}.  (want native, builtin, default, or disabled)
 Usage: 'w_override_app_dlls app mode dll ...'." ;;
     esac
-
-    echo "Using ${_W_mode} override for following DLLs when running ${_W_app}: $*"
+    case ${LANG} in
+      fr*) echo "Utilisation de la redéfinition ${_W_mode} pour les DLL suivantes lors de l'exécution de ${_W_app} : $*" ;;
+        *) echo "Using ${_W_mode} override for following DLLs when running ${_W_app}: $*" ;;
+    esac
     (
         printf 'REGEDIT4\n\n[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\%s\\DllOverrides]\n' "${_W_app}"
     ) > "${W_TMP}"/override-dll.reg
@@ -2744,14 +2794,20 @@ w_do_call()
 
         # Allow verifying a verb separately from installing it
         if test "${WINETRICKS_VERIFY}" = 1 && winetricks_is_installed "$1" && test -z "${WINETRICKS_FORCE}"; then
-            echo "$1 is already installed. --force wasn't given, --verify was, so re-verifying."
+            case ${LANG} in
+              fr*) echo "$1 est déjà installé. --force n'a pas été spécifié, --verify l'a été, donc nouvelle vérification." ;;
+                *) echo "$1 is already installed. --force wasn't given, --verify was, so re-verifying." ;;
+            esac
             winetricks_verify
             return "${TRUE}"
         fi
 
         # Don't install if already installed
         if test "${WINETRICKS_FORCE}" != 1 && winetricks_is_installed "$1"; then
-            echo "$1 already installed, skipping"
+            case ${LANG} in
+              fr*) echo "$1 déjà installé, ignorer" ;;
+                *) echo "$1 already installed, skipping"
+            esac
             return "${TRUE}"
         fi
 
@@ -2772,7 +2828,10 @@ w_do_call()
         # Verify install
         if test "${installed_exe1}" || test "${installed_file1}"; then
             if ! winetricks_is_installed "$1"; then
-                w_die "$1 install completed, but installed file ${_W_file_unix} not found"
+                case ${LANG} in
+                  fr*) w_die "$1 Installation terminée, mais le fichier installé ${_W_file_unix} est introuvable." ;;
+                    *) w_die "$1 install completed, but installed file ${_W_file_unix} not found" ;;
+                esac
             fi
         fi
 
@@ -3176,7 +3235,10 @@ winetricks_detect_gui()
 
     # Print zenity/dialog version info for debugging:
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-        echo "winetricks GUI enabled, using ${WINETRICKS_GUI} ${WINETRICKS_GUI_VERSION##kdialog }"
+        case ${LANG} in
+          fr*) echo "Interface graphique winetricks activée, à l'aide de ${WINETRICKS_GUI} ${WINETRICKS_GUI_VERSION##kdialog }" ;;
+            *) echo "winetricks GUI enabled, using ${WINETRICKS_GUI} ${WINETRICKS_GUI_VERSION##kdialog }" ;;
+        esac
     fi
 }
 
@@ -3206,7 +3268,7 @@ winetricks_prefixmenu()
             _W_msg_unattended1="Включване на автоматичното инсталиране"
             _W_msg_help="Отваряне на помощта"
             ;;
-        fr*) _W_msg_title="Winetricks - Choisir un préfixe"
+       fr*) _W_msg_title="Winetricks - Choisir un préfixe"
             _W_msg_body="Que souhaitez-vous faire ?"
             _W_msg_apps="Installer une application"
             _W_msg_benchmarks="Installer un benchmark"
@@ -3329,7 +3391,7 @@ winetricks_prefixmenu()
                     q="${prefix%%/dosdevices}"
                     p="${q##*/}"
                     if test -f "${W_PREFIXES_ROOT}/${p}/wrapper.cfg"; then
-                        _W_msg_name="${p} ($(winetricks_get_prefix_var name))"
+                        _W_msg_name="${p} ( $(winetricks_get_prefix_var name) )"
                     else
                         _W_msg_name="${p}"
                     fi
@@ -3873,7 +3935,6 @@ winetricks_settings_menu()
                         esac
                     ;;
                     esac
-
                     # End of code
                     printf "%s %s %s %s" " " FALSE \
                             "${code}" \
@@ -4329,7 +4390,10 @@ winetricks_list_installed()
     if [ -f "${WINEPREFIX}/winetricks.log" ]; then
         cat "${WINEPREFIX}/winetricks.log"
     else
-        echo "warning: ${WINEPREFIX}/winetricks.log not found; winetricks has not installed anything in this prefix."
+        case ${LANG} in
+            fr*) echo "Avertissement : ${WINEPREFIX}/winetricks.log introuvable ; winetricks n'a rien installé dans ce préfixe." ;;
+            *)  echo "warning: ${WINEPREFIX}/winetricks.log not found; winetricks has not installed anything in this prefix." ;;
+        esac
     fi
 }
 
@@ -4836,7 +4900,10 @@ winetricks_init()
 
     # Running Wine as root is (generally) bad, mmkay?
     if [ "$(id -u)" = 0 ]; then
-        w_warn "Running Wine/winetricks as root is highly discouraged. See https://wiki.winehq.org/FAQ#Should_I_run_Wine_as_root.3F"
+        case ${LANG} in
+            fr*) w_warn "Il est fortement déconseillé d'exécuter Wine/winetricks en tant qu'administrateur. Voir https://gitlab.winehq.org/wine/wine/-/wikis/fr/FAQ#faut-il-ex%C3%A9cuter-wine-comme-root" ;;
+              *) w_warn "Running Wine/winetricks as root is highly discouraged. See https://wiki.winehq.org/FAQ#Should_I_run_Wine_as_root.3F" ;;
+        esac
     fi
 
     # Ephemeral files for this run
@@ -4920,7 +4987,10 @@ winetricks_init()
         W_TASKSET="cpuset -l 0"
     else
         # not using w_warn so we don't annoy everyone running via GUI, but still printed to terminal:
-        echo "warning: taskset/cpuset not available on your platform!"
+        case ${LANG} in
+          fr*) echo "Avertissement : taskset/cpuset n'est pas disponible sur votre plateforme !" ;;
+            *) echo "warning: taskset/cpuset not available on your platform!" ;;
+        esac
         W_TASKSET=""
     fi
 
@@ -5024,13 +5094,19 @@ winetricks_wine_setup()
     # If WINE is < 8.0, warn user:
     # 8.0 doesn't do what I thought it would
     if w_wine_version_in ,7.99 ; then
-        w_warn "Your version of wine ${_wine_version_stripped} is no longer supported upstream. You should upgrade to 8.x"
+        case ${LANG} in
+          fr*) w_warn "Votre version de wine ${_wine_version_stripped} n'est plus prise en charge en amont. Vous devez passer à la version 8.x." ;;
+            *) w_warn "Your version of wine ${_wine_version_stripped} is no longer supported upstream. You should upgrade to 8.x" ;;
+        esac
     fi
 
     winetricks_set_wineprefix "$1"
 
     if [ -z "${WINETRICKS_SUPER_QUIET}" ] ; then
-        echo "Using winetricks $(winetricks_print_version) with ${WINETRICKS_ORIG_WINE_VERSION} and WINEARCH=${W_ARCH}"
+        case ${LANG} in
+          fr*) echo "Utilisation de winetricks $(winetricks_print_version) avec ${WINETRICKS_ORIG_WINE_VERSION} et WINEARCH=${W_ARCH}" ;;
+            *) echo "Using winetricks $(winetricks_print_version) with ${WINETRICKS_ORIG_WINE_VERSION} and WINEARCH=${W_ARCH}";;
+        esac
     fi
 }
 
@@ -11786,7 +11862,10 @@ load_physx()
 
     w_get_sha256sum "${W_PROGRAMS_X86_UNIX}/NVIDIA Corporation/PhysX/Engine/86C5F4F22ECD/APEX_Particles_x64.dll"
     if [ "${_W_gotsha256sum}"x = "10bc05958e874739064d1acaf7720a9bb4f5bdc0f219e6aeb6ece6f202d194a1"x ] ; then
-        w_warn "${W_PACKAGE} is already installed - not updating"
+        case ${LANG} in
+          fr*) w_warn "${W_PACKAGE} est déjà installé - pas de mise à jour" ;;
+            *) w_warn "${W_PACKAGE} is already installed - not updating" ;;
+        esac
         unset _W_gotsha256sum
         return
     else
@@ -18519,6 +18598,7 @@ _EOF_
 
 w_metadata alldlls=default settings \
     title_bg="Премахнете всички замени на DLL файловете" \
+    title_fr="Supprimer toutes les remplacements de DLL" \
     title_uk="Видалити всі перевизначення DLL" \
     title="Remove all DLL overrides"
 w_metadata alldlls=builtin settings \
@@ -18566,7 +18646,10 @@ w_metadata good settings \
 
 load_good()
 {
-    w_info "${W_PACKAGE} succeeded!"
+    case ${LANG} in
+      fr*) w_info "${W_PACKAGE} réussi !" ;;
+        *) w_info "${W_PACKAGE} succeeded!" ;;
+    esac
 }
 
 #----------------------------------------------------------------
