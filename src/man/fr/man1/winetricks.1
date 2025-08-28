@@ -1,0 +1,211 @@
+.\" -*- nroff -*-
+.TH WINETRICKS "1 Janvier 2025" Winetricks "20250102" "Gestionnaire de paquets Wine"
+.SH NOM
+Winetricks \- gérer les environnements Windows virtuels à l'aide de Wine
+.SH SYNOPSIS
+.BI winetricks
+[options] [verbe ... ]
+.SH DESCRIPTION
+.B Winetricks
+est un moyen simple de contourner les problèmes courants dans Wine.
+.PP
+Il fournit des commandes simples pour
+modifier les paramètres de Wine,
+télécharger et installer les DLL et polices Windows manquantes,
+ou installer diverses applications avec les solutions de contournement appropriées pour la version actuelle de Wine.
+.PP
+Il peut être utilisé via l'interface graphique ou la ligne de commande. Le mode ligne de commande est destiné à une utilisation interactive et comme élément constitutif dans des interfaces Wine plus sophistiquées et dans des tests de régression automatisés.
+
+.B winetricks
+sans argument affiche une interface graphique utilisant Zenity ou Kdialog.
+
+.SH OPTIONS
+.TP
+.B
+\-\-country=CC
+                Définit le code pays sur CC et ne détecte pas votre adresse IP lorsque vous réessayez les téléchargements
+.TP
+.B
+\-f, \-\-force
+                Ne vérifie pas si les paquets sont déjà installés.
+.TP
+.B
+\-\-gui
+                Affiche les diagnostics de l'interface graphique même lorsque l'application est lancée depuis la ligne de commande.
+.TP
+.B
+\-\-gui=OPT
+                Définit OPT sur kdialog ou zenity pour remplacer le moteur de l'interface graphique.
+.TP
+.B
+\-\-isolate
+                Installe chaque application ou jeu dans son propre bottle.
+.TP
+.B
+\-\-self\-update
+                Mettre à jour cette application vers la dernière version.
+.TP
+.B
+\-\-update\-rollback
+                Revenir à la dernière mise à jour automatique.
+.TP
+.B
+\-\-no\-isolate
+                Ne pas installer chaque application ou jeu dans son propre bottle (par défaut).
+.TP
+.B
+\-\-no\-clean
+                Ne pas supprimer les répertoires temporaires (utile pendant le débogage).
+.TP
+.B
+\-\-optin
+                Choisissez de signaler les verbes que vous utilisez aux responsables de Winetricks.
+.TP
+.B
+\-\-optout
+                Choisissez de ne pas signaler les verbes que vous utilisez aux responsables de Winetricks.
+.TP
+.B
+\-q, \-\-unattended
+                Ne posez aucune question, installez automatiquement.
+.TP
+.B
+\-t, \-\-torify
+                Exécutez les téléchargements sous torify, si disponible.
+.TP
+.B
+\-v, \-\-verbose
+                Affichez toutes les commandes au fur et à mesure de leur exécution.
+.TP
+.B
+\-\-verify
+                Exécutez des tests GUI (automatisés) pour les verbes, si disponibles.
+.TP
+.B
+\-h, \-\-help
+                Affichez ce message et quittez.
+.TP
+.B
+\-V, \-\-version
+                Afficher la version et quitter
+
+.SH COMMANDES
+.TP
+.B
+app list
+                Liste des verbes dans la catégorie « applications »
+.TP
+.B
+benchmarks list
+                Liste des verbes dans la catégorie « benchmarks »
+.TP
+.B
+dlls list
+                Liste des verbes dans la catégorie « dlls »
+.TP
+.B
+fonts list
+                Liste des verbes dans la catégorie « polices »
+.TP
+.B
+settings list
+                Liste des verbes dans la catégorie « paramètres »
+.TP
+.B
+list
+                Liste des catégories
+.TP
+.B
+list-cached
+                Liste des verbes mis en cache et prêts à être installés
+.TP
+.B
+list-download
+                Liste des verbes qui se téléchargent automatiquement
+.TP
+.B
+list-manual-download
+                Liste des verbes qui se téléchargent avec l'aide de l'utilisateur
+.TP
+.B
+list-installed
+                Liste des verbes déjà installés
+.TP
+.B
+arch=32|64
+                Créer un wineprefix en 32 ou 64 bits, cette option doit être
+                spécifiée avant prefix=foobar et ne fonctionnera pas dans le cas du
+                wineprefix par défaut.
+.TP
+.B
+prefix=foobar
+                Sélectionner WINEPREFIX=$HOME/.local/share/wineprefixes/foobar
+.TP
+.B
+annihilate
+                Supprimer TOUTES LES DONNÉES ET APPLICATIONS CONTENUES DANS CE PRÉFIXE
+
+.PP
+.SH EXEMPLES
+.TP
+
+Pour voir la liste des paquets disponibles à installer :
+
+winetricks list-download
+.TP
+Pour installer un paquet (par exemple 7zip):
+
+winetricks 7zip
+
+.SH VARIABLES D'ENVIRONNEMENT
+Wine vérifie plusieurs variables d'environnement au démarrage :
+.TP
+.I WINE
+        Si elle est définie, cette variable spécifie quel binaire wine utiliser par défaut.
+.TP
+.I WINESERVER
+        Si elle est définie, cette variable spécifie quel wineserver utiliser par défaut.
+.TP
+.I WINEPREFIX
+        Si elle est définie, cette variable spécifie l'emplacement du répertoire .wine par défaut ( généralement
+.IR $HOME/.wine
+).
+.TP
+.I XDG_CACHE_HOME
+        Si elle est définie, cette variable indique le chemin d'accès au cache des données utilisateur du système (par défaut : $HOME/.cache).
+.TP
+.I W_CACHE
+        Chemin d'accès au cache des données utilisateur de Winetricks (par défaut : $XDG_CACHE_HOME/winetricks}
+
+.SH AUTEURS
+Dan Kegel, Austin English et bien d'autres.  Pour obtenir la liste complète,
+veuillez consulter la section « Copyright » du fichier « winetricks ».
+
+.SH COPYRIGHT
+Ce programme est un logiciel libre ; vous pouvez le redistribuer et/ou
+le modifier selon les termes de la licence publique générale GNU Library
+publiée par la Free Software Foundation ; soit la
+version 2 de la licence, soit (à votre choix) toute version ultérieure.
+Voir <https://www.gnu.org/licenses/>.
+.SH BOGUES
+.PP
+Les bogues peuvent être signalés à l'adresse suivante :
+.I https://github.com/Winetricks/winetricks/issues
+.PP
+.SH DISPONIBILITÉ
+La version la plus récente de
+.B winetricks
+peut être téléchargée à partir de
+.I https://github.com/Winetricks/winetricks/releases/latest
+.PP
+Le dernier instantané du code peut être obtenu via git ; voir
+.I https://github.com/Winetricks/winetricks/
+.PP
+La documentation relative à Winetricks est disponible à l'adresse suivante :
+.I https://github.com/Winetricks/winetricks/wiki
+.PP
+Pour plus d'informations sur winetricks, consultez
+.I https://github.com/Winetricks/winetricks/
+
+.SH VOIR AUSSI
+.BR wine (1)
