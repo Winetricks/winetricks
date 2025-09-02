@@ -5590,6 +5590,7 @@ arch=32|64            crée wineprefix en 32 ou 64 bits, cette option doit être
 prefix=foobar         sélectionner WINEPREFIX=${W_PREFIXES_ROOT}/foobar
 annihilate            Supprimer TOUTES LES DONNÉES ET APPLICATIONS CONTENUES DANS CE WINEPREFIX
 _EOF_
+        ;;
         zh_CN*)
             cat <<_EOF_
 用法：$0 [选项] [命令|脚本|脚本路径] ...
@@ -9442,7 +9443,7 @@ load_dotnet40_kb2468871()
         C|en_US.UTF-8*) ;;
 
         fr*) w_warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9508,7 +9509,7 @@ load_dotnet45()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9567,7 +9568,7 @@ load_dotnet452()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9616,7 +9617,7 @@ load_dotnet46()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9668,7 +9669,7 @@ load_dotnet461()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9721,7 +9722,7 @@ load_dotnet462()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9773,7 +9774,7 @@ load_dotnet471()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9824,7 +9825,7 @@ load_dotnet472()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9876,7 +9877,7 @@ load_dotnet48()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
