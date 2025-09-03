@@ -3968,8 +3968,6 @@ winetricks_mainmenu()
                     shell       "${_W_msg_shell}" off \
                     folder      "${_W_msg_folder}" off \
                     annihilate  "${_W_msg_annihilate}" off \
-                    "${_W_cmd_unattended}" "${_W_msg_unattended}" off \
-
             ;;
     esac
     unset _W_msg_body _W_msg_title _W_msg_apps _W_msg_benchmarks _W_msg_dlls _W_msg_settings
@@ -4495,6 +4493,70 @@ winetricks_showmenu()
                         title=$(printf "%s" "${title}" | head -c 95)
                         title="${title} ..."
                     fi
+                    case ${LANG} in
+                    bg*)
+                        case "${title_bg}" in
+                            "") ;;
+                            *) title="${title_bg}";;
+                        esac
+                    ;;
+                    fr*)
+                        case "${title_fr}" in
+                            "") ;;
+                            *) title="${title_fr}";;
+                        esac
+                    ;;
+                    ru*)
+                        case "${title_ru}" in
+                            "") ;;
+                            *) title="${title_ru}";;
+                        esac
+                    ;;
+                    zh_CN*)
+                        case "${title_zh_CN}" in
+                            "") ;;
+                            *) title="${title_zh_CN}";;
+                        esac
+                    ;;
+                    uk*)
+                        case "${title_uk}" in
+                            "") ;;
+                            *) title="${title_uk}";;
+                        esac
+                    ;;
+                    esac
+                    case ${LANG} in
+                    bg*)
+                        case "${media_bg}" in
+                            "") ;;
+                            *) media="${media_bg}";;
+                        esac
+                    ;;
+                    fr*)
+                        case "${media_fr}" in
+                            "") ;;
+                            *) media="${media_fr}";;
+                        esac
+                    ;;
+                    ru*)
+                        case "${media_ru}" in
+                            "") ;;
+                            *) media="${media_ru}";;
+                        esac
+                    ;;
+                    zh_CN*)
+                        case "${media_zh_CN}" in
+                            "") ;;
+                            *) media="${media_zh_CN}";;
+                        esac
+                    ;;
+                    uk*)
+                        case "${media_uk}" in
+                            "") ;;
+                            *) media="${media_uk}";;
+                        esac
+                    ;;
+                    esac
                     printf %s " ${installed} \
                         ${code} \
                         \"${title}\" \
@@ -5590,6 +5652,7 @@ arch=32|64            crée wineprefix en 32 ou 64 bits, cette option doit être
 prefix=foobar         sélectionner WINEPREFIX=${W_PREFIXES_ROOT}/foobar
 annihilate            Supprimer TOUTES LES DONNÉES ET APPLICATIONS CONTENUES DANS CE WINEPREFIX
 _EOF_
+        ;;
         zh_CN*)
             cat <<_EOF_
 用法：$0 [选项] [命令|脚本|脚本路径] ...
@@ -5918,6 +5981,7 @@ w_metadata amstream dlls \
     title="MS amstream.dll" \
     publisher="Microsoft" \
     year="2011" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/amstream.dll"
@@ -5944,6 +6008,7 @@ w_metadata art2kmin dlls \
     title="MS Access 2000 runtime" \
     publisher="Microsoft" \
     year="2000" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="art2kmin.exe" \
     installed_file1="${W_COMMONFILES_X86_WIN}/Microsoft Shared/MSDesigners98/MDT2DBNS.DLL"
@@ -5960,6 +6025,7 @@ w_metadata art2k7min dlls \
     title="MS Access 2007 runtime" \
     publisher="Microsoft" \
     year="2007" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="AccessRuntime.exe" \
     installed_file1="${W_COMMONFILES_X86_WIN}/Microsoft Shared/OFFICE12/ACEES.DLL"
@@ -5980,6 +6046,7 @@ w_metadata atmlib dlls \
     title="Adobe Type Manager" \
     publisher="Adobe" \
     year="2009" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../win2ksp4/W2KSP4_EN.EXE" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/atmlib.dll"
@@ -5996,6 +6063,7 @@ w_metadata avifil32 dlls \
     title="MS avifil32" \
     publisher="Microsoft" \
     year="2004" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/avifil32.dll"
@@ -6014,6 +6082,7 @@ w_metadata cabinet dlls \
     title="Microsoft cabinet.dll" \
     publisher="Microsoft" \
     year="2002" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="MDAC_TYP.EXE" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/cabinet.dll"
@@ -6038,6 +6107,7 @@ w_metadata cmd dlls \
     title="MS cmd.exe" \
     publisher="Microsoft" \
     year="2004" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="Q811493_W2K_SP4_X86_EN.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/cmd.exe"
@@ -6056,6 +6126,7 @@ w_metadata cnc_ddraw dlls \
     homepage="https://github.com/FunkyFr3sh/cnc-ddraw" \
     publisher="CnCNet" \
     year="2021" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="cnc-ddraw-v7.0.0.0.zip" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/Shaders/readme.txt"
@@ -6100,6 +6171,7 @@ w_metadata comctl32 dlls \
     title="MS common controls 5.80" \
     publisher="Microsoft" \
     year="2001" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="CC32inst.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/comctl32.dll"
@@ -6133,6 +6205,7 @@ w_metadata comctl32ocx dlls \
     title="MS comctl32.ocx and mscomctl.ocx, comctl32 wrappers for VB6" \
     publisher="Microsoft" \
     year="2012" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../vb6sp6/VB60SP6-KB2708437-x86-ENU.msi" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/mscomctl.ocx"
@@ -6152,6 +6225,7 @@ w_metadata comdlg32ocx dlls \
     title="Common Dialog ActiveX Control for VB6" \
     publisher="Microsoft" \
     year="2012" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../vb6sp6/VB60SP6-KB2708437-x86-ENU.msi" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/comdlg32.ocx"
@@ -6169,6 +6243,7 @@ w_metadata crypt32 dlls \
     title="MS crypt32" \
     publisher="Microsoft" \
     year="2011" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../win7sp1/windows6.1-KB976932-X64.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/crypt32.dll"
@@ -6194,6 +6269,7 @@ w_metadata crypt32_winxp dlls \
     title="MS crypt32" \
     publisher="Microsoft" \
     year="2004" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/crypt32.dll"
@@ -6216,6 +6292,7 @@ w_metadata binkw32 dlls \
     title="RAD Game Tools binkw32.dll" \
     publisher="RAD Game Tools, Inc." \
     year="2000" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="__32-binkw32.dll3.0.0.0.zip" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/binkw32.dll"
@@ -6241,6 +6318,7 @@ w_metadata d2gl dlls \
     title="Diablo 2 LoD Glide to OpenGL Wrapper" \
     publisher="Bayaraa" \
     year="2023" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="D2GL.v1.3.3.zip" \
     installed_file1="${W_PROGRAMS_X86_WIN}/Diablo II/glide3x.dll" \
@@ -6260,6 +6338,7 @@ w_metadata d3dcompiler_42 dlls \
     title="MS d3dcompiler_42.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dcompiler_42.dll"
@@ -6292,6 +6371,7 @@ w_metadata d3dcompiler_43 dlls \
     title="MS d3dcompiler_43.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dcompiler_43.dll"
@@ -6325,6 +6405,7 @@ w_metadata d3dcompiler_46 dlls \
     title="MS d3dcompiler_46.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dcompiler_46.dll"
@@ -6352,6 +6433,7 @@ w_metadata d3dcompiler_47 dlls \
     title="MS d3dcompiler_47.dll" \
     publisher="Microsoft" \
     year="FIXME" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="d3dcompiler_47_32.dll" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dcompiler_47.dll"
@@ -6375,6 +6457,7 @@ w_metadata d3drm dlls \
     title="MS d3drm.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3drm.dll"
@@ -6395,6 +6478,7 @@ w_metadata d3dx9 dlls \
     title="MS d3dx9_??.dll from DirectX 9 redistributable" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_43.dll"
@@ -6430,6 +6514,7 @@ w_metadata d3dx9_24 dlls \
     title="MS d3dx9_24.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_24.dll"
@@ -6445,6 +6530,7 @@ w_metadata d3dx9_25 dlls \
     title="MS d3dx9_25.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_25.dll"
@@ -6460,6 +6546,7 @@ w_metadata d3dx9_26 dlls \
     title="MS d3dx9_26.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_26.dll"
@@ -6475,6 +6562,7 @@ w_metadata d3dx9_27 dlls \
     title="MS d3dx9_27.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_27.dll"
@@ -6490,6 +6578,7 @@ w_metadata d3dx9_28 dlls \
     title="MS d3dx9_28.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_28.dll"
@@ -6505,6 +6594,7 @@ w_metadata d3dx9_29 dlls \
     title="MS d3dx9_29.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_29.dll"
@@ -6520,6 +6610,7 @@ w_metadata d3dx9_30 dlls \
     title="MS d3dx9_30.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_30.dll"
@@ -6535,6 +6626,7 @@ w_metadata d3dx9_31 dlls \
     title="MS d3dx9_31.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_31.dll"
@@ -6550,6 +6642,7 @@ w_metadata d3dx9_32 dlls \
     title="MS d3dx9_32.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_32.dll"
@@ -6565,6 +6658,7 @@ w_metadata d3dx9_33 dlls \
     title="MS d3dx9_33.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_33.dll"
@@ -6580,6 +6674,7 @@ w_metadata d3dx9_34 dlls \
     title="MS d3dx9_34.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_34.dll"
@@ -6595,6 +6690,7 @@ w_metadata d3dx9_35 dlls \
     title="MS d3dx9_35.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_35.dll"
@@ -6610,6 +6706,7 @@ w_metadata d3dx9_36 dlls \
     title="MS d3dx9_36.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_36.dll"
@@ -6625,6 +6722,7 @@ w_metadata d3dx9_37 dlls \
     title="MS d3dx9_37.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_37.dll"
@@ -6640,6 +6738,7 @@ w_metadata d3dx9_38 dlls \
     title="MS d3dx9_38.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_38.dll"
@@ -6655,6 +6754,7 @@ w_metadata d3dx9_39 dlls \
     title="MS d3dx9_39.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_39.dll"
@@ -6670,6 +6770,7 @@ w_metadata d3dx9_40 dlls \
     title="MS d3dx9_40.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_40.dll"
@@ -6685,6 +6786,7 @@ w_metadata d3dx9_41 dlls \
     title="MS d3dx9_41.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_41.dll"
@@ -6700,6 +6802,7 @@ w_metadata d3dx9_42 dlls \
     title="MS d3dx9_42.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_42.dll"
@@ -6715,6 +6818,7 @@ w_metadata d3dx9_43 dlls \
     title="MS d3dx9_43.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx9_43.dll"
@@ -6730,6 +6834,7 @@ w_metadata d3dx11_42 dlls \
     title="MS d3dx11_42.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx11_42.dll"
@@ -6762,6 +6867,7 @@ w_metadata d3dx11_43 dlls \
     title="MS d3dx11_43.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx11_43.dll"
@@ -6794,6 +6900,7 @@ w_metadata d3dx10 dlls \
     title="MS d3dx10_??.dll from DirectX user redistributable" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx10_33.dll"
@@ -6827,6 +6934,7 @@ w_metadata d3dx10_43 dlls \
     title="MS d3dx10_43.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dx10_43.dll"
@@ -6859,6 +6967,7 @@ w_metadata d3dxof dlls \
     title="MS d3dxof.dll from DirectX user redistributable" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dxof.dll"
@@ -6879,6 +6988,7 @@ w_metadata dbghelp dlls \
     title="MS dbghelp" \
     publisher="Microsoft" \
     year="2008" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dbghelp.dll"
@@ -6898,6 +7008,7 @@ w_metadata devenum dlls \
     title="MS devenum.dll from DirectX user redistributable" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     conflicts="quartz" \
     file1="../directx9/directx_feb2010_redist.exe" \
@@ -6919,6 +7030,7 @@ w_metadata dinput dlls \
     title="MS dinput.dll; breaks mouse, use only on Rayman 2 etc." \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     conflicts="dinputto8" \
     file1="../directx9/directx_feb2010_redist.exe" \
@@ -6940,6 +7052,7 @@ w_metadata dinput8 dlls \
     title="MS DirectInput 8 from DirectX user redistributable" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dinput8.dll"
@@ -6963,6 +7076,7 @@ w_metadata dinputto8 dlls \
     homepage="https://github.com/elishacloud/dinputto8" \
     publisher="Elisha Riedlinger" \
     year="2018" \
+    media_fr="Téléchargement" \
     media="download" \
     conflicts="dinput" \
     file1="dinput.dll" \
@@ -6981,6 +7095,7 @@ w_metadata directmusic dlls \
     title="MS DirectMusic from DirectX user redistributable" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dmusic.dll"
@@ -7013,6 +7128,7 @@ w_metadata directshow dlls \
     title="DirectShow runtime DLLs (amstream, qasf, qcap, qdvd, qedit, quartz)" \
     publisher="Microsoft" \
     year="2011" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../win7sp1/windows6.1-KB976932-X86.exe"
 
@@ -7034,6 +7150,7 @@ w_metadata directplay dlls \
     title="MS DirectPlay from DirectX user redistributable" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dplayx.dll"
@@ -7066,6 +7183,7 @@ w_metadata directx9 dlls \
     title="MS DirectX 9 (Deprecated, no-op)" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download"
 
 load_directx9()
@@ -7081,6 +7199,7 @@ w_metadata dpvoice dlls \
     title="Microsoft dpvoice dpvvox dpvacm Audio dlls" \
     publisher="Microsoft" \
     year="2002" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dpvoice.dll" \
@@ -7109,6 +7228,7 @@ w_metadata dsdmo dlls \
     title="MS dsdmo.dll" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dsdmo.dll"
@@ -7130,6 +7250,7 @@ w_metadata dbgview apps \
     title="Debug monitor" \
     publisher="Mark Russinovich" \
     year="2019" \
+    media_fr="Téléchargement" \
     media="download" \
 
 load_dbgview()
@@ -7149,6 +7270,7 @@ w_metadata depends apps \
     title="Dependency Walker" \
     publisher="Steve P. Miller" \
     year="2006" \
+    media_fr="Téléchargement" \
     media="download" \
 
 load_depends()
@@ -7166,6 +7288,7 @@ w_metadata dxsdk_aug2006 apps \
     title="MS DirectX SDK, August 2006 (developers only)" \
     publisher="Microsoft" \
     year="2006" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxsdk_aug2006.exe" \
     installed_file1="${W_PROGRAMS_X86_WIN}/Microsoft DirectX SDK (August 2006)/Lib/x86/d3d10.lib"
@@ -7189,6 +7312,7 @@ w_metadata dxsdk_jun2010 apps \
     title="MS DirectX SDK, June 2010 (developers only)" \
     publisher="Microsoft" \
     year="2010" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="DXSDK_Jun10.exe" \
     installed_file1="${W_PROGRAMS_X86_WIN}/Microsoft DirectX SDK (June 2010)/Lib/x86/d3d11.lib"
@@ -7212,6 +7336,7 @@ w_metadata dxtrans dlls \
     title="MS dxtrans.dll" \
     publisher="Microsoft" \
     year="2002" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dxtrans.dll" \
@@ -7287,6 +7412,7 @@ w_metadata dxvk1000 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.0)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.0.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7304,6 +7430,7 @@ w_metadata dxvk1001 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.0.1)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.0.1.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7321,6 +7448,7 @@ w_metadata dxvk1002 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.0.2)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.0.2.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7338,6 +7466,7 @@ w_metadata dxvk1003 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.0.3)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.0.3.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7355,6 +7484,7 @@ w_metadata dxvk1011 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.1.1)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.1.1.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7372,6 +7502,7 @@ w_metadata dxvk1020 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.2)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.2.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7389,6 +7520,7 @@ w_metadata dxvk1021 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.2.1)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.2.1.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7406,6 +7538,7 @@ w_metadata dxvk1022 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.2.2)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.2.2.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7423,6 +7556,7 @@ w_metadata dxvk1023 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.2.3)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.2.3.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7440,6 +7574,7 @@ w_metadata dxvk1030 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.3)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.3.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7457,6 +7592,7 @@ w_metadata dxvk1031 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.3.1)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.3.1.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7474,6 +7610,7 @@ w_metadata dxvk1032 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.3.2)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.3.2.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7491,6 +7628,7 @@ w_metadata dxvk1033 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.3.3)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.3.3.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7508,6 +7646,7 @@ w_metadata dxvk1034 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.3.4)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.3.4.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7525,6 +7664,7 @@ w_metadata dxvk1040 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.4)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.4.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7542,6 +7682,7 @@ w_metadata dxvk1041 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.4.1)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.4.1.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7559,6 +7700,7 @@ w_metadata dxvk1042 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.4.2)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.4.2.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7576,6 +7718,7 @@ w_metadata dxvk1043 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.4.3)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.4.3.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7593,6 +7736,7 @@ w_metadata dxvk1044 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.4.4)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.4.4.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7610,6 +7754,7 @@ w_metadata dxvk1045 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.4.5)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.4.5.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7627,6 +7772,7 @@ w_metadata dxvk1046 dlls \
     title="Vulkan-based D3D10/D3D11 implementation for Linux / Wine (1.4.6)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.4.6.tar.gz" \
     installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
@@ -7646,6 +7792,7 @@ w_metadata dxvk1050 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.5)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.5.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7664,6 +7811,7 @@ w_metadata dxvk1051 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.5.1)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.5.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7682,6 +7830,7 @@ w_metadata dxvk1052 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.5.2)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.5.2.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7700,6 +7849,7 @@ w_metadata dxvk1053 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.5.3)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.5.3.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7718,6 +7868,7 @@ w_metadata dxvk1054 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.5.4)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.5.4.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7736,6 +7887,7 @@ w_metadata dxvk1055 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.5.5)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.5.5.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7754,6 +7906,7 @@ w_metadata dxvk1060 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.6)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.6.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7772,6 +7925,7 @@ w_metadata dxvk1061 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.6.1)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.6.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7790,6 +7944,7 @@ w_metadata dxvk1070 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.7)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.7.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7808,6 +7963,7 @@ w_metadata dxvk1071 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.7.1)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.7.1.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7826,6 +7982,7 @@ w_metadata dxvk1072 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.7.2)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.7.2.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -7844,6 +8001,7 @@ w_metadata dxvk1073 dlls \
     title="Vulkan-based D3D9/D3D10/D3D11 implementation for Linux / Wine (1.7.3)" \
     publisher="Philip Rebohle" \
     year="2017" \
+    media_fr="Téléchargement" \
     media="download" \
     file1="dxvk-1.7.3.tar.gz" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
@@ -9442,7 +9600,7 @@ load_dotnet40_kb2468871()
         C|en_US.UTF-8*) ;;
 
         fr*) w_warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9508,7 +9666,7 @@ load_dotnet45()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9567,7 +9725,7 @@ load_dotnet452()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9616,7 +9774,7 @@ load_dotnet46()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9668,7 +9826,7 @@ load_dotnet461()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9721,7 +9879,7 @@ load_dotnet462()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9773,7 +9931,7 @@ load_dotnet471()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9824,7 +9982,7 @@ load_dotnet472()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
@@ -9876,7 +10034,7 @@ load_dotnet48()
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
         fr*) w-warn "Vous pouvez rencontrer des boucles infinies lorsque vous essayez d'utiliser des applications qui utilisent WPF. Utilisez LC_ALL=C lorsque vous exécutez votre application comme solution de contournement." ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround." ;;
         zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
