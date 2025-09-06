@@ -7798,6 +7798,24 @@ load_dxvk2070()
     helper_dxvk "${file1}" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
 }
 
+w_metadata dxvk2071 dlls \
+    title="Vulkan-based D3D8/D3D9/D3D10/D3D11 implementation for Linux / Wine (2.7.1)" \
+    publisher="Philip Rebohle" \
+    year="2025" \
+    media="download" \
+    file1="dxvk-2.7.1.tar.gz" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d8.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+
+load_dxvk2071()
+{
+    w_download "https://github.com/doitsujin/dxvk/releases/download/v2.7.1/dxvk-2.7.1.tar.gz" d85ce7c79f57ecd765aaa1b9e7007cb875e6fde9f6d331df799bce73d513ce87
+    helper_dxvk "${file1}" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
+}
+
 #----------------------------------------------------------------
 
 w_metadata dxvk dlls \
