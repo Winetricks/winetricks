@@ -628,7 +628,10 @@ w_package_broken_wow64() {
 w_package_unsupported_win32()
 {
     if [ "${W_ARCH}" = "win32" ] ; then
-        w_warn "This package (${W_PACKAGE}) does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64."
+        case ${LANG} in
+          fr*) w_warn "Ce paquet (${W_PACKAGE}) ne fonctionne pas sur une installation 32 bits. Vous devez utiliser un préfixe créé avec WINEARCH=win64." ;;
+            *) w_warn "This package (${W_PACKAGE}) does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64." ;;
+        esac
         _w_force_continue_check 64
     fi
 }
@@ -642,6 +645,7 @@ w_package_unsupported_win64()
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
             bg*) w_warn "Пакетът (${W_PACKAGE}) не работи на 64-битовите инсталации. Трябва да използвате папка, създадена с WINEARCH=win32." ;;
+            fr*) w_warn "Ce paquet (${W_PACKAGE}) ne fonctionne pas sur une installation 64 bits. Vous devez utiliser un préfixe créé avec WINEARCH=win32." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) não funciona em instalação de 64-bit. Você precisa usar um prefixo feito com WINEARCH=win32." ;;
             ru*) w_warn "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
@@ -659,6 +663,7 @@ w_package_warn_win64()
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
             bg*) w_warn "Пакетът (${W_PACKAGE}) вероятно няма да работи на 64-битовите инсталации. 32-битовите папки може да работят по-добре." ;;
+            fr*) w_warn "Ce paquet (${W_PACKAGE}) peut ne pas fonctionner correctement sur une installation 64 bits. Les préfixes 32 bits peuvent fonctionner mieux." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) talvez não funcione completamente em 64-bit. Em prefixo 32-bit talvez funcione melhor." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działać lepiej." ;;
             ru*) w_warn "Данный пакет может быть не полностью работоспособным в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
