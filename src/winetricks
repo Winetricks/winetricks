@@ -629,7 +629,7 @@ w_package_unsupported_win32()
 {
     if [ "${W_ARCH}" = "win32" ] ; then
         case ${LANG} in
-          fr*) w_warn "Ce paquet (${W_PACKAGE}) ne fonctionne pas sur une installation 32 bits. Vous devez utiliser un préfixe créé avec WINEARCH=win64." ;;
+            fr*) w_warn "Ce paquet (${W_PACKAGE}) ne fonctionne pas sur une installation 32 bits. Vous devez utiliser un préfixe créé avec WINEARCH=win64." ;;
             *) w_warn "This package (${W_PACKAGE}) does not work on a 32-bit installation. You must use a prefix made with WINEARCH=win64." ;;
         esac
         _w_force_continue_check 64
@@ -5235,7 +5235,7 @@ arch=32|64            Crée un préfixe en 32 ou 64 bits, cette option doit êtr
 prefix=foobar         Sélectionner WINEPREFIX=${W_PREFIXES_ROOT}/foobar
 annihilate            Supprimer TOUTES LES DONNÉES ET APPLICATIONS CONTENUES DANS CE WINEPREFIX
 _EOF_
-              ;;
+            ;;
         zh_CN*)
             cat <<_EOF_
 用法：$0 [选项] [命令|脚本|脚本路径] ...
