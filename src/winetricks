@@ -7888,7 +7888,7 @@ helper_dxvk_async()
 
     _W_package_dir="${_W_package_archive%.tar.gz}"
     w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://gitlab.com/${_W_repository}/-/releases/v${_W_package_version}"
-    w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support"
+    w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support" # The async fork lacks a wiki, and upstream's is most relevant anyway
 
     if w_wine_version_in ",${_W_min_wine_version}" ; then
         # shellcheck disable=SC2140
