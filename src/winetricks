@@ -1154,6 +1154,29 @@ w_get_github_latest_prerelease()
     echo "${latest_version}"
 }
 
+# Get the latest tagged release from gitlab.com API
+w_get_gitlab_latest_release()
+{
+    # FIXME: can we get releases that aren't on master branch?
+    org="$1"
+    repo="$2"
+
+    # release.json might still exists from the previous verb
+    w_try rm -f "${W_TMP_EARLY}/release.json"
+
+    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://gitlab.com/api/v4/projects/${org}%2F${repo}/releases" "" "release.json" >/dev/null 2>&1
+
+    # aria2c condenses the json (https://github.com/aria2/aria2/issues/1389)
+    # but curl/wget don't, so handle both cases:
+    json_length="$(wc -l "${W_TMP_EARLY}/release.json")"
+    case "${json_length}" in
+        0*) latest_version="$(sed -e "s/\",\"/|/g" "${W_TMP_EARLY}/release.json" | tr '|' '\n' | grep tag_name | sed 's@.*"@@' | head -n 1)";;
+        *) latest_version="$(grep -w tag_name "${W_TMP_EARLY}/release.json" | cut -d '"' -f 4 | head -n 1)";;
+    esac
+
+    echo "${latest_version}"
+}
+
 # get sha256sum string and set $_W_gotsha256sum to it
 w_get_sha256sum()
 {
@@ -7837,6 +7860,86 @@ load_dxvk()
     w_linkcheck_ignore=1 w_download "https://github.com/doitsujin/dxvk/releases/download/v${_W_dxvk_version}/dxvk-${_W_dxvk_version}.tar.gz"
     helper_dxvk "dxvk-${_W_dxvk_version}.tar.gz" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
     unset _W_dxvk_version
+}
+
+#----------------------------------------------------------------
+
+# $1 - dxvk async archive name (required)
+# $2 - dxvk async version (required)
+# $3 - minimum Wine version (required)
+# $4 - minimum Vulkan API version (required)
+# $5 - [dxgi,][d3d8,][d3d9,][d3d10core,]d3d11 (required)
+helper_dxvk_async()
+{
+    _W_package_archive="${1}"
+    _W_package_version="${2}"
+    _W_min_wine_version="${3}"
+    _W_min_vulkan_version="${4}"
+    _W_dll_overrides="$(echo "${5}" | sed 's/,/ /g')"
+    # dxvk async repository, for d3d8/d3d9/d3d10/d3d11 support
+    _W_repository="Ph42oN/dxvk-gplasync"
+
+    _W_supported_overrides="dxgi d3d8 d3d9 d3d10core d3d11"
+    _W_invalid_overrides="$(echo "${_W_dll_overrides}" | awk -vvalid_overrides_regex="$(echo "${_W_supported_overrides}" | sed 's/ /|/g')" '{ gsub(valid_overrides_regex,""); sub("[ ]*",""); print $0 }')"
+    if [ "${_W_invalid_overrides}" != "" ]; then
+        w_die "parameter (4) unsupported dll override: '${_W_invalid_overrides}' ; supported dll overrides: ${_W_supported_overrides}"
+    fi
+
+    _W_package_dir="${_W_package_archive%.tar.gz}"
+    w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://gitlab.com/${_W_repository}/-/releases/v${_W_package_version}"
+    w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support"
+
+    if w_wine_version_in ",${_W_min_wine_version}" ; then
+        # shellcheck disable=SC2140
+        w_warn "${_W_repository#*/} ${_W_package_version} does not support wine version ${_wine_version_stripped} . "\
+            "${_W_repository#*/} ${_W_package_version} requires wine version ${_W_min_wine_version} (or newer). "\
+            "Vulkan ${_W_min_vulkan_version} API (or newer) support is recommended."
+    fi
+
+    if [ "${_W_package_archive##*.}" = "zip" ]; then
+        w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    else
+        w_try tar -C "${W_TMP}" -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    fi
+
+    for _W_dll in ${_W_dll_overrides}; do
+        w_try mv "${W_TMP}/${_W_package_dir}/x32/${_W_dll}.dll" "${W_SYSTEM32_DLLS}/"
+    done
+
+    if test "${W_ARCH}" = "win64"; then
+        for _W_dll in ${_W_dll_overrides}; do
+            w_try mv "${W_TMP}/${_W_package_dir}/x64/${_W_dll}.dll" "${W_SYSTEM64_DLLS}/"
+        done
+    fi
+    # shellcheck disable=SC2086
+    w_override_dlls native ${_W_dll_overrides}
+
+    unset _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
+        _W_package_archive _W_package_dir _W_package_version \
+        _W_repository _W_supported_overrides
+}
+
+#----------------------------------------------------------------
+
+w_metadata dxvk_async dlls \
+    title="DXVK with Async and GPL patches [USE AT OWN RISK IN GAMES WITH ANTICHEAT] (latest)" \
+    publisher="Ph42oN" \
+    year="2025" \
+    media="download" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d8.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+
+load_dxvk_async()
+{
+    # https://gitlab.com/Ph42oN/dxvk-gplasync
+    _W_dxvk_async_version="$(w_get_gitlab_latest_release Ph42oN dxvk-gplasync)"
+    _W_dxvk_async_version="${_W_dxvk_async_version#v}"
+    w_linkcheck_ignore=1 w_download "https://gitlab.com/Ph42oN/dxvk-gplasync/-/raw/main/releases/dxvk-gplasync-v${_W_dxvk_async_version}.tar.gz"
+    helper_dxvk_async "dxvk-gplasync-v${_W_dxvk_async_version}.tar.gz" "${_W_dxvk_async_version}" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
+    unset _W_dxvk_async_version
 }
 
 #----------------------------------------------------------------
