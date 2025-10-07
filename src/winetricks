@@ -12735,7 +12735,7 @@ load_vcrun2003()
 {
     # Sadly, I know of no Microsoft URL for these
     # winetricks-test can't handle ${file1} in url since it does a raw parsing :/
-    w_download https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
+    w_download https://downloads.sourceforge.net/project/bzflag/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
 
     w_try_7z "${W_SYSTEM32_DLLS}" "${W_CACHE}/vcrun2003/BZEditW32_1.6.5.exe" "mfc71.dll" "msvcp71.dll" "msvcr71.dll" -y
 }
@@ -12750,7 +12750,7 @@ w_metadata mfc71 dlls \
 
 load_mfc71()
 {
-    w_download_to vcrun2003 https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
+    w_download_to vcrun2003 https://downloads.sourceforge.net/project/bzflag/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
 
     w_try_7z "${W_SYSTEM32_DLLS}" "${W_CACHE}/vcrun2003/BZEditW32_1.6.5.exe" "mfc71.dll" -y
 }
