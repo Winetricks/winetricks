@@ -9787,7 +9787,7 @@ load_dsound()
 
     # Don't try to register native dsound; it doesn't export DllRegisterServer().
     #w_try_regsvr32 dsound.dll
-    w_override_dlls native dsound
+    w_override_dlls native,builtin dsound
 }
 
 #----------------------------------------------------------------
