@@ -1185,6 +1185,29 @@ w_get_github_latest_prerelease()
     echo "${latest_version}"
 }
 
+# Get the latest tagged release from gitlab.com API
+w_get_gitlab_latest_release()
+{
+    # FIXME: can we get releases that aren't on master branch?
+    org="$1"
+    repo="$2"
+
+    # release.json might still exists from the previous verb
+    w_try rm -f "${W_TMP_EARLY}/release.json"
+
+    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://gitlab.com/api/v4/projects/${org}%2F${repo}/releases" "" "release.json" >/dev/null 2>&1
+
+    # aria2c condenses the json (https://github.com/aria2/aria2/issues/1389)
+    # but curl/wget don't, so handle both cases:
+    json_length="$(wc -l "${W_TMP_EARLY}/release.json")"
+    case "${json_length}" in
+        0*) latest_version="$(sed -e "s/\",\"/|/g" "${W_TMP_EARLY}/release.json" | tr '|' '\n' | grep tag_name | sed 's@.*"@@' | head -n 1)";;
+        *) latest_version="$(grep -w tag_name "${W_TMP_EARLY}/release.json" | cut -d '"' -f 4 | head -n 1)";;
+    esac
+
+    echo "${latest_version}"
+}
+
 # get sha256sum string and set $_W_gotsha256sum to it
 w_get_sha256sum()
 {
@@ -3535,7 +3558,7 @@ winetricks_mainmenu()
             _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Uruchomić powłokę wiersza poleceń (dla debugowania)'
             _W_msg_folder='Przeglądać pliki'
-            _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
+            _W_msg_annihilate="Usunąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
             ;;
         pt*) _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
             _W_msg_body='O que você gostaria de fazer com este prefixo wineprefix?'
@@ -5274,6 +5297,7 @@ list-installed        列出已安装的脚本
 arch=32|64            创建 32 位或 64 位 wineprefix，此选项必须在 prefix=foobar 之前指定，默认 wineprefix 不支持此选项
 prefix=foobar         选择 WINEPREFIX 为 ${W_PREFIXES_ROOT}/foobar
 annihilate            删除该 WINEPREFIX 内的所有数据和应用程序
+_EOF_
             ;;
         *)
             cat <<_EOF_
@@ -7993,6 +8017,86 @@ load_dxvk()
 
 #----------------------------------------------------------------
 
+# $1 - dxvk async archive name (required)
+# $2 - dxvk async version (required)
+# $3 - minimum Wine version (required)
+# $4 - minimum Vulkan API version (required)
+# $5 - [dxgi,][d3d8,][d3d9,][d3d10core,]d3d11 (required)
+helper_dxvk_async()
+{
+    _W_package_archive="${1}"
+    _W_package_version="${2}"
+    _W_min_wine_version="${3}"
+    _W_min_vulkan_version="${4}"
+    _W_dll_overrides="$(echo "${5}" | sed 's/,/ /g')"
+    # dxvk async repository, for d3d8/d3d9/d3d10/d3d11 support
+    _W_repository="Ph42oN/dxvk-gplasync"
+
+    _W_supported_overrides="dxgi d3d8 d3d9 d3d10core d3d11"
+    _W_invalid_overrides="$(echo "${_W_dll_overrides}" | awk -vvalid_overrides_regex="$(echo "${_W_supported_overrides}" | sed 's/ /|/g')" '{ gsub(valid_overrides_regex,""); sub("[ ]*",""); print $0 }')"
+    if [ "${_W_invalid_overrides}" != "" ]; then
+        w_die "parameter (4) unsupported dll override: '${_W_invalid_overrides}' ; supported dll overrides: ${_W_supported_overrides}"
+    fi
+
+    _W_package_dir="${_W_package_archive%.tar.gz}"
+    w_warn "Please refer to ${_W_repository#*/} version ${_W_package_version} release notes... See: https://gitlab.com/${_W_repository}/-/releases/v${_W_package_version}"
+    w_warn "Please refer to current dxvk base graphics driver requirements... See: https://github.com/doitsujin/dxvk/wiki/Driver-support" # The async fork lacks a wiki, and upstream's is most relevant anyway
+
+    if w_wine_version_in ",${_W_min_wine_version}" ; then
+        # shellcheck disable=SC2140
+        w_warn "${_W_repository#*/} ${_W_package_version} does not support wine version ${_wine_version_stripped} . "\
+            "${_W_repository#*/} ${_W_package_version} requires wine version ${_W_min_wine_version} (or newer). "\
+            "Vulkan ${_W_min_vulkan_version} API (or newer) support is recommended."
+    fi
+
+    if [ "${_W_package_archive##*.}" = "zip" ]; then
+        w_try_unzip "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    else
+        w_try tar -C "${W_TMP}" -zxf "${W_CACHE}/${W_PACKAGE}/${_W_package_archive}"
+    fi
+
+    for _W_dll in ${_W_dll_overrides}; do
+        w_try mv "${W_TMP}/${_W_package_dir}/x32/${_W_dll}.dll" "${W_SYSTEM32_DLLS}/"
+    done
+
+    if test "${W_ARCH}" = "win64"; then
+        for _W_dll in ${_W_dll_overrides}; do
+            w_try mv "${W_TMP}/${_W_package_dir}/x64/${_W_dll}.dll" "${W_SYSTEM64_DLLS}/"
+        done
+    fi
+    # shellcheck disable=SC2086
+    w_override_dlls native ${_W_dll_overrides}
+
+    unset _W_dll _W_dll_overrides _W_invalid_overrides _W_min_vulkan_version _W_min_wine_version \
+        _W_package_archive _W_package_dir _W_package_version \
+        _W_repository _W_supported_overrides
+}
+
+#----------------------------------------------------------------
+
+w_metadata dxvk_async dlls \
+    title="DXVK with Async and GPL patches [USE AT OWN RISK IN GAMES WITH ANTICHEAT] (latest)" \
+    publisher="Ph42oN" \
+    year="2025" \
+    media="download" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/d3d8.dll" \
+    installed_file2="${W_SYSTEM32_DLLS_WIN}/d3d9.dll" \
+    installed_file3="${W_SYSTEM32_DLLS_WIN}/d3d10core.dll" \
+    installed_file4="${W_SYSTEM32_DLLS_WIN}/d3d11.dll" \
+    installed_file5="${W_SYSTEM32_DLLS_WIN}/dxgi.dll"
+
+load_dxvk_async()
+{
+    # https://gitlab.com/Ph42oN/dxvk-gplasync
+    _W_dxvk_async_version="$(w_get_gitlab_latest_release Ph42oN dxvk-gplasync)"
+    _W_dxvk_async_version="${_W_dxvk_async_version#v}"
+    w_linkcheck_ignore=1 w_download "https://gitlab.com/Ph42oN/dxvk-gplasync/-/raw/main/releases/dxvk-gplasync-v${_W_dxvk_async_version}.tar.gz"
+    helper_dxvk_async "dxvk-gplasync-v${_W_dxvk_async_version}.tar.gz" "${_W_dxvk_async_version}" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
+    unset _W_dxvk_async_version
+}
+
+#----------------------------------------------------------------
+
 # $1 - dxvk-nvapi archive name (required)
 # $2 - minimum Wine version (required)
 # $3 - nvapi,[nvapi64] (required)
@@ -9939,7 +10043,7 @@ load_dsound()
 
     # Don't try to register native dsound; it doesn't export DllRegisterServer().
     #w_try_regsvr32 dsound.dll
-    w_override_dlls native dsound
+    w_override_dlls native,builtin dsound
 }
 
 #----------------------------------------------------------------
@@ -12886,7 +12990,7 @@ load_vcrun2003()
 {
     # Sadly, I know of no Microsoft URL for these
     # winetricks-test can't handle ${file1} in url since it does a raw parsing :/
-    w_download https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
+    w_download https://downloads.sourceforge.net/project/bzflag/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
 
     w_try_7z "${W_SYSTEM32_DLLS}" "${W_CACHE}/vcrun2003/BZEditW32_1.6.5.exe" "mfc71.dll" "msvcp71.dll" "msvcr71.dll" -y
 }
@@ -12901,7 +13005,7 @@ w_metadata mfc71 dlls \
 
 load_mfc71()
 {
-    w_download_to vcrun2003 https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
+    w_download_to vcrun2003 https://downloads.sourceforge.net/project/bzflag/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
 
     w_try_7z "${W_SYSTEM32_DLLS}" "${W_CACHE}/vcrun2003/BZEditW32_1.6.5.exe" "mfc71.dll" -y
 }
