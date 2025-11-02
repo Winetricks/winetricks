@@ -76,6 +76,7 @@ WINETRICKS_VERSION=20250102-next
 #   Copyright (C) 2013,2016 André Hentschel <nerv!dawncrow.de>
 #   Copyright (C) 2023 Georgi Georgiev (RacerBG) <g.georgiev.shumen!gmail.com>
 #   Copyright (C) 2025 ykla <yklaxds!gmail.com>
+#   Copyright (C) 2025 Allan Rémy
 #
 # License:
 #   This program is free software; you can redistribute it and/or
@@ -359,6 +360,31 @@ _w_get_broken_messages()
             broken_good_and_bad_version_known_win64="Пакетът (${W_PACKAGE}) е повреден при 64-битовата архитектура на wine-${_wine_version_stripped}. Повреден е от версия ${bad_version}. Използвайте папка, създадена с WINEARCH=win32 или wine to >=${good_version}. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
             broken_only_bad_version_known_win64="Пакетът (${W_PACKAGE}) е повреден при 64-битовата архитектура на wine-${_wine_version_stripped}. Повреден е от версия ${bad_version}. Използвайте папка, създадена с WINEARCH=win32. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
             broken_no_version_known_win64="Пакетът (${W_PACKAGE}) е повреден, когато wine е създаден без mingw. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
+            ;;
+        fr*)
+            # default broken messages
+            broken_good_version_known_default="Ce paquet (${W_PACKAGE}) ne fonctionne pas correctement dans wine-${_wine_version_stripped}. Effectuez une mise à niveau vers >=${good_version}. Consultez ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_good_and_bad_version_known_default="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version}. Mettez à jour vers >=${good_version}. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_only_bad_version_known_default="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version}. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_no_version_known_default="Ce paquet (${W_PACKAGE}) est cassé. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+
+            # mingw broken messages
+            broken_good_version_known_mingw="Ce paquet (${W_PACKAGE}) ne fonctionne pas sous wine-${_wine_version_stripped} lorsque wine est compilé avec mingw. Effectuez une mise à niveau vers >=${good_version} ou recompilez wine sans mingw. Consultez ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_good_and_bad_version_known_mingw="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version} lorsque wine est compilé avec mingw. Mettez à jour vers >=${good_version} ou recompilez wine sans mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_only_bad_version_known_mingw="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version} lorsque wine est compilé avec mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_no_version_known_mingw="Ce paquet (${W_PACKAGE}) est cassé lorsque Wine est compilé avec mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+
+            # no mingw broken messages
+            broken_good_version_known_no_mingw="Ce paquet (${W_PACKAGE}) est défectueux dans wine-${_wine_version_stripped} lorsque wine est compilé sans mingw. Effectuez une mise à niveau vers >=${good_version}. Consultez ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_good_and_bad_version_known_no_mingw="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version} lorsque wine est compilé sans mingw. Mettez à jour vers >=${good_version}. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_only_bad_version_known_no_mingw="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version} lorsque wine est compilé sans mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_no_version_known_no_mingw="Ce paquet (${W_PACKAGE}) est cassé lorsque wine est compilé sans mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+
+            # win64 broken messages
+            broken_good_version_known_win64="Ce paquet (${W_PACKAGE}) ne fonctionne pas sous Wine 64 bits-${_wine_version_stripped}. Utilisez un préfixe créé avec WINEARCH=win32 ou mettez à niveau Wine vers >=${good_version} pour contourner ce problème. Ou utilisez --force pour essayer quand même. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_good_and_bad_version_known_win64="Ce paquet (${W_PACKAGE}) est cassé sur wine-${_wine_version_stripped} 64 bits. Cassé depuis ${bad_version}. Utilisez un préfixe créé avec WINEARCH=win32 ou mettez à jour wine vers >=${good_version} pour contourner ce problème. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_only_bad_version_known_win64="Ce paquet (${W_PACKAGE}) est cassé sur wine-${_wine_version_stripped} 64 bits. Cassé depuis ${bad_version}. Utilisez un préfixe créé avec WINEARCH=win32 pour contourner ce problème. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
+            broken_no_version_known_win64="Ce paquet (${W_PACKAGE}) est cassé lorsque wine est compilé sans mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
             ;;
         pt*)
             # default broken messages
@@ -3216,6 +3242,17 @@ winetricks_prefixmenu()
             _W_msg_unattended1="Включване на автоматичното инсталиране"
             _W_msg_help="Отваряне на помощта"
             ;;
+        fr*) _W_msg_title="Winetricks - Choisir un préfixe"
+            _W_msg_body="Que souhaitez-vous faire ?"
+            _W_msg_apps="Installer une application"
+            _W_msg_benchmarks="Installer un benchmark"
+            _W_msg_default="Sélectionner le préfixe par défaut"
+            _W_msg_mkprefix="Créer un nouveau préfixe"
+            _W_msg_unattended0="Désactiver une installation silencieuse"
+            _W_msg_unattended1="Activer une installation silencieuse"
+            _W_msg_help="Voir aide"
+            _W_msg_cancel="Quitter"
+            ;;
         ru*) _W_msg_title="Winetricks - выберите путь wine (префикс)"
             _W_msg_body='Что вы хотите сделать?'
             _W_msg_apps='Установить программу'
@@ -3396,6 +3433,10 @@ winetricks_mkprefixmenu()
             _W_msg_name="Name"
             _W_msg_arch="Architektur"
             ;;
+        fr*)  _W_msg_title="Winetricks - Créer un nouveau préfixe"
+            _W_msg_name="Nom :"
+            _W_msg_arch="Architecture"
+            ;;
         pt*) _W_msg_title="Winetricks - criar novo wineprefix"
             _W_msg_name="Nome"
             _W_msg_arch="Arquitetura"
@@ -3480,6 +3521,23 @@ winetricks_mainmenu()
             _W_msg_shell='Eine Kommandozeile zum debuggen starten'
             _W_msg_folder='Ordner durchsuchen'
             _W_msg_annihilate="ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen"
+            ;;
+        fr*) _W_msg_title="Winetricks - Le préfixe actuel est \"${WINEPREFIX}\""
+            _W_msg_body='Que souhaitez-vous faire avec ce préfixe ?'
+            _W_msg_cancel="Revenir en arrière"
+            _W_msg_dlls="Installer une DLL ou un composant Windows"
+            _W_msg_fonts='Installer une police'
+            _W_msg_settings='Modifier les paramètres'
+            _W_msg_winecfg='Exécuter winecfg'
+            _W_msg_regedit='Exécuter regedit'
+            _W_msg_taskmgr='Exécuter taskmgr'
+            _W_msg_explorer='Exécuter explorer'
+            _W_msg_uninstaller='Exécuter uninstaller'
+            _W_msg_winecmd='Exécuter une invite de commande'
+            _W_msg_wine_misc_exe='Exécuter un exécutable arbitraire (.exe/.msi/.msu)'
+            _W_msg_shell='Exécuter une invite de commande pour le débogage'
+            _W_msg_folder='Parcourir les fichiers'
+            _W_msg_annihilate="Supprimer TOUTES LES DONNÉES ET APPLICATIONS CONTENUES DANS CE PRÉFIXE"
             ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
             _W_msg_body='Co chcesz zrobić w tym prefiksie?'
@@ -3667,6 +3725,9 @@ winetricks_settings_menu()
         de*) _W_msg_title="Winetricks - Aktueller Präfix ist \"${WINEPREFIX}\""
             _W_msg_body='Welche Einstellungen möchten Sie ändern?'
             ;;
+        fr*) _W_msg_title="Winetricks - Le préfixe actuel est \"${WINEPREFIX}\""
+            _W_msg_body='Quels paramètres souhaitez-vous modifier ?'
+            ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
             _W_msg_body='Jakie ustawienia chcesz zmienić?'
             ;;
@@ -3725,6 +3786,19 @@ winetricks_settings_menu()
                         --column '' \
                         --column Einstellung \
                         --column Name \
+                        --height ${WINETRICKS_MENU_HEIGHT} \
+                        --width ${WINETRICKS_MENU_WIDTH} \
+                        "
+                    ;;
+                fr*) printf %s "zenity \
+                        --title '${_W_msg_title}' \
+                        --text '${_W_msg_body}' \
+                        --cancel-label 'Revenir en arrière' \
+                        --list \
+                        --checklist \
+                        --column '' \
+                        --column Paramètres \
+                        --column Titre \
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
@@ -3890,6 +3964,10 @@ winetricks_showmenu()
             _W_msg_body='Welche Paket(e) möchten Sie installieren?'
             _W_cached="gecached"
             ;;
+        fr*) _W_msg_title="Winetricks - Le préfixe actuel est \"${WINEPREFIX}\""
+            _W_msg_body="Quel(s) paquet(s) souhaitez-vous installer ?"
+            _W_cached="mis en cache"
+            ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
             _W_msg_body='Które paczki chesz zainstalować?'
             _W_cached="zarchiwizowane"
@@ -3966,6 +4044,22 @@ winetricks_showmenu()
                         --column Name \
                         --column Herausgeber \
                         --column Jahr \
+                        --column Media \
+                        --column Status \
+                        --height ${WINETRICKS_MENU_HEIGHT} \
+                        --width ${WINETRICKS_MENU_WIDTH} \
+                        "
+                        ;;
+                fr*) printf %s "zenity \
+                        --title '${_W_msg_title}' \
+                        --text '${_W_msg_body}' \
+                        --list \
+                        --checklist \
+                        --column '' \
+                        --column Package \
+                        --column Titre \
+                        --column Éditeur \
+                        --column Année \
                         --column Media \
                         --column Status \
                         --height ${WINETRICKS_MENU_HEIGHT} \
@@ -4312,6 +4406,7 @@ winetricks_list_all()
         bg*) _W_cached="кеширано"   ; _W_download="за изтегляне"  ;;
         da*) _W_cached="cached"   ; _W_download="kan hentes"    ;;
         de*) _W_cached="gecached" ; _W_download="herunterladbar";;
+        fr*) _W_cached="mis en cache"   ; _W_download="téléchargeable";;
         pl*) _W_cached="zarchiwizowane"   ; _W_download="do pobrania"  ;;
         pt*) _W_cached="em cache"   ; _W_download="para download"  ;;
         ru*) _W_cached="в кэше"   ; _W_download="доступно для скачивания"  ;;
@@ -4632,6 +4727,7 @@ winetricks_set_wineprefix()
         if [ "${W_NO_WIN64_WARNINGS}" = 0 ]; then
             case ${LANG} in
                 bg*) w_warn "Използвате 64-битова папка. Повечето програми са за 32-битова архитектура. Ако възникнат проблеми, моля, използвайте 32-битова папка, преди да ги докладвате." ;;
+                fr*) w_warn "Vous utilisez un WINEPREFIX 64 bits. Notez que de nombreux verbes n'installent que des versions 32 bits des paquets. Si vous rencontrez des problèmes, veuillez refaire un test dans un WINEPREFIX 32 bits propre avant de signaler un bug." ;;
                 ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
                 pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
                 zh_CN*) w_warn "您正在使用 64 位的 WINEPREFIX。请注意，许多脚本（verbs）只安装 32 位版本的软件包。如果遇到问题，请先在干净的 32 位 WINEPREFIX 中重新测试，然后再报告错误。" ;;
@@ -4744,6 +4840,7 @@ winetricks_annihilate_wineprefix()
 
     case ${LANG} in
         bg*) w_askpermission "Изтриване на ${WINEPREFIX}, нейните приложения, икони и менюта?" ;;
+        fr*) w_askpermission "Supprimer ${WINEPREFIX}, ses applications, ses icônes et ses éléments de menu ?" ;;
         uk*) w_askpermission "Бажаєте видалити '${WINEPREFIX}'?" ;;
         pl*) w_askpermission "Czy na pewno chcesz usunąć prefiks ${WINEPREFIX} i wszystkie jego elementy?" ;;
         pt*) w_askpermission "Apagar ${WINEPREFIX}, Estes apps, ícones e ítens do menu?" ;;
@@ -5107,6 +5204,50 @@ prefix=foobar         WINEPREFIX=${W_PREFIXES_ROOT}/foobar auswählen
 annihilate            ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen
 _EOF_
             ;;
+        fr*)
+            cat <<_EOF_
+Utilisation : $0 [options] [commande|verbe|chemin-vers-le-verbe] ...
+Exécute les verbes donnés. Chaque verbe installe une application ou modifie un paramètre.
+
+Options :
+    --country=CC      Définit le code pays sur CC et ne détecte pas votre adresse IP
+-f, --force           Ne vérifie pas si les paquets sont déjà installés
+    --gui             Affiche les diagnostics de l'interface graphique même lorsque l'application est lancée en ligne de commande
+    --gui=OPT         Définit OPT sur kdialog ou zenity pour remplacer le moteur GUI
+    --isolate         Installe chaque application ou jeu dans son propre bottle (WINEPREFIX)
+    --self-update     Mettre à jour cette application vers la dernière version (non Debian)
+    --update-rollback Annuler la dernière mise à jour automatique
+-k, --keep_isos       Mettre en cache les images ISO (permet une installation ultérieure sans disque)
+    --no-clean        Ne pas supprimer les répertoires temporaires (utile pendant le débogage)
+    --optin           Activer le rapport des verbes que vous utilisez aux responsables de Winetricks
+    --optout          Désactiver le rapport des verbes que vous utilisez aux responsables de Winetricks
+-q, --unattended      Ne poser aucune question, installer automatiquement
+-r, --ddrescue        Réessayer plusieurs fois lors de la mise en cache de disques rayés
+-t  --torify          Exécute les téléchargements sous torify, si disponible
+    --verify          Exécute des tests GUI (automatisés) pour les verbes, si disponibles
+-v, --verbose         Affiche toutes les commandes au fur et à mesure de leur exécution
+-h, --help            Affiche ce message et quitte
+-V, --version         Affiche la version et quitte
+
+Commandes :
+list                  Liste des catégories
+list-all              Liste toutes les catégories et leurs verbes
+apps list             Liste les verbes dans la catégorie « applications »
+benchmarks list       Liste les verbes dans la catégorie « benchmarks »
+dlls list             Liste les verbes de la catégorie « dlls »
+fonts list            Liste les verbes de la catégorie « polices »
+settings list         Liste les verbes de la catégorie « paramètres »
+list-cached           Liste les verbes mis en cache et prêts à être installés
+list-download         Liste les verbes qui se téléchargent automatiquement
+list-manual-download  Liste les verbes qui se téléchargent avec l'aide de l'utilisateur
+list-installed        Liste les verbes déjà installés
+arch=32|64            Crée un préfixe en 32 ou 64 bits, cette option doit être
+                      Spécifiée avant prefix=foobar et ne fonctionnera pas dans le cas du
+                      wineprefix par défaut.
+prefix=foobar         Sélectionner WINEPREFIX=${W_PREFIXES_ROOT}/foobar
+annihilate            Supprimer TOUTES LES DONNÉES ET APPLICATIONS CONTENUES DANS CE WINEPREFIX
+_EOF_
+              ;;
         zh_CN*)
             cat <<_EOF_
 用法：$0 [选项] [命令|脚本|脚本路径] ...
