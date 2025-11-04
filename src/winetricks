@@ -15351,40 +15351,6 @@ load_emu8086()
 
 #----------------------------------------------------------------
 
-w_metadata ev3 apps \
-    title="Lego Mindstorms EV3 Home Edition" \
-    publisher="Lego" \
-    year="2014" \
-    media="download" \
-    file1="LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe" \
-    installed_exe1="${W_PROGRAMS_X86_WIN}/LEGO Software/LEGO MINDSTORMS EV3 Home Edition/MindstormsEV3.exe"
-
-load_ev3()
-{
-    if w_workaround_wine_bug 40192 "Installing vcrun2005 as Wine does not have MFC80.dll"; then
-        w_call vcrun2005
-    fi
-
-    if w_workaround_wine_bug 40193 "Installing IE8 as built-in Gecko is not sufficient"; then
-        w_call ie8
-    fi
-
-    w_call dotnet40
-
-    # 2016/03/22: LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
-
-    w_download http://esd.lego.com.edgesuite.net/digitaldelivery/mindstorms/6ecda7c2-1189-4816-b2dd-440e22d65814/public/LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
-
-    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/qb /AcceptLicenses yes}
-
-    if w_workaround_wine_bug 40729 "Setting override for urlmon.dll to native to avoid crash"; then
-        w_override_dlls native urlmon
-    fi
-}
-
-#----------------------------------------------------------------
-
 w_metadata firefox apps \
     title="Firefox 51.0" \
     publisher="Mozilla" \
