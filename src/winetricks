@@ -17898,6 +17898,32 @@ w_metadata windowmanagerdecorated=n settings \
 
 #----------------------------------------------------------------
 
+w_metadata useegl=y settings \
+    title="Enable EGL (default)"
+w_metadata useegl=n settings \
+    title="Disable EGL, use GLX instead"
+
+load_useegl()
+{
+    case "$1" in
+        y) arg="Y";;
+        n) arg="N";;
+        *) w_die "illegal value $1 for UseEGL";;
+    esac
+
+    echo "Setting UseEGL to ${arg}"
+    cat > "${W_TMP}"/set-useegl.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Wine\\X11 Driver]
+"UseEGL"="${arg}"
+
+_EOF_
+    w_try_regedit "${W_TMP}"/set-useegl.reg
+}
+
+#----------------------------------------------------------------
+
 w_metadata usetakefocus=y settings \
     title_bg="Включете UseTakeFocus" \
     title_cz="Aktivovat UseTakeFocus" \
