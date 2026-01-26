@@ -15468,7 +15468,9 @@ load_dxwnd()
 {
     # 2022/10/02 v2_05_88_build.rar a80ad1246493b3b34fba2131494052423ac298a39592d4e06a685568b829922e
     w_download https://downloads.sourceforge.net/project/dxwnd/Latest%20build/v2_05_88_build.rar a80ad1246493b3b34fba2131494052423ac298a39592d4e06a685568b829922e
-    w_try_7z "${W_PROGRAMS_X86_UNIX}"/dxwnd "${W_CACHE}"/"${W_PACKAGE}"/"${file1}" -aoa
+    w_try_mkdir "${W_PROGRAMS_X86_UNIX}"/dxwnd
+    w_try_cd "${W_PROGRAMS_X86_UNIX}"/dxwnd
+    w_try_unrar "${W_CACHE}/${W_PACKAGE}/${file1}"
 }
 
 #----------------------------------------------------------------
