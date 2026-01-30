@@ -2469,12 +2469,8 @@ w_set_app_winver()
     _W_app="$1"
     _W_version="$2"
     echo "Setting ${_W_app} to ${_W_version} mode"
-    (
-    echo REGEDIT4
-    echo ""
-    echo "[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\${_W_app}]"
-    echo "\"Version\"=\"${_W_version}\""
-    ) > "${W_TMP}"/set-winver.reg
+    # Use printf to avoid echo interpreting \n in app names like "node.exe"
+    printf '%s\n' "REGEDIT4" "" "[HKEY_CURRENT_USER\\Software\\Wine\\AppDefaults\\${_W_app}]" "\"Version\"=\"${_W_version}\"" > "${W_TMP}"/set-winver.reg
 
     w_try_regedit "${W_TMP_WIN}"\\set-winver.reg
     rm "${W_TMP}"/set-winver.reg
