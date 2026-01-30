@@ -1104,9 +1104,14 @@ w_pathconv()
 }
 
 # Expand an environment variable and print it to stdout
+# Move to $WINEPREFIX to avoid corruption of W_PROGRAMS_WIN and W_PROGRAMS_X86_WIN when running from syswow64
 w_expand_env()
 {
+    _W_dl_olddir=$(pwd)
+    w_try_cd "${WINEPREFIX}"
     winetricks_early_wine_arch cmd.exe /c "chcp 65001 > nul & echo %$1%"
+    w_try_cd "${_W_dl_olddir}"
+    unset _W_dl_olddir
 }
 
 # Determine what architecture a binary file is built for, silently continue in case of failure.
