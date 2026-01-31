@@ -13767,6 +13767,48 @@ load_webio()
     w_override_dlls native,builtin webio
 }
 
+#----------------------------------------------------------------
+
+w_metadata webview2 dlls \
+    title="Microsoft Edge WebView2 Evergreen Runtime" \
+    publisher="Microsoft" \
+    year="2020" \
+    media="download" \
+    file1="MicrosoftEdgeWebview2Setup.exe" \
+    installed_file1="${W_PROGRAMS_X86_WIN}/Microsoft/EdgeUpdate/MicrosoftEdgeUpdate.exe"
+
+load_webview2()
+{
+    # https://developer.microsoft.com/en-us/microsoft-edge/webview2/
+    # Evergreen Bootstrapper - downloads and installs appropriate architecture
+    # https://go.microsoft.com/fwlink/p/?LinkId=2124703
+    # Skip checksum verification since this file updates frequently
+    w_download https://go.microsoft.com/fwlink/p/?LinkId=2124703 "" MicrosoftEdgeWebview2Setup.exe
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try_ms_installer "${WINE}" MicrosoftEdgeWebview2Setup.exe ${W_OPT_UNATTENDED:+/silent /install}
+
+    if w_workaround_wine_bug 53925 "Setting edgeupdate service to manual startup"; then
+        cat > "${W_TMP}"/edgeupdate-service.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\edgeupdate]
+"Start"=dword:00000003
+
+_EOF_
+        w_try_regedit "${W_TMP_WIN}"\\edgeupdate-service.reg
+
+        # Kill the running service since it was started during installation
+        # Use pgrep -f to match full command line since process name is >15 chars
+        # shellcheck disable=SC2046,SC2086
+        sleep 5 # Make sure we don't accidentally kill any other MicrosoftEdgeUpdate instance (shouldn't be needed, but better safe than sorry)
+        kill -s KILL $(pgrep -f "MicrosoftEdgeUpdate.exe /c") 2>/dev/null || true
+    fi
+
+    if w_workaround_wine_bug 58921 "Setting Windows 7 mode"; then
+        w_set_app_winver msedgewebview2.exe win7
+    fi
+}
 
 #----------------------------------------------------------------
 
