@@ -13401,7 +13401,7 @@ w_metadata vcrun2015 dlls \
     publisher="Microsoft" \
     year="2015" \
     media="download" \
-    conflicts="vcrun2017 vcrun2019 ucrtbase2019 vcrun2022" \
+    conflicts="vcrun2017 vcrun2019 ucrtbase2019 vcrun2022 vcrun2026" \
     file1="vc_redist.x86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/mfc140.dll"
 
@@ -13477,7 +13477,7 @@ w_metadata vcrun2017 dlls \
     publisher="Microsoft" \
     year="2017" \
     media="download" \
-    conflicts="vcrun2015 vcrun2019 ucrtbase2019 vcrun2022" \
+    conflicts="vcrun2015 vcrun2019 ucrtbase2019 vcrun2022 vcrun2026" \
     file1="vc_redist.x86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/mfc140.dll"
 
@@ -13527,7 +13527,7 @@ w_metadata vcrun2019 dlls \
     publisher="Microsoft" \
     year="2019" \
     media="download" \
-    conflicts="vcrun2015 vcrun2017 vcrun2022" \
+    conflicts="vcrun2015 vcrun2017 vcrun2022 vcrun2026" \
     file1="vc_redist.x86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/mfc140.dll"
 
@@ -13637,7 +13637,7 @@ w_metadata vcrun2022 dlls \
     publisher="Microsoft" \
     year="2022" \
     media="download" \
-    conflicts="vcrun2015 vcrun2017 vcrun2019" \
+    conflicts="vcrun2015 vcrun2017 vcrun2019 vcrun2026" \
     file1="vc_redist.x86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/vcruntime140.dll"
 
@@ -13689,6 +13689,54 @@ load_vcrun2022()
             w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a12" -F 'msvcp140.dll'
 
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
+            ;;
+    esac
+}
+
+#----------------------------------------------------------------
+
+w_metadata vcrun2026 dlls \
+    title="Visual C++ 2017-2026 libraries (concrt140.dll,mfc140.dll,mfc140chs.dll,mfc140cht.dll,mfc140deu.dll,mfc140enu.dll,mfc140esn.dll,mfc140fra.dll,mfc140ita.dll,mfc140jpn.dll,mfc140kor.dll,mfc140rus.dll,mfc140u.dll,mfcm140.dll,mfcm140u.dll,msvcp140.dll,msvcp140_1.dll,msvcp140_2.dll,msvcp140_atomic_wait.dll,msvcp140_codecvt_ids.dll,vcamp140.dll,vccorlib140.dll,vcomp140.dll,vcruntime140.dll,vcruntime140_1.dll)" \
+    publisher="Microsoft" \
+    year="2026" \
+    media="download" \
+    conflicts="vcrun2015 vcrun2017 vcrun2019 vcrun2022" \
+    file1="VC_redist.x86.exe" \
+    installed_file1="${W_SYSTEM32_DLLS_WIN}/vcruntime140.dll"
+
+load_vcrun2026()
+{
+    # https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
+    # 2026-02-01: 14.50.35719 @ https://download.visualstudio.microsoft.com/download/pr/6f02464a-5e9b-486d-a506-c99a17db9a83/E7267C1BDF9237C0B4A28CF027C382B97AA909934F84F1C92D3FB9F04173B33E/VC_redist.x86.exe
+    w_override_dlls native,builtin concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids vcamp140 vccorlib140 vcomp140 vcruntime140
+
+    w_download https://aka.ms/vc14/vc_redist.x86.exe e7267c1bdf9237c0b4a28cf027c382b97aa909934f84f1c92d3fb9f04173b33e
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try_ms_installer "${WINE}" VC_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
+
+    # Setup will refuse to install msvcp140 & msvcp140_2 because the builtin's version number is higher, so manually replace them
+    # See https://bugs.winehq.org/show_bug.cgi?id=57518
+    w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/"${W_PACKAGE}"/VC_redist.x86.exe -F 'a2'
+    w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/a2"
+    w_try mv -f "${W_TMP}/win32/msvcp140.dll_x86" "${W_SYSTEM32_DLLS}/msvcp140.dll"
+    w_try mv -f "${W_TMP}/win32/msvcp140_2.dll_x86" "${W_SYSTEM32_DLLS}/msvcp140_2.dll"
+
+    case "${W_ARCH}" in
+        win64)
+            # Also install the 64-bit version
+            # 2026-02-01: 14.50.35719 @ https://download.visualstudio.microsoft.com/download/pr/6f02464a-5e9b-486d-a506-c99a17db9a83/8995548DFFFCDE7C49987029C764355612BA6850EE09A7B6F0FDDC85BDC5C280/VC_redist.x64.exe
+            # vcruntime140_1 is only shipped on x64:
+            w_override_dlls native,builtin vcruntime140_1
+
+            w_download https://aka.ms/vc14/vc_redist.x64.exe 8995548dfffcde7c49987029c764355612ba6850ee09a7b6f0fddc85bdc5c280
+            w_try_ms_installer "${WINE}" VC_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
+
+            # Also replace 64-bit msvcp140.dll, msvcp140_2.dll & vcruntime140_1.dll
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/VC_redist.x64.exe -F 'a4'
+            w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/a4"
+            w_try mv -f "${W_TMP}/win64/msvcp140.dll_amd64" "${W_SYSTEM64_DLLS}/msvcp140.dll"
+            w_try mv -f "${W_TMP}/win64/msvcp140_2.dll_amd64" "${W_SYSTEM64_DLLS}/msvcp140_2.dll"
+            w_try mv -f "${W_TMP}/win64/vcruntime140_1.dll_amd64" "${W_SYSTEM64_DLLS}/vcruntime140_1.dll"
             ;;
     esac
 }
