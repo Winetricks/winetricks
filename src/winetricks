@@ -6807,11 +6807,20 @@ w_metadata depends apps \
 
 load_depends()
 {
-    w_download https://www.dependencywalker.com/depends22_x86.zip 03d73abba0e856c81ba994505373fdb94a13b84eb29e6c268be1bf21b7417ca3
-    w_try_unzip "${W_TMP}" "${W_CACHE}"/depends/depends22_x86.zip
-    w_try cp "${W_TMP}"/depends.* "${W_WINDIR_UNIX}"
-    # depends.exe uses mfc42
-    w_call mfc42
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_download https://www.dependencywalker.com/depends22_x64.zip 35db68a613874a2e8c1422eb0ea7861f825fc71717d46dabf1f249ce9634b4f1
+        w_try_unzip "${W_TMP}" "${W_CACHE}"/depends/depends22_x64.zip
+        w_try cp "${W_TMP}"/depends.* "${W_WINDIR_UNIX}"
+        w_download_to  depends "https://www.dlldownloader.com/mfc42-dll/download/f0c0df5da0fdb6305017c5dec1099a94/07c410623c40f250d422e5801cc57855/?c=bEhCdUZzZjg5T0lYWjU5a3lNU0gyUT09" f3ce67a68b650f33a6b1ff21a0bff1dba75282e4d4a0e4ba72f7c4a336fc4be5 mfc42.zip
+        w_try_unzip "${W_TMP}" "${W_CACHE}"/depends/mfc42.zip
+        w_try cp "${W_TMP}"/mfc42.dll "${W_WINDIR_UNIX}"
+    else
+        w_download https://www.dependencywalker.com/depends22_x86.zip 03d73abba0e856c81ba994505373fdb94a13b84eb29e6c268be1bf21b7417ca3
+        w_try_unzip "${W_TMP}" "${W_CACHE}"/depends/depends22_x86.zip
+        w_try cp "${W_TMP}"/depends.* "${W_WINDIR_UNIX}"
+        # depends.exe uses mfc42
+        w_call mfc42
+    fi
 }
 
 #----------------------------------------------------------------
