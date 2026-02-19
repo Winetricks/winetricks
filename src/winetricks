@@ -208,7 +208,7 @@ w_askpermission()
                 w_info "Unattended mode, not prompting for confirmation"
             else
                 printf %s "Press Y or N, then Enter: " >&2
-                read -r response
+                read -r response </dev/tty
                 test "${response}" = Y || test "${response}" = y
             fi
     esac
@@ -2771,31 +2771,37 @@ w_do_call()
         test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP}"
         w_try_mkdir -q "${W_TMP}"
 
-        # Don't install if a conflicting verb is already installed:
-        # shellcheck disable=SC2154
-        if test "${WINETRICKS_FORCE}" != 1 && test "${conflicts}" && test -f "${WINEPREFIX}/winetricks.log"; then
-            for x in ${conflicts}; do
-                w_conflicts "$1" "${x}"
-            done
-        fi
+        if test "${WINETRICKS_DOWNLOAD_ONLY}" != 1; then
+            # Don't install if a conflicting verb is already installed:
+            # shellcheck disable=SC2154
+            if test "${WINETRICKS_FORCE}" != 1 && test "${conflicts}" && test -f "${WINEPREFIX}/winetricks.log"; then
+                for x in ${conflicts}; do
+                    w_conflicts "$1" "${x}"
+                done
+            fi
 
-        # Allow verifying a verb separately from installing it
-        if test "${WINETRICKS_VERIFY}" = 1 && winetricks_is_installed "$1" && test -z "${WINETRICKS_FORCE}"; then
-            echo "$1 is already installed. --force wasn't given, --verify was, so re-verifying."
-            winetricks_verify
-            return "${TRUE}"
-        fi
+            # Allow verifying a verb separately from installing it
+            if test "${WINETRICKS_VERIFY}" = 1 && winetricks_is_installed "$1" && test -z "${WINETRICKS_FORCE}"; then
+                echo "$1 is already installed. --force wasn't given, --verify was, so re-verifying."
+                winetricks_verify
+                return "${TRUE}"
+            fi
 
-        # Don't install if already installed
-        if test "${WINETRICKS_FORCE}" != 1 && winetricks_is_installed "$1"; then
-            echo "$1 already installed, skipping"
-            return "${TRUE}"
+            # Don't install if already installed
+            if test "${WINETRICKS_FORCE}" != 1 && winetricks_is_installed "$1"; then
+                echo "$1 already installed, skipping"
+                return "${TRUE}"
+            fi
         fi
 
         # We'd like to get rid of W_PACKAGE, but for now, just set it as late as possible.
         W_PACKAGE=$1
-        w_try "load_${cmd}" "${arg}"
-        winetricks_stats_log_command "$@"
+        if test "${WINETRICKS_DOWNLOAD_ONLY}" = 1; then
+            w_try "winetricks_download_only" "${cmd}" "${arg}"
+        else
+            w_try "load_${cmd}" "${arg}"
+            winetricks_stats_log_command "$@"
+        fi
 
         # User-specific postinstall hook.
         # Source it so the script can call w_download() if needed.
@@ -2807,15 +2813,17 @@ w_do_call()
         fi
 
         # Verify install
-        if test "${installed_exe1}" || test "${installed_file1}"; then
-            if ! winetricks_is_installed "$1"; then
-                w_die "$1 install completed, but installed file ${_W_file_unix} not found"
+        if test "${WINETRICKS_DOWNLOAD_ONLY}" != 1; then
+            if test "${installed_exe1}" || test "${installed_file1}"; then
+                if ! winetricks_is_installed "$1"; then
+                    w_die "$1 install completed, but installed file ${_W_file_unix} not found"
+                fi
             fi
-        fi
 
-        # If the user specified --verify, also run GUI tests:
-        if test "${WINETRICKS_VERIFY}" = 1; then
-            winetricks_verify
+            # If the user specified --verify, also run GUI tests:
+            if test "${WINETRICKS_VERIFY}" = 1; then
+                winetricks_verify
+            fi
         fi
 
         # Clean up after this verb
@@ -5290,6 +5298,7 @@ Usage: $0 [options] [command|verb|path-to-verb] ...
 Executes given verbs.  Each verb installs an application or changes a setting.
 
 Options:
+    --download        Allows you to download components without installing them
     --country=CC      Set country code to CC and don't detect your IP address
 -f, --force           Don't check whether packages were already installed
     --gui             Show gui diagnostics even when driven by commandline
@@ -5349,6 +5358,7 @@ winetricks_handle_option()
         -V|--version) winetricks_print_version ; exit 0;;
         --verify) WINETRICKS_VERIFY=1 ;;
         -vv|--really-verbose) WINETRICKS_OPT_VERBOSE=2 ; set -x ;;
+        --download) WINETRICKS_DOWNLOAD_ONLY=1;;
         -*) w_die "unknown option $1" ;;
         prefix=*) export WINEPREFIX="${W_PREFIXES_ROOT}/${1##prefix=}" ;;
         *) return "${FALSE}" ;;
@@ -5421,6 +5431,91 @@ winetricks_verify()
         127) echo "verify_${cmd} not found, not verifying ${cmd}" ;;
         *) w_die "verify_${cmd} failed!" ;;
     esac
+}
+
+winetricks_func_extract()
+{
+    _W_func_name="${1}"
+    _W_func_file="${W_TMP_EARLY}/${_W_func_name}.txt"
+
+    # Use sed to extract the specified function
+    sed -n '/^'"${_W_func_name}"'()/,/^}/p' "$0" > "${_W_func_file}"
+}
+
+winetricks_func_process()
+{
+    _W_proc_package="${1}"
+    _W_proc_file="${2}"
+    _W_previous_name="${3}"
+
+    while IFS= read -r line; do
+        # Clean the input line by removing leading whitespace
+        _W_clean_line="${line#"${line%%[![:space:]]*}"}"
+
+        case "${_W_clean_line}" in
+            "w_download_to"*)
+                eval "w_try" "${_W_clean_line}"
+                ;;
+            "w_download"*)
+                # Update the package variable temporarily
+                _W_PACKAGE_TEMP="${W_PACKAGE}"
+                W_PACKAGE="${_W_proc_package}"
+                eval "w_try" "${_W_clean_line}"
+                W_PACKAGE="${_W_PACKAGE_TEMP}"
+                ;;
+            "helper_"*)
+                # Extract helper function name and package
+                _W_temp_line="${_W_clean_line#"${_W_clean_line%%[![:space:]]*}"}"
+                _W_helper_name="${_W_temp_line%%[ (;]*}"
+                _W_helper_package="$(echo "${_W_helper_name}" | sed 's|helper_||')"
+
+                # Check if the helper function is different from the previous one
+                if [ -n "${_W_helper_name}" ] && [ "${_W_helper_name}" != "${_W_previous_name}" ]; then
+                    winetricks_func_extract "${_W_helper_name}"
+                    _W_helper_file="${W_TMP_EARLY}/${_W_helper_name}.txt"
+                    if [ -s "${_W_helper_file}" ]; then
+                        winetricks_func_process "${_W_helper_package}" "${_W_helper_file}" "${_W_helper_name}"
+                    fi
+                fi
+                ;;
+        esac
+    done < "${_W_proc_file}"
+}
+
+winetricks_download_only()
+{
+    _W_load_package="${1}"
+    _W_load_arg="${2}"
+    _W_load_name="load_${_W_load_package}"
+    _W_load_file="${W_TMP_EARLY}/${_W_load_name}.txt"
+
+    case "${_W_load_package}=${_W_load_arg}" in
+        "alldlls=download"|"allfonts=download"|"allcodecs=download"|"allapps=apps"|"allapps=benchmarks"|"alldownloadables=")
+            w_try "${_W_load_name}" "${_W_load_arg}"
+        ;;
+        "winrar="*|"dxvk="*|"dxvk_nvapi="*|"vkd3d="*|"faudio="*|"galliumnine="*|"droid="*)
+            # exception handling
+            _W_PACKAGE_TEMP="${W_PACKAGE}"
+            W_PACKAGE="${_W_load_package}"
+            W_SKIP_INSTALL="skip_install"
+            w_try "${_W_load_name}"
+            W_PACKAGE="${_W_PACKAGE_TEMP}"
+        ;;
+        *)
+            _W_metadata=$(echo "${WINETRICKS_METADATA}"/*/"${_W_load_package}.vars")
+
+            # shellcheck disable=SC1090
+            . "${_W_metadata}"
+
+            test "${media}" = "download" || return 0
+
+            winetricks_func_extract "${_W_load_name}"
+            test -s "${W_TMP_EARLY}"/"${_W_load_name}.txt" || return 1
+
+            winetricks_func_process "${_W_load_package}" "${_W_load_file}"
+        ;;
+    esac
+    unset _W_metadata _W_PACKAGE_TEMP W_SKIP_INSTALL
 }
 
 #---- Builtin Verbs ----
@@ -7996,7 +8091,9 @@ load_dxvk()
     _W_dxvk_version="$(w_get_github_latest_release doitsujin dxvk)"
     _W_dxvk_version="${_W_dxvk_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/doitsujin/dxvk/releases/download/v${_W_dxvk_version}/dxvk-${_W_dxvk_version}.tar.gz"
-    helper_dxvk "dxvk-${_W_dxvk_version}.tar.gz" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
+    if [ "${W_SKIP_INSTALL}" != "skip_install" ]; then
+        helper_dxvk "dxvk-${_W_dxvk_version}.tar.gz" "7.1" "1.3.204" "dxgi,d3d8,d3d9,d3d10core,d3d11"
+    fi
     unset _W_dxvk_version
 }
 
@@ -8172,7 +8269,9 @@ load_dxvk_nvapi()
     _W_dxvk_nvapi_version="$(w_get_github_latest_release jp7677 dxvk-nvapi)"
     _W_dxvk_nvapi_version="${_W_dxvk_nvapi_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/jp7677/dxvk-nvapi/releases/download/v${_W_dxvk_nvapi_version}/dxvk-nvapi-v${_W_dxvk_nvapi_version}.tar.gz"
-    helper_dxvk_nvapi "dxvk-nvapi-v${_W_dxvk_nvapi_version}.tar.gz" "7.1" "nvapi,nvapi64"
+    if [ "${W_SKIP_INSTALL}" != "skip_install" ]; then
+        helper_dxvk_nvapi "dxvk-nvapi-v${_W_dxvk_nvapi_version}.tar.gz" "7.1" "nvapi,nvapi64"
+    fi
     unset _W_dxvk_nvapi_version
 }
 
@@ -8250,7 +8349,9 @@ load_vkd3d()
     _W_vkd3d_proton_version="$(w_get_github_latest_release HansKristian-Work vkd3d-proton)"
     _W_vkd3d_proton_version="${_W_vkd3d_proton_version#v}"
     w_linkcheck_ignore=1 w_download "https://github.com/HansKristian-Work/vkd3d-proton/releases/download/v${_W_vkd3d_proton_version}/vkd3d-proton-${_W_vkd3d_proton_version}.tar.zst"
-    helper_vkd3d_proton "vkd3d-proton-${_W_vkd3d_proton_version}.tar.zst"
+    if [ "${W_SKIP_INSTALL}" != "skip_install" ]; then
+        helper_vkd3d_proton "vkd3d-proton-${_W_vkd3d_proton_version}.tar.zst"
+    fi
     unset _W_vkd3d_proton_version
 }
 
@@ -10268,7 +10369,9 @@ load_faudio()
     w_download_to "${W_TMP_EARLY}" "https://raw.githubusercontent.com/Kron4ek/FAudio-Builds/master/LATEST"
     faudio_version="$(cat "${W_TMP_EARLY}/LATEST")"
     w_linkcheck_ignore=1 w_download "https://github.com/Kron4ek/FAudio-Builds/releases/download/${faudio_version}/faudio-${faudio_version}.tar.xz"
-    helper_faudio "faudio-${faudio_version}.tar.xz"
+    if [ "${W_SKIP_INSTALL}" != "skip_install" ]; then
+        helper_faudio "faudio-${faudio_version}.tar.xz"
+    fi
 }
 
 #----------------------------------------------------------------
@@ -10502,7 +10605,9 @@ load_galliumnine()
     _W_galliumnine_version="$(w_get_github_latest_release iXit wine-nine-standalone)"
     w_linkcheck_ignore=1 w_download "https://github.com/iXit/wine-nine-standalone/releases/download/${_W_galliumnine_version}/gallium-nine-standalone-${_W_galliumnine_version}.tar.gz"
     w_warn "Gallium Nine is deprecated and will be removed in Mesa3D 25.2 release https://cgit.freedesktop.org/mesa/mesa/commit/?id=6b6cb825e92ad3bf33b1e032151e32c7b79d8323"
-    helper_galliumnine "gallium-nine-standalone-${_W_galliumnine_version}.tar.gz"
+    if [ "${W_SKIP_INSTALL}" != "skip_install" ]; then
+        helper_galliumnine "gallium-nine-standalone-${_W_galliumnine_version}.tar.gz"
+    fi
     unset _W_galliumnine_version
 }
 
@@ -10667,15 +10772,28 @@ w_metadata allcodecs dlls \
     publisher="various" \
     year="1995-2009" \
     media="download"
+w_metadata allcodecs=download dlls \
+    title="Download all codecs (dirac, ffdshow, icodecs, cinepak, l3codecx, xvid) except wmp" \
+    publisher="various" \
+    year="1995-2009"
 
 load_allcodecs()
 {
-    w_call dirac
-    w_call l3codecx
-    w_call ffdshow
-    w_call icodecs
-    w_call cinepak
-    w_call xvid
+    case "$1" in
+    download) WINETRICKS_DOWNLOAD_ONLY=1
+        for file in dirac l3codecx ffdshow icodecs cinepak xvid; do
+            winetricks_download_only "${file}" skip
+        done
+        ;;
+    *)
+        w_call dirac
+        w_call l3codecx
+        w_call ffdshow
+        w_call icodecs
+        w_call cinepak
+        w_call xvid
+        ;;
+    esac
 }
 
 #----------------------------------------------------------------
@@ -14701,8 +14819,10 @@ w_metadata droid fonts \
 
 do_droid() {
     w_download "${_W_droid_url}${1}?raw=true" "$3"  "$1"
-    w_try_cp_font_files "${W_CACHE}/droid" "${W_FONTSDIR_UNIX}" "$1"
-    w_register_font "$(echo "$1" | tr "[:upper:]" "[:lower:]")" "$2"
+    if [ "${W_SKIP_INSTALL}" != "skip_install" ]; then
+        w_try_cp_font_files "${W_CACHE}/droid" "${W_FONTSDIR_UNIX}" "$1"
+        w_register_font "$(echo "$1" | tr "[:upper:]" "[:lower:]")" "$2"
+    fi
 }
 
 load_droid()
@@ -15268,22 +15388,36 @@ w_metadata allfonts fonts \
     publisher="various" \
     year="1998-2010" \
     media="download"
+w_metadata allfonts=download fonts \
+    title="Download all fonts" \
+    publisher="various" \
+    year="1998-2010"
 
 load_allfonts()
 {
-    # This verb uses reflection, should probably do it portably instead, but that would require keeping it up to date
-    for file in "${WINETRICKS_METADATA}"/fonts/*.vars; do
-        cmd=$(basename "${file}" .vars)
-        case ${cmd} in
-            # "fake*" verbs need to be skipped because
-            # this "allfonts" verb is intended to only install real fonts and
-            # adding font replacements at the same time may invalidate the replacements
-            # "pptfonts" can be skipped because it only calls other verbs for installing fonts
-            # See https://github.com/Winetricks/winetricks/issues/899
-            allfonts|cjkfonts|fake*|pptfonts) ;;
-            *) w_call "${cmd}";;
-        esac
-    done
+    case "$1" in
+        download) WINETRICKS_DOWNLOAD_ONLY=1
+            for file in "${WINETRICKS_METADATA}"/fonts/*.vars; do
+                cmd=$(basename "${file}" .vars)
+                winetricks_download_only "${cmd}" skip
+            done
+        ;;
+        *)
+            # This verb uses reflection, should probably do it portably instead, but that would require keeping it up to date
+            for file in "${WINETRICKS_METADATA}"/fonts/*.vars; do
+                cmd=$(basename "${file}" .vars)
+                case ${cmd} in
+                    # "fake*" verbs need to be skipped because
+                    # this "allfonts" verb is intended to only install real fonts and
+                    # adding font replacements at the same time may invalidate the replacements
+                    # "pptfonts" can be skipped because it only calls other verbs for installing fonts
+                    # See https://github.com/Winetricks/winetricks/issues/899
+                    allfonts|cjkfonts|fake*|pptfonts) ;;
+                    *) w_call "${cmd}";;
+                esac
+            done
+        ;;
+    esac
 }
 
 #######################
@@ -17234,8 +17368,10 @@ load_winrar()
             fi
             ;;
     esac
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" "${_W_winrar_exe}" ${W_OPT_UNATTENDED:+/S}
+    if [ "${W_SKIP_INSTALL}" != "skip_install" ]; then
+        w_try_cd "${W_CACHE}/${W_PACKAGE}"
+        w_try "${WINE}" "${_W_winrar_exe}" ${W_OPT_UNATTENDED:+/S}
+    fi
 }
 
 #----------------------------------------------------------------
@@ -17814,6 +17950,35 @@ load_wglgears()
     w_download https://web.archive.org/web/20091001002702/http://www2.cs.uidaho.edu/~jeffery/win32/wglgears.exe 858ba95ea3c9af4ded1f4100e59b6e8e57024f3efef56304dbd48106e8f2f6f7
     cp "${W_CACHE}"/wglgears/wglgears.exe "${W_SYSTEM32_DLLS}"
     chmod +x "${W_SYSTEM32_DLLS}/wglgears.exe"
+}
+
+#----------------------------------------------------------------
+
+w_metadata allapps=apps apps \
+    title="Download all apps" \
+    publisher="various" \
+    year="1993-2025"
+w_metadata allapps=benchmarks benchmarks \
+    title="Download all benchmarks" \
+    publisher="various" \
+    year="2000-2010"
+
+load_allapps()
+{
+    case "$1" in
+        apps) WINETRICKS_DOWNLOAD_ONLY=1
+            for file in "${WINETRICKS_METADATA}"/apps/*.vars; do
+                cmd=$(basename "${file}" .vars)
+                winetricks_download_only "${cmd}" skip
+            done
+        ;;
+        benchmarks) WINETRICKS_DOWNLOAD_ONLY=1
+            for file in "${WINETRICKS_METADATA}"/benchmarks/*.vars; do
+                cmd=$(basename "${file}" .vars)
+                winetricks_download_only "${cmd}" skip
+            done
+        ;;
+    esac
 }
 
 #######################
@@ -18724,13 +18889,37 @@ w_metadata alldlls=builtin settings \
     title_bg="Заменете DLL файловете" \
     title_uk="Перевизначити найбільш поширені DLL на вбудовані" \
     title="Override most common DLLs to builtin"
+w_metadata alldlls=download dlls \
+    title="Download all dlls" \
+    publisher="various" \
+    year="1993-2025" \
 
 load_alldlls()
 {
     case "$1" in
         default) w_override_no_dlls ;;
         builtin) w_override_all_dlls ;;
+        download) WINETRICKS_DOWNLOAD_ONLY=1
+            for file in "${WINETRICKS_METADATA}"/dlls/*.vars; do
+                cmd=$(basename "${file}" .vars)
+                winetricks_download_only "${cmd}" skip
+            done
+        ;;
     esac
+}
+
+w_metadata alldownloadables dlls \
+    title="Download all downloadable content" \
+    publisher="various" \
+    year="1993-2025"
+
+load_alldownloadables()
+{
+    load_alldlls download
+    load_allfonts download
+    load_allcodecs download
+    load_allapps apps
+    load_allapps benchmarks
 }
 
 #----------------------------------------------------------------
