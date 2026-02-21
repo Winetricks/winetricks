@@ -1362,7 +1362,7 @@ w_dotnet_verify()
         dotnet471) version="4.7.1" ;;
         dotnet472) version="4.7.2" ;;
         dotnet48) version="4.8" ;;
-        *) echo error ; exit 1 ;;
+        *) echo "error: w_dotnet_verify unknown dotnet version"; exit 1 ;;
     esac
 
     w_call dotnet_verifier
