@@ -13946,6 +13946,62 @@ load_windowscodecs()
 
 #----------------------------------------------------------------
 
+w_metadata winemono dlls \
+    title="Wine Mono (an open-source and cross-platform re-implementation of the .NET Framework)" \
+    publisher="WineHQ, Esme Povirk et al." \
+    year="2024" \
+    media="download" \
+    conflicts="dotnet11 dotnet11sp1 dotnet20 dotnet20sdk dotnet20sp1 dotnet20sp2 dotnet30 dotnet30sp1 dotnet35 dotnet35sp1 dotnet40 dotnet40_kb2468871 dotnet45 dotnet452 dotnet46 dotnet462 dotnet461 dotnet471 dotnet472 dotnet48 dotnet_verifier" \
+    installed_file1="${W_WINDIR_WIN}/mono/mono-2.0/bin/libmono-2.0-x86.dll" \
+    homepage="https://github.com/madewokherd/wine-mono"
+
+load_winemono()
+{
+    # Look for registry keys and cached .msi files
+    ${WINE} reg query "HKLM\\Software\\Microsoft\\.NETFramework\\Policy" 1>/dev/null # check for wine-mono/dotnet48- regkeys (dotnet5+/dotnetcore don't store regkeys here)
+    regquery_dnbelow5=$? # 0 = found regkeys; 1 = no regkeys (or wine crashed while searching)
+    ${WINE} reg query "HKCU\\Software\\Wine\\Mono" 1>/dev/null # check if a user created a custom wine-mono installation. This is not a default regkey when wine-mono is installed
+    regquery_customwinemono=$? # 0 = found regkeys; 1 = no regkeys (or wine crashed while searching)
+    for winemono_cachedirs in "${HOME}/.cache/wine/" "/usr/share/wine/mono/" "/opt/wine/mono/"; do
+        if winemono_cachedmsi=$(find "${winemono_cachedirs}" -iname 'wine-mono*.msi'); then
+            break
+        fi
+    done
+
+    # Cancel installation if .NET or wine-mono are already installed
+    if [ -d "${W_WINDIR_UNIX}/mono/mono-2.0" ] || [ -d "${WINEPREFIX}/share/wine/mono/wine-mono-5.0.0" ] || [ -d "/usr/local/share/wine/mono/wine-mono-5.0.0" ] || [ -d "/usr/share/wine/mono/wine-mono-5.0.0" ] || [ -d "/opt/wine/mono/wine-mono-5.0.0" ] || [ ${regquery_customwinemono} -eq 0 ]; then
+        w_warn "Wine-mono may have already be installed manually or as a shared install. Attempting to re-install wine-mono into this wineprefix."
+    elif [ ${regquery_dnbelow5} -eq 0 ]; then
+        w_warn "It appears .NET v1.0 - v4.9 may have been installed and/or removed from this wineprefix in the past. These versions of .NET are not compatable with wine-mono and their uninstallers do not always cleanly uninstall from Wine. If you experience problems running your .NET applications after installing wine-mono, please try installing wine-mono into a fresh wineprefix before filing any bug reports."
+        # Note: Simply checking for "${W_WINDIR_UNIX}/Microsoft.NET/Framework/" doesn't work here since dotnet uninstallers often leave files behind.
+    fi
+
+    # Auto-install any cached wine-mono*.msi files silenty, or use AHK to silently press "Wine Mono Installer" install button, or run "Wine Mono Installer" for user
+    if [ "${winemono_cachedmsi}" ]; then
+        w_try "${WINE}" control.exe appwiz.cpl install_mono # launch Wine Mono Installer
+        # Note: Wine Mono Installer will auto-install a cached wine-mono*.msi if it is in any of these directories (ignores .tar.gz / .tar.xz files).
+    elif [ ${W_OPT_UNATTENDED} ]; then
+        w_ahk_do "
+            ; AutoHotKey script to push the Install button on the Wine Mono Installer window.
+            SetTitleMatchMode, 2
+            Run, control.exe appwiz.cpl install_mono, C:\windows\System32
+            WinWait, Wine Mono Installer,, 8
+            if ErrorLevel
+            {
+                MsgBox, 0, Warning, AutoHotKey could not find the Wine Mono Installer window.\`n\`nYou might have to install wine-mono manually., 5
+                return
+            }
+            ControlClick, Button1, Wine Mono Installer
+            WinWaitClose
+        "
+    else
+        w_try "${WINE}" control.exe appwiz.cpl install_mono # launch Wine Mono Installer
+        # Note: If no cached wine-mono*.msi files are present, then user must push the "Install" button.
+    fi
+}
+
+#----------------------------------------------------------------
+
 w_metadata winhttp dlls \
     title="MS Windows HTTP Services" \
     publisher="Microsoft" \
