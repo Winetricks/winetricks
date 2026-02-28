@@ -19855,7 +19855,7 @@ if ! test "${WINETRICKS_LIB}"; then
     case "$1" in
         die) w_die "we who are about to die salute you." ;;
         "")
-            if [ -z "${DISPLAY}" ]; then
+            if [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ]; then
                 if [ "$(uname -s)" = "Darwin" ]; then
                     echo "Running on OSX, but DISPLAY is not set...probably using Mac Driver."
                 else
