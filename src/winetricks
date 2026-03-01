@@ -11649,6 +11649,9 @@ load_msxml3()
     # ftp://94.79.56.169/common/Client/MSXML%204.0%20Service%20Pack%202/msxml3.msi
     w_download https://media.codeweavers.com/pub/other/msxml3.msi f9c678f8217e9d4f9647e8a1f6d89a7c26a57b9e9e00d39f7487493dd7b4e36c
 
+    # Downloading 64-bit msxml3r.dll (resources Dll), which not included in Service Pack 7.
+    w_download https://cloudflare-ipfs.com/ipfs/QmanVf9v1NDfBRieGmuHLNkZyoxndijitbTJxs9MyGVpCc?filename=msxml3r.dll 3efa5c3a8ee14c2de9f9ea5507a9950a0d991184dd723c79aca786e0b5fd7cf5 msxml3r.dll
+
     # It won't install on top of Wine's msxml3, which has a pretty high version number, so delete Wine's fake DLL
     rm "${W_SYSTEM32_DLLS}"/msxml3.dll
     w_override_dlls native msxml3
@@ -11671,6 +11674,7 @@ load_msxml3()
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-msxml30_31bf3856ad364e35_6.1.7601.17514_none_e6944609ad75ac7d/msxml3.dll
         w_try_cp_dll "${W_TMP}/amd64_microsoft-windows-msxml30_31bf3856ad364e35_6.1.7601.17514_none_e6944609ad75ac7d/msxml3.dll" "${W_SYSTEM64_DLLS}/msxml3.dll"
+        w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/msxml3r.dll" "${W_SYSTEM64_DLLS}/msxml3r.dll"
     fi
 }
 
