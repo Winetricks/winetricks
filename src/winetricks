@@ -1456,6 +1456,7 @@ winetricks_selfupdate()
     w_try cp "$0" "${_W_rollback_file}"
     w_try chmod -x "${_W_rollback_file}"
 
+    # Uses mv to avoid race condition in overwriting running shell script. Do not replace with cp or other non-atomic writes!
     w_try mv "${_W_update_file}" "$0"
     w_try chmod +x "$0"
 
@@ -1471,6 +1472,7 @@ winetricks_selfupdate_rollback()
     _W_rollback_file="${0}.bak"
 
     if test -f "${_W_rollback_file}"; then
+        # Uses mv to avoid race condition in overwriting running shell script. Do not replace with cp or other non-atomic writes!
         w_try mv "${_W_rollback_file}" "$0"
         w_try chmod +x "$0"
         w_warn "Rollback finished! The current version is $($0 -V)."
