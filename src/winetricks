@@ -6013,19 +6013,21 @@ load_d3dcompiler_46()
 w_metadata d3dcompiler_47 dlls \
     title="MS d3dcompiler_47.dll" \
     publisher="Microsoft" \
-    year="FIXME" \
+    year="2013" \
     media="download" \
-    file1="d3dcompiler_47_32.dll" \
+    file1="../directx9/directx_Jun2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/d3dcompiler_47.dll"
 
 load_d3dcompiler_47()
 {
-    w_download https://raw.githubusercontent.com/mozilla/fxc2/master/dll/d3dcompiler_47_32.dll 2ad0d4987fc4624566b190e747c9d95038443956ed816abfd1e2d389b5ec0851
-    w_try_cp_dll "${W_CACHE}/d3dcompiler_47/d3dcompiler_47_32.dll" "${W_SYSTEM32_DLLS}/d3dcompiler_47.dll"
+    w_download https://download.microsoft.com/download/B/0/C/B0C80BA3-8AD6-4958-810B-6882485230B5/standalonesdk/Installers/2630bae9681db6a9f6722366f47d055c.cab
+    w_try_cabextract -d "${W_TMP}" -L -F "fila319f706acfa16d6707473ebf29bdc7f" "${W_CACHE}/${W_PACKAGE}/2630bae9681db6a9f6722366f47d055c.cab"
+    w_try mv "${W_TMP}/fila319f706acfa16d6707473ebf29bdc7f" "${W_SYSTEM32_DLLS}/d3dcompiler_47.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download https://raw.githubusercontent.com/mozilla/fxc2/master/dll/d3dcompiler_47.dll 4432bbd1a390874f3f0a503d45cc48d346abc3a8c0213c289f4b615bf0ee84f3
-        w_try_cp_dll "${W_CACHE}/d3dcompiler_47/d3dcompiler_47.dll" "${W_SYSTEM64_DLLS}/d3dcompiler_47.dll"
+        w_download https://download.microsoft.com/download/B/0/C/B0C80BA3-8AD6-4958-810B-6882485230B5/standalonesdk/Installers/61d57a7a82309cd161a854a6f4619e52.cab
+        w_try_cabextract -d "${W_TMP}" -L -F "fil3585cb2ea5db13cc0838f8d06b5c9679" "${W_CACHE}/${W_PACKAGE}/61d57a7a82309cd161a854a6f4619e52.cab"
+        w_try mv "${W_TMP}/fil3585cb2ea5db13cc0838f8d06b5c9679" "${W_SYSTEM64_DLLS}/d3dcompiler_47.dll"
     fi
 
     w_override_dlls native d3dcompiler_47
