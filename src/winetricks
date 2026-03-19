@@ -12916,32 +12916,17 @@ load_vb5run()
 #----------------------------------------------------------------
 
 w_metadata vb6run dlls \
-    title="MS Visual Basic 6 runtime sp6" \
+    title="MS Visual Basic 6 runtime" \
     publisher="Microsoft" \
-    year="2004" \
+    year="2008" \
     media="download" \
-    file1="vbrun60sp6.exe" \
+    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/msvbvm60.dll"
 
 load_vb6run()
 {
-    # https://support.microsoft.com/kb/290887
-    if test ! -f "${W_CACHE}"/vb6run/vbrun60sp6.exe; then
-        w_download https://web.archive.org/web/20070204154430/https://download.microsoft.com/download/5/a/d/5ad868a0-8ecd-4bb0-a882-fe53eb7ef348/VB6.0-KB290887-X86.exe 467b5a10c369865f2021d379fc0933cb382146b702bbca4bcb703fc86f4322bb
-
-        w_try "${WINE}" "${W_CACHE}"/vb6run/VB6.0-KB290887-X86.exe "/T:${W_TMP_WIN}" /c ${W_OPT_UNATTENDED:+/q}
-        if test ! -f "${W_TMP}"/vbrun60sp6.exe; then
-            w_die vbrun60sp6.exe not found
-        fi
-        w_try mv "${W_TMP}"/vbrun60sp6.exe "${W_CACHE}"/vb6run
-    fi
-
-    # extract the files instead of using installer to avoid https://github.com/Winetricks/winetricks/issues/1806
-    w_try_cabextract -L "${W_CACHE}/${W_PACKAGE}/${file1}" -d "${W_TMP}"
-
-    for dll in asycfilt.dll comcat.dll msvbvm60.dll oleaut32.dll olepro32.dll stdole2.tlb; do
-        w_try mv "${W_TMP}/${dll}" "${W_SYSTEM32_DLLS}"
-    done
+    helper_winxpsp3 i386/msvbvm60.dl_
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/msvbvm60.dl_
 }
 
 #----------------------------------------------------------------
