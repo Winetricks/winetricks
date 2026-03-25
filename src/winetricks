@@ -11776,17 +11776,24 @@ load_ogg()
 w_metadata ole32 dlls \
     title="MS ole32 Module (ole32.dll)" \
     publisher="Microsoft" \
-    year="2004" \
+    year="2015" \
     media="download" \
-    file1="../winxpsp3/WindowsXP-KB936929-SP3-x86-ENU.exe" \
+    file1="windowsserver2003-kb3072633-x64-enu_e3bee4ea9cab584b77067f26e4aeed5428436327.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/ole32.dll"
 
 load_ole32()
 {
     # Some applications need this, for example Wechat.
-    helper_winxpsp3 i386/ole32.dl_
-    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/ole32.dl_
-    w_override_dlls native,builtin ole32
+    w_download https://catalog.s.download.windowsupdate.com/d/msdownload/update/software/secu/2015/06/windowsserver2003-kb3072633-x64-enu_e3bee4ea9cab584b77067f26e4aeed5428436327.exe 1e0d4065f34bebd5bde679779ec7472cd7e0a285bc7209a50aae744d4849cbdf
+    w_try_cabextract --directory="${W_TMP}" "${W_CACHE}/${W_PACKAGE}/${file1}"
+
+    w_try_cp_dll "${W_TMP}"/SP2QFE/wow/wole32.dll "${W_SYSTEM32_DLLS}"/ole32.dll
+
+    if [ "${W_ARCH}" = "win64" ]; then
+        w_try_cp_dll "${W_TMP}"/SP2QFE/ole32.dll "${W_SYSTEM64_DLLS}"/ole32.dll
+    fi
+
+    w_override_dlls native ole32
 }
 
 #----------------------------------------------------------------
