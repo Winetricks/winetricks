@@ -9852,23 +9852,23 @@ load_dotnetdesktop8()
 w_metadata dotnet9 dlls \
     title="MS .NET Runtime 9.0 LTS" \
     publisher="Microsoft" \
-    year="2024" \
+    year="2026" \
     media="download" \
-    file1="dotnet-runtime-9.0.7-win-x86.exe" \
+    file1="dotnet-runtime-9.0.14-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnet9()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/9.0
-    w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.7/dotnet-runtime-9.0.7-win-x86.exe a4d077890c9820d9968a3c310973dceeae6ce949f4af3dae50611c0457196c82
+    w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.14/dotnet-runtime-9.0.14-win-x86.exe a99eb555e90eaa6703efa20f3b8fe676a9ba24bd24d439f016c20815d4ff815c
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.7/dotnet-runtime-9.0.7-win-x64.exe 482a02fa01dd822d67d5286049ed7cc74fe8eda01848612cd070e0b0583de9c4
-        w_try "${WINE}" "dotnet-runtime-9.0.7-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.14/dotnet-runtime-9.0.14-win-x64.exe 690f85d3592edb3e5810f8cd8b4a630bbaa2a8abc354061d44d7d6c0f0d8a0dd
+        w_try "${WINE}" "dotnet-runtime-9.0.14-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
