@@ -432,10 +432,10 @@ _w_get_broken_messages()
             broken_no_version_known_no_mingw="此软件包（${W_PACKAGE}）在 wine 未使用 mingw 构建时已损坏。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
 
             # win64 broken messages
-            broken_good_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上存在问题。可以使用 WINEARCH=win32 创建的容器，或升级 wine 至 >=${good_version} 来解决此问题。或者使用 --force 仍可尝试。更多信息请参见 ${bug_link}。"
-            broken_good_and_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 中已损坏，自 ${bad_version} 起出现该问题。请使用 WINEARCH=win32 创建的容器，或升级 wine 至 >=${good_version} 来解决此问题。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_only_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上已损坏，自 ${bad_version} 起出现该问题。请使用 WINEARCH=win32 创建的容器作为解决方法。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_no_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上存在问题。请使用以 WINEARCH=win32 创建的容器。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
+            broken_good_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上存在问题。可以使用 WINEARCH=win32 创建的 Prefix，或升级 wine 至 >=${good_version} 来解决此问题。或者使用 --force 仍可尝试。更多信息请参见 ${bug_link}。"
+            broken_good_and_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 中已损坏，自 ${bad_version} 起出现该问题。请使用 WINEARCH=win32 创建的 Prefix，或升级 wine 至 >=${good_version} 来解决此问题。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
+            broken_only_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上已损坏，自 ${bad_version} 起出现该问题。请使用 WINEARCH=win32 创建的 Prefix 作为解决方法。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
+            broken_no_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上存在问题。请使用以 WINEARCH=win32 创建的 Prefix。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
             ;;
         zh_TW*|zh_HK*)
             # default broken messages
@@ -457,10 +457,10 @@ _w_get_broken_messages()
             broken_no_version_known_no_mingw="此軟體套件（${W_PACKAGE}）在 wine 未以 mingw 建置時已損壞。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
 
             # win64 broken messages
-            broken_good_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 上有問題。可使用以 WINEARCH=win32 建立的容器，或將 wine 升級至 >=${good_version} 來解決此問題。或者仍可使用 --force 嘗試。更多資訊請參閱 ${bug_link}。"
-            broken_good_and_bad_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 中已損壞，自 ${bad_version} 起出現此問題。請使用以 WINEARCH=win32 建立的容器，或將 wine 升級至 >=${good_version} 來解決此問題。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
-            broken_only_bad_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 上已損壞，自 ${bad_version} 起出現此問題。請使用以 WINEARCH=win32 建立的容器作為解決方式。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
-            broken_no_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 上有問題。請使用以 WINEARCH=win32 建立的容器。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_good_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 上有問題。可使用以 WINEARCH=win32 建立的 Prefix，或將 wine 升級至 >=${good_version} 來解決此問題。或者仍可使用 --force 嘗試。更多資訊請參閱 ${bug_link}。"
+            broken_good_and_bad_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 中已損壞，自 ${bad_version} 起出現此問題。請使用以 WINEARCH=win32 建立的 Prefix，或將 wine 升級至 >=${good_version} 來解決此問題。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_only_bad_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 上已損壞，自 ${bad_version} 起出現此問題。請使用以 WINEARCH=win32 建立的 Prefix 作為解決方式。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_no_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 上有問題。請使用以 WINEARCH=win32 建立的 Prefix。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
             ;;
         *)
             # default broken messages
@@ -671,8 +671,8 @@ w_package_unsupported_win64()
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) não funciona em instalação de 64-bit. Você precisa usar um prefixo feito com WINEARCH=win32." ;;
             ru*) w_warn "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
-            zh_CN*) w_warn "(${W_PACKAGE}) 无法在 64 位环境下工作，您必须使用以 WINEARCH=win32 创建的容器。" ;;
-            zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 無法在 64 位元環境下運作，您必須使用以 WINEARCH=win32 建立的容器。" ;;
+            zh_CN*) w_warn "(${W_PACKAGE}) 无法在 64 位环境下工作，您必须使用以 WINEARCH=win32 创建的 Prefix。" ;;
+            zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 無法在 64 位元環境下運作，您必須使用以 WINEARCH=win32 建立的 Prefix。" ;;
             *) w_warn "This package (${W_PACKAGE}) does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32." ;;
         esac
         _w_force_continue_check 32
@@ -688,8 +688,8 @@ w_package_warn_win64()
             pt*) w_warn "Este pacote (${W_PACKAGE}) talvez não funcione completamente em 64-bit. Em prefixo 32-bit talvez funcione melhor." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działać lepiej." ;;
             ru*) w_warn "Данный пакет может быть не полностью работоспособным в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
-            zh_CN*) w_warn "(${W_PACKAGE}) 在 64 位环境下可能无法完全正常工作，建议改用 32 位容器。" ;;
-            zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 在 64 位元環境下可能無法完全正常運作，建議改用 32 位元容器。" ;;
+            zh_CN*) w_warn "(${W_PACKAGE}) 在 64 位环境下可能无法完全正常工作，建议改用 32 位 Prefix。" ;;
+            zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 在 64 位元環境下可能無法完全正常運作，建議改用 32 位元 Prefix。" ;;
             *) w_warn "This package (${W_PACKAGE}) may not fully work on a 64-bit installation. 32-bit prefixes may work better." ;;
         esac
     fi
@@ -3307,8 +3307,8 @@ winetricks_prefixmenu()
             _W_msg_body='您想做什么？'
             _W_msg_apps='安装 Windows 应用程序'
             _W_msg_benchmarks='安装基准测试程序'
-            _W_msg_default="选择默认的 Wine 容器"
-            _W_msg_mkprefix="创建新的 Wine 容器"
+            _W_msg_default="选择默认的 Wineprefix"
+            _W_msg_mkprefix="创建新的 Wineprefix"
             _W_msg_unattended0="禁用静默安装"
             _W_msg_unattended1="启用静默安装"
             _W_msg_help="查看帮助"
@@ -3637,8 +3637,8 @@ winetricks_mainmenu()
             _W_msg_folder='Перегляд файлів'
             _W_msg_annihilate="Видалити УСІ ДАНІ ТА ПРОГРАМИ З ЦЬОГО WINEPREFIX"
             ;;
-        zh_CN*)   _W_msg_title="Winetricks - 当前 Wine 容器为 \"${WINEPREFIX}\""
-            _W_msg_body='管理当前 Wine 容器'
+        zh_CN*)   _W_msg_title="Winetricks - 当前 Prefix 为 \"${WINEPREFIX}\""
+            _W_msg_body='您想要对此 Wineprefix 做什么？'
             _W_msg_dlls="安装 Windows DLL 或组件"
             _W_msg_fonts='安装字体'
             _W_msg_settings='修改设置'
@@ -3650,11 +3650,11 @@ winetricks_mainmenu()
             _W_msg_winecmd='运行 Wine 命令提示符'
             _W_msg_wine_misc_exe='运行任意可执行文件 (.exe/.msi/.msu)'
             _W_msg_shell='运行命令行（用于调试）'
-            _W_msg_folder='浏览容器中的文件'
-            _W_msg_annihilate="删除此容器中的所有数据和应用程序"
+            _W_msg_folder='浏览文件'
+            _W_msg_annihilate="删除此 WINEPREFIX 中的所有数据和应用程序"
             ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前的 Wine 容器為 \"${WINEPREFIX}\""
-            _W_msg_body='管理目前的 Wine 容器'
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前的 Prefix 為 \"${WINEPREFIX}\""
+            _W_msg_body='您想要對此 Wineprefix 做什麼？'
             _W_msg_dlls="安裝 Windows DLL 或元件"
             _W_msg_fonts='安裝字型'
             _W_msg_settings='修改設定'
@@ -3666,8 +3666,8 @@ winetricks_mainmenu()
             _W_msg_winecmd='執行 Wine 命令提示字元'
             _W_msg_wine_misc_exe='執行任意可執行檔 (.exe/.msi/.msu)'
             _W_msg_shell='執行命令列（用於偵錯）'
-            _W_msg_folder='瀏覽容器中的檔案'
-            _W_msg_annihilate="刪除此容器中的所有資料和應用程式"
+            _W_msg_folder='瀏覽檔案'
+            _W_msg_annihilate="刪除此 WINEPREFIX 中的所有資料和應用程式"
             ;;
         *)  _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
             _W_msg_body='What would you like to do to this wineprefix?'
@@ -3774,10 +3774,10 @@ winetricks_settings_menu()
         uk*) _W_msg_title="Winetricks - поточний prefix \"${WINEPREFIX}\""
             _W_msg_body='Які налаштування Ви хочете змінити?'
             ;;
-        zh_CN*)   _W_msg_title="Winetricks - 当前 Wine 容器为 \"${WINEPREFIX}\""
+        zh_CN*)   _W_msg_title="Winetricks - 当前 Prefix 为 \"${WINEPREFIX}\""
             _W_msg_body='您想要更改哪项设置？'
             ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前的 Wine 容器為 \"${WINEPREFIX}\""
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前的 Prefix 為 \"${WINEPREFIX}\""
             _W_msg_body='您想要變更哪項設定？'
             ;;
         *)  _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
@@ -4027,11 +4027,11 @@ winetricks_showmenu()
             _W_msg_body='Які пакунки Ви хочете встановити?'
             _W_cached="кешовано"
             ;;
-        zh_CN*)   _W_msg_title="Winetricks - 当前 Wine 容器为 \"${WINEPREFIX}\""
+        zh_CN*)   _W_msg_title="Winetricks - 当前 Prefix 为 \"${WINEPREFIX}\""
             _W_msg_body='您想要安装什么应用程序？'
             _W_cached="已缓存"
             ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前的 Wine 容器為 \"${WINEPREFIX}\""
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前的 Prefix 為 \"${WINEPREFIX}\""
             _W_msg_body='您想要安裝什麼應用程式？'
             _W_cached="已快取"
             ;;
@@ -5303,7 +5303,7 @@ _EOF_
 -f, --force           不检查软件包是否已安装
     --gui             即使在命令行模式下，也显示 GUI 诊断
     --gui=OPT         设置 GUI 引擎为 kdialog 或 zenity
-    --isolate         将每个应用或游戏安装到独立的 Wine 容器（WINEPREFIX）中
+    --isolate         将每个应用或游戏安装到独立的容器（WINEPREFIX）中
     --self-update     更新此应用到最新版本
     --update-rollback 回滚最近一次的自我更新
     --no-clean        不删除临时目录（调试时有用）
@@ -5328,9 +5328,9 @@ list-cached           列出已缓存且准备安装的脚本
 list-download         列出会自动下载的脚本
 list-manual-download  列出需要用户协助下载的脚本
 list-installed        列出已安装的脚本
-arch=32|64            创建 32 位或 64 位 Wine 容器，此选项必须在 prefix=foobar 之前指定，默认 Wine 容器不支持此选项
+arch=32|64            创建 32 位或 64 位 Wineprefix，此选项必须在 prefix=foobar 之前指定，默认 Wineprefix 不支持此选项
 prefix=foobar         选择 WINEPREFIX 为 ${W_PREFIXES_ROOT}/foobar
-annihilate            删除该 Wine 容器中的所有数据和应用程序
+annihilate            删除该 WINEPREFIX 中的所有数据和应用程序
 _EOF_
             ;;
         zh_TW*|zh_HK*)
@@ -5343,7 +5343,7 @@ _EOF_
 -f, --force           不檢查套件是否已安裝
     --gui             即使在命令列模式下，也顯示 GUI 診斷資訊
     --gui=OPT         將 GUI 引擎設為 kdialog 或 zenity
-    --isolate         將每個應用程式或遊戲安裝到獨立的 Wine 容器（WINEPREFIX）中
+    --isolate         將每個應用程式或遊戲安裝到獨立的容器（WINEPREFIX）中
     --self-update     將此程式更新到最新版本
     --update-rollback 回復最近一次的自動更新
     --no-clean        不刪除暫存目錄（偵錯時很有用）
@@ -5368,9 +5368,9 @@ list-cached           列出已快取且可直接安裝的指令稿
 list-download         列出會自動下載的指令稿
 list-manual-download  列出需要使用者協助下載的指令稿
 list-installed        列出已安裝的指令稿
-arch=32|64            建立 32 位元或 64 位元 Wine 容器，此選項必須在 prefix=foobar 之前指定，預設 Wine 容器不支援此選項
+arch=32|64            建立 32 位元或 64 位元 Wineprefix，此選項必須在 prefix=foobar 之前指定，預設 Wineprefix 不支援此選項
 prefix=foobar         將 WINEPREFIX 設為 ${W_PREFIXES_ROOT}/foobar
-annihilate            刪除此 Wine 容器中的所有資料和應用程式
+annihilate            刪除此 WINEPREFIX 中的所有資料和應用程式
 _EOF_
             ;;
         *)
