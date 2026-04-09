@@ -220,6 +220,7 @@ w_askpermission()
             pl*) w_die "Anulowano operację, opuszczanie." ;;
             pt*) w_die "Operação cancelada, saindo." ;;
             zh_CN*) w_die "操作已取消，正在退出。" ;;
+            zh_TW*|zh_HK*) w_die "操作已取消，正在退出。" ;;
             *) w_die "Operation cancelled, quitting." ;;
         esac
     fi
@@ -431,10 +432,35 @@ _w_get_broken_messages()
             broken_no_version_known_no_mingw="此软件包（${W_PACKAGE}）在 wine 未使用 mingw 构建时已损坏。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
 
             # win64 broken messages
-            broken_good_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上存在问题。可以使用 WINEARCH=win32 创建的前缀，或升级 wine 至 >=${good_version} 来解决此问题。或者使用 --force 仍可尝试。更多信息请参见 ${bug_link}。"
-            broken_good_and_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 中已损坏，自 ${bad_version} 起出现该问题。请使用 WINEARCH=win32 创建的前缀，或升级 wine 至 >=${good_version} 来解决此问题。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_only_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上已损坏，自 ${bad_version} 起出现该问题。请使用 WINEARCH=win32 创建的前缀作为解决方法。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_no_version_known_win64="此软件包（${W_PACKAGE}）在 wine 未使用 mingw 构建时已损坏。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
+            broken_good_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上存在问题。可以使用 WINEARCH=win32 创建的容器，或升级 wine 至 >=${good_version} 来解决此问题。或者使用 --force 仍可尝试。更多信息请参见 ${bug_link}。"
+            broken_good_and_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 中已损坏，自 ${bad_version} 起出现该问题。请使用 WINEARCH=win32 创建的容器，或升级 wine 至 >=${good_version} 来解决此问题。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
+            broken_only_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上已损坏，自 ${bad_version} 起出现该问题。请使用 WINEARCH=win32 创建的容器作为解决方法。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
+            broken_no_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上存在问题。请使用以 WINEARCH=win32 创建的容器。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
+            ;;
+        zh_TW*|zh_HK*)
+            # default broken messages
+            broken_good_version_known_default="此軟體套件（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已損壞，請升級到 >=${good_version}，更多資訊請參閱 ${bug_link}，若仍要嘗試，請使用 --force。"
+            broken_good_and_bad_version_known_default="此軟體套件（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已損壞，自 ${bad_version} 起出現問題，請升級到 >=${good_version}，更多資訊請參閱 ${bug_link}，若仍要嘗試，請使用 --force。"
+            broken_only_bad_version_known_default="此軟體套件（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已損壞，自 ${bad_version} 起出現問題。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_no_version_known_default="此軟體套件（${W_PACKAGE}）已損壞。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+
+            # mingw broken messages
+            broken_good_version_known_mingw="此軟體套件（${W_PACKAGE}）在以 mingw 建置的 wine-${_wine_version_stripped} 中已損壞，請升級到 >=${good_version}，或重新建置不含 mingw 的 wine。更多資訊請參閱 ${bug_link}，若仍要嘗試，請使用 --force。"
+            broken_good_and_bad_version_known_mingw="此軟體套件（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已損壞，自 ${bad_version} 起在以 mingw 建置的 wine 中出現問題。請升級到 >=${good_version}，或重新建置不含 mingw 的 wine。更多資訊請參閱 ${bug_link}，若仍要嘗試，請使用 --force。"
+            broken_only_bad_version_known_mingw="此軟體套件（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已損壞。自 ${bad_version} 起，當 wine 以 mingw 建置時會出現此問題。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_no_version_known_mingw="此軟體套件（${W_PACKAGE}）在以 mingw 建置的 Wine 中有問題。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+
+            # no mingw broken messages
+            broken_good_version_known_no_mingw="此軟體套件（${W_PACKAGE}）在未以 mingw 建置的 wine-${_wine_version_stripped} 中已損壞。請升級到 >=${good_version}。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_good_and_bad_version_known_no_mingw="此軟體套件（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已損壞。自 ${bad_version} 起，當 wine 未以 mingw 建置時會出現此問題。請升級到 >=${good_version}。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_only_bad_version_known_no_mingw="此軟體套件（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已損壞。自 ${bad_version} 起，當 wine 未以 mingw 建置時會出現此問題。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_no_version_known_no_mingw="此軟體套件（${W_PACKAGE}）在 wine 未以 mingw 建置時已損壞。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+
+            # win64 broken messages
+            broken_good_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 上有問題。可使用以 WINEARCH=win32 建立的容器，或將 wine 升級至 >=${good_version} 來解決此問題。或者仍可使用 --force 嘗試。更多資訊請參閱 ${bug_link}。"
+            broken_good_and_bad_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 中已損壞，自 ${bad_version} 起出現此問題。請使用以 WINEARCH=win32 建立的容器，或將 wine 升級至 >=${good_version} 來解決此問題。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_only_bad_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 上已損壞，自 ${bad_version} 起出現此問題。請使用以 WINEARCH=win32 建立的容器作為解決方式。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
+            broken_no_version_known_win64="此軟體套件（${W_PACKAGE}）在 64 位元 wine-${_wine_version_stripped} 上有問題。請使用以 WINEARCH=win32 建立的容器。更多資訊請參閱 ${bug_link}。若仍要嘗試，請使用 --force。"
             ;;
         *)
             # default broken messages
@@ -645,8 +671,8 @@ w_package_unsupported_win64()
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) não funciona em instalação de 64-bit. Você precisa usar um prefixo feito com WINEARCH=win32." ;;
             ru*) w_warn "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
-            zh_CN*) w_warn "(${W_PACKAGE}) 无法在 64 位环境下工作，您必须使用 WINEARCH=win32 创建的容器。" ;;
-            zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 無法在64元下工作，只能將容器變數設定為 WINEARCH=win32 安装。" ;;
+            zh_CN*) w_warn "(${W_PACKAGE}) 无法在 64 位环境下工作，您必须使用以 WINEARCH=win32 创建的容器。" ;;
+            zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 無法在 64 位元環境下運作，您必須使用以 WINEARCH=win32 建立的容器。" ;;
             *) w_warn "This package (${W_PACKAGE}) does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32." ;;
         esac
         _w_force_continue_check 32
@@ -662,8 +688,8 @@ w_package_warn_win64()
             pt*) w_warn "Este pacote (${W_PACKAGE}) talvez não funcione completamente em 64-bit. Em prefixo 32-bit talvez funcione melhor." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działać lepiej." ;;
             ru*) w_warn "Данный пакет может быть не полностью работоспособным в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
-            zh_CN*) w_warn "(${W_PACKAGE}) 可能在64位环境下工作有问题，安装在32位环境可能会更好。" ;;
-            zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 可能在64元環境下工作有問題，安装在32元環境可能會更好。" ;;
+            zh_CN*) w_warn "(${W_PACKAGE}) 在 64 位环境下可能无法完全正常工作，建议改用 32 位容器。" ;;
+            zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 在 64 位元環境下可能無法完全正常運作，建議改用 32 位元容器。" ;;
             *) w_warn "This package (${W_PACKAGE}) may not fully work on a 64-bit installation. 32-bit prefixes may work better." ;;
         esac
     fi
@@ -712,6 +738,7 @@ w_try()
     pt_abort="Nota: comando $* retornou o status ${status}. Cancelando."
     ru_abort="Важно: команда $* вернула статус ${status}. Прерывание."
     zh_CN_abort="注意：命令 $* 返回了状态码 ${status}，操作中止。"
+    zh_TW_abort="注意：命令 $* 傳回狀態碼 ${status}，操作中止。"
 
     if [ -n "${_w_ms_installer}" ]; then
         case ${status} in
@@ -735,6 +762,7 @@ w_try()
                     pt*) w_die "${pt_abort}" ;;
                     ru*) w_die "${ru_abort}" ;;
                     zh_CN*) w_die "${zh_CN_abort}" ;;
+                    zh_TW*|zh_HK*) w_die "${zh_TW_abort}" ;;
                     *) w_die "${en_abort}" ;;
                 esac
                 ;;
@@ -1305,6 +1333,8 @@ winetricks_parse_wget_progress()
             '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKBT]) +([0-9hms,.]+).*$/\1\n# Загрузка... \2 (\3)/' ;;
         zh_CN*) perl -p -e \
             '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKBT]) +([0-9hms,.]+).*$/\1\n# 正在下载…… \2 (\3)/' ;;
+        zh_TW*|zh_HK*) perl -p -e \
+            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKBT]) +([0-9hms,.]+).*$/\1\n# 正在下載…… \2 (\3)/' ;;
         *) perl -p -e \
             '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKBT]) +([0-9hms,.]+).*$/\1\n# Downloading... \2 (\3)/' ;;
     esac
@@ -1559,6 +1589,7 @@ w_download_to()
                         pt*) w_warn "Checksum para ${_W_cache}/${_W_file} não confere, tentando novo download" ;;
                         ru*) w_warn "Контрольная сумма файла ${_W_cache}/${_W_file} не совпадает, попытка повторной загрузки" ;;
                         zh_CN*) w_warn "${_W_cache}/${_W_file} 的校验和不匹配，正在重新下载。" ;;
+                        zh_TW*|zh_HK*) w_warn "${_W_cache}/${_W_file} 的總和檢查碼不符，正在重新下載。" ;;
                         *) w_warn "Checksum for ${_W_cache}/${_W_file} did not match, retrying download" ;;
                     esac
                     mv -f "${_W_cache}/${_W_file}" "${_W_cache}/${_W_file}".bak
@@ -1821,8 +1852,8 @@ w_download_manual_to()
             pt*) _W_dlmsg="Baixe o ${_W_file} de ${_W_url}, salve em ${W_CACHE}/${_W_packagename}, então tente executar novamente este script.";;
             ru*) _W_dlmsg="Пожалуйста, скачайте файл ${_W_file} по адресу ${_W_url}, и поместите его в ${W_CACHE}/${_W_packagename}, а затем запустите winetricks заново.";;
             uk*) _W_dlmsg="Будь ласка, звантажте ${_W_file} з ${_W_url}, розташуйте в ${W_CACHE}/${_W_packagename}, потім запустіть скрипт знову.";;
-            zh_CN*) _W_dlmsg="请从 ${_W_url} 下载 ${_W_file}，并置放于 ${W_CACHE}/${_W_packagename}, 然后重新运行 winetricks.";;
-            zh_TW*|zh_HK*) _W_dlmsg="請從 ${_W_url} 下載 ${_W_file}，并置放於 ${W_CACHE}/${_W_packagename}, 然后重新執行 winetricks.";;
+            zh_CN*) _W_dlmsg="请从 ${_W_url} 下载 ${_W_file}，并将文件置于 ${W_CACHE}/${_W_packagename}，然后重新运行 winetricks。";;
+            zh_TW*|zh_HK*) _W_dlmsg="請從 ${_W_url} 下載 ${_W_file}，並將檔案置於 ${W_CACHE}/${_W_packagename}，然後重新執行 winetricks。";;
             *) _W_dlmsg="Please download ${_W_file} from ${_W_url}, place it in ${W_CACHE}/${_W_packagename}, then re-run this script.";;
         esac
 
@@ -3017,6 +3048,7 @@ winetricks_dl_warning() {
         ru*) _W_countrymsg="Скрипт определил, что ваш IP-адрес принадлежит России. Если во время загрузки файлов вы увидите ошибки несоответствия сертификата, перезапустите скрипт с опцией '--torify' или скачайте файлы вручную, например, используя VPN." ;;
         pl*) _W_countrymsg="Wykryto, że twój adres IP należy do Rosji. W wypadku problemów z pobieraniem, uruchom z parametrem '--torify' lub pobierz plik manualnie, np. z użyciem VPN." ;;
         zh_CN*) _W_countrymsg="系统检测到您的 IP 地址属于俄罗斯。如果您在下载时遇到证书错误，请使用选项 --torify 重新启动，或者通过 VPN 手动下载文件。" ;;
+        zh_TW*|zh_HK*) _W_countrymsg="系統偵測到您的 IP 位址位於俄羅斯。若下載時遇到憑證錯誤，請以選項 --torify 重新啟動，或透過 VPN 手動下載檔案。" ;;
         *)  _W_countrymsg="Your IP address has been determined to belong to Russia. If you encounter a certificate error while downloading, please relaunch with the '--torify' option, or download files manually, for instance using VPN." ;;
     esac
 
@@ -3088,7 +3120,7 @@ winetricks_latest_version_check()
             pt*) w_warn "Github offline? versão '${latest_version}' não parece uma versão válida" ;;
             ru*) w_warn "Отсутствует подключение к Github? Версия '${latest_version}' может быть неактуальной" ;;
             zh_CN*) w_warn "GitHub 无法访问？${latest_version} 似乎不是个有效的版本号。" ;;
-            zh_TW*|zh_HK*) w_warn "GitHub 宕機了？${latest_version} 似乎不是個有效的版本號。" ;;
+            zh_TW*|zh_HK*) w_warn "GitHub 無法連線？${latest_version} 似乎不是個有效的版本號。" ;;
             *) w_warn "Github down? version '${latest_version}' doesn't appear to be a valid version" ;;
         esac
 
@@ -3121,11 +3153,11 @@ winetricks_latest_version_check()
                     w_warn "Вы можете выполнить обновление с помощью менеджера пакетов, параметра --self-update или вручную."
                     ;;
                 zh_CN*)
-                    w_warn "你正在使用 winetricks-${WINETRICKS_VERSION}，最新版本是 winetricks-${latest_version}!"
+                    w_warn "您正在使用 winetricks-${WINETRICKS_VERSION}，最新版本为 winetricks-${latest_version}！"
                     w_warn "建议通过发行版的包管理器、--self-update 或者手动方式进行更新。"
                     ;;
                 zh_TW*|zh_HK*)
-                    w_warn "你正在使用 winetricks-${WINETRICKS_VERSION}，最新版本是 winetricks-${latest_version}!"
+                    w_warn "您正在使用 winetricks-${WINETRICKS_VERSION}，最新版本為 winetricks-${latest_version}！"
                     w_warn "建議通過發行版的套件管理員、--self-update 或者手動方式進行更新。"
                     ;;
                 *)
@@ -3271,25 +3303,25 @@ winetricks_prefixmenu()
             _W_msg_unattended1="Увімкнути автоматичне встановлення"
             _W_msg_help="Переглянути довідку"
             ;;
-        zh_CN*)   _W_msg_title="Winetricks - 请选择一个 Wine 容器"
-            _W_msg_body='您想要做些什么？'
-            _W_msg_apps='安装 Windows 应用'
-            _W_msg_benchmarks='安装基准测试软件'
+        zh_CN*)   _W_msg_title="Winetricks - 选择一个 Wineprefix"
+            _W_msg_body='您想做什么？'
+            _W_msg_apps='安装 Windows 应用程序'
+            _W_msg_benchmarks='安装基准测试程序'
             _W_msg_default="选择默认的 Wine 容器"
             _W_msg_mkprefix="创建新的 Wine 容器"
             _W_msg_unattended0="禁用静默安装"
             _W_msg_unattended1="启用静默安装"
             _W_msg_help="查看帮助"
             ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 取一 Wine 容器"
-            _W_msg_body='君欲何為？'
-            _W_msg_apps='安裝一個 Windows 應用'
-            _W_msg_benchmarks='安裝一個基准測試軟體'
-            _W_msg_default="選取預設的 Wine 容器"
-            _W_msg_mkprefix="建立新的 Wine 容器"
-            _W_msg_unattended0="禁用靜默安裝"
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 選擇一個 Wineprefix"
+            _W_msg_body='您想做什麼？'
+            _W_msg_apps='安裝 Windows 應用程式'
+            _W_msg_benchmarks='安裝基準測試程式'
+            _W_msg_default="選取預設的 Wineprefix"
+            _W_msg_mkprefix="建立新的 Wineprefix"
+            _W_msg_unattended0="停用靜默安裝"
             _W_msg_unattended1="啟用靜默安裝"
-            _W_msg_help="檢視輔助說明"
+            _W_msg_help="查看說明"
             ;;
         de*) _W_msg_title="Winetricks - wineprefix auswählen"
             _W_msg_body='Was möchten Sie tun?'
@@ -3370,8 +3402,8 @@ winetricks_prefixmenu()
                     fi
                 case ${LANG} in
                     bg*) printf %s " FALSE prefix='${p}' 'Изберете ${_W_msg_name}' " ;;
-                    zh_CN*) printf %s " FALSE prefix='${p}' '选择管理 ${_W_msg_name}' " ;;
-                    zh_TW*|zh_HK*) printf %s " FALSE prefix='${p}' '選擇管理 ${_W_msg_name}' " ;;
+                    zh_CN*) printf %s " FALSE prefix='${p}' '选择 ${_W_msg_name}' " ;;
+                    zh_TW*|zh_HK*) printf %s " FALSE prefix='${p}' '選擇 ${_W_msg_name}' " ;;
                     de*) printf %s " FALSE prefix='${p}' '${_W_msg_name} auswählen' " ;;
                     pl*) printf %s " FALSE prefix='${p}' 'Wybierz ${_W_msg_name}' " ;;
                     pt*) printf %s " FALSE prefix='${p}' 'Selecione ${_W_msg_name}' " ;;
@@ -3439,9 +3471,13 @@ winetricks_mkprefixmenu()
             _W_msg_name="Nome"
             _W_msg_arch="Arquitetura"
             ;;
-        zh_CN*) _W_msg_title="Winetricks - 创建新的 wineprefix"
+        zh_CN*) _W_msg_title="Winetricks - 创建新的 Wineprefix"
             _W_msg_name="名称"
             _W_msg_arch="架构"
+            ;;
+        zh_TW*|zh_HK*) _W_msg_title="Winetricks - 建立新的 Wineprefix"
+            _W_msg_name="名稱"
+            _W_msg_arch="架構"
             ;;
         *)  _W_msg_title="Winetricks - create new wineprefix"
             _W_msg_name="Name"
@@ -3601,25 +3637,25 @@ winetricks_mainmenu()
             _W_msg_folder='Перегляд файлів'
             _W_msg_annihilate="Видалити УСІ ДАНІ ТА ПРОГРАМИ З ЦЬОГО WINEPREFIX"
             ;;
-        zh_CN*)   _W_msg_title="Winetricks - 当前容器路径是 \"${WINEPREFIX}\""
-            _W_msg_body='管理当前容器'
+        zh_CN*)   _W_msg_title="Winetricks - 当前 Wine 容器为 \"${WINEPREFIX}\""
+            _W_msg_body='管理当前 Wine 容器'
             _W_msg_dlls="安装 Windows DLL 或组件"
             _W_msg_fonts='安装字体'
             _W_msg_settings='修改设置'
             _W_msg_winecfg='运行 Wine 配置程序'
-            _W_msg_regedit='运行注册表'
+            _W_msg_regedit='运行注册表编辑器'
             _W_msg_taskmgr='运行任务管理器'
             _W_msg_explorer='运行资源管理器'
             _W_msg_uninstaller='运行卸载程序'
-            _W_msg_winecmd='运行 Wine cmd'
+            _W_msg_winecmd='运行 Wine 命令提示符'
             _W_msg_wine_misc_exe='运行任意可执行文件 (.exe/.msi/.msu)'
-            _W_msg_shell='运行命令提示窗口 (作为调试)'
+            _W_msg_shell='运行命令行（用于调试）'
             _W_msg_folder='浏览容器中的文件'
-            _W_msg_annihilate="删除容器中所有数据和应用程序"
+            _W_msg_annihilate="删除此容器中的所有数据和应用程序"
             ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"${WINEPREFIX}\""
-            _W_msg_body='管理目前容器'
-            _W_msg_dlls="安裝 Windows DLL 或套件"
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前的 Wine 容器為 \"${WINEPREFIX}\""
+            _W_msg_body='管理目前的 Wine 容器'
+            _W_msg_dlls="安裝 Windows DLL 或元件"
             _W_msg_fonts='安裝字型'
             _W_msg_settings='修改設定'
             _W_msg_winecfg='執行 Wine 設定程式'
@@ -3627,11 +3663,11 @@ winetricks_mainmenu()
             _W_msg_taskmgr='執行工作管理員'
             _W_msg_explorer='執行檔案總管'
             _W_msg_uninstaller='執行解除安裝程式'
-            _W_msg_winecmd='運行 Wine cmd'
-            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
-            _W_msg_shell='執行命令提示視窗 (作為偵錯)'
+            _W_msg_winecmd='執行 Wine 命令提示字元'
+            _W_msg_wine_misc_exe='執行任意可執行檔 (.exe/.msi/.msu)'
+            _W_msg_shell='執行命令列（用於偵錯）'
             _W_msg_folder='瀏覽容器中的檔案'
-            _W_msg_annihilate="刪除容器中所有資料和應用程式"
+            _W_msg_annihilate="刪除此容器中的所有資料和應用程式"
             ;;
         *)  _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
             _W_msg_body='What would you like to do to this wineprefix?'
@@ -3738,10 +3774,10 @@ winetricks_settings_menu()
         uk*) _W_msg_title="Winetricks - поточний prefix \"${WINEPREFIX}\""
             _W_msg_body='Які налаштування Ви хочете змінити?'
             ;;
-        zh_CN*)   _W_msg_title="Winetricks - 当前容器路径是 \"${WINEPREFIX}\""
+        zh_CN*)   _W_msg_title="Winetricks - 当前 Wine 容器为 \"${WINEPREFIX}\""
             _W_msg_body='您想要更改哪项设置？'
             ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"${WINEPREFIX}\""
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前的 Wine 容器為 \"${WINEPREFIX}\""
             _W_msg_body='您想要變更哪項設定？'
             ;;
         *)  _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
@@ -3915,6 +3951,15 @@ winetricks_settings_menu()
                             *) title="${title_zh_CN}";;
                         esac
                     ;;
+                    zh_TW*|zh_HK*)
+                        case "${title_zh_TW}" in
+                            "") case "${title_zh_HK}" in
+                                    "") ;;
+                                    *) title="${title_zh_HK}";;
+                                esac ;;
+                            *) title="${title_zh_TW}";;
+                        esac
+                    ;;
                     uk*)
                         case "${title_uk}" in
                             "") ;;
@@ -3982,13 +4027,13 @@ winetricks_showmenu()
             _W_msg_body='Які пакунки Ви хочете встановити?'
             _W_cached="кешовано"
             ;;
-        zh_CN*)   _W_msg_title="Winetricks - 当前容器路径是 \"${WINEPREFIX}\""
+        zh_CN*)   _W_msg_title="Winetricks - 当前 Wine 容器为 \"${WINEPREFIX}\""
             _W_msg_body='您想要安装什么应用程序？'
             _W_cached="已缓存"
             ;;
-        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前容器路徑是 \"${WINEPREFIX}\""
+        zh_TW*|zh_HK*)   _W_msg_title="Winetricks - 目前的 Wine 容器為 \"${WINEPREFIX}\""
             _W_msg_body='您想要安裝什麼應用程式？'
-            _W_cached="已緩存"
+            _W_cached="已快取"
             ;;
         *)  _W_msg_title="Winetricks - current prefix is \"${WINEPREFIX}\""
             _W_msg_body='Which package(s) would you like to install?'
@@ -4134,11 +4179,11 @@ winetricks_showmenu()
                         --list \
                         --checklist \
                         --column '' \
-                        --column 包名 \
-                        --column 软件名 \
+                        --column 软件包名称 \
+                        --column 软件名称 \
                         --column 发行商 \
-                        --column 发行年 \
-                        --column 媒介 \
+                        --column 发行年份 \
+                        --column 媒体 \
                         --column 状态 \
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
@@ -4150,11 +4195,11 @@ winetricks_showmenu()
                         --list \
                         --checklist \
                         --column '' \
-                        --column 包名 \
-                        --column 軟體名 \
+                        --column 套件名稱 \
+                        --column 軟體名稱 \
                         --column 發行商 \
-                        --column 發行年 \
-                        --column 媒介 \
+                        --column 發行年份 \
+                        --column 媒體 \
                         --column 狀態 \
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
@@ -4410,7 +4455,7 @@ winetricks_list_all()
         ru*) _W_cached="в кэше"   ; _W_download="доступно для скачивания"  ;;
         uk*) _W_cached="кешовано"   ; _W_download="завантажуване"  ;;
         zh_CN*) _W_cached="已缓存"   ; _W_download="可下载"  ;;
-        zh_TW*|zh_HK*)   _W_cached="已緩存"   ; _W_download="可下載"  ;;
+        zh_TW*|zh_HK*)   _W_cached="已快取"   ; _W_download="可下載"  ;;
         *)   _W_cached="cached"   ; _W_download="downloadable"  ;;
     esac
 
@@ -4728,7 +4773,8 @@ winetricks_set_wineprefix()
                 fr*) w_warn "Vous utilisez un WINEPREFIX 64 bits. Notez que de nombreux verbes n'installent que des versions 32 bits des paquets. Si vous rencontrez des problèmes, veuillez refaire un test dans un WINEPREFIX 32 bits propre avant de signaler un bug." ;;
                 ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
                 pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
-                zh_CN*) w_warn "您正在使用 64 位的 WINEPREFIX。请注意，许多脚本（verbs）只安装 32 位版本的软件包。如果遇到问题，请先在干净的 32 位 WINEPREFIX 中重新测试，然后再报告错误。" ;;
+                zh_CN*) w_warn "您正在使用 64 位 WINEPREFIX。请注意，许多脚本只会安装 32 位版本的软件包。如果遇到问题，请先在干净的 32 位 WINEPREFIX 中重新测试，再报告错误。" ;;
+                zh_TW*|zh_HK*) w_warn "您正在使用 64 位元 WINEPREFIX。請注意，許多指令稿只會安裝 32 位元版本的套件。如果遇到問題，請先在乾淨的 32 位元 WINEPREFIX 中重新測試，再回報錯誤。" ;;
                 *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
             esac
 
@@ -4842,7 +4888,8 @@ winetricks_annihilate_wineprefix()
         uk*) w_askpermission "Бажаєте видалити '${WINEPREFIX}'?" ;;
         pl*) w_askpermission "Czy na pewno chcesz usunąć prefiks ${WINEPREFIX} i wszystkie jego elementy?" ;;
         pt*) w_askpermission "Apagar ${WINEPREFIX}, Estes apps, ícones e ítens do menu?" ;;
-        zh_CN*) w_askpermission "要删除 ${WINEPREFIX} 及其应用程序、图标和菜单项？" ;;
+        zh_CN*) w_askpermission "要删除 ${WINEPREFIX} 及其应用程序、图标和菜单项吗？" ;;
+        zh_TW*|zh_HK*) w_askpermission "要刪除 ${WINEPREFIX} 及其應用程式、圖示和選單項目嗎？" ;;
         *) w_askpermission "Delete ${WINEPREFIX}, its apps, icons, and menu items?" ;;
     esac
 
@@ -5256,7 +5303,7 @@ _EOF_
 -f, --force           不检查软件包是否已安装
     --gui             即使在命令行模式下，也显示 GUI 诊断
     --gui=OPT         设置 GUI 引擎为 kdialog 或 zenity
-    --isolate         将每个应用或游戏安装到独立的 WINEPREFIX 中
+    --isolate         将每个应用或游戏安装到独立的 Wine 容器（WINEPREFIX）中
     --self-update     更新此应用到最新版本
     --update-rollback 回滚最近一次的自我更新
     --no-clean        不删除临时目录（调试时有用）
@@ -5281,9 +5328,49 @@ list-cached           列出已缓存且准备安装的脚本
 list-download         列出会自动下载的脚本
 list-manual-download  列出需要用户协助下载的脚本
 list-installed        列出已安装的脚本
-arch=32|64            创建 32 位或 64 位 wineprefix，此选项必须在 prefix=foobar 之前指定，默认 wineprefix 不支持此选项
+arch=32|64            创建 32 位或 64 位 Wine 容器，此选项必须在 prefix=foobar 之前指定，默认 Wine 容器不支持此选项
 prefix=foobar         选择 WINEPREFIX 为 ${W_PREFIXES_ROOT}/foobar
-annihilate            删除该 WINEPREFIX 内的所有数据和应用程序
+annihilate            删除该 Wine 容器中的所有数据和应用程序
+_EOF_
+            ;;
+        zh_TW*|zh_HK*)
+            cat <<_EOF_
+用法：$0 [選項] [命令|指令稿|指令稿路徑] ...
+執行指定的指令稿。每個指令稿用於安裝應用程式或變更設定。
+
+選項：
+    --country=CC      將地區代碼設為 CC，且不偵測您的 IP 位址
+-f, --force           不檢查套件是否已安裝
+    --gui             即使在命令列模式下，也顯示 GUI 診斷資訊
+    --gui=OPT         將 GUI 引擎設為 kdialog 或 zenity
+    --isolate         將每個應用程式或遊戲安裝到獨立的 Wine 容器（WINEPREFIX）中
+    --self-update     將此程式更新到最新版本
+    --update-rollback 回復最近一次的自動更新
+    --no-clean        不刪除暫存目錄（偵錯時很有用）
+    --optin           選擇向 Winetricks 維護者回報所使用的指令稿
+    --optout          選擇不向 Winetricks 維護者回報所使用的指令稿
+-q, --unattended      不詢問任何問題，直接自動安裝
+-t, --torify          若可用，透過 torify 執行下載
+    --verify          執行（自動化）GUI 指令稿測試（若有）
+-v, --verbose         執行時回顯所有命令
+-h, --help            顯示此說明並結束
+-V, --version         顯示版本資訊並結束
+
+命令：
+list                  列出分類
+list-all              列出所有分類及其指令稿
+apps list             列出 applications 分類下的指令稿
+benchmarks list       列出 benchmarks 分類下的指令稿
+dlls list             列出 dlls 分類下的指令稿
+fonts list            列出 fonts 分類下的指令稿
+settings list         列出 settings 分類下的指令稿
+list-cached           列出已快取且可直接安裝的指令稿
+list-download         列出會自動下載的指令稿
+list-manual-download  列出需要使用者協助下載的指令稿
+list-installed        列出已安裝的指令稿
+arch=32|64            建立 32 位元或 64 位元 Wine 容器，此選項必須在 prefix=foobar 之前指定，預設 Wine 容器不支援此選項
+prefix=foobar         將 WINEPREFIX 設為 ${W_PREFIXES_ROOT}/foobar
+annihilate            刪除此 Wine 容器中的所有資料和應用程式
 _EOF_
             ;;
         *)
@@ -9146,7 +9233,8 @@ load_dotnet40()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -9192,7 +9280,8 @@ load_dotnet40_kb2468871()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -9256,7 +9345,8 @@ load_dotnet45()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -9313,7 +9403,8 @@ load_dotnet452()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -9360,7 +9451,8 @@ load_dotnet46()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -9410,7 +9502,8 @@ load_dotnet461()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -9461,7 +9554,8 @@ load_dotnet462()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -9511,7 +9605,8 @@ load_dotnet471()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -9560,7 +9655,8 @@ load_dotnet472()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -9610,7 +9706,8 @@ load_dotnet48()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
+        zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -12445,7 +12542,8 @@ load_quicktime72()
             bg*) w_warn "В настройките на Quicktime, включете Разширени / Безопасен режим (gdi), иначе видеоклиповете няма да се възпроизвеждат." ;;
             ru*) w_warn "В настройках Quicktime включите Дополнительно / Безопасный режим (только gdi), иначе видеофайлы не будут воспроизводиться." ;;
             pt*) w_warn "Nas preferências do Quicktime, marque Advanced / Safe Mode (gdi), ou os vídeos não irão reproduzir." ;;
-            zh_CN*) w_warn "在 QuickTime 的偏好设置中，勾选高级 / 安全模式（GDI），否则影片将无法播放。" ;;
+            zh_CN*) w_warn "在 QuickTime 的偏好设置中，勾选「高级 / 安全模式（GDI）」，否则视频将无法播放。" ;;
+            zh_TW*|zh_HK*) w_warn "在 QuickTime 的偏好設定中，勾選「進階 / 安全模式（GDI）」；否則影片將無法播放。" ;;
             *) w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play." ;;
         esac
         if [ -z "${W_OPT_UNATTENDED}" ]; then
@@ -17902,24 +18000,28 @@ w_metadata graphics=wayland settings \
     title_uk="Встановити графічний драйвер Wayland" \
     title_ru="Установить графический драйвер Wayland" \
     title_zh_CN="将图形驱动设置为 Wayland" \
+    title_zh_TW="將圖形驅動設為 Wayland" \
     title="Set graphics driver to Wayland"
 w_metadata graphics=x11 settings \
     title_bg="Задайте графичния драйвер X11" \
     title_uk="Встановити графічний драйвер X11" \
     title_ru="Установить графический драйвер X11" \
     title_zh_CN="将图形驱动设置为 X11" \
+    title_zh_TW="將圖形驅動設為 X11" \
     title="Set graphics driver to X11"
 w_metadata graphics=mac settings \
     title_bg="Задайте графичния драйвер Quartz (за macOS)" \
     title_uk="Встановити графічний драйвер Quartz (для macOS)" \
     title_ru="Установить графический драйвер Quartz (для macOS)" \
     title_zh_CN="将图形驱动设置为 Quartz（针对 macOS）" \
+    title_zh_TW="將圖形驅動設為 Quartz（適用於 macOS）" \
     title="Set graphics driver to Quartz (for macOS)"
 w_metadata graphics=default settings \
     title_bg="Задайте графичния драйвер по подразбиране" \
     title_uk="Встановити графічний драйвер за замовчуванням" \
     title_ru="Установить графический драйвер по умолчанию" \
     title_zh_CN="将图形驱动恢复默认设置" \
+    title_zh_TW="將圖形驅動還原為預設值" \
     title="Set graphics driver to default"
 
 load_graphics() {
@@ -19536,10 +19638,16 @@ winetricks_stats_init()
                     declined="Надсилання звітності Winetricks вимкнено. Ви більше не отримуватиме це питання знову."
                     ;;
                 zh_CN*)
-                    title="有关是否协助 Winetricks 开发的一次性询问。"
-                    question="您是否愿意通过允许 winetricks 报告统计信息来协助 winetricks 的开发？您可以随时通过命令 'winetricks --optout' 关闭统计信息上报。"
+                    title="协助 Winetricks 开发"
+                    question="您是否愿意允许 Winetricks 上报统计信息，以协助 Winetricks 的开发？您可以随时通过命令 'winetricks --optout' 关闭统计信息上报。"
                     thanks="谢谢！此问题将不会再次出现。请注意，您可随时使用命令 'winetricks --optout' 关闭统计信息上报。"
-                    declined="好的，winetricks 将不会报告统计信息。此问题将不会再次出现。"
+                    declined="好的，Winetricks 将不会上报统计信息。此问题将不会再次出现。"
+                    ;;
+                zh_TW*|zh_HK*)
+                    title="協助 Winetricks 開發"
+                    question="您是否願意允許 Winetricks 回報使用統計，以協助 Winetricks 的開發？您可以隨時透過命令 'winetricks --optout' 關閉統計資訊回報。"
+                    thanks="謝謝！此問題將不會再次出現。請注意，您可隨時使用命令 'winetricks --optout' 關閉統計資訊回報。"
+                    declined="好的，Winetricks 將不會回報使用統計。此問題將不會再次出現。"
                     ;;
                 *)
                     title="One-time question about helping Winetricks development"
