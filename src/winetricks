@@ -19047,6 +19047,33 @@ load_sandbox()
     w_call isolate_home
 }
 
+#----------------------------------------------------------------
+
+w_metadata showdotfiles=y settings \
+    title="Show dotfiles/folders (.foo) in Windows programs"
+w_metadata showdotfiles=n settings \
+    title="Hide dotfiles/folders (.foo) in Windows programs (default)"
+
+load_showdotfiles()
+{
+    case "$1" in
+        y|Y) arg="Y";;
+        n|N) arg="N";;
+        *) w_die "illegal value $1 for ShowDotFiles";;
+    esac
+
+    echo "Setting ShowDotFiles to ${arg}"
+    cat > "${W_TMP}/${W_PACKAGE}.reg" <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Software\\Wine]
+"ShowDotFiles"="${arg}"
+
+_EOF_
+    w_try_regedit "${W_TMP}/${W_PACKAGE}.reg"
+}
+
+
 ####
 # settings->sound
 
