@@ -18407,6 +18407,77 @@ _EOF_
 }
 
 #----------------------------------------------------------------
+
+w_metadata dpi=96 settings \
+    title="Set screen DPI to 96"
+
+w_metadata dpi=120 settings \
+    title="Set screen DPI to 120"
+
+w_metadata dpi=144 settings \
+    title="Set screen DPI to 144"
+
+w_metadata dpi=168 settings \
+    title="Set screen DPI to 168"
+
+w_metadata dpi=192 settings \
+    title="Set screen DPI to 192"
+
+w_metadata dpi=216 settings \
+    title="Set screen DPI to 216"
+
+w_metadata dpi=240 settings \
+    title="Set screen DPI to 240"
+
+w_metadata dpi=288 settings \
+    title="Set screen DPI to 288"
+
+w_metadata dpi=336 settings \
+    title="Set screen DPI to 336"
+
+w_metadata dpi=384 settings \
+    title="Set screen DPI to 384"
+
+w_metadata dpi=432 settings \
+    title="Set screen DPI to 432"
+
+w_metadata dpi=480 settings \
+    title="Set screen DPI to 480"
+
+load_dpi()
+{
+    dpi="$1"
+
+    case "${dpi}" in
+        96) log_pixels=00000060;;
+        120) log_pixels=00000078;;
+        144) log_pixels=00000090;;
+        168) log_pixels=000000a8;;
+        192) log_pixels=000000c0;;
+        216) log_pixels=000000d8;;
+        240) log_pixels=000000f0;;
+        288) log_pixels=00000120;;
+        336) log_pixels=00000150;;
+        384) log_pixels=00000180;;
+        432) log_pixels=000001b0;;
+        480) log_pixels=000001e0;;
+        *) w_die "illegal value $1 for DPI";;
+    esac
+
+    echo "Setting DPI to ${dpi}"
+    cat > "${W_TMP}"/set-dpi.reg <<_EOF_
+REGEDIT4
+
+[HKEY_CURRENT_USER\\Control Panel\\Desktop]
+"LogPixels"=dword:${log_pixels}
+
+_EOF_
+    w_try_regedit "${W_TMP}"/set-dpi.reg
+
+    w_wineserver -w
+}
+
+#----------------------------------------------------------------
 # MIME-type file associations settings
 
 w_metadata mimeassoc=on settings \
