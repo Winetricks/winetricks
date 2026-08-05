@@ -17165,17 +17165,17 @@ load_vc2010express()
 #----------------------------------------------------------------
 
 w_metadata vlc apps \
-    title="VLC media player 2.2.1" \
+    title="VLC media player 3.0.23" \
     publisher="VideoLAN" \
-    year="2015" \
+    year="2026" \
     media="download" \
-    file1="vlc-2.2.1-win32.exe" \
-    installed_file1="${W_PROGRAMS_X86_WIN}/VideoLAN/VLC/vlc.exe" \
+    file1="vlc-3.0.23-win64.exe" \
+    installed_file1="${W_PROGRAMS_WIN}/VideoLAN/VLC/vlc.exe" \
     homepage="https://www.videolan.org/vlc/"
 
 load_vlc()
 {
-    w_download https://get.videolan.org/vlc/2.2.1/win32/vlc-2.2.1-win32.exe 2eaa3881b01a2464d2a155ad49cc78162571dececcef555400666c719a60794d
+    w_download https://plug-mirror.rcac.purdue.edu/vlc/vlc/3.0.23/win64/vlc-3.0.23-win64.exe 20ad191348684b470ddc4e05204316f3d8e39655f412b3e392a0eef97639daaf
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+ /S}
 }
