@@ -15125,15 +15125,15 @@ load_ipamona()
 w_metadata liberation fonts \
     title="Red Hat Liberation fonts (Mono, Sans, SansNarrow, Serif)" \
     publisher="Red Hat" \
-    year="2008" \
+    year="2021" \
     media="download" \
-    file1="liberation-fonts-ttf-1.07.4.tar.gz" \
+    file1="liberation-fonts-ttf-2.1.5.tar.gz" \
     installed_file1="${W_FONTSDIR_WIN}/liberationmono-bolditalic.ttf"
 
 load_liberation()
 {
-    # https://pagure.io/liberation-fonts
-    w_download "https://releases.pagure.org/liberation-fonts/liberation-fonts-ttf-1.07.4.tar.gz" 61a7e2b6742a43c73e8762cdfeaf6dfcf9abdd2cfa0b099a9854d69bc4cfee5c
+    # https://github.com/liberationfonts/liberation-fonts/
+    w_download https://github.com/liberationfonts/liberation-fonts/files/7261482/liberation-fonts-ttf-2.1.5.tar.gz 7191c669bf38899f73a2094ed00f7b800553364f90e2637010a69c0e268f25d0
 
     w_try_cd "${W_TMP}"
     w_try tar -zxf "${W_CACHE}/${W_PACKAGE}/${file1}"
