@@ -219,6 +219,7 @@ w_askpermission()
             uk*) w_die "Операція скасована." ;;
             pl*) w_die "Anulowano operację, opuszczanie." ;;
             pt*) w_die "Operação cancelada, saindo." ;;
+            ru*) w_die "Операция отменена, выход." ;;
             zh_CN*) w_die "操作已取消，正在退出。" ;;
             zh_TW*|zh_HK*) w_die "操作已取消，正在退出。" ;;
             *) w_die "Operation cancelled, quitting." ;;
@@ -411,6 +412,31 @@ _w_get_broken_messages()
             broken_good_and_bad_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado em 64-bit wine-${_wine_version_stripped}. Quebrado desde ${bad_version}. Use um prefixo feito com WINEARCH=win32 ou atualize o wine para >=${good_version} para trabalhar com isto. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
             broken_only_bad_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado em 64-bit wine-${_wine_version_stripped}. Quebrado desde ${bad_version}. Use um prefixo feito com WINEARCH=win32 para trabalhar com isto. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
             broken_no_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado quando o wine é feito sem mingw. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
+            ;;
+        ru*)
+            # default broken messages
+            broken_good_version_known_default="Пакет (${W_PACKAGE}) не работает в wine-${_wine_version_stripped}. Обновите wine до >=${good_version}. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_good_and_bad_version_known_default="Пакет (${W_PACKAGE}) не работает в wine-${_wine_version_stripped}. Сломан начиная с ${bad_version}. Обновите wine до >=${good_version}. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_only_bad_version_known_default="Пакет (${W_PACKAGE}) не работает в wine-${_wine_version_stripped}. Сломан начиная с ${bad_version}. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_no_version_known_default="Пакет (${W_PACKAGE}) не работает. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+
+            # mingw broken messages
+            broken_good_version_known_mingw="Пакет (${W_PACKAGE}) не работает в wine-${_wine_version_stripped}, если wine собран с mingw. Обновите wine до >=${good_version} или пересоберите wine без mingw. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_good_and_bad_version_known_mingw="Пакет (${W_PACKAGE}) не работает в wine-${_wine_version_stripped}. Сломан начиная с ${bad_version}, если wine собран с mingw. Обновите wine до >=${good_version} или пересоберите wine без mingw. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_only_bad_version_known_mingw="Пакет (${W_PACKAGE}) не работает в wine-${_wine_version_stripped}. Сломан начиная с ${bad_version}, если wine собран с mingw. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_no_version_known_mingw="Пакет (${W_PACKAGE}) не работает, если wine собран с mingw. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+
+            # no mingw broken messages
+            broken_good_version_known_no_mingw="Пакет (${W_PACKAGE}) не работает в wine-${_wine_version_stripped}, если wine собран без mingw. Обновите wine до >=${good_version}. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_good_and_bad_version_known_no_mingw="Пакет (${W_PACKAGE}) не работает в wine-${_wine_version_stripped}. Сломан начиная с ${bad_version}, если wine собран без mingw. Обновите wine до >=${good_version}. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_only_bad_version_known_no_mingw="Пакет (${W_PACKAGE}) не работает в wine-${_wine_version_stripped}. Сломан начиная с ${bad_version}, если wine собран без mingw. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_no_version_known_no_mingw="Пакет (${W_PACKAGE}) не работает, если wine собран без mingw. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+
+            # win64 broken messages
+            broken_good_version_known_win64="Пакет (${W_PACKAGE}) не работает в 64-битном wine-${_wine_version_stripped}. Используйте префикс, созданный с WINEARCH=win32, или обновите wine до >=${good_version}. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_good_and_bad_version_known_win64="Пакет (${W_PACKAGE}) не работает в 64-битном wine-${_wine_version_stripped}. Сломан начиная с ${bad_version}. Используйте префикс, созданный с WINEARCH=win32, или обновите wine до >=${good_version}. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_only_bad_version_known_win64="Пакет (${W_PACKAGE}) не работает в 64-битном wine-${_wine_version_stripped}. Сломан начиная с ${bad_version}. Используйте префикс, созданный с WINEARCH=win32. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
+            broken_no_version_known_win64="Пакет (${W_PACKAGE}) не работает в 64-битном wine-${_wine_version_stripped}. Используйте префикс, созданный с WINEARCH=win32. Подробности: ${bug_link}. Используйте --force, чтобы всё равно попробовать."
             ;;
         zh_CN*)
             # default broken messages
