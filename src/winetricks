@@ -9273,6 +9273,7 @@ load_dotnet40()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
@@ -9320,6 +9321,7 @@ load_dotnet40_kb2468871()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
@@ -9385,6 +9387,7 @@ load_dotnet45()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
@@ -9443,6 +9446,7 @@ load_dotnet452()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
@@ -9491,6 +9495,7 @@ load_dotnet46()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
@@ -9542,6 +9547,7 @@ load_dotnet461()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
@@ -9594,6 +9600,7 @@ load_dotnet462()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
@@ -9645,6 +9652,7 @@ load_dotnet471()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
@@ -9695,6 +9703,7 @@ load_dotnet472()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
@@ -9746,6 +9755,7 @@ load_dotnet48()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
+        ru*) w_warn "При запуске приложений, использующих WPF, возможны бесконечные циклы. Временное решение — запускать программу с LC_ALL=C." ;;
         zh_CN*) w_warn "在尝试执行依赖 WPF 的应用程序时，您可能会遇到无限循环的问题。临时解决方法是在运行程序时使用 LC_ALL=C。" ;;
         zh_TW*|zh_HK*) w_warn "在嘗試執行依賴 WPF 的應用程式時，您可能會遇到無限迴圈的問題。暫時的解決方式是在執行程式時使用 LC_ALL=C。" ;;
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
