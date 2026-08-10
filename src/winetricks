@@ -3433,6 +3433,7 @@ winetricks_prefixmenu()
                     de*) printf %s " FALSE prefix='${p}' '${_W_msg_name} auswählen' " ;;
                     pl*) printf %s " FALSE prefix='${p}' 'Wybierz ${_W_msg_name}' " ;;
                     pt*) printf %s " FALSE prefix='${p}' 'Selecione ${_W_msg_name}' " ;;
+                    ru*) printf %s " FALSE prefix='${p}' 'Выбрать ${_W_msg_name}' " ;;
                     *) printf %s " FALSE prefix='${p}' 'Select ${_W_msg_name}' " ;;
                 esac
                 done >> "${WINETRICKS_WORKDIR}"/zenity.sh
@@ -3496,6 +3497,10 @@ winetricks_mkprefixmenu()
         pt*) _W_msg_title="Winetricks - criar novo wineprefix"
             _W_msg_name="Nome"
             _W_msg_arch="Arquitetura"
+            ;;
+        ru*) _W_msg_title="Winetricks — создать новый префикс wine"
+            _W_msg_name="Имя"
+            _W_msg_arch="Архитектура"
             ;;
         zh_CN*) _W_msg_title="Winetricks - 创建新的 Wineprefix"
             _W_msg_name="名称"
@@ -4805,9 +4810,15 @@ winetricks_set_wineprefix()
             esac
 
             if [ "${_W_wow64_style}" = "new" ]; then
-                w_warn "You appear to be using Wine's new wow64 mode. Note that this is EXPERIMENTAL and not yet fully supported. If reporting an issue, be sure to mention this."
+                case ${LANG} in
+                    ru*) w_warn "Похоже, вы используете новый режим wow64 в Wine. Важно: он ЭКСПЕРИМЕНТАЛЬНЫЙ и пока поддерживается не полностью. Если будете сообщать о проблеме, обязательно упомяните об этом." ;;
+                    *) w_warn "You appear to be using Wine's new wow64 mode. Note that this is EXPERIMENTAL and not yet fully supported. If reporting an issue, be sure to mention this." ;;
+                esac
             elif [ "${_W_wow64_style}" = "unknown" ]; then
-                w_warn "WoW64 type could not be detected."
+                case ${LANG} in
+                    ru*) w_warn "Не удалось определить тип WoW64." ;;
+                    *) w_warn "WoW64 type could not be detected." ;;
+                esac
             fi
         fi
 
@@ -4914,6 +4925,7 @@ winetricks_annihilate_wineprefix()
         uk*) w_askpermission "Бажаєте видалити '${WINEPREFIX}'?" ;;
         pl*) w_askpermission "Czy na pewno chcesz usunąć prefiks ${WINEPREFIX} i wszystkie jego elementy?" ;;
         pt*) w_askpermission "Apagar ${WINEPREFIX}, Estes apps, ícones e ítens do menu?" ;;
+        ru*) w_askpermission "Удалить ${WINEPREFIX}, все программы в нём, значки и пункты меню?" ;;
         zh_CN*) w_askpermission "要删除 ${WINEPREFIX} 及其应用程序、图标和菜单项吗？" ;;
         zh_TW*|zh_HK*) w_askpermission "要刪除 ${WINEPREFIX} 及其應用程式、圖示和選單項目嗎？" ;;
         *) w_askpermission "Delete ${WINEPREFIX}, its apps, icons, and menu items?" ;;
