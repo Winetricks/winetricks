@@ -6188,12 +6188,12 @@ w_metadata d3dcompiler_47 dlls \
 
 load_d3dcompiler_47()
 {
-    w_download https://download.microsoft.com/download/B/0/C/B0C80BA3-8AD6-4958-810B-6882485230B5/standalonesdk/Installers/2630bae9681db6a9f6722366f47d055c.cab
+    w_download https://download.microsoft.com/download/38ab8f6d-3676-4860-ae84-3361308b9d7f/KIT_BUNDLE_WINDOWSSDK_MEDIACREATION/Installers/2630bae9681db6a9f6722366f47d055c.cab
     w_try_cabextract -d "${W_TMP}" -L -F "fila319f706acfa16d6707473ebf29bdc7f" "${W_CACHE}/${W_PACKAGE}/2630bae9681db6a9f6722366f47d055c.cab"
     w_try mv "${W_TMP}/fila319f706acfa16d6707473ebf29bdc7f" "${W_SYSTEM32_DLLS}/d3dcompiler_47.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download https://download.microsoft.com/download/B/0/C/B0C80BA3-8AD6-4958-810B-6882485230B5/standalonesdk/Installers/61d57a7a82309cd161a854a6f4619e52.cab
+        w_download https://download.microsoft.com/download/38ab8f6d-3676-4860-ae84-3361308b9d7f/KIT_BUNDLE_WINDOWSSDK_MEDIACREATION/Installers/61d57a7a82309cd161a854a6f4619e52.cab
         w_try_cabextract -d "${W_TMP}" -L -F "fil3585cb2ea5db13cc0838f8d06b5c9679" "${W_CACHE}/${W_PACKAGE}/61d57a7a82309cd161a854a6f4619e52.cab"
         w_try mv "${W_TMP}/fil3585cb2ea5db13cc0838f8d06b5c9679" "${W_SYSTEM64_DLLS}/d3dcompiler_47.dll"
     fi
