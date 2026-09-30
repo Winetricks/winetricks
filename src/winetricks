@@ -10241,11 +10241,10 @@ w_metadata dsoal dlls \
 
 load_dsoal()
 {
-    if [ -e "${W_CACHE}/${W_PACKAGE}/DSOAL.7z" ]; then
-        w_warn "${W_PACKAGE} is already downloaded in ${W_CACHE}/${W_PACKAGE}/DSOAL.7z. This does not prevent the installation of this package. However, the downloaded version may be out-of-date. If you want a more up-to-date version, delete ${W_CACHE}/${W_PACKAGE}/DSOAL.7z."
-    fi
-    w_download https://github.com/kcat/dsoal/releases/download/latest-master/DSOAL.7z
-    w_try_7z "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/DSOAL.7z"
+    _W_DSOAL_COMMIT_COUNT="$(curl -I -s https://api.github.com/repos/kcat/dsoal/commits?per_page=1 | grep -oP "page=\K[0-9]{2,}")"
+    w_linkcheck_ignore=1 w_download "https://github.com/kcat/dsoal/releases/download/archive/DSOAL_r${_W_DSOAL_COMMIT_COUNT}.zip"
+    w_try_7z "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/DSOAL_r${_W_DSOAL_COMMIT_COUNT}.zip"
+    w_try_7z "${W_TMP}" "${W_TMP}/DSOAL_r${_W_DSOAL_COMMIT_COUNT}.zip"
     w_try_cp_dll "${W_TMP}/DSOAL/Win32/dsoal-aldrv.dll" "${W_SYSTEM32_DLLS}/dsoal-aldrv.dll"
     w_try_cp_dll "${W_TMP}/DSOAL/Win32/dsound.dll" "${W_SYSTEM32_DLLS}/dsound.dll"
     if [ "${W_ARCH}" = "win64" ]; then
