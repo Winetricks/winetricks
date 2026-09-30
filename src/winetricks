@@ -1592,7 +1592,7 @@ w_download_to()
         test "${tries}" -eq 1 && winetricks_dl_warning
         tries=$((tries + 1))
 
-        if test -s "${_W_cache}/${_W_file}" ; then
+        if test -s "${_W_cache}/${_W_file}"; then
             if test "${_W_sum}" ; then
                 # If checksum matches, declare success and exit loop
                 case "${_W_shatype}" in
@@ -1608,7 +1608,7 @@ w_download_to()
                         ;;
                 esac
 
-                if test "${WINETRICKS_FORCE}" != 1; then
+                if test "${WINETRICKS_FORCE}" = 1; then
                     case ${LANG} in
                         bg*) w_warn "Контролната сума на ${_W_cache}/${_W_file} не съвпада, повторен опит за изтегляне" ;;
                         pl*) w_warn "Niezgodność sum kontrolnych dla ${_W_cache}/${_W_file}, pobieram ponownie" ;;
@@ -1619,14 +1619,14 @@ w_download_to()
                         *) w_warn "Checksum for ${_W_cache}/${_W_file} did not match, retrying download" ;;
                     esac
                     mv -f "${_W_cache}/${_W_file}" "${_W_cache}/${_W_file}".bak
-                else
-                    w_warn "Checksum for ${_W_cache}/${_W_file} did not match, but --force was used, so ignoring and trying anyway."
-                    checksum_ok=1
-                    break
                 fi
             else
-                # file exists, no checksum known, declare success and exit loop
-                break
+                if test "${WINETRICKS_FORCE}" = 1; then
+                    mv -f "${_W_cache}/${_W_file}" "${_W_cache}/${_W_file}".bak
+                else
+                    # file exists, no checksum known, declare success and exit loop
+                    break
+                fi
             fi
         elif test -f "${_W_cache}/${_W_file}" ; then
             # zero-length file, just delete before retrying
