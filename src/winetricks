@@ -358,7 +358,7 @@ _w_get_broken_messages()
             broken_no_version_known_no_mingw="Пакетът (${W_PACKAGE}) е повреден, когато wine е създаден без mingw. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
 
             # win64 broken messages
-            broken_good_version_known_win64="Пакетът (${W_PACKAGE}) е повреден при 64-битовата архитектура на wine-${_wine_version_stripped}. Използвайте папка, създадена с WINEARCH=win32 или wine >=${good_version}. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
+            broken_good_version_known_win64="Пакетът (${W_PACKAGE}) е повреден при 64-битовата архитектура на wine-${_wine_version_stripped}. Използвайте префикс, създаден с WINEARCH=win32 или wine >=${good_version}. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
             broken_good_and_bad_version_known_win64="Пакетът (${W_PACKAGE}) е повреден при 64-битовата архитектура на wine-${_wine_version_stripped}. Повреден е от версия ${bad_version}. Използвайте папка, създадена с WINEARCH=win32 или wine to >=${good_version}. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
             broken_only_bad_version_known_win64="Пакетът (${W_PACKAGE}) е повреден при 64-битовата архитектура на wine-${_wine_version_stripped}. Повреден е от версия ${bad_version}. Използвайте папка, създадена с WINEARCH=win32. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
             broken_no_version_known_win64="Пакетът (${W_PACKAGE}) е повреден, когато wine е създаден без mingw. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
@@ -693,7 +693,7 @@ w_package_unsupported_win64()
 {
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
-            bg*) w_warn "Пакетът (${W_PACKAGE}) не работи на 64-битовите инсталации. Трябва да използвате папка, създадена с WINEARCH=win32." ;;
+            bg*) w_warn "Пакетът (${W_PACKAGE}) не работи на 64-битовите инсталации. Трябва да използвате префикс, създаден с WINEARCH=win32." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) não funciona em instalação de 64-bit. Você precisa usar um prefixo feito com WINEARCH=win32." ;;
             ru*) w_warn "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
@@ -710,7 +710,7 @@ w_package_warn_win64()
 {
     if [ "${W_ARCH}" = "win64" ] ; then
         case ${LANG} in
-            bg*) w_warn "Пакетът (${W_PACKAGE}) вероятно няма да работи на 64-битовите инсталации. 32-битовите папки може да работят по-добре." ;;
+            bg*) w_warn "Пакетът (${W_PACKAGE}) вероятно няма да работи на 64-битовите инсталации. 32-битовите префикси може да работят по-добре." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) talvez não funcione completamente em 64-bit. Em prefixo 32-bit talvez funcione melhor." ;;
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) może nie działać poprawnie z 64-bitową instalacją. Prefiks 32-bitowy może działać lepiej." ;;
             ru*) w_warn "Данный пакет может быть не полностью работоспособным в 64-битном окружении. 32-битные префиксы могут работать лучше." ;;
@@ -3292,8 +3292,8 @@ winetricks_prefixmenu()
             _W_msg_body='Какво да бъде?'
             _W_msg_apps='Инсталиране на приложение'
             _W_msg_benchmarks='Инсталиране на еталонен тест'
-            _W_msg_default="Избиране на папката по подразбиране"
-            _W_msg_mkprefix="Създаване на нова папка"
+            _W_msg_default="Избиране на префикс по подразбиране"
+            _W_msg_mkprefix="Създаване на нов префикс"
             _W_msg_unattended0="Изключване на автоматичното инсталиране"
             _W_msg_unattended1="Включване на автоматичното инсталиране"
             _W_msg_help="Отваряне на помощта"
@@ -3482,7 +3482,7 @@ winetricks_mkprefixmenu()
 {
     case ${LANG} in
         # TODO: translate to other languages
-        bg*) _W_msg_title="Winetricks - създайте нова папка"
+        bg*) _W_msg_title="Winetricks - създайте нов префикс"
             _W_msg_name="Наименование"
             _W_msg_arch="Архитектура"
             ;;
@@ -3539,7 +3539,7 @@ winetricks_mkprefixmenu()
 winetricks_mainmenu()
 {
     case ${LANG} in
-        bg*) _W_msg_title="Winetricks - текущата папка е \"${WINEPREFIX}\""
+        bg*) _W_msg_title="Winetricks - текущият префикс е \"${WINEPREFIX}\""
             _W_msg_body='Какво да бъде?'
             _W_msg_dlls="Инсталиране на DLL файл или компонент"
             _W_msg_fonts='Инсталиране на шрифт'
@@ -3553,7 +3553,7 @@ winetricks_mainmenu()
             _W_msg_wine_misc_exe='Стартиране на изпълним файл (.exe/.msi/.msu)'
             _W_msg_shell='Стартиране на терминала (за отстраняване на неизправности)'
             _W_msg_folder='Търсене на файлове'
-            _W_msg_annihilate="Изтриване на ВСИЧКИ ДАННИ И ПРИЛОЖЕНИЯ В ТАЗИ ПАПКА"
+            _W_msg_annihilate="Изтриване на ВСИЧКИ ДАННИ И ПРИЛОЖЕНИЯ В ТОЗИ ПРЕФИКС"
             ;;
         da*) _W_msg_title="Vælg en pakke-kategori - Nuværende præfiks er \"${WINEPREFIX}\""
             _W_msg_body='Hvad ønsker du at gøre?'
@@ -3781,7 +3781,7 @@ winetricks_settings_menu()
 {
     # FIXME: these translations should really be centralized/reused:
     case ${LANG} in
-        bg*) _W_msg_title="Winetricks - текущата папка е \"${WINEPREFIX}\""
+        bg*) _W_msg_title="Winetricks - текущият префикс е \"${WINEPREFIX}\""
             _W_msg_body='Какво искате да промените?'
             ;;
         da*) _W_msg_title="Vælg en pakke - Nuværende præfiks er \"${WINEPREFIX}\""
@@ -4026,7 +4026,7 @@ winetricks_settings_menu()
 winetricks_showmenu()
 {
     case ${LANG} in
-        bg*) _W_msg_title="Winetricks - текущата папка е \"${WINEPREFIX}\""
+        bg*) _W_msg_title="Winetricks - текущият префикс е \"${WINEPREFIX}\""
             _W_msg_body='Какво искате да инсталирате?'
             _W_cached="кеширано"
             ;;
@@ -4800,7 +4800,7 @@ winetricks_set_wineprefix()
 
         if [ "${W_NO_WIN64_WARNINGS}" = 0 ]; then
             case ${LANG} in
-                bg*) w_warn "Използвате 64-битова папка. Повечето програми са за 32-битова архитектура. Ако възникнат проблеми, моля, използвайте 32-битова папка, преди да ги докладвате." ;;
+                bg*) w_warn "Използвате 64-битов префикс. Повечето програми са за 32-битова архитектура. Ако възникнат проблеми, моля, използвайте 32-битов префикс, преди да ги докладвате." ;;
                 fr*) w_warn "Vous utilisez un WINEPREFIX 64 bits. Notez que de nombreux verbes n'installent que des versions 32 bits des paquets. Si vous rencontrez des problèmes, veuillez refaire un test dans un WINEPREFIX 32 bits propre avant de signaler un bug." ;;
                 ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие команды устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте ещё раз на чистом 32-битном WINEPREFIX до отправки отчёта об ошибке." ;;
                 pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
@@ -4811,11 +4811,13 @@ winetricks_set_wineprefix()
 
             if [ "${_W_wow64_style}" = "new" ]; then
                 case ${LANG} in
+                    bg*) w_warn "Изглежда използвате новия WoW64 режим на Wine. Имайте предвид, че той е ЕКСПЕРИМЕНТАЛЕН и все още не се поддържа напълно. Ако докладвате за проблем, задължително споменете това." ;;
                     ru*) w_warn "Похоже, вы используете новый режим wow64 в Wine. Важно: он ЭКСПЕРИМЕНТАЛЬНЫЙ и пока поддерживается не полностью. Если будете сообщать о проблеме, обязательно упомяните об этом." ;;
                     *) w_warn "You appear to be using Wine's new wow64 mode. Note that this is EXPERIMENTAL and not yet fully supported. If reporting an issue, be sure to mention this." ;;
                 esac
             elif [ "${_W_wow64_style}" = "unknown" ]; then
                 case ${LANG} in
+                    bg*) w_warn "Неуспешно откриване на типа на WoW64." ;;
                     ru*) w_warn "Не удалось определить тип WoW64." ;;
                     *) w_warn "WoW64 type could not be detected." ;;
                 esac
@@ -4920,7 +4922,7 @@ winetricks_annihilate_wineprefix()
     w_skip_windows "No wineprefix to delete on windows" && return
 
     case ${LANG} in
-        bg*) w_askpermission "Изтриване на ${WINEPREFIX}, нейните приложения, икони и менюта?" ;;
+        bg*) w_askpermission "Изтриване на ${WINEPREFIX}, неговите приложения, икони и менюта?" ;;
         fr*) w_askpermission "Supprimer ${WINEPREFIX}, ses applications, ses icônes et ses éléments de menu ?" ;;
         uk*) w_askpermission "Бажаєте видалити '${WINEPREFIX}'?" ;;
         pl*) w_askpermission "Czy na pewno chcesz usunąć prefiks ${WINEPREFIX} i wszystkie jego elementy?" ;;
@@ -5169,15 +5171,15 @@ winetricks_usage()
     case ${LANG} in
         bg*)
             cat <<_EOF_
-Начин на използване: $0 [опции] [команда|глагол|местоположение-на-глагола] ...
-Изпълнява глаголите. Всеки глагол инсталира приложение или променя настройка.
+Начин на използване: $0 [опции] [команда|глагол|местоположение-на-командата] ...
+Изпълнява командите. Всяка команда инсталира приложение или променя настройка.
 
 Опции:
     --country=CC      Променя държавния код (СС) и не засича Вашия IP адрес
 -f, --force           Не проверява за инсталираните пакети
     --gui             Показва графична диагностика
     --gui=OPT         Избира kdialog или zenity (OPT)
-    --isolate         Инсталира всяко приложение или игра в отделна бутилка (ПАПКА)
+    --isolate         Инсталира всяко приложение или игра в отделна бутилка (ПРЕФИКС)
     --self-update     Обновява това приложение
     --update-rollback Отменя последното обновяване на това приложение
     --no-clean        Не изтрива временните директории (полезно е за отстраняване на неизправности)
@@ -5185,28 +5187,28 @@ winetricks_usage()
     --optout          Изключва докладването за използваните глаголи към разработчиците на Winetricks
 -q, --unattended      Не задава въпроси, инсталира автоматично
 -t  --torify          Стартира изтегляне с torify, ако е налично
-    --verify          Стартира автоматични графични тестове за глаголи, ако е налично
+    --verify          Стартира автоматични графични тестове за команди, ако са налични
 -v, --verbose         Изписва всички изпълнени команди
 -h, --help            Показва това съобщение и излиза
 -V, --version         Показва версията и излиза
 
 Команди:
 list                  показва категориите
-list-all              показва всички категории и техните глаголи
-apps list             показва глаголите в категория 'приложения'
-benchmarks list       показва глаголите в категория 'еталонни тестове'
-dlls list             показва глаголите в категория 'DLL файлове'
-fonts list            показва глаголите в категория 'шрифтове'
-settings list         показва глаголите в категория 'настройки'
-list-cached           показва кешираните-и-готови-за-инсталиране глаголи
-list-download         показва глаголите, които се изтеглят автоматично
-list-manual-download  показва глаголите, които се изтеглят от потребителя
-list-installed        показва инсталираните глаголи
-arch=32|64            създава папка с 32 или 64-битова архитектура, тази опция
+list-all              показва всички категории и техните команди
+apps list             показва командите в категория 'приложения'
+benchmarks list       показва командите в категория 'еталонни тестове'
+dlls list             показва командите в категория 'DLL файлове'
+fonts list            показва командите в категория 'шрифтове'
+settings list         показва командите в категория 'настройки'
+list-cached           показва кешираните-и-готови-за-инсталиране команди
+list-download         показва командите, които се изтеглят автоматично
+list-manual-download  показва командите, които се изтеглят от потребителя
+list-installed        показва инсталираните команди
+arch=32|64            създава префикс с 32 или 64-битова архитектура, тази опция
                       трябва да бъде зададена преди prefix=foobar и няма да работи
-                      с папката по подразбиране.
-prefix=foobar         избира ПАПКА=${W_PREFIXES_ROOT}/foobar
-annihilate            Изтрива ВСИЧКИ ДАННИ И ПРИЛОЖЕНИЯ В ТАЗИ ПАПКА
+                      с префикса по подразбиране.
+prefix=foobar         избира ПРЕФИКС=${W_PREFIXES_ROOT}/foobar
+annihilate            Изтрива ВСИЧКИ ДАННИ И ПРИЛОЖЕНИЯ В ТОЗИ ПРЕФИКС
 _EOF_
             ;;
         da*)
@@ -18285,9 +18287,11 @@ w_metadata windowmanagerdecorated=n settings \
 #----------------------------------------------------------------
 
 w_metadata useegl=y settings \
+    title_bg="Включете EGL (po podrazbirane)" \
     title_ru="Включить EGL (по умолчанию)" \
     title="Enable EGL (default)"
 w_metadata useegl=n settings \
+    title_bg="Изключете EGL, използвайте GLX" \
     title_ru="Отключить EGL, использовать GLX" \
     title="Disable EGL, use GLX instead"
 
@@ -18471,50 +18475,62 @@ _EOF_
 #----------------------------------------------------------------
 
 w_metadata dpi=96 settings \
+    title_bg="Задайте DPI на екрана на 96" \
     title_ru="Установить DPI экрана 96" \
     title="Set screen DPI to 96"
 
 w_metadata dpi=120 settings \
+    title_bg="Задайте DPI на екрана на 120" \
     title_ru="Установить DPI экрана 120" \
     title="Set screen DPI to 120"
 
 w_metadata dpi=144 settings \
+    title_bg="Задайте DPI на екрана на 144" \
     title_ru="Установить DPI экрана 144" \
     title="Set screen DPI to 144"
 
 w_metadata dpi=168 settings \
+    title_bg="Задайте DPI на екрана на 168" \
     title_ru="Установить DPI экрана 168" \
     title="Set screen DPI to 168"
 
 w_metadata dpi=192 settings \
+    title_bg="Задайте DPI на екрана на 192" \
     title_ru="Установить DPI экрана 192" \
     title="Set screen DPI to 192"
 
 w_metadata dpi=216 settings \
+    title_bg="Задайте DPI на екрана на 216" \
     title_ru="Установить DPI экрана 216" \
     title="Set screen DPI to 216"
 
 w_metadata dpi=240 settings \
+    title_bg="Задайте DPI на екрана на 240" \
     title_ru="Установить DPI экрана 240" \
     title="Set screen DPI to 240"
 
 w_metadata dpi=288 settings \
+    title_bg="Задайте DPI на екрана на 288" \
     title_ru="Установить DPI экрана 288" \
     title="Set screen DPI to 288"
 
 w_metadata dpi=336 settings \
+    title_bg="Задайте DPI на екрана на 336" \
     title_ru="Установить DPI экрана 336" \
     title="Set screen DPI to 336"
 
 w_metadata dpi=384 settings \
+    title_bg="Задайте DPI на екрана на 384" \
     title_ru="Установить DPI экрана 384" \
     title="Set screen DPI to 384"
 
 w_metadata dpi=432 settings \
+    title_bg="Задайте DPI на екрана на 432" \
     title_ru="Установить DPI экрана 432" \
     title="Set screen DPI to 432"
 
 w_metadata dpi=480 settings \
+    title_bg="Задайте DPI на екрана на 480" \
     title_ru="Установить DPI экрана 480" \
     title="Set screen DPI to 480"
 
@@ -19062,7 +19078,7 @@ _EOF_
 }
 
 w_metadata set_userpath settings \
-    title_bg="задайте потребителската променлива PATH в папката, посочена от местоположенията в променливата на средата WINEPATH с разделител ';'" \
+    title_bg="Задайте потребителската променлива PATH в префикса, посочена от местоположенията в променливата на средата WINEPATH с разделител ';'" \
     title_uk="" \
     title_ru="Задать пользовательскую переменную PATH в префиксе wine из путей (системных и/или wine), перечисленных в переменной окружения WINEPATH через ';'" \
     title="set user PATH variable in wine prefix specified by native and/or wine paths in WINEPATH environment variable with ';' as path separator"
@@ -19106,7 +19122,7 @@ load_alldlls()
 #----------------------------------------------------------------
 
 w_metadata bad settings \
-    title_bg="Фалшив глагол, който винаги връща false" \
+    title_bg="Фалшива команда, която винаги връща false" \
     title_ru="Фиктивная команда, всегда возвращающая ложь" \
     title="Fake verb that always returns false"
 
@@ -19132,7 +19148,7 @@ load_forcemono()
 #----------------------------------------------------------------
 
 w_metadata good settings \
-    title_bg="Фалшив глагол, който винаги връща true" \
+    title_bg="Фалшива команда, която винаги връща true" \
     title_ru="Фиктивная команда, всегда возвращающая истину" \
     title="Fake verb that always returns true"
 
@@ -19207,7 +19223,7 @@ load_hosts()
 #----------------------------------------------------------------
 
 w_metadata isolate_home settings \
-    title_bg="Премахнете връзките на папката към \$HOME" \
+    title_bg="Премахнете връзките на префикса към \$HOME" \
     title_uk="Видалити посилання на вино преміум на \$HOME" \
     title_ru="Убрать из префикса ссылки на \$HOME" \
     title="Remove wineprefix links to \$HOME"
@@ -19334,7 +19350,7 @@ load_remove_mono()
 #----------------------------------------------------------------
 
 w_metadata sandbox settings \
-    title_bg="Добавете папката в пясъчника - премахнете връзките към \$HOME" \
+    title_bg="Изолирайте префикса - премахнете връзките към \$HOME" \
     title_uk="Пісочниця wineprefix - видалити посилання до HOME" \
     title_ru="Изолировать префикс — убрать ссылки на \$HOME" \
     title="Sandbox the wineprefix - remove links to \$HOME"
@@ -19357,9 +19373,11 @@ load_sandbox()
 #----------------------------------------------------------------
 
 w_metadata showdotfiles=y settings \
+    title_bg="Покажете файловете и папките с точкa (.foo) в програмите за Windows" \
     title_ru="Показывать скрытые файлы и папки (.foo) в программах Windows" \
     title="Show dotfiles/folders (.foo) in Windows programs"
 w_metadata showdotfiles=n settings \
+    title_bg="Скрийте файловете и папките с точкa (.foo) в програмите за Windows" \
     title_ru="Скрывать файлы и папки, начинающиеся с точки (.foo), в программах Windows (по умолчанию)" \
     title="Hide dotfiles/folders (.foo) in Windows programs (default)"
 
@@ -19430,9 +19448,11 @@ _EOF_
 # settings->theme
 #----------------------------------------------------------------
 w_metadata theme=dark settings \
+    title_bg="Използвайте тъмната тема за префикса" \
     title_ru="Использовать тёмную тему для префикса" \
     title="Use dark theme for the WINEPREFIX"
 w_metadata theme=light settings \
+    title_bg="Използвайте светлата тема (по подразбиране) за префикса" \
     title_ru="Использовать стандартную тему Wine (светлую) для префикса" \
     title="Use default Wine theme (light) for the WINEPREFIX"
 
