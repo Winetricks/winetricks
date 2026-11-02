@@ -79,23 +79,23 @@ wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetric
 #   https://www.tldp.org/LDP/GNU-Linux-Tools-Summary/html/x9543.htm
 chmod +x winetricks
 
-# Move the winetricks script to a location which will be in the standard user PATH. See:
+# Install the winetricks script to a location which will be in the standard user PATH. See:
 #   https://www.tldp.org/LDP/abs/html/internalvariables.html
-sudo mv winetricks /usr/bin
+sudo install -m 755 winetricks /usr/bin/winetricks
 
 # Download the latest winetricks BASH completion script (master="latest version") from Github.
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks.bash-completion
 
-# Move the winetricks BASH completion script to a standard location for BASH completion modules. See:
+# Install the winetricks BASH completion script to a standard location for BASH completion modules. See:
 #   https://www.tldp.org/LDP/abs/html/tabexpansion.html
-sudo mv winetricks.bash-completion /usr/share/bash-completion/completions/winetricks
+sudo install -m 644 winetricks.bash-completion /usr/share/bash-completion/completions/winetricks
 
 # Download the latest winetricks MAN page (master="latest version") from Github.
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks.1
 
-# Move the winetricks MAN page to a standard location for MAN pages. See:
+# Install the winetricks MAN page to a standard location for MAN pages. See:
 #   https://www.pathname.com/fhs/pub/fhs-2.3.html#USRSHAREMANMANUALPAGES
-sudo mv winetricks.1 /usr/share/man/man1/winetricks.1
+sudo install -m 644 winetricks.1 /usr/share/man/man1/winetricks.1
 _EOF_SCRIPT
 ###### create update_winetricks FINISH ########
 
@@ -104,13 +104,13 @@ _EOF_SCRIPT
 chmod +x update_winetricks
 
 # We must escalate privileges to root, as regular Linux users do not have write access to '/usr/bin'.
-sudo mv update_winetricks /usr/bin/
+sudo install -m 755 update_winetricks /usr/bin/update_winetricks
 ```
 
 See the manpages for the individual functions, if you are not clear how they are being used, e.g.
 ```
 man mktemp
-man mv
+man install
 man wget
 man sudo
 ...
@@ -127,11 +127,11 @@ cd "\$(mktemp -d)"
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks.bash-completion
 chmod +x winetricks
-su root sh -c 'mv winetricks /usr/bin ; mv winetricks.bash-completion /usr/share/bash-completion/completions/winetricks'
+su root sh -c 'install -m 755 winetricks /usr/bin/winetricks ; install -m 644 winetricks.bash-completion /usr/share/bash-completion/completions/winetricks'
 _EOF_SCRIPT
 
 chmod +x update_winetricks
-su root sh -c 'mv update_winetricks /usr/bin/'
+su root sh -c 'install -m 755 update_winetricks /usr/bin/update_winetricks'
 ```
 
 To use ```curl``` instead of ```wget```: substitute all ```wget``` calls with ```curl -O```, in the winetricks update script.
@@ -169,7 +169,7 @@ ExecStart=/bin/sh /usr/bin/update_winetricks
 Type=oneshot
 _EOF_SERVICE_UNIT
 
-sudo mv winetricks_update.timer winetricks_update.service /etc/systemd/system/
+sudo install -m 644 -t /etc/systemd/system/ winetricks_update.timer winetricks_update.service
 ```
 See:
 * [freedesktop.org: systemd service unit](https://www.freedesktop.org/software/systemd/man/systemd.service.html)
