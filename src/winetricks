@@ -5507,8 +5507,8 @@ winetricks_handle_option()
         --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
         --no-clean) W_OPT_NOCLEAN=1 ;;
         --no-isolate) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
-        --optin) WINETRICKS_STATS_REPORT=1;;
-        --optout) WINETRICKS_STATS_REPORT=0;;
+        --optin) WINETRICKS_STATS_REPORT=1; _W_stats_opt=1;;
+        --optout) WINETRICKS_STATS_REPORT=0; _W_stats_opt=1;;
         -q|--unattended) winetricks_set_unattended 1 ;;
         --self-update) winetricks_selfupdate;;
         -t|--torify)  WINETRICKS_OPT_TORIFY=1 ;;
@@ -5547,6 +5547,12 @@ if ! test "${WINETRICKS_LIB}"; then
     # while also supporting `dlls list` (etc.)
     # This used by w_metadata() to skip checking installed files if wine isn't available/needed
     if echo "$*" | grep -v list-installed | grep -q -w list; then
+        export _W_wine_not_needed=1
+    fi
+
+    # --optin/--optout on their own only store a preference, which doesn't need a wineprefix
+    if test $# -eq 0 && test -n "${_W_stats_opt}" && test "${WINETRICKS_GUI}" = none; then
+        _W_stats_only=1
         export _W_wine_not_needed=1
     fi
 
@@ -20209,6 +20215,11 @@ execute_command()
 if ! test "${WINETRICKS_LIB}"; then
     # If user opted out, save that preference now.
     winetricks_stats_save
+
+    # Only --optin/--optout was given: nothing else to do, so don't start the GUI (or wine)
+    if test -n "${_W_stats_only}"; then
+        exit 0
+    fi
 
     # If user specifies menu on command line, execute that command, but don't commit to command-line mode
     # FIXME: this code is duplicated several times; unify it
