@@ -686,6 +686,36 @@ w_package_unsupported_win32()
 }
 
 
+# Like w_package_unsupported_win64, but allow new-style (pure) WoW64 prefixes,
+# where 32-bit installers run fine and WINEARCH=win32 is not available.
+w_package_unsupported_win64_unless_new_wow64()
+{
+    if [ "${_W_wow64_style}" != "new" ]; then
+        w_package_unsupported_win64
+    fi
+}
+
+# Install an MDAC_TYP.EXE (IExpress package) from the current directory.
+# On new-style WoW64, "mdac_typ.exe /q /C:setup /qnt" exits with status 2 without
+# installing anything, so extract the package and run setup.exe directly instead.
+helper_mdac_install()
+{
+    _W_mdac_exe="$1"
+    if [ "${_W_wow64_style}" = "new" ]; then
+        w_try rm -rf "${W_TMP}/mdac"
+        w_try mkdir -p "${W_TMP}/mdac"
+        w_try "${WINE}" "${_W_mdac_exe}" /C /T:"${W_TMP_WIN}\\mdac" /Q
+        test -f "${W_TMP}/mdac/setup.exe" || w_die "Extracting ${_W_mdac_exe} failed"
+        w_try_cd "${W_TMP}/mdac"
+        w_try "${WINE}" setup.exe ${W_OPT_UNATTENDED:+/qnt}
+        w_try_cd "${W_CACHE}/${W_PACKAGE}"
+        w_try rm -rf "${W_TMP}/mdac"
+    else
+        w_try "${WINE}" "${_W_mdac_exe}" ${W_OPT_UNATTENDED:+/q /C:"setup /qnt"}
+    fi
+    unset _W_mdac_exe
+}
+
 # Some packages don't support win64, die with an appropriate message
 # Note: this is for packages that natively don't support win64, not packages that are broken on wine64, for that, use w_package_broken_win64()
 # Returns 32 (for tests/winetricks-test)
@@ -11178,8 +11208,8 @@ w_metadata jet40 dlls \
 
 load_jet40()
 {
-    # Both mdac27/mdac28 are 32-bit only:
-    w_package_unsupported_win64
+    # Both mdac27/mdac28 are 32-bit only (but work on new-style WoW64):
+    w_package_unsupported_win64_unless_new_wow64
 
     w_call mdac27
     w_call wsh57
@@ -11340,7 +11370,7 @@ w_metadata mdac27 dlls \
 
 load_mdac27()
 {
-    w_package_unsupported_win64
+    w_package_unsupported_win64_unless_new_wow64
 
     # https://www.microsoft.com/downloads/en/details.aspx?FamilyId=9AD000F2-CAE7-493D-B0F3-AE36C570ADE8&displaylang=en
     # Originally at: https://download.microsoft.com/download/3/b/f/3bf74b01-16ba-472d-9a8c-42b2b4fa0d76/mdac_typ.exe
@@ -11352,7 +11382,7 @@ load_mdac27()
     w_store_winver
     w_set_winver nt40
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/q /C:"setup /qnt"}
+    helper_mdac_install "${file1}"
     w_restore_winver
 }
 
@@ -11368,7 +11398,7 @@ w_metadata mdac28 dlls \
 
 load_mdac28()
 {
-    w_package_unsupported_win64
+    w_package_unsupported_win64_unless_new_wow64
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=5793
     w_download https://web.archive.org/web/20070127061938/https://download.microsoft.com/download/4/a/a/4aafff19-9d21-4d35-ae81-02c48dcbbbff/MDAC_TYP.EXE 157ebae46932cb9047b58aa849ac1885e8cbd2f218810cb83e57613b49c679d6
@@ -11376,7 +11406,7 @@ load_mdac28()
     w_store_winver
     w_set_winver nt40
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
-    w_try "${WINE}" mdac_typ.exe ${W_OPT_UNATTENDED:+/q /C:"setup /qnt"}
+    helper_mdac_install mdac_typ.exe
     w_restore_winver
 }
 
